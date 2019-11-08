@@ -1,4 +1,4 @@
-# skillexplosion
+# Skill Explosion
 Gaming improvement mini-games.
 
 # Basic Overview
