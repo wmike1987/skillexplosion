@@ -1,7 +1,7 @@
 # skillexplosion
 Gaming improvement mini-games.
 
-#Basic Overview
+# Basic Overview
 Matter.js for physics
 Pixi.js for rendering
 Javascript for game logic
