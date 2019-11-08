@@ -1,0 +1,84 @@
+{"frames": {
+
+"blueCollapse1.png":
+{
+	"frame": {"x":1,"y":1,"w":510,"h":444},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":34,"w":510,"h":444},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse2.png":
+{
+	"frame": {"x":1,"y":447,"w":510,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":67,"w":510,"h":377},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse3.png":
+{
+	"frame": {"x":1,"y":826,"w":510,"h":314},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":98,"w":510,"h":314},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse4.png":
+{
+	"frame": {"x":1,"y":1142,"w":510,"h":248},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":131,"w":510,"h":248},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse5.png":
+{
+	"frame": {"x":1,"y":1392,"w":510,"h":189},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":159,"w":510,"h":189},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse6.png":
+{
+	"frame": {"x":1,"y":1583,"w":510,"h":129},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":192,"w":510,"h":129},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse7.png":
+{
+	"frame": {"x":1,"y":1714,"w":510,"h":71},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":221,"w":510,"h":71},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"blueCollapse8.png":
+{
+	"frame": {"x":1,"y":1787,"w":510,"h":25},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":242,"w":510,"h":25},
+	"sourceSize": {"w":512,"h":512},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "blueCollapse.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":1813},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:a6aef022301917a61fb76e55f9a03044:89176910020b61be2831daf6c49b4e45:31bc0c1ad803232bc1cc617798b1d635$"
+}
+}

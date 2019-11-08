@@ -1,0 +1,21 @@
+{"frames": {
+
+"Ice.png":
+{
+	"frame": {"x":1,"y":1,"w":1200,"h":600},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":600},
+	"sourceSize": {"w":1200,"h":600},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "BackgroundSheet2.png",
+	"format": "RGBA8888",
+	"size": {"w":1202,"h":602},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:09921dd978a500b21e0a495aec33a745:40c1c22d76f6b03dbf3d39cedd9b942d:b8d41880353de99612fe0b7a6d304998$"
+}
+}

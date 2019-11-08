@@ -1,0 +1,30 @@
+{"frames": {
+
+"Chalkboard.png":
+{
+	"frame": {"x":1,"y":1,"w":1200,"h":600},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":600},
+	"sourceSize": {"w":1200,"h":600},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"MatchChalk.png":
+{
+	"frame": {"x":1203,"y":1,"w":231,"h":76},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":68,"w":231,"h":76},
+	"sourceSize": {"w":250,"h":200},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ChalkboardSheet.png",
+	"format": "RGBA8888",
+	"size": {"w":1280,"h":602},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:355df393d298de0c9b7d529daac02f57:89b2fa0803b606c07aedd178687c4435:3daf47d2f41d35e82e0d6d17a19f3b3b$"
+}
+}

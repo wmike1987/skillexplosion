@@ -1,0 +1,94 @@
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113832510-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-113832510-1', {
+      'page_title' : 'homepage',
+      'page_path': '/home'
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="css/mainStyle.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <script src="lib/poly-decomp/poly-decomp.js"></script>
+    <script src="app/Utils/KeyStates.js"></script>
+    <script data-main="frontdoor" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.js"></script>
+    
+    <title>Skill Explosion</title>
+    <meta name="description" content="Skill Explosion is a collection of mini games which help train your mouse-movement muscle memory and your aiming capabilities. Play various point-click, selection-box, and multitasking games and post high scores to compete with others.">
+
+</head>
+<body>
+	<div class="backgroundtexture">
+		<div class="container">
+			<div id='title'>
+				    <svg height="100%" width="100%">
+			            <defs>
+                            <filter id="shadow" x="0" y="0" width="200%" height="200%">
+                                <feOffset result="offOut" in="SourceGraphic" dx="6" dy="6" />
+                            </filter>
+                        </defs>
+                        <text id="filler" x="50%" y="50%" text-anchor="middle" dy="40px" letter-spacing="5px" stroke-width="0" stroke-opacity="0" fill-opacity="1">Skill Explosion</text>
+                        <text id="fillerShadow" x="50%" y="50%" text-anchor="middle" dy="40px" letter-spacing="5px" stroke-width="0" stroke-opacity="0" fill-opacity=".5" filter='url(#shadow)'>Skill Explosion</text>
+                        <text id="textone" x="50%" y="50%" text-anchor="middle" stroke="#00ffff" dy="40px" letter-spacing="5px" stroke-width="3" stroke-dasharray="10 0" stroke-opacity=".75" fill-opacity="0.0">Skill Explosion</text>
+                        <text id="texttwo" x="50%" y="50%" text-anchor="middle" stroke="blue" dy="40px" letter-spacing="5px" stroke-width="3" stroke-opacity="0" fill-opacity="0">Skill Explosion</text>
+                    </svg>
+					<!--div id="banner"></div>-->
+			</div>
+		
+			<div class="column-right sideColumn">
+				<div class='noSelect' id="highScoreTable">
+				
+				</div>
+			</div>
+			
+			<div class="column-left sideColumn">
+				<div class="shadow gameMenu hidden noSelect">
+			   	    <div class='gameCategoryTitle'>Point-Click</div>
+				   	<ul class='gameList'>
+					    <li><span gameName='Simple_Target' class='game' >Bouncing Targets</span></li>
+					    <li><span gameName='Simple_Zarya' class='game' >Tracking</span></li>
+					    <li><span gameName='SideToSide_Practice' class='game' >Left-Right</span></li>
+					    <li><span gameName='UpDown_Practice' class='game' >Top-Bottom</span></li>
+					    <!--<li><span gameName='Phara' class='game' >Bubbles (beta)</span></li>-->
+					    <li><span gameName='Raindrops' class='game' >Raindrops</span></li>
+					    <li><span gameName='Pelicans' class='game' >Pelicans</span></li>
+					    <li><span gameName='Gauntlet' class='game' href="#">Gauntlet</span></li>
+					    <!--li><span gameName='Rainy_Season' class='game' >Rainy Season (test)</span></li-->
+					</ul>
+				    
+				    <div class='gameCategoryTitle'>Selection Box</div>
+					<ul class='gameList'>
+					    <li><span gameName='Marbles' class='game' >Marbles</span></li>
+					    <li><span gameName='Split' class='game' >Split</span></li>
+					    <li><span gameName='MultiDodge' class='game' >Multi Dodge</span></li>
+					    
+					</ul>
+					
+				    <div class='gameCategoryTitle'>Keyboard</div>
+					<ul class='gameList'>
+					    <li><span gameName='Recall' class='game' >Key Recall</span></li>
+					    
+					</ul>
+					
+				    <div class='gameCategoryTitle'>Math/Puzzle</div>
+					<ul class='gameList'>
+					    <li><span gameName='SequenceMatch' class='game' >Sequencer</span></li>
+					    
+					</ul>
+				</div>
+				<!--a id='magicButton' >magicButton</span>-->
+			</div>
+			
+			<div class="column-center">
+				<div id="gameTheater"></div>
+				<div class='noSelect' id="gameInstructions"></div>
+			</div>
+		</div>
+	</div>
+  
+</body>

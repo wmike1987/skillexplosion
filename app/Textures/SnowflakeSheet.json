@@ -1,0 +1,57 @@
+{"frames": {
+
+"DarkCork.png":
+{
+	"frame": {"x":1,"y":1,"w":1200,"h":600},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":600},
+	"sourceSize": {"w":1200,"h":600},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Snowflake1.png":
+{
+	"frame": {"x":121,"y":1203,"w":104,"h":116},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":12,"y":6,"w":104,"h":116},
+	"sourceSize": {"w":128,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Snowflake2.png":
+{
+	"frame": {"x":1,"y":1203,"w":104,"h":118},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":12,"y":5,"w":104,"h":118},
+	"sourceSize": {"w":128,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Snowflake3.png":
+{
+	"frame": {"x":239,"y":1203,"w":102,"h":118},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":13,"y":5,"w":102,"h":118},
+	"sourceSize": {"w":128,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Snowflake4.png":
+{
+	"frame": {"x":359,"y":1203,"w":96,"h":100},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":14,"w":96,"h":100},
+	"sourceSize": {"w":128,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "SnowflakeSheet.png",
+	"format": "RGBA8888",
+	"size": {"w":602,"h":1308},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:8409c45eddeabeb3fd2b342de64093dd:b3d6d6494a3906f34ac439e5b9b5cd63:47fb4f7d0514bba79e4f8d32b316d857$"
+}
+}

@@ -1,0 +1,39 @@
+{"frames": {
+
+"Cork.jpg":
+{
+	"frame": {"x":1,"y":1,"w":1200,"h":600},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":600},
+	"sourceSize": {"w":1200,"h":600},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Grass.jpg":
+{
+	"frame": {"x":1,"y":603,"w":1200,"h":600},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":600},
+	"sourceSize": {"w":1200,"h":600},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"SteelBackground.png":
+{
+	"frame": {"x":1203,"y":1,"w":900,"h":450},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":900,"h":450},
+	"sourceSize": {"w":900,"h":450},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "BackgroundSheet.jpg",
+	"format": "RGB888",
+	"size": {"w":1654,"h":1204},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6d813f02bec4c6c58d75da93fdba275f:2d6b3c87b7d61a4fe7204ffe4f2312dc:50ab9a83f16d841ed36263a1a42139f9$"
+}
+}
