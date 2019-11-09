@@ -6,7 +6,7 @@ requirejs.config({
         games: '../app/dev/Games',
         mixins: '../app/dev/Mixins',
         utils: '../app/dev/Utils',
-    	pixi: "//cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi", //4.8.6 last stable
+    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi", //4.8.6 last stable
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min",
 	    'matter-js': "matter/matter-timing",
@@ -62,7 +62,7 @@ requirejs(['jquery'], function($) {
 	        $('#gameTheater').text("Loading...");
 	        
 	        //load game
-    	    require(['utils/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/OHS'], function(GameStarter, game, $, hs) {
+    	    require(['utils/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/HS'], function(GameStarter, game, $, hs) {
     	    	
     	    	//destroy previous game
     	    	if(previousGame) previousGame.nuke({noMercy: true});

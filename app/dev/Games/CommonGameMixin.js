@@ -2,7 +2,7 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles', 'utils/Styles'], function(Matter, PIXI, $, hs, h, particles, styles) {
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils/Styles'], function(Matter, PIXI, $, hs, h, particles, styles) {
     
     var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 	
