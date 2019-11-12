@@ -1,25 +1,40 @@
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113832510-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'UA-113832510-1', {
-      'page_title' : 'homepage',
-      'page_path': '/home'
-        });
-    </script>
-    <link rel="stylesheet" type="text/css" href="css/mainStyle.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <script src="lib/poly-decomp/poly-decomp.js"></script>
-    <script src="app/Utils/KeyStates.js"></script>
-    <script data-main="frontdoor" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.js"></script>
-    
-    <title>Skill Explosion</title>
-    <meta name="description" content="Skill Explosion is a collection of mini games which help train your mouse-movement muscle memory and your aiming capabilities. Play various point-click, selection-box, and multitasking games and post high scores to compete with others.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113832510-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113832510-1');
+</script>
+<link rel="stylesheet" type="text/css" href="css/mainStyle.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<script src="lib/poly-decomp/poly-decomp.js"></script>
+<script src="app/Utils/KeyStates.js"></script>
+<script data-main="frontdoor" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.js"></script>
+
+<script>
+//     var lastTime = 0;
+// var deltas = 0;
+// var frameCount = 0;
+
+// (function render(time){
+// 	requestAnimationFrame(render);
+// 	if(lastTime > 0) {
+// 		frameCount++;
+// 		deltas += time - lastTime;
+// 		console.debug(time-lastTime);
+// 		if(deltas >= 1000) {
+// 			deltas -= 1000;
+// 			console.info("fps:" + frameCount);
+// 			frameCount = 0;
+// 		}
+// 	}
+// 	lastTime = time;
+// })()
+</script>
 
 </head>
 <body>
@@ -50,38 +65,39 @@
 				<div class="shadow gameMenu hidden noSelect">
 			   	    <div class='gameCategoryTitle'>Point-Click</div>
 				   	<ul class='gameList'>
-					    <li><span gameName='Simple_Target' class='game' >Bouncing Targets</span></li>
-					    <li><span gameName='Simple_Zarya' class='game' >Tracking</span></li>
-					    <li><span gameName='SideToSide_Practice' class='game' >Left-Right</span></li>
-					    <li><span gameName='UpDown_Practice' class='game' >Top-Bottom</span></li>
-					    <!--<li><span gameName='Phara' class='game' >Bubbles (beta)</span></li>-->
-					    <li><span gameName='Raindrops' class='game' >Raindrops</span></li>
-					    <li><span gameName='Pelicans' class='game' >Pelicans</span></li>
-					    <li><span gameName='Gauntlet' class='game' href="#">Gauntlet</span></li>
-					    <!--li><span gameName='Rainy_Season' class='game' >Rainy Season (test)</span></li-->
+					    <li><a gameName='Simple_Target' class='game' href="#">Bouncing Targets</a></li>
+					    <li><a gameName='Simple_Zarya' class='game' href="#">Tracking</a></li>
+					    <li><a gameName='SideToSide_Practice' class='game' href="#">Left-Right</a></li>
+					    <li><a gameName='UpDown_Practice' class='game' href="#">Top-Bottom</a></li>
+					    <!--<li><a gameName='Phara' class='game' href="#">Bubbles (beta)</a></li>-->
+					    <li><a gameName='Raindrops' class='game' href="#">Raindrops</a></li>
+					    <li><a gameName='Pelicans' class='game' href="#">Pelicans</a></li>
+					    <li><a gameName='Gauntlet' class='game' href="#">Gauntlet</a></li>
+					    <li><a gameName='HeadMan' class='game' href="#">Head Man</a></li>
 					</ul>
 				    
 				    <div class='gameCategoryTitle'>Selection Box</div>
 					<ul class='gameList'>
-					    <li><span gameName='Marbles' class='game' >Marbles</span></li>
-					    <li><span gameName='Split' class='game' >Split</span></li>
-					    <li><span gameName='MultiDodge' class='game' >Multi Dodge</span></li>
-					    
+					    <li><a gameName='Marbles' class='game' href="#">Marbles</a></li>
+					    <li><a gameName='Split' class='game' href="#">Split</a></li>
+					    <li><a gameName='MultiDodge' class='game' href="#">Multi Dodge</a></li>
+					    <li><a gameName='Us' class='game' href="#">Us</a> (new)</li>
 					</ul>
 					
 				    <div class='gameCategoryTitle'>Keyboard</div>
 					<ul class='gameList'>
-					    <li><span gameName='Recall' class='game' >Key Recall</span></li>
+					    <li><a gameName='Recall' class='game' href="#">Key Recall</a></li>
 					    
 					</ul>
 					
 				    <div class='gameCategoryTitle'>Math/Puzzle</div>
 					<ul class='gameList'>
-					    <li><span gameName='SequenceMatch' class='game' >Sequencer</span></li>
+					    <li><a gameName='SequenceMatch' class='game' href="#">Sequence Match</a></li>
+					    <li><a gameName='SequenceMatch' class='game' href="#">Umbrellas</a></li>
 					    
 					</ul>
 				</div>
-				<!--a id='magicButton' >magicButton</span>-->
+				<!--a id='magicButton' href=#>magicButton</a>-->
 			</div>
 			
 			<div class="column-center">

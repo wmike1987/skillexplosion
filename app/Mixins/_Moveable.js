@@ -13,21 +13,18 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
         sensorCollisionCategory: 0x8000,
         noProgressBuffer: 15, //pixels
         
+        //directional data
+        visibleSprite: null,
+        animationStateNames: ['stand', 'left', 'right', 'up', 'down', 'downRight', 'downLeft', 'upRight', 'upLeft'],
+        
         moveableInit: function() {
-            /*var clickPointSprite = currentGame.addSomethingToRenderer(currentGame.texture('MouseX'), 'foreground', {x: -50, y: -50});
-				clickPointSprite.scale.x = .25;
-				clickPointSprite.scale.y = .25;
-				
-				var clickPointSprite2 = currentGame.addSomethingToRenderer(currentGame.texture('MouseXGreen'), 'foreground', {x: -50, y: -50});
-					clickPointSprite2.scale.x = .25;
-				clickPointSprite2.scale.y = .25;*/
-            
+            if(this._moveableInit) return;
             this._moveableInit = true;
             
             //create body sensor - the selection box collides with a slightly smaller body size
             this.smallerBody = Matter.Bodies.circle(0, 0, this.circleRadius-8, { isSensor: true, noWire: true });
             this.smallerBody.collisionFilter.category = this.sensorCollisionCategory;
-            this.smallerBody.collisionFilter.mask = 0x2000;
+            this.smallerBody.collisionFilter.mask = 0x0002;//this.smallerBody.collisionFilter.mask - (this.team || 4);
             this.smallerBody.isSmallerBody = true;
             this.smallerBody.parentBody = this;
             var smallerCallback = currentGame.addTickCallback(function() {
@@ -43,7 +40,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             
             Matter.Events.on(this, 'onCollideActive', this.collideCallback);
             Matter.Events.on(this, 'onCollideActive', this.avoidCallback);
-            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false, 'afterUpdate');
+            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
             this.timer = {name: 'tryForDestination' + this.id, gogogo:true, timeLimit: 850, callback: function() {
     			    if(this.lastPosition) {
     			        //clickPointSprite2.position = this.position;
@@ -85,6 +82,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             }
             
             Matter.Body.setVelocity(this, {x: 0, y: 0});
+            
+            if(this.directional) {
+                $.each(this.renderlings, function(name, sprite){
+                        if(sprite.visible && this.animationStateNames.indexOf(name) > -1) {
+                          sprite.visible = false; 
+                        }
+                    }.bind(this));
+                this.renderlings['stand'].visible = true;
+            }
             this.frictionAir = .8;
             Matter.Body.setMass(this, 5);
             this.isMoving = false;
@@ -92,7 +98,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             this.timer.paused = true;
         },
         constantlySetVelocityTowardsDestination: function(event) {
-            if(!this.isMoving) return;
+            
+            if(!this.isMoving) {
+                return;
+            }
             var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.overshootBuffer * 20;
             
             //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
@@ -108,6 +117,42 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             //figure out the movement vector
             var velocityVector = Matter.Vector.sub(this.destination, this.position);
             var velocityScale = this.moveSpeed/Matter.Vector.magnitude(velocityVector);
+            //change animation
+            if(this.directional) {
+                var angle = Matter.Vector.angle({x: 0, y: 0}, velocityVector);
+                var newSprite = null;
+                if(angle >= 0) {
+                    if(angle < Math.PI/8) {
+                        newSprite = 'right';
+                    } else if(angle < Math.PI*3/8) {
+                        newSprite = 'downRight';
+                    } else if(angle < Math.PI*5/8) {
+                        newSprite = 'down';
+                    } else if(angle < Math.PI*7/8){
+                        newSprite = 'downLeft';
+                    } else {
+                        newSprite = 'left';
+                    }
+                } else {
+                    if(angle > -Math.PI/8) {
+                        newSprite = 'right';
+                    } else if(angle > -Math.PI*3/8) {
+                        newSprite = 'upRight';
+                    } else if(angle > -Math.PI*5/8) {
+                        newSprite = 'up';
+                    } else if(angle > -Math.PI*7/8){
+                        newSprite = 'upLeft';
+                    } else {
+                        newSprite = 'left';
+                    }
+                }
+                $.each(this.renderlings, function(name, sprite){
+                    if(sprite.visible && this.animationStateNames.indexOf(name) > -1) {
+                      sprite.visible = false; 
+                    }
+                }.bind(this));
+                this.renderlings[newSprite].visible = true;
+            }
             if(Matter.Vector.magnitude(velocityVector) < this.moveSpeed)
                 Matter.Body.setVelocity(this, velocityVector);
             else

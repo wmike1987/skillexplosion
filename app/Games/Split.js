@@ -10,7 +10,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		small: 8,
 		zoneSize: 128,
 		level: 1,
-		victoryCondition: {type: 'lives', limit: 5},
+		victoryCondition: {type: 'lives', limit: 305},
 		currentZones: [],
 		selectionBox: true,
 		noClickIndicator: true,
@@ -234,10 +234,12 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
             			    }.bind(this)})
     			            this.marbles.splice(this.marbles.indexOf(target), 1);
     			        }
+    			        
     			        if(this.marbles.length == 0) {
     			            this.addLives(-1);
     			            nextLevelGo = true;
     			        }
+    			        
     			        this.removeBody(target);
     			    }.bind(this));
     			    
@@ -319,6 +321,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		
 		resetGameExtension: function() {
 		    this.level = 0;
+		    this.banes = [];
+		    this.marbles = [];
 		}
 	}
 	

@@ -6,10 +6,10 @@ requirejs.config({
         games: '../app/Games',
         mixins: '../app/Mixins',
         utils: '../app/Utils',
-    	pixi: "//cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.0/pixi", //4.8.6 last stable
+    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi", //4.8.6 last stable
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min",
-	    'matter-js': "matter/matter",
+	    'matter-js': "matter/matter-timing",
 	    matterCollisionPlugin: "https://cdn.jsdelivr.net/npm/matter-collision-events@0.1.7/build/matter-collision-events",
 	    particles: "pixi-particles/pixi-particles"
     },
@@ -62,7 +62,7 @@ requirejs(['jquery'], function($) {
 	        $('#gameTheater').text("Loading...");
 	        
 	        //load game
-    	    require(['utils/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/OHS'], function(GameStarter, game, $, hs) {
+    	    require(['utils/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/HS'], function(GameStarter, game, $, hs) {
     	    	
     	    	//destroy previous game
     	    	if(previousGame) previousGame.nuke({noMercy: true});
@@ -102,32 +102,22 @@ requirejs(['jquery'], function($) {
     	    	
     	    	//populate highscore table
     	    	hs.refreshHighScoreTable(game.gameName);
-    	    	
-    	    	//send a pageview to ga
-    	    	gtag('config', 'UA-113832510-1', {
-                  'page_title' : game.gameName,
-                  'page_path': '/' + game.gameName
-                });
     	    })
     	};
-    	
-    	var gameDict = {};
     
     	$('.game').each(function(i, obj) {
-	        var modifiedGameLinkText = $(obj).text().replace(' ', '');
-    	    gameDict[modifiedGameLinkText] = $(obj).attr('gameName');
     	    $(obj).click(function(event) {
     	    	loadGameIntoTheater($(obj).attr('gameName'));
-    	    	window.location.hash = modifiedGameLinkText;
     	    });
     	});	
     	
-    // 	$('.devgame').each(function(i, obj) {
-    // 	    $(obj).click(function(event) {
-    // 	    	loadGameIntoTheater('dev' + $(obj).attr('gameName'));
-    // 	    });
-    // 	});	
+    	$('.devgame').each(function(i, obj) {
+    	    $(obj).click(function(event) {
+    	    	loadGameIntoTheater('dev' + $(obj).attr('gameName'));
+    	    });
+    	});
     	
+    	    	
     	//auto load game based on url hash
     	if(window.location.hash) {
     	    loadGameIntoTheater(gameDict[window.location.hash.substring(1)]);
@@ -141,21 +131,19 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 	var loader = PIXI.Loader.shared;
 	loader.loaderDeferred = $.Deferred();
 	
-	//load sprite sheets - should do all textures like this...
-	loader.add('quickDrawSheet', 'app/Textures/QuickDrawSheet.json');
-	loader.DiamondFlashFrameCount = 4;
-	loader.SquareWithBorderDeathFrameCount = 5;
-	
+	//backgrounds
 	loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
 	loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
 	loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
 	loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
 	loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
+	
+	//animations
 	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
 	loader.ssBlueDeathFrameCount = 6;
 	
 	loader.add('baneExplosion', 'app/Textures/BaneExplosionSheet.json');
-	loader.baneFrameCount = 5;
+	loader.baneExplosionFrameCount = 5;
 	
 	loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
 	loader.blueCollapseFrameCount = 6;
@@ -163,6 +151,15 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 	loader.add('raindropflash', 'app/Textures/DropletFlash.json');
 	loader.raindropflashFrameCount = 3;
 	
+	loader.add('quickDrawSheet', 'app/Textures/QuickDrawSheet.json');
+	loader.DiamondFlashFrameCount = 4;
+	loader.SquareWithBorderDeathFrameCount = 5;
+	
+	//character animations
+	loader.add('tile', 'app/Textures/8dirchar.json');
+	
+	//odds and ends
+	loader.add('iso1', 'app/Textures/IsometricSheet1.json');
 	loader.add('Umbrella', 'app/Textures/UmbrellaSheet.json');
 	loader.add('raindrop2', 'app/Textures/Raindrop2.png');
 	loader.add('alpha', 'app/Textures/alpha.png');

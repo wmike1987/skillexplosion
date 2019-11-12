@@ -61,12 +61,12 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer'], function($, Matter
         		
         		//override set velocity in order to normalize the velocity
                 Matter.Body.originalSetVelocity = Matter.Body.originalSetVelocity || Matter.Body.setVelocity;
-                Matter.Body.setVelocity = function(body, velocity) {
-                        //normalize to 16.6666 ms per frame
-                        //var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.deltaHistory[engine.runner.deltaHistory.length - 1] / (1000/60)));
-                        var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.delta / (1000/60)));
-                        Matter.Body.originalSetVelocity(body, normalizedVelocity);
-                    };
+                // Matter.Body.setVelocity = function(body, velocity) {
+                //         //normalize to 16.6666 ms per frame
+                //         //var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.deltaHistory[engine.runner.deltaHistory.length - 1] / (1000/60)));
+                //         var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.delta / (1000/60)));
+                //         Matter.Body.originalSetVelocity(body, normalizedVelocity);
+                //     };
         		
         		// start the renderer
         		pixiRenderer.start();

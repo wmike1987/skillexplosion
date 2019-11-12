@@ -2,115 +2,7 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], function(Matter, PIXI, $, hs, h, particles) {
-	    
-	var style = new PIXI.TextStyle({
-        dropShadow: true,
-        dropShadowAngle: 7.1,
-        dropShadowBlur: -12,
-        dropShadowDistance: 4,
-        fill: [
-            "#ff0080",
-            "#f10cec",
-            "#bf34ed",
-            "#fdaaf4",
-            "#05e0d6"
-        ],
-        fillGradientType: 1,
-        fontFamily: "Helvetica",
-        fontSize: 70,
-        fontStyle: "italic",
-        fontVariant: "small-caps",
-        lineJoin: "bevel",
-        strokeThickness: 2
-    });
-			
-	var scoreStyle = new PIXI.TextStyle({
-			    fontFamily: 'Arial',
-			    fontSize: 20,
-			    fontStyle: 'italic',
-			    fill: ['#01A8F8'],
-			    stroke: '#4a1850',
-			    strokeThickness: 2,
-			    dropShadow: true,
-			    dropShadowColor: '#000000',
-			    dropShadowBlur: 4,
-			    dropShadowAngle: Math.PI / 6,
-			    dropShadowDistance: 2,
-			    wordWrap: true,
-			    wordWrapWidth: 440
-			});
-			
-	var redScoreStyle = new PIXI.TextStyle({
-			    fontFamily: 'Arial',
-			    fontSize: 20,
-			    fontStyle: 'italic',
-			    fill: ['#ff542d'],
-			    stroke: '#4a1850',
-			    strokeThickness: 2,
-			    dropShadow: true,
-			    dropShadowColor: '#000000',
-			    dropShadowBlur: 4,
-			    dropShadowAngle: Math.PI / 6,
-			    dropShadowDistance: 2,
-			    wordWrap: true,
-			    wordWrapWidth: 440
-			});
-			
-	var greenScoreStyle = new PIXI.TextStyle({
-			    fontFamily: 'Arial',
-			    fontSize: 20,
-			    fontStyle: 'italic',
-			    fill: ['#b1ff84'],
-			    stroke: '#4a1850',
-			    strokeThickness: 2,
-			    dropShadow: true,
-			    dropShadowColor: '#000000',
-			    dropShadowBlur: 4,
-			    dropShadowAngle: Math.PI / 6,
-			    dropShadowDistance: 2,
-			    wordWrap: true,
-			    wordWrapWidth: 440
-			});
-			
-	var newWaveStyle = new PIXI.TextStyle({
-        dropShadow: true,
-        dropShadowAlpha: 0.7,
-        dropShadowAngle: 7.1,
-        dropShadowColor: "#cf22dd",
-        dropShadowDistance: 8,
-        fill: [
-            "#25a6eb",
-            "#83e6eb"
-        ],
-        fillGradientType: 1,
-        fontFamily: "Helvetica",
-        fontSize: 125,
-        fontVariant: "small-caps",
-        fontWeight: 100,
-        letterSpacing: 7,
-        lineJoin: "bevel",
-        strokeThickness: 8
-    });
-            
-    var praiseStyle = new PIXI.TextStyle({
-        dropShadow: true,
-        dropShadowAlpha: 0.7,
-        dropShadowAngle: 7.1,
-        dropShadowColor: "#5224db",
-        dropShadowDistance: 8,
-        fill: [
-            "#e81ebf",
-            "silver"
-        ],
-        fillGradientType: 1,
-        fontFamily: "Helvetica",
-        fontSize: 125,
-        fontStyle: "oblique",
-        fontVariant: "small-caps",
-        fontWeight: 200,
-        strokeThickness: 6
-    });
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils/Styles'], function(Matter, PIXI, $, hs, h, particles, styles) {
     
     var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 	
@@ -131,7 +23,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		baseScoreText: "Score: ",
 		baseWaveText: "Wave: ",
 		score: 0,
+		selectionBox: false,
 		clickAnywhereToStart: "Click anywhere to start",
+		frames: 0,
+		frameSecondCounter: 0,
 		
 		/*
 		 * Main game flow, lifecycle
@@ -169,6 +64,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		 	this.loseLifeSound = this.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
 		 	this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
 			var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
+			this.bodiesByTeam = {};
 		 	
 			//begin tracking body vertice histories
 			this.addTickCallback(function() {
@@ -196,19 +92,55 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		 	    }
 		 	});
 			
+			
+			//mouse position
 			this.addEventListener('mousemove', function(event) { 
 				this.mousePosition.x = event.data.global.x;
 				this.mousePosition.y = event.data.global.y;
-			    //destination marker
-			 //   if(!this.clickPointSprites)
-			 //       this.clickPointSprites = this.addSomethingToRenderer(this.texture('MouseXGreen'), 'foreground', {x: -50, y: -50});
-			 //   this.clickPointSprites.scale.x = .25;
-			 //   this.clickPointSprites.scale.y = .25;
-			 //   this.clickPointSprites.position = this.mousePosition;
 			}.bind(this), true, true);
+			
+			//track bodies and sort by teams
+			Matter.Events.on(this.engine.world, 'afterAdd', function(event) {
+			    //console.info(event);   
+			});
+			
+			Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
+			    //console.info(event);   
+			});
+			
+		    //fps (crtl + shift + f to toggle)
+	        this.lastDeltaText = this.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
+	        this.fpsText = this.addSomethingToRenderer("TEXT:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
+	        this.fpsText.persists = true;
+	        this.lastDeltaText.persists = true;
+	        this.addTickCallback(function(event) {
+	            this.lastDeltaText.text = event.deltaTime.toFixed(2) + "ms";
+	            this.frameSecondCounter += event.deltaTime;
+	            if(this.frameSecondCounter > 1000) {
+	                this.frameSecondCounter -= 1000;
+	                this.fpsText.text = this.frames + " fps";
+	                this.frames = 0;
+	            }
+	            this.frames += 1;
+	        }.bind(this), true);
+	        
+	        //init fps to be off
+            this.lastDeltaText.visible = false;
+            this.fpsText.visible = false;
+	        
+	        $('body').on('keydown', function( event ) {
+	            if(keyStates['Shift'] && keyStates['Control']) {
+        	        if(event.key == 'f' || event.key == 'F') {
+        	            this.lastDeltaText.visible = !this.lastDeltaText.visible;
+        	            this.fpsText.visible = !this.fpsText.visible;
+        	        }
+	            }
+    	        
+    	    }.bind(this));
 			
 		 	//setup timing utility
 			this.addTickCallback(function(event) {
+			    
 				$.each(this.timers, function(key, value) {
 					
 					if(!value) return;
@@ -269,9 +201,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 					if(this.timeLeft)
 					if(this.gameTime.text == " ") this.gameTime.text = '0';
 					if(this.timeLeft < 15000) {
-					    this.gameTime.style = redScoreStyle;
+					    this.gameTime.style = styles.redScoreStyle;
 					} else {
-					    this.gameTime.style = scoreStyle;
+					    this.gameTime.style = styles.scoreStyle;
 					}
 					if(this.timeLeft <= 1000) {
 						this.regulationPlay.resolve();
@@ -279,6 +211,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 				}
 				
 			}.bind(this), true);
+
+            //This was in case I wanted to use the engine.afterTick event instead of the runner.after tick event for general tick callbacks, given that
+            //the renderer uses the engine.tick even. The order of matter events is runner.tick then engine.tick, one implication
+            //of this is that some ticks will occur before the body has realized it's renderlings. So ticks should not assume anything
+            //about any bodies it references.
+// 			if(!this.engine.runner.events) {
+// 			    this.engine.runner.events = {}
+// 			}
 			
 			//customizable init game state call
             if(this.initExtension)
@@ -294,7 +234,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		    animateTitle();
 		
 			this.gameState = "pregame";
-			var startGameText = this.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: style, x: this.canvas.width/2, y: this.canvas.height/2});
+			var startGameText = this.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
 			
 			//customizable pre game call
 			if(this.preGameExtension)
@@ -353,23 +293,23 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			//score overlay
 			this.s = {s: 0, t: 0, f: 0};
 			if(!this.hideScore) {
-				this.score = this.addSomethingToRenderer("TEXT:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: scoreStyle});
+				this.score = this.addSomethingToRenderer("TEXT:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
 				this.score.persists = true;
 				this.setScore(0);
 			}
 			
 			//wave overlay
 			if(this.showWave) {
-				this.wave = this.addSomethingToRenderer("TEXT:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: scoreStyle});
+				this.wave = this.addSomethingToRenderer("TEXT:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
 				this.wave.persists = true;
 				this.setWave(0);
 			}
 			
 			//timer, if necessary
 			if(this.victoryCondition.type == 'timed') {
-				this.gameTime = this.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: scoreStyle});
+				this.gameTime = this.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
 			} else if (this.victoryCondition.type == 'lives') {
-				this.hudLives = this.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: scoreStyle});
+				this.hudLives = this.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
 			}
 			
 		 	//call the game's play method
@@ -391,8 +331,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 				var clickPointSprite = this.addSomethingToRenderer(this.texture('MouseX'), 'foreground', {x: -50, y: -50});
 				clickPointSprite.scale.x = .25;
 				clickPointSprite.scale.y = .25;
+				this.rightClickIndicator = clickPointSprite;
 				this.addEventListener('rightdown', function(event) { 
 				    clickPointSprite.position = {x: event.data.global.x, y: event.data.global.y};
+				    if(this.selectionBox)
+				        this.box.clickPointSprite.position = {x: -50, y: -50};
 				}.bind(this), false, true);
 			}
 			
@@ -402,8 +345,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			    this.attackMove = false;
 			    Object.defineProperty(this, 'attackMove', {set: function(value) {
 			        this._attackMove = value;
-			        if(value)
+			        if(value) {
 			            this.setCursorStyle('crosshair');
+			        }
 			        else
 			            this.setCursorStyle('auto');
 			    }.bind(this), get: function() {
@@ -411,11 +355,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			    }});
 			    
         	    //keypress events
-        	    $('body').on('keypress.selectionBox', function( event ) {
+        	    $('body').on('keydown.selectionBox', function( event ) {
         	        if(event.key == 'a' || event.key == 'A') {
         	            $.each(this.box.selectedBodies, function(prop, obj) {
         	                if(obj.isAttacker) {
-        	                    this.attackMove = true;
+        	                    if(!this.box.selectionBoxActive) {
+                                    this.box.invalidateNextBox = true;
+        	                        this.attackMove = true;
+        	                    }
         	                }
         	            }.bind(this))
         	        }
@@ -434,7 +381,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			    
 			    //create rectangle
 			    this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: true});
-			    this.box.collisionFilter.category = 0x2000;
+			    this.box.collisionFilter.category = 0x0002;
 			    this.box.selectedBodies = {};
 			    this.box.permaPendingBody = null;
 			    this.box.pendingSelections = {};
@@ -518,6 +465,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
                     });
                     if(groupDestination) {
                         this.box.clickPointSprite.position = groupDestination;
+                        if(this.rightClickIndicator)
+                            this.rightClickIndicator.position = {x: -50, y: -50};
                     } else {
                         this.box.clickPointSprite.position = {x: -50, y: -50};
                     }
@@ -544,37 +493,20 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 				//attach mouse events to body (whole page) so that the selection box will support mouse events off-canvas
 				$('body').on('mousedown.selectionBox', function(event) {
 				    var canvasPoint = {x: 0, y: 0};
+				    var specifiedAttackTarget = null;
 				    this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
 				    
 				    //left click
 				    if(event.which == 1) {
-				        
-				        //attacker functionality
-				        if(this.attackMove && !this.box.selectionBoxActive) {
-				            $.each(this.box.selectedBodies, function(key, body) {
-    				            if(Object.keys(this.box.selectedBodies).length == 1)
-    				                body.isSoloMover = true;
-    				            else
-    				                body.isSoloMover = false;
-        				        if(body.isAttacker) {
-        				            body.attackMove(canvasPoint);
-        				        } else if(body.isMoveable) {
-    				                body.groupRightClick(canvasPoint);
-        				        }
-    				        }.bind(this))
-    				        this.attackMove = false; //invalidate the key pressed state
-    				        
-    				        return;
-				        }
-				        
-    				    this.box.mouseDown = true;
+				            				    
+                        this.box.mouseDown = true;
     				    this.box.originalPoint = canvasPoint;
-			            
-			            //find bodies under mouse which are selectable, use the vertice history method if possible
+				        
+    				    //find bodies under mouse, use the vertice history method if possible
 			            var bodies = [];
 			            if(this.verticeHistories.length > 0) {
 			                $.each(this.verticeHistories, function(index, body) {
-			                    if(!body.verticeCopy || !body.isSelectable) return;
+			                    if(!body.verticeCopy) return;// || !body.isSelectable) return;
 			                    if(Matter.Vertices.contains(body.verticeCopy, this.box.originalPoint)) {
 			                        bodies.push(body);
 			                    }
@@ -583,13 +515,42 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
     				        bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), this.box.originalPoint);
 			            }
 			            
+			            //this is a perma body which we'll add to the pending selection, or we're trying to attack a singular target
+			            var singleAttackTarget = null;
     		 	        $.each(bodies, function(key, body) {
-    		 	            if(body.isSelectable) {
+    		 	            if(body.isSelectable && !this.attackMove) {
     		 	                this.box.pendingSelections[body.id] = body; //needed for a special case when the game starts - no longer need this (i think)
     		 	                changeSelectionState(body, 'selectionPending', true);
     		 	                this.box.permaPendingBody = body;
+    		 	            } else if(this.attackMove && body.isAttackable) {
+    		 	                singleAttackTarget = body;
     		 	            }
-    		 	        }.bind(this))
+    		 	        }.bind(this));
+    		 	        
+ 				        //attacker functionality
+				        if(this.attackMove && !this.box.selectionBoxActive) {
+                            this.box.invalidateNextMouseUp = true;
+				            $.each(this.box.selectedBodies, function(key, body) {
+    				            if(Object.keys(this.box.selectedBodies).length == 1)
+    				                body.isSoloMover = true;
+    				            else
+    				                body.isSoloMover = false;
+    				                
+        				        if(body.isAttacker) {
+        				            if(singleAttackTarget) {
+        				                body.attackSpecificTarget(canvasPoint, singleAttackTarget)
+        				            }
+        				            else {
+        				                body.attackMove(canvasPoint);   
+        				            }
+        				        } else if(body.isMoveable) {
+    				                body.groupRightClick(canvasPoint);
+        				        }
+    				        }.bind(this))
+    				        this.attackMove = false; //invalidate the key pressed state
+    				        
+    				        return;
+				        }
     		 	         
         		 	    var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
     				    var loneSoldier;
@@ -602,8 +563,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
     				    //handle control+click on mousedown (this is based on the sc2 controls)
     				    if(keyStates['Control'] && !this.box.selectionBoxActive && pendingBodyCount == 1) {//handle control clicking
                             var likeTypes = $.each(Matter.Composite.allBodies(this.renderer.engine.world), function(index, body) {
-                                if(body.typeId == loneSoldier.typeId)
+                                if(body.typeId == loneSoldier.typeId) {
                                     this.box.pendingSelections[body.id] = body;
+                                }
                             }.bind(this))
                             
                             //immediately execute a selection (again, based on sc2 style)
@@ -618,6 +580,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 				        //if we've pressed 'a' then right click, cancel the attack move and escape this flow
 				        if(this.attackMove) {
 				            this.attackMove = false;
+                            this.box.invalidateNextBox = false;
 				            return;
 				        }
 				        
@@ -653,8 +616,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 				}.bind(this));
 				
 				$('body').on('mouseup.selectionBox', function(event) { 
-				    // console.info(this.box.bounds.max.x-this.box.bounds.min.x);
-				    // console.info(this.box.bounds.max.y-this.box.bounds.min.y);
 				    if(event.which == 1) {
     				    this.box.mouseDown = false;
     				    Matter.Body.setPosition(this.box, {x: -500, y: -1000});
@@ -669,7 +630,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 				}.bind(this));
 			    
 			    Matter.Events.on(this.box, 'onCollideActive', function(pair) {
-			        var otherBody = pair.pair.bodyA == this.box ? pair.pair.bodyB : pair.pair.bodyA;
+			        var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
 			        if(otherBody.isMoving && this.box.bounds.max.x-this.box.bounds.min.x < 25 && this.box.bounds.max.y-this.box.bounds.min.y < 25) return;
 			        if(!otherBody.isMoving && otherBody.isSelectable) {
 		                changeSelectionState(otherBody, 'selectionPending', true);
@@ -686,7 +647,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			    }.bind(this));
 			    
 			    Matter.Events.on(this.box, 'onCollide', function(pair) {
-			        var otherBody = pair.pair.bodyA == this.box ? pair.pair.bodyB : pair.pair.bodyA;
+			        var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
 			        if(otherBody.isMoving && this.box.bounds.max.x-this.box.bounds.min.x < 25 && this.box.bounds.max.y-this.box.bounds.min.y < 25) return;
 			        if(!otherBody.isMoving && otherBody.isSelectable) {
 		                changeSelectionState(otherBody, 'selectionPending', true);
@@ -703,7 +664,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			    }.bind(this));
 			    
 			    Matter.Events.on(this.box, 'onCollideEnd', function(pair) {
-			        var otherBody = pair.pair.bodyA == this.box ? pair.pair.bodyB : pair.pair.bodyA;
+			        var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
 		            if(!otherBody.isMoving && otherBody.isSelectable && otherBody != this.box.permaPendingBody) {
 		                changeSelectionState(otherBody, 'selectionPending', false);
 			            delete this.box.pendingSelections[otherBody.id];
@@ -774,7 +735,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		},
 		
 		endGame: function(options) {
-		    
 			this.gameState = "ending";
 			this.nuke({savePersistables: true});
 			var scoreSubmission = $.Deferred();
@@ -816,45 +776,99 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		 * Utilities
 		 */
 		addBody: function(body, trackVerticeHistory) {
-			Matter.World.add(this.world, body);
+		    
+		    //init these damn things, is there a better way?
+		    if(body._initAttacker) {
+    			body._initAttacker();
+		    }
+		    
+            if(body.moveableInit) {
+                body.moveableInit();
+            }
+            
+            //track the team this unit is on
+            if(body.team) {
+                if(!this.bodiesByTeam[body.team]) {
+                    this.bodiesByTeam[body.team] = [body];
+                } else {
+                    this.bodiesByTeam[body.team].push(body);
+                }
+            }
+            
 			if(trackVerticeHistory)
 			    this.verticeHistories.push(body);
 			
+			//add to matter world
+			Matter.World.add(this.world, body);
 		},
 		
 		removeBodies: function(bodies) {
-		    $.each(bodies, function(index, body) {
+		    var copy = bodies.slice();
+		    $.each(copy, function(index, body) {
 		        this.removeBody(body);
 		    }.bind(this))
 		},
 		
 		removeBody: function(body) {
+		    
+		    //just in case?
 		    if(body.hasBeenRemoved) return;
+		    
+		    //trigger our own event
 		    Matter.Events.trigger(body, "onremove", {});
-		    if(body.slaves) { //another way to clear dependents
+		    
+		    //clear slaves (deathPact())
+		    if(body.slaves) {
 		        $.each(body.slaves, function(index, slave) {
-		            Matter.World.remove(this.world, [slave])
+		            this.removeBody(slave);
 		        }.bind(this));
 		    }
+		    
+		    //turn off events on this body (probably doesn't actually matter since the events live of the object itself)
 		    Matter.Events.off(body);
+		    
+		    //remove body from world
 			Matter.World.remove(this.world, [body]);
+			
+			//clean up vertice history and bodiesByTeam
 			var index = this.verticeHistories.indexOf(body);
 			if(index > -1)
 			    this.verticeHistories.splice(index, 1);
+			    
+			if(body.team) {
+			    var bbtindex = this.bodiesByTeam[body.team].indexOf(body);
+    			if(index > -1)
+    			    this.bodiesByTeam[body.team].splice(bbtindex, 1);
+			}    
+			
+			//clean up selection box data related to this body
 			if(this.selectionBox && body.isSelectable) {
 			    delete this.box.selectedBodies[body.id];
+			    delete this.box.pendingSelections[body.id];
 			}
 			
+			//for internal use
 		    body.hasBeenRemoved = true;
 		},
+		
+		/*
+		 * Method to...
+		 * Clean up unwanted DOM/pixi-interactive listeners
+		 * Clean up unwanted Matter listeners (tick callbacks)
+		 * Remove all bodies from the matter world
+		 * Clear the matter engine (I think this zeroes-out collision state)
+		 * Clear unwanted timers
+		 * Clear (and destroy) unwanted Pixi objects
+		 * With options.noMercy=true, everything dies, otherwise objs with a 'persists' attribute will survive
+		 */
 		nuke: function(options) {
 			if(this.selectionBox) {
 			    if(this.box) Matter.Events.off(this.box, 'onCollide');
 			    $('body').off('mousedown.selectionBox');
 			    $('body').off('mousemove.selectionBox');
 			    $('body').off('mouseup.selectionBox');
-			    $('body').off('keypress.selectionBox');
 			    $('body').off('keydown.selectionBox');
+			    $('body').off('keypress.selectionBox'); //remove if games seem normal
 			}
 			
 		    //re-enable right click
@@ -872,14 +886,29 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			
 			options = options || {}
 			if(!this.world) return;
+			
+			//remove bodies safely
+			this.removeBodies(this.world.bodies);
 			Matter.World.clear(this.world, false);
+			
+			//clear the engine (clears broadphase state)
 			Matter.Engine.clear(this.engine);
+			
+			//clear the renderer
 			this.renderer.clear(options.noMercy, options.savePersistables);
+			
 			this.clearListeners(options.noMercy);
 			this.clearTickCallbacks(options.noMercy);
 			this.invalidateTimers(options.noMercy);
 			this.verticeHistories = [];
 		},
+		
+		distanceBetweenBodies: function(bodyA, bodyB) {
+		    var a = bodyA.position.x - bodyB.position.x;
+		    var b = bodyA.position.y - bodyB.position.y;
+		    return Math.sqrt(a*a + b*b);
+		},
+		
 		resetGame: function() {
 		    if(this.score)
 		        this.removeSomethingFromRenderer(this.score);
@@ -887,12 +916,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 		        this.removeSomethingFromRenderer(this.wave);
 		    if(this.resetGameExtension)
 		        this.resetGameExtension();
+		    
 			this.preGame();	
 		},
-		getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames) {
+		
+		//need to redesign this method, it's so confusingly dumb
+		getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames, startFrameNumber) {
 			var frames = [];
 			var numberOfFrames = numberOfFrames || PIXI.Loader.shared[baseName+'FrameCount'] || 10;
-			for(var i = 1; i <= numberOfFrames; i++) {
+			var startFrame = (startFrameNumber == 0 ? 0 : startFrameNumber || 1);
+			for(var i = startFrame; i < startFrame + numberOfFrames; i++) {
 				try {
 					frames.push(PIXI.Texture.from(baseName+i+'.png'));
 				} catch(err) {
@@ -983,61 +1016,34 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
         },
 		
 		addLives: function(numberOfLives) {
-			if(numberOfLives < 1) {
-				this.loseLife();
-			}
 			if(numberOfLives < 0) {
-		        this.loseLifeSound.play();
+				this.loseLife();
 		        //shake life text
 		        self = this;
     		    this.addTimer({name: 'shakeLifeTimer', timeLimit: 48, runs: 12, callback: function() {
     		        self.hudLives.position = {x: self.hudLives.x + (this.runs%2==0 ? 1 : -1)*2, y: self.hudLives.y};
     		        if(this.runs%2==0) {
-    		            self.hudLives.style = redScoreStyle;
+    		            self.hudLives.style = styles.redScoreStyle;
     		        } else {
-    		            self.hudLives.style = scoreStyle;
+    		            self.hudLives.style = styles.scoreStyle;
     		        }
 			    }})
 			}
 			
 			this.lives = this.lives + numberOfLives;
+			if(this.lives < 0) this.lives = 0;
 			if(this.lives <= 0)
-				this.regulationPlay.resolve();
+			    this.regulationPlay.resolve();
 			this.hudLives.text = "Lives: " + this.lives;
 		},
 		loseLife: function() {
+	        this.loseLifeSound.play();
 			var self = this;
 			var runs = 8;
 			var timer = this.getTimer('lifeFlash');
-			/*if(timer == null) {
-				this.addTimer({runs: runs, name: 'lifeFlash', timeLimit: 36, killsSelf: true, callback: function() {
-					//var tintTo = 'blueBorder';
-					//if(this.repeats % 2 != 0) tintTo = 'redBorder';
-					if($(self.canvasEl).hasClass('blueBorder')) {
-						$(self.canvasEl).removeClass('blueBorder');
-						$(self.canvasEl).addClass('redBorder');
-					} else {
-						$(self.canvasEl).removeClass('redBorder');
-						$(self.canvasEl).addClass('blueBorder');
-					}
-				}});
-			} else {
-				timer.runs = runs;
-			}*/
 		},
 		addToGameTimer: function(amount) { //in millis
 		    this.timeLeft  += amount;
-		  //  if(amount > 0) {
-		  //      self = this;
-    // 		    this.addTimer({name: 'shakeLifeTimer', timeLimit: 42, runs: 16, callback: function() {
-    // 		        //self.gameTime.position = {x: self.gameTime.x + (this.runs%2==0 ? 1 : -1)*2, y: self.gameTime.y};
-    // 		        if(this.runs%2==0) {
-    // 		            self.gameTime.style = greenScoreStyle;
-    // 		        } else {
-    // 		            self.gameTime.style = scoreStyle;
-    // 		        }
-			 //   }})
-		  //  }
 		},
 		
 		/*
@@ -1086,6 +1092,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			var deltaTime = 0, lastTimestamp = 0;
 			var self = this;
 			var tickDeltaWrapper = function(event) {
+			    if(tickDeltaWrapper.removePending) return;
 				deltaTime = event.timestamp - lastTimestamp;
 				lastTimestamp = event.timestamp;
 				event.deltaTime = deltaTime;
@@ -1100,15 +1107,29 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 			Matter.Events.on(this.engine.runner, eventName || 'afterTick', tickDeltaWrapper);
 			return tickDeltaWrapper; //return so you can turn this off if needed
 		},
+		
+		/*
+		 * We need to remove the callback from the matter.event system (just stored on the object itself, actually),
+		 * but I also want to invalidate the callback at this moment. 
+		 * Not doing so creates a confusing phenomen whereby a callback could be triggered after
+		 * the remove() if we're in the same tick as the remove(). One would expect that the remove() call would
+		 * prevent all subsequent invocations of the callback().
+		 */
 		removeTickCallback: function(callback) {
+		    //remove from matter system
 			Matter.Events.off(this.engine, callback);
 			Matter.Events.off(this.engine.runner, callback);
+			
+			//remove from our internal lists here
 			if(this.invincibleTickCallbacks.indexOf(callback) > -1) {
 			    this.invincibleTickCallbacks.splice(this.invincibleTickCallbacks.indexOf(callback), 1)
 			}
 			if(this.tickCallbacks.indexOf(callback) > -1) {
 			    this.tickCallbacks.splice(this.tickCallbacks.indexOf(callback), 1)
 			}
+			
+			//invalidate per the comment above, preventing a confusing phenomenom
+			callback.removePending = true;
 		},
 		clearTickCallbacks: function(noMercy) {
 			this.tickCallbacks.forEach(function(callback) {
@@ -1263,7 +1284,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 	        var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
 	        var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
 	        placement.x = Math.random() * (this.canvasEl.getBoundingClientRect().width - bodyHalfWidth*2) + bodyHalfWidth;
-	        placement.y = Math.random() * (this.canvasEl.getBoundingClientRect().height - bodyHalfHeight*2) + bodyHalfHeight;
+	        placement.y = Math.random() * (this.canvasEl.getBoundingClientRect().height - bodyHalfHeight*2) + bodyHTalfHeight;
 	        Matter.Body.setPosition(body, placement);
 	        return placement;
 	    },
@@ -1331,9 +1352,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 	    floatText: function(text, position, options) {
 	        options = options || {};
 	        if(options.textSize) {
-	            var newStyle = $.extend({}, style, {fontSize: options.textSize})
+	            var newStyle = $.extend({}, styles.style, {fontSize: options.textSize})
 	        } else {
-	            newStyle = style;
+	            newStyle = styles.style;
 	        }
 	        var startGameText = this.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: this.canvas.width/2, y: this.canvas.height/2});
 	        startGameText.position = position;
@@ -1351,9 +1372,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
 	    
 	    praise: function(options) {
 	        if(!options) {
-	            options = {style: praiseStyle}
+	            options = {style: styles.praiseStyle}
 	        } else if (!options.style) {
-	            options.style = praiseStyle;
+	            options.style = styles.praiseStyle;
 	        }
 	        var praiseWord = praiseWords[this.getIntBetween(0, praiseWords.length-1)] + "!";
 	        this.floatText(praiseWord, options.position || this.getCanvasCenter(), options);
@@ -1424,7 +1445,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/OHS', 'howler', 'particles'], func
         },
         
         signalNewWave: function(wave, deferred) {
-            this.floatText("Wave: " + wave, this.getCanvasCenter(), {runs: 100, stationary: true, style: newWaveStyle, deferred: deferred});
+            this.floatText("Wave: " + wave, this.getCanvasCenter(), {runs: 100, stationary: true, style: styles.newWaveStyle, deferred: deferred});
         },
         
         flipCoin: function() {

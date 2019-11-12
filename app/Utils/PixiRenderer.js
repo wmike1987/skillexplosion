@@ -43,7 +43,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			this.stages.background.filters = [];
 			bodies.forEach(function(body) {
     		
-    			//add filters - Can't remember why or how this works. Looks like a hack at the moment to me.
+    			//add filters - Can't remember why or how this works. Looks like a hack at the moment to me. This is needed for displacement sprites.
     			if(body.render.filters) {
     				if(!this.stages.background.filters) {
     					this.stages.background.filters = body.render.filters;
@@ -147,6 +147,25 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			//set background - probably shouldn't be handling this in the pixi renderer
 			this.setBackground(options.background.image, {scale: {x: options.background.scale.x, y: options.background.scale.y}, bloat: options.background.bloat, backgroundFilter: options.backgroundFilter});
 			
+			//when a body is added to the matter world, initialize its renderlings
+			var realizeBody = function(body) {
+		        if(!body.renderChildren) return;
+			    $.each(body.renderChildren, function(index, child) {
+				    this.realizeChild(body, child);
+				}.bind(this))
+			}.bind(this);
+			
+			Matter.Events.on(this.engine.world, 'afterAdd', function(event) {
+			    if(Array.isArray(event.object)) {
+		            $.each(event.object, function(index, body) {
+				        realizeBody(body)
+    				}.bind(this))
+			    } else {
+			        realizeBody(event.object)
+			    }
+			}.bind(this));
+				
+			
 			//setup engine listener to afterRemove
 			Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
 				this.removeFromPixiStage(event.object[0]);
@@ -239,16 +258,15 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		//accepts a matter body or just a pixi obj
 		this.removeFromPixiStage = function(something, where) {
 			something = something.renderlings ? Object.keys(something.renderlings).map(function (key) { return something.renderlings[key]; }) : [something];
-			//where = where || 'stage';
 			$.each(something, function(i, obj) {
-			    this.stages[where || obj.myLayer || 'stage'].removeChild(obj);
+			    this.removeAndDestroyChild(this.stages[where || obj.myLayer || 'stage'], obj)
 			}.bind(this));
 			
-			//call destroy
-			$.each(something, function(i, obj) {
-			    if(obj.destroy)
-			        obj.destroy();
-			})
+			//call destroy - I can remove this if everything seems to be working
+// 			$.each(something, function(i, obj) {
+// 			    if(obj.destroy)
+// 			        obj.destroy();
+// 			})
 		};
 		
 		this.addToPixiStage = function(something, where) {
@@ -304,10 +322,14 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			return something;
 		};
 
+        //This is used to clear the pixi app while keeping the app alive. Here, we remove and destroy unwanted children but keep the stages (pixi containers)
 		this.clear = function(noMercy, savePersistables) {
 			if(noMercy) { //no mercy
 				$.each(this.stages, function(key, value) {
-					value.removeChildren();
+				    var i = this.stages[key].children.length;
+					while(i--) {
+						this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
+					}
 				}.bind(this));	
 			} else { //have mercy on background and on persistables if wanted
 				$.each(this.stages, function(key, value) {
@@ -316,15 +338,24 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 					while(i--) {
 						if((savePersistables && this.stages[key].getChildAt(i).persists))
 							continue;
-						this.stages[key].removeChild(this.stages[key].getChildAt(i));
+						this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
 					}
 				}.bind(this));	
 			}
 		
 		};
 		
+		//helper method for removing the child from its parent and calling the destroy method on the object being removed
+		this.removeAndDestroyChild = function(stage, child) {
+		    stage.removeChild(child);
+		    if(child.destroy)
+		    child.destroy(); //i'm unsure if I need to check for a destroy method first
+		}
+		
+		//destroy the whole pixi app
 		this.destroy = function() {
-			this.pixiApp.destroy(true);
+		    if(this.pixiApp)
+			    this.pixiApp.destroy(true, true);
 		};
 		
 		this.drawWireFrame = function(body) {

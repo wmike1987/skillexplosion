@@ -36,6 +36,7 @@ define(['jquery'], function($) {
     				            $('<td>').text(scoreObj.name),
     				            $('<td>').text(scoreObj.score)
     				        ).appendTo(table);
+							if(i > 20) return false;
     		    		});
 		    		}
 		    		

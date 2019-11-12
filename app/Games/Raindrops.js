@@ -11,7 +11,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 		},
 		
 		play: function(options) {
-		    this.wave = 0;
+		    this.levelWave = 0;
 			this.lastSoundPlayed = 0;
 			this.drops = []
 			this.ghostTarget = null;
@@ -21,13 +21,13 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 			this.addTimer({name: 'dropletTimer', gogogo: true, timeLimit: 1500, callback: function() {
 					this.timeLimit = Math.max(this.timeLimit -= 50, 500);
 					self.createRaindrop();
-					if(self.wave > 1300 && self.wave % 3 == 0) {
+					if(self.levelWave > 1300 && self.levelWave % 3 == 0) {
 					    self.createRaindrop();
-					}else if(self.wave > 800 && self.wave % 4 == 0) {
+					}else if(self.levelWave > 800 && self.levelWave % 4 == 0) {
 					    self.createRaindrop();
-					}else if(self.wave > 500 && self.wave % 5 == 0) {
+					}else if(self.levelWave > 500 && self.levelWave % 5 == 0) {
 					    self.createRaindrop();
-					}else if(self.wave > 200 && self.wave % 10 == 0) {
+					}else if(self.levelWave > 200 && self.levelWave % 10 == 0) {
 					    self.createRaindrop();
 					}
 				}
@@ -98,7 +98,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 			
 			this.addBody(drop);
 			this.drops.push(drop);
-			this.wave++;
+			this.levelWave++;
 			return drop;
 			
 			Matter.Bodies.circle(xLoc, yLoc, radius, { restitution: .95, friction: .3});
