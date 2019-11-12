@@ -901,6 +901,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			this.clearTickCallbacks(options.noMercy);
 			this.invalidateTimers(options.noMercy);
 			this.verticeHistories = [];
+			
+			if(options.noMercy) {
+				$('body').off();
+			}
 		},
 		
 		distanceBetweenBodies: function(bodyA, bodyB) {
