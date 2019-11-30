@@ -154,7 +154,16 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			        realizeBody(event.object)
 			    }
 			}.bind(this));
-				
+			
+			Matter.Events.on(currentGame, 'unitInit', function(event) {
+			    if(Array.isArray(event.unit)) {
+		            $.each(event.unit, function(index, unit) {
+				        realizeBody(unit.body)
+    				}.bind(this))
+			    } else {
+			        realizeBody(event.unit.body)
+			    }
+			}.bind(this));
 			
 			//setup engine listener to afterRemove
 			Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
@@ -219,10 +228,13 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			    newSprite.tint = child.tint;
 			if(child.visible != null)
 			    newSprite.visible = child.visible;
-			child.isRealized = true;
+			
 			this.addToPixiStage(newSprite, child.stage || child.myLayer);
+			
 			if(child.isLegacy)
 			    body.renderling = newSprite;
+			
+			child.isRealized = true;
 			return newSprite;
 		},
 		

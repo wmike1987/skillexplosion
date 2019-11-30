@@ -1,10 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/IsoSpriteManager'], 
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso) {
-    
-	/*
-	 *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior and returns the body
-	 */
-	
+
+	//default unit attributes
 	var _UnitBase = {
 		isUnit: true,
 		isoManaged: true,
@@ -19,9 +16,16 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso) {
 				this.death();
 			}
 		},
+		initUnit: function() {
+			Matter.Events.trigger(currentGame, 'unitInit', {unit: this});
+			if(this.isoManaged)
+				this.isoManager.idle();
+		}
 	}
-	
+	    
 	/*
+	 *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior and returns the body
+	 *
 	 * options contains:
 	 * unit {}
 	 * moveable {}
@@ -68,6 +72,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso) {
 		if(newUnit.isoManaged) {
 			newUnit.isoManager = new Iso({unit: newUnit});
 		}
+		
+		//initialize any starting behavior
+		newUnit.initUnit();
 		
 		return newUnit;
 	}

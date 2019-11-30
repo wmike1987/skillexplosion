@@ -28,6 +28,10 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer'], function($, Matter
 		 * were requested
 		 */
 		latestGameRequest = game;
+		
+		// set a globally accessible reference to the game object
+		currentGame = latestGameRequest;
+		
 		latestGameOptions = options;
 		
 		//update the "loading..." text as assets are loaded
@@ -70,9 +74,6 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer'], function($, Matter
         		
         		// start the renderer
         		pixiRenderer.start();
-        		
-        		// set a globally accessible reference to the game object
-        		currentGame = latestGameRequest;
         		
         		//Run through the Common Game Lifecycle. init() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()
         		latestGameRequest.init($.extend(latestGameOptions, {world: engine.world, 

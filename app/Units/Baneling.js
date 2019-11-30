@@ -80,7 +80,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 					isoManaged: false,
 					health: 10,
 					energy: 0,
-					team: options.team || 4
+					team: options.team || 4,
+					isSelectable: options.isSelectable
 				}, 
 				moveable: {
 					moveSpeed: 1.5
@@ -101,7 +102,6 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		baneling.attack = function(target) {
 			currentGame.getAnimation('bane', [this.position.x, this.position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40], .5, null, 1).play();
 			var nextLevelGo = false;
-			currentGame.pop.play();
 			
 			var bodiesToDamage = [];
 			currentGame.applyToBodiesByTeam(function(team) {baneling.team != team}, function(body) {
@@ -121,6 +121,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 						}, totallyDoneCallback: function() {
 							currentGame.removeSomethingFromRenderer(shard);
 			}.bind(this)})
+			
+			currentGame.pop.play();
 			currentGame.removeUnit(this);
 			this.alreadyDied = true;
 			if(!this.alreadyAttacked)

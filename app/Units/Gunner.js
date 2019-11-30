@@ -2,6 +2,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 
 	return function Gunner(options) {
 		
+		var radius = 19;
 		var gunner = {};
 		var options = options || {};
 		var walkSpeed = .65;
@@ -9,7 +10,6 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var shootSpeed = .45;
 		
 		var walkAnimations = {
-			stand: currentGame.getAnimation('MarineN/Walk/skeleton3-walk_', [-1000, -1000], walkSpeed, null, -1, null, null, 1, 1, true),
 			up: currentGame.getAnimation('MarineN/Walk/skeleton3-walk_', [-1000, -1000], walkSpeed, null, -1, null, null, 30, 0, true),
 			upRight: currentGame.getAnimation('MarineNW/Walk/skeleton-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
 			right: currentGame.getAnimation('MarineW/Walk/skeleton5-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
@@ -94,13 +94,6 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			avoidIsoMgr: true,
 			rotate: 'none',
 			offset: {x: 0, y: 26},
-		}, {
-			id: 'stand',
-			data: walkAnimations.stand,
-			scale: sc,
-			rotate: 'none',
-			visible: true,
-			offset: {x: 2, y: 0}
 		},{
 			id: 'walkLeft',
 			data: walkAnimations.left,
@@ -224,11 +217,13 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			rotate: 'none',
 			stage: "stageZero",
 			offset: {x: 0, y: 26}}];
+			
+		var fireSound = currentGame.getSound('machinegun.wav', {volume: .002, rate: 3});
 	
 		return UC({
 				objToUse: gunner,
 				renderChildren: rc,
-				radius: 19,
+				radius: radius,
 				unit: {
 					unitType: 'Gunner',
 					health: 45,
@@ -243,6 +238,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 					cooldown: 1000,
 					range: 175,
 					damage: 18,
+					attack: function(target) {
+						target.sufferAttack(this.damage);
+						fireSound.play();
+					},
 				}
 		});
 	}
