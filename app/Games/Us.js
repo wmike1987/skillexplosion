@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/Gunner', 'units/Baneling'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling) {
 	
 	var targetScore = 1;
 	
@@ -89,150 +89,56 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     		    var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
 		    }
 		    
-	        this.createGunner(50);
+			this.createGunner(2);
+			this.createBane(20);
+			
+	        //this.createGunner(2);
 		        
 		    //create banelings
-            this.createBanelings(80);
-            
-            console.info(currentGame.tickCallbacks.length)
+            //this.createBanelings(10);
+		
 		},
 		
 		//create gunner
 		createGunner: function(number) {
 		    for(x = 0; x < number; x++) {
-    		    var radius = this.large;
-    			const marble = Matter.Bodies.circle(0, 0, radius, { restitution: .95, frictionAir: 1});
-    			this.marbles.push(marble);
-    			$.extend(marble, Moveable);
-    			$.extend(marble, Attacker);
-    			marble.isSelectable = true;
-    			marble.isMoveable = true;
-    			marble.cooldown = 1000;
-    			marble.isAttackable = true;
-    			marble.moveSpeed = 2.65;
-    			marble.damage = 18;
-    			marble.team = 4;
-    			marble.range = 175;
-    			marble.gunner = true;
-    			marble.stop();
-    			var tintIndex = this.getRandomIntInclusive(0, this.acceptableTints.length-1);
-    			marble.originalTint = 0x009BFF;
-    			marble.tint = marble.originalTint;
-    			marble.highlightTint = this.highlightTints[tintIndex];
-    			marble.typeId = 34;
-    			
-    			marble.directional = true;
-    			var walkSpeed = .19;
-    			var stand = this.getAnimation('WizardWalkDown', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var down = this.getAnimation('WizardWalkDown', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var left = this.getAnimation('WizardLeftWalk', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var right = this.getAnimation('WizardWalkSide', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var up = this.getAnimation('WizardWalkUp', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var downLeft = this.getAnimation('WizardWalkDiagDownLeft', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var upLeft = this.getAnimation('WizardWalkDiagUpLeft', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var downRight = this.getAnimation('WizardWalkDiagDownRight', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			var upRight = this.getAnimation('WizardWalkDiagUpRight', [-1000, -1000], walkSpeed, null, -1, null, null, 8, 0);
-    			down.play();
-    			left.play();
-    			right.play();
-    			up.play();
-    			downLeft.play();
-    			upLeft.play();
-    			downRight.play();
-    			upRight.play();
-    			
-    			marble.renderChildren = [{
-    			    id: 'selected',
-    			    data: this.texture('IsometricSelected'),
-    			    scale: {x: .8, y: .8},
-    			    tint: this.selectionTint,
-    			    stage: 'stageOne',
-    			    visible: false,
-    			    rotate: 'none',
-    			    offset: {x: 0, y: 26},
-    			}, {
-    			    id: 'selectionPending',
-    			    data: this.texture('IsometricSelectedPending'),
-    			    scale: {x: 1, y: 1},
-    			    stage: 'stageOne',
-    			    visible: false,
-    			    tint: this.pendingSelectionTint,
-    			    rotate: 'none',
-    			    offset: {x: 0, y: 26},
-    			}, {
-    			    id: 'stand',
-    			    data: stand,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: true,
-    			},{
-    			    id: 'left',
-    			    data: left,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'right',
-    			    data: right,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'up',
-    			    data: up,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'down',
-    			    data: down,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'upLeft',
-    			    data: upLeft,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'upRight',
-    			    data: upRight,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'downRight',
-    			    data: downRight,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'downLeft',
-    			    data: downLeft,
-    			    scale: {x: 1, y: 1},
-    			    rotate: 'none',
-    			    visible: false,
-    			}, {
-    			    id: 'shadow',
-    			    data: this.texture('IsoShadow'),
-    			    scale: {x: .75, y: .75},
-    			    visible: true,
-    			    rotate: 'none',
-    			    stage: "stageZero",
-    			    offset: {x: 0, y: 26}}];
-    			
-    			marble.attack = function(target) {
-    			    target.sufferAttack(marble.damage);
-    			}.bind(this);
-    			
-    			this.placeBodyWithinRadiusAroundCanvasCenter(marble, 1*3);
+				var gunner = Gunner();
+    			this.marbles.push(gunner.body);
+    			gunner.typeId = 34;
+    			gunner.directional = true;
+    			this.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);
     
     // 			this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
     		  //  this.addTickCallback(function() {
     		  //      this.blueGlowFilter.uniforms.currentUnitPosition = {x: marble.position.x, y: marble.position.y};
     		  //  }.bind(this))
-    			this.addBody(marble, true);
+			  
+    			this.addBody(gunner, true);
+		    }
+		},
+		
+		//create gunner
+		createBane: function(number) {
+		    for(x = 0; x < number; x++) {
+				var gunner = Baneling({team: 2});
+    			this.marbles.push(gunner.body);
+    			gunner.typeId = 34;
+    			//gunner.directional = true;
+    			this.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);
+    
+    // 			this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
+    		  //  this.addTickCallback(function() {
+    		  //      this.blueGlowFilter.uniforms.currentUnitPosition = {x: marble.position.x, y: marble.position.y};
+    		  //  }.bind(this))
+			  
+				if(this.flipCoin()) {
+                    Matter.Body.setPosition(gunner.body, {x: Math.random() * 100, y: this.getCanvasCenter().y + Math.random() * 600 - 300});
+                } else {
+                    Matter.Body.setPosition(gunner.body, {x: this.getCanvasWidth() - Math.random() * 100, y: this.getCanvasCenter().y + Math.random() * 600 - 300});
+                }
+                
+                //Matter.Body.setPosition(blastSensor, {x: marble.position.x, y: marble.position.y});
+    			this.addBody(gunner, true);
 		    }
 		},
 		

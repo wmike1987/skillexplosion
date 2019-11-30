@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable'], function($, Matter, PIXI, CommonGameMixin, Moveable) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'units/Marble'], function($, Matter, PIXI, CommonGameMixin, Moveable, Marble) {
 	
 	var targetScore = 1;
 	
@@ -10,7 +10,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		small: 8,
 		zoneSize: 128,
 		level: 0,
-		victoryCondition: {type: 'timed', limit: 75},
+		victoryCondition: {type: 'timed', limit: 5},
 		currentZones: [],
 		selectionBox: true,
 		noClickIndicator: true,
@@ -107,7 +107,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		    }
 		    
 		    //set marble count
-		    this.marbleCount = 4 + this.level;
+		    this.marbleCount = 14 + this.level;
 		    
 		    //remove previous goal zones
 		    $.each(this.currentZones, function(index, zone) {
@@ -146,10 +146,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			    (function(newZone) {
     			    Matter.Events.on(newZone, 'onCollide', function(pair) {
         		        var otherBody = pair.pair.bodyA == newZone ? pair.pair.bodyB : pair.pair.bodyA;
-        		        if(otherBody.tint == newZone.tint) {
+        		        if(otherBody.unit.tint == newZone.tint) {
         		            newZone.isFlashing += 8;
         		            this.marbleHit.play();
-        	                this.removeBody(otherBody);
+        	                this.removeUnit(otherBody.unit);
         	                this.incrementScore(1);
         	                this.marbleCount -= 1;
         	                if(this.marbleCount == 0) {
@@ -214,80 +214,12 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		
 		createMarbles: function(number) {
 		    for(x = 0; x < number; x++) {
-    			var radius = this.extraLarge;
-    			const marble = Matter.Bodies.circle(0, 0, radius, { restitution: .95, frictionAir: 1});
-    			$.extend(marble, Moveable);
-    			marble.isSelectable = true;
-    			marble.isMoveable = true;
-    			marble.moveSpeed = 4.5;
-    			marble.stop();
     			var tintIndex = this.getRandomIntInclusive(0, this.acceptableTints.length-1);
-    			marble.originalTint = this.acceptableTints[tintIndex];
-    			marble.tint = marble.originalTint;
-    			marble.highlightTint = this.highlightTints[tintIndex];
-    			marble.typeId = 33;
+    			var tint = this.acceptableTints[tintIndex];
+    			var highlightTint = this.highlightTints[tintIndex];
     			
-    			marble.renderChildren = [{
-    			    id: 'marble',
-    			    data: this.texture('GlassMarble'),
-    			    tint: marble.originalTint,
-    			    scale: {x: radius*2/64, y: radius*2/64},
-    			    rotate: 'none',
-    			}, {
-    			    id: 'marbleBodyHighlight',
-    			    data: this.texture('MarbleBodyHighlights'),
-    			    scale: {x: radius*2/64, y: radius*2/64},
-    			    rotate: 'random',
-    			    rotatePredicate: function() {
-    			        return marble.isMoving;
-    			    },
-    			    tint: marble.highlightTint,
-    			    initialRotate: 'random'
-    			}, {
-    			    id: 'marbleHighlight',
-    			    data: this.texture('MarbleHighlight'),
-    			    scale: {x: radius*2/64, y: radius*2/64},
-    			    rotate: 'none',
-    			    initialRotate: 'none'
-    			}, {
-    			    id: 'marbleShadow',
-    			    data: this.texture('MarbleShadow'),
-    			    scale: {x: radius*2.5/256, y: radius*2.5/256},
-    			    visible: true,
-    			    rotate: 'none',
-    			    tint: marble.originalTint,
-    			    stage: "stageZero",
-    			    offset: {x: 12, y: 12},
-    			}, {
-    			    id: 'marbleShadowHighlights',
-    			    data: this.texture('MarbleShadowHighlight'),
-    			    scale: {x: radius*1.6/256, y: radius*1.6/256},
-    			    visible: false,
-    			    rotate: 'random',
-    			    rotatePredicate: function() {
-    			        return marble.isMoving;
-    			    },
-    			    initialRotate: 'random',
-    			    tint: marble.highlightTint,
-    			    stage: "stageZero",
-    			    offset: {x: 12, y: 12}
-    			}, {
-    			    id: 'selected',
-    			    data: this.texture('MarbleSelected'),
-    			    scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
-    			    tint: this.selectionTint,
-    			    stage: 'stageOne',
-    			    visible: false,
-    			    rotate: 'none'
-    			}, {
-    			    id: 'selectionPending',
-    			    data: this.texture('MarbleSelectedPending'),
-    			    scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
-    			    stage: 'stageOne',
-    			    visible: false,
-    			    tint: this.pendingSelectionTint,
-    			    rotate: 'continuous'
-    			}];
+    			var marble = Marble({tint: tint, highlightTint: highlightTint, selectionTint: this.selectionTint, pendingSelectionTint: this.pendingSelectionTint});
+				marble.tint = tint;
     			
     			this.placeBodyWithinRadiusAroundCanvasCenter(marble, 10);
     			this.addBody(marble, true);
@@ -297,6 +229,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		
 		resetGameExtension: function() {
 		    this.level = 0;
+		},
+		
+		endGameExtension: function() { 
+			this.currentZones = [];
 		}
 	}
 	

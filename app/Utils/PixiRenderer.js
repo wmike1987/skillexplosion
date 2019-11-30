@@ -85,7 +85,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
     				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'none') {
     				    //do nothing
     				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'random') {
-    				    if(sprite.behaviorSpecs.rotatePredicate && sprite.behaviorSpecs.rotatePredicate())
+    				    if(sprite.behaviorSpecs.rotatePredicate && sprite.behaviorSpecs.rotatePredicate.apply(body.unit || body))
     				        sprite.rotation = Math.random();
     				} else {
 				        sprite.rotation = body.angle + (sprite.initialRotate || 0);
@@ -98,16 +98,6 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 					this.drawWireFrame(body);
 					return;
 				};
-				
-				//var sprite = this.giveMeNewOrExistingSpriteBasedOnBody(body);
-				
-				//update sprite position based on physics body position
-				// sprite.position = body.position;
-				// sprite.rotation = body.angle;
-   				//sprite.scale.x = body.render.sprite.xScale || 1;
-    			//sprite.scale.y = body.render.sprite.yScale || 1;
-    // 			sprite.scale.x = body.render.sprite.xScale || 1;
-    // 			sprite.scale.y = body.render.sprite.yScale || 1;
     				
 				//align any displacement sprites. The displacement sprite's anchor needs extra care unfortunately.
 				if(body.displacementSprite) {
@@ -217,6 +207,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		    if(child.skew) {
 		        newSprite.skew = child.skew;
 		    }
+			if(child.avoidIsoMgr) {
+				newSprite.avoidIsoMgr = true;
+			}
 		    
 		    //store original child specs
 		    newSprite.behaviorSpecs = {};
@@ -233,40 +226,12 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			return newSprite;
 		},
 		
-// 		this.giveMeNewOrExistingSpriteBasedOnBody = function(body) {
-			
-// 			var sp = body.renderling;
-			
-// 			if(!sp) {
-// 				//new sprite
-// 				var newSprite = this.itsMorphinTime(body.render.sprite.texture);
-// 				body.renderling = newSprite;
-// 				newSprite.anchor.x = body.render.sprite.xOffset;
-//     			newSprite.anchor.y = body.render.sprite.yOffset;
-    			
-//     			if(body.render.sprite.tint)
-//     			    newSprite.tint = body.render.sprite.tint;
-    			
-//     			this.addToPixiStage(newSprite);
-// 				return newSprite;
-// 			} else {
-// 				//existing sprite
-// 				return sp;
-// 			}
-// 		};
-		
 		//accepts a matter body or just a pixi obj
 		this.removeFromPixiStage = function(something, where) {
 			something = something.renderlings ? Object.keys(something.renderlings).map(function (key) { return something.renderlings[key]; }) : [something];
 			$.each(something, function(i, obj) {
 			    this.removeAndDestroyChild(this.stages[where || obj.myLayer || 'stage'], obj)
 			}.bind(this));
-			
-			//call destroy - I can remove this if everything seems to be working
-// 			$.each(something, function(i, obj) {
-// 			    if(obj.destroy)
-// 			        obj.destroy();
-// 			})
 		};
 		
 		this.addToPixiStage = function(something, where) {
@@ -349,7 +314,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		this.removeAndDestroyChild = function(stage, child) {
 		    stage.removeChild(child);
 		    if(child.destroy)
-		    child.destroy(); //i'm unsure if I need to check for a destroy method first
+				child.destroy(); //i'm unsure if I need to check for a destroy method first
 		}
 		
 		//destroy the whole pixi app

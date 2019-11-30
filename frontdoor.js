@@ -6,6 +6,7 @@ requirejs.config({
         games: '../app/Games',
         mixins: '../app/Mixins',
         utils: '../app/Utils',
+        units: '../app/Units',
     	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi", //4.8.6 last stable
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min",
@@ -157,6 +158,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 	
 	//character animations
 	loader.add('tile', 'app/Textures/8dirchar.json');
+	loader.add('marine0', 'app/Textures/marine-0.json');
 	
 	//odds and ends
 	loader.add('iso1', 'app/Textures/IsometricSheet1.json');

@@ -373,7 +373,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         	        if(event.key == 's' || event.key == 'S') {
         	            $.each(this.box.selectedBodies, function(prop, obj) {
         	                if(obj.isMoveable) {
-        	                    obj.stop();
+        	                    obj.unit.stop();
         	                }
         	            }.bind(this))
         	        }
@@ -458,8 +458,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     var groupDestination = 0;
                     $.each(this.box.selectedBodies, function(key, body) {
                         if(groupDestination == 0) {
-                            groupDestination = body.destination;
-                        } else if(body.destination != groupDestination) {
+                            groupDestination = body.attackMoveDestination || body.destination;
+                        } else if(body.destination != groupDestination && body.attackMoveDestination != groupDestination) {
                             groupDestination = null;
                         }
                     });
@@ -538,13 +538,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
     				                
         				        if(body.isAttacker) {
         				            if(singleAttackTarget) {
-        				                body.attackSpecificTarget(canvasPoint, singleAttackTarget)
+        				                body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
         				            }
         				            else {
-        				                body.attackMove(canvasPoint);   
+        				                body.unit.attackMove(canvasPoint);   
         				            }
         				        } else if(body.isMoveable) {
-    				                body.groupRightClick(canvasPoint);
+    				                body.unit.groupRightClick(canvasPoint);
         				        }
     				        }.bind(this))
     				        this.attackMove = false; //invalidate the key pressed state
@@ -586,7 +586,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 				        
     				    $.each(this.box.selectedBodies, function(key, body) {
     				        if(body.isMoveable) {
-    				            body.groupRightClick(canvasPoint);
+    				            body.unit.groupRightClick(canvasPoint);
     				            if(Object.keys(this.box.selectedBodies).length == 1)
     				                body.isSoloMover = true;
     				            else
@@ -638,10 +638,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			            if(otherBody == this.box.permaPendingBody)
 			                this.box.boxContainsPermaPending = true;
 			        }
-			        if(otherBody.isSmallerBody && otherBody.parentBody.isMoving && otherBody.parentBody.isSelectable) {
-		                changeSelectionState(otherBody.parentBody, 'selectionPending', true);
-			            this.box.pendingSelections[otherBody.parentBody.id] = otherBody.parentBody;
-			            if(otherBody.parentBody == this.box.permaPendingBody)
+			        if(otherBody.isSmallerBody && otherBody.unit.isMoving && otherBody.unit.isSelectable) {
+		                changeSelectionState(otherBody.unit, 'selectionPending', true);
+			            this.box.pendingSelections[otherBody.unit.body.id] = otherBody.unit.body;
+			            if(otherBody.unit.body == this.box.permaPendingBody)
 			                this.box.boxContainsPermaPending = true;
 			        }
 			    }.bind(this));
@@ -655,10 +655,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			            if(otherBody == this.box.permaPendingBody)
 			                this.box.boxContainsPermaPending = true;
 			        }
-			        if(otherBody.isSmallerBody && otherBody.parentBody.isMoving && otherBody.parentBody.isSelectable) {
-		                changeSelectionState(otherBody.parentBody, 'selectionPending', true);
-			            this.box.pendingSelections[otherBody.parentBody.id] = otherBody.parentBody;
-			            if(otherBody.parentBody == this.box.permaPendingBody)
+			        if(otherBody.isSmallerBody && otherBody.unit.isMoving && otherBody.unit.isSelectable) {
+		                changeSelectionState(otherBody.unit, 'selectionPending', true);
+			            this.box.pendingSelections[otherBody.unit.body.id] = otherBody.unit.body;
+			            if(otherBody.unit.body == this.box.permaPendingBody)
 			                this.box.boxContainsPermaPending = true;
 			        }
 			    }.bind(this));
@@ -669,11 +669,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		                changeSelectionState(otherBody, 'selectionPending', false);
 			            delete this.box.pendingSelections[otherBody.id];
 		            }
-		            if(otherBody.isSmallerBody && otherBody.parentBody.isMoving && otherBody.parentBody != this.box.permaPendingBody) {
-		                changeSelectionState(otherBody.parentBody, 'selectionPending', false);
-			            delete this.box.pendingSelections[otherBody.parentBody.id];
+		            if(otherBody.isSmallerBody && otherBody.unit.isMoving && otherBody.unit.body != this.box.permaPendingBody) {
+		                changeSelectionState(otherBody.unit, 'selectionPending', false);
+			            delete this.box.pendingSelections[otherBody.unit.body.id];
 		            }
-		            if((otherBody.isSmallerBody && otherBody.parentBody == this.box.permaPendingBody && otherBody.parentBody.isSelectable) ||
+		            if((otherBody.isSmallerBody && otherBody.unit.body == this.box.permaPendingBody && otherBody.unit.isSelectable) ||
 		                otherBody.isSelectable && otherBody == this.box.permaPendingBody)
 		            {
 			                this.box.boxContainsPermaPending = false;
@@ -741,6 +741,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			
 			this.endGameSound.play();
 			
+			if(this.selectionBox) {
+					
+			}
+			
 			//prompt for the score
 			setTimeout(function(){ 
 			    this.scoreContainer = $('<div>').appendTo('#gameTheater');
@@ -777,6 +781,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		 */
 		addBody: function(body, trackVerticeHistory) {
 		    
+			//if we've added a unit, call down to its body
+			if(body.isUnit) {
+				body = body.body;
+			}
+			
 		    //init these damn things, is there a better way?
 		    if(body._initAttacker) {
     			body._initAttacker();
@@ -807,6 +816,21 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		    $.each(copy, function(index, body) {
 		        this.removeBody(body);
 		    }.bind(this))
+		},
+		
+		removeUnit: function(unit) {
+		    Matter.Events.trigger(unit, "onremove", {});
+			//clear slaves (deathPact())
+		    if(unit.slaves) {
+		        $.each(body.slaves, function(index, slave) {
+					if(slave.isUnit)
+						this.removeUnit(slave);
+					else
+						this.removeBody(slave);
+		        }.bind(this));
+		    }
+			this.removeBody(unit.body);
+			Matter.Events.off(unit);
 		},
 		
 		removeBody: function(body) {
@@ -851,6 +875,21 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		    body.hasBeenRemoved = true;
 		},
 		
+		//apply something to bodies by team		
+		applyToBodiesByTeam: function(teamPredicate, bodyPredicate, f) {
+			teamPredicate = teamPredicate || true;
+			bodyPredicate = bodyPredicate || true;
+			$.each(this.bodiesByTeam, function(i, team) {
+				if(teamPredicate(team)) {
+					$.each(team, function(i, body) {
+                        if(bodyPredicate(body)) {
+							f(body);
+						}
+					})
+				}
+			})
+		},
+		
 		/*
 		 * Method to...
 		 * Clean up unwanted DOM/pixi-interactive listeners
@@ -862,14 +901,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		 * With options.noMercy=true, everything dies, otherwise objs with a 'persists' attribute will survive
 		 */
 		nuke: function(options) {
-			if(this.selectionBox) {
-			    if(this.box) Matter.Events.off(this.box, 'onCollide');
-			    $('body').off('mousedown.selectionBox');
-			    $('body').off('mousemove.selectionBox');
-			    $('body').off('mouseup.selectionBox');
-			    $('body').off('keydown.selectionBox');
-			    $('body').off('keypress.selectionBox'); //remove if games seem normal
-			}
+			
+			options = options || {};
 			
 		    //re-enable right click
 		    $('body').off("contextmenu.common");
@@ -884,7 +917,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			    this.nukeExtension(options);
 			}
 			
-			options = options || {}
 			if(!this.world) return;
 			
 			//remove bodies safely
@@ -904,6 +936,18 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			
 			if(options.noMercy) {
 				$('body').off();
+			}
+			
+			if(this.selectionBox) {
+			    if(this.box) {
+					Matter.Events.off(this.box, 'onCollide');
+					this.box = null;
+				}
+			    $('body').off('mousedown.selectionBox');
+			    $('body').off('mousemove.selectionBox');
+			    $('body').off('mouseup.selectionBox');
+			    $('body').off('keydown.selectionBox');
+			    $('body').off('keypress.selectionBox'); //remove if games seem normal
 			}
 		},
 		
@@ -925,13 +969,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		},
 		
 		//need to redesign this method, it's so confusingly dumb
-		getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames, startFrameNumber) {
+		getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames, startFrameNumber, bufferUnderTen) {
 			var frames = [];
 			var numberOfFrames = numberOfFrames || PIXI.Loader.shared[baseName+'FrameCount'] || 10;
 			var startFrame = (startFrameNumber == 0 ? 0 : startFrameNumber || 1);
 			for(var i = startFrame; i < startFrame + numberOfFrames; i++) {
 				try {
-					frames.push(PIXI.Texture.from(baseName+i+'.png'));
+					var j = i;
+					if(bufferUnderTen && j < 10)
+						j = "0" + j;
+					frames.push(PIXI.Texture.from(baseName+j+'.png'));
 				} catch(err) {
 					try {
     						frames.push(PIXI.Texture.from(baseName+i+'.jpg'));
@@ -942,7 +989,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			}
 			
 			var anim = new PIXI.AnimatedSprite(frames);
-			anim.onComplete = function() {this.removeSomethingFromRenderer(anim)}.bind(this);
+			anim.onComplete = function() {
+				this.removeSomethingFromRenderer(anim)
+			}.bind(this);
 			anim.persists = true;
 			anim.setTransform.apply(anim, transform);
 			anim.animationSpeed = speed;
@@ -975,6 +1024,86 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			this.addSomethingToRenderer(anim, where, options);
 			return anim;
 		},
+		
+		/*
+		 * options {
+		 *	numberOfFrames
+		 *	startFrameNumber
+		 *	baseName
+		 *	bufferUnderTen
+		 *	transform
+		 *	speed
+		 *	playThisManyTimes
+		 *	rotation
+		 * 	body
+		 *	where
+		 *	onComplete
+		 */
+		getAnimationB: function(options) {
+			var frames = [];
+			var anim = null;
+			if(options.numberOfFrames) {
+				var numberOfFrames = options.numberOfFrames || PIXI.Loader.shared[options.baseName+'FrameCount'] || 10;
+				var startFrame = (options.startFrameNumber == 0 ? 0 : options.startFrameNumber || 1);
+				for(var i = startFrame; i < startFrame + numberOfFrames; i++) {
+					try {
+						var j = i;
+						if(options.bufferUnderTen && j < 10)
+							j = "0" + j;
+						frames.push(PIXI.Texture.from(options.baseName+j+'.png'));
+					} catch(err) {
+						try {
+								frames.push(PIXI.Texture.from(options.baseName+i+'.jpg'));
+							} catch(err) {
+								break;
+						} 		
+					}
+				}
+				anim = new PIXI.AnimatedSprite(frames);
+			} else {
+				anim = new PIXI.AnimatedSprite(PIXI.Loader.shared.resources[options.spritesheetName].spritesheet.animations[options.animationName]);
+			}
+			
+			
+			anim.onComplete = function() { //default onComplete function
+				this.removeSomethingFromRenderer(anim)
+			}.bind(this);
+			anim.persists = true;
+			anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
+			anim.animationSpeed = options.speed;
+			anim.loop = options.playThisManyTimes == 'loop';
+			anim.playThisManyTimes = options.playThisManyTimes;
+			anim.currentPlayCount = options.playThisManyTimes;
+			
+			if(options.rotation)
+			    anim.rotation = options.rotation;
+			
+			if(!anim.loop && anim.currentPlayCount && anim.currentPlayCount > 0) {
+				anim.onManyComplete = anim.onComplete; //default to remove the animation
+				anim.onComplete = function() { //override onComplete to countdown the specified number of times
+					if(anim.currentPlayCount) {
+						console.info(anim.currentPlayCount);
+						anim.gotoAndPlay(0);
+						anim.currentPlayCount--;
+					} else {
+						anim.onManyComplete.call(anim);
+					}
+				}
+			}
+			
+			//if body is given, let's apply the same anchor to this animation
+			var rendOptions = {};
+			if(options.body) {
+			    rendOptions.anchor = {};
+    			rendOptions.anchor.x = options.body.render.sprite.xOffset;
+    			rendOptions.anchor.y = options.body.render.sprite.yOffset;
+			}
+			
+			this.addSomethingToRenderer(anim, options.where, rendOptions);
+			return anim;
+		},
+		
+		
 		addTimer: function(timer) {
 			this.timers[timer.name] = timer;
 			timer.originalRuns = timer.runs;
@@ -1284,6 +1413,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 	    },
 	    
 	    placeBodyWithinCanvasBounds: function(body) {
+			//if we've added a unit, call down to its body
+			if(body.isUnit) {
+				body = body.body;
+			}
 	        var placement = {};
 	        var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
 	        var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
@@ -1294,6 +1427,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 	    },
 	    
 	    placeBodyWithinRadiusAroundCanvasCenter: function(body, radius) {
+			//if we've added a unit, call down to its body
+			if(body.isUnit) {
+				body = body.body;
+			}
 	        var placement = {};
 	        var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
 	        var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
@@ -1303,6 +1440,38 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 	        Matter.Body.setPosition(body, placement);
 	        return placement;
 	    },
+		
+		isoDirectionBetweenPositions: function(v1, v2) {
+			
+			var angle = Matter.Vector.angle({x: 0, y: 0}, Matter.Vector.sub(v2, v1));
+			var dir = null;
+			if(angle >= 0) {
+				if(angle < Math.PI/8) {
+					dir = 'right';
+				} else if(angle < Math.PI*3/8) {
+					dir = 'downRight';
+				} else if(angle < Math.PI*5/8) {
+					dir = 'down';
+				} else if(angle < Math.PI*7/8){
+					dir = 'downLeft';
+				} else {
+					dir = 'left';
+				}
+			} else {
+				if(angle > -Math.PI/8) {
+					dir = 'right';
+				} else if(angle > -Math.PI*3/8) {
+					dir = 'upRight';
+				} else if(angle > -Math.PI*5/8) {
+					dir = 'up';
+				} else if(angle > -Math.PI*7/8){
+					dir = 'upLeft';
+				} else {
+					dir = 'left';
+				}
+			}
+			return dir;
+		},
 	    
 	    getCanvasCenter: function() {
 	      return {x: this.canvasEl.getBoundingClientRect().width/2, y: this.canvasEl.getBoundingClientRect().height/2};  

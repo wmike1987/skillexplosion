@@ -1,0 +1,201 @@
+<NotepadPlus>
+    <Project name="Skill Explosion">
+        <Folder name="SE Root">
+            <Folder name=".well-known">
+                <Folder name="acme-challenge" />
+            </Folder>
+            <Folder name="app">
+                <Folder name="Games">
+                    <File name="app\Games\CommonGameMixin.js" />
+                    <File name="app\Games\Gauntlet.js" />
+                    <File name="app\Games\HeadMan.js" />
+                    <File name="app\Games\Marbles.js" />
+                    <File name="app\Games\MultiDodge.js" />
+                    <File name="app\Games\Pelicans.js" />
+                    <File name="app\Games\Phara.js" />
+                    <File name="app\Games\Raindrops.js" />
+                    <File name="app\Games\Rainy_Season.js" />
+                    <File name="app\Games\Recall.js" />
+                    <File name="app\Games\SequenceMatch.js" />
+                    <File name="app\Games\SideToSide_Practice.js" />
+                    <File name="app\Games\Simple_Target.js" />
+                    <File name="app\Games\Simple_Zarya.js" />
+                    <File name="app\Games\Split.js" />
+                    <File name="app\Games\Umbrellas.js" />
+                    <File name="app\Games\UpDown_Practice.js" />
+                    <File name="app\Games\Us.js" />
+                </Folder>
+                <Folder name="Mixins">
+                    <File name="app\Mixins\_Attacker.js" />
+                    <File name="app\Mixins\_Moveable.js" />
+                </Folder>
+                <Folder name="Sounds">
+                    <File name="app\Sounds\Beach.wav" />
+                    <File name="app\Sounds\bellhit1.wav" />
+                    <File name="app\Sounds\bellhit2.wav" />
+                    <File name="app\Sounds\bellhit3.wav" />
+                    <File name="app\Sounds\bellhit4.wav" />
+                    <File name="app\Sounds\bellhit5.wav" />
+                    <File name="app\Sounds\bells.wav" />
+                    <File name="app\Sounds\chalkEraser1.wav" />
+                    <File name="app\Sounds\chalkWriting1.wav" />
+                    <File name="app\Sounds\chalkWriting2.wav" />
+                    <File name="app\Sounds\chalkWriting3.wav" />
+                    <File name="app\Sounds\chalkWriting4.wav" />
+                    <File name="app\Sounds\gamefinished.wav" />
+                    <File name="app\Sounds\loselife1.mp3" />
+                    <File name="app\Sounds\marblegoal.wav" />
+                    <File name="app\Sounds\marblehit.wav" />
+                    <File name="app\Sounds\marbles.wav" />
+                    <File name="app\Sounds\mybell1.wav" />
+                    <File name="app\Sounds\nextlevel.wav" />
+                    <File name="app\Sounds\nicehit.wav" />
+                    <File name="app\Sounds\nicehit1.wav" />
+                    <File name="app\Sounds\nicehit2.wav" />
+                    <File name="app\Sounds\nicehit3.wav" />
+                    <File name="app\Sounds\nicehit4.wav" />
+                    <File name="app\Sounds\pop1.wav" />
+                    <File name="app\Sounds\powerup1.wav" />
+                    <File name="app\Sounds\powerup2.wav" />
+                    <File name="app\Sounds\QuickDrawSheet.json" />
+                    <File name="app\Sounds\QuickDrawSheet.png" />
+                    <File name="app\Sounds\RainyBackgroundAndMarbles.json" />
+                    <File name="app\Sounds\RainyBackgroundAndMarbles.png" />
+                    <File name="app\Sounds\rush1.wav" />
+                    <File name="app\Sounds\softBeep.wav" />
+                    <File name="app\Sounds\swoosh1.wav" />
+                    <File name="app\Sounds\swoosh2.wav" />
+                    <File name="app\Sounds\whistle.wav" />
+                    <File name="app\Sounds\woosh.wav" />
+                    <File name="app\Sounds\zap1.wav" />
+                </Folder>
+                <Folder name="Textures">
+                    <File name="app\Textures\8dirchar.json" />
+                    <File name="app\Textures\8dirchar.png" />
+                    <File name="app\Textures\alpha.png" />
+                    <File name="app\Textures\backgroundgradient.png" />
+                    <File name="app\Textures\BackgroundSheet.jpg" />
+                    <File name="app\Textures\BackgroundSheet.json" />
+                    <File name="app\Textures\BackgroundSheet2.json" />
+                    <File name="app\Textures\BackgroundSheet2.png" />
+                    <File name="app\Textures\BaneExplosionSheet.json" />
+                    <File name="app\Textures\BaneExplosionSheet.png" />
+                    <File name="app\Textures\blueCollapse.json" />
+                    <File name="app\Textures\blueCollapse.png" />
+                    <File name="app\Textures\BlueTargetDeath.json" />
+                    <File name="app\Textures\BlueTargetDeath.png" />
+                    <File name="app\Textures\Chalkboard.png" />
+                    <File name="app\Textures\ChalkboardSheet.json" />
+                    <File name="app\Textures\ChalkboardSheet.png" />
+                    <File name="app\Textures\ClickRipple.json" />
+                    <File name="app\Textures\ClickRipple.png" />
+                    <File name="app\Textures\DropletFlash.json" />
+                    <File name="app\Textures\DropletFlash.png" />
+                    <File name="app\Textures\DullLandscapeLess.jpg" />
+                    <File name="app\Textures\glassShards.png" />
+                    <File name="app\Textures\GrayBackground.png" />
+                    <File name="app\Textures\IsometricSheet1.json" />
+                    <File name="app\Textures\IsometricSheet1.png" />
+                    <File name="app\Textures\marine-0.json" />
+                    <File name="app\Textures\marine-0.png" />
+                    <File name="app\Textures\marine-1.json" />
+                    <File name="app\Textures\marine-1.png" />
+                    <File name="app\Textures\particle.png" />
+                    <File name="app\Textures\Pelican.png" />
+                    <File name="app\Textures\PelicanGhost.png" />
+                    <File name="app\Textures\PelicanSheet.json" />
+                    <File name="app\Textures\PelicanSheet.png" />
+                    <File name="app\Textures\PelicanSheetLess.jpg" />
+                    <File name="app\Textures\PelicanSheetLess.json" />
+                    <File name="app\Textures\PelicanSheetLess.png" />
+                    <File name="app\Textures\PlusFive.png" />
+                    <File name="app\Textures\PlusTwo.png" />
+                    <File name="app\Textures\QuickDrawSheet.json" />
+                    <File name="app\Textures\QuickDrawSheet.png" />
+                    <File name="app\Textures\Raindrop2.png" />
+                    <File name="app\Textures\raindrop_lit.png" />
+                    <File name="app\Textures\RainyBackgroundAndMarbles.json" />
+                    <File name="app\Textures\RainyBackgroundAndMarbles.png" />
+                    <File name="app\Textures\RedBlueTarget.png" />
+                    <File name="app\Textures\SelectionBox.png" />
+                    <File name="app\Textures\Snowflake1.png" />
+                    <File name="app\Textures\SnowflakeSheet.json" />
+                    <File name="app\Textures\SnowflakeSheet.png" />
+                    <File name="app\Textures\stripes.png" />
+                    <File name="app\Textures\UmbrellaSheet.json" />
+                    <File name="app\Textures\UmbrellaSheet.png" />
+                    <File name="app\Textures\VolumeOff.png" />
+                    <File name="app\Textures\VolumeOn.png" />
+                    <File name="app\Textures\waveExplosion.json" />
+                    <File name="app\Textures\waveExplosion.png" />
+                </Folder>
+                <Folder name="Units">
+                    <File name="app\Units\Baneling.js" />
+                    <File name="app\Units\Gunner.js" />
+                    <File name="app\Units\IsoSpriteManager.js" />
+                    <File name="app\Units\Marble.js" />
+                    <File name="app\Units\UnitConstructor.js" />
+                </Folder>
+                <Folder name="Utils">
+                    <File name="app\Utils\CommonGameStarter.js" />
+                    <File name="app\Utils\HighScores.js" />
+                    <File name="app\Utils\HS.js" />
+                    <File name="app\Utils\KeyStates.js" />
+                    <File name="app\Utils\OHS.js" />
+                    <File name="app\Utils\PixiRenderer.js" />
+                    <File name="app\Utils\Styles.js" />
+                    <File name="app\Utils\TargetSpawnZone.js" />
+                </Folder>
+            </Folder>
+            <Folder name="cgi-bin">
+                <File name="cgi-bin\error_log" />
+                <File name="cgi-bin\GetHighScores.cgi" />
+                <File name="cgi-bin\PostHighScore.cgi" />
+            </Folder>
+            <Folder name="css">
+                <File name="css\mainStyle.css" />
+            </Folder>
+            <Folder name="lib">
+                <Folder name="jquery-aop">
+                    <File name="lib\jquery-aop\aop.js" />
+                </Folder>
+                <Folder name="matter">
+                    <File name="lib\matter\matter-old.js" />
+                    <File name="lib\matter\matter-timing.js" />
+                    <File name="lib\matter\matter.js" />
+                </Folder>
+                <Folder name="pixi-input">
+                    <File name="lib\pixi-input\pixi.input.js" />
+                </Folder>
+                <Folder name="pixi-particles">
+                    <File name="lib\pixi-particles\pixi-particles.js" />
+                    <File name="lib\pixi-particles\pixi-particles.min.js" />
+                </Folder>
+                <Folder name="pixi.js-master">
+                    <Folder name="bin">
+                        <File name="lib\pixi.js-master\bin\pixi.js" />
+                        <File name="lib\pixi.js-master\bin\pixi.js.map" />
+                        <File name="lib\pixi.js-master\bin\pixi.min.js" />
+                        <File name="lib\pixi.js-master\bin\pixi.min.js.map" />
+                        <File name="lib\pixi.js-master\bin\pixiv4.js" />
+                    </Folder>
+                </Folder>
+                <Folder name="poly-decomp">
+                    <File name="lib\poly-decomp\poly-decomp.js" />
+                </Folder>
+            </Folder>
+            <File name=".gitignore" />
+            <File name=".htaccess" />
+            <File name="error_log" />
+            <File name="favicon-16x16.png" />
+            <File name="favicon-32x32.png" />
+            <File name="favicon.ico" />
+            <File name="frontdoor.js" />
+            <File name="googleab7fbe773b9f74bf.html" />
+            <File name="index.html" />
+            <File name="LICENSE" />
+            <File name="README.md" />
+            <File name="server.bat" />
+        </Folder>
+    </Project>
+</NotepadPlus>
