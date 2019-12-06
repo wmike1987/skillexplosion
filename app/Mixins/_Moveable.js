@@ -46,7 +46,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
             this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
             this.timer = {name: 'tryForDestination' + this.body.id, gogogo:true, timeLimit: 850, callback: function() {
-    			    if(this.lastPosition) {
+    			    if(this.lastPosition && this.isMoving) {
     			        //clickPointSprite2.position = this.position;
     			        if(this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
         			        if(this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {

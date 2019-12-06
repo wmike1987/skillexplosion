@@ -5,19 +5,59 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var radius = 19;
 		var gunner = {};
 		var options = options || {};
-		var walkSpeed = .65;
+		var walkSpeed = .9;
 		var walkSpeedBonus = .25;
 		var shootSpeed = .45;
 		
 		var walkAnimations = {
-			up: currentGame.getAnimation('MarineN/Walk/skeleton3-walk_', [-1000, -1000], walkSpeed, null, -1, null, null, 30, 0, true),
-			upRight: currentGame.getAnimation('MarineNW/Walk/skeleton-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
-			right: currentGame.getAnimation('MarineW/Walk/skeleton5-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
-			downRight: currentGame.getAnimation('MarineSW/Walk/skeleton4-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
-			down: currentGame.getAnimation('MarineS/Walk/skeleton2-walk_', [-1000, -1000], walkSpeed, null, -1, null, null, 30, 0, true),
-			downLeft: currentGame.getAnimation('MarineSW/Walk/skeleton4-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
-			left: currentGame.getAnimation('MarineW/Walk/skeleton5-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true),
-			upLeft: currentGame.getAnimation('MarineNW/Walk/skeleton-walk_', [-1000, -1000], walkSpeed+walkSpeedBonus, null, -1, null, null, 30, 0, true)
+			up: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineN/Walk/skeleton3-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			upRight: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineNW/Walk/skeleton-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			right: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineW/Walk/skeleton5-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			downRight: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineSW/Walk/skeleton4-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			down: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineS/Walk/skeleton2-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			downLeft: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineSW/Walk/skeleton4-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			left: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineW/Walk/skeleton5-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
+			upLeft: currentGame.getAnimationB({
+				spritesheetName: 'marine0',
+				animationName: 'MarineNW/Walk/skeleton-walk',
+				speed: walkSpeed,
+				playThisManyTimes: 'loop',
+			}),
 		}
 		
 		var attackAnimations = {
@@ -74,7 +114,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var otherAnimations = {
 		}
     			
-		var sc = {x: .35, y: .35};
+		var sc = {x: .3, y: .3};
 		var flipsc = {x: -1 * sc.x, y: sc.y};
 		var rc = [{
 			id: 'selected',
@@ -100,7 +140,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			scale: sc,
 			rotate: 'none',
 			visible: false,
-			offset: {x: -2, y: 0}
+			offset: {x: -2, y: 0},
 		}, {
 			id: 'attackLeft',
 			data: attackAnimations.left,
@@ -221,23 +261,24 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var fireSound = currentGame.getSound('machinegun.wav', {volume: .002, rate: 3});
 	
 		return UC({
-				objToUse: gunner,
 				renderChildren: rc,
 				radius: radius,
 				unit: {
 					unitType: 'Gunner',
 					health: 45,
 					energy: 45,
-					team: options.team || 4
+					team: options.team || 4,
+					heightAnimation: 'walkLeft'
 				}, 
 				moveable: {
 					moveSpeed: 2.65,
 					walkAnimations: walkAnimations,
 				}, attacker: {
 					attackAnimations: attackAnimations,
-					cooldown: 1000,
-					range: 175,
-					damage: 18,
+					cooldown: 300,
+					honeRange: 3000,
+					range: 180,
+					damage: 6,
 					attack: function(target) {
 						target.sufferAttack(this.damage);
 						fireSound.play();

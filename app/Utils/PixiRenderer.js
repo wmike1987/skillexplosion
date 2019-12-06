@@ -137,31 +137,13 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			//set background - probably shouldn't be handling this in the pixi renderer
 			this.setBackground(options.background.image, {scale: {x: options.background.scale.x, y: options.background.scale.y}, bloat: options.background.bloat, backgroundFilter: options.backgroundFilter});
 			
-			//when a body is added to the matter world, initialize its renderlings
-			var realizeBody = function(body) {
-		        if(!body.renderChildren) return;
-			    $.each(body.renderChildren, function(index, child) {
-				    this.realizeChild(body, child);
-				}.bind(this))
-			}.bind(this);
-			
 			Matter.Events.on(this.engine.world, 'afterAdd', function(event) {
 			    if(Array.isArray(event.object)) {
 		            $.each(event.object, function(index, body) {
-				        realizeBody(body)
+				        this.realizeBody(body)
     				}.bind(this))
 			    } else {
-			        realizeBody(event.object)
-			    }
-			}.bind(this));
-			
-			Matter.Events.on(currentGame, 'unitInit', function(event) {
-			    if(Array.isArray(event.unit)) {
-		            $.each(event.unit, function(index, unit) {
-				        realizeBody(unit.body)
-    				}.bind(this))
-			    } else {
-			        realizeBody(event.unit.body)
+			        this.realizeBody(event.object)
 			    }
 			}.bind(this));
 			
@@ -175,6 +157,18 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				this.renderWorld(this.engine, event);
 			}.bind(this));
 		};
+		
+		this.processUnit = function(unit) {
+			this.realizeBody(unit.body);
+		};
+		
+		//when a body is added to the matter world, initialize its renderlings
+		this.realizeBody = function(body) {
+			if(!body.renderChildren) return;
+			$.each(body.renderChildren, function(index, child) {
+				this.realizeChild(body, child);
+			}.bind(this))
+		}.bind(this);
 		
 		this.realizeChild = function(body, child) {
 		    if(child.isRealized) return;
@@ -202,16 +196,22 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		    if(child.anchor) {
     			newSprite.anchor.x = child.anchor.x;
     			newSprite.anchor.y = child.anchor.y;
-		    } else {
-		        newSprite.anchor.x = body.render.sprite.xOffset;
-    			newSprite.anchor.y = body.render.sprite.yOffset;
+		    } else { //default to center of sprite is centered
+		        newSprite.anchor.x = .5;
+    			newSprite.anchor.y = .5;
 		    }
 		    if(child.scale) {
     			newSprite.scale.x  = child.scale.x;
     			newSprite.scale.y  = child.scale.y;
 		    }
 		    if(child.filter) {
-		        newSprite.filters = [child.filter];
+				if($.isArray(child.filter))
+					newSprite.filters = child.filter;
+				else
+					newSprite.filters = [child.filter];
+		    }
+			if(child.gameFilter) {
+		        this.pixiApp.stage.filters = [child.gameFilter];
 		    }
 		    if(child.skew) {
 		        newSprite.skew = child.skew;
@@ -238,7 +238,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			return newSprite;
 		},
 		
-		//accepts a matter body or just a pixi obj
+		//accepts a matter body or just a pixi obj. Also works for a Unit object whose body renderlings-accessor gets the units renderlings.
 		this.removeFromPixiStage = function(something, where) {
 			something = something.renderlings ? Object.keys(something.renderlings).map(function (key) { return something.renderlings[key]; }) : [something];
 			$.each(something, function(i, obj) {
@@ -252,21 +252,27 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			this.stages[where].addChild(something);
 		};
 		
-		//method meant to unify creating a sprite based on various input
+		//Method meant to unify creating a sprite based on various input
 		this.itsMorphinTime = function(something, options) {
+			
+			//If we're already a texture...
 			if(something.baseTexture) {
 				return new PIXI.Sprite(something);			
 			}
 			
+			//If user specified a string, locate the intended texture and turn it into a sprite
 			if(typeof something === 'string') {
+				
+				//Text
 				if(something.indexOf('TEXT:') >= 0) {
 					return new PIXI.Text(something.substring(something.indexOf('TEXT:')+5), options.style);
 				}
 				
-				//attempt to load from preloaded texture
-			    if(PIXI.Loader.shared.resources[something])
+				//Attempt to load from preloaded texture
+			    if(PIXI.Loader.shared.resources[something]) {
 			        return new PIXI.Sprite(PIXI.Loader.shared.resources[something].texture);
-			    else { //check for textures inside a texture atlas
+				}
+			    else { //Check for textures inside a texture atlas
 			        var foundAtlasTexture;
 			        $.each(PIXI.Loader.shared.resources, function(key, value) {
 			            if(value.extension == 'json') {
@@ -284,6 +290,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			        if(foundAtlasTexture) return foundAtlasTexture;
 			    }
 		
+				//Lastly, just try and load a png from the Textures dir
 				if(something.indexOf('.png') < 0) {
 					something = something + '.png';
 				}

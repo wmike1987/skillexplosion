@@ -98,8 +98,6 @@
                     <File name="app\Textures\IsometricSheet1.png" />
                     <File name="app\Textures\marine-0.json" />
                     <File name="app\Textures\marine-0.png" />
-                    <File name="app\Textures\marine-1.json" />
-                    <File name="app\Textures\marine-1.png" />
                     <File name="app\Textures\particle.png" />
                     <File name="app\Textures\Pelican.png" />
                     <File name="app\Textures\PelicanGhost.png" />

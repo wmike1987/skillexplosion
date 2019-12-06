@@ -145,19 +145,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 					
 					if(!value) return;
 					
-					//reset currently doesn't reset the original amount of runs set on the timer
-					if(!value.reset) value.reset = value.execute = function() {
-						this.timeElapsed = 0;
-						this.percentDone = 0;
-						
-						if(this.runs == 0)
-						    this.runs = null;
-						this.done = false;
-						this.started = false;
-						this.paused = false;
-						this.invalidated = false;
-					}
-					
 					if(value.done || value.paused || value.invalidated || value.runs === 0) return;
 
 					if(!value.timeElapsed) value.timeElapsed = 0;
@@ -779,6 +766,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		/*
 		 * Utilities
 		 */
+		 
+		addUnit: function(unit, trackVerticeHistory) {
+			this.addBody(unit.body, trackVerticeHistory);
+			Matter.Events.trigger(unit, 'addUnit', {});
+		},
+		 
 		addBody: function(body, trackVerticeHistory) {
 		    
 			//if we've added a unit, call down to its body
@@ -787,13 +780,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			}
 			
 		    //init these damn things, is there a better way?
-		    if(body._initAttacker) {
+		    /*if(body._initAttacker) {
     			body._initAttacker();
 		    }
 		    
             if(body.moveableInit) {
                 body.moveableInit();
-            }
+            }*/
             
             //track the team this unit is on
             if(body.team) {
@@ -822,11 +815,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		    Matter.Events.trigger(unit, "onremove", {});
 			//clear slaves (deathPact())
 		    if(unit.slaves) {
-		        $.each(body.slaves, function(index, slave) {
+		        $.each(unit.slaves, function(index, slave) {
 					if(slave.isUnit)
 						this.removeUnit(slave);
-					else
+					else if(!$.isFunction(slave))
 						this.removeBody(slave);
+					else
+						this.removeTickCallback(slave);
 		        }.bind(this));
 		    }
 			this.removeBody(unit.body);
@@ -861,7 +856,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 			    
 			if(body.team) {
 			    var bbtindex = this.bodiesByTeam[body.team].indexOf(body);
-    			if(index > -1)
+    			if(bbtindex > -1)
     			    this.bodiesByTeam[body.team].splice(bbtindex, 1);
 			}    
 			
@@ -1107,6 +1102,20 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 		addTimer: function(timer) {
 			this.timers[timer.name] = timer;
 			timer.originalRuns = timer.runs;
+								
+			//add a reset method to the timer
+			if(!timer.reset) timer.reset = timer.execute = function() {
+				this.timeElapsed = 0;
+				this.percentDone = 0;
+				
+				if(this.runs == 0)
+					this.runs = null;
+				this.done = false;
+				this.started = false;
+				this.paused = false;
+				this.invalidated = false;
+			}
+			
 			return timer;
 		},
 		invalidateTimer: function(timer) {
@@ -1564,6 +1573,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             $('*').css('cursor', style);
         },
         
+		//death pact currently supports other units, bodies, and tick callbacks
         deathPact: function(master, slave) {
             if(!master.slaves)
                 master.slaves = [];

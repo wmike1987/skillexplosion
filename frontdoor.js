@@ -7,12 +7,13 @@ requirejs.config({
         mixins: '../app/Mixins',
         utils: '../app/Utils',
         units: '../app/Units',
-    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi", //4.8.6 last stable
+    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.0/pixi", //4.8.6 last stable
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min",
 	    'matter-js': "matter/matter-timing",
 	    matterCollisionPlugin: "https://cdn.jsdelivr.net/npm/matter-collision-events@0.1.7/build/matter-collision-events",
-	    particles: "pixi-particles/pixi-particles"
+	    particles: "pixi-particles/pixi-particles",
+		'pixi-filters': "pixi-filters/pixi-filters"
     },
     shim: {
         "pixi": {
@@ -138,6 +139,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 	loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
 	loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
 	loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
+	loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
 	
 	//animations
 	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
@@ -157,15 +159,13 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 	loader.SquareWithBorderDeathFrameCount = 5;
 	
 	//character animations
-	loader.add('tile', 'app/Textures/8dirchar.json');
 	loader.add('marine0', 'app/Textures/marine-0.json');
 	
 	//odds and ends
+	loader.add('unitMisc', 'app/Textures/UnitMisc.json');
 	loader.add('iso1', 'app/Textures/IsometricSheet1.json');
-	loader.add('Umbrella', 'app/Textures/UmbrellaSheet.json');
 	loader.add('raindrop2', 'app/Textures/Raindrop2.png');
 	loader.add('alpha', 'app/Textures/alpha.png');
-	loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
 	loader.add('glassShards', 'app/Textures/glassShards.png');
 	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
 	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');

@@ -1,4 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/Gunner', 'units/Baneling'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/Gunner', 'units/Baneling', 'pixi-filters'], 
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling, filters) {
 	
 	var targetScore = 1;
 	
@@ -57,6 +58,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		play: function(options) {
             this.nextLevel();
             
+			this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
+				this.createBane(15);
+			}.bind(this)});
 		},
 		
 		nextLevel: function() {
@@ -88,14 +92,13 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     		    var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
 		    }
 		    
-			this.createGunner(2);
+			this.createGunner(6);
 			this.createBane(20);
 		},
 		
 		createGunner: function(number) {
 		    for(x = 0; x < number; x++) {
 				var gunner = Gunner();
-    			this.marbles.push(gunner.body);
     			gunner.typeId = 34;
     			gunner.directional = true;
     			this.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);
@@ -105,14 +108,13 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     		  //      this.blueGlowFilter.uniforms.currentUnitPosition = {x: marble.position.x, y: marble.position.y};
     		  //  }.bind(this))
 			  
-    			this.addBody(gunner, true);
+    			this.addUnit(gunner, true);
 		    }
 		},
 		
 		createBane: function(number) {
 		    for(x = 0; x < number; x++) {
 				var bane = Baneling({team: 2, isSelectable: false});
-    			this.marbles.push(bane.body);
     			this.placeBodyWithinRadiusAroundCanvasCenter(bane, 4);
     
     // 			this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
@@ -126,7 +128,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                     Matter.Body.setPosition(bane.body, {x: this.getCanvasWidth() - Math.random() * 100, y: this.getCanvasCenter().y + Math.random() * 600 - 300});
                 }
                 
-    			this.addBody(bane, true);
+    			this.addUnit(bane, true);
 		    }
 		},
 		
