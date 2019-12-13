@@ -1,0 +1,125 @@
+
+SW.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+FrontM_0000_Layer-17-copy
+  rotate: false
+  xy: 513, 400
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+FrontM_0001_Layer-17
+  rotate: false
+  xy: 461, 287
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+FrontM_0003_Layer-18
+  rotate: false
+  xy: 513, 412
+  size: 19, 54
+  orig: 19, 54
+  offset: 0, 0
+  index: -1
+FrontM_0007_Layer-35
+  rotate: false
+  xy: 461, 468
+  size: 102, 42
+  orig: 102, 42
+  offset: 0, 0
+  index: -1
+FrontM_0008_Layer-24-copy
+  rotate: false
+  xy: 461, 299
+  size: 21, 40
+  orig: 21, 40
+  offset: 0, 0
+  index: -1
+FrontM_0009_Layer-23-copy
+  rotate: false
+  xy: 534, 434
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+FrontM_0010_Layer-24
+  rotate: true
+  xy: 622, 489
+  size: 21, 40
+  orig: 21, 40
+  offset: 0, 0
+  index: -1
+FrontM_0011_Layer-23
+  rotate: true
+  xy: 230, 35
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+FrontM_0013_Layer-22
+  rotate: true
+  xy: 188, 2
+  size: 19, 22
+  orig: 19, 22
+  offset: 0, 0
+  index: -1
+FrontM_0015_Layer-13
+  rotate: true
+  xy: 565, 472
+  size: 13, 46
+  orig: 13, 46
+  offset: 0, 0
+  index: -1
+FrontM_0017_Layer-26
+  rotate: true
+  xy: 565, 487
+  size: 23, 55
+  orig: 23, 55
+  offset: 0, 0
+  index: -1
+Gun
+  rotate: false
+  xy: 124, 13
+  size: 62, 38
+  orig: 62, 38
+  offset: 0, 0
+  index: -1
+Gun Glow
+  rotate: false
+  xy: 2, 53
+  size: 457, 457
+  orig: 457, 457
+  offset: 0, 0
+  index: -1
+Variant_0003_Layer-9-copy
+  rotate: false
+  xy: 461, 396
+  size: 50, 70
+  orig: 50, 70
+  offset: 0, 0
+  index: -1
+Variant_0007_Layer-45
+  rotate: false
+  xy: 461, 341
+  size: 43, 53
+  orig: 43, 53
+  offset: 0, 0
+  index: -1
+drop shadow
+  rotate: false
+  xy: 2, 5
+  size: 120, 46
+  orig: 120, 46
+  offset: 0, 0
+  index: -1
+thigh
+  rotate: true
+  xy: 188, 23
+  size: 28, 40
+  orig: 28, 40
+  offset: 0, 0
+  index: -1
