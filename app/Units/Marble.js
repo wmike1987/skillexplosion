@@ -1,9 +1,9 @@
 define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 
 	return function Marble(options) {
-    	
-		var options = options || {};		
-				
+
+		var options = options || {};
+
 		var radius = 20;
 		var rc = [{
 			id: 'marble',
@@ -66,7 +66,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			tint: options.pendingSelectionTint,
 			rotate: 'continuous'
 		}];
-	
+
 		return UC({
 				renderChildren: rc,
 				radius: radius,
@@ -76,23 +76,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 					health: 45,
 					energy: 45,
 					team: options.team || 4
-				}, 
+				},
 				moveable: {
 					moveSpeed: 4.5
 				}});
 	}
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
