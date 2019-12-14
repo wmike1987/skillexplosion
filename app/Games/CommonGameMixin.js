@@ -851,18 +851,24 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }.bind(this))
         },
 
+        //This method has the heart but is poorly designed
+        //Right now it'll support slaves which are units, bodies, and tickCallbacks
+        removeSlaves: function(slaves) {
+            $.each(slaves, function(index, slave) {
+                if(slave.isUnit)
+                    this.removeUnit(slave);
+                else if(slave.render)
+                    this.removeBody(slave);
+                else if(slave.isTickCallback)
+                    this.removeTickCallback(slave);
+            }.bind(this));
+        },
+
         removeUnit: function(unit) {
             Matter.Events.trigger(unit, "onremove", {});
             //clear slaves (deathPact())
             if(unit.slaves) {
-                $.each(unit.slaves, function(index, slave) {
-                    if(slave.isUnit)
-                        this.removeUnit(slave);
-                    else if(!$.isFunction(slave))
-                        this.removeBody(slave);
-                    else
-                        this.removeTickCallback(slave);
-                }.bind(this));
+                this.removeSlaves(unit.slaves);
             }
             this.removeBody(unit.body);
             Matter.Events.off(unit);
@@ -878,9 +884,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
             //clear slaves (deathPact())
             if(body.slaves) {
-                $.each(body.slaves, function(index, slave) {
-                    this.removeBody(slave);
-                }.bind(this));
+                this.removeSlaves(body.slaves);
             }
 
             //turn off events on this body (probably doesn't actually matter since the events live of the object itself)
@@ -1282,6 +1286,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 if(invincible || (self.gameState == 'playing'))
                     callback(event);
             }
+            tickDeltaWrapper.isTickCallback = true;
 
             if(invincible)
                 this.invincibleTickCallbacks.push(tickDeltaWrapper);
@@ -1492,7 +1497,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         isoDirectionBetweenPositions: function(v1, v2) {
-
             var angle = Matter.Vector.angle({x: 0, y: 0}, Matter.Vector.sub(v2, v1));
             var dir = null;
             if(angle >= 0) {
@@ -1677,23 +1681,46 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         rgbToHex: function (red, green, blue) {
-          var r = Number(Math.floor(red)).toString(16);
-          if (r.length < 2) {
+            var r = Number(Math.floor(red)).toString(16);
+            if (r.length < 2) {
                r = "0" + r;
-          }
+            }
 
-          var g = Number(Math.floor(green)).toString(16);
-          if (g.length < 2) {
+            var g = Number(Math.floor(green)).toString(16);
+            if (g.length < 2) {
                g = "0" + g;
-          }
+            }
 
-          var b = Number(Math.floor(blue)).toString(16);
-          if (b.length < 2) {
+            var b = Number(Math.floor(blue)).toString(16);
+            if (b.length < 2) {
                b = "0" + b;
-          }
+            }
 
-          return "0x" + r + g + b;
-      },
+            return "0x" + r + g + b;
+        },
+
+        sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {
+            //figure out the movement vector
+            var velocityVector = Matter.Vector.sub(destination, body.position);
+            var velocityScale = speed / Matter.Vector.magnitude(velocityVector);
+
+            if(surpassDestination) {
+                Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+            } else {
+                if (Matter.Vector.magnitude(velocityVector) < speed)
+                    Matter.Body.setVelocity(body, velocityVector);
+                else
+                    Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+            }
+        },
+
+        //return angle to rotate something facing an original direction, towards a point
+        angleBetweenVectors(origin, destination, orientation) {
+            var originAngle = Matter.Vector.angle(origin, orientation || {x: origin.x, y: origin.y + 1});
+            var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
+
+            return originAngle - destAngle;
+        }
     };
 
     //aliases

@@ -260,6 +260,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             offset: {x: 0, y: 26}}];
 
         var fireSound = currentGame.getSound('machinegun.wav', {volume: .002, rate: 3});
+
         var dashVelocity = .8;
         var dash = function(destination) {
             this.stop(); //stop any movement
@@ -269,6 +270,45 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             var velocityVector = Matter.Vector.sub(destination, this.position);
             var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
             Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
+        }
+
+        var knifeSound = currentGame.getSound('marbles.wav', {volume: .1, rate: 20});
+        var knifeSpeed = 14;
+        var throwKnife = function(destination) {
+            //create knife body
+            var knife = Matter.Bodies.circle(0, 0, 4, {
+                restitution: .95,
+                frictionAir: 0,
+                mass: options.mass || 5,
+                isSensor: true
+            });
+
+            Matter.Body.setPosition(knife, this.position);
+            knife.renderChildren = [{
+                id: 'knife',
+                data: currentGame.texture('Knife'),
+                scale: {x: .8, y: .8},
+                rotate: currentGame.angleBetweenVectors(knife.position, destination),
+            }]
+            currentGame.addBody(knife);
+
+            //send knife
+            knifeSound.play();
+            knife.deltaTime = this.body.deltaTime;
+            currentGame.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
+            var removeSelf = currentGame.addTickCallback(function() {
+                if(currentGame.bodyRanOffStage(knife)) {
+                    currentGame.removeBody(knife);
+                }
+            })
+            currentGame.deathPact(knife, removeSelf);
+            Matter.Events.on(knife, 'onCollide', function(pair) {
+                var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
+                if(otherBody != this.body && otherBody.isAttackable) {
+                    currentGame.removeBody(knife);
+                    otherBody.unit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
+                }
+            }.bind(this))
         }
 
         return UC({
@@ -282,7 +322,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
                     team: options.team || 4,
                     heightAnimation: 'walkLeft',
                     keyMappings: {
-                        e: dash
+                        e: dash,
+                        r: throwKnife
                     }
                 },
                 moveable: {

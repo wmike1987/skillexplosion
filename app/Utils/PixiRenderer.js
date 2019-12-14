@@ -87,9 +87,11 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
     				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'random') {
     				    if(sprite.behaviorSpecs.rotatePredicate && sprite.behaviorSpecs.rotatePredicate.apply(body.unit || body))
     				        sprite.rotation = Math.random();
+    				} else if (sprite.behaviorSpecs && sprite.behaviorSpecs.rotate != null) {
+				        sprite.rotation = sprite.behaviorSpecs.rotate;
     				} else {
-				        sprite.rotation = body.angle + (sprite.initialRotate || 0);
-    				}
+						sprite.rotation = body.angle + (sprite.initialRotate || 0);
+					}
 				})
 
 			    //if all else fails, draw wire frame if specified

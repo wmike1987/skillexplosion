@@ -141,7 +141,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
      * Options to for the game starter
      */
     game.worldOptions = {
-            background: {image: 'IsoBackground', scale: {x: 1.5, y: 1.5}},
+            background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
                 width: 1200,
                 height: 600,
                 gravity: 0,

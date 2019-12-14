@@ -138,18 +138,21 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
                 }
             }
 
-            //figure out the movement vector
-            var velocityVector = Matter.Vector.sub(this.destination, this.body.position);
-            var velocityScale = this.moveSpeed / Matter.Vector.magnitude(velocityVector);
-
             //trigger movement event
             Matter.Events.trigger(this, 'move', {
                 direction: currentGame.isoDirectionBetweenPositions(this.position, this.destination)
             });
-            if (Matter.Vector.magnitude(velocityVector) < this.moveSpeed)
-                Matter.Body.setVelocity(this.body, velocityVector);
-            else
-                Matter.Body.setVelocity(this.body, Matter.Vector.mult(velocityVector, velocityScale));
+
+            //send body
+            currentGame.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+            // var velocityVector = Matter.Vector.sub(this.destination, this.body.position);
+            // var velocityScale = this.moveSpeed / Matter.Vector.magnitude(velocityVector);
+            //
+            //
+            // if (Matter.Vector.magnitude(velocityVector) < this.moveSpeed)
+            //     Matter.Body.setVelocity(this.body, velocityVector);
+            // else
+            //     Matter.Body.setVelocity(this.body, Matter.Vector.mult(velocityVector, velocityScale));
         },
         collideCallback: function(pair) {
             if (!this.isMoving) return;
