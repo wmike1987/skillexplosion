@@ -28,13 +28,6 @@ require(['matter-js', 'matterCollisionPlugin'], function(Matter, MatterCollision
     Matter.use('matter-collision-events');
 });
 
-//register pixi spine plugin, the pixi-spine lib adds itself to the PIXI namespace, wish there were a better way to do this
-//but this is essentially taken from https://github.com/pixijs/pixi-spine/
-require(['pixi'], function(PIXI) {
-    window.PIXI = PIXI;
-    require(['pixi-spine'], function(spine) {})
-});
-
 activateTextOne = false; //bool for animation
 colorChoices = ['#ffffff', '#307fff', '#d91cff', '#008e8e', '#5d8729', '#d17b47', '#e377ff', '#57ff35'];
 lastColor = 0;
@@ -137,53 +130,61 @@ requirejs(['jquery'], function($) {
 
 requirejs(['jquery', 'pixi'], function($, PIXI) {
 
-	//preload load texture
-	var loader = PIXI.Loader.shared;
-	loader.loaderDeferred = $.Deferred();
+    window.PIXI = PIXI;
 
-	//backgrounds
-	loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
-	loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
-	loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
-	loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
-	loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
-	loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
+    //register pixi spine plugin, the pixi-spine lib adds itself to the PIXI namespace, wish there were a better way to do this
+    //but this is essentially taken from https://github.com/pixijs/pixi-spine/
+    require(['pixi-spine'], function(spine) {
+        	var loader = PIXI.Loader.shared;
+        	loader.loaderDeferred = $.Deferred();
 
-	//animations
-	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
-	loader.ssBlueDeathFrameCount = 6;
+        	//backgrounds
+        	loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
+        	loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
+        	loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
+        	loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
+        	loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
+        	loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
 
-	loader.add('baneExplosion', 'app/Textures/BaneExplosionSheet.json');
-	loader.baneExplosionFrameCount = 5;
+        	//animations
+        	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
+        	loader.ssBlueDeathFrameCount = 6;
 
-	loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
-	loader.blueCollapseFrameCount = 6;
+        	loader.add('baneExplosion', 'app/Textures/BaneExplosionSheet.json');
+        	loader.baneExplosionFrameCount = 5;
 
-	loader.add('raindropflash', 'app/Textures/DropletFlash.json');
-	loader.raindropflashFrameCount = 3;
+        	loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
+        	loader.blueCollapseFrameCount = 6;
 
-	loader.add('quickDrawSheet', 'app/Textures/QuickDrawSheet.json');
-	loader.DiamondFlashFrameCount = 4;
-	loader.SquareWithBorderDeathFrameCount = 5;
+        	loader.add('raindropflash', 'app/Textures/DropletFlash.json');
+        	loader.raindropflashFrameCount = 3;
 
-	//character animations
-	loader.add('marine0', 'app/Textures/marine-0.json');
+        	loader.add('quickDrawSheet', 'app/Textures/QuickDrawSheet.json');
+        	loader.DiamondFlashFrameCount = 4;
+        	loader.SquareWithBorderDeathFrameCount = 5;
 
-    //spine assets
-    //loader.add('marineN', 'app/SpineAssets/Marine Exports/MarineN/N.json');
+        	//character animations
+        	loader.add('marine0', 'app/Textures/marine-0.json');
 
-	//odds and ends
-	loader.add('unitMisc', 'app/Textures/UnitMisc.json');
-	loader.add('iso1', 'app/Textures/IsometricSheet1.json');
-	loader.add('raindrop2', 'app/Textures/Raindrop2.png');
-	loader.add('alpha', 'app/Textures/alpha.png');
-	loader.add('glassShards', 'app/Textures/glassShards.png');
-	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
-	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
+        	//odds and ends
+        	loader.add('unitMisc', 'app/Textures/UnitMisc.json');
+        	loader.add('iso1', 'app/Textures/IsometricSheet1.json');
+        	loader.add('raindrop2', 'app/Textures/Raindrop2.png');
+        	loader.add('alpha', 'app/Textures/alpha.png');
+        	loader.add('glassShards', 'app/Textures/glassShards.png');
+        	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
+        	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
 
-	loader.once('complete', function() {
-	    loader.loaderDeferred.resolve();
-	});
+            //spine assets
+            loader.add('marineN', 'app/SpineAssets/Marine Exports/MarineN/N.json');
+            loader.add('marineNW', 'app/SpineAssets/Marine Exports/MarineNW/NW.json');
+            loader.add('marineS', 'app/SpineAssets/Marine Exports/MarineS/S.json');
+            loader.add('marineSW', 'app/SpineAssets/Marine Exports/MarineSW/SW.json');
+            loader.add('marineW', 'app/SpineAssets/Marine Exports/MarineW/W.json');
 
-	loader.load();
+            loader.load();
+            loader.once('complete', function() {
+                loader.loaderDeferred.resolve();
+            });
+    })
 });

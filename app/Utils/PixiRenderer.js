@@ -195,10 +195,11 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
     			newSprite.offset.x = child.offset.x;
     			newSprite.offset.y = child.offset.y;
 		    }
+
 		    if(child.anchor) {
     			newSprite.anchor.x = child.anchor.x;
     			newSprite.anchor.y = child.anchor.y;
-		    } else { //default to center of sprite is centered
+		    } else if(newSprite.anchor) { //default to center of sprite is centered
 		        newSprite.anchor.x = .5;
     			newSprite.anchor.y = .5;
 		    }
@@ -275,7 +276,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 					if(PIXI.Loader.shared.resources[something].texture)
 			        	return new PIXI.Sprite(PIXI.Loader.shared.resources[something].texture);
 					else
-						return new PIXI.spine.Spine(PIXI.Loader.shared.resources[something].data);
+						return new PIXI.spine.Spine(PIXI.Loader.shared.resources[something].spineData);
 				}
 			    else { //Check for textures inside a texture atlas
 			        var foundAtlasTexture;

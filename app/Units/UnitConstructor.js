@@ -60,7 +60,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                             rotate: 'none',
                             tint: 0x000000,
                             avoidIsoMgr: true,
-                            visible: true,
+                            visible: false,
                         }, {
                             id: 'healthbar',
                             data: 'HealthEnergyBackground',
@@ -80,7 +80,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                             rotate: 'none',
                             avoidIsoMgr: true,
                             tint: 0x00FF00,
-                            visible: true
+                            visible: false
                         });
 
                         var updateHealthTick = currentGame.addTickCallback(function() {

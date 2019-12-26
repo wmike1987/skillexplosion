@@ -3,109 +3,131 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
     return function Gunner(options) {
         var options = options || {};
 
+        //animation settings
         var walkSpeed = .9;
         var walkSpeedBonus = .25;
-        var shootSpeed = .45;
+        var shootSpeed = 1;
+
+        var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
+        var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineS'].spineData);
+        var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineW'].spineData);
+        var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineW'].spineData);
+        var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineSW'].spineData);
+        var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineSW'].spineData);
+        var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
+        var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
 
         var walkAnimations = {
-			up: currentGame.getAnimationB({
-				spritesheetName: 'marine0',
-				animationName: 'MarineN/Walk/skeleton3-walk',
-				speed: walkSpeed,
-				playThisManyTimes: 'loop',
-			}),
-            upRight: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineNW/Walk/skeleton-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            up: currentGame.getSpineAnimation({
+                spine: spineNorth,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-            right: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineW/Walk/skeleton5-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            upRight: currentGame.getSpineAnimation({
+                spine: spineNorthEast,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-            downRight: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineSW/Walk/skeleton4-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            right: currentGame.getSpineAnimation({
+                spine: spineEast,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-            down: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineS/Walk/skeleton2-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            downRight: currentGame.getSpineAnimation({
+                spine: spineSouthEast,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-            downLeft: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineSW/Walk/skeleton4-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            down: currentGame.getSpineAnimation({
+                spine: spineSouth,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-            left: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineW/Walk/skeleton5-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            downLeft: currentGame.getSpineAnimation({
+                spine: spineSouthWest,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-            upLeft: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineNW/Walk/skeleton-walk',
-                speed: walkSpeed,
-                playThisManyTimes: 'loop',
+            left: currentGame.getSpineAnimation({
+                spine: spineWest,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
             }),
-        }
+            upLeft: currentGame.getSpineAnimation({
+                spine: spineNorthWest,
+                animationName: 'walk',
+                speed: 1.5,
+                loop: true,
+                canInterruptSelf: false
+            }),
+        };
+
+        var attackAndStop = function() {
+            this.gotoAndStop(0);
+        };
 
         var attackAnimations = {
-            up: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineN/Action/skeleton3-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            up: currentGame.getSpineAnimation({
+                spine: spineNorth,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            upRight: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineNW/Action/skeleton-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            upRight: currentGame.getSpineAnimation({
+                spine: spineNorthEast,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            right: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineW/Action/skeleton5-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            right: currentGame.getSpineAnimation({
+                spine: spineEast,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            downRight: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineSW/Action/skeleton4-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            downRight: currentGame.getSpineAnimation({
+                spine: spineSouthEast,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            down: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineS/Action/skeleton2-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            down: currentGame.getSpineAnimation({
+                spine: spineSouth,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            downLeft: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineSW/Action/skeleton4-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            downLeft: currentGame.getSpineAnimation({
+                spine: spineSouthWest,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            left: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineW/Action/skeleton5-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            left: currentGame.getSpineAnimation({
+                spine: spineWest,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
-            upLeft: currentGame.getAnimationB({
-                spritesheetName: 'marine0',
-                animationName: 'MarineNW/Action/skeleton-shoot',
-                speed: shootSpeed,
-                playThisManyTimes: 1,
+            upLeft: currentGame.getSpineAnimation({
+                spine: spineNorthWest,
+                animationName: 'shoot',
+                speed: 2,
+                times: 3,
             }),
         }
 
@@ -113,7 +135,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
         }
 
         var sc = {x: .3, y: .3};
+        var adjustedUpDownsc = {x: .33, y: .33};
         var flipsc = {x: -1 * sc.x, y: sc.y};
+        var yOffset = 22;
         var rc = [
         {
             id: 'selected',
@@ -135,129 +159,75 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             rotate: 'none',
             offset: {x: 0, y: 22},
         },{
-            id: 'walkLeft',
-            data: walkAnimations.left,
+            id: 'left',
+            data: spineWest,
             scale: sc,
             rotate: 'none',
             visible: false,
-            offset: {x: -2, y: 0},
+            offset: {x: 0, y: yOffset},
+        },{
+            id: 'right',
+            data: spineEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {x: 0, y: yOffset}
         },
         {
-            id: 'attackLeft',
-            data: attackAnimations.left,
+            id: 'up',
+            data: spineNorth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {x: 0, y: yOffset}
+        },
+        {
+            id: 'down',
+            data: spineSouth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {x: 0, y: yOffset}
+        },
+        {
+            id: 'upLeft',
+            data: spineNorthWest,
             scale: sc,
             rotate: 'none',
             visible: false,
-            offset: {x: -34, y: -11}
-        }, {
-            id: 'walkRight',
-            data: walkAnimations.right,
+            offset: {x: 0, y: yOffset}
+        },
+        {
+            id: 'upRight',
+            data: spineNorthEast,
             scale: flipsc,
             rotate: 'none',
             visible: false,
-            offset: {x: 2, y: 0}
-        }, {
-            id: 'attackRight',
-            data: attackAnimations.right,
+            offset: {x: 0, y: yOffset}
+        },
+        {
+            id: 'downRight',
+            data: spineSouthEast,
             scale: flipsc,
             rotate: 'none',
             visible: false,
-            offset: {x: 34, y: -11}
+            offset: {x: 0, y: yOffset}
         }, {
-            id: 'walkUp',
-            data: walkAnimations.up,
+            id: 'downLeft',
+            data: spineSouthWest,
             scale: sc,
             rotate: 'none',
             visible: false,
-            offset: {x: 2, y: 0}
-        }, {
-            id: 'attackUp',
-            data: attackAnimations.up,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: 4, y: -12}
-        },{
-            id: 'walkDown',
-            data: walkAnimations.down,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: -4, y: 0}
-        },{
-            id: 'attackDown',
-            data: attackAnimations.down,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: -7, y: 2}
-        }, {
-            id: 'walkUpLeft',
-            data: walkAnimations.upLeft,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: -4, y: 0}
-        }, {
-            id: 'attackUpLeft',
-            data: attackAnimations.upLeft,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: -19, y: -14}
-        },{
-            id: 'walkUpRight',
-            data: walkAnimations.upRight,
-            scale: flipsc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: 4, y: 0}
-        }, {
-            id: 'attackUpRight',
-            data: attackAnimations.upRight,
-            scale: flipsc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: 19, y: -14}
-        },{
-            id: 'walkDownRight',
-            data: walkAnimations.downRight,
-            scale: flipsc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: 6, y: 0}
-        }, {
-            id: 'attackDownRight',
-            data: attackAnimations.downRight,
-            scale: flipsc,
-            rotate: 'none',
-            visible: false,
-            offset: {x: 16, y: 1}
-        },{
-            id: 'walkDownLeft',
-            data: walkAnimations.downLeft,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            visible: false,
-            offset: {x: -5, y: 0}
-        }, {
-            id: 'attackDownLeft',
-            data: attackAnimations.downLeft,
-            scale: sc,
-            rotate: 'none',
-            visible: false,
-            visible: false,
-            offset: {x: -16, y: 1}
+            offset: {x: 0, y: yOffset}
         },{
             id: 'shadow',
             data: currentGame.texture('IsoShadow'),
             scale: {x: .75, y: .75},
-            visible: false,
+            visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
             stage: "stageZero",
-            offset: {x: 0, y: 26}}];
+            offset: {x: 0, y: 22}}];
 
         var fireSound = currentGame.getSound('machinegun.wav', {volume: .002, rate: 3});
 
@@ -289,6 +259,14 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
                 data: currentGame.texture('Knife'),
                 scale: {x: .8, y: .8},
                 rotate: currentGame.angleBetweenVectors(knife.position, destination),
+            },
+            {
+                id: 'shadow',
+                data: currentGame.texture('MarbleShadow'),
+                scale: {x: 10/256, y: 50/256},
+                offset: {x: 15, y: 25},
+                rotate: currentGame.angleBetweenVectors(knife.position, destination),
+    			stage: "stageZero",
             }]
             currentGame.addBody(knife);
 
@@ -320,10 +298,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
                     health: 45,
                     energy: 45,
                     team: options.team || 4,
-                    heightAnimation: 'walkLeft',
+                    heightAnimation: 'up',
                     keyMappings: {
-                        e: dash,
-                        r: throwKnife
+                        d: dash,
+                        f: throwKnife
                     }
                 },
                 moveable: {

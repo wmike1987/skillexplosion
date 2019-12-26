@@ -87,6 +87,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             this.destination = destination;
             this.isMoving = true;
             this.body.frictionAir = 0;
+
+            //trigger movement event
+            Matter.Events.trigger(this, 'move', {
+                direction: currentGame.isoDirectionBetweenPositions(this.position, destination)
+            });
         },
         stop: function() {
 
@@ -137,11 +142,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
                     return;
                 }
             }
-
-            //trigger movement event
-            Matter.Events.trigger(this, 'move', {
-                direction: currentGame.isoDirectionBetweenPositions(this.position, this.destination)
-            });
 
             //send body
             currentGame.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);

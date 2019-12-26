@@ -1118,17 +1118,26 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(options.rotation)
                 anim.rotation = options.rotation;
 
+            //default on complete allows for multi-play
             if(!anim.loop && anim.currentPlayCount && anim.currentPlayCount > 0) {
                 anim.onManyComplete = anim.onComplete; //default to remove the animation
                 anim.onComplete = function() { //override onComplete to countdown the specified number of times
                     if(anim.currentPlayCount) {
-                        console.info(anim.currentPlayCount);
+                        //console.info(anim.currentPlayCount);
                         anim.gotoAndPlay(0);
                         anim.currentPlayCount--;
                     } else {
                         anim.onManyComplete.call(anim);
+                        this.currentPlayCount = this.playThisManyTimes;
                     }
                 }
+            }
+
+            if(options.onComplete) {
+                anim.onComplete = options.onComplete;
+            }
+            if(options.onManyComplete) {
+                anim.onManyComplete = options.onManyComplete;
             }
 
             //if body is given, let's apply the same anchor to this animation
@@ -1139,10 +1148,71 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 rendOptions.anchor.y = options.body.render.sprite.yOffset;
             }
 
-            this.addSomethingToRenderer(anim, options.where, rendOptions);
+            //this.addSomethingToRenderer(anim, options.where, rendOptions);
             return anim;
         },
 
+        /*
+         * options {
+         *  spine: the pixi-spine object
+         *  animationName: the animation name
+         *  loops: loop or not
+         *  times: how many times to play the animation
+         *  speed: animation speed
+         *  canInterruptSelf: default true
+         *
+         *  // NOTE: right now we're just using track 0 and this method assumes such
+         * }
+         */
+        getSpineAnimation(options) {
+            options = $.extend({canInterruptSelf: true}, options)
+            var anim = {};
+
+            Object.defineProperty(anim, 'visible', {
+                set: function(v) {
+                    options.spine.visible = v;
+                }
+            });
+
+            anim.play = function() {
+                if(!options.canInterruptSelf && options.spine.currentAnimation == options.animationName) {
+                    return;
+                }
+
+                //Set the animation name for use in the above test
+                options.spine.currentAnimation = options.animationName;
+
+                //Clear track and reset lastTime to be null since pixi freezes the delta timing of the pixi-spine
+                //object when 'visible' becomes false.
+                options.spine.state.clearTrack(0);
+                options.spine.lastTime = null;
+                options.spine.skeleton.setToSetupPose()
+
+                //Set animation speed
+                options.spine.state.timeScale = options.speed || 1;
+
+                //Loop if desired
+                if(options.loop) {
+                    options.spine.state.setAnimation(0, options.animationName, options.loop);
+                } else if(options.times) {
+                    //Otherwise queue the animation so many times
+                    $.each(new Array(options.times), function() {
+                        var entry = options.spine.state.addAnimation(0, options.animationName, false, 0);
+                    })
+                }
+            }
+
+            anim.stop = function() {
+                options.spine.state.clearTrack(0);
+                options.spine.currentAnimation = null;
+            }
+
+            options.spine.state.addListener({
+                complete: options.completeListener
+            });
+
+            return anim;
+        },
 
         addTimer: function(timer) {
             this.timers[timer.name] = timer;

@@ -1,9 +1,9 @@
 define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 
 	return function Baneling(options) {
-    			
+
 		var options = options || {};
-				
+
 		var radius = options.radius || 16;
 		var tint = options.tint || 0x00FF00;
 		var selectionTint = 0x33FF45;
@@ -71,7 +71,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
     			    tint: pendingSelectionTint,
     			    rotate: 'continuous'
     			}];
-	
+
 		var baneling = UC({
 				renderChildren: rc,
 				radius: radius,
@@ -82,9 +82,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 					energy: 0,
 					team: options.team || 4,
 					isSelectable: options.isSelectable
-				}, 
+				},
 				moveable: {
-					moveSpeed: 1.5
+					moveSpeed: .2
 				},
 				attacker: {
 					honeRange: 200,
@@ -92,17 +92,17 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 					range: radius*2+10,
 					damage: 18,
 					attack: function() {
-					
+
 					}
 		}});
-		
+
 		//create attack blast radius
 		var blastRadius = radius*2.5;
-		
+
 		baneling.attack = function(target) {
 			currentGame.getAnimation('bane', [this.position.x, this.position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40], .5, null, 1).play();
 			var nextLevelGo = false;
-			
+
 			var bodiesToDamage = [];
 			currentGame.applyToBodiesByTeam(function(team) {baneling.team != team}, function(body) {
 				currentGame.distanceBetweenBodies(this.body, body) <= blastRadius && body.isAttackable;
@@ -113,7 +113,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			if(!this.alreadyDied)
 				this.death();
 		};
-		
+
 		baneling.death = function() {
 			if(this.alreadyDied) return;
 			var shard = currentGame.addSomethingToRenderer('glassShards', 'background', {position: baneling.position, scale: {x: .65, y: .65}, tint: tint, rotation: Math.random()*6});
@@ -122,37 +122,14 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 						}, totallyDoneCallback: function() {
 							currentGame.removeSomethingFromRenderer(shard);
 			}.bind(this)})
-			
+
 			currentGame.pop.play();
 			currentGame.removeUnit(this);
 			this.alreadyDied = true;
 			if(!this.alreadyAttacked)
 				this.attack();
 		}
-		
+
 		return baneling;
 	}
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -93,7 +93,15 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
             }
 
             this.createGunner(1);
-            this.createBane(2);
+            this.createBane(10);
+
+
+            var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
+            var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
+            spineNorthWest.state.setAnimation(0, 'walk', true);
+            spineNorth.state.setAnimation(0, 'walk', true);
+            this.addSomethingToRenderer(spineNorthWest, {position: {x: this.getCanvasCenter().x, y: this.getCanvasHeight()}, scale: {x: .5, y: .5}})
+            this.addSomethingToRenderer(spineNorth, {position: {x: this.getCanvasCenter().x + 50, y: this.getCanvasHeight()}, scale: {x: .55, y: .55}})
         },
 
         createGunner: function(number) {

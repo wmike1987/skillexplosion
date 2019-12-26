@@ -17,8 +17,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
 			//this comes from moveable
 			Matter.Events.on(this.unit, 'pause', function(event) {
-				if(this.unit.isMoving)
+				if(this.unit.isMoving) {
 					this.currentAnimation.stop();
+					this.currentAnimation.isStopped = true;
+				}
 			}.bind(this))
 
 			//turn on idle
@@ -31,11 +33,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		if(this.unit.isAttacker) {
 			Matter.Events.on(this.unit, 'attack', function(event) {
 				var animation = this.unit.attackAnimations[event.direction];
-				animation.onManyComplete = function() {
-					animation.gotoAndStop(0);
-					animation.currentPlayCount = animation.playThisManyTimes;
-					this.switchAnimation(this.unit.walkAnimations[this.currentDirection], {stop: true});
-				}.bind(this);
 				this.switchAnimation(this.unit.attackAnimations[event.direction]);
 				this.currentDirection = event.direction;
 			}.bind(this))
@@ -58,6 +55,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
 			//turn one on
 			this.currentAnimation = animation;
+			animation.isStopped = false;
 			animation.visible = true;
 			if(options.stop) {
 				animation.stop();
