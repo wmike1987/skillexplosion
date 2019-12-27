@@ -1,6 +1,7 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/IsoSpriteManager'],
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/IsoSpriteManager',
+'utils/GameUtils'],
 
-    function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso) {
+    function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso, utils) {
 
         //default unit attributes
         var _UnitBase = {
@@ -90,7 +91,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                                     x: backgroundScaleX * barScaleXMultiplier * percentage,
                                     y: healthBarScale
                                 };
-                                this.renderlings['healthbar'].tint = currentGame.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
+                                this.renderlings['healthbar'].tint = utils.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
                             }
                         }.bind(this))
 

@@ -8,10 +8,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpa
 		victoryCondition: {type: 'timed', limit: 35},
 		
 		initExtension: function() {
-		    this.hit = this.getSound('nicehit1.wav', {volume: .2, rate: 2});  
-		    this.hit2 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.3});  
-		    this.hit3 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.6});  
-		    this.hit4 = this.getSound('nicehit1.wav', {volume: .2, rate: 3});  
+		    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});  
+		    this.hit2 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.3});  
+		    this.hit3 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});  
+		    this.hit4 = utils.getSound('nicehit1.wav', {volume: .2, rate: 3});  
 		    this.hits = [this.hit, this.hit2, this.hit3, this.hit4];
 		},
 		
@@ -34,7 +34,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpa
 			
 			//create ghost target indicator		
 			this.addEventListener('mousedown', function(event) { 
-				this.ghostTarget = this.ghostTarget || this.addSomethingToRenderer('blueTarget2Ghost', 'stageZero');
+				this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageZero');
 				this.ghostTarget.position.x = this.ball.position.x;
 				this.ghostTarget.position.y = this.ball.position.y;
 				this.ghostTarget.scale.x = this.ghostTarget.scale.y = this.ball.circleRadius*2/128;
@@ -58,7 +58,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpa
 						if(this.chain == 4) {
 						    this.chain = 0;
 						    this.addToGameTimer(1000);
-    						var plusOne = this.addSomethingToRenderer('PlusOne', 'foreground');
+    						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
     						plusOne.position = this.ball.position;
     						plusOne.position.y -= 50;
     						this.floatSprite(plusOne);

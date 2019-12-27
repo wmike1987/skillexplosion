@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Matter, PIXI, CommonGameMixin) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils'], function($, Matter, PIXI, CommonGameMixin, utils) {
 
     return {
         //private
@@ -45,7 +45,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
                             }
 
                             if (!teamBody.isAttackable) return;
-                            var dist = currentGame.distanceBetweenBodies(this.body, teamBody);
+                            var dist = utils.distanceBetweenBodies(this.body, teamBody);
                             if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
 
                             //determine the closest honable target
@@ -136,7 +136,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
                 if (this.attack) {
                     this.attack(target);
                     Matter.Events.trigger(this, 'attack', {
-                        direction: currentGame.isoDirectionBetweenPositions(this.position, target.position)
+                        direction: utils.isoDirectionBetweenPositions(this.position, target.position)
                     });
                 }
                 this.canAttack = false;

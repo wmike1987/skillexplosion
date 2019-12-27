@@ -10,8 +10,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		noClickIndicator: false,
 		
 		initExtension: function() {
-		    this.hit = this.getSound('bellhit3.wav', {volume: .2, rate: 2});
-		    this.bullseye = this.getSound('powerup2.wav', {volume: .75, rate: 1.1});
+		    this.hit = utils.getSound('bellhit3.wav', {volume: .2, rate: 2});
+		    this.bullseye = utils.getSound('powerup2.wav', {volume: .75, rate: 1.1});
 		},
 		
 		play: function(options) {
@@ -34,8 +34,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 			
 			//create ghost target indicator		
 			this.addEventListener('mousedown', function(event) { 
-				this.ghostTarget = this.ghostTarget || this.addSomethingToRenderer('blueTarget2Ghost', 'stageZero');
-				this.ghostTargetCenter = this.ghostTargetCenter || this.addSomethingToRenderer('bluetarget2CenterGhost', 'stageZero');
+				this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageZero');
+				this.ghostTargetCenter = this.ghostTargetCenter || utils.addSomethingToRenderer('bluetarget2CenterGhost', 'stageZero');
 				this.ghostTarget.position.x = this.ball.positionCopy.x;
 				this.ghostTarget.position.y = this.ball.positionCopy.y;
 				this.ghostTarget.scale.x = this.ghostTarget.scale.y = this.ball.circleRadius*2/128;
@@ -58,7 +58,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 						//play special animation
 						this.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], 1, null, 1).play();
 						this.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], .6, null, 1, 0.785398).play(); //with rotation
-						var plusOne = this.addSomethingToRenderer('PlusOne', 'foreground');
+						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
 						plusOne.position = this.ballTarget.position;
 						plusOne.position.y -= 50;
 						this.floatSprite(plusOne);

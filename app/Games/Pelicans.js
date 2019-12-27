@@ -20,15 +20,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 		},
 		
 		initExtension: function() {
-            this.waveRustle = this.getSound('Beach.wav');
+            this.waveRustle = utils.getSound('Beach.wav');
             
-		    this.hit = this.getSound('nicehit1.wav', {volume: .2, rate: 2});  
-		    this.hit2 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.3});
-		    this.hit3 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.6});
+		    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});  
+		    this.hit2 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.3});
+		    this.hit3 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});
 		    this.hits = [this.hit, this.hit2, this.hit3];
             
             //setup palm tree
-			this.palm = this.addSomethingToRenderer('BluePalm', 'foreground');
+			this.palm = utils.addSomethingToRenderer('BluePalm', 'foreground');
 			this.palm.persists = true;
 			this.palm.tint = 0;
 			this.palm.scale.x = this.palm.scale.y = 1.3;
@@ -96,14 +96,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
     					    } else {
     					        if(this.timerBirdsHit == 2) { //add 2 seconds
         						    this.addToGameTimer(2000);
-            						var plusOne = this.addSomethingToRenderer('PlusTwo', 'foreground');
+            						var plusOne = utils.addSomethingToRenderer('PlusTwo', 'foreground');
             						plusOne.position = {x: x, y: y};
             						plusOne.position.y -= 50;
             						this.floatSprite(plusOne);
     					            this.hits[2].play();
     					        } else if(this.timerBirdsHit == 1) { //add 1 second
         						    this.addToGameTimer(1000);
-            						var plusOne = this.addSomethingToRenderer('PlusOne', 'foreground');
+            						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
             						plusOne.position = {x: x, y: y};
             						plusOne.position.y -= 50;
             						this.floatSprite(plusOne);

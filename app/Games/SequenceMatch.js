@@ -61,14 +61,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		lastTap: null,
 	
 		initExtension: function() {
-		    this.begin = this.getSound('chalkWriting1.wav', {volume: .5, rate: 1.4});
-		    this.match = this.getSound('chalkEraser1.wav', {volume: 1, rate: 1});
-		    this.tap = [this.getSound('chalkWriting2.wav', {volume: .03, rate: .9}), 
-            		    this.getSound('chalkWriting2.wav', {volume: .02, rate: 1.1}), 
-            		    this.getSound('chalkWriting3.wav', {volume: .03, rate: .9}), 
-            		    this.getSound('chalkWriting3.wav', {volume: .02, rate: 1.1}),
-            		    this.getSound('chalkWriting4.wav', {volume: .03, rate: .9}),
-            		    this.getSound('chalkWriting4.wav', {volume: .02, rate: 1.1})];
+		    this.begin = utils.getSound('chalkWriting1.wav', {volume: .5, rate: 1.4});
+		    this.match = utils.getSound('chalkEraser1.wav', {volume: 1, rate: 1});
+		    this.tap = [utils.getSound('chalkWriting2.wav', {volume: .03, rate: .9}), 
+            		    utils.getSound('chalkWriting2.wav', {volume: .02, rate: 1.1}), 
+            		    utils.getSound('chalkWriting3.wav', {volume: .03, rate: .9}), 
+            		    utils.getSound('chalkWriting3.wav', {volume: .02, rate: 1.1}),
+            		    utils.getSound('chalkWriting4.wav', {volume: .03, rate: .9}),
+            		    utils.getSound('chalkWriting4.wav', {volume: .02, rate: 1.1})];
 
     		this.levelEmitterConfig = { "alpha": { "start": 1, "end": 0.11 }, "scale": { "start": 0.2, "end": 0.2, "minimumScaleMultiplier": 1 }, "color": { "start": "#ffffff", "end": "#ffffff" }, "speed": { "start": 200, "end": 0, "minimumSpeedMultiplier": 1.02 }, "acceleration": { "x": 0, "y": 0 }, "maxSpeed": 0, "startRotation": { "min": 0, "max": 360 }, "noRotation": false, "rotationSpeed": { "min": 2, "max": 0 }, "lifetime": { "min": 0.5, "max": 0.5 }, "blendMode": "add", "frequency": 0.2, "emitterLifetime": 0.5, "maxParticles": 500, "pos": { "x": 0, "y": 0 }, "addAtBack": false, "spawnType": "burst", "particlesPerWave": 14, "particleSpacing": 100, "angleStart": 16 }
 		},
@@ -93,19 +93,19 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		    
 		    /***create buttons***/
 		    //plus
-		    var add = this.addSomethingToRenderer('TEXT:' + '+', null, {style: $.extend({}, style), x: this.canvas.width/2-(2*buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
+		    var add = utils.addSomethingToRenderer('TEXT:' + '+', null, {style: $.extend({}, style), x: this.canvas.width/2-(2*buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
 		    
 		    //minus
-		    var subtract = this.addSomethingToRenderer('TEXT:' + '–', null, {style: $.extend({}, style), x: this.canvas.width/2-(buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
+		    var subtract = utils.addSomethingToRenderer('TEXT:' + '–', null, {style: $.extend({}, style), x: this.canvas.width/2-(buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
 		    
 		    //multiply
-		    var multiply = this.addSomethingToRenderer('TEXT:' + 'x', null, {style: $.extend({}, style), x: this.canvas.width/2+0 + buttonSpacing/2, y: this.canvas.height*3/4});
+		    var multiply = utils.addSomethingToRenderer('TEXT:' + 'x', null, {style: $.extend({}, style), x: this.canvas.width/2+0 + buttonSpacing/2, y: this.canvas.height*3/4});
 		    
 		    //divide
-		    var divide = this.addSomethingToRenderer('TEXT:' + '÷', null, {style: $.extend({}, style), x: this.canvas.width/2+buttonSpacing + buttonSpacing/2, y: this.canvas.height*3/4});
+		    var divide = utils.addSomethingToRenderer('TEXT:' + '÷', null, {style: $.extend({}, style), x: this.canvas.width/2+buttonSpacing + buttonSpacing/2, y: this.canvas.height*3/4});
 		    
 		    //create MATCH text
-		    this.addSomethingToRenderer('MatchChalk', null, {style: $.extend({}, style), x: this.canvas.width/2-(1.5*buttonSpacing), y: this.canvas.height*1/4});
+		    utils.addSomethingToRenderer('MatchChalk', null, {style: $.extend({}, style), x: this.canvas.width/2-(1.5*buttonSpacing), y: this.canvas.height*1/4});
 		    
 		    buttons = [add, subtract, multiply, divide];
 		    
@@ -215,7 +215,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		
 		generateNewMatch: function() {
 		    if(this.currentMatch) {
-    		    this.removeSomethingFromRenderer(this.currentMatch);
+    		    utils.removeSomethingFromRenderer(this.currentMatch);
 		    }
 		    
 		    var fontSize = 70;
@@ -228,7 +228,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		        }
 		    }
 		    
-		    var firstSprite = this.addSomethingToRenderer('TEXT:' + first.toString(), null, {style: matchStyle, x: this.canvas.width/2, y: this.canvas.height/4});
+		    var firstSprite = utils.addSomethingToRenderer('TEXT:' + first.toString(), null, {style: matchStyle, x: this.canvas.width/2, y: this.canvas.height/4});
 		    firstSprite.numericalValue = first;
 			this.currentMatch = firstSprite;
 			

@@ -10,7 +10,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 		ball: null,
 		
 		initExtension: function() {
-		    this.hit = this.getSound('nicehit1.wav', {volume: .2, rate: 2});   
+		    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});   
 		},
 		
 		play: function(options) {
@@ -36,7 +36,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 							this.ball.timer = null;
 							this.incrementScore(targetScore);
 								
-							var plusOne = this.addSomethingToRenderer('PlusOne', 'foreground');
+							var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
     						plusOne.position = this.ball.position;
     						plusOne.position.y -= 50;
     						this.addTime(1000);

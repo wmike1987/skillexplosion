@@ -7,7 +7,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 		noBorder: true,
 		
 		initExtension: function() {
-		    this.hits = [this.getSound('nicehit1.wav', {volume: .2}), this.getSound('nicehit2.wav', {volume: .2}), this.getSound('nicehit3.wav', {volume: .2}), this.getSound('nicehit4.wav', {volume: .2})]
+		    this.hits = [utils.getSound('nicehit1.wav', {volume: .2}), utils.getSound('nicehit2.wav', {volume: .2}), utils.getSound('nicehit3.wav', {volume: .2}), utils.getSound('nicehit4.wav', {volume: .2})]
 		},
 		
 		play: function(options) {
@@ -44,7 +44,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 							//play death animation
 							this.getAnimation('raindropflash', [drop.position.x, drop.position.y], .6, null, 3, null, drop).play();
 							this.removeBody(drop);
-						    this.removeSomethingFromRenderer(drop.displacementSprite);
+						    utils.removeSomethingFromRenderer(drop.displacementSprite);
 							this.drops[i] = null;
 							this.incrementScore(1);
 							this.lastSoundPlayed = (this.lastSoundPlayed + this.getRandomIntInclusive(1, this.hits.length-1)) % this.hits.length;
@@ -61,7 +61,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 					if(drop == null) return;
 					if(this.bodyRanOffStage(drop)) {
 						this.removeBody(drop);
-						this.removeSomethingFromRenderer(drop.displacementSprite);
+						utils.removeSomethingFromRenderer(drop.displacementSprite);
 						this.drops[i] = null;
 						this.addLives(-1);
 					}
@@ -86,7 +86,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 			var displacementSprite = PIXI.Sprite.fromImage("http://i.imgur.com/CbFRs98.png"); //trying something
 			displacementSprite.x = -100;
 			displacementSprite.y = -100;
-        	this.addSomethingToRenderer(displacementSprite);
+        	utils.addSomethingToRenderer(displacementSprite);
         	
         	var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
 			displacementFilter.scale.x = Math.random() * 10 + 20;

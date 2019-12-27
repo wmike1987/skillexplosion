@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
+define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function($, PIXI, UC, utils) {
 
 	return function Baneling(options) {
 
@@ -12,13 +12,13 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var radius = 20;
 		var rc = [{
     			    id: 'marble',
-    			    data: currentGame.texture('GlassMarble'),
+    			    data: 'GlassMarble',
     			    tint: tint,
     			    scale: {x: radius*2/64, y: radius*2/64},
     			    rotate: 'none',
     			}, {
     			    id: 'marbleBodyHighlight',
-    			    data: currentGame.texture('MarbleBodyHighlights'),
+    			    data: 'MarbleBodyHighlights',
     			    scale: {x: radius*2/64, y: radius*2/64},
     			    rotate: 'random',
     			    rotatePredicate: function() {
@@ -28,13 +28,13 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
     			    initialRotate: 'random'
     			}, {
     			    id: 'marbleHighlight',
-    			    data: currentGame.texture('MarbleHighlight'),
+    			    data: 'MarbleHighlight',
     			    scale: {x: radius*2/64, y: radius*2/64},
     			    rotate: 'none',
     			    initialRotate: 'none'
     			}, {
     			    id: 'marbleShadow',
-    			    data: currentGame.texture('MarbleShadow'),
+    			    data: 'MarbleShadow',
     			    scale: {x: radius*2.5/256, y: radius*2.5/256},
     			    visible: true,
     			    rotate: 'none',
@@ -43,7 +43,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
     			    offset: {x: 12, y: 12},
     			}, {
     			    id: 'marbleShadowHighlights',
-    			    data: currentGame.texture('MarbleShadowHighlight'),
+    			    data: 'MarbleShadowHighlight',
     			    scale: {x: radius*1.6/256, y: radius*1.6/256},
     			    visible: false,
     			    rotate: 'random',
@@ -56,7 +56,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
     			    offset: {x: 12, y: 12}
     			}, {
     			    id: 'selected',
-    			    data: currentGame.texture('MarbleSelected'),
+    			    data: 'MarbleSelected',
     			    scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
     			    tint: selectionTint,
     			    stage: 'stageOne',
@@ -64,7 +64,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
     			    rotate: 'none'
     			}, {
     			    id: 'selectionPending',
-    			    data: currentGame.texture('MarbleSelectedPending'),
+    			    data: 'MarbleSelectedPending',
     			    scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
     			    stage: 'stageOne',
     			    visible: false,
@@ -100,12 +100,12 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var blastRadius = radius*2.5;
 
 		baneling.attack = function(target) {
-			currentGame.getAnimation('bane', [this.position.x, this.position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40], .5, null, 1).play();
+			utils.getAnimation('bane', [this.position.x, this.position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40], .5, null, 1).play();
 			var nextLevelGo = false;
 
 			var bodiesToDamage = [];
 			currentGame.applyToBodiesByTeam(function(team) {baneling.team != team}, function(body) {
-				currentGame.distanceBetweenBodies(this.body, body) <= blastRadius && body.isAttackable;
+				utils.distanceBetweenBodies(this.body, body) <= blastRadius && body.isAttackable;
 			}.bind(this), function(body) {
 				body.sufferAttack(baneling.damage);
 			});
@@ -116,11 +116,11 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 
 		baneling.death = function() {
 			if(this.alreadyDied) return;
-			var shard = currentGame.addSomethingToRenderer('glassShards', 'background', {position: baneling.position, scale: {x: .65, y: .65}, tint: tint, rotation: Math.random()*6});
+			var shard = utils.addSomethingToRenderer('glassShards', 'background', {position: baneling.position, scale: {x: .65, y: .65}, tint: tint, rotation: Math.random()*6});
 				currentGame.addTimer({name: 'shardDisappear' + baneling.id, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
 					shard.alpha -= .05;
 						}, totallyDoneCallback: function() {
-							currentGame.removeSomethingFromRenderer(shard);
+							utils.removeSomethingFromRenderer(shard);
 			}.bind(this)})
 
 			currentGame.pop.play();

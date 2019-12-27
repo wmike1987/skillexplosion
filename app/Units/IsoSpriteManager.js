@@ -1,4 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'utils/GameUtils'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, utils) {
 
 	/*
 	 * Manager which will handle playing animations at the right time.
@@ -66,12 +67,12 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
 		this.idle = function() {
 			var self = this;
-			var index = currentGame.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
+			var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 			self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true});
 
 			this.idleTimer = currentGame.addTimer({name: 'idleTimer' + this.unit.id, gogogo: true, timeLimit: 2000, callback: function() {
 				this.timeLimit = 2000 + Math.random() * 2000;
-				var index = currentGame.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
+				var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 				self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true, idle: true});
 			}})
 		}

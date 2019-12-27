@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'units/Marble'], function($, Matter, PIXI, CommonGameMixin, Moveable, Marble) {
-	
+
 	var targetScore = 1;
-	
+
 	var game = {
 		gameName: 'Marbles',
 		extraLarge: 20,
@@ -19,18 +19,18 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		selectionTint: 0x33FF45,
 		pendingSelectionTint: 0x70ff32,
 		previousListener: null,
-		
+
 		initExtension: function() {
-		    this.marblePour = this.getSound('marbles.wav');
-		    this.marbleHit = this.getSound('marblehit.wav', {volume: .15});
-		    this.timerBoostAppear = this.getSound('powerup1.wav', {volume: .15});
-		    //this.timerBoostGrab = this.getSound('bellhit3.wav', {volume: .25, rate: 1.85});
-		    this.timerBoostGrab = this.getSound('mybell1.wav', {volume: 2.5, rate: 2});
+		    this.marblePour = utils.getSound('marbles.wav');
+		    this.marbleHit = utils.getSound('marblehit.wav', {volume: .15});
+		    this.timerBoostAppear = utils.getSound('powerup1.wav', {volume: .15});
+		    //this.timerBoostGrab = utils.getSound('bellhit3.wav', {volume: .25, rate: 1.85});
+		    this.timerBoostGrab = utils.getSound('mybell1.wav', {volume: 2.5, rate: 2});
 		},
-		
+
 		play: function(options) {
             this.nextLevel();
-            
+
 		    game = this;
 		    var fadePercent = .8;
 		    this.addTimer({name: 'timeBoostTimer', gogogo: true, timeLimit: 15000, callback: function() {
@@ -38,7 +38,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		        var timeBoost = game.createTimeBoost(1);
 		        game.addBody(timeBoost);
 		        game.timerBoostAppear.play();
-		        
+
 		        var deathTimer = game.addTimer({name: 'boosterLifetime' + timeBoost.id, runs: 1, timeLimit: 1200, callback: function() {
 		            game.removeBody(timeBoost);
 		            game.removeEventListener(clickListener);
@@ -48,8 +48,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		                timeBoost.renderlings['timeBoostShadow'].alpha = 1-(this.percentDone-fadePercent)*(1/(1-fadePercent));
 		            }
 		        }});
-		        
-    		    var clickListener = game.addEventListener('mousedown', function(event) { 
+
+    		    var clickListener = game.addEventListener('mousedown', function(event) {
     				var x = event.data.global.x;
     				var y = event.data.global.y;
     				if(!timeBoost.activated) {
@@ -85,36 +85,36 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     				}
     			}.bind(game), false, true);
 		    }});
-            		    
+
 		},
-		
+
 		nextLevel: function() {
 		    //increment level
 		    this.level += 1;
-		    
+
 		    //give time bonus for completion
 		    if(this.level > 1) {
 		        this.addToGameTimer(2000);
-		        var plusTwo = this.addSomethingToRenderer('PlusTwo', 'foreground');
+		        var plusTwo = utils.addSomethingToRenderer('PlusTwo', 'foreground');
 		            plusTwo.alpha = 1.4;
 					plusTwo.position = this.getCanvasCenter();
 					this.addTimer({name: 'plusTwo', timeLimit: 16, runs: 34, callback: function() {
 					    plusTwo.position.y -= 1;
 					    plusTwo.alpha -= 1.4/34;
 					}, totallyDoneCallback: function() {
-					    this.removeSomethingFromRenderer(plusTwo, 'foreground');
+					    utils.removeSomethingFromRenderer(plusTwo, 'foreground');
 				}.bind(this)})
 		    }
-		    
+
 		    //set marble count
 		    this.marbleCount = 14 + this.level;
-		    
+
 		    //remove previous goal zones
 		    $.each(this.currentZones, function(index, zone) {
 		        this.removeBody(zone);
 		    }.bind(this))
 		    this.currentZones = [];
-		    
+
 		    //create and randomly place the zones in a corner
 			var canvasWidth = this.canvasEl.getBoundingClientRect().width;
 			var canvasHeight = this.canvasEl.getBoundingClientRect().height;
@@ -134,7 +134,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			            }
 			        }.bind(newZone)
 			    });
-			    
+
 			    this.currentZones.push(newZone);
 			    chosenCorner = null;
 			    while(!chosenCorner) {
@@ -160,19 +160,19 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			    }.bind(this)(newZone))
 			    this.addBody(newZone);
 			}
-			
+
 			//create handful of marbles
 			this.createMarbles(this.marbleCount);
-			
+
 			//play sound
 			var s = this.marblePour.play();
 			this.marblePour.fade(.5, 0, 500, s);
 		},
-		
+
 		createTimeBoost: function(scale) {
 		    var boosterScale = scale || .15;
 		    var timeBoost = Matter.Bodies.circle(0, 0, 32, {isStatic: true, isSensor: true});
-	        timeBoost.renderChildren = 
+	        timeBoost.renderChildren =
 	        [{
 		        id: 'timeBoostShadow',
 			    data: this.texture('StopwatchShadow'),
@@ -190,14 +190,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		    }]
 		    var newPos = this.calculateRandomPlacementForBodyWithinCanvasBounds(timeBoost);
 		    Matter.Body.setPosition(timeBoost, newPos);
-		    
+
 		    this.addTimer({name: 'shakeTimer' + timeBoost.id, timeLimit: 48, runs: 10, callback: function() {
 					        Matter.Body.setPosition(timeBoost, {x: newPos.x + (this.runs%2==0 ? 1 : -1)*2, y: newPos.y})
 					    }, totallyDoneCallback: function() {
 			    }.bind(this)})
 		    return timeBoost;
 		},
-		
+
 		createZone: function(tint) {
 		    var zone = Matter.Bodies.rectangle(0, 0, this.zoneSize, this.zoneSize, {isStatic: true, isSensor: true});
 		        zone.renderChildren = [{
@@ -211,56 +211,42 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		    zone.tint = tint;
 		    return zone;
 		},
-		
+
 		createMarbles: function(number) {
 		    for(x = 0; x < number; x++) {
     			var tintIndex = this.getRandomIntInclusive(0, this.acceptableTints.length-1);
     			var tint = this.acceptableTints[tintIndex];
     			var highlightTint = this.highlightTints[tintIndex];
-    			
+
     			var marble = Marble({tint: tint, highlightTint: highlightTint, selectionTint: this.selectionTint, pendingSelectionTint: this.pendingSelectionTint});
 				marble.tint = tint;
-    			
-    			this.placeBodyWithinRadiusAroundCanvasCenter(marble, 10);
+
+    			utils.placeBodyWithinRadiusAroundCanvasCenter(marble, 10);
     			this.addBody(marble, true);
 		    }
 
 		},
-		
+
 		resetGameExtension: function() {
 		    this.level = 0;
 		},
-		
-		endGameExtension: function() { 
+
+		endGameExtension: function() {
 			this.currentZones = [];
 		}
 	}
-	
+
 	/*
 	 * Options to for the game starter
-	 */ 
+	 */
 	game.worldOptions = {
 			background: {image: 'Cork', scale: {x: 1, y: 1}},
-		        width: 1200, 
-		        height: 600,     
-		        gravity: 0,  
+		        width: 1200,
+		        height: 600,
+		        gravity: 0,
 		       };
-	
+
 	game.instructions = ['Group marbles into their respective corners', 'Utilize shift-clicking and the selection box for economy of selection', 'Right-click to move a selection', 'Click the timers for a time boost'];
-	
+
 	return $.extend({}, CommonGameMixin, game);
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-

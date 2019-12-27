@@ -40,11 +40,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		acceptableCharacters: ['a', 's', 'd', 'f', 'q', 'w', 'e', 'r', 't', 'v', 'c', 'g', 'x', 'Tab'],
 		
 		initExtension: function() {
-		    this.hit = this.getSound('nicehit1.wav', {volume: .2, rate: 2});   
-		    this.hit2 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.2});  
-		    this.hit3 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.4});  
-		    this.hit4 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.6});  
-		    this.hit5 = this.getSound('nicehit1.wav', {volume: .2, rate: 2.8});  
+		    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});   
+		    this.hit2 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.2});  
+		    this.hit3 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.4});  
+		    this.hit4 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});  
+		    this.hit5 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.8});  
 		    this.hits = [this.hit, this.hit2, this.hit3, this.hit4, this.hit5];
 		},
 		

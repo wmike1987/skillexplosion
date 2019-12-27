@@ -1,5 +1,6 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/Gunner', 'units/Baneling', 'pixi-filters'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling, filters) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
+'units/Gunner', 'units/Baneling', 'pixi-filters', 'utils/GameUtils'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling, filters, utils) {
 
     var targetScore = 1;
 
@@ -46,10 +47,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
 
         initExtension: function() {
             //wave begin sound
-            this.nextWave = this.getSound('rush1.wav');
+            this.nextWave = utils.getSound('rush1.wav');
 
             //blow up sound
-            this.pop = this.getSound('pop1.wav');
+            this.pop = utils.getSound('pop1.wav');
 
             //create blue glow filter
             //this.blueGlowFilter = new PIXI.Filter(null, blueGlowShader)
@@ -95,13 +96,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
             this.createGunner(1);
             this.createBane(10);
 
-
-            var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
-            var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
-            spineNorthWest.state.setAnimation(0, 'walk', true);
-            spineNorth.state.setAnimation(0, 'walk', true);
-            this.addSomethingToRenderer(spineNorthWest, {position: {x: this.getCanvasCenter().x, y: this.getCanvasHeight()}, scale: {x: .5, y: .5}})
-            this.addSomethingToRenderer(spineNorth, {position: {x: this.getCanvasCenter().x + 50, y: this.getCanvasHeight()}, scale: {x: .55, y: .55}})
+            // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
+            // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
+            // spineNorthWest.state.setAnimation(0, 'walk', true);
+            // spineNorth.state.setAnimation(0, 'walk', true);
+            // utils.addSomethingToRenderer(spineNorthWest, {position: {x: this.getCanvasCenter().x, y: this.getCanvasHeight()}, scale: {x: .5, y: .5}})
+            // utils.addSomethingToRenderer(spineNorth, {position: {x: this.getCanvasCenter().x + 50, y: this.getCanvasHeight()}, scale: {x: .55, y: .55}})
         },
 
         createGunner: function(number) {
@@ -109,7 +109,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
                 var gunner = Gunner();
                 gunner.typeId = 34;
                 gunner.directional = true;
-                this.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);
+                utils.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);
 
     //          this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
               //  this.addTickCallback(function() {
@@ -123,17 +123,17 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
         createBane: function(number) {
             for(x = 0; x < number; x++) {
                 var bane = Baneling({team: 2, isSelectable: false});
-                this.placeBodyWithinRadiusAroundCanvasCenter(bane, 4);
+                utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 4);
 
     //          this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
               //  this.addTickCallback(function() {
               //      this.blueGlowFilter.uniforms.currentUnitPosition = {x: marble.position.x, y: marble.position.y};
               //  }.bind(this))
 
-                if(this.flipCoin()) {
-                    Matter.Body.setPosition(bane.body, {x: Math.random() * 100, y: this.getCanvasCenter().y + Math.random() * 600 - 300});
+                if(utils.flipCoin()) {
+                    Matter.Body.setPosition(bane.body, {x: Math.random() * 100, y: utils.getCanvasCenter().y + Math.random() * 600 - 300});
                 } else {
-                    Matter.Body.setPosition(bane.body, {x: this.getCanvasWidth() - Math.random() * 100, y: this.getCanvasCenter().y + Math.random() * 600 - 300});
+                    Matter.Body.setPosition(bane.body, {x: utils.getCanvasWidth() - Math.random() * 100, y: utils.getCanvasCenter().y + Math.random() * 600 - 300});
                 }
 
                 this.addUnit(bane, true);

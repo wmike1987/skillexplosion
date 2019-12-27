@@ -22,32 +22,32 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpa
 		deadZones: [{x: 480, y: 330}, {x: 690, y: 280}], //don't create targets over the eyes
 		
 		initExtension: function() {
-		    this.hit = this.getSound('nicehit1.wav', {volume: .12, rate: 2});  
-		    this.countDown = this.getSound('softBeep.wav', {volume: .2, rate: 1});  
-		    this.whistle = this.getSound('whistle.wav', {volume: .2, rate: 1.2});  
-		    this.gameFinished = this.getSound('nextlevel.wav', {volume: .38, rate: .75});  
+		    this.hit = utils.getSound('nicehit1.wav', {volume: .12, rate: 2});  
+		    this.countDown = utils.getSound('softBeep.wav', {volume: .2, rate: 1});  
+		    this.whistle = utils.getSound('whistle.wav', {volume: .2, rate: 1.2});  
+		    this.gameFinished = utils.getSound('nextlevel.wav', {volume: .38, rate: .75});  
 		    this.hits = [this.hit, this.hit2, this.hit3, this.hit4];
 		    
 			//create face
-			this.face = this.addSomethingToRenderer('EyeFace', 'background');
+			this.face = utils.addSomethingToRenderer('EyeFace', 'background');
 			this.face.scale.x = .75;
 			this.face.scale.y = .75;
 			this.face.position = this.getCanvasCenter();
 			this.face.persists = true;
 			
-			this.eyes = this.addSomethingToRenderer('EyeEyes', 'background');
+			this.eyes = utils.addSomethingToRenderer('EyeEyes', 'background');
 			this.eyes.scale.x = .75;
 			this.eyes.scale.y = .75;
 			this.eyes.position = this.getCanvasCenter();
 			this.eyes.persists = true;
 			
-			this.blink = this.addSomethingToRenderer('EyeBlink', 'background');
+			this.blink = utils.addSomethingToRenderer('EyeBlink', 'background');
 			this.blink.scale.x = .75;
 			this.blink.scale.y = .75;
 			this.blink.position = this.getCanvasCenter();
 			this.blink.persists = true;
 			
-			this.wink = this.addSomethingToRenderer('EyeWink', 'background');
+			this.wink = utils.addSomethingToRenderer('EyeWink', 'background');
 			this.wink.scale.x = .75;
 			this.wink.scale.y = .75;
 			this.wink.position = this.getCanvasCenter();
@@ -409,7 +409,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpa
 		    //apply number text to target
 		    $.each(this.currentTargets, function(i, tintArray) {
 		        $.each(tintArray, function(i, target) {
-		            target.numberSprite = this.addSomethingToRenderer("TEXT:"+target.numberValue, 'hud', {style: $.extend({}, numberStyle, {fill: target.tint}), x: target.position.x, y: target.position.y});
+		            target.numberSprite = utils.addSomethingToRenderer("TEXT:"+target.numberValue, 'hud', {style: $.extend({}, numberStyle, {fill: target.tint}), x: target.position.x, y: target.position.y});
 		        }.bind(this))
 		    }.bind(this))
 		    
@@ -428,7 +428,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpa
 		        if(tintManager[target.tint] == target.numberValue) {
                     this.removeBody(target);
                     target.playDeathAnimation();
-                    this.removeSomethingFromRenderer(target.numberSprite);
+                    utils.removeSomethingFromRenderer(target.numberSprite);
                     tintManager[target.tint] += 1;
                     this.hit.play();
                     return false

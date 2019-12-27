@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker) {
-	
+
 	var targetScore = 1;
-	
+
 	var game = {
 		gameName: 'Split',
 		extraLarge: 20,
@@ -20,24 +20,24 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		pendingSelectionTint: 0x70ff32,
 		previousListener: null,
 		baneSpeed: 2.0,
-		
+
 		initExtension: function() {
 		    //wave begin sound
-		    this.nextWave = this.getSound('rush1.wav');
-		    
+		    this.nextWave = utils.getSound('rush1.wav');
+
 		    //blow up sound
-		    this.pop = this.getSound('pop1.wav');
+		    this.pop = utils.getSound('pop1.wav');
 		},
-		
+
 		play: function(options) {
             this.nextLevel();
 		},
-		
+
 		nextLevel: function() {
 		    if(this.lives == 0) return;
 		    var s = this.nextWave.play();
 		    this.nextWave.rate(.8 + .1 * this.level, s);
-		    
+
 		    if(this.banes)
 		        this.removeBodies(this.banes);
 		    if(this.marbles) {
@@ -46,7 +46,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		    }
 		    this.marbles = [];
 		    this.banes = [];
-		    
+
 		    //increment level
 		    this.level += 30;
 		    //start increasing speed if we've got lots of units on the map
@@ -54,25 +54,25 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		    if(this.level < levelCap) {
     		    this.baneSpeed = Math.min(2.5, this.baneSpeed+.05);
     		    var numberOfDrones = 3 + this.level * 2; //add two drones per level
-    		    var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish    
+    		    var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
 		    } else {
 		        this.baneSpeed = Math.min(3.2, this.baneSpeed+.03);
     		    var numberOfDrones = 3 + levelCap * 2; //add two drones per level
     		    var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
 		    }
-		    
+
 		    //create drones
 		    this.createDrones(numberOfDrones);
-		    
+
 		    //create banelings
 		    this.createBanelings(numberOfBanes);
-		    
+
 		    //send banelings to attack
-		    
+
 		    //add tick callback to detect if no banelings exist
 		        //if so, tally score and play next level
 		},
-		  
+
 		createDrones: function(number) {
 		    for(x = 0; x < number; x++) {
     			var radius = this.large;
@@ -89,7 +89,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     			marble.tint = marble.originalTint;
     			marble.highlightTint = this.highlightTints[tintIndex];
     			marble.typeId = 33;
-    			
+
                 marble.renderChildren = [{
     			    id: 'marble',
     			    data: this.texture('GlassMarble'),
@@ -151,12 +151,12 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     			    tint: this.pendingSelectionTint,
     			    rotate: 'continuous'
     			}];
-    			
-    			this.placeBodyWithinRadiusAroundCanvasCenter(marble, number*3);
+
+    			utils.placeBodyWithinRadiusAroundCanvasCenter(marble, number*3);
     			this.addBody(marble, true);
 		    }
 		},
-		
+
 		createBanelings: function(number) {
 		    var side = Math.random();
 		    for(x = 0; x < number; x++) {
@@ -181,9 +181,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     			$.each(this.marbles, function(index, drone) {
     			    marble.honableTargets.add(drone);
     			})
-    			
+
     			marble._initAttacker();
-    			
+
 	            //create attack blast radius
 	            var blastRadius = radius*2.5;
                 const blastSensor = Matter.Bodies.circle(0, 0, blastRadius, { isStatic: true, isSensor: true, noWire: true });
@@ -194,11 +194,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                     Matter.Body.setPosition(blastSensor, {x: marble.position.x, y: marble.position.y});
                 }.bind(this));
                 this.addBody(blastSensor);
-                
+
                 Matter.Events.on(marble, "onremove", function() {
                     this.removeTickCallback(blastSensorTick);
                 }.bind(this));
-                
+
                 //blast targets
     			marble.blastTargets = new Set();
                 Matter.Events.on(blastSensor, 'onCollide', function(pair) {
@@ -207,14 +207,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     	                marble.blastTargets.add(otherBody);
     		        }
     		    });
-    		    
+
                 Matter.Events.on(blastSensor, 'onCollideEnd', function(pair) {
     		        var otherBody = pair.pair.bodyA == blastSensor ? pair.pair.bodyB : pair.pair.bodyA;
     		        if(otherBody.isAttackable && marble.team != otherBody.team) {
     	                marble.blastTargets.delete(otherBody);
     		        }
     		    });
-    			
+
     			marble.attack = function(target) {
     			    this.getAnimation('bane', [marble.positionCopy.x, marble.positionCopy.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40], .5, null, 1).play();
     			    this.banes.splice(this.banes.indexOf(marble), 1);
@@ -226,28 +226,28 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     			    this.removeBody(marble);
     			    marble.blastTargets.forEach(function(index, target) {
     			        if(this.marbles.indexOf(target) >= 0) {
-    			            var shard = this.addSomethingToRenderer('glassShards', 'background', {position: target.position, scale: {x: .65, y: .65}, tint: target.tint, rotation: Math.random()*6});
+    			            var shard = utils.addSomethingToRenderer('glassShards', 'background', {position: target.position, scale: {x: .65, y: .65}, tint: target.tint, rotation: Math.random()*6});
                 		    this.addTimer({name: 'shardDisappear' + target.id, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
                                 shard.alpha -= .05;
             					    }, totallyDoneCallback: function() {
-            					        this.removeSomethingFromRenderer(shard);
+            					        utils.removeSomethingFromRenderer(shard);
             			    }.bind(this)})
     			            this.marbles.splice(this.marbles.indexOf(target), 1);
     			        }
-    			        
+
     			        if(this.marbles.length == 0) {
     			            this.addLives(-1);
     			            nextLevelGo = true;
     			        }
-    			        
+
     			        this.removeBody(target);
     			    }.bind(this));
-    			    
+
     			    if(nextLevelGo) {
     			        setTimeout(this.nextLevel.bind(this), 250);
     			    }
     			}.bind(this);
-    			
+
     			marble.renderChildren = [{
     			    id: 'marble',
     			    data: this.texture('GlassMarble'),
@@ -318,39 +318,25 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 		    }
 
 		},
-		
+
 		resetGameExtension: function() {
 		    this.level = 0;
 		    this.banes = [];
 		    this.marbles = [];
 		}
 	}
-	
+
 	/*
 	 * Options to for the game starter
-	 */ 
+	 */
 	game.worldOptions = {
 			background: {image: 'Grass', scale: {x: 1, y: 1}},
-		        width: 1200, 
-		        height: 600,     
-		        gravity: 0,  
+		        width: 1200,
+		        height: 600,
+		        gravity: 0,
 		       };
 
     game.instructions = ['Split the purple marbles to avoid area of effect damage', 'If all purple marbles die, you lose a life'];
-	
+
 	return $.extend({}, CommonGameMixin, game);
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-

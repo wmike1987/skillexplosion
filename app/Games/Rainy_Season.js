@@ -34,7 +34,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		    var rainDensity = 30;
 		    
 		  	$(this.canvasEl).addClass('noCursor');  
-		  	this.addSomethingToRenderer("GreenGridRain", "background", {x: 600, y: 300, filter: filter});
+		  	utils.addSomethingToRenderer("GreenGridRain", "background", {x: 600, y: 300, filter: filter});
   			this.addTimer({name: 'dropletTimer', gogogo: true, persists: true, timeLimit: rainWaveFrequency, callback: function() {
 					self.createRaindrop(rainDensity);
 				}
@@ -75,7 +75,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], funct
 		
 		createRaindrop: function(amount) {
 		    for(i = 0; i < amount; i++) {
-    		    var raindrop = this.addSomethingToRenderer("raindrop2", "background");//, {filter: filter});
+    		    var raindrop = utils.addSomethingToRenderer("raindrop2", "background");//, {filter: filter});
     		    var rainSpeed = .5;
     		    raindrop.scale.x = .25 + Math.random() * .75;
     		    raindrop.scale.y = .25 + Math.random() * .75;

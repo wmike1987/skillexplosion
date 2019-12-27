@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Matter, PIXI, CommonGameMixin) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils'], function($, Matter, PIXI, CommonGameMixin, utils) {
 
     return {
         //private
@@ -90,7 +90,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
 
             //trigger movement event
             Matter.Events.trigger(this, 'move', {
-                direction: currentGame.isoDirectionBetweenPositions(this.position, destination)
+                direction: utils.isoDirectionBetweenPositions(this.position, destination)
             });
         },
         stop: function() {
@@ -144,15 +144,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin'], function($, Mat
             }
 
             //send body
-            currentGame.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
-            // var velocityVector = Matter.Vector.sub(this.destination, this.body.position);
-            // var velocityScale = this.moveSpeed / Matter.Vector.magnitude(velocityVector);
-            //
-            //
-            // if (Matter.Vector.magnitude(velocityVector) < this.moveSpeed)
-            //     Matter.Body.setVelocity(this.body, velocityVector);
-            // else
-            //     Matter.Body.setVelocity(this.body, Matter.Vector.mult(velocityVector, velocityScale));
+            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
         },
         collideCallback: function(pair) {
             if (!this.isMoving) return;

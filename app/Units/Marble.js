@@ -7,13 +7,13 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 		var radius = 20;
 		var rc = [{
 			id: 'marble',
-			data: currentGame.texture('GlassMarble'),
+			data: 'GlassMarble',
 			tint: options.tint,
 			scale: {x: radius*2/64, y: radius*2/64},
 			rotate: 'none',
 		}, {
 			id: 'marbleBodyHighlight',
-			data: currentGame.texture('MarbleBodyHighlights'),
+			data: 'MarbleBodyHighlights',
 			scale: {x: radius*2/64, y: radius*2/64},
 			rotate: 'random',
 			rotatePredicate: function() {
@@ -23,13 +23,13 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			initialRotate: 'random'
 		}, {
 			id: 'marbleHighlight',
-			data: currentGame.texture('MarbleHighlight'),
+			data: 'MarbleHighlight',
 			scale: {x: radius*2/64, y: radius*2/64},
 			rotate: 'none',
 			initialRotate: 'none'
 		}, {
 			id: 'marbleShadow',
-			data: currentGame.texture('MarbleShadow'),
+			data: 'MarbleShadow',
 			scale: {x: radius*2.5/256, y: radius*2.5/256},
 			visible: true,
 			rotate: 'none',
@@ -38,7 +38,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			offset: {x: 12, y: 12},
 		}, {
 			id: 'marbleShadowHighlights',
-			data: currentGame.texture('MarbleShadowHighlight'),
+			data: 'MarbleShadowHighlight',
 			scale: {x: radius*1.6/256, y: radius*1.6/256},
 			visible: false,
 			rotate: 'random',
@@ -51,7 +51,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			offset: {x: 12, y: 12}
 		}, {
 			id: 'selected',
-			data: currentGame.texture('MarbleSelected'),
+			data: 'MarbleSelected',
 			scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
 			tint: options.selectionTint,
 			stage: 'stageOne',
@@ -59,7 +59,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			rotate: 'none'
 		}, {
 			id: 'selectionPending',
-			data: currentGame.texture('MarbleSelectedPending'),
+			data: 'MarbleSelectedPending',
 			scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
 			stage: 'stageOne',
 			visible: false,

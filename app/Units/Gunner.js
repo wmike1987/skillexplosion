@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIXI, UC, Matter) {
+define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils'], function($, PIXI, UC, Matter, utils) {
 
     return function Gunner(options) {
         var options = options || {};
@@ -18,56 +18,56 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
         var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
 
         var walkAnimations = {
-            up: currentGame.getSpineAnimation({
+            up: utils.getSpineAnimation({
                 spine: spineNorth,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            upRight: currentGame.getSpineAnimation({
+            upRight: utils.getSpineAnimation({
                 spine: spineNorthEast,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            right: currentGame.getSpineAnimation({
+            right: utils.getSpineAnimation({
                 spine: spineEast,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            downRight: currentGame.getSpineAnimation({
+            downRight: utils.getSpineAnimation({
                 spine: spineSouthEast,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            down: currentGame.getSpineAnimation({
+            down: utils.getSpineAnimation({
                 spine: spineSouth,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            downLeft: currentGame.getSpineAnimation({
+            downLeft: utils.getSpineAnimation({
                 spine: spineSouthWest,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            left: currentGame.getSpineAnimation({
+            left: utils.getSpineAnimation({
                 spine: spineWest,
                 animationName: 'walk',
                 speed: 1.5,
                 loop: true,
                 canInterruptSelf: false
             }),
-            upLeft: currentGame.getSpineAnimation({
+            upLeft: utils.getSpineAnimation({
                 spine: spineNorthWest,
                 animationName: 'walk',
                 speed: 1.5,
@@ -81,49 +81,49 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
         };
 
         var attackAnimations = {
-            up: currentGame.getSpineAnimation({
+            up: utils.getSpineAnimation({
                 spine: spineNorth,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            upRight: currentGame.getSpineAnimation({
+            upRight: utils.getSpineAnimation({
                 spine: spineNorthEast,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            right: currentGame.getSpineAnimation({
+            right: utils.getSpineAnimation({
                 spine: spineEast,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            downRight: currentGame.getSpineAnimation({
+            downRight: utils.getSpineAnimation({
                 spine: spineSouthEast,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            down: currentGame.getSpineAnimation({
+            down: utils.getSpineAnimation({
                 spine: spineSouth,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            downLeft: currentGame.getSpineAnimation({
+            downLeft: utils.getSpineAnimation({
                 spine: spineSouthWest,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            left: currentGame.getSpineAnimation({
+            left: utils.getSpineAnimation({
                 spine: spineWest,
                 animationName: 'shoot',
                 speed: 2,
                 times: 3,
             }),
-            upLeft: currentGame.getSpineAnimation({
+            upLeft: utils.getSpineAnimation({
                 spine: spineNorthWest,
                 animationName: 'shoot',
                 speed: 2,
@@ -141,7 +141,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
         var rc = [
         {
             id: 'selected',
-            data: currentGame.texture('IsometricSelected'),
+            data: 'IsometricSelected',
             scale: {x: .8, y: .8},
             stage: 'stageOne',
             visible: false,
@@ -151,7 +151,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
         },
         {
             id: 'selectionPending',
-            data: currentGame.texture('IsometricSelectedPending'),
+            data: 'IsometricSelectedPending',
             scale: {x: 1, y: 1},
             stage: 'stageOne',
             visible: false,
@@ -221,7 +221,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             offset: {x: 0, y: yOffset}
         },{
             id: 'shadow',
-            data: currentGame.texture('IsoShadow'),
+            data: 'IsoShadow',
             scale: {x: .75, y: .75},
             visible: true,
             avoidIsoMgr: true,
@@ -229,7 +229,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             stage: "stageZero",
             offset: {x: 0, y: 22}}];
 
-        var fireSound = currentGame.getSound('machinegun.wav', {volume: .002, rate: 3});
+        var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
 
         var dashVelocity = .8;
         var dash = function(destination) {
@@ -242,7 +242,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
         }
 
-        var knifeSound = currentGame.getSound('marbles.wav', {volume: .1, rate: 20});
+        var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
         var knifeSpeed = 14;
         var throwKnife = function(destination) {
             //create knife body
@@ -256,16 +256,16 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             Matter.Body.setPosition(knife, this.position);
             knife.renderChildren = [{
                 id: 'knife',
-                data: currentGame.texture('Knife'),
+                data: 'Knife',
                 scale: {x: .8, y: .8},
-                rotate: currentGame.angleBetweenVectors(knife.position, destination),
+                rotate: utils.angleBetweenVectors(knife.position, destination),
             },
             {
                 id: 'shadow',
-                data: currentGame.texture('MarbleShadow'),
+                data: 'MarbleShadow',
                 scale: {x: 10/256, y: 50/256},
                 offset: {x: 15, y: 25},
-                rotate: currentGame.angleBetweenVectors(knife.position, destination),
+                rotate: utils.angleBetweenVectors(knife.position, destination),
     			stage: "stageZero",
             }]
             currentGame.addBody(knife);
@@ -273,9 +273,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js'], function($, PIX
             //send knife
             knifeSound.play();
             knife.deltaTime = this.body.deltaTime;
-            currentGame.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
+            utils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
             var removeSelf = currentGame.addTickCallback(function() {
-                if(currentGame.bodyRanOffStage(knife)) {
+                if(utils.bodyRanOffStage(knife)) {
                     currentGame.removeBody(knife);
                 }
             })
