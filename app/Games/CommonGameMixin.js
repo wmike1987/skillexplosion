@@ -24,6 +24,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         baseWaveText: "Wave: ",
         score: 0,
         selectionBox: false,
+        unitSelectionSystem: false,
         clickAnywhereToStart: "Click anywhere to start",
         frames: 0,
         frameSecondCounter: 0,
@@ -45,6 +46,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
              * blow up options into properties
              */
             $.extend(this, options);
+
+            //for backwards compatibility
+            if(this.selectionBox) {
+                //this variable conveys more meaning, so let's use this in various places instead of this.selectionBox
+                this.unitSelectionSystem = true;
+            }
 
             /*
              * create some other variables
@@ -309,74 +316,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 }.bind(this), false, true);
             }
 
-            //enable selection box - should think about breaking this into another file for better readability
-            if(this.selectionBox) {
-
-                this.attackMove = false;
-                Object.defineProperty(this, 'attackMove', {set: function(value) {
-                    this._attackMove = value;
-                    if(value) {
-                        utils.setCursorStyle('crosshair');
-                    }
-                    else
-                        utils.setCursorStyle('auto');
-                }.bind(this), get: function() {
-                    return this._attackMove;
-                }});
-
-                //call attack move, this is a special event reserved for attack moving
-                $('body').on('keydown.selectionBox', function( event ) {
-                    if(event.key == 'a' || event.key == 'A') {
-                        $.each(this.box.selectedBodies, function(prop, obj) {
-                            if(obj.isAttacker) {
-                                if(!this.box.selectionBoxActive) {
-                                    this.box.invalidateNextBox = true;
-                                    this.attackMove = true;
-                                }
-                            }
-                        }.bind(this))
-                    }
-
-                }.bind(this));
-
-                //dispatch key events
-                $('body').on('keydown.selectionBox', function( event ) {
-                    if(this.selectedUnit && this.selectedUnit.unit.keyMappings[event.key]) {
-                        this.abilityDispatch = event.key;
-                    }
-                }.bind(this));
-
-                //toggle life bars
-                $('body').on('keydown.selectionBox', function( event ) {
-                    if(event.key == 'Alt') {
-                        this.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
-                                var unit = body.unit;
-                                unit.renderlings['healthbarbackground'].visible = true;
-                                unit.renderlings['healthbar'].visible = true;
-                            })
-                    }
-                }.bind(this));
-
-                $('body').on('keyup.selectionBox', function( event ) {
-                    if(event.key == 'Alt') {
-                        this.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
-                                var unit = body.unit;
-                                unit.renderlings['healthbarbackground'].visible = false;
-                                unit.renderlings['healthbar'].visible = false;
-                            })
-                    }
-                }.bind(this));
-
-                $('body').on('keydown.selectionBox', function( event ) {
-                    if(event.key == 's' || event.key == 'S') {
-                        $.each(this.box.selectedBodies, function(prop, obj) {
-                            if(obj.isMoveable) {
-                                obj.unit.stop();
-                            }
-                        }.bind(this))
-                    }
-                }.bind(this));
-
+            /*
+             * Enable selection box
+             * Dispatch attack move, move, and generic keydown events (for abilities)
+             */
+            if(this.unitSelectionSystem) {
                 //create rectangle
                 this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false});
                 this.box.collisionFilter.category = 0x0002;
@@ -414,12 +358,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
                     //for convenience
                     var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
-                    var loneSoldier;
+                    var loneSoldier = null;
                     if(pendingBodyCount == 1) {
                         loneSoldier = this.box.pendingSelections[parseInt(Object.keys(this.box.pendingSelections)[0])];
-                    }
-                    else {
-                        loneSoldier = null;
                     }
 
                     //if nothing pending, take no action
@@ -429,21 +370,25 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
                     //handle shift functionality
                     if(keyStates['Shift']) {
-                        //if one, already-selected body is requested here, remove from selection
+                        //If one, already-selected body is requested here, remove from selection
                         if(loneSoldier && ($.inArray(loneSoldier.id.toString(), Object.keys(this.box.selectedBodies)) > -1)) {
                             changeSelectionState(loneSoldier, 'selected', false);
                             delete this.box.selectedBodies[loneSoldier.id];
                         }
-                        else { //else add to current selection
-                            //if we have multiple things selected (from drawing a box) this will override the permaPendingBody, unless permaPendingBody was also selected in the box
+                        else {
+                            //If we have multiple things pending (from drawing a box) this will override the permaPendingBody, unless permaPendingBody was also selected in the box
+                            //in which case we'll exclude it from the pending selections
                             if(this.box.permaPendingBody && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
                                 changeSelectionState(this.box.permaPendingBody, 'selectionPending', false);
                                 delete this.box.pendingSelections[this.box.permaPendingBody.id]
                             }
+
+                            //Add pending bodies to current selection
                             $.extend(this.box.selectedBodies, this.box.pendingSelections)
                         }
-                    } else { //else create a brand new selection (don't add to current selection)
-                        //if we have multiple things selected (from drawing a box) this will override the permaPendingBody, unless permaPendingBody was also selected in the box
+                    } else {
+                        //Else create a brand new selection (don't add to current selection)
+                        //If we have multiple things pending (from drawing a box) this will override the permaPendingBody, unless permaPendingBody was also selected in the box
                         if(this.box.permaPendingBody && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
                             changeSelectionState(this.box.permaPendingBody, 'selectionPending', false);
                             delete this.box.pendingSelections[this.box.permaPendingBody.id]
@@ -452,12 +397,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                         this.box.selectedBodies = $.extend({}, this.box.pendingSelections);
                     }
 
-                    //asssign the selected unit
+                    //Asssign the selected unit
                     if(Object.keys(this.box.selectedBodies).length > 0) {
                         this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
                     }
 
-                    //show group destination of selected
+                    //Show group destination of selected
                     var groupDestination = 0;
                     $.each(this.box.selectedBodies, function(key, body) {
                         if(groupDestination == 0) {
@@ -474,11 +419,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                         this.box.clickPointSprite.position = {x: -50, y: -50};
                     }
 
-                    //update visuals
+                    //Update visuals
                     changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
                     changeSelectionState(this.box.selectedBodies, 'selected', true);
 
-                    //update state
+                    //Refresh state
                     this.box.permaPendingBody = null;
                     this.box.pendingSelections = {};
 
@@ -493,15 +438,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
                 }.bind(this);
 
-                //attach mouse events to body (whole page) so that the selection box will support mouse events off-canvas
+                //Mouse down event
                 $('body').on('mousedown.selectionBox', function(event) {
                     var canvasPoint = {x: 0, y: 0};
                     var specifiedAttackTarget = null;
                     this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
 
-                    //left click
+                    //Left click, used for both establishing a pending body and for attack-moving and dispatching events
                     if(event.which == 1) {
-
                         this.box.mouseDown = true;
                         this.box.originalPoint = canvasPoint;
 
@@ -518,19 +462,19 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                             bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), this.box.originalPoint);
                         }
 
-                        //this is a perma body which we'll add to the pending selection, or we're trying to attack a singular target
+                        //This is a perma body which we'll add to the pending selection, or we're trying to attack a singular target
                         var singleAttackTarget = null;
                         $.each(bodies, function(key, body) {
                             if(body.isSelectable && !this.attackMove) {
-                                this.box.pendingSelections[body.id] = body; //needed for a special case when the game starts - no longer need this (i think)
                                 changeSelectionState(body, 'selectionPending', true);
+                                this.box.pendingSelections[body.id] = body; //needed for a special case when the game starts - no longer need this (i think)
                                 this.box.permaPendingBody = body;
                             } else if(this.attackMove && body.isAttackable) {
                                 singleAttackTarget = body;
                             }
                         }.bind(this));
 
-                        //attacker functionality
+                        //Attacker functionality, dispatch attackMove
                         if(this.attackMove && !this.box.selectionBoxActive) {
                             this.box.invalidateNextMouseUp = true;
                             $.each(this.box.selectedBodies, function(key, body) {
@@ -555,26 +499,19 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                             return;
                         }
 
-                        if(this.abilityDispatch) {
-                            if(this.selectedUnit.unit.keyMappings[this.abilityDispatch]) {
-                                this.selectedUnit.unit.keyMappings[this.abilityDispatch].call(this.selectedUnit.unit, canvasPoint);
-                                this.abilityDispatch = false;
-                            }
-                        }
-
                         var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
-                        var loneSoldier;
+                        var loneSoldier = null;
                         if(pendingBodyCount == 1) {
                             loneSoldier = this.box.pendingSelections[parseInt(Object.keys(this.box.pendingSelections)[0])];
                         }
-                        else {
-                            loneSoldier = null;
-                        }
+
                         //handle control+click on mousedown (this is based on the sc2 controls)
                         if(keyStates['Control'] && !this.box.selectionBoxActive && pendingBodyCount == 1) {//handle control clicking
                             var likeTypes = $.each(Matter.Composite.allBodies(this.renderer.engine.world), function(index, body) {
-                                if(body.typeId == loneSoldier.typeId) {
-                                    this.box.pendingSelections[body.id] = body;
+                                if(body.isUnit) {
+                                    if(body.unit.unitType == loneSoldier.unitType) {
+                                        this.box.pendingSelections[body.id] = body;
+                                    }
                                 }
                             }.bind(this))
 
@@ -583,9 +520,17 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                             this.box.invalidateNextMouseUp = true; //after a control click, mouseup does not execute a selection (sc2)
                             this.box.invalidateNextBox = true;
                         }
+
+                        //Dispatch ability on this click
+                        if(this.abilityDispatch) {
+                            if(this.selectedUnit.unit.keyMappings[this.abilityDispatch]) {
+                                this.selectedUnit.unit.keyMappings[this.abilityDispatch].call(this.selectedUnit.unit, canvasPoint);
+                                this.abilityDispatch = false;
+                            }
+                        }
                     }
 
-                    //right click - this should be modular in order to easily apply different right-click actions
+                    //Right click - this should be modular in order to easily apply different right-click actions
                     if(event.which == 3 && !this.box.selectionBoxActive) {
                         //if we've pressed 'a' then right click, cancel the attack move and escape this flow
                         if(this.attackMove) {
@@ -601,9 +546,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                                     body.isSoloMover = true;
                                 else
                                     body.isSoloMover = false;
-                                /*var velocityVector = Matter.Vector.sub(canvasPoint, body.position);
-                                var velocityScale = body.moveSpeed/Matter.Vector.magnitude(velocityVector);
-                                Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));*/
                             }
                         }.bind(this))
                     }
@@ -731,8 +673,79 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     }
                 }.bind(this));
 
+                /*
+                 * Change cursor style, set attackMove state
+                 * Dispatch events
+                 */
+                 this.attackMove = false;
+                 Object.defineProperty(this, 'attackMove', {set: function(value) {
+                     this._attackMove = value;
+                     if(value) {
+                         utils.setCursorStyle('crosshair');
+                     }
+                     else
+                         utils.setCursorStyle('auto');
+                 }.bind(this), get: function() {
+                     return this._attackMove;
+                 }});
+
+                 //A or a dispatch (reserved)
+                 $('body').on('keydown.selectionBox', function( event ) {
+                     if(event.key == 'a' || event.key == 'A') {
+                         $.each(this.box.selectedBodies, function(prop, obj) {
+                             if(obj.isAttacker) {
+                                 if(!this.box.selectionBoxActive) {
+                                     this.box.invalidateNextBox = true;
+                                     this.attackMove = true;
+                                 }
+                             }
+                         }.bind(this))
+                     }
+                 }.bind(this));
+
+                 //S or s dispatch (reserved)
+                  $('body').on('keydown.selectionBox', function( event ) {
+                      if(event.key == 's' || event.key == 'S') {
+                          $.each(this.box.selectedBodies, function(prop, obj) {
+                              if(obj.isMoveable) {
+                                  obj.unit.stop();
+                              }
+                          }.bind(this))
+                      }
+                  }.bind(this));
+
+                 //dispatch generic key events
+                 $('body').on('keydown.selectionBox', function( event ) {
+                     if(this.selectedUnit && this.selectedUnit.unit.keyMappings[event.key]) {
+                         this.abilityDispatch = event.key;
+                     }
+                 }.bind(this));
+
+                 //toggle life bars with Alt
+                 $('body').on('keydown.selectionBox', function( event ) {
+                     if(event.key == 'Alt') {
+                         this.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
+                                 var unit = body.unit;
+                                 unit.renderlings['healthbarbackground'].visible = true;
+                                 unit.renderlings['healthbar'].visible = true;
+                             })
+                     }
+                 }.bind(this));
+
+                 $('body').on('keyup.selectionBox', function( event ) {
+                     if(event.key == 'Alt') {
+                         this.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
+                                 var unit = body.unit;
+                                 unit.renderlings['healthbarbackground'].visible = false;
+                                 unit.renderlings['healthbar'].visible = false;
+                             })
+                     }
+                 }.bind(this));
+
                 this.addBody(this.box);
-            }
+            };
+
+            //dispatch other events
 
             this.regulationPlay = $.Deferred();
             this.regulationPlay.done(this.endGame.bind(this));
@@ -781,17 +794,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             scoreSubmission.done(this.resetGame.bind(this));
         },
 
-        /*
-         * Utilities
-         */
-
         addUnit: function(unit, trackVerticeHistory) {
             this.addBody(unit.body, trackVerticeHistory);
             Matter.Events.trigger(unit, 'addUnit', {});
         },
 
         addBody: function(body, trackVerticeHistory) {
-
             //if we've added a unit, call down to its body
             if(body.isUnit) {
                 body = body.body;

@@ -256,7 +256,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
             if(options.filter) {
                 options.filter.uniforms.mouse = {x: 50, y: 50};
-                options.filter.uniforms.resolution = {x: this.canvas.width, y: this.canvas.height};
+                options.filter.uniforms.resolution = {x: currentGame.canvas.width, y: currentGame.canvas.height};
                 something.filters = [options.filter];
             }
             if(options.height)
@@ -314,7 +314,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         isSpriteBelowStage: function(sprite) {
             var deletePointAdjustment = sprite.anchor.x * sprite.height;
-            if(sprite.position.y - deletePointAdjustment > this.canvas.height)
+            if(sprite.position.y - deletePointAdjustment > currentGame.canvas.height)
                 return true;
             return false;
         },
@@ -441,7 +441,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         floatSprite: function(sprite) {
             sprite.alpha = 1.4;
-            this.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 34, callback: function() {
+            currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 34, callback: function() {
                 sprite.position.y -= 1;
                 sprite.alpha -= 1.4/34;
             }, totallyDoneCallback: function() {
@@ -459,7 +459,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var startGameText = utils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: this.canvas.width/2, y: this.canvas.height/2});
             startGameText.position = position;
             startGameText.alpha = 1.4;
-            this.addTimer({name: this.uuidv4(), timeLimit: 32, runs: options.runs || 30, callback: function() {
+            currentGame.addTimer({name: this.uuidv4(), timeLimit: 32, runs: options.runs || 30, callback: function() {
                 if(!options.stationary) {
                     startGameText.position.y -= 1;
                 }
@@ -534,7 +534,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         //method to normalize setting a matter js body
         setVelocity: function(body, velocity) {
             //normalize to 16.6666 ms per frame
-            var normalizedVelocity = (this.engine.delta / (1000/60)) * velocity;
+            var normalizedVelocity = (currentGame.engine.delta / (1000/60)) * velocity;
             Matter.Body.setVelocity(body, normalizedVelocity);
         },
 
