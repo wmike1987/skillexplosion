@@ -188,3 +188,12 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             });
     })
 });
+
+//setup mute button
+muted = false;
+require(['jquery', 'howler'], function($, h) {
+    $('#muteButton').on('click', function() {
+	muted = !muted;
+	h.Howler.mute(muted);
+    });
+});

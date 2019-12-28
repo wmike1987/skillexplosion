@@ -70,7 +70,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler', 'utils
 						utils.getAnimation('blueCollapse', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .6).play();
 
 						//play sound
-						hitSound.play()
+            hitSound.play();
 						//hitSound.fade(.75, 0, 750, );
 
 						this.removeBody(this.ball);
