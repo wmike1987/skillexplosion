@@ -192,8 +192,12 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 //setup mute button
 muted = false;
 require(['jquery', 'howler'], function($, h) {
+    var unmutedIcon = "&#128266;";
+    var mutedIcon = "&#128263;";
+    $('#muteButton').html(unmutedIcon);
     $('#muteButton').on('click', function() {
 	muted = !muted;
+	$(this).html(muted ? mutedIcon : unmutedIcon);
 	h.Howler.mute(muted);
     });
 });
