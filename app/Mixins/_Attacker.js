@@ -6,7 +6,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         currentTarget: null,
         currentHone: null,
         canAttack: true,
-        sensorCollisionCategory: 0x8000,
         randomizeHone: true,
         honableTargets: null, //this prevents the need for honing sensor (which can have a negative performance impact). This may not be relevant anymore
         specifiedAttackTarget: null,
@@ -27,8 +26,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.availableTargets = new Set();
             this.tickCallbacks = [];
 
-            //setup collision params
-            this.body.collisionFilter.category = this.team || 4;
+            //setup collision params (idk if I need this)
+            //this.body.collisionFilter.category = this.team || 4;
 
             //create improved honable and attack sensors
             this.tickCallbacks.push(currentGame.addTickCallback(function() {
@@ -75,6 +74,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                         }.bind(this))
                     }
                 }.bind(this))
+
+                //If we don't have a target anymore, and are static, un-static us
+                if(!this.currentTarget && this.body.isStatic) {
+                    Matter.Body.setStatic(this.body, false);
+                }
 
                 if (this.currentHone == null && this.currentTarget == null && this.attackMoveDestination && this.canAttack && !this.isMoving) {
                     this.attackMove(this.attackMoveDestination);
@@ -134,6 +138,13 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 //if we attack, pause the movement, the attacking engine will resume movement
                 this.pause();
                 if (this.attack) {
+
+                    //Make the body stationary if attacking
+                    if(!this.body.isStatic) {
+                        Matter.Body.setStatic(this.body, true);
+                    }
+
+                    //Call attack()
                     this.attack(target);
                     Matter.Events.trigger(this, 'attack', {
                         direction: utils.isoDirectionBetweenPositions(this.position, target.position)
@@ -167,12 +178,24 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         //this assumes _moveable is mixed in
         attackSpecificTarget: function(destination, target) {
 
+            if(target.team == this.team) {
+                this.attackMove({x: target.position.x, y: target.position.y});
+                return;
+            };
+
             this.specifiedAttackTarget = target;
+
+            //If the specified dies (is removed), stop and reset state.
             this.specifiedCallback = function() {
                 this.stop();
                 this.specifiedAttackTarget = null;
             }.bind(this);
-            Matter.Events.on(target, 'onremove', this.specifiedCallback);
+            var callback = Matter.Events.on(target, 'onremove', this.specifiedCallback);
+
+            //But if we die first, remove the onremove listener
+            currentGame.deathPact(this, function() {
+                Matter.Events.off(target, 'onremove', this.specifiedCallback);
+            });
 
             //move unit
             this.rawMove(destination);

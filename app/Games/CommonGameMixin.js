@@ -828,7 +828,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }.bind(this))
         },
 
-        //death pact currently supports other units, bodies, and tick callbacks
+        //death pact currently supports other units, bodies, tick callbacks, timers, and finally functions to execute
         deathPact: function(master, slave) {
             if(!master.slaves)
                 master.slaves = [];
@@ -836,15 +836,29 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         //This method has the heart but is poorly designed
-        //Right now it'll support slaves which are units, bodies, and tickCallbacks
+        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, and finally functions to execute
         removeSlaves: function(slaves) {
             $.each(slaves, function(index, slave) {
-                if(slave.isUnit)
+                if(slave.isUnit) {
                     this.removeUnit(slave);
-                else if(slave.render)
+                    //console.info("removing " + slave)
+                }
+                else if(slave.render) {
                     this.removeBody(slave);
-                else if(slave.isTickCallback)
+                    //console.info("removing " + slave)
+                }
+                else if(slave.isTickCallback) {
                     this.removeTickCallback(slave);
+                    //console.info("removing " + slave)
+                }
+                else if(slave.isTimer) {
+                    this.invalidateTimer(slave);
+                    //console.info("removing " + slave)
+                }
+                else if(slave instanceof Function) {
+                    //console.info("removing " + slave)
+                    slave();
+                }
             }.bind(this));
         },
 
@@ -900,8 +914,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         //apply something to bodies by team
         applyToBodiesByTeam: function(teamPredicate, bodyPredicate, f) {
-            teamPredicate = teamPredicate || true;
-            bodyPredicate = bodyPredicate || true;
+            teamPredicate = teamPredicate || function(team) {return true};
+            bodyPredicate = bodyPredicate || function(body) {return true};
             $.each(this.bodiesByTeam, function(i, team) {
                 if(teamPredicate(team)) {
                     $.each(team, function(i, body) {
@@ -941,6 +955,17 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }
 
             if(!this.world) return;
+
+            //Remove units, this could be way better
+            var unitsToRemove = [];
+            this.applyToBodiesByTeam(null, function(body) {
+                return body.unit;
+            }, function(body) {
+                unitsToRemove.push(body.unit);
+            }.bind(this));
+            $.each(unitsToRemove, function(i, unit) {
+                this.removeUnit(unit);
+            }.bind(this))
 
             //remove bodies safely
             this.removeBodies(this.world.bodies);
@@ -994,6 +1019,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         addTimer: function(timer) {
             this.timers[timer.name] = timer;
+            timer.isTimer = true;
             timer.originalRuns = timer.runs;
 
             //add a reset method to the timer

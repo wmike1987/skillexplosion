@@ -10,7 +10,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         isSoloMover: false,
         stopOnCollisionBuffer: 30, //pixels
         overshootBuffer: 1, //pixels
-        sensorCollisionCategory: 0x8000,
+        smallerBodyCollisionCategory: 0x4000,
         noProgressBuffer: 15, //pixels
 
         //user defined
@@ -29,7 +29,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 isSensor: true,
                 noWire: true
             });
-            this.smallerBody.collisionFilter.category = this.sensorCollisionCategory;
+            this.smallerBody.collisionFilter.category = this.smallerBodyCollisionCategory;
             this.smallerBody.collisionFilter.mask = 0x0002; //this.smallerBody.collisionFilter.mask - (this.team || 4);
             this.smallerBody.isSmallerBody = true;
             this.smallerBody.unit = this;
@@ -40,20 +40,17 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 });
             }.bind(this));
             currentGame.addBody(this.smallerBody);
-            Matter.Events.on(this, "onremove", function() {
-                currentGame.removeBody(this.smallerBody);
-                currentGame.removeTickCallback(smallerCallback);
-                currentGame.invalidateTimer(this.timer);
-                currentGame.removeTickCallback(this.moveTick);
-            }.bind(this));
 
             Matter.Events.on(this.body, 'onCollideActive', this.collideCallback);
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
+
             this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
-            this.timer = {
+
+            //This timer stops a moveable object from moving forever if they're making "no progress"
+            this.tryForDestinationTimer = {
                 name: 'tryForDestination' + this.body.id,
                 gogogo: true,
-                timeLimit: 850,
+                timeLimit: 500,
                 callback: function() {
                     if (this.lastPosition && this.isMoving) {
                         //clickPointSprite2.position = this.position;
@@ -67,13 +64,20 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     this.lastPosition = Matter.Vector.clone(this.body.position);
                 }.bind(this)
             };
-            currentGame.addTimer(this.timer);
+
+            //Deathpact these entities
+            utils.deathPact(this, this.smallerBody);
+            utils.deathPact(this, smallerCallback);
+            utils.deathPact(this, this.tryForDestinationTimer);
+            utils.deathPact(this, this.moveTick);
+
+            currentGame.addTimer(this.tryForDestinationTimer);
         },
 
         move: function(destination) {
 
             //reset try for destination timer and nullify (not literally) the body's last position
-            this.timer.reset();
+            this.tryForDestinationTimer.reset();
             this.lastPosition = {
                 x: -50,
                 y: -50
@@ -83,10 +87,18 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             if (this.body.position.x == destination.x && this.body.position.y == destination.y)
                 return;
 
-            //set state, some of this does nothing and should be revamped
+            //set state
             this.destination = destination;
             this.isMoving = true;
             this.body.frictionAir = 0;
+
+            //immediate set the velocity (rather than waiting for the next tick)
+            this.constantlySetVelocityTowardsDestination();
+
+            //un-static the body (attackers become static when firing)
+            if(this.body.isStatic) {
+                Matter.Body.setStatic(this.body, false);
+            }
 
             //trigger movement event
             Matter.Events.trigger(this, 'move', {
@@ -105,7 +117,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.body.frictionAir = .9;
             this.isMoving = false;
             this.isSoloMover = false;
-            this.timer.paused = true;
+            this.tryForDestinationTimer.paused = true;
         },
 
         pause: function(target) {
@@ -118,7 +130,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.body.frictionAir = .9;
             this.isMoving = false;
             this.isSoloMover = false;
-            this.timer.paused = true;
+            this.tryForDestinationTimer.paused = true;
         },
 
         resume: function() {
@@ -146,6 +158,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             //send body
             utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
         },
+
+        //This tests whether units with the same destination have reached the destination as a group. If this moveable collides with a moveable with the same destination
+        //and the other body is already stopped and we're in a certain range of the destination, stop us too, since we're close enough and our "group" has reached the destination.
         collideCallback: function(pair) {
             if (!this.isMoving) return;
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
@@ -157,11 +172,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 }
             }
         },
+
+        //This will move me out of the way if I'm not moving and a moving object is colliding with me.
         avoidCallback: function(pair) {
             if (this.isMoving) return;
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination) {
                 this.frictionAir = .9;
+                console.info(otherBody + " colliding with me (" + this.id + ")");
+                console.info(otherBody.velocity);
                 var m = otherBody.velocity.y / otherBody.velocity.x;
                 var x = this.position.x - otherBody.position.x;
                 var b = otherBody.position.y;
@@ -179,12 +198,17 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     else
                         swapY = -1;
                 }
-                //gtfo scale needs to move the body at it's velocity
-                var gtfoScale = 4.5;
-                Matter.Body.setVelocity(this, {
-                    x: otherBody.velocity.y * swapX * gtfoScale,
-                    y: otherBody.velocity.x * swapY * gtfoScale
-                });
+
+                var scatterDistance = this.circleRadius * 2.8;
+                var newVelocity = {x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY};
+                console.info(newVelocity);
+                var scatterScale = scatterDistance/Matter.Vector.magnitude(newVelocity);
+                console.info(scatterScale);
+                this.unit.move(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
+                // Matter.Body.setVelocity(this, {
+                //     x: otherBody.velocity.y * swapX * gtfoScale,
+                //     y: otherBody.velocity.x * swapY * gtfoScale
+                // });
             }
         },
         groupRightClick: function(destination) {

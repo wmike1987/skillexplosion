@@ -586,7 +586,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
 
             return originAngle - destAngle;
-        }
+        },
+
+        //death pact currently supports other units, bodies, tick callbacks, timers, and finally functions to execute
+        deathPact: function(master, slave) {
+            if(!master.slaves)
+                master.slaves = [];
+            master.slaves.push(slave);
+        },
     };
 
     //aliases

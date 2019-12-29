@@ -93,8 +93,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createGunner(15);
-            this.createBane(10);
+            this.createGunner(5);
+            this.createBane(5);
 
             // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
             // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
@@ -155,7 +155,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
                 gravity: 0,
                };
 
-    game.instructions = ['Split the purple marbles to avoid area of effect damage', 'If all purple marbles die, you lose a life'];
+    //game.instructions = ['Split the purple marbles to avoid area of effect damage', 'If all purple marbles die, you lose a life'];
 
     return $.extend({}, CommonGameMixin, game);
 })
