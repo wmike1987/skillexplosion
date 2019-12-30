@@ -4,8 +4,6 @@
 
 define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils/Styles', 'utils/GameUtils'], function(Matter, PIXI, $, hs, h, particles, styles, utils) {
 
-    var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
-
     var common = {
 
         /*
@@ -28,6 +26,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         clickAnywhereToStart: "Click anywhere to start",
         frames: 0,
         frameSecondCounter: 0,
+        playerTeam: 100,
 
         /*
          * Game lifecycle
@@ -427,7 +426,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     this.box.permaPendingBody = null;
                     this.box.pendingSelections = {};
 
-                    //update selected attribute
+                    //Update selected attribute
                     $.each(Matter.Composite.allBodies(this.renderer.engine.world), function(index, body) {
                         body.isSelected = false;
                     })
@@ -523,8 +522,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
                         //Dispatch ability on this click
                         if(this.abilityDispatch) {
-                            if(this.selectedUnit.unit.keyMappings[this.abilityDispatch]) {
-                                this.selectedUnit.unit.keyMappings[this.abilityDispatch].call(this.selectedUnit.unit, canvasPoint);
+                            if(this.selectedUnit) {
+                                this.selectedUnit.unit.handleEvent({id: this.abilityDispatch, target: canvasPoint});
                                 this.abilityDispatch = false;
                             }
                         }
@@ -541,7 +540,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
                         $.each(this.box.selectedBodies, function(key, body) {
                             if(body.isMoveable) {
-                                body.unit.groupRightClick(canvasPoint);
+                                body.unit.handleEvent({id: 'move', target: canvasPoint})
+                                //body.unit.groupRightClick(canvasPoint);
                                 if(Object.keys(this.box.selectedBodies).length == 1)
                                     body.isSoloMover = true;
                                 else
@@ -632,10 +632,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     }
                 }.bind(this));
 
-                //mouse hover
+                //Mouse hover
                 var pastHoveredBodies = [];
                 this.addTickCallback(function(event) {
                     if(!this.box.selectionBoxActive) {
+
                         //if we have a perma, we won't act on hovering pending selections, so break here
                         if(this.box.permaPendingBody) return;
 
@@ -672,6 +673,34 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                         }.bind(this))
                     }
                 }.bind(this));
+
+                //Dispatch hovering event to units
+                var pastHoveredUnits = [];
+                this.addTickCallback(function(event) {
+
+                    //Find bodies under mouse position, use vertice history if possible
+                    var bodies = [];
+                    if(this.verticeHistories.length > 0) {
+                        $.each(this.verticeHistories, function(index, body) {
+                            if(!body.verticeCopy) return;
+                            if(Matter.Vertices.contains(body.verticeCopy, this.mousePosition)) {
+                                bodies.push(body);
+                            }
+                        }.bind(this));
+                    } else {
+                        bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), this.mousePosition);
+                    }
+
+                    var units = $.grep(bodies, function(body, index) {
+                        return body.isUnit;
+                    })
+
+                    $.each(units, function(i, unit) {
+                        if(unit.hover)
+                            unit.hover({team: currentGame.playerTeam});
+                        pastHoveredUnits.push(unit);
+                    }.bind(this))
+                }.bind(this))
 
                 /*
                  * Change cursor style, set attackMove state
@@ -716,9 +745,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
                  //dispatch generic key events
                  $('body').on('keydown.selectionBox', function( event ) {
-                     if(this.selectedUnit && this.selectedUnit.unit.keyMappings[event.key]) {
-                         this.abilityDispatch = event.key;
-                     }
+                         this.abilityDispatch = event.key.toLowerCase();
                  }.bind(this));
 
                  //toggle life bars with Alt

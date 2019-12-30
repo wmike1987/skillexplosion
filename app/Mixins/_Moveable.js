@@ -1,6 +1,6 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils'], function($, Matter, PIXI, CommonGameMixin, utils) {
 
-    return {
+    var moveable = {
         //private
         isMoveable: true,
         isMoving: false,
@@ -57,6 +57,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                         if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                             if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {
                                 this.stop();
+                                this.queue.next();
                             }
                         }
                     }
@@ -151,6 +152,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             if (this.destination.x + alteredOvershootBuffer > this.body.position.x && this.destination.x - alteredOvershootBuffer < this.body.position.x) {
                 if (this.destination.y + alteredOvershootBuffer > this.body.position.y && this.destination.y - alteredOvershootBuffer < this.body.position.y) {
                     this.stop();
+                    this.queue.next();
                     return;
                 }
             }
@@ -167,6 +169,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             if (this.destination.x + this.stopOnCollisionBuffer > this.position.x && this.destination.x - this.stopOnCollisionBuffer < this.position.x) {
                 if (this.destination.y + this.stopOnCollisionBuffer > this.position.y && this.destination.y - this.stopOnCollisionBuffer < this.position.y) {
                     if (otherBody.isMoveable && !otherBody.isMoving && otherBody.destination && otherBody.destination.x == this.destination.x && otherBody.destination.y == this.destination.y) {
+                        this.queue.next();
                         this.stop();
                     }
                 }
@@ -179,8 +182,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination) {
                 this.frictionAir = .9;
-                console.info(otherBody + " colliding with me (" + this.id + ")");
-                console.info(otherBody.velocity);
                 var m = otherBody.velocity.y / otherBody.velocity.x;
                 var x = this.position.x - otherBody.position.x;
                 var b = otherBody.position.y;
@@ -201,14 +202,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
 
                 var scatterDistance = this.circleRadius * 2.8;
                 var newVelocity = {x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY};
-                console.info(newVelocity);
                 var scatterScale = scatterDistance/Matter.Vector.magnitude(newVelocity);
-                console.info(scatterScale);
                 this.unit.move(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
-                // Matter.Body.setVelocity(this, {
-                //     x: otherBody.velocity.y * swapX * gtfoScale,
-                //     y: otherBody.velocity.x * swapY * gtfoScale
-                // });
             }
         },
         groupRightClick: function(destination) {
@@ -216,4 +211,5 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         },
     }
 
+    return moveable;
 })

@@ -274,6 +274,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             knifeSound.play();
             knife.deltaTime = this.body.deltaTime;
             utils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
+            this.queue.next();
             var removeSelf = currentGame.addTickCallback(function() {
                 if(utils.bodyRanOffStage(knife)) {
                     currentGame.removeBody(knife);
@@ -299,7 +300,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     energy: 45,
                     team: options.team || 4,
                     heightAnimation: 'up',
-                    keyMappings: {
+                    actionMappings: {
                         d: dash,
                         f: throwKnife
                     }

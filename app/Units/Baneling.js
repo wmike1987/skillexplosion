@@ -81,7 +81,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 					health: 10,
 					energy: 0,
 					team: options.team || 4,
-					isSelectable: options.isSelectable
+					isSelectable: options.isSelectable,
+					actionMappings: {}
 				},
 				moveable: {
 					moveSpeed: .2

@@ -106,7 +106,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
 
         createGunner: function(number) {
             for(x = 0; x < number; x++) {
-                var gunner = Gunner();
+                var gunner = Gunner({team: currentGame.playerTeam});
                 gunner.typeId = 34;
                 gunner.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);

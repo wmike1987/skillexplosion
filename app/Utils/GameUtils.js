@@ -3,6 +3,8 @@
  */
 define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils/Styles'], function(Matter, PIXI, $, hs, h, particles, styles) {
 
+    var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
+
     var utils = {
 
         distanceBetweenBodies: function(bodyA, bodyB) {

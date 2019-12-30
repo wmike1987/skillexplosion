@@ -14,6 +14,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
             isSelectable: true,
             isAttackable: true,
             team: 4,
+            actionMappings: {},
             sufferAttack: function(damage) {
                 this.currentHealth -= damage;
                 if (this.currentHealth <= 0) {
@@ -24,11 +25,51 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
             initUnit: function() {
 
+                //Event queue handling
+                var self = this;
+                this.queue = {
+                    unit: null,
+                    queue: [],
+                    enqueue: function(event) {
+                        this.queue.push(event);
+                        if(this.queue.length == 1) {
+                            this.executeEvent(event);
+                        }
+                    },
+                    next: function() {
+                        this.queue.shift();
+                        if(this.queue.length > 0) {
+                            this.executeEvent(this.queue[0]);
+                        }
+                    },
+                    executeEvent: function(event) {
+                        self.actionMappings[event.id].call(self, event.target);
+                    },
+                    clear: function() {
+                        this.queue = [];
+                    }
+                },
+
+                this.handleEvent = function(event) {
+                    if(this.actionMappings[event.id]) {
+                        if(keyStates['Shift']) {
+                            this.queue.enqueue(event);
+                        }
+                        else {
+                            this.queue.clear();
+                            this.queue.enqueue(event);
+                        }
+                    }
+                },
+
                 Matter.Events.on(this, 'addUnit', function() {
 
                     //start unit as idling upon add
                     if (this.isoManaged)
                         this.isoManager.idle();
+
+                    //init the unit's queue
+                    this.queue.unit = this;
 
                     //establish the height of the unit
                     if (this.heightAnimation)
@@ -214,7 +255,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
             // mixin moveable and its given properties
             if (options.moveable) {
-                $.extend(newUnit, Moveable);
+                $.extend(true, newUnit, Moveable);
+                newUnit.actionMappings['move'] = newUnit.move;
                 $.extend(newUnit, options.moveable);
                 newUnit.moveableInit();
             }
