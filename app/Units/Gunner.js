@@ -232,7 +232,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
         var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
 
         var dashVelocity = .8;
-        var dash = function(destination) {
+        var dash = function(destination, command) {
             this.stop(); //stop any movement
             this._becomePeaceful(); //prevent us from honing/attacking
             this.moveSpeedAugment = this.moveSpeed;
@@ -240,11 +240,19 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             var velocityVector = Matter.Vector.sub(destination, this.position);
             var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
             Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
+            currentGame.addTimer({
+                name: 'dashDoneTimer' + this.body.id,
+                runs: 1,
+                timeLimit: 450,
+                callback: function() {
+                    command.done();
+                }
+            })
         }
 
         var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
         var knifeSpeed = 14;
-        var throwKnife = function(destination) {
+        var throwKnife = function(destination, command) {
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {
                 restitution: .95,
@@ -274,7 +282,6 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             knifeSound.play();
             knife.deltaTime = this.body.deltaTime;
             utils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
-            this.queue.next();
             var removeSelf = currentGame.addTickCallback(function() {
                 if(utils.bodyRanOffStage(knife)) {
                     currentGame.removeBody(knife);
@@ -288,6 +295,16 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     otherBody.unit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
                 }
             }.bind(this))
+
+            currentGame.addTimer({
+                name: 'knifeDoneTimer' + knife.id,
+                runs: 1,
+                killsSelf: true,
+                timeLimit: 150,
+                callback: function() {
+                    command.done();
+                }
+            })
         }
 
         return UC({
@@ -300,7 +317,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     energy: 45,
                     team: options.team || 4,
                     heightAnimation: 'up',
-                    actionMappings: {
+                    eventMappings: {
                         d: dash,
                         f: throwKnife
                     }
@@ -313,7 +330,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     cooldown: 650,
                     honeRange: 300,
                     range: 180,
-                    damage: 2,
+                    damage: 12,
                     attack: function(target) {
                         target.sufferAttack(this.damage);
                         fireSound.play();

@@ -21,16 +21,74 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         cooldown: 3000,
         damage: 6,
 
-        _initAttacker: function() {
-            if (this._attackerInit) return;
+        initAttacker: function() {
+            this.eventMappings['attackMove'] = this.attackMove;
             this.availableTargets = new Set();
-            this.tickCallbacks = [];
+            this.cooldownTimer = currentGame.addTimer({
+                name: 'cooldown' + this.body.id,
+                runs: 0,
+                timeLimit: this.cooldown,
+                callback: function() {
+                    this.canAttack = true;
+                }.bind(this)
+            });
+            utils.deathPact(this, this.cooldownTimer);
 
-            //setup collision params (idk if I need this)
-            //this.body.collisionFilter.category = this.team || 4;
+            //extend move to cease attacking
+            this.rawMove = this.move;
+            var originalMove = this.move;
+            this.move = function(destination, command) {
+                originalMove.call(this, destination, command);
+                this._becomePeaceful();
+            }
+            //also be sure to override the 'move' event mapping with the peaceful version
+            this.eventMappings['move'] = this.move;
 
-            //create improved honable and attack sensors
-            this.tickCallbacks.push(currentGame.addTickCallback(function() {
+            //extend stop
+            this.rawStop = this.stop;
+            var originalStop = this.stop;
+            this.stop = function() {
+                //nullify specified attack target
+                if (this.specifiedAttackTarget) {
+                    Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                    this.specifiedAttackTarget = null;
+                };
+                originalStop.call(this);
+                this.attackMoveDestination = null;
+                this._becomeOnAlert();
+            }
+
+            this._becomeOnAlert();
+        },
+
+        _attack: function(target) {
+            if (this.canAttack) {
+                //if we attack, pause the movement, the attacking engine will resume movement
+                this.pause();
+                if (this.attack) {
+
+                    //Make the body stationary if attacking
+                    if(!this.body.isStatic) {
+                        Matter.Body.setStatic(this.body, true);
+                    }
+
+                    //Call attack()
+                    this.attack(target);
+                    Matter.Events.trigger(this, 'attack', {
+                        direction: utils.isoDirectionBetweenPositions(this.position, target.position)
+                    });
+                }
+                this.canAttack = false;
+                this.cooldownTimer.reset();
+                this.cooldownTimer.runs = 1;
+            }
+        },
+
+        setupHoneAndTargetSensing: function(command) {
+            if(this.honeAndTargetSensorCallback)
+                currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
+
+            var sensingFunction = function() {
                 this.currentHone = null; //blitz current hone?
                 this.currentTarget = null;
                 $.each(currentGame.bodiesByTeam, function(i, obj) {
@@ -81,83 +139,18 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 }
 
                 if (this.currentHone == null && this.currentTarget == null && this.attackMoveDestination && this.canAttack && !this.isMoving) {
-                    this.attackMove(this.attackMoveDestination);
+                    this.attackMove(this.attackMoveDestination, command);
                 }
-            }.bind(this)))
-
-            Matter.Events.on(this, "onremove", function() {
-                $.each(this.tickCallbacks, function(index, cb) {
-                    currentGame.removeTickCallback(cb);
-                })
-                currentGame.removeTickCallback(this.attackHoneTick);
-                currentGame.removeTickCallback(this.attackMoveTick);
-                currentGame.invalidateTimer(this.cooldownTimer);
-            }.bind(this));
-
-            this.cooldownTimer = currentGame.addTimer({
-                name: 'cooldown' + this.body.id,
-                runs: 0,
-                timeLimit: this.cooldown,
-                callback: function() {
-                    this.canAttack = true;
-                }.bind(this)
-            });
-
-            //extend move to cease attacking
-            this.rawMove = this.move;
-            var originalMove = this.move;
-            this.move = function(destination) {
-                originalMove.call(this, destination);
-                this._becomePeaceful();
-            }
-
-            //extend stop
-            this.rawStop = this.stop;
-            var originalStop = this.stop;
-            this.stop = function() {
-                //nullify specified attack target
-                if (this.specifiedAttackTarget) {
-                    Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
-                    this.specifiedAttackTarget = null;
-                };
-                originalStop.call(this);
-                this.attackMoveDestination = null;
-                this._becomeOnAlert();
-            }
-
-            this.pauseMovement = function() {
-                this.isMoving = false;
-            }
-
-            this._becomeOnAlert();
-            this._attackerInit = true;
-        },
-
-        _attack: function(target) {
-            if (this.canAttack) {
-                //if we attack, pause the movement, the attacking engine will resume movement
-                this.pause();
-                if (this.attack) {
-
-                    //Make the body stationary if attacking
-                    if(!this.body.isStatic) {
-                        Matter.Body.setStatic(this.body, true);
-                    }
-
-                    //Call attack()
-                    this.attack(target);
-                    Matter.Events.trigger(this, 'attack', {
-                        direction: utils.isoDirectionBetweenPositions(this.position, target.position)
-                    });
-                }
-                this.canAttack = false;
-                this.cooldownTimer.reset();
-                this.cooldownTimer.runs = 1;
-            }
+            }.bind(this)
+            this.honeAndTargetSensorCallback = currentGame.addTickCallback(sensingFunction);
+            utils.deathPact(this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
         },
 
         //this assumes _moveable is mixed in
-        attackMove: function(destination) {
+        attackMove: function(destination, command) {
+
+            //setup target sensing (with command reference)
+            this.setupHoneAndTargetSensing(command);
 
             //nullify specified attack target
             if (this.specifiedAttackTarget) {
@@ -165,14 +158,13 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 this.specifiedAttackTarget = null;
             };
 
-
             this.attackMoveDestination = destination;
 
             //move unit
-            this.rawMove(destination);
+            this.rawMove(destination, command);
 
             //become alert to nearby enemies
-            this._becomeOnAlert();
+            this._becomeOnAlert(command);
         },
 
         //this assumes _moveable is mixed in
@@ -204,19 +196,22 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this._becomeOnAlert();
         },
 
-        _becomeOnAlert: function() {
+        _becomeOnAlert: function(command) {
+            //setup target sensing
+            this.setupHoneAndTargetSensing(command)
+
             /*
              * Honing callbacks
              */
             if (this.attackHoneTick) {
                 currentGame.removeTickCallback(this.attackHoneTick);
             }
-
             //constantly scan for units within honing range and move towards them, unless we have a current target.
             this.attackHoneTick = currentGame.addTickCallback(function() {
                 if (this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget)
-                    this.rawMove(this.currentHone.position);
+                    this.rawMove(this.currentHone.position, command);
             }.bind(this));
+            utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
 
             /*
              * Attacking callbacks
@@ -224,7 +219,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             if (this.attackMoveTick) {
                 currentGame.removeTickCallback(this.attackMoveTick);
             }
-
             //constantly scan for units within range and issue attack
             this.attackMoveTick = currentGame.addTickCallback(function() {
                 if (this.currentTarget) {
@@ -232,6 +226,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     this._attack(this.currentTarget);
                 }
             }.bind(this))
+            utils.deathPact(this, this.attackMoveTick, 'attackMoveTick')
         },
 
         /*

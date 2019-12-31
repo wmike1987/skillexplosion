@@ -591,10 +591,23 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         //death pact currently supports other units, bodies, tick callbacks, timers, and finally functions to execute
-        deathPact: function(master, slave) {
+        //it will also search for an existing slave with the given id and replace it with the incoming slave
+        deathPact: function(master, slave, slaveId) {
             if(!master.slaves)
                 master.slaves = [];
-            master.slaves.push(slave);
+
+            var added = false;
+            if(slaveId) {
+                slave.slaveId = slaveId;
+                $.each(master.slaves, function(i, slave) {
+                    if(slave.slaveId == slaveId) {
+                        master.slaves[i] = slave;
+                        added = true;
+                    }
+                })
+            }
+            if(!added)
+                master.slaves.push(slave);
         },
     };
 

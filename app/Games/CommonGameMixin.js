@@ -487,10 +487,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                                         body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
                                     }
                                     else {
-                                        body.unit.attackMove(canvasPoint);
+                                        body.unit.handleEvent({id: 'attackMove', target: canvasPoint})
                                     }
                                 } else if(body.isMoveable) {
-                                    body.unit.groupRightClick(canvasPoint);
+                                    body.unit.handleEvent({id: 'move', target: canvasPoint})
                                 }
                             }.bind(this))
                             this.attackMove = false; //invalidate the key pressed state
@@ -541,7 +541,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                         $.each(this.box.selectedBodies, function(key, body) {
                             if(body.isMoveable) {
                                 body.unit.handleEvent({id: 'move', target: canvasPoint})
-                                //body.unit.groupRightClick(canvasPoint);
+                                // body.unit.groupRightClick(canvasPoint);
                                 if(Object.keys(this.box.selectedBodies).length == 1)
                                     body.isSoloMover = true;
                                 else
