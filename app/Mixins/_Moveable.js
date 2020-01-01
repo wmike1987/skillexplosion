@@ -1,5 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils', 'utils/Command'],
-function($, Matter, PIXI, CommonGameMixin, utils, Command) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils', 'utils/Command', 'utils/PathFinder'],
+function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
 
     var moveable = {
         //private
@@ -66,6 +66,33 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 x: -50,
                 y: -50
             };
+
+            //////////// PATH FINDING -- FOR TESTING ONLY /////////////////////
+            var grid = new pf.Grid(currentGame.width / 100,
+                                   currentGame.height / 100);
+
+            //add an obstacle
+            var obstacle = [
+                {x: 4, y: 5},
+                {x: 4, y: 4},
+                {x: 4, y: 3},
+                {x: 4, y: 2}
+            ];
+            grid.addObstacle(obstacle);
+
+            var AStar = new pf.AStar({
+                allowDiagonal: true,
+                heuristic: "octile",
+            });
+
+            var startX = Math.floor(this.body.position.x / 100);
+            var startY = Math.floor(this.body.position.y / 100);
+            var endX = Math.floor(destination.x / 100);
+            var endY = Math.floor(destination.y / 100);
+
+            var path = AStar.findPath(startX, startY, endX, endY, grid);
+            console.log(path);
+            //////////// PATH FINDING END /////////////////////
 
             //un-static the body (attackers become static when firing)
             if(this.body.isStatic) {

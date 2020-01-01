@@ -231,6 +231,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
          */
         startGame: function(options) {
 
+            //////////// PATH FINDING -- FOR TESTING ONLY /////////////////////
+            //overlay a grid on the game map
+            utils.drawPathGrid(this.canvas);
+
+            //add an obstacle
+            var obstacle = Matter.Bodies.rectangle(450, 400, 100, 400, {});
+            Matter.Body.setStatic(obstacle, true)
+            this.addBody(obstacle);
+            //////////// PATH FINDING END /////////////////////
+
             //disable right click during game
             $('body').on("contextmenu.common", function(e){
                 e.preventDefault();
