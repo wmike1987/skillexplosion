@@ -609,6 +609,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(!added)
                 master.slaves.push(slave);
         },
+
+        // A temporary helper function to draw a grid onto the map.
+        drawPathGrid: function(canvas) {
+            this.addSomethingToRenderer("grid", "background", {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+            });
+        },
     };
 
     //aliases
