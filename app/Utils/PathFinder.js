@@ -1,14 +1,16 @@
 define(['utils/Heap'], function(Heap) {
 
-    function Tile(y, x, walkable) {
+    // A Tile is represented by its leftmost and topmost sides.
+    function Tile(i, j, sideLen, walkable) {
         // Make 'new' operator optional
         if (!(this instanceof Tile)) {
-            return new Tile(x, y);
+            return new Tile(i, j, sideLen, walkable);
         }
 
-        this.y = y
-        this.x = x
-        this.walkable = walkable || true;
+        this.x = j * sideLen;
+        this.y = i * sideLen;
+        this.sideLen = sideLen;
+        this.walkable = (walkable === undefined) ? true : walkable;
     }
 
     // Determine whether a neighboring tile is at a diagonal to this tile.
@@ -17,57 +19,63 @@ define(['utils/Heap'], function(Heap) {
         return this.x != neighbor.x && this.y != neighbor.y;
     };
 
-    // Return a Grid of width * height tiles.
-    // TODO: pass in an array of booleans for a grid of walkable/unwalkable tiles.
-    function Grid(width, height) {
+    // Return the position at the center of a Tile.
+    Tile.prototype.center = function() {
+        return {x: this.x + this.sideLen / 2, y: this.y + this.sideLen / 2};
+    };
+
+    // A Grid represents the layout of Tiles. Pass in width and height of the game
+    // map, and optionally a 2d grid of booleans to signify walkable tiles.
+    function Grid(width, height, sideLen, grid) {
         // Make 'new' operator optional
         if (!(this instanceof Grid)) {
-            return new Grid(options);
+            return new Grid(width, height, sideLen, grid);
         }
 
         this.width = width;
         this.height = height;
-
+        this.sideLen = sideLen;
         this.tiles = [];
 
-        for (var y = 0; y < this.height; ++y) {
-            this.tiles[y] = [];
-            for (var x = 0; x < this.width; ++x) {
-                this.tiles[y][x] = new Tile(y, x);
+        for (var i = 0; i < this.height / this.sideLen; ++i) {
+            this.tiles[i] = [];
+            for (var j = 0; j < this.width / this.sideLen; ++j) {
+                this.tiles[i][j] = new Tile(i, j, this.sideLen, grid[i][j]);
             }
         }
     };
 
-    // Return tile at indices x and y, or null if off grid.
+    // Return tile at the given position if it's on the grid.
     Grid.prototype.tileAt = function(x, y) {
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
             return null;
         }
-        return this.tiles[y][x];
+        var i = Math.floor(y / this.sideLen), j = Math.floor(x / this.sideLen);
+        return this.tiles[i][j];
     }
 
     // Return a list of tile's neighbors.
     Grid.prototype.neighbors = function(tile, allowDiagonal) {
         var neighbors = [];
-        var x = tile.x, y = tile.y;
+        var x = tile.x, y = tile.y, sideLen = this.sideLen;
         var up, left, right, down;
 
-        up = this.tileAt(x, y - 1);
+        up = this.tileAt(x, y - sideLen);
         if (up && up.walkable) {
             neighbors.push(up);
         }
 
-        left = this.tileAt(x - 1, y);
+        left = this.tileAt(x - sideLen, y);
         if (left && left.walkable) {
             neighbors.push(left);
         }
 
-        right = this.tileAt(x + 1, y);
+        right = this.tileAt(x + sideLen, y);
         if (right && right.walkable) {
             neighbors.push(right);
         }
 
-        down = this.tileAt(x, y + 1);
+        down = this.tileAt(x, y + sideLen);
         if (down && down.walkable) {
             neighbors.push(down);
         }
@@ -75,22 +83,22 @@ define(['utils/Heap'], function(Heap) {
         if (allowDiagonal) {
             var upLeft, upRight, downLeft, downRight;
 
-            upLeft = this.tileAt(x - 1, y - 1);
+            upLeft = this.tileAt(x - sideLen, y - sideLen);
             if (upLeft && upLeft.walkable) {
                 neighbors.push(upLeft);
             }
 
-            upRight = this.tileAt(x + 1, y - 1);
+            upRight = this.tileAt(x + sideLen, y - sideLen);
             if (upRight && upRight.walkable) {
                 neighbors.push(upRight);
             }
 
-            downLeft = this.tileAt(x - 1, y + 1);
+            downLeft = this.tileAt(x - sideLen, y + sideLen);
             if (downLeft && downLeft.walkable) {
                 neighbors.push(downLeft);
             }
 
-            downRight = this.tileAt(x + 1, y + 1);
+            downRight = this.tileAt(x + sideLen, y + sideLen);
             if (downRight && downRight.walkable) {
                 neighbors.push(downRight);
             }
@@ -109,6 +117,7 @@ define(['utils/Heap'], function(Heap) {
 
     // AStar path finding algorithm.
     // Options are allowDiagonal, weight, and heuristic.
+    // FIXME: Setting allowDiagonal to true breaks the algorithm.
     var AStar = function(options) {
         // Make 'new' operator optional.
         if (!(this instanceof AStar)) {
@@ -144,6 +153,7 @@ define(['utils/Heap'], function(Heap) {
         }
     };
 
+    // Return a list of tiles that correspond to the shortest possible path. Does not include the starting tile.
     AStar.prototype.findPath = function(startX, startY, endX, endY, grid) {
         var openList = new Heap(function(tileA, tileB) {
             return tileA.f - tileB.f;
@@ -206,14 +216,17 @@ define(['utils/Heap'], function(Heap) {
         return [];
     };
 
+    // Construct a path from tile's cameFrom property.
     AStar.prototype.constructPath = function(tile) {
         var cur = tile, path = [];
 
-        while (cur) {
+        // Follow each tile's cameFrom property until the first tile is found.
+        while (cur.cameFrom) {
             path.push(cur);
             cur = cur.cameFrom;
         }
 
+        // The resulting list starts with the destination, so reverse it here.
         path.reverse();
 
         return path;

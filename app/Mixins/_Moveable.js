@@ -21,6 +21,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
         facing: null,
         visibleSprite: null,
 
+        //path finding
+        path: null,
+
         moveableInit: function() {
             this.eventMappings['move'] = this.move;
 
@@ -67,32 +70,31 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
                 y: -50
             };
 
-            //////////// PATH FINDING -- FOR TESTING ONLY /////////////////////
-            var grid = new pf.Grid(currentGame.width / 100,
-                                   currentGame.height / 100);
-
-            //add an obstacle
-            var obstacle = [
-                {x: 4, y: 5},
-                {x: 4, y: 4},
-                {x: 4, y: 3},
-                {x: 4, y: 2}
-            ];
-            grid.addObstacle(obstacle);
-
-            var AStar = new pf.AStar({
+            // Begin the pathfinding process.
+            var pathFinder = new pf.AStar({
                 allowDiagonal: true,
                 heuristic: "octile",
+                weight: 0,
             });
 
-            var startX = Math.floor(this.body.position.x / 100);
-            var startY = Math.floor(this.body.position.y / 100);
-            var endX = Math.floor(destination.x / 100);
-            var endY = Math.floor(destination.y / 100);
+            // Create a path finding grid with current map represented as an array of bools.
+            // NOTE: The obstacle is being added in CommonGameMixin.js.
+            var grid = new pf.Grid(currentGame.width, currentGame.height, 100, [
+                [true, true, true, true, true, true, true, true, true, true, true, true],
+                [true, true, true, true, true, true, true, true, true, true, true, true],
+                [true, true, true, true, false, true, true, true, true, true, true, true],
+                [true, true, true, true, false, true, true, true, true, true, true, true],
+                [true, true, true, true, false, true, true, true, true, true, true, true],
+                [true, true, true, true, false, true, true, true, true, true, true, true],
+            ]);
 
-            var path = AStar.findPath(startX, startY, endX, endY, grid);
-            console.log(path);
-            //////////// PATH FINDING END /////////////////////
+            var startX = this.body.position.x,
+                startY = this.body.position.y,
+                endX = destination.x,
+                endY = destination.y;
+
+            // Find the shortest path using the A* algorithm.
+            this.path = pathFinder.findPath(startX, startY, endX, endY, grid);
 
             //un-static the body (attackers become static when firing)
             if(this.body.isStatic) {
@@ -100,12 +102,12 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             }
 
             //immediate set the velocity (rather than waiting for the next tick)
-            this.constantlySetVelocityTowardsDestination();
+            this.sendTowardDestination();
 
             //setup the constant move tick
             if(this.moveTick)
                 currentGame.removeRunnerCallback(this.moveTick);
-            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
+            this.moveTick = currentGame.addRunnerCallback(this.sendTowardDestination.bind(this), false);
             utils.deathPact(this, this.moveTick, 'moveTick');
 
             //Setup stop conditions
@@ -217,12 +219,29 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             }
         },
 
-        constantlySetVelocityTowardsDestination: function(event) {
-            if (!this.isMoving)
+        // Send a moveable object toward an updateable destination.
+        sendTowardDestination: function(event) {
+            // Don't do anything if the object isn't moving or there is not optimal path.
+            if (!this.isMoving || this.path.length == 0)
                 return;
 
-            //send body
-            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+            // If the object is one grid space away, send it directly to the destination.
+            if (this.path.length === 1) {
+                utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+                return;
+            }
+
+            // The next destination is the center of the next tile.
+            var nextPos = this.path[0].center();
+
+            // If the object has reached the current tile, set the current tile to the next tile on the path.
+            if (nextPos.x == this.body.position.x && nextPos.y == this.body.position.y) {
+                this.path.shift();
+                nextPos = this.path[0].center();
+            }
+
+            // Send the object to the current tile.
+            utils.sendBodyToDestinationAtSpeed(this.body, nextPos, this.moveSpeed, false);
         },
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
