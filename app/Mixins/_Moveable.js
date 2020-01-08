@@ -21,6 +21,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
         facing: null,
         visibleSprite: null,
 
+        //path-finding
+        path: null,
+
         moveableInit: function() {
             this.eventMappings['move'] = this.move;
 
@@ -68,15 +71,15 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             };
 
             //////////// PATH FINDING -- FOR TESTING ONLY /////////////////////
-            var grid = new pf.Grid(currentGame.width / 100,
-                                   currentGame.height / 100);
+            var grid = new pf.Grid(currentGame.width / 300,
+                                   currentGame.height / 300);
 
             //add an obstacle
             var obstacle = [
-                {x: 4, y: 5},
-                {x: 4, y: 4},
-                {x: 4, y: 3},
-                {x: 4, y: 2}
+                {x: 12, y: 15},
+                {x: 12, y: 12},
+                {x: 12, y: 9},
+                {x: 12, y: 6}
             ];
             grid.addObstacle(obstacle);
 
@@ -85,13 +88,13 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
                 heuristic: "octile",
             });
 
-            var startX = Math.floor(this.body.position.x / 100);
-            var startY = Math.floor(this.body.position.y / 100);
-            var endX = Math.floor(destination.x / 100);
-            var endY = Math.floor(destination.y / 100);
+            var startX = Math.floor(this.body.position.x / 300);
+            var startY = Math.floor(this.body.position.y / 300);
+            var endX = Math.floor(destination.x / 300);
+            var endY = Math.floor(destination.y / 300);
 
-            var path = AStar.findPath(startX, startY, endX, endY, grid);
-            console.log(path);
+            this.path = AStar.findPath(startX, startY, endX, endY, grid);
+            console.log(this.path);
             //////////// PATH FINDING END /////////////////////
 
             //un-static the body (attackers become static when firing)
@@ -221,8 +224,26 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             if (!this.isMoving)
                 return;
 
+            //////////////////////// AJBOND //////////////////////////////
+            // Set current path index
+            var pi = 0;
+
+            // get current position in terms of tiles
+            var curX = Math.floor(this.body.position.x / 300);
+            var curY = Math.floor(this.body.position.y / 300);
+
+            // check if the tile specified by path[pi] has been reached
+            if (this.path[pi].x == curX && this.path[pi].y == curY) {
+                if (this.path.length === 1) {
+                    utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+                    return;
+                }
+                this.path.shift();
+            }
+            ///////////////////// AJBOND /////////////////////////////////
+
             //send body
-            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+            utils.sendBodyToDestinationAtSpeed(this.body, {x: this.path[pi].x * 300, y: this.path[pi].y * 300}, this.moveSpeed, false);
         },
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
