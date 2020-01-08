@@ -95,9 +95,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             this.createMarine(1);
             this.createBane(5);
-            setTimeout(function() {
-                this.createMarine(1);
-            }.bind(this), 1000);
 
             // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
             // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
