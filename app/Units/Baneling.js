@@ -104,10 +104,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 			var nextLevelGo = false;
 
 			var bodiesToDamage = [];
-			currentGame.applyToBodiesByTeam(function(team) {baneling.team != team}, function(body) {
-				utils.distanceBetweenBodies(this.body, body) <= blastRadius && body.isAttackable;
+			currentGame.applyToBodiesByTeam(function(team) {return baneling.team != team}, function(body) {
+				return (utils.distanceBetweenBodies(this.body, body) <= blastRadius && body.isAttackable);
 			}.bind(this), function(body) {
-				body.sufferAttack(baneling.damage);
+				body.unit.sufferAttack(baneling.damage);
 			});
 			this.alreadyAttacked = true;
 			if(!this.alreadyDied)

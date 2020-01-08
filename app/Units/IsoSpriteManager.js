@@ -75,6 +75,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, utils) {
 				var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 				self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true, idle: true});
 			}})
+			utils.deathPact(this.unit, this.idleTimer);
 		}
 	}
 

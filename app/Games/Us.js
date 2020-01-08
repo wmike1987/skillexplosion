@@ -1,6 +1,6 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
-'units/Gunner', 'units/Baneling', 'pixi-filters', 'utils/GameUtils'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling, filters, utils) {
+'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils) {
 
     var targetScore = 1;
 
@@ -93,8 +93,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createGunner(1);
+            this.createMarine(1);
             this.createBane(5);
+            setTimeout(function() {
+                this.createMarine(1);
+            }.bind(this), 1000);
 
             // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
             // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
@@ -104,19 +107,19 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Gunner, Baneling,
             // utils.addSomethingToRenderer(spineNorth, {position: {x: this.getCanvasCenter().x + 50, y: this.getCanvasHeight()}, scale: {x: .55, y: .55}})
         },
 
-        createGunner: function(number) {
+        createMarine: function(number) {
             for(x = 0; x < number; x++) {
-                var gunner = Gunner({team: currentGame.playerTeam});
-                gunner.typeId = 34;
-                gunner.directional = true;
-                utils.placeBodyWithinRadiusAroundCanvasCenter(gunner, 4);
+                var marine = Marine({team: currentGame.playerTeam});
+                marine.typeId = 34;
+                marine.directional = true;
+                utils.placeBodyWithinRadiusAroundCanvasCenter(marine, 4);
 
     //          this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
               //  this.addTickCallback(function() {
               //      this.blueGlowFilter.uniforms.currentUnitPosition = {x: marble.position.x, y: marble.position.y};
               //  }.bind(this))
 
-                this.addUnit(gunner, true);
+                this.addUnit(marine, true);
             }
         },
 

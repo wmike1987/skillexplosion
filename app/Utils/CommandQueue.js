@@ -12,7 +12,7 @@ define(['jquery'], function($) {
         },
         queue.next = function(command) {
             //ignore rogue next requests
-            if(this.queue[0].id != command.id)
+            if(this.queue.length == 0 || (this.queue[0].id != command.id))
                 return;
 
             this.queue.shift();

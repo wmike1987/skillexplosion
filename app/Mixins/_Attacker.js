@@ -134,7 +134,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 }.bind(this))
 
                 //If we don't have a target anymore, and are static, un-static us
-                if(!this.currentTarget && this.body.isStatic) {
+                if(!this.currentTarget && this.body.isStatic && this.canAttack) {
+                    // if(command)
+                    //     command.done();
                     Matter.Body.setStatic(this.body, false);
                 }
 

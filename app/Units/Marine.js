@@ -1,6 +1,6 @@
 define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils'], function($, PIXI, UC, Matter, utils) {
 
-    return function Gunner(options) {
+    return function Marine(options) {
         var options = options || {};
 
         //animation settings
@@ -132,6 +132,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
         }
 
         var otherAnimations = {
+
         }
 
         var sc = {x: .3, y: .3};
@@ -243,7 +244,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             currentGame.addTimer({
                 name: 'dashDoneTimer' + this.body.id,
                 runs: 1,
-                timeLimit: 450,
+                timeLimit: 280,
                 callback: function() {
                     command.done();
                 }
@@ -312,7 +313,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 radius: options.radius || 23,
                 mass: options.mass || 8,
                 unit: {
-                    unitType: 'Gunner',
+                    unitType: 'Marine',
                     health: 45,
                     energy: 45,
                     team: options.team || 4,
@@ -320,6 +321,19 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     eventMappings: {
                         d: dash,
                         f: throwKnife
+                    },
+                    death: function() {
+                        var self = this;
+                        var anim = utils.getAnimationB({
+                            spritesheetName: 'bloodburst',
+                            animationName: 'bloodsplat',
+                            speed: .3,
+                            transform: [self.position.x, self.position.y, .3, .3]
+
+                        });
+                        utils.addSomethingToRenderer(anim);
+                        anim.play();
+                        currentGame.removeUnit(this);
                     }
                 },
                 moveable: {

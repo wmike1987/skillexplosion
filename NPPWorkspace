@@ -129,7 +129,7 @@
                 </Folder>
                 <Folder name="Units">
                     <File name="app\Units\Baneling.js" />
-                    <File name="app\Units\Gunner.js" />
+                    <File name="app\Units\Marine.js" />
                     <File name="app\Units\IsoSpriteManager.js" />
                     <File name="app\Units\Marble.js" />
                     <File name="app\Units\UnitConstructor.js" />

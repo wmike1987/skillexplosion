@@ -164,7 +164,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.SquareWithBorderDeathFrameCount = 5;
 
         	//character animations
-        	loader.add('marine0', 'app/Textures/marine-0.json');
+        	loader.add('bloodburst', 'app/Textures/BloodBurst.json');
 
         	//odds and ends
         	loader.add('unitMisc', 'app/Textures/UnitMisc.json');

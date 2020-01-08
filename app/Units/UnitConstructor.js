@@ -13,7 +13,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
          */
         function UnitConstructor(options) {
 
-            var newUnit = $.extend({}, ub, options.unit);
+            var newUnit = $.extend(true, {}, ub, options.unit);
 
             // setup health and energy
             if (this.health) {
@@ -110,7 +110,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
             // mixin moveable and its given properties
             if (options.moveable) {
-                $.extend(true, newUnit, Moveable);
+                $.extend(newUnit, Moveable);
                 $.extend(newUnit, options.moveable);
                 newUnit.moveableInit();
             }

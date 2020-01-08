@@ -918,15 +918,19 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             //remove body from world
             Matter.World.remove(this.world, [body]);
 
-            //clean up vertice history and bodiesByTeam
+            //clean up vertice history
             var index = this.verticeHistories.indexOf(body);
             if(index > -1)
                 this.verticeHistories.splice(index, 1);
 
+            //Handle bodiesByTeam. Since bodiesByTeam is a loopable datastructure let's grep instead of splice
+            //(don't want to alter the array since we might be iterating over it)
             if(body.team) {
                 var bbtindex = this.bodiesByTeam[body.team].indexOf(body);
                 if(bbtindex > -1)
-                    this.bodiesByTeam[body.team].splice(bbtindex, 1);
+                    this.bodiesByTeam[body.team] = $.grep(this.bodiesByTeam[body.team], function(obj, index) {
+                            return index != bbtindex;
+                    })
             }
 
             //clean up selection box data related to this body
@@ -944,7 +948,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             teamPredicate = teamPredicate || function(team) {return true};
             bodyPredicate = bodyPredicate || function(body) {return true};
             $.each(this.bodiesByTeam, function(i, team) {
-                if(teamPredicate(team)) {
+                if(teamPredicate(i)) {
                     $.each(team, function(i, body) {
                         if(bodyPredicate(body)) {
                             f(body);
@@ -1026,12 +1030,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 $('body').off('keypress.selectionBox'); //remove if games seem normal
             }
         },
-
-        // distanceBetweenBodies: function(bodyA, bodyB) {
-        //     var a = bodyA.position.x - bodyB.position.x;
-        //     var b = bodyA.position.y - bodyB.position.y;
-        //     return Math.sqrt(a*a + b*b);
-        // },
 
         resetGame: function() {
             if(this.score)

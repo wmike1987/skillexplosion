@@ -72,10 +72,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         /*
          * options {
-         *  numberOfFrames
+         *  (numberOfFrames
          *  startFrameNumber
          *  baseName
-         *  bufferUnderTen
+         *  bufferUnderTen)
+         *  OR
+         *  (animationName
+         *  spritesheetName)
          *  transform
          *  speed
          *  playThisManyTimes
@@ -152,7 +155,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 rendOptions.anchor.x = options.body.render.sprite.xOffset;
                 rendOptions.anchor.y = options.body.render.sprite.yOffset;
             }
-
+            
             return anim;
         },
 
