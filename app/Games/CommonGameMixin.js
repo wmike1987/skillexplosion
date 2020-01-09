@@ -692,13 +692,17 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     }
 
                     var units = $.grep(bodies, function(body, index) {
-                        return body.isUnit;
+                        return body.unit;
                     })
 
-                    $.each(units, function(i, unit) {
-                        if(unit.hover)
-                            unit.hover({team: currentGame.playerTeam});
-                        pastHoveredUnits.push(unit);
+                    $.each(pastHoveredUnits, function(i, unit) {
+                        unit.unhover();
+                    })
+                    pastHoveredUnits = [];
+                    $.each(units, function(i, body) {
+                        if(body.unit.hover)
+                            body.unit.hover({team: currentGame.playerTeam});
+                        pastHoveredUnits.push(body.unit);
                     }.bind(this))
                 }.bind(this))
 

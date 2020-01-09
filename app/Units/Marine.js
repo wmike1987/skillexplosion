@@ -312,6 +312,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 renderChildren: rc,
                 radius: options.radius || 23,
                 mass: options.mass || 8,
+                mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 unit: {
                     unitType: 'Marine',
                     health: 45,

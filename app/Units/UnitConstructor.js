@@ -108,6 +108,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
             if (options.renderChildren)
                 newUnit.renderChildren = options.renderChildren;
 
+            if (options.mainRenderSprite)
+                newUnit.mainRenderSprite = options.mainRenderSprite;
+
             // mixin moveable and its given properties
             if (options.moveable) {
                 $.extend(newUnit, Moveable);

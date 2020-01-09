@@ -74,6 +74,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 
 		var baneling = UC({
 				renderChildren: rc,
+				mainRenderSprite: 'marble',
 				radius: radius,
 				unit: {
 					unitType: 'Baneling',

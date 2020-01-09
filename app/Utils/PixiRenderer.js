@@ -213,6 +213,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				else
 					newSprite.filters = [child.filter];
 		    }
+			if(child.shader) {
+				newSprite.shader = null;
+			}
 			if(child.gameFilter) {
 		        this.pixiApp.stage.filters = [child.gameFilter];
 		    }
