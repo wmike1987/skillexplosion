@@ -2,7 +2,7 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils/Styles', 'utils/GameUtils'], function(Matter, PIXI, $, hs, h, particles, styles, utils) {
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils/Styles', 'utils/GameUtils', 'utils/PathFinder'], function(Matter, PIXI, $, hs, h, particles, styles, utils, pf) {
 
     var common = {
 
@@ -233,7 +233,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
             //////////// PATH FINDING -- FOR TESTING ONLY /////////////////////
             //overlay a grid on the game map
-            utils.drawPathGrid(this.canvas);
+            utils.drawPathGrid(this.canvasEl, 100);
 
             //add an obstacle
             var obstacle = Matter.Bodies.rectangle(450, 400, 100, 400, {});
@@ -342,6 +342,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
                 this.box.clickPointSprite.scale.x = .25;
                 this.box.clickPointSprite.scale.y = .25;
+
+                this.grid = new pf.Grid(currentGame.width, currentGame.height, 100, [
+                    [true, true, true, true, true, true, true, true, true, true, true, true],
+                    [true, true, true, true, true, true, true, true, true, true, true, true],
+                    [true, true, true, true, false, true, true, true, true, true, true, true],
+                    [true, true, true, true, false, true, true, true, true, true, true, true],
+                    [true, true, true, true, false, true, true, true, true, true, true, true],
+                    [true, true, true, true, false, true, true, true, true, true, true, true],
+                ]);
 
                 var originalX = 0;
                 var originalY = 0;

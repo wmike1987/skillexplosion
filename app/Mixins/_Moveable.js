@@ -52,7 +52,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
         },
 
         move: function(destination, command) {
-
             //if command is given, we're being executed as part of a command queue, else, fake the command object
             if(!command)
                 command = {done: function() {return;}}
@@ -74,19 +73,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             var pathFinder = new pf.AStar({
                 allowDiagonal: true,
                 heuristic: "octile",
-                weight: 0,
             });
-
-            // Create a path finding grid with current map represented as an array of bools.
-            // NOTE: The obstacle is being added in CommonGameMixin.js.
-            var grid = new pf.Grid(currentGame.width, currentGame.height, 100, [
-                [true, true, true, true, true, true, true, true, true, true, true, true],
-                [true, true, true, true, true, true, true, true, true, true, true, true],
-                [true, true, true, true, false, true, true, true, true, true, true, true],
-                [true, true, true, true, false, true, true, true, true, true, true, true],
-                [true, true, true, true, false, true, true, true, true, true, true, true],
-                [true, true, true, true, false, true, true, true, true, true, true, true],
-            ]);
 
             var startX = this.body.position.x,
                 startY = this.body.position.y,
@@ -94,7 +81,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
                 endY = destination.y;
 
             // Find the shortest path using the A* algorithm.
-            this.path = pathFinder.findPath(startX, startY, endX, endY, grid);
+            this.path = pathFinder.findPath(startX, startY, endX, endY, currentGame.grid.clone());
 
             //un-static the body (attackers become static when firing)
             if(this.body.isStatic) {
@@ -157,13 +144,8 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             }.bind(this);
             Matter.Events.on(this.body, 'onCollideActive', this.collideCallback);
 
-            //trigger movement event
-            Matter.Events.trigger(this, 'move', {
-                direction: utils.isoDirectionBetweenPositions(this.position, destination)
-            });
         },
         stop: function() {
-
             Matter.Body.setVelocity(this.body, {
                 x: 0,
                 y: 0
@@ -206,24 +188,35 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
         },
 
         generalStopCondition: function(command) {
+            //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
+            //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger
+            //overshoot buffer
+            if (this.closeToDestination(this.body.position, this.destination)) {
+                this.stop();
+                command.done();
+            }
+        },
+
+        closeToDestination: function(position, destination) {
             var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.overshootBuffer * 20;
 
             //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
             //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger
             //overshoot buffer
-            if (this.destination.x + alteredOvershootBuffer > this.body.position.x && this.destination.x - alteredOvershootBuffer < this.body.position.x) {
-                if (this.destination.y + alteredOvershootBuffer > this.body.position.y && this.destination.y - alteredOvershootBuffer < this.body.position.y) {
-                    this.stop();
-                    command.done();
+            if (destination.x + alteredOvershootBuffer > position.x && destination.x - alteredOvershootBuffer < position.x) {
+                if (destination.y + alteredOvershootBuffer > position.y && destination.y - alteredOvershootBuffer < position.y) {
+                    return true;
                 }
             }
+            return false;
         },
 
         // Send a moveable object toward an updateable destination.
         sendTowardDestination: function(event) {
             // Don't do anything if the object isn't moving or there is not optimal path.
-            if (!this.isMoving || this.path.length == 0)
+            if (!this.isMoving || this.path.length == 0) {
                 return;
+            }
 
             // If the object is one grid space away, send it directly to the destination.
             if (this.path.length === 1) {
@@ -235,13 +228,18 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             var nextPos = this.path[0].center();
 
             // If the object has reached the current tile, set the current tile to the next tile on the path.
-            if (nextPos.x == this.body.position.x && nextPos.y == this.body.position.y) {
+            if (this.closeToDestination(this.body.position, nextPos)) {
                 this.path.shift();
                 nextPos = this.path[0].center();
             }
 
             // Send the object to the current tile.
             utils.sendBodyToDestinationAtSpeed(this.body, nextPos, this.moveSpeed, false);
+
+            // Trigger movement event.
+            Matter.Events.trigger(this, 'move', {
+                direction: utils.isoDirectionBetweenPositions(this.position, nextPos)
+            });
         },
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.

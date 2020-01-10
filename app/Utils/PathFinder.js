@@ -40,7 +40,7 @@ define(['utils/Heap'], function(Heap) {
         for (var i = 0; i < this.height / this.sideLen; ++i) {
             this.tiles[i] = [];
             for (var j = 0; j < this.width / this.sideLen; ++j) {
-                this.tiles[i][j] = new Tile(i, j, this.sideLen, grid[i][j]);
+                this.tiles[i][j] = new Tile(i, j, this.sideLen, grid ? grid[i][j] : null);
             }
         }
     };
@@ -105,6 +105,21 @@ define(['utils/Heap'], function(Heap) {
         }
 
         return neighbors;
+    };
+
+    // Return a deep copy of a Grid.
+    Grid.prototype.clone = function() {
+        // Create a new grid.
+        var grid = new Grid(this.width, this.height, this.sideLen);
+
+        // Copy walkable data into tiles.
+        for (var i = 0; i < this.height / this.sideLen; ++i) {
+            for (var j = 0; j < this.width / this.sideLen; ++j) {
+                grid.tiles[i][j].walkable = this.tiles[i][j].walkable;
+            }
+        }
+
+        return grid;
     };
 
     // Add an obstacle to grid by marking all tiles it occupies as unwalkable.
