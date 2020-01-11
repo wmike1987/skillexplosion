@@ -76,9 +76,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             }),
         };
 
-        var attackAndStop = function() {
-            this.gotoAndStop(0);
-        };
+        // var attackAndStop = function() { //remove this if everything seems okay
+        //     this.gotoAndStop(0);
+        // };
 
         var attackAnimations = {
             up: utils.getSpineAnimation({
@@ -232,6 +232,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
 
+        //Dash
         var dashVelocity = .8;
         var dash = function(destination, command) {
             this.stop(); //stop any movement
@@ -251,6 +252,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             })
         }
 
+        //Knife
         var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
         var knifeSpeed = 14;
         var throwKnife = function(destination, command) {
@@ -288,7 +290,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     currentGame.removeBody(knife);
                 }
             })
-            currentGame.deathPact(knife, removeSelf);
+            utils.deathPact(knife, removeSelf);
             Matter.Events.on(knife, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
                 if(otherBody != this.body && otherBody.isAttackable) {
@@ -315,7 +317,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 unit: {
                     unitType: 'Marine',
-                    health: 45,
+                    health: 20,
                     energy: 45,
                     team: options.team || 4,
                     heightAnimation: 'up',
@@ -326,11 +328,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     death: function() {
                         var self = this;
                         var anim = utils.getAnimationB({
-                            spritesheetName: 'bloodburst',
+                            spritesheetName: 'deathAnimations',
                             animationName: 'bloodsplat',
                             speed: .3,
                             transform: [self.position.x, self.position.y, .3, .3]
-
                         });
                         utils.addSomethingToRenderer(anim);
                         anim.play();

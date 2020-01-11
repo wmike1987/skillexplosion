@@ -150,21 +150,18 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
         	loader.ssBlueDeathFrameCount = 6;
 
-        	loader.add('baneExplosion', 'app/Textures/BaneExplosionSheet.json');
-        	loader.baneExplosionFrameCount = 5;
-
         	loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
         	loader.blueCollapseFrameCount = 6;
 
         	loader.add('raindropflash', 'app/Textures/DropletFlash.json');
         	loader.raindropflashFrameCount = 3;
 
-        	loader.add('quickDrawSheet', 'app/Textures/QuickDrawSheet.json');
+        	loader.add('gauntlet', 'app/Textures/Gauntlet.json');
         	loader.DiamondFlashFrameCount = 4;
         	loader.SquareWithBorderDeathFrameCount = 5;
 
-        	//character animations
-        	loader.add('bloodburst', 'app/Textures/BloodBurst.json');
+        	//death animations
+        	loader.add('deathAnimations', 'app/Textures/DeathAnimations.json');
 
         	//odds and ends
         	loader.add('unitMisc', 'app/Textures/UnitMisc.json');

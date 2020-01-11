@@ -326,7 +326,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 this.box.selectedBodies = {};
                 this.box.permaPendingBody = null;
                 this.box.pendingSelections = {};
-                this.box.renderChildren = [{id: 'box', data: 'BlueTransparency'}];
+                this.box.renderChildren = [{id: 'box', data: 'SelectionBox'}];
 
                 //destination marker
                 this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
@@ -440,7 +440,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 //Mouse down event
                 $('body').on('mousedown.selectionBox', function(event) {
                     var canvasPoint = {x: 0, y: 0};
-                    var specifiedAttackTarget = null;
                     this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
 
                     //Left click, used for both establishing a pending body and for attack-moving and dispatching events
@@ -469,7 +468,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                                 this.box.pendingSelections[body.id] = body; //needed for a special case when the game starts - no longer need this (i think)
                                 this.box.permaPendingBody = body;
                             } else if(this.attackMove && body.isAttackable) {
-                                singleAttackTarget = body;
+                                singleAttackTarget = body.unit;
                             }
                         }.bind(this));
 
@@ -538,6 +537,38 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                             return;
                         }
 
+                        //Find bodies under mouse position, use vertice history if possible, and if there's a target
+                        //underneath, dispatch an attack event.
+                        var bodies = [];
+                        if(this.verticeHistories.length > 0) {
+                            $.each(this.verticeHistories, function(index, body) {
+                                if(!body.verticeCopy) return;
+                                if(Matter.Vertices.contains(body.verticeCopy, this.mousePosition)) {
+                                    bodies.push(body);
+                                }
+                            }.bind(this));
+                        } else {
+                            bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), this.mousePosition);
+                        }
+
+                        var singleAttackTarget = null;
+                        $.each(bodies, function(index, body) {
+                            if(body.unit && body.unit.team != currentGame.playerTeam && body.unit.isAttackable) {
+                                singleAttackTarget = body.unit;
+                                return false; //break out of each loop
+                            }
+                        })
+
+                        var attacking = false;
+                        $.each(this.box.selectedBodies, function(key, body) {
+                            if(body.isAttacker && singleAttackTarget) {
+                                body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
+                                attacking = true;
+                            }
+                        })
+                        if(attacking) return;
+
+                        //Dispatch move event
                         $.each(this.box.selectedBodies, function(key, body) {
                             if(body.isMoveable) {
                                 body.unit.handleEvent({id: 'move', target: canvasPoint})
@@ -880,7 +911,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 }
                 else if(slave.isTickCallback) {
                     this.removeTickCallback(slave);
-                    //console.info("removing " + slave)
+                    // console.info("removing " + slave.slaveId)
                 }
                 else if(slave.isTimer) {
                     this.invalidateTimer(slave);

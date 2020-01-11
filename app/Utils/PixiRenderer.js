@@ -288,7 +288,10 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			                if(something.indexOf('.png') < 0)
             					var pngSomething = something + '.png';
             					var jpgSomething = something + '.jpg';
-			                if(value.textures && value.textures[pngSomething]) {
+							if(value.textures && value.textures[something]) {
+								foundAtlasTexture = new PIXI.Sprite(value.textures[something]);
+							}
+			                else if(value.textures && value.textures[pngSomething]) {
 			                    foundAtlasTexture = new PIXI.Sprite(value.textures[pngSomething]);
 			                }
 			                else if(value.textures && value.textures[jpgSomething]) {

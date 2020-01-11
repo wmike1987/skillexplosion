@@ -79,7 +79,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 				unit: {
 					unitType: 'Baneling',
 					isoManaged: false,
-					health: 10,
+					health: 40,
 					energy: 0,
 					team: options.team || 4,
 					isSelectable: options.isSelectable,
@@ -91,7 +91,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 					honeRange: 200,
 					cooldown: 1,
 					range: radius*2+10,
-					damage: 18,
+					damage: 20,
 					attack: function() {
 
 					}
@@ -101,7 +101,14 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 		var blastRadius = radius*2.5;
 
 		baneling.attack = function(target) {
-			utils.getAnimation('bane', [this.position.x, this.position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40], .5, null, 1).play();
+			var deathAnim = utils.getAnimationB({
+				spritesheetName: 'deathAnimations',
+				animationName: 'bane',
+				speed: .45,
+				transform: [this.position.x, this.position.y, 1.3, 1.3]
+			});
+			deathAnim.play();
+			utils.addSomethingToRenderer(deathAnim);
 			var nextLevelGo = false;
 
 			var bodiesToDamage = [];

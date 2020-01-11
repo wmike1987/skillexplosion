@@ -58,6 +58,17 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
             initUnit: function() {
 
+                // setup health and energy
+                if (this.health) {
+                    this.maxHealth = this.health;
+                    this.currentHealth = this.health;
+                }
+
+                if (this.energy) {
+                    this.maxEnergy = this.energy;
+                    this.currentEnergy = this.energy;
+                }
+
                 //event handling/dispatch queue
                 this.commandQueue = CommandQueue();
                 this.handleEvent = function(event) {
@@ -188,7 +199,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                             }
                         }.bind(this))
 
-                        currentGame.deathPact(this, updateHealthTick);
+                        utils.deathPact(this, updateHealthTick);
                     }
                 }.bind(this));
 

@@ -13,7 +13,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return Math.sqrt(a*a + b*b);
         },
 
-        //need to redesign this method, it's so confusingly dumb
+        //Deprecated: replace remaining calls with getAnimationB, then rename that method to getAnimation
         getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames, startFrameNumber, bufferUnderTen) {
             var frames = [];
             var numberOfFrames = numberOfFrames || PIXI.Loader.shared[baseName+'FrameCount'] || 10;
@@ -155,7 +155,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 rendOptions.anchor.x = options.body.render.sprite.xOffset;
                 rendOptions.anchor.y = options.body.render.sprite.yOffset;
             }
-            
+
             return anim;
         },
 
@@ -602,8 +602,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var added = false;
             if(slaveId) {
                 slave.slaveId = slaveId;
-                $.each(master.slaves, function(i, slave) {
-                    if(slave.slaveId == slaveId) {
+                $.each(master.slaves, function(i, existingSlave) {
+                    if(existingSlave.slaveId == slaveId) {
                         master.slaves[i] = slave;
                         added = true;
                     }

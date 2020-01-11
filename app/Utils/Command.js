@@ -16,8 +16,8 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
         newCommand.context = options.context;
         newCommand.target = options.target;
         newCommand.done = function() {
-            console.info("command done")
-            console.info(this);
+            // console.info("command done")
+            // console.info(this);
             options.queue.next(this);
         }
 

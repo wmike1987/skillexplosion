@@ -15,17 +15,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
             var newUnit = $.extend(true, {}, ub, options.unit);
 
-            // setup health and energy
-            if (this.health) {
-                this.maxHealth = this.health;
-                this.currentHealth = this.health;
-            }
-
-            if (this.energy) {
-                this.maxEnergy = this.energy;
-                this.currentEnergy = this.energy;
-            }
-
             // create body
             var body = Matter.Bodies.circle(0, 0, options.radius, {
                 restitution: .95,
@@ -105,6 +94,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 }
             });
 
+            //Add certain properties, mix in moveable and attacker
             if (options.renderChildren)
                 newUnit.renderChildren = options.renderChildren;
 

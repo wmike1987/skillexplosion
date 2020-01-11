@@ -91,45 +91,44 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             var sensingFunction = function() {
                 this.currentHone = null; //blitz current hone?
                 this.currentTarget = null;
-                $.each(currentGame.bodiesByTeam, function(i, obj) {
-                    if (i != this.team) {
-                        var currentHoneDistance = null;
-                        var currentAttackDistance = null;
-                        $.each(obj, function(i, teamBody) {
-                            //specific attack target case
-                            if (this.specifiedAttackTarget && teamBody != this.specifiedAttackTarget) {
-                                return;
+                var currentHoneDistance = null;
+                var currentAttackDistance = null;
+
+                currentGame.applyToBodiesByTeam(function(team) {
+                    return this.team != team;
+                }.bind(this), function(body) {
+                    return body.unit && body.isAttackable;
+                }, function(body) {
+                    //if we have a target specific, ignore other units, forcing currentTarget to be the specified unit
+                    if (this.specifiedAttackTarget && body.unit != this.specifiedAttackTarget) {
+                        return;
+                    }
+
+                    var dist = utils.distanceBetweenBodies(this.body, body);
+                    if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
+
+                    //determine the closest honable target
+                    if (!currentHoneDistance) {
+                        currentHoneDistance = dist;
+                        this.currentHone = body;
+                    } else {
+                        if (dist < currentHoneDistance) {
+                            currentHoneDistance = dist;
+                            this.currentHone = body;
+                        }
+                    }
+
+                    //figure out who (if anyone) is within range to attack
+                    if (dist <= this.range) {
+                        if (!currentAttackDistance) {
+                            currentAttackDistance = dist;
+                            this.currentTarget = body.unit;
+                        } else {
+                            if (dist < currentAttackDistance) {
+                                currentAttackDistance = dist;
+                                this.currentTarget = body.unit;
                             }
-
-                            if (!teamBody.isAttackable) return;
-                            var dist = utils.distanceBetweenBodies(this.body, teamBody);
-                            if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
-
-                            //determine the closest honable target
-                            if (!currentHoneDistance) {
-                                currentHoneDistance = dist;
-                                this.currentHone = teamBody;
-                            } else {
-                                if (dist < currentHoneDistance) {
-                                    currentHoneDistance = dist;
-                                    this.currentHone = teamBody;
-                                }
-                            }
-
-                            //figure out who (if anyone) is within range to attack
-                            if (dist <= this.range) {
-                                if (!currentAttackDistance) {
-                                    currentAttackDistance = dist;
-                                    this.currentTarget = teamBody.unit;
-                                } else {
-                                    if (dist < currentAttackDistance) {
-                                        currentAttackDistance = dist;
-                                        this.currentTarget = teamBody.unit;
-                                    }
-                                }
-                            }
-
-                        }.bind(this))
+                        }
                     }
                 }.bind(this))
 
@@ -184,7 +183,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 this.stop();
                 this.specifiedAttackTarget = null;
             }.bind(this);
-            var callback = Matter.Events.on(target, 'onremove', this.specifiedCallback);
+            var callback = Matter.Events.on(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
 
             //But if we die first, remove the onremove listener
             currentGame.deathPact(this, function() {
