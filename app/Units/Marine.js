@@ -296,6 +296,64 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 if(otherBody != this.body && otherBody.isAttackable) {
                     currentGame.removeBody(knife);
                     otherBody.unit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
+                    var emitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                        config: {
+                    	"alpha": {
+                    		"start": 1,
+                    		"end": 1
+                    	},
+                    	"scale": {
+                    		"start": 0.25,
+                    		"end": 0.01,
+                    		"minimumScaleMultiplier": 1
+                    	},
+                    	"color": {
+                    		"start": "#ff0000",
+                    		"end": "#ff0000"
+                    	},
+                    	"speed": {
+                    		"start": 0,
+                    		"end": 0,
+                    		"minimumSpeedMultiplier": 1
+                    	},
+                    	"acceleration": {
+                    		"x": 0,
+                    		"y": 1800
+                    	},
+                    	"maxSpeed": 0,
+                    	"startRotation": {
+                    		"min": 0,
+                    		"max": 0
+                    	},
+                    	"noRotation": false,
+                    	"rotationSpeed": {
+                    		"min": 0,
+                    		"max": 0
+                    	},
+                    	"lifetime": {
+                    		"min": 0.25,
+                    		"max": 0.3
+                    	},
+                    	"blendMode": "normal",
+                    	"frequency": 0.01,
+                    	"emitterLifetime": 0.2,
+                    	"maxParticles": 3,
+                    	"pos": {
+                    		"x": 0,
+                    		"y": 0
+                    	},
+                    	"addAtBack": false,
+                    	"spawnType": "circle",
+                    	"spawnCircle": {
+                    		"x": 0,
+                    		"y": 0,
+                    		"r": 20
+                    	}
+                    }, texture: PIXI.Texture.fromImage('../app/Textures/particle.png')});
+
+                    // Start emitting
+                    emitter.updateSpawnPos(otherBody.position.x, otherBody.position.y);
+                    emitter.playOnceAndDestroy();
                 }
             }.bind(this))
 
@@ -350,6 +408,122 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     attack: function(target) {
                         target.sufferAttack(this.damage);
                         fireSound.play();
+
+                        //bullet emitter
+                        var emitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                            config: {
+                            	"alpha": {
+                            		"start": 1,
+                            		"end": 1
+                            	},
+                            	"scale": {
+                            		"start": .3,
+                            		"end": .2,
+                            		"minimumScaleMultiplier": 1
+                            	},
+                            	"color": {
+                            		"start": "#ffd21f",
+                            		"end": "#fff23d"
+                            	},
+                            	"speed": {
+                            		"start": 200,
+                            		"end": 200,
+                            		"minimumSpeedMultiplier": 1
+                            	},
+                            	"acceleration": {
+                            		"x": 0,
+                            		"y": 0
+                            	},
+                            	"maxSpeed": 0,
+                            	"startRotation": {
+                            		"min": 0,
+                            		"max": 360
+                            	},
+                            	"noRotation": false,
+                            	"rotationSpeed": {
+                            		"min": 0,
+                            		"max": 0
+                            	},
+                            	"lifetime": {
+                            		"min": 0.02,
+                            		"max": 0.02
+                            	},
+                            	"blendMode": "normal",
+                            	"frequency": .3/3,
+                            	"emitterLifetime": .3,
+                            	"maxParticles": 3,
+                            	"pos": {
+                            		"x": 0,
+                            		"y": 0
+                            	},
+                            	"addAtBack": false,
+                            	"spawnType": "circle",
+                            	"spawnCircle": {
+                            		"x": 0,
+                            		"y": 0,
+                            		"r": 8
+                            	}
+                        }, texture: PIXI.Texture.fromImage('../app/Textures/bulletParticle.png')})
+                        emitter.updateSpawnPos(target.position.x, target.position.y);
+                        emitter.playOnceAndDestroy();
+
+                        //blood emitter
+                        var bloodEmitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                            config: {
+                        	"alpha": {
+                        		"start": 1,
+                        		"end": 1
+                        	},
+                        	"scale": {
+                        		"start": 0.1,
+                        		"end": 0.01,
+                        		"minimumScaleMultiplier": 1
+                        	},
+                        	"color": {
+                        		"start": "#ff0000",
+                        		"end": "#ff0000"
+                        	},
+                        	"speed": {
+                        		"start": 0,
+                        		"end": 0,
+                        		"minimumSpeedMultiplier": 1
+                        	},
+                        	"acceleration": {
+                        		"x": 0,
+                        		"y": 1800
+                        	},
+                        	"maxSpeed": 0,
+                        	"startRotation": {
+                        		"min": 0,
+                        		"max": 0
+                        	},
+                        	"noRotation": false,
+                        	"rotationSpeed": {
+                        		"min": 0,
+                        		"max": 0
+                        	},
+                        	"lifetime": {
+                        		"min": 0.25,
+                        		"max": 0.3
+                        	},
+                        	"blendMode": "normal",
+                        	"frequency": 0.01,
+                        	"emitterLifetime": 0.2,
+                        	"maxParticles": 2,
+                        	"pos": {
+                        		"x": 0,
+                        		"y": 0
+                        	},
+                        	"addAtBack": false,
+                        	"spawnType": "circle",
+                        	"spawnCircle": {
+                        		"x": 0,
+                        		"y": 0,
+                        		"r": 20
+                        	}
+                        }, texture: PIXI.Texture.fromImage('../app/Textures/particle.png')});
+                        bloodEmitter.updateSpawnPos(target.position.x, target.position.y);
+                        bloodEmitter.playOnceAndDestroy();
                     },
                 },
         });

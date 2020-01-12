@@ -496,21 +496,28 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             $('*').css('cursor', style);
         },
 
-        createParticleEmitter: function(where, config) {
+        /*
+         * options {
+         *   where: stage
+         *   texture: particle texture
+         *   config: particle configuration (see https://pixijs.io/pixi-particles-editor/#)
+         * }
+         */
+        createParticleEmitter: function(options) {
             // Create a new emitter
             var emitter = new PIXI.particles.Emitter(
 
                 // The PIXI.Container to put the emitter in
                 // if using blend modes, it's important to put this
                 // on top of a bitmap, and not use the root stage Container
-                where,
+                options.where,
 
                 // The collection of particle images to use
-                [PIXI.Texture.fromImage('https://skillexplosion.com/app/Textures/particle.png')],
+                [options.texture || PIXI.Texture.fromImage('../app/Textures/particle.png')],
 
                 // Emitter configuration, edit this to change the look
                 // of the emitter
-                config
+                options.config
             );
 
             // Calculate the current time

@@ -186,7 +186,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             var callback = Matter.Events.on(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
 
             //But if we die first, remove the onremove listener
-            currentGame.deathPact(this, function() {
+            utils.deathPact(this, function() {
                 Matter.Events.off(target, 'onremove', this.specifiedCallback);
             });
 
