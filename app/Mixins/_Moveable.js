@@ -75,7 +75,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             //setup the constant move tick
             if(this.moveTick)
                 currentGame.removeRunnerCallback(this.moveTick);
-            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false, 'beforeTick');
+            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
             utils.deathPact(this, this.moveTick, 'moveTick');
 
             //Setup stop conditions
@@ -195,11 +195,14 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             var localMoveSpeed = Matter.Vector.magnitude(this.body.velocity);
 
             //accelerate into the movement and give initial movement a small increment before becoming full force
-            var deltaTime = event ? event.deltaTime : .16; //this is bad
-            if(localMoveSpeed <= 0.001) {
+            var deltaTime = event ? event.deltaTime : 16; //this is bad
+
+            //if we're at zero, let's creep up slowly
+            if(localMoveSpeed <= 0.002) {
                 localMoveSpeed += 0.001 * deltaTime;
+            //else if we're slightly better than zero, creep up a little faster
             } else if(localMoveSpeed < this.moveSpeed) {
-                localMoveSpeed += .05 * deltaTime;
+                localMoveSpeed += .035 * deltaTime;
                 if(localMoveSpeed > this.moveSpeed) {
                     localMoveSpeed = this.moveSpeed;
                 }
@@ -252,7 +255,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             var positionVector = Matter.Vector.sub(otherBody.position, this.position);
             if(this.isMoving && otherBody.unit && otherBody.unit.isAttacking) {
                 if(utils.angleBetweenTwoVectors(positionVector, this.velocity) < Math.PI/2)
-                    Matter.Body.setVelocity(this, {x: 0, y: 0})
+                {
+                    Matter.Body.setVelocity(this, {x: 0.001, y: 0.001})
+                }
             }
         },
 
