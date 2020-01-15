@@ -47,7 +47,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
             isSelectable: true,
             isAttackable: true,
             team: 4,
-            eventMappings: {},
+            eventClickMappings: {},
+            eventKeyMappings: {},
+
             sufferAttack: function(damage) {
                 this.currentHealth -= damage;
                 if (this.currentHealth <= 0) {
@@ -72,19 +74,37 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 //event handling/dispatch queue
                 this.commandQueue = CommandQueue();
                 this.handleEvent = function(event) {
-                    if(this.eventMappings[event.id]) {
-                        var newCommand = Command({
-                            queue: this.commandQueue,
-                            method: this.eventMappings[event.id],
-                            context: this,
-                            target: event.target
-                        })
-                        if(keyStates['Shift']) {
-                            this.commandQueue.enqueue(newCommand);
+                    if(event.type == 'click') {
+                        if(this.eventClickMappings[event.id]) {
+                            var newCommand = Command({
+                                queue: this.commandQueue,
+                                method: this.eventClickMappings[event.id],
+                                context: this,
+                                target: event.target
+                            })
+                            if(keyStates['Shift']) {
+                                this.commandQueue.enqueue(newCommand);
+                            }
+                            else {
+                                this.commandQueue.clear();
+                                this.commandQueue.enqueue(newCommand);
+                            }
                         }
-                        else {
-                            this.commandQueue.clear();
-                            this.commandQueue.enqueue(newCommand);
+                    } else if(event.type == 'key') {
+                        if(this.eventKeyMappings[event.id]) {
+                            var newCommand = Command({
+                                queue: this.commandQueue,
+                                method: this.eventKeyMappings[event.id],
+                                context: this,
+                                target: event.target
+                            })
+                            if(keyStates['Shift']) {
+                                this.commandQueue.enqueue(newCommand);
+                            }
+                            else {
+                                this.commandQueue.clear();
+                                this.commandQueue.enqueue(newCommand);
+                            }
                         }
                     }
                 };

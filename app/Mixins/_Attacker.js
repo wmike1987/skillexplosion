@@ -3,6 +3,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
     return {
         //private
         isAttacker: true,
+        isAttacking: false,
+        isHoning: false,
         currentTarget: null,
         currentHone: null,
         canAttack: true,
@@ -22,7 +24,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         damage: 6,
 
         initAttacker: function() {
-            this.eventMappings['attackMove'] = this.attackMove;
+            this.eventClickMappings['attackMove'] = this.attackMove;
             this.availableTargets = new Set();
             this.cooldownTimer = currentGame.addTimer({
                 name: 'cooldown' + this.body.id,
@@ -38,11 +40,12 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.rawMove = this.move;
             var originalMove = this.move;
             this.move = function(destination, command) {
+                this.isAttacking = false;
                 originalMove.call(this, destination, command);
                 this._becomePeaceful();
             }
             //also be sure to override the 'move' event mapping with the peaceful version
-            this.eventMappings['move'] = this.move;
+            this.eventClickMappings['move'] = this.move;
 
             //extend stop
             this.rawStop = this.stop;
@@ -66,13 +69,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 //if we attack, pause the movement, the attacking engine will resume movement
                 this.pause();
                 if (this.attack) {
-
-                    //Make the body stationary if attacking
-                    if(!this.body.isStatic) {
-                        Matter.Body.setStatic(this.body, true);
-                    }
-
                     //Call attack()
+                    this.isAttacking = true;
                     this.attack(target);
                     Matter.Events.trigger(this, 'attack', {
                         direction: utils.isoDirectionBetweenPositions(this.position, target.position)
@@ -132,11 +130,20 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     }
                 }.bind(this))
 
-                //If we don't have a target anymore, and are static, un-static us
-                if(!this.currentTarget && this.body.isStatic && this.canAttack) {
-                    // if(command)
-                    //     command.done();
-                    Matter.Body.setStatic(this.body, false);
+                //If we don't have a target anymore
+                if(!this.currentTarget && this.canAttack && this.isAttacking) {
+                    if(command)
+                        command.done();
+                }
+
+                if(!this.currentTarget && !this.forcedAttackStatus) {
+                    this.isAttacking = false;
+                }
+
+                if(this.currentHone) {
+                    this.isHoning = true;
+                } else {
+                    this.isHoning = false;
                 }
 
                 if (this.currentHone == null && this.currentTarget == null && this.attackMoveDestination && this.canAttack && !this.isMoving) {
@@ -209,8 +216,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             }
             //constantly scan for units within honing range and move towards them, unless we have a current target.
             this.attackHoneTick = currentGame.addTickCallback(function() {
-                if (this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget)
+                if (!this.isMoving && this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
                     this.rawMove(this.currentHone.position, command);
+                    this.isHoning = true;
+                }
             }.bind(this));
             utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
 

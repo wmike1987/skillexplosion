@@ -593,11 +593,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         //return angle to rotate something facing an original direction, towards a point
-        angleBetweenVectors: function(origin, destination, orientation) {
+        pointInDirection: function(origin, destination, orientation) {
             var originAngle = Matter.Vector.angle(origin, orientation || {x: origin.x, y: origin.y + 1});
             var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
 
             return originAngle - destAngle;
+        },
+
+        angleBetweenTwoVectors: function(vecA, vecB) {
+            return Math.acos((Matter.Vector.dot(vecA, vecB)) / (Matter.Vector.magnitude(vecA) * Matter.Vector.magnitude(vecB)))
         },
 
         //death pact currently supports other units, bodies, tick callbacks, timers, and finally functions to execute

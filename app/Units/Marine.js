@@ -269,14 +269,14 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 id: 'knife',
                 data: 'Knife',
                 scale: {x: .8, y: .8},
-                rotate: utils.angleBetweenVectors(knife.position, destination),
+                rotate: utils.pointInDirection(knife.position, destination),
             },
             {
                 id: 'shadow',
                 data: 'MarbleShadow',
                 scale: {x: 10/256, y: 50/256},
                 offset: {x: 15, y: 25},
-                rotate: utils.angleBetweenVectors(knife.position, destination),
+                rotate: utils.pointInDirection(knife.position, destination),
     			stage: "stageZero",
             }]
             currentGame.addBody(knife);
@@ -379,9 +379,12 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     energy: 45,
                     team: options.team || 4,
                     heightAnimation: 'up',
-                    eventMappings: {
+                    eventClickMappings: {
                         d: dash,
                         f: throwKnife
+                    },
+                    eventKeyMappings: {
+                        x: makeMassive
                     },
                     death: function() {
                         var self = this;
@@ -404,7 +407,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     cooldown: 650,
                     honeRange: 300,
                     range: 180,
-                    damage: 12,
+                    damage: 6,
                     attack: function(target) {
                         target.sufferAttack(this.damage);
                         fireSound.play();

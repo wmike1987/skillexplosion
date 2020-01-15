@@ -22,7 +22,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         visibleSprite: null,
 
         moveableInit: function() {
-            this.eventMappings['move'] = this.move;
+            this.eventClickMappings['move'] = this.move;
 
             //Create body sensor - the selection box collides with a slightly smaller body size
             this.smallerBody = Matter.Bodies.circle(0, 0, this.body.circleRadius - 8, {
@@ -42,6 +42,8 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             currentGame.addBody(this.smallerBody);
 
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
+
+            Matter.Events.on(this.body, 'onCollideActive', this.slowIfCollideWithAttackingUnit);
 
             //Deathpact these entities
             utils.deathPact(this, this.smallerBody);
@@ -67,18 +69,13 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 y: -50
             };
 
-            //un-static the body (attackers become static when firing)
-            if(this.body.isStatic) {
-                Matter.Body.setStatic(this.body, false);
-            }
-
             //immediate set the velocity (rather than waiting for the next tick)
             this.constantlySetVelocityTowardsDestination();
 
             //setup the constant move tick
             if(this.moveTick)
                 currentGame.removeRunnerCallback(this.moveTick);
-            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
+            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false, 'beforeTick');
             utils.deathPact(this, this.moveTick, 'moveTick');
 
             //Setup stop conditions
@@ -92,9 +89,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             this.tryForDestinationTimer = {
                 name: 'tryForDestination' + this.body.id,
                 gogogo: true,
-                timeLimit: 500,
+                timeLimit: 550,
                 callback: function() {
-                    if (this.lastPosition && this.isMoving) {
+                    if (this.lastPosition && this.isMoving && !this.isHoning) {
                         //clickPointSprite2.position = this.position;
                         if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                             if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {
@@ -159,10 +156,10 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         },
 
         pause: function(target) {
-            Matter.Body.setVelocity(this.body, {
-                x: 0,
-                y: 0
-            });
+            // Matter.Body.setVelocity(this.body, {
+            //     x: 0.001,
+            //     y: 0.001,
+            // });
             Matter.Events.trigger(this, 'pause', {});
 
             this.body.frictionAir = .9;
@@ -191,16 +188,32 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         },
 
         constantlySetVelocityTowardsDestination: function(event) {
-            if (!this.isMoving)
+            if (!this.isMoving) {
                 return;
+            }
+
+            var localMoveSpeed = Matter.Vector.magnitude(this.body.velocity);
+
+            //accelerate into the movement and give initial movement a small increment before becoming full force
+            var deltaTime = event ? event.deltaTime : .16; //this is bad
+            if(localMoveSpeed <= 0.001) {
+                localMoveSpeed += 0.001 * deltaTime;
+            } else if(localMoveSpeed < this.moveSpeed) {
+                localMoveSpeed += .05 * deltaTime;
+                if(localMoveSpeed > this.moveSpeed) {
+                    localMoveSpeed = this.moveSpeed;
+                }
+            } else {
+                localMoveSpeed = this.moveSpeed;
+            }
 
             //send body
-            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, localMoveSpeed, false);
         },
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
         avoidCallback: function(pair) {
-            if (this.isMoving) return;
+            if (this.isMoving || this.isAttacking || this.isHoning) return;
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination) {
                 this.frictionAir = .9;
@@ -225,9 +238,24 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 var scatterDistance = this.circleRadius * 2.8;
                 var newVelocity = {x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY};
                 var scatterScale = scatterDistance/Matter.Vector.magnitude(newVelocity);
-                this.unit.move(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
+
+                if(!this.isAttacker) {
+                    this.unit.move(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
+                }
+                else {
+                    this.unit.attackMove(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
+                }
             }
         },
+        slowIfCollideWithAttackingUnit: function(pair) {
+            var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
+            var positionVector = Matter.Vector.sub(otherBody.position, this.position);
+            if(this.isMoving && otherBody.unit && otherBody.unit.isAttacking) {
+                if(utils.angleBetweenTwoVectors(positionVector, this.velocity) < Math.PI/2)
+                    Matter.Body.setVelocity(this, {x: 0, y: 0})
+            }
+        },
+
         groupRightClick: function(destination) {
             this.move(destination);
         },

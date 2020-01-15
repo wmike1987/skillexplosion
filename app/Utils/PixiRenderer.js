@@ -324,7 +324,14 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				$.each(this.stages, function(key, value) {
 				    var i = this.stages[key].children.length;
 					while(i--) {
-						this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
+						//even though we're decrementing here, cleaning up pixi particles can remove more than one child at a time
+						//so getChildAt could fail. If it does, let's just move on
+						try {
+							this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
+						}
+						catch(err) {
+							//caught a child doesn't exist, which we just want to swallow and move on
+						}
 					}
 				}.bind(this));
 			} else { //have mercy on background and on persistables if wanted
@@ -334,7 +341,12 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 					while(i--) {
 						if((savePersistables && this.stages[key].getChildAt(i).persists))
 							continue;
-						this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
+						try {
+							this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
+						}
+						catch(err) {
+							//caught a child doesn't exist, which we just want to swallow and move on
+						}
 					}
 				}.bind(this));
 			}
@@ -344,7 +356,10 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		//helper method for removing the child from its parent and calling the destroy method on the object being removed
 		this.removeAndDestroyChild = function(stage, child) {
 		    stage.removeChild(child);
-		    if(child.destroy)
+			if(child.constructor.name == 'Particle') {
+				child.emitter.cleanup();
+			}
+		    else if(child.destroy)
 				child.destroy(); //i'm unsure if I need to check for a destroy method first
 		}
 

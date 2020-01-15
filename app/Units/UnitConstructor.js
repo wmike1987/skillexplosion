@@ -20,7 +20,21 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 restitution: .95,
                 frictionAir: .9,
                 mass: options.mass || 5,
+                originalMass: options.mass || 5
             });
+
+            // Matter.Events.on(body, 'onCollide', function(pair) {
+            //     var otherBody = pair.pair.bodyB == body ? pair.pair.bodyA : pair.pair.bodyB;
+            //     if(otherBody.team == body.team && otherBody.isStatic) {
+            //         Matter.Body.setPosition(body, body.positionPrev);
+            //     }
+            // }.bind(this));
+            // Matter.Events.on(body, 'onCollideActive', function(pair) {
+            //     var otherBody = pair.pair.bodyB == body ? pair.pair.bodyA : pair.pair.bodyB;
+            //     if(otherBody.team == body.team && otherBody.isStatic) {
+            //         Matter.Body.setPosition(body, body.positionPrev);
+            //     }
+            // }.bind(this));
 
             body.unit = newUnit; //reference to parent
             newUnit.body = body; //reference to body
@@ -53,6 +67,16 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
             Object.defineProperty(body, 'isMoving', {
                 get: function() {
                     return this.unit.isMoving;
+                }
+            });
+            Object.defineProperty(body, 'isAttacking', {
+                get: function() {
+                    return this.unit.isAttacking;
+                }
+            });
+            Object.defineProperty(body, 'isHoning', {
+                get: function() {
+                    return this.unit.isHoning;
                 }
             });
             Object.defineProperty(body, 'renderlings', {

@@ -85,7 +85,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 					isSelectable: options.isSelectable,
 				},
 				moveable: {
-					moveSpeed: .2
+					moveSpeed: 0.001
 				},
 				attacker: {
 					honeRange: 200,

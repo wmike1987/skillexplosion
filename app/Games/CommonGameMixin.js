@@ -333,6 +333,21 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 this.box.clickPointSprite.scale.x = .25;
                 this.box.clickPointSprite.scale.y = .25;
 
+                //update selected bodies upon body removal
+                Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
+                    var newSelection = {};
+                    $.each(this.box.selectedBodies, function(key, body) {
+                        if(body != event.object[0]) {
+                            newSelection[key] = body;
+                        }
+                    });
+                    this.box.selectedBodies = newSelection;
+                    //Re-assign the selected unit
+                    if(Object.keys(this.box.selectedBodies).length > 0) {
+                        this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
+                    }
+                }.bind(this));
+
                 var originalX = 0;
                 var originalY = 0;
                 var scaleX = 1;
@@ -396,7 +411,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         this.box.selectedBodies = $.extend({}, this.box.pendingSelections);
                     }
 
-                    //Asssign the selected unit
+                    //Assign the selected unit
                     if(Object.keys(this.box.selectedBodies).length > 0) {
                         this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
                     }
@@ -486,10 +501,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                                         body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
                                     }
                                     else {
-                                        body.unit.handleEvent({id: 'attackMove', target: canvasPoint})
+                                        body.unit.handleEvent({type: 'click', id: 'attackMove', target: canvasPoint})
                                     }
                                 } else if(body.isMoveable) {
-                                    body.unit.handleEvent({id: 'move', target: canvasPoint})
+                                    body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint})
                                 }
                             }.bind(this))
                             this.attackMove = false; //invalidate the key pressed state
@@ -522,7 +537,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         //Dispatch ability on this click
                         if(this.abilityDispatch) {
                             if(this.selectedUnit) {
-                                this.selectedUnit.unit.handleEvent({id: this.abilityDispatch, target: canvasPoint});
+                                this.selectedUnit.unit.handleEvent({type: 'click', id: this.abilityDispatch, target: canvasPoint});
                                 this.abilityDispatch = false;
                             }
                         }
@@ -571,7 +586,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         //Dispatch move event
                         $.each(this.box.selectedBodies, function(key, body) {
                             if(body.isMoveable) {
-                                body.unit.handleEvent({id: 'move', target: canvasPoint})
+                                body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint})
                                 // body.unit.groupRightClick(canvasPoint);
                                 if(Object.keys(this.box.selectedBodies).length == 1)
                                     body.isSoloMover = true;
@@ -781,6 +796,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                  //dispatch generic key events
                  $('body').on('keydown.selectionBox', function( event ) {
                          this.abilityDispatch = event.key.toLowerCase();
+                         // if(this.selectedUnit)
+                         //    this.selectedUnit.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: this.mousePosition});
+                         $.each(this.box.selectedBodies, function(prop, obj) {
+                             obj.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: this.mousePosition});
+                         }.bind(this))
                  }.bind(this));
 
                  //toggle life bars with Alt
@@ -1193,7 +1213,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             var self = this;
             var tickDeltaWrapper = function(event) {
                 if(tickDeltaWrapper.removePending) return;
-                deltaTime = event.timestamp - lastTimestamp;
+                if(lastTimestamp) {
+                    deltaTime = event.timestamp - lastTimestamp;
+                }
+                else {
+                    deltaTime = .1666;
+                }
                 lastTimestamp = event.timestamp;
                 event.deltaTime = deltaTime;
                 if(invincible || (self.gameState == 'playing'))
