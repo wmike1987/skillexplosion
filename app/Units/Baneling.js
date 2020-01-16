@@ -10,7 +10,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 		var pendingSelectionTint = 0x70ff32;
 		var highlightTint = 0xFFFFFF;
 		var radius = 20;
-		var rc = [{
+		var rc = [
+			{
     			    id: 'marble',
     			    data: 'GlassMarble',
     			    tint: tint,
@@ -85,7 +86,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 					isSelectable: options.isSelectable,
 				},
 				moveable: {
-					moveSpeed: 0.001
+					moveSpeed: 1.8
 				},
 				attacker: {
 					honeRange: 200,
@@ -98,7 +99,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 		}});
 
 		//create attack blast radius
-		var blastRadius = radius*2.5;
+		var blastRadius = radius*4;
 
 		baneling.attack = function(target) {
 			var deathAnim = utils.getAnimationB({

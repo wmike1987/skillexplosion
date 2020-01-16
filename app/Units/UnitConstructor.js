@@ -23,21 +23,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 originalMass: options.mass || 5
             });
 
-            // Matter.Events.on(body, 'onCollide', function(pair) {
-            //     var otherBody = pair.pair.bodyB == body ? pair.pair.bodyA : pair.pair.bodyB;
-            //     if(otherBody.team == body.team && otherBody.isStatic) {
-            //         Matter.Body.setPosition(body, body.positionPrev);
-            //     }
-            // }.bind(this));
-            // Matter.Events.on(body, 'onCollideActive', function(pair) {
-            //     var otherBody = pair.pair.bodyB == body ? pair.pair.bodyA : pair.pair.bodyB;
-            //     if(otherBody.team == body.team && otherBody.isStatic) {
-            //         Matter.Body.setPosition(body, body.positionPrev);
-            //     }
-            // }.bind(this));
-
             body.unit = newUnit; //reference to parent
             newUnit.body = body; //reference to body
+
+            //Set infrastructure attributes
+            if (options.renderChildren)
+                newUnit.renderChildren = options.renderChildren;
+
+            if (options.mainRenderSprite)
+                newUnit.mainRenderSprite = options.mainRenderSprite;
 
             /*
              * We cycle through matter bodies rather than units in many places (PixiRenderer mainly),
@@ -117,13 +111,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                     return this.body.id;
                 }
             });
-
-            //Add certain properties, mix in moveable and attacker
-            if (options.renderChildren)
-                newUnit.renderChildren = options.renderChildren;
-
-            if (options.mainRenderSprite)
-                newUnit.mainRenderSprite = options.mainRenderSprite;
 
             // mixin moveable and its given properties
             if (options.moveable) {

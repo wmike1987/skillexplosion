@@ -1,6 +1,6 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
-'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils) {
+'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic) {
 
     var targetScore = 1;
 
@@ -93,8 +93,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(40);
-            this.createBane(30);
+            this.createMarine(1);
+            this.createMedic(1);
+            this.createBane(2);
 
             // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
             // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
@@ -110,13 +111,17 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 marine.typeId = 34;
                 marine.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(marine, 4);
-
-    //          this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};
-              //  this.addTickCallback(function() {
-              //      this.blueGlowFilter.uniforms.currentUnitPosition = {x: marble.position.x, y: marble.position.y};
-              //  }.bind(this))
-
                 this.addUnit(marine, true);
+            }
+        },
+
+        createMedic: function(number) {
+            for(x = 0; x < number; x++) {
+                var medic = Medic({team: currentGame.playerTeam});
+                medic.typeId = 35;
+                medic.directional = true;
+                utils.placeBodyWithinRadiusAroundCanvasCenter(medic, 4);
+                this.addUnit(medic, true);
             }
         },
 

@@ -76,10 +76,6 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             }),
         };
 
-        // var attackAndStop = function() { //remove this if everything seems okay
-        //     this.gotoAndStop(0);
-        // };
-
         var attackAnimations = {
             up: utils.getSpineAnimation({
                 spine: spineNorth,
@@ -375,8 +371,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 unit: {
                     unitType: 'Marine',
-                    health: 20,
-                    energy: 45,
+                    health: 50,
+                    energy: 20,
                     team: options.team || 4,
                     heightAnimation: 'up',
                     eventClickMappings: {

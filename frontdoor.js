@@ -179,6 +179,12 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('marineSW', 'app/SpineAssets/Marine Exports/MarineSW/SW.json');
             loader.add('marineW', 'app/SpineAssets/Marine Exports/MarineW/W.json');
 
+            loader.add('medicN', 'app/SpineAssets/Medic Exports/MedicN/N.json');
+            loader.add('medicNW', 'app/SpineAssets/Medic Exports/MedicNW/NW.json');
+            loader.add('medicS', 'app/SpineAssets/Medic Exports/MedicS/S.json');
+            loader.add('medicSW', 'app/SpineAssets/Medic Exports/MedicSW/SW.json');
+            loader.add('medicW', 'app/SpineAssets/Medic Exports/MedicW/W.json');
+
             loader.load();
             loader.once('complete', function() {
                 loader.loaderDeferred.resolve();

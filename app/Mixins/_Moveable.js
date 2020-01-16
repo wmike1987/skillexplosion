@@ -254,7 +254,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             var positionVector = Matter.Vector.sub(otherBody.position, this.position);
             if(this.isMoving && otherBody.unit && otherBody.unit.isAttacking) {
-                if(utils.angleBetweenTwoVectors(positionVector, this.velocity) < Math.PI/2)
+                if(utils.angleBetweenTwoVectors(positionVector, this.velocity) < Math.PI/2.25)
                 {
                     Matter.Body.setVelocity(this, {x: 0.001, y: 0.001})
                 }

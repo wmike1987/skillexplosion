@@ -93,10 +93,16 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 var currentAttackDistance = null;
 
                 currentGame.applyToBodiesByTeam(function(team) {
-                    return this.team != team;
+                    if(this.attackHoneTeamPredicate)
+                        return this.attackHoneTeamPredicate(team);
+                    else
+                        return this.team != team;
                 }.bind(this), function(body) {
-                    return body.unit && body.isAttackable;
-                }, function(body) {
+                    if(this.attackHoneBodyPredicate)
+                        return this.attackHoneBodyPredicate(body);
+                    else
+                        return body.unit && body.isAttackable;
+                }.bind(this), function(body) {
                     //if we have a target specific, ignore other units, forcing currentTarget to be the specified unit
                     if (this.specifiedAttackTarget && body.unit != this.specifiedAttackTarget) {
                         return;
