@@ -261,7 +261,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 }, attacker: {
                     attackAnimations: healAnimations,
                     cooldown: 180,
-                    honeRange: 400,
+                    honeRange: 300,
                     range: 50,
                     healAmount: 1,
                     attack: function(target) {
@@ -272,9 +272,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     attackHoneTeamPredicate: function(team) {
                         return this.team == team;
                     },
-                    attackHoneBodyPredicate: function(body) {
-                        if(body.unit && body.isAttackable && this.body != body) {
-                            return body.unit.maxHealth - body.unit.currentHealth;
+                    canTargetUnit: function(unit) {
+                        if(unit.isAttackable && unit != this) {
+                            return unit.maxHealth - unit.currentHealth;
                         }
                         return false;
                     },

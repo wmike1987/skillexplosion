@@ -58,6 +58,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 Matter.Events.trigger(this, 'sufferedAttack', damage);
             },
 
+            canTargetUnit: function(unit) {
+                return unit.isAttackable && this.team != unit.team;
+            },
+
             initUnit: function() {
 
                 // setup health and energy

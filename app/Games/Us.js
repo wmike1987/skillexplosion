@@ -93,9 +93,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(1);
-            this.createMedic(1);
-            this.createBane(2);
+            this.createMarine(10);
+            this.createMedic(4);
+            this.createBane(20);
 
             // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
             // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);

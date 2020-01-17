@@ -43,8 +43,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
 
-            Matter.Events.on(this.body, 'onCollideActive', this.slowIfCollideWithAttackingUnit);
-
             //Deathpact these entities
             utils.deathPact(this, this.smallerBody);
             utils.deathPact(this, smallerCallback);
@@ -68,6 +66,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 x: -50,
                 y: -50
             };
+
+            //return body to non Sleeping
+            Matter.Sleeping.set(this.body, false);
 
             //immediate set the velocity (rather than waiting for the next tick)
             this.constantlySetVelocityTowardsDestination();
@@ -216,7 +217,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
         avoidCallback: function(pair) {
-            if (this.isMoving || this.isAttacking || this.isHoning) return;
+            if (this.isMoving || this.isAttacking || this.isHoning || this.isSleeping) return;
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination) {
                 this.frictionAir = .9;
@@ -247,16 +248,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 }
                 else {
                     this.unit.attackMove(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
-                }
-            }
-        },
-        slowIfCollideWithAttackingUnit: function(pair) {
-            var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
-            var positionVector = Matter.Vector.sub(otherBody.position, this.position);
-            if(this.isMoving && otherBody.unit && otherBody.unit.isAttacking) {
-                if(utils.angleBetweenTwoVectors(positionVector, this.velocity) < Math.PI/2.25)
-                {
-                    Matter.Body.setVelocity(this, {x: 0.001, y: 0.001})
                 }
             }
         },

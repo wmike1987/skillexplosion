@@ -51,7 +51,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.rawStop = this.stop;
             var originalStop = this.stop;
             this.stop = function() {
-                //nullify specified attack target
                 if (this.specifiedAttackTarget) {
                     Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
                     this.specifiedAttackTarget = null;
@@ -70,6 +69,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 this.pause();
                 if (this.attack) {
                     //Call attack()
+                    Matter.Sleeping.set(this.body, true);
                     this.isAttacking = true;
                     this.attack(target);
                     Matter.Events.trigger(this, 'attack', {
@@ -98,10 +98,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     else
                         return this.team != team;
                 }.bind(this), function(body) {
-                    if(this.attackHoneBodyPredicate)
-                        return this.attackHoneBodyPredicate(body);
-                    else
-                        return body.unit && body.isAttackable;
+                    if(body.unit) {
+                        return this.canTargetUnit(body.unit);
+                    } else {
+                        return false;
+                    }
                 }.bind(this), function(body) {
                     //if we have a target specific, ignore other units, forcing currentTarget to be the specified unit
                     if (this.specifiedAttackTarget && body.unit != this.specifiedAttackTarget) {
@@ -140,9 +141,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 if(!this.currentTarget && this.canAttack && this.isAttacking) {
                     if(command)
                         command.done();
-                }
 
-                if(!this.currentTarget && !this.forcedAttackStatus) {
+                    Matter.Sleeping.set(this.body, true);
                     this.isAttacking = false;
                 }
 
@@ -184,7 +184,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         //this assumes _moveable is mixed in
         attackSpecificTarget: function(destination, target) {
 
-            if(target.team == this.team) {
+            if(!this.canTargetUnit(target)) {
                 this.attackMove({x: target.position.x, y: target.position.y});
                 return;
             };
@@ -222,7 +222,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             }
             //constantly scan for units within honing range and move towards them, unless we have a current target.
             this.attackHoneTick = currentGame.addTickCallback(function() {
-                if (!this.isMoving && this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
+                //delete this comment if everything seem okay
+                if (/*!this.isMoving && */this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
                     this.rawMove(this.currentHone.position, command);
                     this.isHoning = true;
                 }

@@ -362,6 +362,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     command.done();
                 }
             })
+        };
+
+        var setSleeping = function() {
+            Matter.Sleeping.set(this.body, !this.body.isSleeping);
         }
 
         return UC({
@@ -380,6 +384,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                         f: throwKnife
                     },
                     eventKeyMappings: {
+                        x: setSleeping,
                     },
                     death: function() {
                         var self = this;
