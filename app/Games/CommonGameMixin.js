@@ -568,7 +568,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
                         var singleAttackTarget = null;
                         $.each(bodies, function(index, body) {
-                            if(body.unit && body.unit.team != currentGame.playerTeam && body.unit.isAttackable) {
+                            if(body.isAttackable) {
                                 singleAttackTarget = body.unit;
                                 return false; //break out of each loop
                             }

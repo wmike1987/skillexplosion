@@ -107,6 +107,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             //set state
             this.attackMoveDestination = destination;
             this.attackMoving = true;
+            this.isAttacking = false;
+            this.isHoning = false;
 
             //move unit, rawly
             this.rawMove(this.attackMoveDestination, commandObj);
@@ -246,13 +248,24 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     this.isHoning = false;
                 }
 
-                //if we're not attack moving but have an attackMoveDestination and we have no target or hone, do another
-                //this means we've finished our attack or hone and need to resume the attackMove command
+                //This clause is important:
+                //If we're here, we're on alert...
+                //Either we were "still" and on alert, were given an attack move command, or were given a specific target
+                //If we were "still" and no longer have a target or a hone, let's stop.
+                //If we were given an "attack move" command and no longer have a target or a hone, let's issue an identical attackMove command
+                //If we were given a "specific target" to attack, we we only want to naturally stop if we can no longer attack it
                 if (!this.currentHone && !this.currentTarget) {
+                    //given attack move, reissue the attack move
                     if(this.attackMoveDestination && !this.attackMoving && this.canAttack) {
                         this.attackMove(this.attackMoveDestination, commandObj);
-                    } else if(!this.attackMoveDestination && !this.attackMoving) {
-                        this.stop();
+                    //we were still, let's stop
+                    } else if(!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget) {
+                            this.stop();
+                    //else let's check to see if our specified attack target can still be targeted
+                    } else if(this.specifiedAttackTarget) {
+                        if(!this.canTargetUnit(this.specifiedAttackTarget)) {
+                            this.stop();
+                        }
                     }
                 }
             }.bind(this)
