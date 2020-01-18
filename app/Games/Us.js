@@ -93,9 +93,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(20);
-            this.createMedic(5);
-            this.createBane(30);
+            this.createMarine(1);
+            this.createMedic(1);
+            this.createBane(4);
         },
 
         createMarine: function(number) {
@@ -120,7 +120,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
         createBane: function(number) {
             for(x = 0; x < number; x++) {
-                var bane = Baneling({team: 2, isSelectable: false});
+                //var tint = x%2==0 ? 0xff0000 : null;
+                var bane = Baneling({team: 4, isSelectable: false});
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 4);
 
     //          this.blueGlowFilter.uniforms.unitStart = {x: marble.position.x, y: marble.position.y};

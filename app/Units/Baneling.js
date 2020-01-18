@@ -14,7 +14,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 			{
     			    id: 'marble',
     			    data: 'GlassMarble',
-    			    tint: tint,
+    			    tint: options.tint || tint,
     			    scale: {x: radius*2/64, y: radius*2/64},
     			    rotate: 'none',
     			}, {
@@ -33,7 +33,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
     			    scale: {x: radius*2/64, y: radius*2/64},
     			    rotate: 'none',
     			    initialRotate: 'none'
-    			}, {
+    			}, /*{
     			    id: 'marbleShadow',
     			    data: 'MarbleShadow',
     			    scale: {x: radius*2.5/256, y: radius*2.5/256},
@@ -55,7 +55,17 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
     			    tint: highlightTint,
     			    stage: "stageZero",
     			    offset: {x: 12, y: 12}
-    			}, {
+    			},*/
+				{
+		            id: 'shadow',
+		            data: 'IsoShadow',
+		            scale: {x: .75, y: .75},
+		            visible: true,
+		            avoidIsoMgr: true,
+		            rotate: 'none',
+		            stage: "stageZero",
+		            offset: {x: 0, y: 22}
+				}, {
     			    id: 'selected',
     			    data: 'MarbleSelected',
     			    scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},

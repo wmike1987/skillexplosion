@@ -9,13 +9,31 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		var appendToElement = appendToElement || document.body;
 
 		this.engine = engine;
-		this.stages = {background: new PIXI.Container, stageZero: new PIXI.Container, stageOne: new PIXI.Container, stage: new PIXI.Container, foreground: new PIXI.Container, hud: new PIXI.Container};
-		$.each(this.stages, function(name, stage) {
 
-		})
+		//create stages (these don't handle sorting, see the laying group below)
+		this.stages = {background: new PIXI.Container, stageZero: new PIXI.Container, stageOne: new PIXI.Container, stage: new PIXI.Container, foreground: new PIXI.Container, hud: new PIXI.Container};
+
+		//create the layering groups
+		var i = 0;
+		this.layerGroups = {};
+		$.each(this.stages, function(key, stage) {
+			this.layerGroups[key] = new PIXI.display.Group(i, !options.noZSorting);
+			this.layerGroups[key].on('sort', (sprite) => {
+			    sprite.zOrder = sprite.y;
+			});
+			i += 1;
+		}.bind(this));
+
+		//create the display stage
+		this.stage = new PIXI.display.Stage();
+
+		//Add the stages, and create a layer for the associated group as well. The layer API is very confusing...
+		$.each(this.layerGroups, function(key, layerGroup) {
+			this.stage.addChild(new PIXI.display.Layer(layerGroup));
+			this.stage.addChild(this.stages[key]);
+		}.bind(this))
 
 		this.setBackground = function(imagePath, options) {
-			//var background = new PIXI.Sprite(imagePath);
 			var background = this.itsMorphinTime(imagePath);
 
 			if(options.backgroundFilter) {
@@ -127,10 +145,8 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			this.stages.background.interactive = true;
 			this.interactiveObject = this.stages.background;
 
-			//add each of our stages to the main pixi stage
-			$.each(this.stages, function(key, value) {
-				this.pixiApp.stage.addChild(value);
-			}.bind(this));
+			//set the pixiApp stage to be the display.Stage obj
+			this.pixiApp.stage = this.stage;
 
 			//add pixi canvas to dom
 			appendToElement = '#' + appendToElement;
@@ -256,6 +272,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			where = where || 'stage';
 			something.myLayer = where;
 			this.stages[where].addChild(something);
+			something.parentGroup = this.layerGroups[where];
 		};
 
 		//Method meant to unify creating a sprite based on various input

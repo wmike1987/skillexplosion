@@ -14,7 +14,8 @@ requirejs.config({
 	    matterCollisionPlugin: "https://cdn.jsdelivr.net/npm/matter-collision-events@0.1.7/build/matter-collision-events",
 	    particles: "pixi-particles/pixi-particles",
 		'pixi-filters': "pixi-filters/pixi-filters",
-        'pixi-spine': "pixi-spine/pixi-spine"
+        'pixi-spine': "pixi-spine/pixi-spine",
+        'pixi-layers': "pixi-layers/pixi-layers"
     },
     shim: {
         "pixi": {
@@ -132,9 +133,10 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 
     window.PIXI = PIXI;
 
-    //register pixi spine plugin, the pixi-spine lib adds itself to the PIXI namespace, wish there were a better way to do this
+    //Register pixi spine plugin, the pixi-spine lib adds itself to the PIXI namespace, wish there were a better way to do this
     //but this is essentially taken from https://github.com/pixijs/pixi-spine/
-    require(['pixi-spine'], function(spine) {
+    //Same with pixi-layers
+    require(['pixi-spine', 'pixi-layers'], function(spine, pixiLayers) {
         	var loader = PIXI.Loader.shared;
         	loader.loaderDeferred = $.Deferred();
 
