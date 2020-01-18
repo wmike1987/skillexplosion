@@ -135,18 +135,13 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 }
             }.bind(this);
             Matter.Events.on(this.body, 'onCollideActive', this.collideCallback);
-
-            //trigger movement event
-            Matter.Events.trigger(this, 'move', {
-                direction: utils.isoDirectionBetweenPositions(this.position, destination)
-            });
         },
         stop: function() {
 
             //stop the unit
             Matter.Body.setVelocity(this.body, {
-                x: 0,
-                y: 0
+                x: 0.1,
+                y: 0.1
             });
 
             //return body to non Sleeping
@@ -176,25 +171,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             this.isSoloMover = false;
         },
 
-        //I'm not sure this method did anything, remove it if everything seems ok
-        pause: function(target) {
-            // Matter.Body.setVelocity(this.body, {
-            //     x: 0.001,
-            //     y: 0.001,
-            // });
-            Matter.Events.trigger(this, 'pause', {});
-
-            this.body.frictionAir = .9;
-            this.isMoving = false;
-            this.isSoloMover = false;
-            this.tryForDestinationTimer.paused = true;
-        },
-
-        resume: function() {
-            this.isMoving = true;
-            this.body.frictionAir = 0;
-        },
-
         generalStopCondition: function(commandObj) {
             var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.overshootBuffer * 20;
 
@@ -212,7 +188,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         constantlySetVelocityTowardsDestination: function(event, options) {
             var options = options || {};
 
-            if (!this.isMoving) {
+            if (!this.isMoving || this.isAttacking) {
                 return;
             }
 
@@ -237,6 +213,11 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
             //send body
             utils.sendBodyToDestinationAtSpeed(this.body, this.destination, localMoveSpeed, false);
+
+            //trigger movement event (for direction)
+            Matter.Events.trigger(this, 'move', {
+                direction: utils.isoDirectionBetweenPositions(this.position, this.destination)
+            });
         },
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
@@ -246,7 +227,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
             //otherwise, let's avoid the mover
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
-            if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination) {
+            if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination && otherBody.speed > 0) {
                 this.frictionAir = .9;
                 var m = otherBody.velocity.y / otherBody.velocity.x;
                 var x = this.position.x - otherBody.position.x;

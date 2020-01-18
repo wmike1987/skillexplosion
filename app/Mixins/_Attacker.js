@@ -73,9 +73,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
 
         _attack: function(target) {
             if (this.canAttack && this.attack) {
-                //Remove this if all is okay
-                //if we attack, pause the movement, the attacking engine will resume movement
-                //this.pause();
 
                 //setting sleep causes the body to not be pushed by other bodies
                 Matter.Sleeping.set(this.body, true);
@@ -178,7 +175,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             //if we have a target, attack it
             this.attackMoveTick = currentGame.addTickCallback(function() {
                 if (this.currentTarget) {
-                    //this.pause(); //pause when we're in range of our target
                     this._attack(this.currentTarget);
                 }
             }.bind(this))

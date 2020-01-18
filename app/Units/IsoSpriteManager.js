@@ -16,14 +16,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, utils) {
 				this.currentDirection = event.direction;
 			}.bind(this))
 
-			//this comes from moveable
-			Matter.Events.on(this.unit, 'pause', function(event) {
-				if(this.unit.isMoving) {
-					this.currentAnimation.stop();
-					this.currentAnimation.isStopped = true;
-				}
-			}.bind(this))
-
 			//turn on idle
 			Matter.Events.on(this.unit, 'stop', function(event) {
 				if(!this.idleTimer)
