@@ -230,7 +230,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         //Dash
         var dashVelocity = .8;
-        var dash = function(destination, command) {
+        var dash = function(destination, commandObj) {
             this.stop(); //stop any movement
             this._becomePeaceful(); //prevent us from honing/attacking
             this.moveSpeedAugment = this.moveSpeed;
@@ -243,7 +243,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 runs: 1,
                 timeLimit: 280,
                 callback: function() {
-                    command.done();
+                    commandObj.command.done();
                 }
             })
         }
@@ -251,7 +251,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
         //Knife
         var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
         var knifeSpeed = 14;
-        var throwKnife = function(destination, command) {
+        var throwKnife = function(destination, commandObj) {
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {
                 restitution: .95,
@@ -359,7 +359,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 killsSelf: true,
                 timeLimit: 150,
                 callback: function() {
-                    command.done();
+                    commandObj.command.done();
                 }
             })
         };

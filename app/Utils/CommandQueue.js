@@ -7,7 +7,11 @@ define(['jquery'], function($) {
         queue.enqueue = function(command) {
             this.queue.push(command);
             if(this.queue.length == 1) {
-                this.executeCommand(command);
+                var commandObj = {
+                    command: this.queue[0],
+                    queueContext: {}
+                };
+                this.executeCommand(commandObj);
             }
         },
         queue.next = function(command) {
@@ -15,17 +19,22 @@ define(['jquery'], function($) {
             if(this.queue.length == 0 || (this.queue[0].id != command.id))
                 return;
 
-            this.queue.shift();
+            var lastCommand = this.queue.shift();
+            var queueContext = {last: lastCommand};
             if(this.queue.length > 0) {
-                this.executeCommand(this.queue[0]);
+                var commandObj = {
+                    command: this.queue[0],
+                    queueContext: queueContext
+                }
+                this.executeCommand(commandObj);
             }
         },
 
         //Execute the command, and pass the command object as a parameter
-        queue.executeCommand = function(command) {
+        queue.executeCommand = function(commandObj) {
             // console.info("executing command from queue: ")
             // console.info(command);
-            command.method.call(command.context, command.target, command);
+            commandObj.command.method.call(commandObj.command.context, commandObj.command.target, commandObj);
         },
         queue.clear = function() {
             this.queue = [];

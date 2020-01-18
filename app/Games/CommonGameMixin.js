@@ -521,8 +521,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         //handle control+click on mousedown (this is based on the sc2 controls)
                         if(keyStates['Control'] && !this.box.selectionBoxActive && pendingBodyCount == 1) {//handle control clicking
                             var likeTypes = $.each(Matter.Composite.allBodies(this.renderer.engine.world), function(index, body) {
-                                if(body.isUnit) {
-                                    if(body.unit.unitType == loneSoldier.unitType) {
+                                if(body.unit) {
+                                    if(body.unit.unitType == loneSoldier.unit.unitType) {
                                         this.box.pendingSelections[body.id] = body;
                                     }
                                 }

@@ -60,7 +60,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.nextLevel();
 
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
-//                this.createBane(15);
+
             }.bind(this)});
         },
 
@@ -94,15 +94,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             }
 
             this.createMarine(10);
-            this.createMedic(4);
-            this.createBane(20);
-
-            // var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
-            // var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
-            // spineNorthWest.state.setAnimation(0, 'walk', true);
-            // spineNorth.state.setAnimation(0, 'walk', true);
-            // utils.addSomethingToRenderer(spineNorthWest, {position: {x: this.getCanvasCenter().x, y: this.getCanvasHeight()}, scale: {x: .5, y: .5}})
-            // utils.addSomethingToRenderer(spineNorth, {position: {x: this.getCanvasCenter().x + 50, y: this.getCanvasHeight()}, scale: {x: .55, y: .55}})
+            this.createMedic(2);
+            this.createBane(4);
         },
 
         createMarine: function(number) {

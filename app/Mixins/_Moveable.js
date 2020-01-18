@@ -48,11 +48,21 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             utils.deathPact(this, smallerCallback);
         },
 
-        move: function(destination, command) {
+        move: function(destination, commandObj) {
 
             //if command is given, we're being executed as part of a command queue, else, fake the command object
-            if(!command)
-                command = {done: function() {return;}}
+            var accelerateOptions = {};
+            if(!commandObj) {
+                commandObj = {
+                    command: {done: function() {return;}}
+                };
+            }
+            else if(commandObj.queueContext.last &&
+                (commandObj.queueContext.last.method.name == 'move' ||
+                commandObj.queueContext.last.method.name == 'attackMove'))
+                {
+                accelerateOptions.immediateMove = true;
+            }
 
             //don't do anything if they're already at their destination
             if (this.body.position.x == destination.x && this.body.position.y == destination.y)
@@ -71,7 +81,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             Matter.Sleeping.set(this.body, false);
 
             //immediate set the velocity (rather than waiting for the next tick)
-            this.constantlySetVelocityTowardsDestination();
+            this.constantlySetVelocityTowardsDestination(null, accelerateOptions);
 
             //setup the constant move tick
             if(this.moveTick)
@@ -83,7 +93,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             //general condition
             if(this.stopConditionCheck)
                 currentGame.removeRunnerCallback(this.stopConditionCheck);
-            this.stopConditionCheck = currentGame.addRunnerCallback(this.generalStopCondition.bind(this, command), false);
+            this.stopConditionCheck = currentGame.addRunnerCallback(this.generalStopCondition.bind(this, commandObj), false);
             utils.deathPact(this, this.stopConditionCheck, 'generalStopCondition');
 
             //"no progress" stop condition
@@ -92,12 +102,12 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 gogogo: true,
                 timeLimit: 550,
                 callback: function() {
-                    if (this.lastPosition && this.isMoving && !this.isHoning) {
+                    if (this.lastPosition && this.isMoving && !this.isHoning && !this.isAttacking) {
                         //clickPointSprite2.position = this.position;
                         if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                             if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {
                                 this.stop();
-                                command.done();
+                                commandObj.command.done();
                             }
                         }
                     }
@@ -119,7 +129,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                     if (this.destination.y + this.stopOnCollisionBuffer > this.position.y && this.destination.y - this.stopOnCollisionBuffer < this.position.y) {
                         if (otherBody.isMoveable && !otherBody.isMoving && otherBody.destination && otherBody.destination.x == this.destination.x && otherBody.destination.y == this.destination.y) {
                             this.stop();
-                            command.done();
+                            commandObj.command.done();
                         }
                     }
                 }
@@ -133,10 +143,18 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         },
         stop: function() {
 
+            //stop the unit
             Matter.Body.setVelocity(this.body, {
                 x: 0,
                 y: 0
             });
+
+            //return body to non Sleeping
+            Matter.Sleeping.set(this.body, false);
+
+            //remove movement callback
+            if(this.moveTick)
+                currentGame.removeRunnerCallback(this.moveTick);
 
             //remove stop conditions
             if(this.stopConditionCheck)
@@ -149,13 +167,16 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 Matter.Events.off(this.body, 'onCollideActive', this.collideCallback);
             }
 
+            //trigger the stop event
             Matter.Events.trigger(this, 'stop', {});
 
+            //set state
             this.body.frictionAir = .9;
             this.isMoving = false;
             this.isSoloMover = false;
         },
 
+        //I'm not sure this method did anything, remove it if everything seems ok
         pause: function(target) {
             // Matter.Body.setVelocity(this.body, {
             //     x: 0.001,
@@ -174,7 +195,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             this.body.frictionAir = 0;
         },
 
-        generalStopCondition: function(command) {
+        generalStopCondition: function(commandObj) {
             var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.overshootBuffer * 20;
 
             //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
@@ -183,12 +204,14 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             if (this.destination.x + alteredOvershootBuffer > this.body.position.x && this.destination.x - alteredOvershootBuffer < this.body.position.x) {
                 if (this.destination.y + alteredOvershootBuffer > this.body.position.y && this.destination.y - alteredOvershootBuffer < this.body.position.y) {
                     this.stop();
-                    command.done();
+                    commandObj.command.done();
                 }
             }
         },
 
-        constantlySetVelocityTowardsDestination: function(event) {
+        constantlySetVelocityTowardsDestination: function(event, options) {
+            var options = options || {};
+
             if (!this.isMoving) {
                 return;
             }
@@ -198,17 +221,18 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             //accelerate into the movement and give initial movement a small increment before becoming full force
             var deltaTime = event ? event.deltaTime : 16; //this is bad
 
-            //if we're at zero, let's creep up slowly
-            if(localMoveSpeed <= 0.002) {
-                localMoveSpeed += 0.001 * deltaTime;
-            //else if we're slightly better than zero, creep up a little faster
-            } else if(localMoveSpeed < this.moveSpeed) {
-                localMoveSpeed += .035 * deltaTime;
-                if(localMoveSpeed > this.moveSpeed) {
+            //immediately move
+            if(options.immediateMove) {
+                localMoveSpeed = this.moveSpeed;
+            } else { //or accelerate
+                if(localMoveSpeed < this.moveSpeed) {
+                    localMoveSpeed += .035 * deltaTime;
+                    if(localMoveSpeed > this.moveSpeed) {
+                        localMoveSpeed = this.moveSpeed;
+                    }
+                } else {
                     localMoveSpeed = this.moveSpeed;
                 }
-            } else {
-                localMoveSpeed = this.moveSpeed;
             }
 
             //send body
@@ -217,7 +241,10 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
         avoidCallback: function(pair) {
+            //if we're busy with something, don't avoid anything
             if (this.isMoving || this.isAttacking || this.isHoning || this.isSleeping) return;
+
+            //otherwise, let's avoid the mover
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination) {
                 this.frictionAir = .9;
