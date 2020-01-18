@@ -345,6 +345,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     //Re-assign the selected unit
                     if(Object.keys(this.box.selectedBodies).length > 0) {
                         this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
+                    } else {
+                        this.selectedUnit = null;
                     }
                 }.bind(this));
 
