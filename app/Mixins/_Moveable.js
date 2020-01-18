@@ -140,8 +140,8 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
             //stop the unit
             Matter.Body.setVelocity(this.body, {
-                x: 0.1,
-                y: 0.1
+                x: 0.0,
+                y: 0.0
             });
 
             //return body to non Sleeping

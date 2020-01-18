@@ -73,11 +73,10 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
 
         _attack: function(target) {
             if (this.canAttack && this.attack) {
-
-                //setting sleep causes the body to not be pushed by other bodies
-                Matter.Sleeping.set(this.body, true);
+                this.rawStop();
 
                 //set state
+                Matter.Sleeping.set(this.body, true);
                 this.isAttacking = true;
                 this.attackMoving = false;
                 this.canAttack = false;
@@ -152,6 +151,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             //setup target sensing
             this.setupHoneAndTargetSensing(commandObj)
 
+            //reset last hone since this is a new alert
+            this.lastHone = null;
+
             /*
              * Honing callbacks
              */
@@ -160,8 +162,9 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             }
             //unless we have a target, move towards currentHone
             this.attackHoneTick = currentGame.addTickCallback(function() {
-                //delete this comment if everything seem okay
-                if (/*!this.isMoving && */!this.isHoning && this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
+                //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
+                if (this.currentHone && this.lastHone != this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
+                    this.lastHone = this.currentHone;
                     this.rawMove(this.currentHone.position);
                     this.isHoning = true;
                 }
@@ -238,25 +241,21 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     }
                 }.bind(this))
 
-                //If we don't have a target anymore
+                //If we were attacking but no longer have a target
                 if(!this.currentTarget && this.canAttack && this.isAttacking) {
                     Matter.Sleeping.set(this.body, false);
                     this.isAttacking = false;
                 }
 
-                if(!this.currentHone) {
-                    this.isHoning = false;
-                }
-
                 //This clause is important:
                 //If we're here, we're on alert...
-                //Either we were "still" and on alert, were given an attack move command, or were given a specific target
-                //If we were "still" and no longer have a target or a hone, let's stop.
+                //Either we were given an attack move command, "still" and on alert, or were given a specific target
                 //If we were given an "attack move" command and no longer have a target or a hone, let's issue an identical attackMove command
+                //If we were "still" and no longer have a target or a hone, let's stop.
                 //If we were given a "specific target" to attack, we we only want to naturally stop if we can no longer attack it
                 if (!this.currentHone && !this.currentTarget) {
                     //given attack move, reissue the attack move
-                    if(this.attackMoveDestination && !this.attackMoving && this.canAttack) {
+                    if(this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.canAttack) {
                         this.attackMove(this.attackMoveDestination, commandObj);
                     //we were still, let's stop
                     } else if(!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget) {
