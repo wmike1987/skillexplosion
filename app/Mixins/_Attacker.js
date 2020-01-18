@@ -180,6 +180,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             //if we have a target, attack it
             this.attackMoveTick = currentGame.addTickCallback(function() {
                 if (this.currentTarget) {
+                    this.lastHone = null; //if we're attacking something, reset the lastHoned unit
                     this._attack(this.currentTarget);
                 }
             }.bind(this))
