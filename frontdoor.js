@@ -7,6 +7,7 @@ requirejs.config({
         mixins: '../app/Mixins',
         utils: '../app/Utils',
         units: '../app/Units',
+        shaders: '../app/Shaders',
     	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.0/pixi", //4.8.6 last stable
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.min",
@@ -147,6 +148,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
         	loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
         	loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
+        	loader.add('GrassTiles', 'app/Textures/GrassTiles.json');
 
         	//animations
         	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');

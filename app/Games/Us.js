@@ -1,6 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
-'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic) {
+'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
+'utils/TileMapper'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper) {
 
     var targetScore = 1;
 
@@ -53,7 +54,21 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.pop = utils.getSound('pop1.wav');
 
             //create blue glow filter
-            //this.blueGlowFilter = new PIXI.Filter(null, blueGlowShader)
+            this.simpleLightShader = new PIXI.Filter(null, lightShader, {
+                lightOnePosition: {x: -10000.0, y: -10000.0},
+                lightTwoPosition: {x: -10000.0, y: -10000.0},
+                stageResolution: utils.getCanvasWH()
+            });
+            //currentGame.renderer.background.filters = [this.simpleLightShader];
+
+            //map the background
+            var grassColor = 'Yellow';
+            var backgroundTiles = [];
+            for(var x = 0; x < 6; x++) {
+                backgroundTiles.push(grassColor + 'Grass' + (x+1));
+            }
+            var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: 180, realTileWidth: 370});
+            tileMap.initialize({where: 'background'});
         },
 
         play: function(options) {
@@ -96,6 +111,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.createMarine(1);
             this.createMedic(1);
             this.createBane(4);
+            var posUpdate = this.addRunnerCallback(function() {
+                this.simpleLightShader.uniforms.lightOnePosition = this.medic.position;
+                this.simpleLightShader.uniforms.lightTwoPosition = this.marine.position;
+            }.bind(this));
+            utils.deathPact(this.medic, posUpdate);
         },
 
         createMarine: function(number) {
@@ -105,6 +125,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 marine.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(marine, 4);
                 this.addUnit(marine, true);
+                this.marine = marine;
             }
         },
 
@@ -115,6 +136,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 medic.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(medic, 4);
                 this.addUnit(medic, true);
+                this.medic = medic;
             }
         },
 
@@ -148,7 +170,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
      * Options to for the game starter
      */
     game.worldOptions = {
-            background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
+            //background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
                 width: 1200,
                 height: 600,
                 gravity: 0,

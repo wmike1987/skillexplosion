@@ -249,7 +249,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         addSomethingToRenderer: function(something, where, options) {
             if($.type(where) == 'object') {
                 options = where;
-                where = null;
+                where = options.where;
             }
             options = options || {};
 
@@ -284,8 +284,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(options.rotation)
                 something.rotation = options.rotation;
 
-            currentGame.renderer.addToPixiStage(something, where);
+            if(!options.dontAdd)
+                currentGame.renderer.addToPixiStage(something, where);
             return something;
+        },
+
+        createDisplayObject: function(something, options) {
+            return this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
         },
 
         removeSomethingFromRenderer: function(something, where) {
@@ -417,6 +422,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
           return currentGame.canvasEl.getBoundingClientRect().width;
         },
 
+        getCanvasWH: function() {
+          return {x: this.getCanvasWidth(), y: this.getCanvasHeight()};
+        },
+
         getSound: function(name, options) {
             options = options || {};
             options.src = '/app/Sounds/' + name;
@@ -426,6 +435,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         //1, 4 return an int in (1, 2, 3, 4)
         getRandomIntInclusive: function(low, high) {
             return Math.floor(Math.random() * (high-low+1) + low);
+        },
+
+        getRandomElementOfArray: function(array) {
+            if(array && array.length > 0) {
+                return array[this.getRandomIntInclusive(0, array.length-1)];
+            }
         },
 
         cloneVertices: function(vertices) {

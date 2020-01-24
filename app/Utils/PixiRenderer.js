@@ -153,7 +153,8 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			$(appendToElement).append(this.pixiApp.renderer.view);
 
 			//set background - probably shouldn't be handling this in the pixi renderer
-			this.setBackground(options.background.image, {scale: {x: options.background.scale.x, y: options.background.scale.y}, bloat: options.background.bloat, backgroundFilter: options.backgroundFilter});
+			if(options.background)
+				this.setBackground(options.background.image, {scale: {x: options.background.scale.x, y: options.background.scale.y}, bloat: options.background.bloat, backgroundFilter: options.backgroundFilter});
 
 			Matter.Events.on(this.engine.world, 'afterAdd', function(event) {
 			    if(Array.isArray(event.object)) {

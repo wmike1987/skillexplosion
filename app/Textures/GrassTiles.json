@@ -1,0 +1,259 @@
+{"frames": {
+
+"GreenGrass1":
+{
+	"frame": {"x":1645,"y":1,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"GreenGrass2":
+{
+	"frame": {"x":1645,"y":417,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"GreenGrass3":
+{
+	"frame": {"x":1,"y":1498,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"GreenGrass4":
+{
+	"frame": {"x":1,"y":1,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"GreenGrass5":
+{
+	"frame": {"x":412,"y":1,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"GreenGrass6":
+{
+	"frame": {"x":777,"y":1479,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"OrangeGrass1":
+{
+	"frame": {"x":823,"y":759,"w":414,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"OrangeGrass2":
+{
+	"frame": {"x":1239,"y":759,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"OrangeGrass3":
+{
+	"frame": {"x":412,"y":1554,"w":409,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"OrangeGrass4":
+{
+	"frame": {"x":823,"y":1,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"OrangeGrass5":
+{
+	"frame": {"x":1234,"y":1,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"OrangeGrass6":
+{
+	"frame": {"x":1,"y":1858,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"RedGrass1":
+{
+	"frame": {"x":823,"y":1119,"w":414,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"RedGrass2":
+{
+	"frame": {"x":1599,"y":833,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"RedGrass3":
+{
+	"frame": {"x":1188,"y":1591,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"RedGrass4":
+{
+	"frame": {"x":1,"y":380,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"RedGrass5":
+{
+	"frame": {"x":412,"y":380,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"RedGrass6":
+{
+	"frame": {"x":772,"y":1839,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"TealGrass1":
+{
+	"frame": {"x":1239,"y":1175,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"TealGrass2":
+{
+	"frame": {"x":1599,"y":1249,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"TealGrass3":
+{
+	"frame": {"x":412,"y":1965,"w":409,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"TealGrass4":
+{
+	"frame": {"x":823,"y":380,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"TealGrass5":
+{
+	"frame": {"x":1234,"y":380,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"TealGrass6":
+{
+	"frame": {"x":1599,"y":1665,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"YellowGrass1":
+{
+	"frame": {"x":1,"y":1138,"w":414,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"YellowGrass2":
+{
+	"frame": {"x":417,"y":1138,"w":414,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":81,"w":414,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"YellowGrass3":
+{
+	"frame": {"x":1183,"y":1951,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"YellowGrass4":
+{
+	"frame": {"x":1,"y":759,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"YellowGrass5":
+{
+	"frame": {"x":412,"y":759,"w":409,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":62,"w":409,"h":377},
+	"sourceSize": {"w":500,"h":500}
+},
+"YellowGrass6":
+{
+	"frame": {"x":1594,"y":2025,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+}},
+"animations": {
+	"GreenGrass": ["GreenGrass1","GreenGrass2","GreenGrass3","GreenGrass4","GreenGrass5","GreenGrass6"],
+	"OrangeGrass": ["OrangeGrass1","OrangeGrass2","OrangeGrass3","OrangeGrass4","OrangeGrass5","OrangeGrass6"],
+	"RedGrass": ["RedGrass1","RedGrass2","RedGrass3","RedGrass4","RedGrass5","RedGrass6"],
+	"TealGrass": ["TealGrass1","TealGrass2","TealGrass3","TealGrass4","TealGrass5","TealGrass6"],
+	"YellowGrass": ["YellowGrass1","YellowGrass2","YellowGrass3","YellowGrass4","YellowGrass5","YellowGrass6"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "GrassTiles.png",
+	"format": "RGBA8888",
+	"size": {"w":2009,"h":2384},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:832d69a9b5f3ee0ff5e97cea3a8607e5:ce88d344fc414b89c1c9960449db7552:659902d8d4e2b7bff8394572afef41e4$"
+}
+}
