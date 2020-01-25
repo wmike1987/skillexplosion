@@ -13,12 +13,6 @@ define(['utils/Heap'], function(Heap) {
         this.walkable = (walkable === undefined) ? true : walkable;
     }
 
-    // Determine whether a neighboring tile is at a diagonal to this tile.
-    // NOTE: neighbor must be a neighboring tile for this to work.
-    Tile.prototype.isDiagonalTo = function(neighbor) {
-        return this.x != neighbor.x && this.y != neighbor.y;
-    };
-
     // Return the position at the center of a Tile.
     Tile.prototype.center = function() {
         return {x: this.x + this.sideLen / 2, y: this.y + this.sideLen / 2};
@@ -140,11 +134,12 @@ define(['utils/Heap'], function(Heap) {
         }
 
         options = options || {};
-        this.allowDiagonal = options.allowDiagonal || false;
+        this.allowDiagonal = (options.allowDiagonal === undefined)
+            ? false : options.allowDiagonal;
 
         // Adjusting the weight can tune the speed of the algorithm.
         // See http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
-        this.weight = options.weight || 1;
+        this.weight = (options.weight === undefined) ? 1 : options.weight;
 
         // Possible values for options.heuristic are 'manhattan', 'octile', and 'euclidean'.
         switch (options.heuristic) {
@@ -208,11 +203,13 @@ define(['utils/Heap'], function(Heap) {
                 }
 
                 // Diagonal moves cost a a little bit more than lateral moves.
-                newScore = current.g + (neighbor.isDiagonalTo(current)) ? Math.SQRT2 : 1;
+                newScore = current.g +
+                    (neighbor.x - current.x === 0 || neighbor.y - current.y === 0) ? 1 : Math.SQRT2;
 
                 if (!neighbor.opened || newScore < neighbor.g) {
                     neighbor.g = newScore;
-                    neighbor.h = neighbor.h || this.weight * this.heuristic(neighbor, destination);
+                    neighbor.h = (neighbor.h === undefined) ?
+                        this.weight * this.heuristic(neighbor, destination) : neighbor.h;
                     neighbor.f = neighbor.g + neighbor.h;
                     neighbor.cameFrom = current;
 
