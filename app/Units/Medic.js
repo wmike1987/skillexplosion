@@ -132,8 +132,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         }
 
-        var sc = {x: .3, y: .3};
-        var adjustedUpDownsc = {x: .33, y: .33};
+        var sc = {x: .35, y: .35};
+        var adjustedUpDownsc = {x: .38, y: .38};
         var flipsc = {x: -1 * sc.x, y: sc.y};
         var yOffset = 22;
         var rc = [
@@ -227,9 +227,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             stage: "stageZero",
             offset: {x: 0, y: 22}}];
 
+        var rad = options.radius || 28;
         return UC({
                 renderChildren: rc,
-                radius: options.radius || 23,
+                radius: rad,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 unit: {
@@ -262,7 +263,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     attackAnimations: healAnimations,
                     cooldown: 180,
                     honeRange: 300,
-                    range: 50,
+                    range: rad*2 + 1,
                     healAmount: 1,
                     attack: function(target) {
                         target.currentHealth += this.healAmount;

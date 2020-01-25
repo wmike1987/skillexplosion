@@ -29,7 +29,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         }
 
         Matter.Body.setPosition(this.body, options.position);
-        //this.body.drawWire = true;
+
+        if(options.drawWire)
+            this.body.drawWire = true;
 
         //setup the body's render children
         this.body.renderChildren = [{

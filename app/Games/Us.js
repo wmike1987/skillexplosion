@@ -74,6 +74,14 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create some Doodads
             var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
                                     shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: -6, y: 20}})
+
+
+            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: -6, y: 20}})
+
+            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 1.6, y: 1.6}, shadowOffset: {x: 2, y: 28}})
+
+
+
         },
 
         play: function(options) {

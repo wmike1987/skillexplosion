@@ -23,6 +23,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 originalMass: options.mass || 5
             });
 
+            body.drawWire = false;
+
             body.unit = newUnit; //reference to parent
             newUnit.body = body; //reference to body
 

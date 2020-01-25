@@ -131,8 +131,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         }
 
-        var sc = {x: .3, y: .3};
-        var adjustedUpDownsc = {x: .33, y: .33};
+        var sc = {x: .35, y: .35};
+        var adjustedUpDownsc = {x: .38, y: .38};
         var flipsc = {x: -1 * sc.x, y: sc.y};
         var yOffset = 22;
         var rc = [
@@ -370,7 +370,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         return UC({
                 renderChildren: rc,
-                radius: options.radius || 23,
+                radius: options.radius || 28,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 unit: {
