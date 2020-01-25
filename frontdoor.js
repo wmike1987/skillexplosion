@@ -176,6 +176,10 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
         	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
 
+            //foliage
+        	loader.add('foliage1', 'app/Textures/FoliagePack1.json');
+        	loader.add('foliage2', 'app/Textures/avtrees.json');
+
             //spine assets
             loader.add('marineN', 'app/SpineAssets/Marine Exports/MarineN/N.json');
             loader.add('marineNW', 'app/SpineAssets/Marine Exports/MarineNW/NW.json');

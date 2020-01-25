@@ -19,7 +19,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		$.each(this.stages, function(key, stage) {
 			this.layerGroups[key] = new PIXI.display.Group(i, !options.noZSorting);
 			this.layerGroups[key].on('sort', (sprite) => {
-			    sprite.zOrder = sprite.y;
+			    sprite.zOrder = sprite.y + (sprite.sortYOffset || 0);
 			});
 			i += 1;
 		}.bind(this));
@@ -113,7 +113,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				})
 
 			    //if all else fails, draw wire frame if specified
-				if(body.render.drawWire || body.renderChildren.length == 0) {
+				if(body.render.drawWire || body.renderChildren.length == 0 || body.drawWire) {
 				    if(body.noWire) return;
 					this.drawWireFrame(body);
 					return;
@@ -241,6 +241,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		    }
 			if(child.avoidIsoMgr) {
 				newSprite.avoidIsoMgr = true;
+			}
+			if(child.sortYOffset) {
+				newSprite.sortYOffset = child.sortYOffset;
 			}
 
 		    //store original child specs

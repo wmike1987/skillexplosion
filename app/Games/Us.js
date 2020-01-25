@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
 'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'utils/TileMapper'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper) {
+'utils/TileMapper', 'utils/Doodad'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper, Doodad) {
 
     var targetScore = 1;
 
@@ -67,8 +67,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             for(var x = 0; x < 6; x++) {
                 backgroundTiles.push(grassColor + 'Grass' + (x+1));
             }
+            //backgroundTiles = ['YellowGrass1','TealGrass1','GreenGrass1','RedGrass1', 'OrangeGrass1']
             var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: 180, realTileWidth: 370});
             tileMap.initialize({where: 'background'});
+
+            //create some Doodads
+            var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
+                                    shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: -6, y: 20}})
         },
 
         play: function(options) {

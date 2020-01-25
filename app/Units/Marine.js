@@ -384,7 +384,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                         f: throwKnife
                     },
                     eventKeyMappings: {
-                        x: setSleeping,
+                        //x: setSleeping,
                     },
                     death: function() {
                         var self = this;

@@ -912,13 +912,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             }.bind(this))
         },
 
-        //death pact currently supports other units, bodies, tick callbacks, timers, and finally functions to execute
-        deathPact: function(master, slave) {
-            if(!master.slaves)
-                master.slaves = [];
-            master.slaves.push(slave);
-        },
-
         //This method has the heart but is poorly designed
         //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, and finally functions to execute
         removeSlaves: function(slaves) {

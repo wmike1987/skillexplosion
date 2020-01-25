@@ -283,9 +283,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.tint = options.tint;
             if(options.rotation)
                 something.rotation = options.rotation;
+            if(options.sortYOffset)
+                something.sortYOffset = options.sortYOffset;
 
-            if(!options.dontAdd)
-                currentGame.renderer.addToPixiStage(something, where);
+            //add options to escape without adding it to the renderer
+            if(options.dontAdd) return something;
+
+            currentGame.renderer.addToPixiStage(something, where);
             return something;
         },
 
@@ -641,16 +645,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
     };
 
     //aliases
-    utils.addTime = utils.addToGameTimer;
-    utils.texture = utils.getPreloadedTexture;
-    utils.addRunnerCallback = utils.addTickCallback;
-    utils.removeRunnerCallback = utils.removeTickCallback;
-    utils.addBodies = utils.addBody;
-    utils.listeners = utils.eventListeners;
-    utils.addEventListener = utils.addListener;
-    utils.addTickListener = utils.addTickCallback;
-    utils.removeEventListener = utils.removeListener;
-    utils.removeText = utils.removeSprite;
     utils.offStage = utils.bodyRanOffStage;
     utils.getIntBetween = utils.getRandomIntInclusive;
 

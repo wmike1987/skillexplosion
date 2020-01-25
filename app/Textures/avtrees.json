@@ -1,0 +1,291 @@
+{"frames": {
+
+"avbush1.png":
+{
+	"frame": {"x":3327,"y":306,"w":204,"h":178},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":204,"h":178},
+	"sourceSize": {"w":204,"h":179}
+},
+"avdeadtree1.png":
+{
+	"frame": {"x":2351,"y":285,"w":221,"h":665},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":221,"h":665},
+	"sourceSize": {"w":221,"h":666}
+},
+"avdeadtree2.png":
+{
+	"frame": {"x":350,"y":1,"w":170,"h":457},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":170,"h":457},
+	"sourceSize": {"w":170,"h":458}
+},
+"avgoldsmalltree1.png":
+{
+	"frame": {"x":522,"y":379,"w":125,"h":153},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":125,"h":153},
+	"sourceSize": {"w":125,"h":154}
+},
+"avgoldtree1.png":
+{
+	"frame": {"x":980,"y":1,"w":160,"h":348},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":160,"h":348},
+	"sourceSize": {"w":160,"h":349}
+},
+"avgoldtree2.png":
+{
+	"frame": {"x":1985,"y":1,"w":168,"h":290},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":168,"h":290},
+	"sourceSize": {"w":168,"h":291}
+},
+"avgoldtree3.png":
+{
+	"frame": {"x":1571,"y":1,"w":260,"h":304},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":260,"h":304},
+	"sourceSize": {"w":260,"h":305}
+},
+"avgoldtree4.png":
+{
+	"frame": {"x":3441,"y":141,"w":163,"h":211},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":211},
+	"sourceSize": {"w":163,"h":212}
+},
+"avgoldtree5.png":
+{
+	"frame": {"x":753,"y":1,"w":225,"h":360},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":225,"h":360},
+	"sourceSize": {"w":225,"h":361}
+},
+"avgoldtree6.png":
+{
+	"frame": {"x":2064,"y":293,"w":216,"h":285},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":216,"h":285},
+	"sourceSize": {"w":216,"h":286}
+},
+"avgreentree1.png":
+{
+	"frame": {"x":1,"y":1,"w":347,"h":486},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":347,"h":486},
+	"sourceSize": {"w":347,"h":487}
+},
+"avgreentree2.png":
+{
+	"frame": {"x":522,"y":1,"w":229,"h":376},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":229,"h":376},
+	"sourceSize": {"w":229,"h":377}
+},
+"avgreentree3.png":
+{
+	"frame": {"x":1833,"y":1,"w":150,"h":292},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":150,"h":292},
+	"sourceSize": {"w":150,"h":293}
+},
+"avgreentree4.png":
+{
+	"frame": {"x":1142,"y":1,"w":239,"h":336},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":336},
+	"sourceSize": {"w":239,"h":337}
+},
+"avgreentree5.png":
+{
+	"frame": {"x":2155,"y":1,"w":186,"h":284},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":186,"h":284},
+	"sourceSize": {"w":186,"h":285}
+},
+"avgreentree6.png":
+{
+	"frame": {"x":1383,"y":1,"w":186,"h":306},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":186,"h":306},
+	"sourceSize": {"w":186,"h":307}
+},
+"avgreentree7.png":
+{
+	"frame": {"x":3441,"y":1,"w":138,"h":212},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":138,"h":212},
+	"sourceSize": {"w":138,"h":213}
+},
+"avgreentree8.png":
+{
+	"frame": {"x":1220,"y":339,"w":171,"h":234},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":234},
+	"sourceSize": {"w":171,"h":235}
+},
+"avpinksmallplan1.png":
+{
+	"frame": {"x":1891,"y":295,"w":171,"h":214},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":214},
+	"sourceSize": {"w":171,"h":215}
+},
+"avpinktree1.png":
+{
+	"frame": {"x":754,"y":363,"w":143,"h":238},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":143,"h":238},
+	"sourceSize": {"w":143,"h":239}
+},
+"avpinktree2.png":
+{
+	"frame": {"x":3507,"y":306,"w":96,"h":188},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":188},
+	"sourceSize": {"w":96,"h":189}
+},
+"avsmallbush1.png":
+{
+	"frame": {"x":677,"y":379,"w":103,"h":75},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":103,"h":75},
+	"sourceSize": {"w":103,"h":76}
+},
+"avsmalltree1.png":
+{
+	"frame": {"x":3080,"y":1,"w":205,"h":240},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":205,"h":240},
+	"sourceSize": {"w":205,"h":241}
+},
+"avsnowtree1.png":
+{
+	"frame": {"x":2523,"y":1,"w":208,"h":255},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":208,"h":255},
+	"sourceSize": {"w":208,"h":256}
+},
+"avsnowtree2.png":
+{
+	"frame": {"x":2902,"y":1,"w":176,"h":249},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":176,"h":249},
+	"sourceSize": {"w":176,"h":250}
+},
+"avsnowtree3.png":
+{
+	"frame": {"x":3018,"y":252,"w":154,"h":249},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":154,"h":249},
+	"sourceSize": {"w":154,"h":250}
+},
+"avsnowtree4.png":
+{
+	"frame": {"x":3507,"y":404,"w":92,"h":167},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":92,"h":167},
+	"sourceSize": {"w":92,"h":168}
+},
+"avsnowtree5.png":
+{
+	"frame": {"x":2733,"y":1,"w":167,"h":253},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":167,"h":253},
+	"sourceSize": {"w":167,"h":254}
+},
+"avsnowtree6.png":
+{
+	"frame": {"x":3174,"y":243,"w":151,"h":240},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":151,"h":240},
+	"sourceSize": {"w":151,"h":241}
+},
+"avsnowtree7.png":
+{
+	"frame": {"x":1748,"y":307,"w":141,"h":190},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":141,"h":190},
+	"sourceSize": {"w":141,"h":191}
+},
+"avsnowtree8.png":
+{
+	"frame": {"x":3287,"y":1,"w":152,"h":220},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":152,"h":220},
+	"sourceSize": {"w":152,"h":221}
+},
+"avsnowtree9.png":
+{
+	"frame": {"x":994,"y":351,"w":158,"h":224},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":158,"h":224},
+	"sourceSize": {"w":158,"h":225}
+},
+"avsnowtree10.png":
+{
+	"frame": {"x":1456,"y":309,"w":195,"h":290},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":195,"h":290},
+	"sourceSize": {"w":195,"h":291}
+},
+"avsnowtree11.png":
+{
+	"frame": {"x":2343,"y":1,"w":178,"h":282},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":178,"h":282},
+	"sourceSize": {"w":178,"h":283}
+}},
+"animations": {
+	"avdeadtree": ["avdeadtree1.png","avdeadtree2.png"],
+	"avgoldtree": ["avgoldtree1.png","avgoldtree2.png","avgoldtree3.png","avgoldtree4.png","avgoldtree5.png","avgoldtree6.png"],
+	"avgreentree": ["avgreentree1.png","avgreentree2.png","avgreentree3.png","avgreentree4.png","avgreentree5.png","avgreentree6.png","avgreentree7.png","avgreentree8.png"],
+	"avpinktree": ["avpinktree1.png","avpinktree2.png"],
+	"avsnowtree": ["avsnowtree1.png","avsnowtree2.png","avsnowtree3.png","avsnowtree4.png","avsnowtree5.png","avsnowtree6.png","avsnowtree7.png","avsnowtree8.png","avsnowtree9.png","avsnowtree10.png","avsnowtree11.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "avtrees.png",
+	"format": "RGBA8888",
+	"size": {"w":3696,"h":511},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:131b2f7a6a84e4d7f88f169e6f0b6a8a:4c69710ce20935483bd4c2d366bdb2d9:fbfa2ed21fd9819dd03ae2e641a6a70e$"
+}
+}
