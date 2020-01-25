@@ -56,7 +56,8 @@ define(function() {
 
         for (var i = 0; i < this.length; ++i) {
             if (item === this.data[i]) {
-                removed = this.data.splice(i, 1);
+                removed = this.data.splice(i, 1)[0];
+                --this.length;
             }
         }
 
