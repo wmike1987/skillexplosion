@@ -33,32 +33,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
     			    scale: {x: radius*2/64, y: radius*2/64},
     			    rotate: 'none',
     			    initialRotate: 'none'
-    			}, /*{
-    			    id: 'marbleShadow',
-    			    data: 'MarbleShadow',
-    			    scale: {x: radius*2.5/256, y: radius*2.5/256},
-    			    visible: true,
-    			    rotate: 'none',
-    			    tint: tint,
-    			    stage: "stageZero",
-    			    offset: {x: 12, y: 12},
-    			}, {
-    			    id: 'marbleShadowHighlights',
-    			    data: 'MarbleShadowHighlight',
-    			    scale: {x: radius*1.6/256, y: radius*1.6/256},
-    			    visible: false,
-    			    rotate: 'random',
-    			    rotatePredicate: function() {
-    			        return this.isMoving;
-    			    },
-    			    initialRotate: 'random',
-    			    tint: highlightTint,
-    			    stage: "stageZero",
-    			    offset: {x: 12, y: 12}
-    			},*/
+    			},
 				{
 		            id: 'shadow',
-		            data: 'IsoShadow',
+		            data: 'IsoShadowBlurred',
 		            scale: {x: .75, y: .75},
 		            visible: true,
 		            avoidIsoMgr: true,
@@ -102,7 +80,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 					honeRange: 200,
 					cooldown: 1,
 					range: radius*2+10,
-					damage: 20,
+					damage: 50,
 					attack: function() {
 
 					}

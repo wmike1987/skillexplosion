@@ -218,7 +218,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             offset: {x: 0, y: yOffset}
         },{
             id: 'shadow',
-            data: 'IsoShadow',
+            data: 'IsoShadowBlurred',
             scale: {x: .75, y: .75},
             visible: true,
             avoidIsoMgr: true,

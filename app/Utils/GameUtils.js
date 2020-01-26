@@ -285,6 +285,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.rotation = options.rotation;
             if(options.sortYOffset)
                 something.sortYOffset = options.sortYOffset;
+            if(options.alpha != undefined)
+                something.alpha = options.alpha;
 
             //add options to escape without adding it to the renderer
             if(options.dontAdd) return something;
@@ -331,6 +333,43 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(sprite.position.y - deletePointAdjustment > currentGame.canvas.height)
                 return true;
             return false;
+        },
+
+        getRandomPlacementWithinCanvasBounds: function() {
+            var placement = {};
+            placement.x = Math.random() * currentGame.canvasEl.getBoundingClientRect().width;
+            placement.y = Math.random() * currentGame.canvasEl.getBoundingClientRect().height;
+            return placement;
+        },
+
+        addRandomVariationToGivenPosition: function(position, randomFactorX, randomFactorY) {
+            position.x += (1 - 2*Math.random()) * randomFactorX;
+            position.y += (1 - 2*Math.random()) * (randomFactorY || randomFactorX);
+            return position;
+        },
+
+        addAmbientLightsToBackground: function(hexColorArray, where, intensity) {
+            var numberOfLights = hexColorArray.length;
+            var spacing = this.getCanvasWidth()/(numberOfLights*2);
+            $.each(hexColorArray, function(i, color) {
+                this.addSomethingToRenderer("AmbientLight" + (i%3 + 1), where || 'backgroundOne',
+                    {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: this.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color, alpha: intensity || .25});
+            }.bind(this))
+        },
+
+        //apply something to bodies by team
+        applyToBodiesByTeam: function(teamPredicate, bodyPredicate, f) {
+            teamPredicate = teamPredicate || function(team) {return true};
+            bodyPredicate = bodyPredicate || function(body) {return true};
+            $.each(currentGame.bodiesByTeam, function(i, team) {
+                if(teamPredicate(i)) {
+                    $.each(team, function(i, body) {
+                        if(bodyPredicate(body)) {
+                            f(body);
+                        }
+                    })
+                }
+            })
         },
 
         calculateRandomPlacementForBodyWithinCanvasBounds: function(body, neatly) {

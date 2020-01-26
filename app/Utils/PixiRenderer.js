@@ -11,7 +11,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		this.engine = engine;
 
 		//create stages (these don't handle sorting, see the laying group below)
-		this.stages = {background: new PIXI.Container, stageZero: new PIXI.Container, stageOne: new PIXI.Container, stage: new PIXI.Container, foreground: new PIXI.Container, hud: new PIXI.Container};
+		this.stages = {background: new PIXI.Container, backgroundOne: new PIXI.Container, stageZero: new PIXI.Container, stageOne: new PIXI.Container, stage: new PIXI.Container, foreground: new PIXI.Container, hud: new PIXI.Container};
 
 		//create the layering groups
 		var i = 0;
@@ -360,9 +360,11 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				    if(key == "background") return;
 					var i = this.stages[key].children.length;
 					while(i--) {
-						if((savePersistables && this.stages[key].getChildAt(i).persists))
-							continue;
+						//even though we're decrementing here, cleaning up pixi particles can remove more than one child at a time
+						//so getChildAt could fail. If it does, let's just move on
 						try {
+							if((savePersistables && this.stages[key].getChildAt(i).persists))
+								continue;
 							this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
 						}
 						catch(err) {

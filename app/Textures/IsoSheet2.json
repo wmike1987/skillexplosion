@@ -1,0 +1,63 @@
+{"frames": {
+
+"AmbientLight1":
+{
+	"frame": {"x":1,"y":1,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"AmbientLight2":
+{
+	"frame": {"x":1,"y":515,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"AmbientLight3":
+{
+	"frame": {"x":1,"y":1029,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"AttackTarget":
+{
+	"frame": {"x":67,"y":1543,"w":32,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
+"IsoShadowBlurred":
+{
+	"frame": {"x":1,"y":1543,"w":64,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
+},
+"MoveTarget":
+{
+	"frame": {"x":101,"y":1543,"w":32,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
+	"sourceSize": {"w":32,"h":32}
+}},
+"animations": {
+	"AmbientLight": ["AmbientLight1","AmbientLight2","AmbientLight3"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "IsoSheet2.png",
+	"format": "RGBA8888",
+	"size": {"w":514,"h":1576},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:52b5e54239f1f950cd8934609d4be508:d922f5fa1b572df1e9e7c96cc3708e3d:46c875579d242a0b1cfceb19946da616$"
+}
+}

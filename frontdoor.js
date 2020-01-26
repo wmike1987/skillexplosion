@@ -170,6 +170,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	//odds and ends
         	loader.add('unitMisc', 'app/Textures/UnitMisc.json');
         	loader.add('iso1', 'app/Textures/IsometricSheet1.json');
+            loader.add('iso2', 'app/Textures/IsoSheet2.json');
         	loader.add('raindrop2', 'app/Textures/Raindrop2.png');
         	loader.add('alpha', 'app/Textures/alpha.png');
         	loader.add('glassShards', 'app/Textures/glassShards.png');

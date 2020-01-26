@@ -35,7 +35,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         small: 8,
         zoneSize: 128,
         level: 1,
-        victoryCondition: {type: 'lives', limit: 95},
+        victoryCondition: {type: 'timed', limit: 5},
+        enableUnitSystem: true,
         currentZones: [],
         selectionBox: true,
         noClickIndicator: true,
@@ -62,7 +63,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //currentGame.renderer.background.filters = [this.simpleLightShader];
 
             //map the background
-            var grassColor = 'Yellow';
+            var grassColor = 'Teal';
             var backgroundTiles = [];
             for(var x = 0; x < 6; x++) {
                 backgroundTiles.push(grassColor + 'Grass' + (x+1));
@@ -73,19 +74,21 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             //create some Doodads
             var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
-                                    shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: -6, y: 20}})
+                                    shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
 
 
-            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: -6, y: 20}})
-
-            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 1.6, y: 1.6}, shadowOffset: {x: 2, y: 28}})
 
 
+            utils.addAmbientLightsToBackground([0x660000, 0x00cc44, 0x660066, 0x00cc44, 0x660000, 0x660000, 0x4d79ff], null, .3);
 
         },
 
         play: function(options) {
             this.nextLevel();
+
+            var tree1 = new Doodad({drawWire: true, collides: true, radius: 20, texture: 'avsnowtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
+
+            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
 
@@ -121,7 +124,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(1);
+            this.createMarine(3);
             this.createMedic(1);
             this.createBane(4);
             var posUpdate = this.addRunnerCallback(function() {
