@@ -1,8 +1,15 @@
 define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
     var unitSystem = function(properties) {
+
+        //Share given properties
         $.extend(this, properties);
+
         this.initialize = function() {
+            //just in case
+            if(this.box)
+                this.cleanUp();
+
             //create rectangle
             this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false});
             this.box.collisionFilter.category = 0x0002;
@@ -15,6 +22,35 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
             this.box.clickPointSprite.scale.x = .25;
             this.box.clickPointSprite.scale.y = .25;
+
+            //move/attack-move markers
+            var moveMarkerScale = 1.2;
+            var moveMarkerTimeLimit = 600;
+
+            //move marker
+            this.box.moveTargetSprite = utils.addSomethingToRenderer('MoveTarget', 'foreground', {x: -50, y: -50});
+            this.box.moveTargetSprite.timer = currentGame.addTimer({name: 'moveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
+                tickCallback: function() {
+                    this.box.moveTargetSprite.scale = {x: moveMarkerScale-this.box.moveTargetSprite.timer.percentDone*moveMarkerScale, y: moveMarkerScale-this.box.moveTargetSprite.timer.percentDone*moveMarkerScale};
+            }.bind(this),
+                resetExtension: function() {
+                    this.box.moveTargetSprite.position = currentGame.mousePosition;
+                    this.box.moveTargetSprite.scale = {x: moveMarkerScale, y: moveMarkerScale};
+            }.bind(this)});
+            utils.deathPact(this.box, this.box.moveTargetSprite.timer);
+
+
+            //attack-move marker
+            this.box.attackMoveTargetSprite = utils.addSomethingToRenderer('AttackTarget', 'foreground', {x: -50, y: -50});
+            this.box.attackMoveTargetSprite.timer = currentGame.addTimer({name: 'attackMoveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
+                tickCallback: function() {
+                    this.box.attackMoveTargetSprite.scale = {x: moveMarkerScale-this.box.attackMoveTargetSprite.timer.percentDone*moveMarkerScale, y: moveMarkerScale-this.box.attackMoveTargetSprite.timer.percentDone*moveMarkerScale};
+            }.bind(this),
+                resetExtension: function() {
+                    this.box.attackMoveTargetSprite.position = currentGame.mousePosition;
+                    this.box.attackMoveTargetSprite.scale = {x: moveMarkerScale, y: moveMarkerScale};
+            }.bind(this)});
+            utils.deathPact(this.box, this.box.attackMoveTargetSprite.timer);
 
             //update selected bodies upon body removal
             this.bodyRemoveCallback = Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
@@ -188,10 +224,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                                     body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
                                 }
                                 else {
-                                    body.unit.handleEvent({type: 'click', id: 'attackMove', target: canvasPoint})
+                                    body.unit.handleEvent({type: 'click', id: 'attackMove', target: canvasPoint});
+                                    this.box.attackMoveTargetSprite.timer.execute({runs: 1});
                                 }
                             } else if(body.isMoveable) {
-                                body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint})
+                                body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint});
                             }
                         }.bind(this))
                         this.attackMove = false; //invalidate the key pressed state
@@ -274,6 +311,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     $.each(this.box.selectedBodies, function(key, body) {
                         if(body.isMoveable) {
                             body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint})
+                            this.box.moveTargetSprite.timer.execute({runs: 1});
                             // body.unit.groupRightClick(canvasPoint);
                             if(Object.keys(this.box.selectedBodies).length == 1)
                                 body.isSoloMover = true;
@@ -483,11 +521,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
              //dispatch generic key events
              $('body').on('keydown.selectionBox', function( event ) {
                      this.abilityDispatch = event.key.toLowerCase();
-                     // if(this.selectedUnit)
-                     //    this.selectedUnit.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
-                     $.each(this.box.selectedBodies, function(prop, obj) {
-                         obj.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
-                     }.bind(this))
+                     if(this.selectedUnit)
+                        this.selectedUnit.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
+                     // $.each(this.box.selectedBodies, function(prop, obj) {
+                     //     obj.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
+                     // }.bind(this))
              }.bind(this));
 
              //toggle life bars with Alt
@@ -514,11 +552,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             currentGame.addBody(this.box);
         }
 
+        /*
+         * Cleanup any listeners we've created
+         */
         this.cleanUp = function() {
-            //since box is a body, this will be removed and matter events disconnected by the common game nuke method, but it's nice to cleanup our responsibility anyway
             if(this.box) {
                 Matter.Events.off(this.box);
                 Matter.Events.off(this.engine.world, this.bodyRemoveCallback)
+                currentGame.removeBody(this.box);
                 this.box = null;
             }
             $('body').off('mousedown.selectionBox');

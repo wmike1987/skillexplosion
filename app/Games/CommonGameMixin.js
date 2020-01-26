@@ -304,23 +304,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 }.bind(this), false, true);
             }
 
-            //create right click indication listener
-            // if(!this.noRightClickIndicator) {
-            //     var clickPointSprite = utils.addSomethingToRenderer('MouseX', 'foreground', {x: -50, y: -50});
-            //     clickPointSprite.scale.x = .25;
-            //     clickPointSprite.scale.y = .25;
-            //     this.rightClickIndicator = clickPointSprite;
-            //     this.addEventListener('rightdown', function(event) {
-            //         clickPointSprite.position = {x: event.data.global.x, y: event.data.global.y};
-            //         if(this.selectionBox)
-            //             this.box.clickPointSprite.position = {x: -50, y: -50};
-            //     }.bind(this), false, true);
-            // }
-
-            /*
-             * Initialize the unit system
-             */
-             this.unitSystem.initialize();
+            //initialize unitSystem, this creates the selection box, dispatches unit events, etc
+            if(this.unitSystem)
+                this.unitSystem.initialize();
 
             this.regulationPlay = $.Deferred();
             this.regulationPlay.done(this.endGame.bind(this));
@@ -528,36 +514,44 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             if(!this.world) return;
 
-            //Remove units, this could be way better
+            //Remove units safely (removeUnit())
             var unitsToRemove = [];
-            this.applyToBodiesByTeam(null, function(body) {
+            utils.applyToBodiesByTeam(null, function(body) {
                 return body.unit;
             }, function(body) {
                 unitsToRemove.push(body.unit);
             }.bind(this));
+
             $.each(unitsToRemove, function(i, unit) {
                 this.removeUnit(unit);
             }.bind(this))
 
-            //remove bodies safely
+            //Remove bodies safely (removeBodies())
             this.removeBodies(this.world.bodies);
+
+            //Clear the matter world (I cant recall if this is necessary)
             Matter.World.clear(this.world, false);
 
-            //clear the engine (clears broadphase state)
+            //Clear the engine (clears broadphase state)
             Matter.Engine.clear(this.engine);
 
-            //clear the renderer
+            //Clear the renderer, save persistables
             this.renderer.clear(options.noMercy, options.savePersistables);
 
+            //Clear listeners, save invincible listeners
             this.clearListeners(options.noMercy);
             this.clearTickCallbacks(options.noMercy);
             this.invalidateTimers(options.noMercy);
+
+            //Clear vertice histories
             this.verticeHistories = [];
 
+            //Clear body listeners if no mercy
             if(options.noMercy) {
                 $('body').off();
             }
 
+            //Clear unit system
             if(this.unitSystem) {
                 this.unitSystem.cleanUp();
             }
@@ -580,12 +574,17 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             timer.originalRuns = timer.runs;
 
             //add a reset method to the timer
-            if(!timer.reset) timer.reset = timer.execute = function() {
+            if(!timer.reset) timer.reset = timer.execute = function(options) {
+                var options = options || {};
                 this.timeElapsed = 0;
                 this.percentDone = 0;
 
                 if(this.runs == 0)
                     this.runs = null;
+                if(options.runs)
+                    this.runs = options.runs;
+                if(this.resetExtension)
+                    this.resetExtension();
                 this.done = false;
                 this.started = false;
                 this.paused = false;

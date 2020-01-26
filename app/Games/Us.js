@@ -35,6 +35,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         small: 8,
         zoneSize: 128,
         level: 1,
+        // victoryCondition: {type: 'timed', limit: 5},
         victoryCondition: {type: 'lives', limit: 5},
         enableUnitSystem: true,
         currentZones: [],
@@ -124,7 +125,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(3);
+            this.createMarine(1);
             this.createMedic(1);
             this.createBane(4);
             var posUpdate = this.addRunnerCallback(function() {
