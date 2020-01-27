@@ -1,5 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils', 'utils/Command'],
-function($, Matter, PIXI, CommonGameMixin, utils, Command) {
+define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils', 'utils/Command', 'utils/PathFinder'],
+function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
 
     var moveable = {
         //private
@@ -20,6 +20,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         //directional data
         facing: null,
         visibleSprite: null,
+
+        //path finding
+        path: null,
 
         moveableInit: function() {
             this.eventClickMappings['move'] = this.move;
@@ -83,10 +86,32 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             //immediate set the velocity (rather than waiting for the next tick)
             this.constantlySetVelocityTowardsDestination(null, accelerateOptions);
 
+            // Begin the pathfinding process.
+            var pathFinder = new pf.AStar({
+                allowDiagonal: true,
+                heuristic: "octile",
+            });
+
+            var startX = this.body.position.x,
+                startY = this.body.position.y,
+                endX = destination.x,
+                endY = destination.y;
+
+            // Find the shortest path using the A* algorithm.
+            this.path = pathFinder.findPath(startX, startY, endX, endY, currentGame.grid.clone());
+
+            //un-static the body (attackers become static when firing)
+            if(this.body.isStatic) {
+                Matter.Body.setStatic(this.body, false);
+            }
+
+            //immediate set the velocity (rather than waiting for the next tick)
+            this.sendTowardDestination();
+
             //setup the constant move tick
             if(this.moveTick)
                 currentGame.removeRunnerCallback(this.moveTick);
-            this.moveTick = currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
+            this.moveTick = currentGame.addRunnerCallback(this.sendTowardDestination.bind(this), false);
             utils.deathPact(this, this.moveTick, 'moveTick');
 
             //Setup stop conditions
@@ -136,8 +161,8 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             }.bind(this);
             Matter.Events.on(this.body, 'onCollideActive', this.collideCallback);
         },
-        stop: function() {
 
+        stop: function() {
             //stop the unit
             Matter.Body.setVelocity(this.body, {
                 x: 0.0,
@@ -171,24 +196,52 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             this.isSoloMover = false;
         },
 
-        generalStopCondition: function(commandObj) {
+        pause: function(target) {
+            Matter.Body.setVelocity(this.body, {
+                x: 0,
+                y: 0
+            });
+            Matter.Events.trigger(this, 'pause', {});
+
+            this.body.frictionAir = .9;
+            this.isMoving = false;
+            this.isSoloMover = false;
+            this.tryForDestinationTimer.paused = true;
+        },
+
+        resume: function() {
+            this.isMoving = true;
+            this.body.frictionAir = 0;
+        },
+
+        generalStopCondition: function(command) {
+            //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
+            //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger
+            //overshoot buffer
+            if (this.closeToDestination(this.body.position, this.destination)) {
+                this.stop();
+                command.done();
+            }
+        },
+
+        closeToDestination: function(position, destination) {
             var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.overshootBuffer * 20;
 
             //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
             //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger
             //overshoot buffer
-            if (this.destination.x + alteredOvershootBuffer > this.body.position.x && this.destination.x - alteredOvershootBuffer < this.body.position.x) {
-                if (this.destination.y + alteredOvershootBuffer > this.body.position.y && this.destination.y - alteredOvershootBuffer < this.body.position.y) {
-                    this.stop();
-                    commandObj.command.done();
+            if (destination.x + alteredOvershootBuffer > position.x && destination.x - alteredOvershootBuffer < position.x) {
+                if (destination.y + alteredOvershootBuffer > position.y && destination.y - alteredOvershootBuffer < position.y) {
+                    return true;
                 }
             }
+            return false;
         },
 
-        constantlySetVelocityTowardsDestination: function(event, options) {
-            var options = options || {};
-
-            if (!this.isMoving || this.isAttacking) {
+        // Send a moveable object toward an updateable destination.
+        sendTowardDestination: function(event) {
+            // Don't do anything if the object isn't moving or there is not optimal path.
+            if (!this.isMoving || this.isAttacking || this.path.length == 0) {
                 return;
             }
 
@@ -211,12 +264,27 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 }
             }
 
-            //send body
-            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, localMoveSpeed, false);
+            // If the object is one grid space away, send it directly to the destination.
+            if (this.path.length === 1) {
+                utils.sendBodyToDestinationAtSpeed(this.body, this.destination, localMoveSpeed, false);
+                return;
+            }
 
-            //trigger movement event (for direction)
+            // The next destination is the center of the next tile.
+            var nextPos = this.path[0].center();
+
+            // If the object has reached the current tile, set the current tile to the next tile on the path.
+            if (this.closeToDestination(this.body.position, nextPos)) {
+                this.path.shift();
+                nextPos = this.path[0].center();
+            }
+
+            // Send the object to the current tile.
+            utils.sendBodyToDestinationAtSpeed(this.body, nextPos, localMoveSpeed, false);
+
+            // Trigger movement event.
             Matter.Events.trigger(this, 'move', {
-                direction: utils.isoDirectionBetweenPositions(this.position, this.destination)
+                direction: utils.isoDirectionBetweenPositions(this.position, nextPos)
             });
         },
 

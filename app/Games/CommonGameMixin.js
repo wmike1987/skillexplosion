@@ -2,7 +2,7 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'utils/UnitSystem'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem) {
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'utils/UnitSystem', 'utils/PathFinder'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem, pf) {
 
     var common = {
 
@@ -233,6 +233,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
          */
         startGame: function(options) {
 
+            //////////// PATH FINDING -- FOR TESTING ONLY /////////////////////
+            //overlay a grid on the game map
+            utils.drawPathGrid(this.canvasEl, 100);
+
+            //add an obstacle
+            var obstacle = Matter.Bodies.rectangle(450, 400, 100, 400, {});
+            Matter.Body.setStatic(obstacle, true)
+            this.addBody(obstacle);
+            //////////// PATH FINDING END /////////////////////
+
             //disable right click during game
             $('body').on("contextmenu.common", function(e){
                 e.preventDefault();
@@ -307,7 +317,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             //initialize unitSystem, this creates the selection box, dispatches unit events, etc
             if(this.unitSystem)
                 this.unitSystem.initialize();
-
             this.regulationPlay = $.Deferred();
             this.regulationPlay.done(this.endGame.bind(this));
         },

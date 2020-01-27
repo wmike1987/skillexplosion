@@ -681,6 +681,42 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(!added)
                 master.slaves.push(slave);
         },
+
+        drawPathGrid: function(canvas, sideLen) {
+            // Clone a new canvas from game theater.
+            var $newCanvas = $(canvas).clone();
+            var ctx = $newCanvas[0].getContext("2d");
+
+            // Draw vertical lines.
+            for (var i = 0; i < canvas.width / sideLen; ++i) {
+                ctx.moveTo(i * sideLen, 0);
+                ctx.lineTo(i * sideLen, canvas.height);
+            }
+
+            // Draw horizontal lines.
+            for (var i = 0; i < canvas.height / sideLen; ++i) {
+                ctx.moveTo(0, i * sideLen);
+                ctx.lineTo(canvas.width, i * sideLen);
+            }
+
+            // Stroke it!
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+
+            // Create an image from the canvas.
+            var png = new Image();
+            png.src = $newCanvas[0].toDataURL();
+
+            // Create a texture from the image.
+            var texture = new PIXI.Texture(new PIXI.BaseTexture(png))
+
+            // Add the texture to the stage.
+            this.addSomethingToRenderer(texture, "background", {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+            });
+        },
+
     };
 
     //aliases
