@@ -96,7 +96,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
 
             // Find the shortest path using the A* algorithm.
             this.path = pathFinder.findPath(startX, startY, endX, endY, currentGame.unitSystem.grid.clone());
-            console.log("path: ", this.path);
 
             //un-static the body (attackers become static when firing)
             if(this.body.isStatic) {

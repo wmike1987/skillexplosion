@@ -116,12 +116,9 @@ define(['utils/Heap'], function(Heap) {
         return grid;
     };
 
-    // Add an obstacle to grid by marking all tiles it occupies as unwalkable.
-    // Obstacle is an array of tile coordinates of the form [{x, y}, ...].
-    Grid.prototype.addObstacle = function(obstacle) {
-        for (var i = 0; i < obstacle.length; ++i) {
-            this.tiles[obstacle[i].y][obstacle[i].x].walkable = false;
-        }
+    // Add an obstacle by marking the tile containing x and y as unwalkable.
+    Grid.prototype.addObstacle = function(x, y) {
+        this.tileAt(x, y).walkable = false;
     };
 
     // AStar path finding algorithm.

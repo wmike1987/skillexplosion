@@ -61,6 +61,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         if(options.autoAdd) {
             currentGame.addBody(this.body);
         }
+
+        //add to pathfinding grid as obstacle if appropriate
+        if(currentGame.unitSystem) {
+            currentGame.unitSystem.grid
+                .addObstacle(this.body.position.x, this.body.position.y);
+        }
     }
 
     return doodad;

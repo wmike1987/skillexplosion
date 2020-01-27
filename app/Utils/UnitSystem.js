@@ -23,10 +23,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/PathFinder'], function(
             this.box.clickPointSprite.scale.x = .25;
             this.box.clickPointSprite.scale.y = .25;
 
-            //pathfinding
-            // TODO: get rid of the magic number 100
-            this.grid = new pf.Grid(currentGame.width, currentGame.height, 100);
-
             //move/attack-move markers
             var moveMarkerScale = 1.2;
             var moveMarkerTimeLimit = 600;
@@ -573,6 +569,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/PathFinder'], function(
             $('body').off('keyup.selectionBox');
             $('body').off('keypress.selectionBox');
         }
+
+        /* Pathfinding grid */
+        // TODO: get rid of the magic number 100
+        this.grid = new pf.Grid(this.width, this.height, 100);
+
     }
 
     return unitSystem;
