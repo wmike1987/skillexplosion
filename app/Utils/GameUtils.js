@@ -422,6 +422,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return placement;
         },
 
+        offScreenPosition: function() {
+            return {x: -9999, y: -9999};
+        },
+
         isoDirectionBetweenPositions: function(v1, v2) {
             var angle = Matter.Vector.angle({x: 0, y: 0}, Matter.Vector.sub(v2, v1));
             var dir = null;

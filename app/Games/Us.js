@@ -125,7 +125,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(1);
+            this.createMarine(4);
             this.createMedic(1);
             this.createBane(4);
             var posUpdate = this.addRunnerCallback(function() {
