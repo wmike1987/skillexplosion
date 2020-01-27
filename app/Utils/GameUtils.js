@@ -711,7 +711,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var texture = new PIXI.Texture(new PIXI.BaseTexture(png))
 
             // Add the texture to the stage.
-            this.addSomethingToRenderer(texture, "background", {
+            this.addSomethingToRenderer(texture, "backgroundOne", {
                 x: canvas.width / 2,
                 y: canvas.height / 2,
             });

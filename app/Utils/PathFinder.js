@@ -18,12 +18,12 @@ define(['utils/Heap'], function(Heap) {
         return {x: this.x + this.sideLen / 2, y: this.y + this.sideLen / 2};
     };
 
-    // A Grid represents the layout of Tiles. Pass in width and height of the game
-    // map, and optionally a 2d grid of booleans to signify walkable tiles.
-    function Grid(width, height, sideLen, grid) {
+    // A Grid represents the layout of Tiles. Pass in width and height of the game map,
+    // and the desired sidelength of each tile.
+    function Grid(width, height, sideLen) {
         // Make 'new' operator optional
         if (!(this instanceof Grid)) {
-            return new Grid(width, height, sideLen, grid);
+            return new Grid(width, height, sideLen);
         }
 
         this.width = width;
@@ -34,7 +34,7 @@ define(['utils/Heap'], function(Heap) {
         for (var i = 0; i < this.height / this.sideLen; ++i) {
             this.tiles[i] = [];
             for (var j = 0; j < this.width / this.sideLen; ++j) {
-                this.tiles[i][j] = new Tile(i, j, this.sideLen, grid ? grid[i][j] : null);
+                this.tiles[i][j] = new Tile(i, j, this.sideLen);
             }
         }
     };

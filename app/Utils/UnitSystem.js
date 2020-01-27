@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/PathFinder'], function($, utils, Matter, pf) {
 
     var unitSystem = function(properties) {
 
@@ -22,6 +22,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
             this.box.clickPointSprite.scale.x = .25;
             this.box.clickPointSprite.scale.y = .25;
+
+            //pathfinding
+            // TODO: get rid of the magic number 100
+            this.grid = new pf.Grid(currentGame.width, currentGame.height, 100);
 
             //move/attack-move markers
             var moveMarkerScale = 1.2;

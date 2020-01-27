@@ -83,9 +83,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             //return body to non Sleeping
             Matter.Sleeping.set(this.body, false);
 
-            //immediate set the velocity (rather than waiting for the next tick)
-            this.constantlySetVelocityTowardsDestination(null, accelerateOptions);
-
             // Begin the pathfinding process.
             var pathFinder = new pf.AStar({
                 allowDiagonal: true,
@@ -98,7 +95,8 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
                 endY = destination.y;
 
             // Find the shortest path using the A* algorithm.
-            this.path = pathFinder.findPath(startX, startY, endX, endY, currentGame.grid.clone());
+            this.path = pathFinder.findPath(startX, startY, endX, endY, currentGame.unitSystem.grid.clone());
+            console.log("path: ", this.path);
 
             //un-static the body (attackers become static when firing)
             if(this.body.isStatic) {
@@ -106,7 +104,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             }
 
             //immediate set the velocity (rather than waiting for the next tick)
-            this.sendTowardDestination();
+            this.sendTowardDestination(null, accelerateOptions);
 
             //setup the constant move tick
             if(this.moveTick)
@@ -214,13 +212,10 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
             this.body.frictionAir = 0;
         },
 
-        generalStopCondition: function(command) {
-            //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
-            //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger
-            //overshoot buffer
+        generalStopCondition: function(commandObj) {
             if (this.closeToDestination(this.body.position, this.destination)) {
                 this.stop();
-                command.done();
+                commandObj.command.done();
             }
         },
 
@@ -239,7 +234,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command, pf) {
         },
 
         // Send a moveable object toward an updateable destination.
-        sendTowardDestination: function(event) {
+        sendTowardDestination: function(event, options) {
+            var options = options || {};
+
             // Don't do anything if the object isn't moving or there is not optimal path.
             if (!this.isMoving || this.isAttacking || this.path.length == 0) {
                 return;
