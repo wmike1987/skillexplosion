@@ -52,22 +52,54 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             }.bind(this)});
             utils.deathPact(this.box, this.box.attackMoveTargetSprite.timer);
 
+
+            //ability marker
+            var abilityMarkerScale = .7;
+            var abilityMarkerTimeLimit = 200;
+            this.box.abilityTargetSprite = utils.addSomethingToRenderer('AbilityTarget', 'foreground', {x: -50, y: -50});
+            this.box.abilityTargetSprite.timer = currentGame.addTimer({name: 'abilityTargetShrink', runs: 1, timeLimit: abilityMarkerTimeLimit,
+                tickCallback: function() {
+                    this.box.abilityTargetSprite.scale = {x: abilityMarkerScale-this.box.abilityTargetSprite.timer.percentDone*abilityMarkerScale, y: abilityMarkerScale-this.box.abilityTargetSprite.timer.percentDone*abilityMarkerScale};
+            }.bind(this),
+                resetExtension: function() {
+                    this.box.abilityTargetSprite.position = currentGame.mousePosition;
+                    this.box.abilityTargetSprite.scale = {x: abilityMarkerScale, y: abilityMarkerScale};
+            }.bind(this)});
+            utils.deathPact(this.box, this.box.abilityTargetSprite.timer);
+
+            //prevailing-unit visual indicator
+            var prevailingTint = 0xff0000;
+            this.prevailingUnitCircle = utils.addSomethingToRenderer('IsometricSelected', 'stageOne', {x: -50, y: -50, tint: prevailingTint});
+            this.prevailingUnitCircle2 = utils.addSomethingToRenderer('IsometricSelected', 'stageOne', {x: -50, y: -50, tint: prevailingTint});
+            this.movePrevailingUnitCircleTick = currentGame.addTickCallback(function() {
+                //this hinges on the unit having a renderling named 'selected'
+                if(this.selectedUnit && this.selectedUnit.renderlings.selected) {
+                    this.prevailingUnitCircle.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, 1.1);
+                    this.prevailingUnitCircle2.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, .9);
+                    this.prevailingUnitCircle.position = Matter.Vector.add(this.selectedUnit.position, this.selectedUnit.renderlings.selected.offset);
+                    this.prevailingUnitCircle2.position = Matter.Vector.add(this.selectedUnit.position, this.selectedUnit.renderlings.selected.offset);
+                }
+                else {
+                    this.prevailingUnitCircle.position = utils.offScreenPosition();
+                        this.prevailingUnitCircle2.position = utils.offScreenPosition();
+                }
+            }.bind(this));
+
             //update selected bodies upon body removal
             this.bodyRemoveCallback = Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
 
                 var removedBody = event.object[0];
 
+                //Re-assign the selected unit if needed
+                if(this.selectedUnit == removedBody) {
+                    console.info("removing unit")
+                    this.annointNextPrevailingUnit({onRemove: true});
+                }
+
                 //remove body from these data structures
                 if(removedBody.isSelectable) {
                     delete this.box.selectedBodies[removedBody.id];
                     delete this.box.pendingSelections[removedBody.id];
-                }
-
-                //Re-assign the selected unit
-                if(Object.keys(this.box.selectedBodies).length > 0) {
-                    this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
-                } else {
-                    this.selectedUnit = null;
                 }
             }.bind(this));
 
@@ -110,6 +142,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     //If one, already-selected body is requested here, remove from selection
                     if(loneSoldier && ($.inArray(loneSoldier.id.toString(), Object.keys(this.box.selectedBodies)) > -1)) {
                         changeSelectionState(loneSoldier, 'selected', false);
+                        if(this.selectedUnit == loneSoldier) {
+                            this.annointNextPrevailingUnit({onRemove: true});
+                        }
                         delete this.box.selectedBodies[loneSoldier.id];
                     }
                     else {
@@ -134,8 +169,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     this.box.selectedBodies = $.extend({}, this.box.pendingSelections);
                 }
 
-                //Assign the selected unit
-                if(Object.keys(this.box.selectedBodies).length > 0) {
+                //If we have a selected unit, check to see if it's the new selection, if so, do nothing, else set prevailing unit to the first body
+                if(!this.selectedUnit) {
+                    this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
+                }
+                else if(!Object.keys(this.box.selectedBodies).includes(this.selectedUnit.id.toString())) {
                     this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
                 }
 
@@ -176,7 +214,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             }.bind(this);
 
             //Mouse down event
-            $('body').on('mousedown.selectionBox', function(event) {
+            $('body').on('mousedown.unitSystem', function(event) {
                 var canvasPoint = {x: 0, y: 0};
                 this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
 
@@ -262,6 +300,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     if(this.abilityDispatch) {
                         if(this.selectedUnit) {
                             this.selectedUnit.unit.handleEvent({type: 'click', id: this.abilityDispatch, target: canvasPoint});
+                            this.box.abilityTargetSprite.timer.execute({runs: 1});
                             this.abilityDispatch = false;
                         }
                     }
@@ -322,7 +361,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 }
             }.bind(this));
 
-            $('body').on('mousemove.selectionBox', function(event) {
+            $('body').on('mousemove.unitSystem', function(event) {
                 if(this.box.mouseDown && this.box.renderlings && !this.box.invalidateNextBox) {
                     this.box.selectionBoxActive = true;
                     var newPoint = {x: 0, y: 0};
@@ -338,7 +377,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 }
             }.bind(this));
 
-            $('body').on('mouseup.selectionBox', function(event) {
+            $('body').on('mouseup.unitSystem', function(event) {
                 if(event.which == 1) {
                     this.box.mouseDown = false;
                     Matter.Body.setPosition(this.box, {x: -500, y: -1000});
@@ -494,7 +533,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
              }});
 
              //A or a dispatch (reserved)
-             $('body').on('keydown.selectionBox', function( event ) {
+             $('body').on('keydown.unitSystem', function( event ) {
                  if(event.key == 'a' || event.key == 'A') {
                      $.each(this.box.selectedBodies, function(prop, obj) {
                          if(obj.isAttacker) {
@@ -508,7 +547,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
              }.bind(this));
 
              //S or s dispatch (reserved)
-              $('body').on('keydown.selectionBox', function( event ) {
+             $('body').on('keydown.unitSystem', function( event ) {
                   if(event.key == 's' || event.key == 'S') {
                       $.each(this.box.selectedBodies, function(prop, obj) {
                           if(obj.isMoveable) {
@@ -516,10 +555,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                           }
                       }.bind(this))
                   }
-              }.bind(this));
+             }.bind(this));
 
              //dispatch generic key events
-             $('body').on('keydown.selectionBox', function( event ) {
+             $('body').on('keydown.unitSystem', function( event ) {
                      this.abilityDispatch = event.key.toLowerCase();
                      if(this.selectedUnit)
                         this.selectedUnit.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
@@ -528,8 +567,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                      // }.bind(this))
              }.bind(this));
 
-             //toggle life bars with Alt
-             $('body').on('keydown.selectionBox', function( event ) {
+            //toggle life bars with Alt
+            $('body').on('keydown.unitSystem', function( event ) {
                  if(event.key == 'Alt') {
                      utils.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
                              var unit = body.unit;
@@ -537,17 +576,61 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                              unit.renderlings['healthbar'].visible = true;
                          })
                  }
-             }.bind(this));
+            }.bind(this));
 
-             $('body').on('keyup.selectionBox', function( event ) {
-                 if(event.key == 'Alt') {
-                     utils.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
-                             var unit = body.unit;
-                             unit.renderlings['healthbarbackground'].visible = false;
-                             unit.renderlings['healthbar'].visible = false;
-                         })
+            //cycle through selected units, changing the prevailing-unit
+            $('body').on('keydown.unitSystem', function( event ) {
+                 if(event.key == 'Tab') {
+                     this.annointNextPrevailingUnit();
                  }
-             }.bind(this));
+            }.bind(this));
+
+            //This is used when tabbing through the list, but also when a unit is removed. In the case of a remove,
+            //this is run before the unit is removed so that we can identify where in line the body was.
+            this.annointNextPrevailingUnit = function(options) {
+                var options = options || {};
+                var selectedUnitCount = Object.keys(this.box.selectedBodies).length;
+                var annointNextBody = false;
+                var firstBody = null;
+                if(!selectedUnitCount) {
+                    this.selectedUnit = null;
+                    return;
+                } else if(selectedUnitCount == 1) {
+                    if(options.onRemove)
+                        this.selectedUnit = null;
+                    return;
+                } else {
+                    $.each(this.box.selectedBodies, function(key, body) {
+                        //mark the first body
+                        if(!firstBody) {
+                            firstBody = body;
+                        }
+                        //we found the currently selected body!
+                        if(this.selectedUnit.id == key) {
+                            annointNextBody = true;
+                        } else if(annointNextBody) {
+                            //we are the next body!
+                            annointNextBody = false;
+                            this.selectedUnit = body;
+                            return;
+                        }
+                    }.bind(this))
+
+                    //if we get here and annointNextBody is true, it means we were at the end and we can assume we should cycle
+                    if(annointNextBody)
+                        this.selectedUnit = firstBody;
+                }
+            }.bind(this),
+
+            $('body').on('keyup.unitSystem', function( event ) {
+                if(event.key == 'Alt') {
+                    utils.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
+                         var unit = body.unit;
+                         unit.renderlings['healthbarbackground'].visible = false;
+                         unit.renderlings['healthbar'].visible = false;
+                     })
+             }
+            }.bind(this));
 
             currentGame.addBody(this.box);
         }
@@ -562,12 +645,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 currentGame.removeBody(this.box);
                 this.box = null;
             }
-            $('body').off('mousedown.selectionBox');
-            $('body').off('mousemove.selectionBox');
-            $('body').off('mouseup.selectionBox');
-            $('body').off('keydown.selectionBox');
-            $('body').off('keyup.selectionBox');
-            $('body').off('keypress.selectionBox');
+
+            if(this.movePrevailingUnitCircleTick) {
+                currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
+            }
+
+            $('body').off('mousedown.unitSystem');
+            $('body').off('mousemove.unitSystem');
+            $('body').off('mouseup.unitSystem');
+            $('body').off('keydown.unitSystem');
+            $('body').off('keyup.unitSystem');
+            $('body').off('keypress.unitSystem');
         }
     }
 

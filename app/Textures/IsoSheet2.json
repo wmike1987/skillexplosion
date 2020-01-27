@@ -1,5 +1,13 @@
 {"frames": {
 
+"AbilityTarget":
+{
+	"frame": {"x":67,"y":1543,"w":32,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
 "AmbientLight1":
 {
 	"frame": {"x":1,"y":1,"w":512,"h":512},
@@ -26,7 +34,7 @@
 },
 "AttackTarget":
 {
-	"frame": {"x":67,"y":1543,"w":32,"h":26},
+	"frame": {"x":101,"y":1543,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -42,7 +50,7 @@
 },
 "MoveTarget":
 {
-	"frame": {"x":101,"y":1543,"w":32,"h":26},
+	"frame": {"x":135,"y":1543,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -58,6 +66,6 @@
 	"format": "RGBA8888",
 	"size": {"w":514,"h":1576},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:52b5e54239f1f950cd8934609d4be508:d922f5fa1b572df1e9e7c96cc3708e3d:46c875579d242a0b1cfceb19946da616$"
+	"smartupdate": "$TexturePacker:SmartUpdate:6bc8403e770d6c2df40fc22920a28c6a:3f9e443e1a9a2d311f7d37579cd22fd3:46c875579d242a0b1cfceb19946da616$"
 }
 }
