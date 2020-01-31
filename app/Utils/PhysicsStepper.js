@@ -38,7 +38,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.lastTime = time;
 
             Matter.Events.trigger(this, 'beforeUpdate', event);
-            if(!options.notFixed) {
+            if(options.isFixed) {
                 this.deltaAccumulator += this.deltaTime;
                 while(this.deltaAccumulator >= this.desiredFrameTime) {
                     this.deltaAccumulator -= this.desiredFrameTime;
