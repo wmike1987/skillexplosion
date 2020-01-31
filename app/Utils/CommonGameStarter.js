@@ -3,7 +3,7 @@
  * setting up the pixi renderer. It also ensures assets have been loaded before initiating the game lifecycle
  */
 
-define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer'], function($, Matter, PIXI, PixiRenderer) {
+define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/FixedStepRunner'], function($, Matter, PIXI, PixiRenderer, FixedStepRunner) {
 
 	var pixiRenderer;
 	var engine;
@@ -51,28 +51,33 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer'], function($, Matter
     		        $('#gameTheater').empty();
     		        loadingCallback.detach();
     		    }
-    		    engine = Matter.Engine.create({enableSleeping: false});
-        		pixiRenderer = new PixiRenderer(engine, latestGameOptions, latestGameOptions.appendToElement);
 
-        		//change some world values
+				//create our Matter engine
+    		    engine = Matter.Engine.create({enableSleeping: false});
         		engine.world.gravity.y = latestGameOptions.gravity;
 
-        		// run the engine
-        		engine.runner = Matter.Engine.run(engine);
-        		// hack to not limit fps
-        		engine.runner.deltaMin = 0;
-        		engine.runner.deltaMax = 10000;
+				//create our fixed physics step manager
+				var fixedStep = new FixedStepRunner({engine: engine});
+				fixedStep.start();
 
-        		//override set velocity in order to normalize the velocity
-                Matter.Body.originalSetVelocity = Matter.Body.originalSetVelocity || Matter.Body.setVelocity;
-                // Matter.Body.setVelocity = function(body, velocity) {
-                //         //normalize to 16.6666 ms per frame
-                //         //var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.deltaHistory[engine.runner.deltaHistory.length - 1] / (1000/60)));
-                //         var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.delta / (1000/60)));
-                //         Matter.Body.originalSetVelocity(body, normalizedVelocity);
-                //     };
+				var overrideVelocity = false;
+				if(overrideVelocity) {
+					//override set velocity in order to normalize the velocity
+					Matter.Body.originalSetVelocity = Matter.Body.originalSetVelocity || Matter.Body.setVelocity;
+					// Matter.Body.setVelocity = function(body, velocity) {
+						//         //normalize to 16.6666 ms per frame
+						//         //var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.deltaHistory[engine.runner.deltaHistory.length - 1] / (1000/60)));
+						//         var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.delta / (1000/60)));
+						//         Matter.Body.originalSetVelocity(body, normalizedVelocity);
+						//     };
+				}
 
-        		// start the renderer
+        		// Start the renderer: this starts the pixi Application and establishes a callback to update sprites with an associated body (if attached to one)
+				// Thus our game loop is established:
+				// 1) phsyics step(s)
+				// 1a) update sprites if they're attached to a body
+				// 2) let pixi draw
+        		pixiRenderer = new PixiRenderer(engine, latestGameOptions, latestGameOptions.appendToElement);
         		pixiRenderer.start();
 
         		//Run through the Common Game Lifecycle. init() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()

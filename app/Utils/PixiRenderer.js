@@ -99,7 +99,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
     				//handle rotation
     				if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'continuous') {
-    				    sprite.rotation += .00075 * tickEvent.source.runner.delta;
+    				    sprite.rotation += .00075 * tickEvent.source.delta;
     				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'none') {
     				    //do nothing
     				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'random') {
@@ -171,8 +171,8 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				this.removeFromPixiStage(event.object[0]);
 			}.bind(this));
 
-			//setup rendering to happen after Matter.Runner tick
-			Matter.Events.on(this.engine, 'afterTick', function(event) {
+			//update sprites after Matter.Runner tick
+			Matter.Events.on(this.engine.runner, 'renderWorld', function(event) {
 				this.renderWorld(this.engine, event);
 			}.bind(this));
 		};

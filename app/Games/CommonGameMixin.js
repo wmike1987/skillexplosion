@@ -111,8 +111,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.fpsText.persists = true;
             this.lastDeltaText.persists = true;
             this.addTickCallback(function(event) {
-                this.lastDeltaText.text = event.deltaTime.toFixed(2) + "ms";
-                this.frameSecondCounter += event.deltaTime;
+                this.lastDeltaText.text = this.engine.runner.deltaTime.toFixed(2) + "ms";
+                this.frameSecondCounter += this.engine.runner.deltaTime;
                 if(this.frameSecondCounter > 1000) {
                     this.frameSecondCounter -= 1000;
                     this.fpsText.text = this.frames + " fps";
@@ -706,7 +706,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 this.invincibleTickCallbacks.push(tickDeltaWrapper);
             else
                 this.tickCallbacks.push(tickDeltaWrapper);
-            Matter.Events.on(this.engine.runner, eventName || 'afterTick', tickDeltaWrapper);
+            Matter.Events.on(this.engine.runner, eventName || 'afterUpdate', tickDeltaWrapper);
             return tickDeltaWrapper; //return so you can turn this off if needed
         },
 

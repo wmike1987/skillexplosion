@@ -192,27 +192,8 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 return;
             }
 
-            var localMoveSpeed = Matter.Vector.magnitude(this.body.velocity);
-
-            //accelerate into the movement and give initial movement a small increment before becoming full force
-            var deltaTime = event ? event.deltaTime : 16; //this is bad
-
-            //immediately move
-            if(options.immediateMove) {
-                localMoveSpeed = this.moveSpeed;
-            } else { //or accelerate
-                if(localMoveSpeed < this.moveSpeed) {
-                    localMoveSpeed += .035 * deltaTime;
-                    if(localMoveSpeed > this.moveSpeed) {
-                        localMoveSpeed = this.moveSpeed;
-                    }
-                } else {
-                    localMoveSpeed = this.moveSpeed;
-                }
-            }
-
             //send body
-            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, localMoveSpeed, false);
+            utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
 
             //trigger movement event (for direction)
             Matter.Events.trigger(this, 'move', {

@@ -87,7 +87,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         play: function(options) {
             this.nextLevel();
 
-            var tree1 = new Doodad({drawWire: true, collides: true, radius: 20, texture: 'avsnowtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
+            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'skelly', stage: 'stage', scale: {x: .3, y: .3}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 0}})
 
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
