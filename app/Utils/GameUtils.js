@@ -299,6 +299,18 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
         },
 
+        attachSomethingToBody: function(something, body, offset) {
+            var tick = currentGame.addTickCallback(function() {
+                something.position = Matter.Vector.add((body.interpolatedPosition || body.position), offset);
+            }, false, 'afterRenderWorld');
+            something.bodyAttachment = tick;
+            this.deathPact(body, tick);
+        },
+
+        detachSomethingFromBody: function(something, body) {
+            currentGame.removeTickCallback(something.bodyAttachment);
+        },
+
         removeSomethingFromRenderer: function(something, where) {
             where = where || something.myLayer || 'stage';
             currentGame.renderer.removeFromPixiStage(something, where);

@@ -10,7 +10,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         hasMoved: false,
         isSoloMover: false,
         stopOnCollisionBuffer: 30, //pixels
-        overshootBuffer: 1, //pixels
+        overshootBuffer: 2, //pixels
         smallerBodyCollisionCategory: 0x4000,
         noProgressBuffer: 15, //pixels
 
@@ -93,7 +93,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             //general condition
             if(this.stopConditionCheck)
                 currentGame.removeRunnerCallback(this.stopConditionCheck);
-            this.stopConditionCheck = currentGame.addRunnerCallback(this.generalStopCondition.bind(this, commandObj), false);
+            this.stopConditionCheck = currentGame.addRunnerCallback(this.generalStopCondition.bind(this, commandObj), false, 'afterStep');
             utils.deathPact(this, this.stopConditionCheck, 'generalStopCondition');
 
             //"no progress" stop condition

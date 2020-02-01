@@ -3,7 +3,7 @@
  * setting up the pixi renderer. It also ensures assets have been loaded before initiating the game lifecycle
  */
 
-define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/PhysicsStepper'], function($, Matter, PIXI, PixiRenderer, PhysicsStepper) {
+define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/GameLoop'], function($, Matter, PIXI, PixiRenderer, GameLoop) {
 
 	var pixiRenderer;
 	var engine;
@@ -56,8 +56,8 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/PhysicsStepp
     		    engine = Matter.Engine.create({enableSleeping: false});
         		engine.world.gravity.y = latestGameOptions.gravity;
 
-				//create our fixed physics step manager
-				var fixedStep = new PhysicsStepper({engine: engine, isFixed: true});
+				//create our game loop manager
+				var fixedStep = new GameLoop({engine: engine, isFixed: true});
 				fixedStep.start();
 
 				var overrideVelocity = false;

@@ -25,7 +25,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
             //move/attack-move markers
             var moveMarkerScale = 1.2;
-            var moveMarkerTimeLimit = 600;
+            var moveMarkerTimeLimit = 275;
 
             //move marker
             this.box.moveTargetSprite = utils.addSomethingToRenderer('MoveTarget', 'foreground', {x: -50, y: -50});
@@ -71,19 +71,50 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             var prevailingTint = 0xff0000;
             this.prevailingUnitCircle = utils.addSomethingToRenderer('IsometricSelected', 'stageOne', {x: -50, y: -50, tint: prevailingTint});
             this.prevailingUnitCircle2 = utils.addSomethingToRenderer('IsometricSelected', 'stageOne', {x: -50, y: -50, tint: prevailingTint});
-            this.movePrevailingUnitCircleTick = currentGame.addTickCallback(function() {
-                //this hinges on the unit having a renderling named 'selected'
-                if(this.selectedUnit && this.selectedUnit.renderlings.selected) {
-                    this.prevailingUnitCircle.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, 1.1);
-                    this.prevailingUnitCircle2.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, .9);
-                    this.prevailingUnitCircle.position = Matter.Vector.add(this.selectedUnit.position, this.selectedUnit.renderlings.selected.offset);
-                    this.prevailingUnitCircle2.position = Matter.Vector.add(this.selectedUnit.position, this.selectedUnit.renderlings.selected.offset);
-                }
-                else {
-                    this.prevailingUnitCircle.position = utils.offScreenPosition();
+
+            Object.defineProperty(this, 'selectedUnit', {
+                get: function(){
+                    return this._selectedUnit;
+                },
+
+                set: function(value) {
+                    if(this._selectedUnit) {
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle2, this._selectedUnit);
+                    }
+
+                    this._selectedUnit = value;
+
+                    if(value) {
+                        this.prevailingUnitCircle.scale = Matter.Vector.mult(value.renderlings.selected.scale, 1.1);
+                        this.prevailingUnitCircle2.scale = Matter.Vector.mult(value.renderlings.selected.scale, .9);
+                        utils.attachSomethingToBody(this.prevailingUnitCircle, value, value.renderlings.selected.offset);
+                        utils.attachSomethingToBody(this.prevailingUnitCircle2, value, value.renderlings.selected.offset);
+                    } else {
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle, value);
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle2, value);
+                        this.prevailingUnitCircle.position = utils.offScreenPosition();
                         this.prevailingUnitCircle2.position = utils.offScreenPosition();
+                    }
+
                 }
-            }.bind(this));
+            });
+            // this.movePrevailingUnitCircleTick = currentGame.addTickCallback(function() {
+            //     //this hinges on the unit having a renderling named 'selected'
+            //     if(this.selectedUnit && this.selectedUnit.renderlings.selected) {
+            //         this.prevailingUnitCircle.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, 1.1);
+            //         this.prevailingUnitCircle2.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, .9);
+            //         //
+            //         this.selectedUnit.renderlings['prevailingUnitCircle1'] = this.prevailingUnitCircle;
+            //         this.selectedUnit.renderlings['prevailingUnitCircle2'] = this.prevailingUnitCircle2;
+            //         this.prevailingUnitCircle.offset = this.selectedUnit.renderlings.selected.offset;
+            //         this.prevailingUnitCircle2.offset = this.selectedUnit.renderlings.selected.offset;
+            //     }
+            //     else {
+            //         this.prevailingUnitCircle.position = utils.offScreenPosition();
+            //         this.prevailingUnitCircle2.position = utils.offScreenPosition();
+            //     }
+            // }.bind(this));
 
             //update selected bodies upon body removal
             this.bodyRemoveCallback = Matter.Events.on(this.engine.world, 'afterRemove', function(event) {

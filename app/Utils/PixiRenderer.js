@@ -59,8 +59,8 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		this.renderWorld = function(engine, tickEvent) {
 			var bodies = Matter.Composite.allBodies(engine.world);
 			this.stages.background.filters = [];
-			bodies.forEach(function(body) {
 
+			bodies.forEach(function(body) {
     			//add filters - Can't remember why or how this works. Looks like a hack at the moment to me. This is needed for displacement sprites.
     			if(body.render.filters) {
     				if(!this.stages.background.filters) {
@@ -70,10 +70,17 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
     				}
     			}
 
+				var drawPosition = null;
+				if(tickEvent.interpolate) {
+					drawPosition = interpolatePosition(body, tickEvent.percentOfNextFrame);
+				}
+				else {
+					drawPosition = body.position;
+				}
+
 				//prevent spinning if specified
 				if(body.zeroOutAngularVelocity)
 					body.zeroOutAngularVelocity();
-
 
 				if(!body.renderChildren) {
 				    body.renderChildren = [];
@@ -94,8 +101,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 				//loop through fully fledged sprites and latch them to the body's coordinates
 				$.each(body.renderlings, function(property, sprite) {
-    				sprite.position.x = body.position.x + sprite.offset.x;
-    				sprite.position.y = body.position.y + sprite.offset.y;
+
+    				sprite.position.x = drawPosition.x + sprite.offset.x;
+    				sprite.position.y = drawPosition.y + sprite.offset.y;
 
     				//handle rotation
     				if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'continuous') {
@@ -128,6 +136,16 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				}
 
 			}.bind(this));
+		};
+
+		//interpolate position of Matter bodies
+		var interpolatePosition = function(body, percentage) {
+			var previousPosition = body.previousPosition || body.positionPrev;
+			var currentPosition = body.position;
+
+			var intPos = Matter.Vector.add(previousPosition, Matter.Vector.mult(Matter.Vector.sub(currentPosition, previousPosition), percentage));
+			body.interpolatedPosition = intPos;
+			return intPos;
 		};
 
 		/*

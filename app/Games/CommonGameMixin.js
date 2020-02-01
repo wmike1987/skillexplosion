@@ -78,6 +78,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 $.each(this.verticeHistories, function(index, body) {
                     body.verticeCopy = utils.cloneVertices(body.vertices);
                     body.positionCopy = {x: body.position.x, y: body.position.y};
+                    body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
                     body.partsCopy = utils.cloneParts(body.parts);
                 }.bind(this))
             }.bind(this), true, 'beforeUpdate');
@@ -355,12 +356,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             scoreSubmission.done(this.resetGame.bind(this));
         },
 
-        addUnit: function(unit, trackVerticeHistory) {
-            this.addBody(unit.body, trackVerticeHistory);
+        addUnit: function(unit) {
+            this.addBody(unit.body);
             Matter.Events.trigger(unit, 'addUnit', {});
         },
 
-        addBody: function(body, trackVerticeHistory) {
+        addBody: function(body) {
             //if we've added a unit, call down to its body
             if(body.isUnit) {
                 body = body.body;
@@ -375,7 +376,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 }
             }
 
-            if(trackVerticeHistory)
+            if(body.vertices)
                 this.verticeHistories.push(body);
 
             //add to matter world
