@@ -55,13 +55,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.deltaTime = time - this.lastTime;
             this.lastTime = time;
 
-            var missedFrame = null;
-            if(debug && this.deltaTime < this.desiredFrameTime) {
-                console.info("missed frame");
-                console.info(this.deltaTime + " is less than the desire " + this.desiredFrameTime);
-                missedFrame = true;
-            }
-
             var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime)
             if(willUpdate) {
                 Matter.Events.trigger(this, 'beforeUpdate', event);
@@ -89,12 +82,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             if(hasUpdated)
                 Matter.Events.trigger(this, 'afterUpdate', event);
 
-            //render the world (actually just update sprite position) with the leftover delta time
-            if(missedFrame) {
-                console.info("last frame %: " + this.lastRenderDelta);
-                console.info("this frame %: " + this.deltaAccumulator/this.desiredFrameTime);
-            }
-            this.lastRenderDelta = this.deltaAccumulator/this.desiredFrameTime;
+            Matter.Events.trigger(this, 'tick', event);
+
             event.percentOfNextFrame = this.deltaAccumulator/this.desiredFrameTime;
             event.interpolate = this.interpolate;
             Matter.Events.trigger(this, 'renderWorld', event);

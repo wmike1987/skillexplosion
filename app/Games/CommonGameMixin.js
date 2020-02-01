@@ -120,7 +120,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     this.frames = 0;
                 }
                 this.frames += 1;
-            }.bind(this), true);
+            }.bind(this), true, 'tick');
 
             //init fps to be off
             this.lastDeltaText.visible = false;
