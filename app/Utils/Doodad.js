@@ -48,7 +48,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
-            stage: "stageZero",
+            stage: "StageNTwo",
             offset: options.shadowOffset || {x: 0, y: 0}
         }
         ]

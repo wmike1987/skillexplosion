@@ -140,7 +140,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             id: 'selected',
             data: 'IsometricSelected',
             scale: {x: .8, y: .8},
-            stage: 'stageOne',
+            stage: 'StageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -150,7 +150,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             id: 'selectionPending',
             data: 'IsometricSelectedPending',
             scale: {x: 1, y: 1},
-            stage: 'stageOne',
+            stage: 'StageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -223,7 +223,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
-            stage: "stageZero",
+            stage: "StageNTwo",
             offset: {x: 0, y: 22}}];
 
         var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
@@ -250,7 +250,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         //Knife
         var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
-        var knifeSpeed = 14;
+        var knifeSpeed = 15;
         var throwKnife = function(destination, commandObj) {
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {
@@ -273,7 +273,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                 scale: {x: 10/256, y: 50/256},
                 offset: {x: 15, y: 25},
                 rotate: utils.pointInDirection(knife.position, destination),
-    			stage: "stageZero",
+    			stage: "StageNTwo",
             }]
             currentGame.addBody(knife);
 
@@ -377,12 +377,27 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     unitType: 'Marine',
                     health: 50,
                     energy: 20,
+                    portrait: utils.createDisplayObject('MarineRedHat'),
                     team: options.team || 4,
+                    name: options.name,
                     heightAnimation: 'up',
                     eventClickMappings: {
                         d: dash,
                         f: throwKnife
                     },
+                    abilityInfo: [
+                        {
+                            name: 'Dash',
+                            cooldown: 5,
+                            icon: utils.createDisplayObject('DashIcon')
+                        },
+                        {
+                            name: 'Throw Knife',
+                            cooldown: .4,
+                            icon: utils.createDisplayObject('KnifeIcon')
+                        },
+
+                    ],
                     eventKeyMappings: {
                         //x: setSleeping,
                     },
@@ -400,7 +415,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     }
                 },
                 moveable: {
-                    moveSpeed: 2.65,
+                    moveSpeed: 2.35,
                     walkAnimations: walkAnimations,
                 }, attacker: {
                     attackAnimations: attackAnimations,

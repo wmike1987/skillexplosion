@@ -1,5 +1,5 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/IsoSpriteManager',
-'utils/GameUtils', 'utils/CommandQueue', 'utils/Command'],
+'utils/GameUtils', 'core/CommandQueue', 'core/Command'],
 
     function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso, utils, CommandQueue, Command) {
 

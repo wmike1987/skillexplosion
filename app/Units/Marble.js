@@ -34,7 +34,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			visible: true,
 			rotate: 'none',
 			tint: options.tint,
-			stage: "stageZero",
+			stage: "StageNTwo",
 			offset: {x: 12, y: 12},
 		}, {
 			id: 'marbleShadowHighlights',
@@ -47,21 +47,21 @@ define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
 			},
 			initialRotate: 'random',
 			tint: options.highlightTint,
-			stage: "stageZero",
+			stage: "StageNTwo",
 			offset: {x: 12, y: 12}
 		}, {
 			id: 'selected',
 			data: 'MarbleSelected',
 			scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
 			tint: options.selectionTint,
-			stage: 'stageOne',
+			stage: 'StageNOne',
 			visible: false,
 			rotate: 'none'
 		}, {
 			id: 'selectionPending',
 			data: 'MarbleSelectedPending',
 			scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
-			stage: 'stageOne',
+			stage: 'StageNOne',
 			visible: false,
 			tint: options.pendingSelectionTint,
 			rotate: 'continuous'

@@ -141,7 +141,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             id: 'selected',
             data: 'IsometricSelected',
             scale: {x: .8, y: .8},
-            stage: 'stageOne',
+            stage: 'StageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -151,7 +151,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             id: 'selectionPending',
             data: 'IsometricSelectedPending',
             scale: {x: 1, y: 1},
-            stage: 'stageOne',
+            stage: 'StageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -224,7 +224,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
-            stage: "stageZero",
+            stage: "StageNTwo",
             offset: {x: 0, y: 22}}];
 
         var rad = options.radius || 28;
@@ -237,7 +237,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     unitType: 'Medic',
                     health: 25,
                     energy: 60,
+                    portrait: utils.createDisplayObject('MedicGreenEyes'),
                     team: options.team || 4,
+                    name: options.name,
                     heightAnimation: 'up',
                     eventClickMappings: {
                     },
@@ -257,7 +259,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     }
                 },
                 moveable: {
-                    moveSpeed: 2.45,
+                    moveSpeed: 2.15,
                     walkAnimations: walkAnimations,
                 }, attacker: {
                     attackAnimations: healAnimations,

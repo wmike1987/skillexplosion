@@ -6,6 +6,7 @@ requirejs.config({
         games: '../app/Games',
         mixins: '../app/Mixins',
         utils: '../app/Utils',
+        core: '../app/Core',
         units: '../app/Units',
         shaders: '../app/Shaders',
     	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.0/pixi", //4.8.6 last stable
@@ -68,7 +69,7 @@ requirejs(['jquery'], function($) {
 	        $('#gameTheater').text("Loading...");
 
 	        //load game
-    	    require(['utils/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/HS'], function(GameStarter, game, $, hs) {
+    	    require(['core/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/HS'], function(GameStarter, game, $, hs) {
 
     	    	//destroy previous game
     	    	if(previousGame) previousGame.nuke({noMercy: true});
@@ -98,13 +99,9 @@ requirejs(['jquery'], function($) {
 	                })
 	            }
 
-    	    	//debugging option
-    	    	if(false)
-    		    	newGameInstance.victoryCondition = {type: 'timed', limit: 5};
-
     		    //call the game starter to initiate pixi, matter engine, and the game lifecycle. This also handles
     		    //not starting a game until resources have been loaded. I may revisit this part of the game starter.
-    	    	GameStarter(newGameInstance, game.worldOptions);
+    	    	GameStarter(newGameInstance);
 
     	    	//populate highscore table
     	    	hs.refreshHighScoreTable(game.gameName);

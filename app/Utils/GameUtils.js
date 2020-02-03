@@ -287,6 +287,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.sortYOffset = options.sortYOffset;
             if(options.alpha != undefined)
                 something.alpha = options.alpha;
+            if(options.persists)
+                something.persists = true;
 
             //add options to escape without adding it to the renderer
             if(options.dontAdd) return something;
@@ -299,6 +301,20 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
         },
 
+        makeSpriteSize: function(sprite, size) {
+            if(!sprite.texture) return;
+            var scaleX = null;
+            var scaleY = null;
+            if(size.w) {
+                scaleX = size.w/sprite.texture.width;
+                scaleY = size.h/sprite.texture.height;
+            } else {
+                scaleX = size/sprite.texture.width;
+            }
+            sprite.scale = {x: scaleX, y: scaleY || scaleX};
+            return sprite.scale;
+        },
+
         attachSomethingToBody: function(something, body, offset) {
             var tick = currentGame.addTickCallback(function() {
                 something.position = Matter.Vector.add((body.interpolatedPosition || body.position), offset);
@@ -307,7 +323,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             this.deathPact(body, tick);
         },
 
-        detachSomethingFromBody: function(something, body) {
+        detachSomethingFromBody: function(something) {
             currentGame.removeTickCallback(something.bodyAttachment);
         },
 
@@ -387,9 +403,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         calculateRandomPlacementForBodyWithinCanvasBounds: function(body, neatly) {
             var placement = {};
             var bodyWidth = (body.bounds.max.x - body.bounds.min.x);
-            var XRange = Math.floor(this.getCanvasWidth()/bodyWidth);
+            var XRange = Math.floor(this.getPlayableWidth()/bodyWidth);
             var bodyHeight = (body.bounds.max.y - body.bounds.min.y);
-            var YRange = Math.floor(this.getCanvasHeight()/bodyHeight);
+            var YRange = Math.floor(this.getPlayableHeight()/bodyHeight);
             var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
             var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
             if(neatly) {
@@ -398,8 +414,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 placement.x = Xtile*bodyWidth + bodyHalfWidth;
                 placement.y = Ytile*bodyHeight + bodyHalfHeight;
             } else {
-                placement.x = Math.random() * (currentGame.canvasEl.getBoundingClientRect().width - bodyHalfWidth*2) + bodyHalfWidth;
-                placement.y = Math.random() * (currentGame.canvasEl.getBoundingClientRect().height - bodyHalfHeight*2) + bodyHalfHeight;
+                placement.x = Math.random() * (this.getPlayableWidth() - bodyHalfWidth*2) + bodyHalfWidth;
+                placement.y = Math.random() * (this.getPlayableHeight() - bodyHalfHeight*2) + bodyHalfHeight;
             }
 
             return placement;
@@ -482,7 +498,23 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         getCanvasWH: function() {
-          return {x: this.getCanvasWidth(), y: this.getCanvasHeight()};
+          return {x: this.getCanvasWidth(), y: this.getCanvasHeight(), w: this.getCanvasWidth(), h: this.getCanvasHeight()};
+        },
+
+        getPlayableWH: function() {
+          return {x: this.getPlayableWidth(), y: this.getPlayableHeight(), w: this.getPlayableWidth(), h: this.getPlayableHeight()};
+        },
+
+        getPlayableWidth: function() {
+          return currentGame.canvasEl.getBoundingClientRect().width;
+        },
+
+        getPlayableHeight: function() {
+          return currentGame.worldOptions.height;
+        },
+
+        getUnitPanelCenter: function() {
+            return {x: this.getCanvasCenter().x, y: this.getPlayableHeight() + currentGame.unitPanelHeight/2};
         },
 
         getSound: function(name, options) {
@@ -649,6 +681,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }
 
             return "0x" + r + g + b;
+        },
+
+        //red to green
+        percentAsHexColor: function(percentage) {
+            return this.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
         },
 
         sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {

@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'utils/TileMap'], function($, utils, TileMap) {
+define(['jquery', 'utils/GameUtils', 'core/TileMap'], function($, utils, TileMap) {
 
     //This module takes in a collection of sprites + tile options and returns a TileMap
     //We assume isometric tiles, aka height = width/2

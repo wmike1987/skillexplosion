@@ -4,14 +4,23 @@
 define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 	//module
-	var renderer = function(engine, options, appendToElement) {
+	var renderer = function(engine, options) {
 		var options = options || {};
-		var appendToElement = appendToElement || document.body;
+		var appendToElement = options.appendToElement || document.body;
 
 		this.engine = engine;
 
 		//create stages (these don't handle sorting, see the laying group below)
-		this.stages = {background: new PIXI.Container, backgroundOne: new PIXI.Container, stageZero: new PIXI.Container, stageOne: new PIXI.Container, stage: new PIXI.Container, foreground: new PIXI.Container, hud: new PIXI.Container};
+		this.stages = {
+			background: new PIXI.Container,
+			backgroundOne: new PIXI.Container,
+			StageNTwo: new PIXI.Container,
+			StageNOne: new PIXI.Container,
+			stage: new PIXI.Container,
+			StageOne: new PIXI.Container,
+			foreground: new PIXI.Container,
+			hud: new PIXI.Container,
+			hudOne: new PIXI.Container};
 
 		//create the layering groups
 		var i = 0;
@@ -154,7 +163,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		this.start = function() {
 
 			//init pixi and it's game loop, important to note that this loop happens after ours (ensuring renderWorld is called prior to this frame's rendering).
-			this.pixiApp = new PIXI.Application({width: options.width, height:  options.height, backgroundColor : 0x1099bb});
+			this.pixiApp = new PIXI.Application({width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0x1099bb});
 			this.canvasEl = this.pixiApp.renderer.view;
 
 			//setup pixi interaction - using this for it's differentiation between left and right click, though could handle this on my own

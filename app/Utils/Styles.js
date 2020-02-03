@@ -1,5 +1,5 @@
 define(function() {
-	
+
 	return {
 		style: new PIXI.TextStyle({
             dropShadow: true,
@@ -21,7 +21,7 @@ define(function() {
             lineJoin: "bevel",
             strokeThickness: 2
         }),
-    
+
     	fpsStyle: new PIXI.TextStyle({
             dropShadowAngle: 7.1,
             dropShadowBlur: -12,
@@ -32,7 +32,7 @@ define(function() {
             fontSize: 14,
             strokeThickness: 4
         }),
-			
+
     	scoreStyle: new PIXI.TextStyle({
 		    fontFamily: 'Arial',
 		    fontSize: 20,
@@ -48,7 +48,7 @@ define(function() {
 		    wordWrap: true,
 		    wordWrapWidth: 440
 		}),
-			
+
     	redScoreStyle: new PIXI.TextStyle({
 		    fontFamily: 'Arial',
 		    fontSize: 20,
@@ -64,7 +64,7 @@ define(function() {
 		    wordWrap: true,
 		    wordWrapWidth: 440
 		}),
-			
+
     	greenScoreStyle: new PIXI.TextStyle({
 		    fontFamily: 'Arial',
 		    fontSize: 20,
@@ -80,7 +80,7 @@ define(function() {
 		    wordWrap: true,
 		    wordWrapWidth: 440
 		}),
-			
+
     	newWaveStyle: new PIXI.TextStyle({
             dropShadow: true,
             dropShadowAlpha: 0.7,
@@ -100,7 +100,7 @@ define(function() {
             lineJoin: "bevel",
             strokeThickness: 8
         }),
-            
+
         praiseStyle: new PIXI.TextStyle({
             dropShadow: true,
             dropShadowAlpha: 0.7,
@@ -119,5 +119,29 @@ define(function() {
             fontWeight: 200,
             strokeThickness: 6
         }),
+
+		unitNameStyle: new PIXI.TextStyle({
+			fill: "white",
+			fillGradientType: 1,
+			fontFamily: "Times New Roman",
+			fontSize: 20,
+			strokeThickness: 4
+		}),
+
+		unitHealthStyle: new PIXI.TextStyle({
+			fill: "#2EA003",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 18,
+			strokeThickness: 2
+		}),
+
+		unitEnergyStyle: new PIXI.TextStyle({
+			fill: "#9F33FF",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 16,
+			strokeThickness: 2
+		}),
 	}
 })

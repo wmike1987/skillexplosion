@@ -2,7 +2,7 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'utils/UnitSystem'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem) {
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'core/UnitSystem'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem) {
 
     var common = {
 
@@ -56,7 +56,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.invincibleListeners = [],
             this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
             this.mousePosition = {x: 0, y: 0},
-            this.canvas = {width: options.canvasWidth, height: options.canvasHeight};
+            this.canvas = {width: utils.getPlayableWidth(), height: utils.getPlayableHeight()};
             this.canvasRect = this.canvasEl.getBoundingClientRect();
             this.justLostALife = 0;
             this.endGameSound = utils.getSound('bells.wav', {volume: .05});
@@ -707,7 +707,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 this.invincibleTickCallbacks.push(tickDeltaWrapper);
             else
                 this.tickCallbacks.push(tickDeltaWrapper);
-            Matter.Events.on(this.engine.runner, eventName || 'afterUpdate', tickDeltaWrapper);
+            Matter.Events.on(this.engine.runner, eventName || 'tick'/*'afterUpdate'*/, tickDeltaWrapper);
             return tickDeltaWrapper; //return so you can turn this off if needed
         },
 

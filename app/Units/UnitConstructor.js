@@ -4,7 +4,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
     function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso, utils, ub) {
 
         /*
-         *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior and returns the body
+         *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior and returns the unit
          *
          * options contains:
          * unit {}
@@ -13,7 +13,8 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
          */
         function UnitConstructor(options) {
 
-            var newUnit = $.extend(true, {}, ub, options.unit);
+            //mixin the unit options into the unit base
+            var newUnit = $.extend({}, ub, options.unit);
 
             // create body
             var body = Matter.Bodies.circle(0, 0, options.radius, {

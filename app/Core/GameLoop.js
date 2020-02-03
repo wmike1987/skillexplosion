@@ -22,6 +22,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         this.fps = options.fps || 60;
         this.desiredFrameTime = 1000/this.fps;
         this.isFixed = options.isFixed;
+        this.maxDelta = 3000;
 
         if(options.interpolate === false) {
             this.interpolate = false;
@@ -52,7 +53,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 timestamp: options.engine.timing.timestamp
             };
 
-            this.deltaTime = time - this.lastTime;
+            this.deltaTime = Math.min(time - this.lastTime, this.maxDelta);
             this.lastTime = time;
 
             var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime)

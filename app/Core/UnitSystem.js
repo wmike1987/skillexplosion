@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($, utils, Matter, UnitPanel) {
 
     var unitSystem = function(properties) {
 
@@ -10,20 +10,28 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             if(this.box)
                 this.cleanUp();
 
-            //create rectangle
+            //create selection box rectangle
             this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false});
             this.box.collisionFilter.category = 0x0002;
-            this.box.selectedBodies = {};
             this.box.permaPendingBody = null;
             this.box.pendingSelections = {};
-            this.box.renderChildren = [{id: 'box', data: 'SelectionBox'}];
+            this.box.renderChildren = [{id: 'box', data: 'SelectionBox', stage: 'StageOne'}];
+
+            //other unit system variables
+            this.selectedBodies = {};
+
+            //create UnitPanel
+            this.unitPanel = new UnitPanel({
+                systemRef: this,
+                position: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight() - currentGame.worldOptions.unitPanelHeight/2}});
+            this.unitPanel.initialize();
 
             //destination marker
             this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
             this.box.clickPointSprite.scale.x = .25;
             this.box.clickPointSprite.scale.y = .25;
 
-            //move/attack-move markers
+            //move, attack-move markers
             var moveMarkerScale = 1.2;
             var moveMarkerTimeLimit = 275;
 
@@ -68,9 +76,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             utils.deathPact(this.box, this.box.abilityTargetSprite.timer);
 
             //prevailing-unit visual indicator
-            var prevailingTint = 0xff0000;
-            this.prevailingUnitCircle = utils.addSomethingToRenderer('IsometricSelected', 'stageOne', {x: -50, y: -50, tint: prevailingTint});
-            this.prevailingUnitCircle2 = utils.addSomethingToRenderer('IsometricSelected', 'stageOne', {x: -50, y: -50, tint: prevailingTint});
+            var prevailingTint = 0x00050C;
+            this.prevailingUnitCircle = utils.addSomethingToRenderer('IsometricSelected', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
+            this.prevailingUnitCircle2 = utils.addSomethingToRenderer('IsometricSelected', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
+
+            var unitSystem = this;
 
             Object.defineProperty(this, 'selectedUnit', {
                 get: function(){
@@ -85,36 +95,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                     this._selectedUnit = value;
 
+                    Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value ? value.unit : null});
+
                     if(value) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(value.renderlings.selected.scale, 1.1);
                         this.prevailingUnitCircle2.scale = Matter.Vector.mult(value.renderlings.selected.scale, .9);
                         utils.attachSomethingToBody(this.prevailingUnitCircle, value, value.renderlings.selected.offset);
                         utils.attachSomethingToBody(this.prevailingUnitCircle2, value, value.renderlings.selected.offset);
                     } else {
-                        utils.detachSomethingFromBody(this.prevailingUnitCircle, value);
-                        utils.detachSomethingFromBody(this.prevailingUnitCircle2, value);
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle);
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle2);
                         this.prevailingUnitCircle.position = utils.offScreenPosition();
                         this.prevailingUnitCircle2.position = utils.offScreenPosition();
                     }
 
                 }
             });
-            // this.movePrevailingUnitCircleTick = currentGame.addTickCallback(function() {
-            //     //this hinges on the unit having a renderling named 'selected'
-            //     if(this.selectedUnit && this.selectedUnit.renderlings.selected) {
-            //         this.prevailingUnitCircle.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, 1.1);
-            //         this.prevailingUnitCircle2.scale = Matter.Vector.mult(this.selectedUnit.renderlings.selected.scale, .9);
-            //         //
-            //         this.selectedUnit.renderlings['prevailingUnitCircle1'] = this.prevailingUnitCircle;
-            //         this.selectedUnit.renderlings['prevailingUnitCircle2'] = this.prevailingUnitCircle2;
-            //         this.prevailingUnitCircle.offset = this.selectedUnit.renderlings.selected.offset;
-            //         this.prevailingUnitCircle2.offset = this.selectedUnit.renderlings.selected.offset;
-            //     }
-            //     else {
-            //         this.prevailingUnitCircle.position = utils.offScreenPosition();
-            //         this.prevailingUnitCircle2.position = utils.offScreenPosition();
-            //     }
-            // }.bind(this));
 
             //update selected bodies upon body removal
             this.bodyRemoveCallback = Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
@@ -123,13 +119,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                 //Re-assign the selected unit if needed
                 if(this.selectedUnit == removedBody) {
-                    console.info("removing unit")
                     this.annointNextPrevailingUnit({onRemove: true});
                 }
 
                 //remove body from these data structures
                 if(removedBody.isSelectable) {
-                    delete this.box.selectedBodies[removedBody.id];
+                    delete this.selectedBodies[removedBody.id];
                     delete this.box.pendingSelections[removedBody.id];
                 }
             }.bind(this));
@@ -171,12 +166,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 //handle shift functionality
                 if(keyStates['Shift']) {
                     //If one, already-selected body is requested here, remove from selection
-                    if(loneSoldier && ($.inArray(loneSoldier.id.toString(), Object.keys(this.box.selectedBodies)) > -1)) {
+                    if(loneSoldier && ($.inArray(loneSoldier.id.toString(), Object.keys(this.selectedBodies)) > -1)) {
                         changeSelectionState(loneSoldier, 'selected', false);
                         if(this.selectedUnit == loneSoldier) {
                             this.annointNextPrevailingUnit({onRemove: true});
                         }
-                        delete this.box.selectedBodies[loneSoldier.id];
+                        delete this.selectedBodies[loneSoldier.id];
                     }
                     else {
                         //If we have multiple things pending (from drawing a box) this will override the permaPendingBody, unless permaPendingBody was also selected in the box
@@ -187,7 +182,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         }
 
                         //Add pending bodies to current selection
-                        $.extend(this.box.selectedBodies, this.box.pendingSelections)
+                        $.extend(this.selectedBodies, this.box.pendingSelections)
                     }
                 } else {
                     //Else create a brand new selection (don't add to current selection)
@@ -196,21 +191,21 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         changeSelectionState(this.box.permaPendingBody, 'selectionPending', false);
                         delete this.box.pendingSelections[this.box.permaPendingBody.id]
                     }
-                    changeSelectionState(this.box.selectedBodies, 'selected', false);
-                    this.box.selectedBodies = $.extend({}, this.box.pendingSelections);
+                    changeSelectionState(this.selectedBodies, 'selected', false);
+                    this.selectedBodies = $.extend({}, this.box.pendingSelections);
                 }
 
                 //If we have a selected unit, check to see if it's the new selection, if so, do nothing, else set prevailing unit to the first body
                 if(!this.selectedUnit) {
-                    this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
+                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]];
                 }
-                else if(!Object.keys(this.box.selectedBodies).includes(this.selectedUnit.id.toString())) {
-                    this.selectedUnit = this.box.selectedBodies[Object.keys(this.box.selectedBodies)[0]];
+                else if(!Object.keys(this.selectedBodies).includes(this.selectedUnit.id.toString())) {
+                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]];
                 }
 
                 //Show group destination of selected
                 var groupDestination = 0;
-                $.each(this.box.selectedBodies, function(key, body) {
+                $.each(this.selectedBodies, function(key, body) {
                     if(groupDestination == 0) {
                         groupDestination = body.attackMoveDestination || body.destination;
                     } else if(body.destination != groupDestination && body.attackMoveDestination != groupDestination) {
@@ -227,7 +222,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                 //Update visuals
                 changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
-                changeSelectionState(this.box.selectedBodies, 'selected', true);
+                changeSelectionState(this.selectedBodies, 'selected', true);
 
                 //Refresh state
                 this.box.permaPendingBody = null;
@@ -238,9 +233,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     body.isSelected = false;
                 })
 
-                $.each(this.box.selectedBodies, function(key, body) {
+                $.each(this.selectedBodies, function(key, body) {
                     body.isSelected = true;
                 })
+
+
+                Matter.Events.trigger(this, 'executeSelection', this.selectedBodies);
 
             }.bind(this);
 
@@ -282,8 +280,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     //Attacker functionality, dispatch attackMove
                     if(this.attackMove && !this.box.selectionBoxActive) {
                         this.box.invalidateNextMouseUp = true;
-                        $.each(this.box.selectedBodies, function(key, body) {
-                            if(Object.keys(this.box.selectedBodies).length == 1)
+                        $.each(this.selectedBodies, function(key, body) {
+                            if(Object.keys(this.selectedBodies).length == 1)
                                 body.isSoloMover = true;
                             else
                                 body.isSoloMover = false;
@@ -369,7 +367,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     })
 
                     var attacking = false;
-                    $.each(this.box.selectedBodies, function(key, body) {
+                    $.each(this.selectedBodies, function(key, body) {
                         if(body.isAttacker && singleAttackTarget) {
                             body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
                             attacking = true;
@@ -378,12 +376,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     if(attacking) return;
 
                     //Dispatch move event
-                    $.each(this.box.selectedBodies, function(key, body) {
+                    $.each(this.selectedBodies, function(key, body) {
                         if(body.isMoveable) {
                             body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint})
                             this.box.moveTargetSprite.timer.execute({runs: 1});
                             // body.unit.groupRightClick(canvasPoint);
-                            if(Object.keys(this.box.selectedBodies).length == 1)
+                            if(Object.keys(this.selectedBodies).length == 1)
                                 body.isSoloMover = true;
                             else
                                 body.isSoloMover = false;
@@ -566,7 +564,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
              //A or a dispatch (reserved)
              $('body').on('keydown.unitSystem', function( event ) {
                  if(event.key == 'a' || event.key == 'A') {
-                     $.each(this.box.selectedBodies, function(prop, obj) {
+                     $.each(this.selectedBodies, function(prop, obj) {
                          if(obj.isAttacker) {
                              if(!this.box.selectionBoxActive) {
                                  this.box.invalidateNextBox = true;
@@ -580,7 +578,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
              //S or s dispatch (reserved)
              $('body').on('keydown.unitSystem', function( event ) {
                   if(event.key == 's' || event.key == 'S') {
-                      $.each(this.box.selectedBodies, function(prop, obj) {
+                      $.each(this.selectedBodies, function(prop, obj) {
                           if(obj.isMoveable) {
                               obj.unit.stop();
                           }
@@ -593,7 +591,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                      this.abilityDispatch = event.key.toLowerCase();
                      if(this.selectedUnit)
                         this.selectedUnit.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
-                     // $.each(this.box.selectedBodies, function(prop, obj) {
+                     // $.each(this.selectedBodies, function(prop, obj) {
                      //     obj.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
                      // }.bind(this))
              }.bind(this));
@@ -620,7 +618,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             //this is run before the unit is removed so that we can identify where in line the body was.
             this.annointNextPrevailingUnit = function(options) {
                 var options = options || {};
-                var selectedUnitCount = Object.keys(this.box.selectedBodies).length;
+                var selectedUnitCount = Object.keys(this.selectedBodies).length;
                 var annointNextBody = false;
                 var firstBody = null;
                 if(!selectedUnitCount) {
@@ -631,7 +629,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         this.selectedUnit = null;
                     return;
                 } else {
-                    $.each(this.box.selectedBodies, function(key, body) {
+                    $.each(this.selectedBodies, function(key, body) {
                         //mark the first body
                         if(!firstBody) {
                             firstBody = body;
@@ -680,6 +678,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             if(this.movePrevailingUnitCircleTick) {
                 currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
             }
+
+            if(this.unitPanel)
+                this.unitPanel.cleanUp();
 
             $('body').off('mousedown.unitSystem');
             $('body').off('mousemove.unitSystem');

@@ -178,14 +178,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			    data: this.texture('StopwatchShadow'),
     			    scale: {x: boosterScale, y: boosterScale},
 			    rotate: 'none',
-			    stage: 'stageZero',
+			    stage: 'StageNTwo',
 			    filter: this.timeFilter
 		    }, {
 		        id: 'timeBoost',
 			    data: this.texture('Stopwatch'),
     			    scale: {x: boosterScale, y: boosterScale},
 			    rotate: 'none',
-			    stage: 'stageZero',
+			    stage: 'StageNTwo',
 			    filter: this.timeFilter
 		    }]
 		    var newPos = this.calculateRandomPlacementForBodyWithinCanvasBounds(timeBoost);
@@ -206,7 +206,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			    tint: tint,
 			    scale: {x: .5, y: .5},
 			    rotate: 'none',
-			    stage: 'stageZero',
+			    stage: 'StageNTwo',
 		    }]
 		    zone.tint = tint;
 		    return zone;

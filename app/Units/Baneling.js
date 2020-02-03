@@ -41,21 +41,21 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 		            visible: true,
 		            avoidIsoMgr: true,
 		            rotate: 'none',
-		            stage: "stageZero",
+		            stage: "StageNTwo",
 		            offset: {x: 0, y: 22}
 				}, {
     			    id: 'selected',
     			    data: 'MarbleSelected',
     			    scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
     			    tint: selectionTint,
-    			    stage: 'stageOne',
+    			    stage: 'StageNOne',
     			    visible: false,
     			    rotate: 'none'
     			}, {
     			    id: 'selectionPending',
     			    data: 'MarbleSelectedPending',
     			    scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
-    			    stage: 'stageOne',
+    			    stage: 'StageNOne',
     			    visible: false,
     			    tint: pendingSelectionTint,
     			    rotate: 'continuous'
@@ -80,7 +80,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function(
 					honeRange: 200,
 					cooldown: 1,
 					range: radius*2+10,
-					damage: 50,
+					damage: 20,
 					attack: function() {
 
 					}

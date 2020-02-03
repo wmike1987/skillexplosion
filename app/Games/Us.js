@@ -1,6 +1,6 @@
 define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
 'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'utils/TileMapper', 'utils/Doodad'],
+'core/TileMapper', 'utils/Doodad'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper, Doodad) {
 
     var targetScore = 1;
@@ -64,7 +64,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //currentGame.renderer.background.filters = [this.simpleLightShader];
 
             //map the background
-            var grassColor = 'Teal';
+            var grassColor = 'Red';
             var backgroundTiles = [];
             for(var x = 0; x < 6; x++) {
                 backgroundTiles.push(grassColor + 'Grass' + (x+1));
@@ -125,7 +125,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
             }
 
-            this.createMarine(4);
+            this.createMarine(1);
             this.createMedic(1);
             this.createBane(4);
             var posUpdate = this.addRunnerCallback(function() {
@@ -137,7 +137,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
         createMarine: function(number) {
             for(x = 0; x < number; x++) {
-                var marine = Marine({team: currentGame.playerTeam});
+                var marine = Marine({team: currentGame.playerTeam, name: 'Sonny'});
                 marine.typeId = 34;
                 marine.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(marine, 4);
@@ -148,7 +148,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
         createMedic: function(number) {
             for(x = 0; x < number; x++) {
-                var medic = Medic({team: currentGame.playerTeam});
+                var medic = Medic({team: currentGame.playerTeam, name: 'Ursula'});
                 medic.typeId = 35;
                 medic.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(medic, 4);
@@ -189,7 +189,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
     game.worldOptions = {
             //background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
                 width: 1200,
-                height: 600,
+                height: 600, //600 playing area, 200 unit panel
+                unitPanelHeight: 100,
                 gravity: 0,
                };
 

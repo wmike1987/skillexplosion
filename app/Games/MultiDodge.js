@@ -247,7 +247,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			    visible: true,
 			    rotate: 'none',
 			    tint: marble.originalTint,
-			    stage: "stageZero",
+			    stage: "StageNTwo",
 			    offset: {x: 8, y: 8},
 			}, {
 			    id: 'marbleShadowHighlights',
@@ -260,21 +260,21 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 			    },
 			    initialRotate: 'random',
 			    tint: marble.highlightTint,
-			    stage: "stageZero",
+			    stage: "StageNTwo",
 			    offset: {x: 12, y: 12}
 			}, {
 			    id: 'selected',
 			    data: this.texture('MarbleSelected'),
 			    scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
 			    tint: this.selectionTint,
-			    stage: 'stageOne',
+			    stage: 'StageNOne',
 			    visible: false,
 			    rotate: 'none'
 			}, {
 			    id: 'selectionPending',
 			    data: this.texture('MarbleSelectedPending'),
 			    scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
-			    stage: 'stageOne',
+			    stage: 'StageNOne',
 			    visible: false,
 			    tint: this.pendingSelectionTint,
 			    rotate: 'continuous'

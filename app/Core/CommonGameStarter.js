@@ -3,16 +3,15 @@
  * setting up the pixi renderer. It also ensures assets have been loaded before initiating the game lifecycle
  */
 
-define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/GameLoop'], function($, Matter, PIXI, PixiRenderer, GameLoop) {
+define(['jquery', 'matter-js', 'pixi', 'core/PixiRenderer', 'core/GameLoop'], function($, Matter, PIXI, PixiRenderer, GameLoop) {
 
 	var pixiRenderer;
 	var engine;
-	var latestGameRequest;
 	var pendingGame;
-	var CommonGameStarter = function(game, options) {
+	var CommonGameStarter = function(game) {
 
-		var defaults = {width: 1200, height: 600, gravity: 1};
-		options = $.extend({}, defaults, options);
+		var defaults = {width: 1200, height: 600, unitPanelHeight: 0, gravity: 1};
+		latestGameOptions = $.extend({}, defaults, game.worldOptions);
 
 		//kill engine and renderer
 		if(engine)
@@ -27,12 +26,9 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/GameLoop'], 
 		 * when asset loading is done and a flurry of game starts will merely update which game (and options)
 		 * were requested
 		 */
-		latestGameRequest = game;
 
 		// set a globally accessible reference to the game object
-		currentGame = latestGameRequest;
-
-		latestGameOptions = options;
+		currentGame = game;
 
 		//update the "loading..." text as assets are loaded
 		if(PIXI.Loader.shared.loaderDeferred.state() == 'pending') {
@@ -56,39 +52,23 @@ define(['jquery', 'matter-js', 'pixi', 'utils/PixiRenderer', 'utils/GameLoop'], 
     		    engine = Matter.Engine.create({enableSleeping: false});
         		engine.world.gravity.y = latestGameOptions.gravity;
 
-				//create our game loop manager
+				//create our game loop (default step rate is 60fps) and start the loop
 				var fixedStep = new GameLoop({engine: engine, isFixed: true});
 				fixedStep.start();
 
-				var overrideVelocity = false;
-				if(overrideVelocity) {
-					//override set velocity in order to normalize the velocity
-					Matter.Body.originalSetVelocity = Matter.Body.originalSetVelocity || Matter.Body.setVelocity;
-					// Matter.Body.setVelocity = function(body, velocity) {
-						//         //normalize to 16.6666 ms per frame
-						//         //var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.deltaHistory[engine.runner.deltaHistory.length - 1] / (1000/60)));
-						//         var normalizedVelocity = Matter.Vector.mult(velocity, (engine.runner.delta / (1000/60)));
-						//         Matter.Body.originalSetVelocity(body, normalizedVelocity);
-						//     };
-				}
-
-        		// Start the renderer: this starts the pixi Application and establishes a callback to update sprites with an associated body (if attached to one)
-				// Thus our game loop is established:
-				// 1) phsyics step(s)
-				// 1a) update sprites if they're attached to a body
-				// 2) let pixi draw
-        		pixiRenderer = new PixiRenderer(engine, latestGameOptions, latestGameOptions.appendToElement);
+        		// Start the renderer: this starts the pixi Application and establishes a callback to update sprites with an associated body (event triggered by the GameLoop)
+        		pixiRenderer = new PixiRenderer(engine, latestGameOptions);
         		pixiRenderer.start();
 
         		//Run through the Common Game Lifecycle. init() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()
-        		latestGameRequest.init($.extend(latestGameOptions, {world: engine.world,
+        		game.init($.extend(latestGameOptions, {
+					   world: engine.world,
         			   engine: engine,
         			   canvasEl: pixiRenderer.canvasEl,
-        			   canvasWidth: latestGameOptions.width, canvasHeight: latestGameOptions.height,
         			   renderer: pixiRenderer,
         			   background: pixiRenderer.background}));
 
-        		latestGameRequest.preGame();
+        		game.preGame();
     		})
 		}
 	};
