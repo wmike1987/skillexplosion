@@ -8,6 +8,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         this.currentPortrait = null;
         this.selectedFrames = {};
         this.currentAbilities = [];
+        this.currentCommands = [];
 
         this.barOffset = 9; //top bar offset;
         this.centerX = utils.getUnitPanelCenter().x;
@@ -30,6 +31,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         this.abilitySpacing = 77;
         this.abilityOneCenterX = this.centerX + 169
         this.abilityOneCenterY = this.centerY;
+
+        //basic command variables
+        this.commandSpacing = 35;
+        this.commandOneCenterX = this.centerX + 397;
+        this.commandOneCenterY = this.centerY - 25;
 
         //create frame
         this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
@@ -72,6 +78,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
             this.displayUnitPortrait();
             this.displayUnitStats();
             this.displayUnitAbilities();
+            this.displayCommands();
         }
     };
 
@@ -122,6 +129,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         }.bind(this))
     };
 
+    unitPanel.prototype.displayCommands = function() {
+        if(!this.attackMoveIcon) {
+            this.moveCommandIcon = utils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.moveCommandIcon, 25);
+            this.currentCommands.push(this.moveCommandIcon);
+
+            this.attackMoveIcon = utils.addSomethingToRenderer('AttackIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.attackMoveIcon, 25);
+            this.currentCommands.push(this.attackMoveIcon);
+
+            this.HoldPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.HoldPositionIcon, 25);
+            this.currentCommands.push(this.HoldPositionIcon);
+
+            this.stopIcon = utils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.stopIcon, 25);
+            this.currentCommands.push(this.stopIcon);
+        } else {
+            $.each(this.currentCommands, function(i, command) {
+                command.visible = true;
+            })
+        }
+    };
+
     unitPanel.prototype.clearPrevailingUnit = function(unit) {
         this.prevailingUnit = null;
 
@@ -141,6 +172,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
             })
         }
         this.currentAbilities = null;
+
+        //clear commands
+        if(this.currentCommands) {
+            $.each(this.currentCommands, function(i, command) {
+                command.visible = false;
+            })
+        }
     };
 
     unitPanel.prototype.cleanUp = function() {
