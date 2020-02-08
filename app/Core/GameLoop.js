@@ -22,7 +22,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         this.fps = options.fps || 60;
         this.desiredFrameTime = 1000/this.fps;
         this.isFixed = options.isFixed;
-        this.maxDelta = 3000;
+        this.maxDelta = 1000;
 
         if(options.interpolate === false) {
             this.interpolate = false;

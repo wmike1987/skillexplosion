@@ -32,9 +32,11 @@ define(['jquery'], function($) {
 
         //Execute the command, and pass the command object as a parameter
         queue.executeCommand = function(commandObj) {
-            // console.info("executing command from queue: ")
-            // console.info(command);
-            commandObj.command.method.call(commandObj.command.context, commandObj.command.target, commandObj);
+            if(commandObj.command.type == 'click') {
+                commandObj.command.method.call(commandObj.command.context, commandObj.command.target, commandObj);
+            } else if(commandObj.command.type == 'key') {
+                commandObj.command.method.call(commandObj.command.context, commandObj);
+            }
         },
         queue.clear = function() {
             this.queue = [];

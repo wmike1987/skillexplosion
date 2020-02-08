@@ -84,6 +84,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                                 queue: this.commandQueue,
                                 method: this.eventClickMappings[event.id],
                                 context: this,
+                                type: 'click',
                                 target: event.target
                             })
                             if(keyStates['Shift']) {
@@ -100,6 +101,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                                 queue: this.commandQueue,
                                 method: this.eventKeyMappings[event.id],
                                 context: this,
+                                type: 'key',
                                 target: event.target
                             })
                             if(keyStates['Shift']) {

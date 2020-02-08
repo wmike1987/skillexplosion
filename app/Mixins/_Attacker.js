@@ -24,7 +24,6 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         damage: 6,
 
         initAttacker: function() {
-            this.eventClickMappings['attackMove'] = this.attackMove;
             this.availableTargets = new Set();
             this.cooldownTimer = currentGame.addTimer({
                 name: 'cooldown' + this.body.id,
@@ -44,17 +43,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 this.isHoning = false;
                 this.attackMoveDestination = null;
                 this.attackMoving = false;
+                this.isHoldingPosition = false;
                 originalMove.call(this, destination, commandObj);
                 this._becomePeaceful();
             }
 
-            //also be sure to override the 'move' event mapping with the peaceful version
-            this.eventClickMappings['move'] = this.move;
-
             //extend stop
             this.rawStop = this.stop;
             var originalStop = this.stop;
-            this.stop = function() {
+            this.stop = function(commandObj) {
                 if (this.specifiedAttackTarget) {
                     Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
                     this.specifiedAttackTarget = null;
@@ -65,8 +62,19 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 this.isHoning = false;
                 this.attackMoveDestination = null;
                 this.attackMoving = false;
+                this.isHoldingPosition = false;
                 this._becomeOnAlert();
+                if(commandObj) {
+                    commandObj.command.done();
+                }
             }
+
+            this.eventKeyMappings['s'] = this.stop;
+            this.eventKeyMappings['h'] = this.holdPosition;
+
+            this.eventClickMappings['attackMove'] = this.attackMove;
+            this.eventClickMappings['move'] = this.move;
+            this.eventClickMappings['m'] = this.move;
 
             this._becomeOnAlert();
         },
@@ -106,14 +114,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             //set state
             this.attackMoveDestination = destination;
             this.attackMoving = true;
-            //this.isAttacking = false;
+            this.isHoldingPosition = false;
             this.isHoning = false;
 
             //move unit, rawly, but only if we're not currently attacking
             this.rawMove(this.attackMoveDestination, commandObj);
 
             //become alert to nearby enemies
-            this._becomeOnAlert(commandObj);
+            this._becomeOnAlert({}, commandObj);
         },
 
         //this assumes _moveable is mixed in
@@ -146,7 +154,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this._becomeOnAlert();
         },
 
-        _becomeOnAlert: function(commandObj) {
+        holdPosition: function() {
+            this.stop();
+            this.isHoldingPosition = true;
+            this._becomeOnAlert({allowHoning: false});
+            Matter.Sleeping.set(this.body, true);
+        },
+
+        _becomeOnAlert: function(options, commandObj) {
+            options = $.extend({allowHoning: true}, options || {});
 
             //setup target sensing
             this.setupHoneAndTargetSensing(commandObj)
@@ -155,21 +171,23 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.lastHone = null;
 
             /*
-             * Honing callbacks
+             * Move/Honing callback
              */
             if (this.attackHoneTick) {
                 currentGame.removeTickCallback(this.attackHoneTick);
             }
             //unless we have a target, move towards currentHone
-            this.attackHoneTick = currentGame.addTickCallback(function() {
-                //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
-                if (this.currentHone && this.lastHone != this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
-                    this.lastHone = this.currentHone;
-                    this.rawMove(this.currentHone.position);
-                    this.isHoning = true;
-                }
-            }.bind(this));
-            utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
+            if(options.allowHoning) {
+                this.attackHoneTick = currentGame.addTickCallback(function() {
+                    //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
+                    if (this.currentHone && this.lastHone != this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
+                        this.lastHone = this.currentHone;
+                        this.rawMove(this.currentHone.position);
+                        this.isHoning = true;
+                    }
+                }.bind(this));
+                utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
+            }
 
             /*
              * Attacking callbacks
@@ -259,7 +277,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                     if(this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.canAttack) {
                         this.attackMove(this.attackMoveDestination, commandObj);
                     //we were still, let's stop
-                    } else if(!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget) {
+                    } else if(!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {
                             this.stop();
                     //else let's check to see if our specified attack target can still be targeted
                     } else if(this.specifiedAttackTarget) {

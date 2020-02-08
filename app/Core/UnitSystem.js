@@ -335,7 +335,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     }
                 }
 
-                //Right click - this should be modular in order to easily apply different right-click actions
+                //Right click - this should be modular in order to easily apply different right-click actions. On second thought, who the hell cares?
                 if(event.which == 3 && !this.box.selectionBoxActive) {
                     //if we've pressed 'a' then right click, cancel the attack move and escape this flow
                     if(this.attackMove) {
@@ -561,7 +561,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                  return this._attackMove;
              }});
 
-             //A or a dispatch (reserved)
+             //'A' or 'a' dispatch (reserved for attack/move)
              $('body').on('keydown.unitSystem', function( event ) {
                  if(event.key == 'a' || event.key == 'A') {
                      $.each(this.selectedBodies, function(prop, obj) {
@@ -573,17 +573,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                          }
                      }.bind(this))
                  }
-             }.bind(this));
-
-             //S or s dispatch (reserved)
-             $('body').on('keydown.unitSystem', function( event ) {
-                  if(event.key == 's' || event.key == 'S') {
-                      $.each(this.selectedBodies, function(prop, obj) {
-                          if(obj.isMoveable) {
-                              obj.unit.stop();
-                          }
-                      }.bind(this))
-                  }
              }.bind(this));
 
              //dispatch generic key events
