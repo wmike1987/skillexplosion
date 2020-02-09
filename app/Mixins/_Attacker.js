@@ -121,7 +121,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.rawMove(this.attackMoveDestination, commandObj);
 
             //become alert to nearby enemies
-            this._becomeOnAlert({}, commandObj);
+            this._becomeOnAlert(commandObj);
         },
 
         //this assumes _moveable is mixed in
@@ -157,12 +157,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
         holdPosition: function() {
             this.stop();
             this.isHoldingPosition = true;
-            this._becomeOnAlert({allowHoning: false});
+
+            //remove the attack hone functionality since we don't want to move
+            if (this.attackHoneTick) {
+                currentGame.removeTickCallback(this.attackHoneTick);
+            }
             Matter.Sleeping.set(this.body, true);
         },
 
-        _becomeOnAlert: function(options, commandObj) {
-            options = $.extend({allowHoning: true}, options || {});
+        _becomeOnAlert: function(commandObj) {
 
             //setup target sensing
             this.setupHoneAndTargetSensing(commandObj)
@@ -177,17 +180,15 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 currentGame.removeTickCallback(this.attackHoneTick);
             }
             //unless we have a target, move towards currentHone
-            if(options.allowHoning) {
-                this.attackHoneTick = currentGame.addTickCallback(function() {
-                    //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
-                    if (this.currentHone && this.lastHone != this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
-                        this.lastHone = this.currentHone;
-                        this.rawMove(this.currentHone.position);
-                        this.isHoning = true;
-                    }
-                }.bind(this));
-                utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
-            }
+            this.attackHoneTick = currentGame.addTickCallback(function() {
+                //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
+                if (this.currentHone && this.lastHone != this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
+                    this.lastHone = this.currentHone;
+                    this.rawMove(this.currentHone.position);
+                    this.isHoning = true;
+                }
+            }.bind(this));
+            utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
 
             /*
              * Attacking callbacks
