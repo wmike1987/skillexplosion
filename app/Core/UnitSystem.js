@@ -582,7 +582,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
              $('body').on('keydown.unitSystem', function( event ) {
                  var key = event.key.toLowerCase();
                  this.abilityDispatch = event.key.toLowerCase();
-                 if(this.selectedUnit) {
+                 if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
+                     $.each(this.selectedBodies, function(key, body) {
+                         var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: body.unit};
+                         Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                     }.bind(this))
+                 } else if(this.selectedUnit) {
                      var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit.unit};
                      Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                  }
