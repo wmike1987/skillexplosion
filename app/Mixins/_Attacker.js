@@ -69,12 +69,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
                 }
             }
 
-            this.eventKeyMappings['s'] = this.stop;
-            this.eventKeyMappings['h'] = this.holdPosition;
+            this.eventKeyMappings[this.commands.stop.key] = this.stop;
+            this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;
 
-            this.eventClickMappings['attackMove'] = this.attackMove;
-            this.eventClickMappings['move'] = this.move;
-            this.eventClickMappings['m'] = this.move;
+            this.eventClickMappings[this.commands.attack.key] = this.attackMove;
+            this.eventClickMappings[this.commands.move.key] = this.move;
 
             this._becomeOnAlert();
         },

@@ -291,11 +291,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                                     body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
                                 }
                                 else {
-                                    body.unit.handleEvent({type: 'click', id: 'attackMove', target: canvasPoint});
+                                    var e = {type: 'click', id: 'a', target: canvasPoint, unit: body.unit};
+                                    Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                                     this.box.attackMoveTargetSprite.timer.execute({runs: 1});
                                 }
                             } else if(body.isMoveable) {
-                                body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint});
+                                var e = {type: 'click', id: 'm', target: canvasPoint, unit: body.unit};
+                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
                             }
                         }.bind(this))
                         this.attackMove = false; //invalidate the key pressed state
@@ -327,8 +329,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
 
                     //Dispatch ability on this click
                     if(this.abilityDispatch) {
-                        if(this.selectedUnit) {
-                            this.selectedUnit.unit.handleEvent({type: 'click', id: this.abilityDispatch, target: canvasPoint});
+                        if(this.selectedUnit && this.abilityDispatch != 'a') {
+                            var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit.unit};
+                            Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                             this.box.abilityTargetSprite.timer.execute({runs: 1});
                             this.abilityDispatch = false;
                         }
@@ -378,9 +381,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     //Dispatch move event
                     $.each(this.selectedBodies, function(key, body) {
                         if(body.isMoveable) {
-                            body.unit.handleEvent({type: 'click', id: 'move', target: canvasPoint})
+                            var e = {type: 'click', id: 'm', target: canvasPoint, unit: body.unit};
+                            Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                             this.box.moveTargetSprite.timer.execute({runs: 1});
-                            // body.unit.groupRightClick(canvasPoint);
                             if(Object.keys(this.selectedBodies).length == 1)
                                 body.isSoloMover = true;
                             else
@@ -577,12 +580,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
 
              //dispatch generic key events
              $('body').on('keydown.unitSystem', function( event ) {
-                     this.abilityDispatch = event.key.toLowerCase();
-                     if(this.selectedUnit)
-                        this.selectedUnit.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
-                     // $.each(this.selectedBodies, function(prop, obj) {
-                     //     obj.unit.handleEvent({type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition});
-                     // }.bind(this))
+                 var key = event.key.toLowerCase();
+                 this.abilityDispatch = event.key.toLowerCase();
+                 if(this.selectedUnit) {
+                     var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit.unit};
+                     Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                 }
              }.bind(this));
 
             //toggle life bars with Alt
@@ -657,6 +660,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
          * Cleanup any listeners we've created
          */
         this.cleanUp = function() {
+
+            //clear unit system events
+            Matter.Events.off(this);
+
+            //cleanup box stuff
             if(this.box) {
                 Matter.Events.off(this.box);
                 Matter.Events.off(this.engine.world, this.bodyRemoveCallback)
@@ -664,13 +672,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 this.box = null;
             }
 
+            //cleanup tick callback
             if(this.movePrevailingUnitCircleTick) {
                 currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
             }
 
+            //cleanup unit panel
             if(this.unitPanel)
                 this.unitPanel.cleanUp();
 
+            //clear jquery events
             $('body').off('mousedown.unitSystem');
             $('body').off('mousemove.unitSystem');
             $('body').off('mouseup.unitSystem');

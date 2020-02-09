@@ -244,6 +244,36 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         /*
+         *  options {
+         *      sprite
+                tint
+                speed of tint color in millis
+         *   }
+         */
+        makeSpriteBlinkTint: function(options) {
+            var sprite = options.sprite;
+            var tint = options.tint;
+            var speed = options.speed;
+
+            if(sprite.blinkTimer) {
+                currentGame.invalidateTimer(sprite.blinkTimer);
+                sprite.tint = sprite.originalTint;
+            }
+
+            sprite.originalTint = sprite.tint;
+            sprite.tint = tint;
+            sprite.blinkTimer = {
+                name: this.uuidv4(),
+                runs: 1,
+                timeLimit: speed,
+                callback: function() {
+                    sprite.tint = sprite.originalTint;
+                }.bind(this)
+            };
+            currentGame.addTimer(sprite.blinkTimer);
+        },
+
+        /*
          * Renderer utils
          */
         addSomethingToRenderer: function(something, where, options) {

@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils'], function($, PIXI, UC, Matter, utils) {
+define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils', 'units/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
 
     return function Marine(options) {
         var options = options || {};
@@ -248,6 +248,14 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             })
         }
 
+        var dashAbility = new Ability({
+            name: 'Dash',
+            key: 'd',
+            type: 'click',
+            icon: utils.createDisplayObject('DashIcon'),
+            method: dash
+        })
+
         //Knife
         var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
         var knifeSpeed = 15;
@@ -364,6 +372,14 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             })
         };
 
+        var knifeAbility = new Ability({
+            name: 'Throw Knife',
+            key: 'f',
+            type: 'click',
+            icon: utils.createDisplayObject('KnifeIcon'),
+            method: throwKnife,
+        })
+
         var setSleeping = function() {
             Matter.Sleeping.set(this.body, !this.body.isSleeping);
         }
@@ -381,26 +397,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     team: options.team || 4,
                     name: options.name,
                     heightAnimation: 'up',
-                    eventClickMappings: {
-                        d: dash,
-                        f: throwKnife
-                    },
-                    abilityInfo: [
-                        {
-                            name: 'Dash',
-                            cooldown: 5,
-                            icon: utils.createDisplayObject('DashIcon')
-                        },
-                        {
-                            name: 'Throw Knife',
-                            cooldown: .4,
-                            icon: utils.createDisplayObject('KnifeIcon')
-                        },
-
-                    ],
-                    eventKeyMappings: {
-                        //x: setSleeping,
-                    },
+                    abilities: [dashAbility, knifeAbility],
                     death: function() {
                         var self = this;
                         var anim = utils.getAnimationB({

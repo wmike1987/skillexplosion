@@ -241,10 +241,6 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     team: options.team || 4,
                     name: options.name,
                     heightAnimation: 'up',
-                    eventClickMappings: {
-                    },
-                    eventKeyMappings: {
-                    },
                     death: function() {
                         var self = this;
                         var anim = utils.getAnimationB({

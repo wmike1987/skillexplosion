@@ -22,7 +22,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
         visibleSprite: null,
 
         moveableInit: function() {
-            this.eventClickMappings['move'] = this.move;
+            this.eventClickMappings[this.commands.move.key] = this.move;
 
             //Create body sensor - the selection box collides with a slightly smaller body size
             this.smallerBody = Matter.Bodies.circle(0, 0, this.body.circleRadius - 8, {

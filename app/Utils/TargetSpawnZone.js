@@ -1,5 +1,5 @@
 define([], function() {
-	
+
 	var zone = function(x, y, width, height, xBuffer, yBuffer) {
 		this.x = x;
 		this.y = y;
@@ -15,20 +15,6 @@ define([], function() {
 			return {x: x, y: y};
 		};
 	}
-	
+
 	return zone;
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-

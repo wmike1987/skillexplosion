@@ -50,6 +50,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
             this.updatePrevailingUnit(event.unit);
         }.bind(this))
+
+        Matter.Events.on(this.unitSystem, 'unitSystemEventDispatch', function(event) {
+            var abilityTint = 0x80ba80;
+            $.each(this.prevailingUnit.abilities, function(i, ability) {
+                if(ability.key == event.id && ability.type == event.type) {
+                    utils.makeSpriteBlinkTint({sprite: ability.icon, tint: abilityTint, speed: 100})
+                }
+            }.bind(this))
+
+            var commandTint = 0xb4b8b4;
+            $.each(this.prevailingUnit.commands, function(name, command) {
+                if(command.key == event.id && command.type == event.type) {
+                    if(name == 'attack') {
+                        utils.makeSpriteBlinkTint({sprite: this.attackMoveIcon, tint: commandTint, speed: 100});
+                    } else if(name == 'move') {
+                        utils.makeSpriteBlinkTint({sprite: this.moveIcon, tint: commandTint, speed: 100})
+                    } else if(name == 'stop') {
+                        utils.makeSpriteBlinkTint({sprite: this.stopIcon, tint: commandTint, speed: 100})
+                    } else if(name == 'holdPosition') {
+                        utils.makeSpriteBlinkTint({sprite: this.holdPositionIcon, tint: commandTint, speed: 100})
+                    }
+                }
+            }.bind(this))
+        }.bind(this))
     };
 
     //unit group
@@ -114,9 +138,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
     };
 
     unitPanel.prototype.displayUnitAbilities = function() {
-        if(!this.prevailingUnit.abilityInfo) return;
+        if(!this.prevailingUnit.abilities) return;
 
-        this.currentAbilities = this.prevailingUnit.abilityInfo;
+        this.currentAbilities = this.prevailingUnit.abilities;
 
         //place, scale and enable abilility icons
         $.each(this.currentAbilities, function(i, ability) {
@@ -131,25 +155,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
 
     unitPanel.prototype.displayCommands = function() {
         if(!this.attackMoveIcon) {
-            this.moveCommandIcon = utils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
-            utils.makeSpriteSize(this.moveCommandIcon, 25);
-            this.currentCommands.push(this.moveCommandIcon);
+            this.moveIcon = utils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.moveIcon, 25);
+            this.currentCommands.push({name: 'attack', icon: this.moveIcon});
 
             this.attackMoveIcon = utils.addSomethingToRenderer('AttackIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.attackMoveIcon, 25);
-            this.currentCommands.push(this.attackMoveIcon);
+            this.currentCommands.push({name: 'move', icon: this.attackMoveIcon});
 
-            this.HoldPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
-            utils.makeSpriteSize(this.HoldPositionIcon, 25);
-            this.currentCommands.push(this.HoldPositionIcon);
+            this.holdPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.holdPositionIcon, 25);
+            this.currentCommands.push({name: 'holdPosition', icon: this.holdPositionIcon});
 
             this.stopIcon = utils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.stopIcon, 25);
-            this.currentCommands.push(this.stopIcon);
+            this.currentCommands.push({name: 'stop', icon: this.stopIcon});
         } else {
             $.each(this.currentCommands, function(i, command) {
-                command.visible = true;
-            })
+                command.icon.visible = false;
+                $.each(this.prevailingUnit.commands, function(j, unitCommand) {
+                    if(unitCommand.name == command.name) {
+                        command.icon.visible = true;
+                    }
+                }.bind(this))
+            }.bind(this))
         }
     };
 
@@ -176,14 +205,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         //clear commands
         if(this.currentCommands) {
             $.each(this.currentCommands, function(i, command) {
-                command.visible = false;
+                command.icon.visible = false;
             })
         }
     };
 
     unitPanel.prototype.cleanUp = function() {
         currentGame.removeTickCallback(this.updateUnitStatTick);
-        Matter.Events.off(this);
     };
 
     return unitPanel;

@@ -14,7 +14,20 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
         function UnitConstructor(options) {
 
             //mixin the unit options into the unit base
-            var newUnit = $.extend({}, ub, options.unit);
+            var newUnit = $.extend(true, {}, ub, options.unit);
+
+            //extrapolate unit ability to key mappings
+            newUnit.eventKeyMappings = {};
+            newUnit.eventClickMappings = {};
+            if(newUnit.abilities) {
+                $.each(newUnit.abilities, function(i, ability) {
+                    if(ability.type == 'key') {
+                        newUnit.eventKeyMappings[ability.key] = ability.method;
+                    } else if(ability.type == 'click') {
+                        newUnit.eventClickMappings[ability.key] = ability.method;
+                    }
+                });
+            }
 
             // create body
             var body = Matter.Bodies.circle(0, 0, options.radius, {

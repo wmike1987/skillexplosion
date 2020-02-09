@@ -46,6 +46,29 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
             currentEnergy: 0,
             isSelectable: true,
             isAttackable: true,
+            abilities: [],
+            commands: {
+                attack: {
+                    name: "attack",
+                    key: 'a',
+                    type: 'click'
+                },
+                move: {
+                    name: 'move',
+                    key: 'm',
+                    type: 'click'
+                },
+                stop: {
+                    name: 'stop',
+                    key: 's',
+                    type: 'key'
+                },
+                holdPosition: {
+                    name: 'holdPosition',
+                    key: 'h',
+                    type: 'key'
+                }
+            },
             team: 4,
             eventClickMappings: {},
             eventKeyMappings: {},
@@ -114,6 +137,11 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                         }
                     }
                 };
+
+                Matter.Events.on(currentGame.unitSystem, 'unitSystemEventDispatch', function(event) {
+                    if(this == event.unit)
+                        this.handleEvent(event);
+                }.bind(this));
 
                 //add filter on the main render sprite
                 var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});
