@@ -166,6 +166,13 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			this.pixiApp = new PIXI.Application({width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0x1099bb});
 			this.canvasEl = this.pixiApp.renderer.view;
 
+			//add-on gstats (ctrl + shift + f to show)
+			var pixiHooks = new GStats.PIXIHooks(this.pixiApp);
+			this.stats = new GStats.StatsJSAdapter(pixiHooks);
+			document.body.appendChild(this.stats.stats.dom || this.stats.stats.domElement);
+			this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
+			this.stats.stats.dom.style.visibility = 'hidden';
+
 			//setup pixi interaction - using this for it's differentiation between left and right click, though could handle this on my own
 			this.interaction = this.pixiApp.renderer.plugins.interaction;
 			$(this.canvasEl).on('contextmenu', function(event) {return false;}); //disable right click menu on the canvas object

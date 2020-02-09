@@ -145,6 +145,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
                 //add filter on the main render sprite
                 var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});
+                hoverFilter.enabled = false;
                 // var hoverShad = new PIXI.Shader(hoverFrag.program, {});
                 if(this.mainRenderSprite) {
                     if($.isArray(this.mainRenderSprite)) {
