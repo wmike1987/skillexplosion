@@ -116,7 +116,7 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils
             this.isHoldingPosition = false;
             this.isHoning = false;
 
-            //move unit, rawly, but only if we're not currently attacking
+            //move unit, rawly
             this.rawMove(this.attackMoveDestination, commandObj);
 
             //become alert to nearby enemies

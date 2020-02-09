@@ -77,9 +77,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 y: -50
             };
 
-            //return body to non Sleeping
-            Matter.Sleeping.set(this.body, false);
-
             //immediate set the velocity (rather than waiting for the next tick)
             this.constantlySetVelocityTowardsDestination(null, accelerateOptions);
 
@@ -192,6 +189,9 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                 return;
             }
 
+            //return body to non Sleeping
+            Matter.Sleeping.set(this.body, false);
+
             //send body
             utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
 
@@ -208,7 +208,7 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
 
             //otherwise, let's avoid the mover
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
-            if (otherBody.isMoveable && otherBody.isMoving && otherBody.destination != this.destination && otherBody.speed > 0) {
+            if (otherBody.isMoveable && otherBody.isMoving /*&& otherBody.destination != this.destination*/ && otherBody.speed > 0) {
                 this.frictionAir = .9;
                 var m = otherBody.velocity.y / otherBody.velocity.x;
                 var x = this.position.x - otherBody.position.x;
