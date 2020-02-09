@@ -209,7 +209,6 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
             //otherwise, let's avoid the mover
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
             if (otherBody.isMoveable && otherBody.isMoving /*&& otherBody.destination != this.destination*/ && otherBody.speed > 0) {
-                this.frictionAir = .9;
                 var m = otherBody.velocity.y / otherBody.velocity.x;
                 var x = this.position.x - otherBody.position.x;
                 var b = otherBody.position.y;
@@ -228,15 +227,20 @@ function($, Matter, PIXI, CommonGameMixin, utils, Command) {
                         swapY = -1;
                 }
 
-                var scatterDistance = this.circleRadius * 2.8;
-                var newVelocity = {x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY};
-                var scatterScale = scatterDistance/Matter.Vector.magnitude(newVelocity);
+                var maxScatterDistance = this.circleRadius * 1.8;
+                var newVelocity = Matter.Vector.normalise({x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY});
+
+                var movePercentage = Math.PI/2.0 - utils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position))
+                //movePercentage = Math.max(.2, movePercentage);
+                newVelocity = Matter.Vector.mult(newVelocity, movePercentage*maxScatterDistance);
 
                 if(!this.isAttacker) {
-                    this.unit.move(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
+                    this.unit.move(Matter.Vector.add(this.position, newVelocity));
+                    this.isSoloMover = true;
                 }
                 else {
-                    this.unit.attackMove(Matter.Vector.add(this.position, Matter.Vector.mult(newVelocity, scatterScale)));
+                    this.unit.attackMove(Matter.Vector.add(this.position, newVelocity));
+                    this.isSoloMover = true;
                 }
             }
         },

@@ -59,7 +59,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
                 }
             }.bind(this))
 
-            var commandTint = 0xb4b8b4;
+            var commandTint = 0xa2fa93;
             $.each(this.prevailingUnit.commands, function(name, command) {
                 if(command.key == event.id && command.type == event.type) {
                     if(name == 'attack') {
