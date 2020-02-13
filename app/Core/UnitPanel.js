@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, utils, Matter, styles) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'], function($, utils, Matter, styles, Tooltip) {
 
     //This module represents a tile map. This is produced by the tile mapper
     var unitPanel = function(options) {
@@ -6,7 +6,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         this.position = options.position;
         this.prevailingUnit = null; //the unit in focus
         this.currentPortrait = null;
-        this.selectedFrames = {};
+        this.selectedUnits = [];
         this.currentAbilities = [];
         this.currentCommands = [];
 
@@ -19,7 +19,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
 
         //unit status variables
         this.unitStatSpacing = 26;
-        this.unitFrameCenterX = this.centerX - 108;
+        this.unitFrameCenterX = this.centerX - 115;
         this.unitNamePosition = {x: this.unitFrameCenterX, y: this.centerY - this.unitStatSpacing};
         this.unitHealthPosition = {x: this.unitFrameCenterX, y: this.centerY};
         this.unitEnergyPosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatSpacing};
@@ -29,13 +29,19 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
 
         //unit ability variables
         this.abilitySpacing = 77;
-        this.abilityOneCenterX = this.centerX + 169
+        this.abilityOneCenterX = this.centerX + 185
         this.abilityOneCenterY = this.centerY;
 
         //basic command variables
         this.commandSpacing = 35;
-        this.commandOneCenterX = this.centerX + 397;
+        this.commandOneCenterX = this.centerX + 413;
         this.commandOneCenterY = this.centerY - 25;
+
+        //selected-group variables
+        this.wireframeSize = 32;
+        this.groupCenterY = this.centerY;
+        this.groupCenterX = 0 + 8 + this.wireframeSize/2;
+        this.groupSpacing = 8 + this.wireframeSize;
 
         //create frame
         this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
@@ -49,6 +55,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
         //listen for when the prevailing unit changes
         Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
             this.updatePrevailingUnit(event.unit);
+        }.bind(this))
+
+        //listen for when the selected group changes
+        Matter.Events.on(this.unitSystem, 'executeSelection', function(event) {
+            this.updateUnitGroup(event.orderedSelection);
         }.bind(this))
 
         Matter.Events.on(this.unitSystem, 'unitSystemEventDispatch', function(event) {
@@ -78,15 +89,40 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
 
     //unit group
     unitPanel.prototype.updateUnitGroup = function(units) {
+        this.clearUnitGroup();
+        this.selectedUnits = units;
+        $.each(this.selectedUnits, function(i, unit) {
+            if(unit.wireframe) {
+                var wireframe = unit.wireframe;
+                if(!wireframe.parent) {
+                    utils.addSomethingToRenderer(wireframe, 'hudOne');
+                }
+                wireframe.position = {x: this.groupCenterX + i * this.groupSpacing, y: this.groupCenterY};
+                utils.makeSpriteSize(wireframe, this.wireframeSize);
+                wireframe.visible = true;
+            }
+        }.bind(this))
 
+        this.highlightGroupUnit(this.prevailingUnit);
     };
+
 
     unitPanel.prototype.clearUnitGroup = function() {
-
+        $.each(this.selectedUnits, function(i, unit) {
+            if(unit.wireframe) {
+                unit.wireframe.visible = false;
+            }
+        })
     };
 
-    unitPanel.prototype.highlightGroupUnit = function() {
-
+    unitPanel.prototype.highlightGroupUnit = function(prevailingUnit) {
+        $.each(this.selectedUnits, function(i, unit) {
+            if(unit == prevailingUnit && unit.wireframe) {
+                utils.makeSpriteSize(unit.wireframe, this.wireframeSize*1.6);
+            } else {
+                utils.makeSpriteSize(unit.wireframe, this.wireframeSize);
+            }
+        }.bind(this))
     };
 
     //unit specific display
@@ -103,6 +139,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
             this.displayUnitStats();
             this.displayUnitAbilities();
             this.displayCommands();
+            this.highlightGroupUnit(unit);
         }
     };
 
@@ -149,6 +186,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
             ability.icon.visible = true;
             if(!ability.icon.parent) {
                 utils.addSomethingToRenderer(ability.icon, 'hudOne');
+                Tooltip.makeTooltippable(ability.icon, ability);
             }
         }.bind(this))
     };
@@ -158,18 +196,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles'], function($, u
             this.moveIcon = utils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.moveIcon, 25);
             this.currentCommands.push({name: 'attack', icon: this.moveIcon});
+            Tooltip.makeTooltippable(this.moveIcon, {title: 'Move', hotkey: 'M', description: "Move to a destination."})
 
             this.attackMoveIcon = utils.addSomethingToRenderer('AttackIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.attackMoveIcon, 25);
             this.currentCommands.push({name: 'move', icon: this.attackMoveIcon});
+            Tooltip.makeTooltippable(this.attackMoveIcon, {title: 'Attack-move', hotkey: 'A', description: "Attack-move to a destination."})
 
             this.holdPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.holdPositionIcon, 25);
             this.currentCommands.push({name: 'holdPosition', icon: this.holdPositionIcon});
+            Tooltip.makeTooltippable(this.holdPositionIcon, {title: 'Hold Position', hotkey: 'H', description: "Prevent any automatic movement."})
 
             this.stopIcon = utils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.stopIcon, 25);
             this.currentCommands.push({name: 'stop', icon: this.stopIcon});
+            Tooltip.makeTooltippable(this.stopIcon, {title: 'Stop', hotkey: 'S', description: "Halt current command."})
         } else {
             $.each(this.currentCommands, function(i, command) {
                 command.icon.visible = false;

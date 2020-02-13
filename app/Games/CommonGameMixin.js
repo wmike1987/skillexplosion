@@ -724,6 +724,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
          * prevent all subsequent invocations of the callback().
          */
         removeTickCallback: function(callback) {
+            if(!callback) return;
+             
             //remove from matter system
             Matter.Events.off(this.engine, callback);
             Matter.Events.off(this.engine.runner, callback);

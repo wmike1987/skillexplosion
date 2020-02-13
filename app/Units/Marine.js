@@ -253,7 +253,10 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             key: 'd',
             type: 'click',
             icon: utils.createDisplayObject('DashIcon'),
-            method: dash
+            method: dash,
+            title: 'Dash',
+            description: 'Quickly move throughout the battlefield.',
+            hotkey: 'D'
         })
 
         //Knife
@@ -378,6 +381,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             type: 'click',
             icon: utils.createDisplayObject('KnifeIcon'),
             method: throwKnife,
+            title: 'Throwing Knife',
+            description: 'Throw a knife, dealing 20 damage.',
+            hotkey: 'F'
         })
 
         var setSleeping = function() {
@@ -394,6 +400,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     health: 50,
                     energy: 20,
                     portrait: utils.createDisplayObject('MarineRedHat'),
+                    wireframe: utils.createDisplayObject('MarineRedHat'),
                     team: options.team || 4,
                     name: options.name,
                     heightAnimation: 'up',

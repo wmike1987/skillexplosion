@@ -19,6 +19,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
 
             //other unit system variables
             this.selectedBodies = {};
+            this.orderedUnits = [];
 
             //create UnitPanel
             this.unitPanel = new UnitPanel({
@@ -95,7 +96,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
 
                     this._selectedUnit = value;
 
-                    Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value ? value.unit : null});
+                    Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value});
 
                     if(value) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(value.renderlings.selected.scale, 1.1);
@@ -125,6 +126,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 //remove body from these data structures
                 if(removedBody.isSelectable) {
                     delete this.selectedBodies[removedBody.id];
+                    updateOrderedUnits(this.selectedBodies);
                     delete this.box.pendingSelections[removedBody.id];
                 }
             }.bind(this));
@@ -172,6 +174,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                             this.annointNextPrevailingUnit({onRemove: true});
                         }
                         delete this.selectedBodies[loneSoldier.id];
+                        updateOrderedUnits(this.selectedBodies);
                     }
                     else {
                         //If we have multiple things pending (from drawing a box) this will override the permaPendingBody, unless permaPendingBody was also selected in the box
@@ -183,6 +186,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
 
                         //Add pending bodies to current selection
                         $.extend(this.selectedBodies, this.box.pendingSelections)
+                        updateOrderedUnits(this.selectedBodies);
                     }
                 } else {
                     //Else create a brand new selection (don't add to current selection)
@@ -193,14 +197,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     }
                     changeSelectionState(this.selectedBodies, 'selected', false);
                     this.selectedBodies = $.extend({}, this.box.pendingSelections);
+                    updateOrderedUnits(this.selectedBodies);
                 }
 
                 //If we have a selected unit, check to see if it's the new selection, if so, do nothing, else set prevailing unit to the first body
                 if(!this.selectedUnit) {
-                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]];
+                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]].unit;
                 }
                 else if(!Object.keys(this.selectedBodies).includes(this.selectedUnit.id.toString())) {
-                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]];
+                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]].unit;
                 }
 
                 //Show group destination of selected
@@ -238,7 +243,26 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 })
 
 
-                Matter.Events.trigger(this, 'executeSelection', this.selectedBodies);
+                Matter.Events.trigger(this, 'executeSelection', {selectedBodies: this.selectedBodies, orderedSelection: this.orderedUnits});
+
+            }.bind(this);
+
+            var updateOrderedUnits = function(selectedBodies) {
+                this.orderedUnits = $.grep(this.orderedUnits, function(unit) {
+                    var found = false;
+                    $.each(selectedBodies, function(key, body) {
+                        if(body.unit && body.unit == unit)
+                            found = true;
+                    })
+                    return found;
+                })
+
+                $.each(selectedBodies, function(key, body) {
+                    if(!body.unit) return;
+                    if(!this.orderedUnits.includes(body.unit)) {
+                        this.orderedUnits.push(body.unit);
+                    }
+                }.bind(this))
 
             }.bind(this);
 
@@ -330,7 +354,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     //Dispatch ability on this click
                     if(this.abilityDispatch) {
                         if(this.selectedUnit && this.abilityDispatch != 'a') {
-                            var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit.unit};
+                            var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
                             Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                             this.box.abilityTargetSprite.timer.execute({runs: 1});
                             this.abilityDispatch = false;
@@ -588,7 +612,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                          Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                      }.bind(this))
                  } else if(this.selectedUnit) {
-                     var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit.unit};
+                     var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit};
                      Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                  }
              }.bind(this));
@@ -626,18 +650,18 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                         this.selectedUnit = null;
                     return;
                 } else {
-                    $.each(this.selectedBodies, function(key, body) {
+                    $.each(this.orderedUnits, function(i, unit) {
                         //mark the first body
                         if(!firstBody) {
-                            firstBody = body;
+                            firstBody = unit;
                         }
                         //we found the currently selected body!
-                        if(this.selectedUnit.id == key) {
+                        if(this.selectedUnit.id == unit.id) {
                             annointNextBody = true;
                         } else if(annointNextBody) {
                             //we are the next body!
                             annointNextBody = false;
-                            this.selectedUnit = body;
+                            this.selectedUnit = unit;
                             return;
                         }
                     }.bind(this))
@@ -685,6 +709,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
             //cleanup unit panel
             if(this.unitPanel)
                 this.unitPanel.cleanUp();
+
+            //don't hold onto any bodies
+            this.selectedBodies = {};
+            this.orderedUnits = [];
 
             //clear jquery events
             $('body').off('mousedown.unitSystem');

@@ -238,6 +238,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     health: 25,
                     energy: 60,
                     portrait: utils.createDisplayObject('MedicGreenEyes'),
+                    wireframe: utils.createDisplayObject('MedicGreenEyes'),
                     team: options.team || 4,
                     name: options.name,
                     heightAnimation: 'up',

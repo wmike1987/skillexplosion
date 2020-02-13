@@ -284,11 +284,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             options = options || {};
 
             something = currentGame.renderer.itsMorphinTime(something, options);
+
             if(options.position) {
                 options.x = options.position.x;
                 options.y = options.position.y;
             }
-
             if(options.filter) {
                 options.filter.uniforms.mouse = {x: 50, y: 50};
                 options.filter.uniforms.resolution = {x: currentGame.canvas.width, y: currentGame.canvas.height};
@@ -331,10 +331,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
         },
 
+        addDisplayObjectToRenderer: function(dobj, where) {
+            currentGame.renderer.addToPixiStage(dobj, where);
+        },
+
         makeSpriteSize: function(sprite, size) {
             if(!sprite.texture) return;
             var scaleX = null;
             var scaleY = null;
+
             if(size.w) {
                 scaleX = size.w/sprite.texture.width;
                 scaleY = size.h/sprite.texture.height;
@@ -529,6 +534,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         getCanvasWH: function() {
           return {x: this.getCanvasWidth(), y: this.getCanvasHeight(), w: this.getCanvasWidth(), h: this.getCanvasHeight()};
+        },
+
+        getPlayableCenter: function() {
+          return {x: this.getPlayableWidth()/2, y: this.getPlayableHeight()/2};
         },
 
         getPlayableWH: function() {

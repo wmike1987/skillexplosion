@@ -72,7 +72,13 @@ requirejs(['jquery'], function($) {
     	    require(['core/CommonGameStarter', 'games/'+gameName, 'jquery', 'utils/HS'], function(GameStarter, game, $, hs) {
 
     	    	//destroy previous game
-    	    	if(previousGame) previousGame.nuke({noMercy: true});
+    	    	if(previousGame) {
+                    //release gstat hooks
+                    if(previousGame.renderer.stats) {
+                        previousGame.renderer.stats.hook.release();
+                    }
+                    previousGame.nuke({noMercy: true});
+                }
     	        $('#gameTheater').empty();
 
     	        //specify game theater as the place to situate the canvas

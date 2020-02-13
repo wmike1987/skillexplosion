@@ -20,7 +20,10 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			StageOne: new PIXI.Container,
 			foreground: new PIXI.Container,
 			hud: new PIXI.Container,
-			hudOne: new PIXI.Container};
+			hudOne: new PIXI.Container,
+			hudTwo: new PIXI.Container,
+			hudThree: new PIXI.Container,
+			hudText: new PIXI.Container};
 
 		//create the layering groups
 		var i = 0;
@@ -173,8 +176,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
 			this.stats.stats.dom.style.visibility = 'hidden';
 
-			//setup pixi interaction - using this for it's differentiation between left and right click, though could handle this on my own
+			//setup pixi interaction
 			this.interaction = this.pixiApp.renderer.plugins.interaction;
+			this.interaction.moveWhenInside  = true;
 			$(this.canvasEl).on('contextmenu', function(event) {return false;}); //disable right click menu on the canvas object
 			this.stages.background.interactive = true;
 			this.interactiveObject = this.stages.background;

@@ -143,5 +143,23 @@ define(function() {
 			fontSize: 16,
 			strokeThickness: 2
 		}),
+
+		abilityTitle: new PIXI.TextStyle({
+            dropShadow: true,
+            dropShadowDistance: 1,
+			fill: "#16D5FB",
+			fillGradientType: 1,
+    		fontFamily: "Tahoma, Geneva, sans-serif",
+			fontSize: 15,
+			strokeThickness: 1
+		}),
+
+		abilityText: new PIXI.TextStyle({
+			fill: "#D2D3DE",
+			fillGradientType: 1,
+    		fontFamily: "Tahoma, Geneva, sans-serif",
+			fontSize: 13,
+			strokeThickness: 1
+		}),
 	}
 })

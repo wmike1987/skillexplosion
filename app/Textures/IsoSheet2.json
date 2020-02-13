@@ -2,8 +2,8 @@
 
 "AbilityTarget":
 {
-	"frame": {"x":1153,"y":171,"w":32,"h":26},
-	"rotated": true,
+	"frame": {"x":1153,"y":205,"w":32,"h":26},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -42,8 +42,8 @@
 },
 "AttackTarget":
 {
-	"frame": {"x":1153,"y":205,"w":32,"h":26},
-	"rotated": false,
+	"frame": {"x":1163,"y":233,"w":32,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -82,7 +82,7 @@
 },
 "HoldPositionIcon":
 {
-	"frame": {"x":1153,"y":137,"w":28,"h":32},
+	"frame": {"x":1153,"y":171,"w":28,"h":32},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":0,"w":28,"h":32},
@@ -130,8 +130,8 @@
 },
 "MoveTarget":
 {
-	"frame": {"x":1163,"y":233,"w":32,"h":26},
-	"rotated": true,
+	"frame": {"x":1029,"y":267,"w":32,"h":26},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -147,6 +147,14 @@
 "StopIcon":
 {
 	"frame": {"x":1153,"y":103,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"TintableSquare":
+{
+	"frame": {"x":1153,"y":137,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -170,6 +178,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1542,"h":918},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:5ea272e6a44f555d966e48e938a3b8a8:13bd1d5bb2e121b59eee96f517cc45cc:46c875579d242a0b1cfceb19946da616$"
+	"smartupdate": "$TexturePacker:SmartUpdate:5c31049ade12dd5b63288649edbd3a1e:d7041b7ce9a4c94aac1b1ef9025a9184:46c875579d242a0b1cfceb19946da616$"
 }
 }
