@@ -77,7 +77,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
             utils.deathPact(this.box, this.box.abilityTargetSprite.timer);
 
             //prevailing-unit visual indicator
-            var prevailingTint = 0x00050C;
+            var prevailingTint = 0x0051AD;
             this.prevailingUnitCircle = utils.addSomethingToRenderer('IsometricSelected', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
             this.prevailingUnitCircle2 = utils.addSomethingToRenderer('IsometricSelected', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
 
@@ -95,14 +95,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     }
 
                     this._selectedUnit = value;
+                    var body = value.body;
 
                     Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value});
 
-                    if(value) {
-                        this.prevailingUnitCircle.scale = Matter.Vector.mult(value.renderlings.selected.scale, 1.1);
-                        this.prevailingUnitCircle2.scale = Matter.Vector.mult(value.renderlings.selected.scale, .9);
-                        utils.attachSomethingToBody(this.prevailingUnitCircle, value, value.renderlings.selected.offset);
-                        utils.attachSomethingToBody(this.prevailingUnitCircle2, value, value.renderlings.selected.offset);
+                    if(body) {
+                        this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
+                        this.prevailingUnitCircle2.scale = Matter.Vector.mult(body.renderlings.selected.scale, .9);
+                        utils.attachSomethingToBody(this.prevailingUnitCircle, body, body.renderlings.selected.offset);
+                        utils.attachSomethingToBody(this.prevailingUnitCircle2, body, body.renderlings.selected.offset);
                     } else {
                         utils.detachSomethingFromBody(this.prevailingUnitCircle);
                         utils.detachSomethingFromBody(this.prevailingUnitCircle2);
