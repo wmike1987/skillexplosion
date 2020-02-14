@@ -58,7 +58,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         }.bind(this))
 
         //listen for when the selected group changes
-        Matter.Events.on(this.unitSystem, 'executeSelection', function(event) {
+        Matter.Events.on(this.unitSystem, 'selectedBodiesChange', function(event) {
             this.updateUnitGroup(event.orderedSelection);
         }.bind(this))
 

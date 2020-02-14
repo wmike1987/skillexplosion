@@ -129,6 +129,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     delete this.selectedBodies[removedBody.id];
                     updateOrderedUnits(this.selectedBodies);
                     delete this.box.pendingSelections[removedBody.id];
+                    Matter.Events.trigger(this, 'selectedBodiesChange', {selectedBodies: this.selectedBodies, orderedSelection: this.orderedUnits});
                 }
             }.bind(this));
 
@@ -241,8 +242,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     body.isSelected = true;
                 })
 
-
                 Matter.Events.trigger(this, 'executeSelection', {selectedBodies: this.selectedBodies, orderedSelection: this.orderedUnits});
+                Matter.Events.trigger(this, 'selectedBodiesChange', {selectedBodies: this.selectedBodies, orderedSelection: this.orderedUnits});
 
             }.bind(this);
 
