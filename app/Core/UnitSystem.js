@@ -95,7 +95,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     }
 
                     this._selectedUnit = value;
-                    var body = value.body;
+                    var body = value ? value.body : null;
 
                     Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value});
 
@@ -120,7 +120,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 var removedBody = event.object[0];
 
                 //Re-assign the selected unit if needed
-                if(this.selectedUnit == removedBody) {
+                if(this.selectedUnit == removedBody.unit) {
                     this.annointNextPrevailingUnit({onRemove: true});
                 }
 
@@ -171,7 +171,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     //If one, already-selected body is requested here, remove from selection
                     if(loneSoldier && ($.inArray(loneSoldier.id.toString(), Object.keys(this.selectedBodies)) > -1)) {
                         changeSelectionState(loneSoldier, 'selected', false);
-                        if(this.selectedUnit == loneSoldier) {
+                        if(this.selectedUnit == loneSoldier.unit) {
                             this.annointNextPrevailingUnit({onRemove: true});
                         }
                         delete this.selectedBodies[loneSoldier.id];
@@ -201,12 +201,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     updateOrderedUnits(this.selectedBodies);
                 }
 
-                //If we have a selected unit, check to see if it's the new selection, if so, do nothing, else set prevailing unit to the first body
-                if(!this.selectedUnit) {
-                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]].unit;
-                }
-                else if(!Object.keys(this.selectedBodies).includes(this.selectedUnit.id.toString())) {
-                    this.selectedUnit = this.selectedBodies[Object.keys(this.selectedBodies)[0]].unit;
+                var firstOfTheSelectedBodies = this.selectedBodies[Object.keys(this.selectedBodies)[0]];
+                //if our selectedUnit doesn't exist, or doesn't exist within the new selection, we need to set it to something relevant
+                if(!this.selectedUnit || !Object.keys(this.selectedBodies).includes(this.selectedUnit.id.toString())) {
+                    this.selectedUnit = firstOfTheSelectedBodies ? firstOfTheSelectedBodies.unit : null;
                 }
 
                 //Show group destination of selected
@@ -642,7 +640,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 var options = options || {};
                 var selectedUnitCount = Object.keys(this.selectedBodies).length;
                 var annointNextBody = false;
-                var firstBody = null;
+                var firstUnit = null;
                 if(!selectedUnitCount) {
                     this.selectedUnit = null;
                     return;
@@ -653,8 +651,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 } else {
                     $.each(this.orderedUnits, function(i, unit) {
                         //mark the first body
-                        if(!firstBody) {
-                            firstBody = unit;
+                        if(!firstUnit) {
+                            firstUnit = unit;
                         }
                         //we found the currently selected body!
                         if(this.selectedUnit.id == unit.id) {
@@ -669,7 +667,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
 
                     //if we get here and annointNextBody is true, it means we were at the end and we can assume we should cycle
                     if(annointNextBody)
-                        this.selectedUnit = firstBody;
+                        this.selectedUnit = firstUnit;
                 }
             }.bind(this),
 

@@ -1,6 +1,6 @@
 {"frames": {
 
-"AbilityTarget":
+"AbilityTarget.png":
 {
 	"frame": {"x":1153,"y":205,"w":32,"h":26},
 	"rotated": false,
@@ -8,7 +8,7 @@
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
-"AmbientLight1":
+"AmbientLight1.png":
 {
 	"frame": {"x":1,"y":103,"w":512,"h":512},
 	"rotated": false,
@@ -16,7 +16,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
 	"sourceSize": {"w":512,"h":512}
 },
-"AmbientLight2":
+"AmbientLight2.png":
 {
 	"frame": {"x":515,"y":103,"w":512,"h":512},
 	"rotated": false,
@@ -24,7 +24,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
 	"sourceSize": {"w":512,"h":512}
 },
-"AmbientLight3":
+"AmbientLight3.png":
 {
 	"frame": {"x":1029,"y":303,"w":512,"h":512},
 	"rotated": false,
@@ -32,7 +32,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
 	"sourceSize": {"w":512,"h":512}
 },
-"AttackIcon":
+"AttackIcon.png":
 {
 	"frame": {"x":1095,"y":233,"w":32,"h":32},
 	"rotated": false,
@@ -40,7 +40,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"AttackTarget":
+"AttackTarget.png":
 {
 	"frame": {"x":1163,"y":233,"w":32,"h":26},
 	"rotated": true,
@@ -48,7 +48,7 @@
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
-"BombIcon":
+"BombIcon.png":
 {
 	"frame": {"x":1203,"y":1,"w":300,"h":300},
 	"rotated": false,
@@ -56,7 +56,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
 	"sourceSize": {"w":300,"h":300}
 },
-"DashIcon":
+"DashIcon.png":
 {
 	"frame": {"x":732,"y":617,"w":100,"h":100},
 	"rotated": false,
@@ -64,7 +64,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
 	"sourceSize": {"w":100,"h":100}
 },
-"GunAttackIcon":
+"GunAttackIcon.png":
 {
 	"frame": {"x":732,"y":719,"w":100,"h":100},
 	"rotated": false,
@@ -72,7 +72,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
 	"sourceSize": {"w":100,"h":100}
 },
-"HealIcon":
+"HealIcon.png":
 {
 	"frame": {"x":1,"y":617,"w":300,"h":300},
 	"rotated": false,
@@ -80,7 +80,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
 	"sourceSize": {"w":300,"h":300}
 },
-"HoldPositionIcon":
+"HoldPositionIcon.png":
 {
 	"frame": {"x":1153,"y":171,"w":28,"h":32},
 	"rotated": false,
@@ -88,7 +88,7 @@
 	"spriteSourceSize": {"x":2,"y":0,"w":28,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"IsoShadowBlurred":
+"IsoShadowBlurred.png":
 {
 	"frame": {"x":1029,"y":233,"w":64,"h":32},
 	"rotated": false,
@@ -96,7 +96,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
 	"sourceSize": {"w":64,"h":32}
 },
-"KnifeIcon":
+"KnifeIcon.png":
 {
 	"frame": {"x":605,"y":738,"w":100,"h":100},
 	"rotated": false,
@@ -104,7 +104,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
 	"sourceSize": {"w":100,"h":100}
 },
-"MarineRedHat":
+"MarineRedHat.png":
 {
 	"frame": {"x":1029,"y":103,"w":128,"h":122},
 	"rotated": true,
@@ -112,7 +112,7 @@
 	"spriteSourceSize": {"x":0,"y":6,"w":128,"h":122},
 	"sourceSize": {"w":128,"h":128}
 },
-"MedicGreenEyes":
+"MedicGreenEyes.png":
 {
 	"frame": {"x":605,"y":617,"w":119,"h":125},
 	"rotated": true,
@@ -120,7 +120,7 @@
 	"spriteSourceSize": {"x":6,"y":3,"w":119,"h":125},
 	"sourceSize": {"w":128,"h":128}
 },
-"MoveIcon":
+"MoveIcon.png":
 {
 	"frame": {"x":1129,"y":233,"w":32,"h":32},
 	"rotated": false,
@@ -128,7 +128,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"MoveTarget":
+"MoveTarget.png":
 {
 	"frame": {"x":1029,"y":267,"w":32,"h":26},
 	"rotated": false,
@@ -136,7 +136,7 @@
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
-"SneakIcon":
+"SneakIcon.png":
 {
 	"frame": {"x":303,"y":617,"w":300,"h":300},
 	"rotated": false,
@@ -144,7 +144,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
 	"sourceSize": {"w":300,"h":300}
 },
-"StopIcon":
+"StopIcon.png":
 {
 	"frame": {"x":1153,"y":103,"w":32,"h":32},
 	"rotated": false,
@@ -152,7 +152,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"TintableSquare":
+"TintableSquare.png":
 {
 	"frame": {"x":1153,"y":137,"w":32,"h":32},
 	"rotated": false,
@@ -160,7 +160,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"UnitPanelFrame":
+"UnitPanelFrame.png":
 {
 	"frame": {"x":1,"y":1,"w":1200,"h":100},
 	"rotated": false,
@@ -169,7 +169,7 @@
 	"sourceSize": {"w":1200,"h":100}
 }},
 "animations": {
-	"AmbientLight": ["AmbientLight1","AmbientLight2","AmbientLight3"]
+	"AmbientLight": ["AmbientLight1.png","AmbientLight2.png","AmbientLight3.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
@@ -178,6 +178,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1542,"h":918},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:5c31049ade12dd5b63288649edbd3a1e:d7041b7ce9a4c94aac1b1ef9025a9184:46c875579d242a0b1cfceb19946da616$"
+	"smartupdate": "$TexturePacker:SmartUpdate:ef7bb9dd70acd2a03447bc80e85303a1:d7041b7ce9a4c94aac1b1ef9025a9184:46c875579d242a0b1cfceb19946da616$"
 }
 }
