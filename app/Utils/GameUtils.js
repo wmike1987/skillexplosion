@@ -744,6 +744,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         //return angle to rotate something facing an original direction, towards a point
         pointInDirection: function(origin, destination, orientation) {
+            if(orientation == 'east')
+                orientation = {x: origin.x + 1, y: origin.y}
             var originAngle = Matter.Vector.angle(origin, orientation || {x: origin.x, y: origin.y + 1});
             var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
 

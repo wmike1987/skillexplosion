@@ -230,6 +230,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         //Dash
         var dashVelocity = .8;
+        var dashSound = utils.getSound('dashsound.wav', {volume: .03, rate: 1.4});
         var dash = function(destination, commandObj) {
             this.stop(); //stop any movement
             this._becomePeaceful(); //prevent us from honing/attacking
@@ -238,6 +239,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             var velocityVector = Matter.Vector.sub(destination, this.position);
             var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
             Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
+            dashSound.play();
             currentGame.addTimer({
                 name: 'dashDoneTimer' + this.body.id,
                 runs: 1,
@@ -260,7 +262,8 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
         })
 
         //Knife
-        var knifeSound = utils.getSound('marbles.wav', {volume: .1, rate: 20});
+        var knifeThrowSound = utils.getSound('knifethrow.wav', {volume: .03, rate: 1});
+        var knifeImpactSound = utils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
         var knifeSpeed = 15;
         var throwKnife = function(destination, commandObj) {
             //create knife body
@@ -289,8 +292,9 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             currentGame.addBody(knife);
 
             //send knife
-            knifeSound.play();
+            knifeThrowSound.play();
             knife.deltaTime = this.body.deltaTime;
+            knife.destination = destination;
             utils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
             var removeSelf = currentGame.addTickCallback(function() {
                 if(utils.bodyRanOffStage(knife)) {
@@ -301,66 +305,18 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             Matter.Events.on(knife, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
                 if(otherBody != this.body && otherBody.isAttackable) {
-                    currentGame.removeBody(knife);
                     otherBody.unit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
-                    var emitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
-                        config: {
-                    	"alpha": {
-                    		"start": 1,
-                    		"end": 1
-                    	},
-                    	"scale": {
-                    		"start": 0.25,
-                    		"end": 0.01,
-                    		"minimumScaleMultiplier": 1
-                    	},
-                    	"color": {
-                    		"start": "#ff0000",
-                    		"end": "#ff0000"
-                    	},
-                    	"speed": {
-                    		"start": 0,
-                    		"end": 0,
-                    		"minimumSpeedMultiplier": 1
-                    	},
-                    	"acceleration": {
-                    		"x": 0,
-                    		"y": 1800
-                    	},
-                    	"maxSpeed": 0,
-                    	"startRotation": {
-                    		"min": 0,
-                    		"max": 0
-                    	},
-                    	"noRotation": false,
-                    	"rotationSpeed": {
-                    		"min": 0,
-                    		"max": 0
-                    	},
-                    	"lifetime": {
-                    		"min": 0.25,
-                    		"max": 0.3
-                    	},
-                    	"blendMode": "normal",
-                    	"frequency": 0.01,
-                    	"emitterLifetime": 0.2,
-                    	"maxParticles": 3,
-                    	"pos": {
-                    		"x": 0,
-                    		"y": 0
-                    	},
-                    	"addAtBack": false,
-                    	"spawnType": "circle",
-                    	"spawnCircle": {
-                    		"x": 0,
-                    		"y": 0,
-                    		"r": 20
-                    	}
-                    }, texture: PIXI.Texture.fromImage('../app/Textures/particle.png')});
-
-                    // Start emitting
-                    emitter.updateSpawnPos(otherBody.position.x, otherBody.position.y);
-                    emitter.playOnceAndDestroy();
+                    var bloodPierceAnimation = utils.getAnimationB({
+                        spritesheetName: 'bloodswipes1',
+                        animationName: 'pierce',
+                        speed: .95,
+                        transform: [knife.position.x, knife.position.y, .25, .25]
+                    });
+                    knifeImpactSound.play();
+                    bloodPierceAnimation.play();
+                    bloodPierceAnimation.rotation = utils.pointInDirection(knife.position, knife.destination, 'east'),
+                    utils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
+                    currentGame.removeBody(knife);
                 }
             }.bind(this))
 

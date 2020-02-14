@@ -1,0 +1,127 @@
+{"frames": {
+
+"pierce00.png":
+{
+	"frame": {"x":972,"y":106,"w":289,"h":21},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":29,"y":249,"w":289,"h":21},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce01.png":
+{
+	"frame": {"x":106,"y":461,"w":335,"h":38},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":29,"y":235,"w":335,"h":38},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce02.png":
+{
+	"frame": {"x":106,"y":407,"w":375,"h":52},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":226,"w":375,"h":52},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce03.png":
+{
+	"frame": {"x":640,"y":1,"w":388,"h":194},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":159,"w":388,"h":194},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce04.png":
+{
+	"frame": {"x":436,"y":1,"w":397,"h":202},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":29,"y":155,"w":397,"h":202},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce05.png":
+{
+	"frame": {"x":268,"y":1,"w":400,"h":166},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":173,"w":400,"h":166},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce06.png":
+{
+	"frame": {"x":104,"y":1,"w":404,"h":162},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":175,"w":404,"h":162},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce07.png":
+{
+	"frame": {"x":1,"y":1,"w":406,"h":101},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":31,"y":211,"w":406,"h":101},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce08.png":
+{
+	"frame": {"x":676,"y":391,"w":189,"h":103},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":249,"y":211,"w":189,"h":103},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce09.png":
+{
+	"frame": {"x":867,"y":106,"w":189,"h":103},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":249,"y":213,"w":189,"h":103},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce10.png":
+{
+	"frame": {"x":483,"y":400,"w":191,"h":103},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":248,"y":215,"w":191,"h":103},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce11.png":
+{
+	"frame": {"x":867,"y":297,"w":192,"h":102},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":248,"y":217,"w":192,"h":102},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce12.png":
+{
+	"frame": {"x":836,"y":1,"w":157,"h":103},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":248,"y":219,"w":157,"h":103},
+	"sourceSize": {"w":512,"h":512}
+},
+"pierce13.png":
+{
+	"frame": {"x":1,"y":409,"w":79,"h":103},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":248,"y":221,"w":79,"h":103},
+	"sourceSize": {"w":512,"h":512}
+}},
+"animations": {
+	"pierce": ["pierce00.png","pierce01.png","pierce02.png","pierce03.png","pierce04.png","pierce05.png","pierce06.png","pierce07.png","pierce08.png","pierce09.png","pierce10.png","pierce11.png","pierce12.png","pierce13.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "bloodswipes1.png",
+	"format": "RGBA8888",
+	"size": {"w":994,"h":504},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:e7c6626db048715379cb6b3587c87f19:e34b355172e64ce982256e381c4cee34:33434a3f30c5346577eb5fd02b415098$"
+}
+}

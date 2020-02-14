@@ -228,6 +228,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             offset: {x: 0, y: 22}}];
 
         var rad = options.radius || 28;
+        var healsound = utils.getSound('healsound.wav', {volume: .0022, rate: .15});
         return UC({
                 renderChildren: rc,
                 radius: rad,
@@ -265,6 +266,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
                     range: rad*2 + 1,
                     healAmount: 1,
                     attack: function(target) {
+                        healsound.play();
                         target.currentHealth += this.healAmount;
                         if(target.currentHealth >= target.maxHealth)
                             target.currentHealth = target.maxHealth;
