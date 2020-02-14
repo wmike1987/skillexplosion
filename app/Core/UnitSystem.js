@@ -354,9 +354,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     //Dispatch ability on this click
                     if(this.abilityDispatch) {
                         if(this.selectedUnit && this.abilityDispatch != 'a') {
-                            var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
-                            Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
-                            this.box.abilityTargetSprite.timer.execute({runs: 1});
+                            if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
+                                this.box.invalidateNextMouseUp = true;
+                                var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
+                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                                this.box.abilityTargetSprite.timer.execute({runs: 1});
+                            }
                             this.abilityDispatch = false;
                         }
                     }
@@ -605,6 +608,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
              //dispatch generic key events
              $('body').on('keydown.unitSystem', function( event ) {
                  var key = event.key.toLowerCase();
+                 if(key == 'shift' || key == 'tab' || key =='alt') return;
                  this.abilityDispatch = event.key.toLowerCase();
                  if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
                      $.each(this.selectedBodies, function(key, body) {
