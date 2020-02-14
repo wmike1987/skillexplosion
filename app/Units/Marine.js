@@ -230,7 +230,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
 
         //Dash
         var dashVelocity = .8;
-        var dashSound = utils.getSound('dashsound.wav', {volume: .03, rate: 1.4});
+        var dashSound = utils.getSound('dashsound.wav', {volume: .02, rate: 1.4});
         var dash = function(destination, commandObj) {
             this.stop(); //stop any movement
             this._becomePeaceful(); //prevent us from honing/attacking
