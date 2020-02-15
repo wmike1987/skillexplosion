@@ -77,6 +77,17 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
                 this.currentHealth -= damage;
                 if (this.currentHealth <= 0) {
                     this.death();
+                } else {
+                    this.showLifeBar(true);
+                    if(!this.barTimer) {
+                        this.barTimer = currentGame.addTimer({name: this.id + 'barTimer', timeLimit: 650, runs: 1, callback: function() {
+                            if(!this.showingBarsWithAlt)
+                            this.showLifeBar(false);
+                        }.bind(this)})
+                        utils.deathPact(this, this.barTimer);
+                    } else {
+                        this.barTimer.reset();
+                    }
                 }
                 Matter.Events.trigger(this, 'sufferedAttack', damage);
             },
@@ -180,7 +191,14 @@ define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveabl
 
                 this.unhover = function(event) {
                     hoverFilter.uniforms.active = false;
-                }
+                };
+
+                this.showLifeBar = function(value) {
+                    if(value !== false)
+                        value = true;
+                    this.renderlings['healthbarbackground'].visible = value;
+                    this.renderlings['healthbar'].visible = value;
+                };
 
                 Matter.Events.on(this, 'addUnit', function() {
 

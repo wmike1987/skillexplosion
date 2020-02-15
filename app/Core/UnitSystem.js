@@ -627,8 +627,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                  if(event.key == 'Alt') {
                      utils.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
                              var unit = body.unit;
-                             unit.renderlings['healthbarbackground'].visible = true;
-                             unit.renderlings['healthbar'].visible = true;
+                             unit.showingBarsWithAlt = true;
+                             unit.showLifeBar(true);
                          })
                  }
             }.bind(this));
@@ -681,8 +681,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                 if(event.key == 'Alt') {
                     utils.applyToBodiesByTeam(function() {return true}, function(body) {return body.unit}, function(body) {
                          var unit = body.unit;
-                         unit.renderlings['healthbarbackground'].visible = false;
-                         unit.renderlings['healthbar'].visible = false;
+                         unit.showingBarsWithAlt = false;
+                         unit.showLifeBar(false);
                      })
              }
             }.bind(this));
