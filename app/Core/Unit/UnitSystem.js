@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($, utils, Matter, UnitPanel) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], function($, utils, Matter, UnitPanel) {
 
     var unitSystem = function(properties) {
 

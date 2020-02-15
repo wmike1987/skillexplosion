@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable'], function($, Matter, PIXI, CommonGameMixin, Moveable) {
+define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable'], function($, Matter, PIXI, CommonGameMixin, Moveable) {
 	
 	var targetScore = 1;
 	var greenScoreStyle = new PIXI.TextStyle({

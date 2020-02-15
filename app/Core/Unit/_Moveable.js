@@ -1,5 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils', 'core/Command'],
-function($, Matter, PIXI, CommonGameMixin, utils, Command) {
+define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils', 'unitcore/Command'],
+function($, Matter, PIXI, utils, Command) {
 
     var moveable = {
         //private

@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/TargetSpawnZone'], function($, Matter, PIXI, CommonGameMixin, zone) {
+define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'utils/TargetSpawnZone'], function($, Matter, PIXI, CommonGameMixin, zone) {
 	
 	var targetScore = 1;
 	

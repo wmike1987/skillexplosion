@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor', 'utils/GameUtils'], function($, PIXI, UC, utils) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], function($, PIXI, UC, utils) {
 
 	return function Baneling(options) {
 

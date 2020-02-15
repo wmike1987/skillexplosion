@@ -1,5 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'utils/GameUtils'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, utils) {
+define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'utils/GameUtils'],
+function($, Matter, PIXI, Moveable, Attacker, utils) {
 
 	/*
 	 * Manager which will handle playing animations at the right time.

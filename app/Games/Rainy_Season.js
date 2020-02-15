@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'howler'], function($, Matter, PIXI, CommonGameMixin, h) {
+define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler'], function($, Matter, PIXI, CommonGameMixin, h) {
 	
 	var targetScore = 1;
 	var fragShader = `

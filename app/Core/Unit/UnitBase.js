@@ -1,7 +1,7 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/IsoSpriteManager',
-'utils/GameUtils', 'core/CommandQueue', 'core/Command'],
+define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
+'utils/GameUtils', 'unitcore/CommandQueue', 'unitcore/Command'],
 
-    function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso, utils, CommandQueue, Command) {
+    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, CommandQueue, Command) {
 
         var hoverShader = `
             precision mediump float;

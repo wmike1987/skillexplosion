@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor'], function($, PIXI, UC) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor'], function($, PIXI, UC) {
 
 	return function Marble(options) {
 

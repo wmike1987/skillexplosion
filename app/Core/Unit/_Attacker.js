@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'utils/GameUtils'], function($, Matter, PIXI, CommonGameMixin, utils) {
+define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, PIXI, utils) {
 
     return {
         //private

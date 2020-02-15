@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker',
+define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
 'core/TileMapper', 'utils/Doodad'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper, Doodad) {
@@ -64,7 +64,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //currentGame.renderer.background.filters = [this.simpleLightShader];
 
             //map the background
-            var grassColor = 'Red';
+            var grassColor = 'Green';
             var backgroundTiles = [];
             for(var x = 0; x < 6; x++) {
                 backgroundTiles.push(grassColor + 'Grass' + (x+1));
@@ -76,9 +76,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create some Doodads
             var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
                                     shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
-
-
-
 
             utils.addAmbientLightsToBackground([0x660000, 0x00cc44, 0x660066, 0x00cc44, 0x660000, 0x660000, 0x4d79ff], null, .3);
 

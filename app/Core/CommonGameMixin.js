@@ -2,7 +2,7 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'core/UnitSystem'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem) {
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'unitcore/UnitSystem'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem) {
 
     var common = {
 
@@ -725,7 +725,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
          */
         removeTickCallback: function(callback) {
             if(!callback) return;
-             
+
             //remove from matter system
             Matter.Events.off(this.engine, callback);
             Matter.Events.off(this.engine.runner, callback);

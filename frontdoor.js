@@ -6,6 +6,7 @@ requirejs.config({
         games: '../app/Games',
         mixins: '../app/Mixins',
         utils: '../app/Utils',
+        unitcore: '../app/Core/Unit',
         core: '../app/Core',
         units: '../app/Units',
         shaders: '../app/Shaders',

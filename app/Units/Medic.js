@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils'], function($, PIXI, UC, Matter, utils) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils'], function($, PIXI, UC, Matter, utils) {
 
     return function Medic(options) {
         var options = options || {};

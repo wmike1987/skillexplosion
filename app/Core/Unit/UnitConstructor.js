@@ -1,7 +1,7 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker', 'units/IsoSpriteManager',
-'utils/GameUtils', 'units/UnitBase'],
+define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
+'utils/GameUtils', 'unitcore/UnitBase'],
 
-    function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Iso, utils, ub) {
+    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, ub) {
 
         /*
          *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior and returns the unit

@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils', 'units/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
 
     return function Marine(options) {
         var options = options || {};

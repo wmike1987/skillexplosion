@@ -1,4 +1,4 @@
-define(['jquery', 'matter-js', 'pixi', 'games/CommonGameMixin', 'mixins/_Moveable', 'mixins/_Attacker'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker) {
+define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker'], function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker) {
 
 	var targetScore = 1;
 
