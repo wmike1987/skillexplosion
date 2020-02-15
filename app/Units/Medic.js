@@ -228,7 +228,7 @@ define(['jquery', 'pixi', 'units/UnitConstructor', 'matter-js', 'utils/GameUtils
             offset: {x: 0, y: 22}}];
 
         var rad = options.radius || 28;
-        var healsound = utils.getSound('healsound.wav', {volume: .0022, rate: .15});
+        var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
         return UC({
                 renderChildren: rc,
                 radius: rad,

@@ -292,7 +292,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                     //This is a perma body which we'll add to the pending selection, or we're trying to attack a singular target
                     var singleAttackTarget = null;
                     $.each(bodies, function(key, body) {
-                        if(body.isSelectable && !this.attackMove) {
+                        if(body.isSelectable && !this.attackMove && !this.abilityDispatch) {
                             changeSelectionState(body, 'selectionPending', true);
                             this.box.pendingSelections[body.id] = body; //needed for a special case when the game starts - no longer need this (i think)
                             this.box.permaPendingBody = body;
@@ -325,8 +325,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                             }
                         }.bind(this))
                         this.attackMove = false; //invalidate the key pressed state
-
                         return;
+                    }
+
+                    //Dispatch ability on this click
+                    if(this.abilityDispatch) {
+                        if(this.selectedUnit && this.abilityDispatch != 'a') {
+                            if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
+                                this.box.invalidateNextMouseUp = true;
+                                var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
+                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                                this.box.abilityTargetSprite.timer.execute({runs: 1});
+                                this.abilityDispatch = false;
+                                return;
+                            }
+                            this.abilityDispatch = false;
+                        }
                     }
 
                     var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
@@ -349,19 +363,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'core/UnitPanel'], function($,
                         executeSelection();
                         this.box.invalidateNextMouseUp = true; //after a control click, mouseup does not execute a selection (sc2)
                         this.box.invalidateNextBox = true;
-                    }
-
-                    //Dispatch ability on this click
-                    if(this.abilityDispatch) {
-                        if(this.selectedUnit && this.abilityDispatch != 'a') {
-                            if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
-                                this.box.invalidateNextMouseUp = true;
-                                var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
-                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
-                                this.box.abilityTargetSprite.timer.execute({runs: 1});
-                            }
-                            this.abilityDispatch = false;
-                        }
                     }
                 }
 

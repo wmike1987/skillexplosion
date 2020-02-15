@@ -96,6 +96,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 var wireframe = unit.wireframe;
                 if(!wireframe.parent) {
                     utils.addSomethingToRenderer(wireframe, 'hudOne');
+                    wireframe.interactive = true;
+                    wireframe.on('mouseup', function(event) {
+                        this.unitSystem.selectedUnit = unit;
+                    }.bind(this))
                 }
                 wireframe.position = {x: this.groupCenterX + i * this.groupSpacing, y: this.groupCenterY};
                 utils.makeSpriteSize(wireframe, this.wireframeSize);
