@@ -7,7 +7,7 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
     var spawn = function(options) {
         require(['items/'+options.name], function(item) {
             var newItem = item();
-            currentGame.addBody(newItem.body);
+            currentGame.addItem(newItem);
             utils.placeBodyWithinRadiusAroundCanvasCenter(newItem.body, 200);
         })
     }

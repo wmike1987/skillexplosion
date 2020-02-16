@@ -2,7 +2,8 @@
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
  */
 
-define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'unitcore/UnitSystem'], function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem) {
+define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'utils/GameUtils', 'unitcore/UnitSystem', 'unitcore/ItemSystem'],
+    function(Matter, PIXI, $, hs, h, styles, utils, UnitSystem, ItemSystem) {
 
     var common = {
 
@@ -73,6 +74,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                  this.unitSystem = new UnitSystem(options);
              }
 
+             /*
+              * Incorporate ItemSystem if specified
+              */
+             if(this.enableItemSystem) {
+                 // Create new item system, letting it share some common game properties
+                 this.itemSystem = new ItemSystem(options);
+             }
+
             //begin tracking body vertice histories
             this.addTickCallback(function() {
                 $.each(this.verticeHistories, function(index, body) {
@@ -81,7 +90,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
                     body.partsCopy = utils.cloneParts(body.parts);
                 }.bind(this))
-            }.bind(this), true, 'beforeUpdate');
+            }.bind(this), true, 'beforeStep');
 
             this['incr' + 'ement' + 'Sco' + 're'] = function(value) {
                 this.s.s += value*77;
@@ -314,6 +323,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             if(this.unitSystem)
                 this.unitSystem.initialize();
 
+            if(this.itemSystem)
+                this.itemSystem.initialize();
+
             this.regulationPlay = $.Deferred();
             this.regulationPlay.done(this.endGame.bind(this));
         },
@@ -368,6 +380,34 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             Matter.Events.trigger(unit, 'addUnit', {});
         },
 
+        removeUnit: function(unit) {
+            Matter.Events.trigger(unit, "onremove", {});
+            //clear slaves (deathPact())
+            if(unit.slaves) {
+                this.removeSlaves(unit.slaves);
+            }
+            this.removeBody(unit.body);
+            Matter.Events.off(unit);
+        },
+
+        addItem: function(item) {
+            this.addBody(item.body);
+
+            this.itemSystem.addItem(item);
+
+            //This is an important stage in a unit's lifecycle as it now has the initial set of renderChildren realized
+            Matter.Events.trigger(item, 'addItem', {});
+        },
+
+        removeItem: function(item) {
+            Matter.Events.trigger(item, "onremove", {});
+            Matter.Events.off(item);
+
+            this.itemSystem.removeItem(item);
+
+            this.removeBody(item.body);
+        },
+
         addBody: function(body) {
             //if we've added a unit, call down to its body
             if(body.isUnit) {
@@ -388,50 +428,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //add to matter world
             Matter.World.add(this.world, body);
-        },
-
-        removeBodies: function(bodies) {
-            var copy = bodies.slice();
-            $.each(copy, function(index, body) {
-                this.removeBody(body);
-            }.bind(this))
-        },
-
-        //This method has the heart but is poorly designed
-        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, and finally functions to execute
-        removeSlaves: function(slaves) {
-            $.each(slaves, function(index, slave) {
-                if(slave.isUnit) {
-                    this.removeUnit(slave);
-                    //console.info("removing " + slave)
-                }
-                else if(slave.render) {
-                    this.removeBody(slave);
-                    //console.info("removing " + slave)
-                }
-                else if(slave.isTickCallback) {
-                    this.removeTickCallback(slave);
-                    // console.info("removing " + slave.slaveId)
-                }
-                else if(slave.isTimer) {
-                    this.invalidateTimer(slave);
-                    //console.info("removing " + slave)
-                }
-                else if(slave instanceof Function) {
-                    //console.info("removing " + slave)
-                    slave();
-                }
-            }.bind(this));
-        },
-
-        removeUnit: function(unit) {
-            Matter.Events.trigger(unit, "onremove", {});
-            //clear slaves (deathPact())
-            if(unit.slaves) {
-                this.removeSlaves(unit.slaves);
-            }
-            this.removeBody(unit.body);
-            Matter.Events.off(unit);
         },
 
         removeBody: function(body) {
@@ -468,14 +464,42 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     })
             }
 
-            //clean up selection box data related to this body
-            // if(this.selectionBox && body.isSelectable) {
-            //     delete this.box.selectedBodies[body.id];
-            //     delete this.box.pendingSelections[body.id];
-            // }
-
             //for internal use
             body.hasBeenRemoved = true;
+        },
+
+        removeBodies: function(bodies) {
+            var copy = bodies.slice();
+            $.each(copy, function(index, body) {
+                this.removeBody(body);
+            }.bind(this))
+        },
+
+        //This method has the heart but is poorly designed I think
+        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, and finally functions to execute
+        removeSlaves: function(slaves) {
+            $.each(slaves, function(index, slave) {
+                if(slave.isUnit) {
+                    this.removeUnit(slave);
+                    //console.info("removing " + slave)
+                }
+                else if(slave.render) {
+                    this.removeBody(slave);
+                    //console.info("removing " + slave)
+                }
+                else if(slave.isTickCallback) {
+                    this.removeTickCallback(slave);
+                    // console.info("removing " + slave.slaveId)
+                }
+                else if(slave.isTimer) {
+                    this.invalidateTimer(slave);
+                    //console.info("removing " + slave)
+                }
+                else if(slave instanceof Function) {
+                    //console.info("removing " + slave)
+                    slave();
+                }
+            }.bind(this));
         },
 
         //apply something to bodies by team
@@ -562,6 +586,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             //Clear unit system
             if(this.unitSystem) {
                 this.unitSystem.cleanUp();
+            }
+
+            //Clear item system
+            if(this.itemSystem) {
+                this.itemSystem.cleanUp();
             }
         },
 

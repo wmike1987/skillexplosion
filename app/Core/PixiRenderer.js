@@ -215,10 +215,6 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			}.bind(this));
 		};
 
-		this.processUnit = function(unit) {
-			this.realizeBody(unit.body);
-		};
-
 		//when a body is added to the matter world, initialize its renderlings
 		this.realizeBody = function(body) {
 			if(!body.renderChildren) return;

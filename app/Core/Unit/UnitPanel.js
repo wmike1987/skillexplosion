@@ -9,6 +9,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.selectedUnits = [];
         this.currentAbilities = [];
         this.currentCommands = [];
+        this.itemSystem = null;
 
         this.barOffset = 9; //top bar offset;
         this.centerX = utils.getUnitPanelCenter().x;
@@ -43,6 +44,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.groupCenterX = 0 + 8 + this.wireframeSize/2;
         this.groupSpacing = 8 + this.wireframeSize;
 
+        //item variables
+        this.itemCenterX = this.centerX + 86;
+        this.itemCenterY = utils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
+        this.itemXSpacing = 30;
+        this.itemYSpacing = 30;
+
         //create frame
         this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
     };
@@ -56,6 +63,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
             this.updatePrevailingUnit(event.unit);
         }.bind(this))
+
+        //listen for item pickup
+        if(currentGame.itemSystem) {
+            Matter.Events.on(currentGame.itemSystem, 'pickupItem', function(event) {
+                if(this.prevailingUnit == event.unit) {
+                    this.updateUnitItems();
+                }
+            }.bind(this))
+        }
 
         //listen for when the selected group changes
         Matter.Events.on(this.unitSystem, 'selectedBodiesChange', function(event) {
@@ -144,7 +160,39 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             this.displayUnitAbilities();
             this.displayCommands();
             this.highlightGroupUnit(unit);
+            this.updateUnitItems(unit);
         }
+    };
+
+    unitPanel.prototype.clearPrevailingUnit = function() {
+        //clear items
+        this.clearUnitItems();
+
+        //turn off portrait
+        this.currentPortrait.visible = false;
+
+        //blank out unit stat panel
+        this.unitNameText.text = '--';
+        this.unitHealthText.style.fill = "#2EA003";
+        this.unitHealthText.text = '--';
+        this.unitEnergyText.text = '--';
+
+        //clear unit ability icons
+        if(this.currentAbilities) {
+            $.each(this.currentAbilities, function(i, ability) {
+                ability.icon.visible = false;
+            })
+        }
+        this.currentAbilities = null;
+
+        //clear commands
+        if(this.currentCommands) {
+            $.each(this.currentCommands, function(i, command) {
+                command.icon.visible = false;
+            })
+        }
+
+        this.prevailingUnit = null;
     };
 
     unitPanel.prototype.displayUnitPortrait = function() {
@@ -157,6 +205,31 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         }
         utils.makeSpriteSize(this.currentPortrait, 90);
         this.currentPortrait.position = this.unitPortraitPosition;
+    };
+
+    unitPanel.prototype.updateUnitItems = function() {
+        if(this.prevailingUnit && this.prevailingUnit.currentItems.length > 0) {
+            $.each(this.prevailingUnit.currentItems, function(i, item) {
+                var icon = item.icon;
+                var x = i % 2 == 0 ? this.itemCenterX : this.itemCenterX + this.itemXSpacing;
+                var yLevel = Math.floor(i / 2);
+                var y = this.itemCenterY + this.itemXSpacing * yLevel;
+                if(!icon.parent) {
+                    utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                    utils.makeSpriteSize(icon, 27);
+                } else {
+                    icon.visible = true;
+                }
+            }.bind(this))
+        }
+    };
+
+    unitPanel.prototype.clearUnitItems = function() {
+        if(this.prevailingUnit && this.prevailingUnit.currentItems.length > 0) {
+            $.each(this.prevailingUnit.currentItems, function(i, item) {
+                item.icon.visible = false;
+            })
+        }
     };
 
     unitPanel.prototype.displayUnitStats = function() {
@@ -225,34 +298,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     }
                 }.bind(this))
             }.bind(this))
-        }
-    };
-
-    unitPanel.prototype.clearPrevailingUnit = function(unit) {
-        this.prevailingUnit = null;
-
-        //turn off portrait
-        this.currentPortrait.visible = false;
-
-        //blank out unit stat panel
-        this.unitNameText.text = '--';
-        this.unitHealthText.style.fill = "#2EA003";
-        this.unitHealthText.text = '--';
-        this.unitEnergyText.text = '--';
-
-        //clear unit ability icons
-        if(this.currentAbilities) {
-            $.each(this.currentAbilities, function(i, ability) {
-                ability.icon.visible = false;
-            })
-        }
-        this.currentAbilities = null;
-
-        //clear commands
-        if(this.currentCommands) {
-            $.each(this.currentCommands, function(i, command) {
-                command.icon.visible = false;
-            })
         }
     };
 

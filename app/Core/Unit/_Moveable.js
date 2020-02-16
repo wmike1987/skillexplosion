@@ -23,6 +23,9 @@ function($, Matter, PIXI, utils, Command) {
 
         moveableInit: function() {
             this.eventClickMappings[this.commands.move.key] = this.move;
+            this.eventClickStateGathering[this.commands.move.key] = function() {
+                return {isSoloMover: Object.keys(currentGame.unitSystem.selectedBodies).length == 1};
+            }
 
             //Create body sensor - the selection box collides with a slightly smaller body size
             this.smallerBody = Matter.Bodies.circle(0, 0, this.body.circleRadius - 8, {
@@ -51,22 +54,21 @@ function($, Matter, PIXI, utils, Command) {
         move: function(destination, commandObj) {
 
             //if command is given, we're being executed as part of a command queue, else, fake the command object
-            var accelerateOptions = {};
             if(!commandObj) {
                 commandObj = {
                     command: {done: function() {return;}}
                 };
             }
-            else if(commandObj.queueContext.last &&
-                (commandObj.queueContext.last.method.name == 'move' ||
-                commandObj.queueContext.last.method.name == 'attackMove'))
-                {
-                accelerateOptions.immediateMove = true;
+
+            if(commandObj.command.state && commandObj.command.state.isSoloMover) {
+                this.isSoloMover = true;
             }
 
             //don't do anything if they're already at their destination
             if (this.body.position.x == destination.x && this.body.position.y == destination.y)
                 return;
+
+            Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
 
             //set state
             this.destination = destination;
@@ -78,7 +80,7 @@ function($, Matter, PIXI, utils, Command) {
             };
 
             //immediate set the velocity (rather than waiting for the next tick)
-            this.constantlySetVelocityTowardsDestination(null, accelerateOptions);
+            this.constantlySetVelocityTowardsDestination(null);
 
             //setup the constant move tick
             if(this.moveTick)

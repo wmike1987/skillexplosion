@@ -94,10 +94,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         utils.detachSomethingFromBody(this.prevailingUnitCircle2, this._selectedUnit);
                     }
 
+                    var fromUnit = this._selectedUnit || null;
                     this._selectedUnit = value;
                     var body = value ? value.body : null;
 
-                    Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value});
+                    Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value, fromUnit: fromUnit});
 
                     if(body) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
@@ -332,8 +333,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         if(this.selectedUnit && this.abilityDispatch != 'a') {
                             if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
                                 this.box.invalidateNextMouseUp = true;
-                                var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
-                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                                if(this.abilityDispatch == 'm') {
+                                    $.each(this.selectedBodies, function(key, body) {
+                                        if(Object.keys(this.selectedBodies).length == 1)
+                                            body.isSoloMover = true;
+                                        else
+                                            body.isSoloMover = false;
+
+                                        if(body.isMoveable) {
+                                            var e = {type: 'click', id: 'm', target: canvasPoint, unit: body.unit};
+                                            Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                                        }
+                                    }.bind(this))
+                                } else {
+                                    var e = {type: 'click', id: this.abilityDispatch, target: canvasPoint, unit: this.selectedUnit};
+                                    Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                                }
                                 this.box.abilityTargetSprite.timer.execute({runs: 1});
                                 this.abilityDispatch = false;
                                 return;

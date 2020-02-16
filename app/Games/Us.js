@@ -54,7 +54,15 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
-            ItemSpawner.spawn({name: 'Jewel_Of_Life'});
+            ItemSpawner.spawn({name: 'JewelOfLife'});
+            ItemSpawner.spawn({name: 'MaskOfRage'});
+            ItemSpawner.spawn({name: 'BootsOfHaste'});
+            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
+            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
+            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
+            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
+            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
+
 
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
 

@@ -59,6 +59,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime)
             if(willUpdate) {
                 Matter.Events.trigger(this, 'beforeUpdate', event);
+            } else {
+                //console.info('missedFrame');
             }
 
             var hasUpdated = false;
@@ -80,8 +82,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 hasUpdated = true;
             }
 
-            if(hasUpdated)
+            if(hasUpdated) {
                 Matter.Events.trigger(this, 'afterUpdate', event);
+            }
 
             Matter.Events.trigger(this, 'tick', event);
 

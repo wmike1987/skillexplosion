@@ -71,7 +71,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
             team: 4,
             eventClickMappings: {},
+            eventClickStateGathering: {},
             eventKeyMappings: {},
+            currentItems: [],
+            maxItems: 6,
 
             sufferAttack: function(damage) {
                 this.currentHealth -= damage;
@@ -94,6 +97,26 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
             canTargetUnit: function(unit) {
                 return unit.isAttackable && this.team != unit.team;
+            },
+
+            pickupItem: function(item) {
+                if(this.canPickupItem(item)) {
+                    this.currentItems.push(item);
+                    this.equipItem(item);
+                    currentGame.removeItem(item);
+                }
+            },
+
+            canPickupItem: function() {
+                return this.currentItems.length < this.maxItems;
+            },
+
+            equipItem: function(item) {
+                item.equip(this);
+            },
+
+            unequipItem: function(item) {
+                item.unequip(this);
             },
 
             initUnit: function() {
@@ -128,12 +151,17 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 this.handleEvent = function(event) {
                     if(event.type == 'click') {
                         if(this.eventClickMappings[event.id]) {
+                            var eventState = {};
+                            if(this.eventClickStateGathering[event.id]) {
+                                eventState = this.eventClickStateGathering[event.id]();
+                            }
                             var newCommand = Command({
                                 queue: this.commandQueue,
                                 method: this.eventClickMappings[event.id],
                                 context: this,
                                 type: 'click',
-                                target: event.target
+                                target: event.target,
+                                state: eventState,
                             })
                             if(keyStates['Shift']) {
                                 this.commandQueue.enqueue(newCommand);
