@@ -470,7 +470,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return placement;
         },
 
-        placeBodyWithinRadiusAroundCanvasCenter: function(body, radius) {
+        placeBodyWithinRadiusAroundCanvasCenter: function(body, radius, minRadius) {
             //if we've added a unit, call down to its body
             if(body.isUnit) {
                 body = body.body;
@@ -478,9 +478,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var placement = {};
             var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
             var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
-            canvasCenter = this.getCanvasCenter();
-            placement.x = canvasCenter.x-radius + (Math.random() * (radius*2 - bodyHalfWidth*2) + bodyHalfWidth);
-            placement.y = canvasCenter.y-radius + (Math.random() * (radius*2 - bodyHalfHeight*2) + bodyHalfHeight);
+            do {
+                canvasCenter = this.getCanvasCenter();
+                placement.x = canvasCenter.x-radius + (Math.random() * (radius*2 - bodyHalfWidth*2) + bodyHalfWidth);
+                placement.y = canvasCenter.y-radius + (Math.random() * (radius*2 - bodyHalfHeight*2) + bodyHalfHeight);
+
+            } while (placement.y > this.getPlayableHeight() || placement.y < 0 || placement.x > this.getPlayableWidth() || placement.x < 0 ||
+                Matter.Vector.magnitude(Matter.Vector.sub(this.getPlayableCenter(), placement)) < (minRadius || 0));
             Matter.Body.setPosition(body, placement);
             return placement;
         },
@@ -756,8 +760,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return Math.acos((Matter.Vector.dot(vecA, vecB)) / (Matter.Vector.magnitude(vecA) * Matter.Vector.magnitude(vecB)))
         },
 
-        //death pact currently supports other units, bodies, tick callbacks, timers, and finally functions to execute
-        //it will also search for an existing slave with the given id and replace it with the incoming slave
+        //Death pact currently supports other units, bodies, tick callbacks, timers, and finally functions-to-execute
+        //It will also search for an existing slave with the given id and replace it with the incoming slave
         deathPact: function(master, slave, slaveId) {
             if(!master.slaves)
                 master.slaves = [];

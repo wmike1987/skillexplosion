@@ -98,6 +98,20 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
             initUnit: function() {
 
+                Object.defineProperty(this, 'maxHealth', {
+                    get: function() {
+                        return this._maxHealth || 0;
+                    },
+
+                    set: function(value) {
+                        var currentPercentage = 100;
+                        if(this._maxHealth)
+                            currentPercentage = this.currentHealth/this._maxHealth;
+                        this._maxHealth = value;
+                        this.currentHealth = Math.round(this._maxHealth * currentPercentage);
+                    }
+                });
+
                 // setup health and energy
                 if (this.health) {
                     this.maxHealth = this.health;
@@ -196,8 +210,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 this.showLifeBar = function(value) {
                     if(value !== false)
                         value = true;
-                    this.renderlings['healthbarbackground'].visible = value;
-                    this.renderlings['healthbar'].visible = value;
+                    if(this.renderlings['healthbarbackground']) {
+                        this.renderlings['healthbarbackground'].visible = value;
+                        this.renderlings['healthbar'].visible = value;
+                    }
                 };
 
                 Matter.Events.on(this, 'addUnit', function() {
@@ -274,7 +290,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         utils.deathPact(this, updateHealthTick);
                     }
                 }.bind(this));
-
 
                 //create energy bar
                 if (this.energy) {

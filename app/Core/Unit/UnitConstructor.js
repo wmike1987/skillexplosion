@@ -132,14 +132,18 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             if (options.moveable) {
                 $.extend(newUnit, Moveable);
                 $.extend(newUnit, options.moveable);
-                newUnit.moveableInit();
+                Matter.Events.on(newUnit, 'addUnit', function() {
+                    newUnit.moveableInit();
+                })
             }
 
             // mixin attacker and its given properties
             if (options.attacker) {
                 $.extend(newUnit, Attacker);
                 $.extend(newUnit, options.attacker);
-                newUnit.initAttacker();
+                Matter.Events.on(newUnit, 'addUnit', function() {
+                    newUnit.initAttacker();
+                })
             }
 
             // associate an iso manager if desired

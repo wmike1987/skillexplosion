@@ -1,0 +1,20 @@
+{"frames": {
+
+"JewelOfLife.png":
+{
+	"frame": {"x":1,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Items.png",
+	"format": "RGBA8888",
+	"size": {"w":34,"h":34},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:24deb8c9e80aefd12fb7de792e5274f6:eba767b32f0cca470fd17419c1d029c3:e6844a27e364e41b6ff4e09f3909db66$"
+}
+}

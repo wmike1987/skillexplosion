@@ -9,6 +9,7 @@ requirejs.config({
         unitcore: '../app/Core/Unit',
         core: '../app/Core',
         units: '../app/Units',
+        items: '../app/Items',
         shaders: '../app/Shaders',
     	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.0/pixi", //4.8.6 last stable
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
@@ -182,6 +183,9 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.add('glassShards', 'app/Textures/glassShards.png');
         	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
         	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
+
+            //items
+        	loader.add('items', 'app/Textures/Items.json');
 
             //foliage
         	loader.add('foliage1', 'app/Textures/FoliagePack1.json');

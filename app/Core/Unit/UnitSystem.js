@@ -110,7 +110,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         this.prevailingUnitCircle.position = utils.offScreenPosition();
                         this.prevailingUnitCircle2.position = utils.offScreenPosition();
                     }
-
                 }
             });
 

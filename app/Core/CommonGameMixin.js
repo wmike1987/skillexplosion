@@ -363,6 +363,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
         addUnit: function(unit) {
             this.addBody(unit.body);
+
+            //This is an important stage in a unit's lifecycle as it now has the initial set of renderChildren realized
             Matter.Events.trigger(unit, 'addUnit', {});
         },
 

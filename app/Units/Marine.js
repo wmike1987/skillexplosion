@@ -240,14 +240,18 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
             Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
             dashSound.play();
-            currentGame.addTimer({
-                name: 'dashDoneTimer' + this.body.id,
+
+            var self = this;
+            self.dashTimer = currentGame.addTimer({
+                name: 'dashDoneTimer' + self.id,
                 runs: 1,
                 timeLimit: 280,
                 callback: function() {
+                    self.stop();
                     commandObj.command.done();
                 }
             })
+            utils.deathPact(this, self.dashTimer, 'dashDoneTimer');
         }
 
         var dashAbility = new Ability({
