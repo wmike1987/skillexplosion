@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'core/TileMapper', 'utils/Doodad', 'unitcore/ItemSpawner'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper, Doodad, ItemSpawner) {
+'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper, Doodad, ItemUtils) {
 
     var targetScore = 1;
 
@@ -53,16 +53,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'skelly', stage: 'stage', scale: {x: .3, y: .3}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 0}})
 
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
-
-            ItemSpawner.spawn({name: 'JewelOfLife'});
-            ItemSpawner.spawn({name: 'MaskOfRage'});
-            ItemSpawner.spawn({name: 'BootsOfHaste'});
-            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
-            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
-            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
-            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
-            // ItemSpawner.spawn({name: 'Jewel_Of_Life'});
-
 
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
 
@@ -136,6 +126,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var bane = Baneling({team: 4, isSelectable: false});
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
+                if(x == 1) {
+                    ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                }
             }
         },
 

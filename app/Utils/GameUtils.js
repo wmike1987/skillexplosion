@@ -405,6 +405,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return placement;
         },
 
+        isPositionWithinPlayableBounds: function(position) {
+            if(position.x > 0 && position.x < this.getPlayableWidth()) {
+                if(position.y > 0 && position.y < this.getPlayableHeight()) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
         addRandomVariationToGivenPosition: function(position, randomFactorX, randomFactorY) {
             position.x += (1 - 2*Math.random()) * randomFactorX;
             position.y += (1 - 2*Math.random()) * (randomFactorY || randomFactorX);

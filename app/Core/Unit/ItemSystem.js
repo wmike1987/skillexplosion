@@ -1,7 +1,9 @@
 define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
     var highlightTint = 0xa6ff29;
-    var itemPickup = utils.getSound('itempickup.wav', {volume: .05, rate: 1});
+    var itemPickup = utils.getSound('itempickup.wav', {volume: .04, rate: 1});
+    var itemDrop = utils.getSound('itempickup.wav', {volume: .04, rate: .8});
+    var cantpickup = utils.getSound('cantpickup.wav', {volume: .01, rate: 1.3});
 
     //This module manages all things item-related
     var itemSystem = function(properties) {
@@ -10,7 +12,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         $.extend(this, properties);
 
         this.unitSystem = currentGame.unitSystem;
-        this.items = [];
+        this.items = []; //represents items on the ground
         this.targetedItem = null;
 
         this.initialize = function(options) {
@@ -38,38 +40,43 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
             }.bind(this));
 
-            //Add listener to a unit's move event to detect a move-to-an-item command, aka a move whose destination is on an item
-            Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
-                if(!event.unit) return;
-                if(!event.unit.itemPickupEnabled) {
-                    Matter.Events.on(event.unit, 'unitMove', function(moveEvent) {
-                        if(!event.unit.attackMoving && this.unitSystem.selectedUnit == event.unit) {
-                            var itemBodies = $.map(this.items, function(item) {
-                                return item.body;
-                            })
+            Matter.Events.on(currentGame, 'addUnit', function(event) {
+                if(!event.unit.isMoveable) return;
 
-                            var itemBodiesUnderMouse = Matter.Query.point(itemBodies, moveEvent.destination);
-                            event.unit.targetedItem = null;
-                            $.each(itemBodiesUnderMouse, function(i, body) {
-                                event.unit.targetedItem = body.item;
-                            }.bind(this))
+                Matter.Events.on(event.unit, 'unitMove', function(moveEvent) {
+                    if(!event.unit.attackMoving && this.unitSystem.selectedUnit == event.unit) {
+                        var itemBodies = $.map(this.items, function(item) {
+                            return item.body;
+                        })
 
-                            Matter.Events.on(event.unit.body, 'onCollideActive', function(pair) {
-                                var otherBody = pair.pair.bodyB == event.unit ? pair.pair.bodyA : pair.pair.bodyB;
-                                if(event.unit.targetedItem && otherBody == event.unit.targetedItem.body) {
-                                    if(event.unit.canPickupItem(event.unit.targetedItem)) {
-                                        itemPickup.play();
-                                        event.unit.pickupItem(event.unit.targetedItem);
-                                        Matter.Events.trigger(this, 'pickupItem', {item: event.unit.targetedItem, unit: event.unit});
-                                        event.unit.targetedItem = null;
-                                    }
-                                }
-                            }.bind(this))
+                        var itemBodiesUnderMouse = Matter.Query.point(itemBodies, moveEvent.destination);
+                        event.unit.targetedItem = null;
+                        $.each(itemBodiesUnderMouse, function(i, body) {
+                            event.unit.targetedItem = body.item;
+                        }.bind(this))
+                    }
+                }.bind(this))
+
+                Matter.Events.on(event.unit.body, 'onCollideActive', function(pair) {
+                    var otherBody = pair.pair.bodyB == event.unit ? pair.pair.bodyA : pair.pair.bodyB;
+                    if(event.unit.targetedItem && otherBody == event.unit.targetedItem.body) {
+                        if(event.unit.canPickupItem(event.unit.targetedItem)) {
+                            itemPickup.play();
+                            event.unit.pickupItem(event.unit.targetedItem);
+                            Matter.Events.trigger(this, 'pickupItem', {item: event.unit.targetedItem, unit: event.unit});
+                        } else {
+                            cantpickup.play();
                         }
-                    }.bind(this))
-                }
-                event.unit.itemPickupEnabled = true;
-            }.bind(this));
+                        event.unit.targetedItem = null;
+                    }
+                }.bind(this))
+
+                Matter.Events.on(event.unit, 'dropItem', function(event) {
+                    //rethrow this event from the item system
+                    itemDrop.play();
+                    Matter.Events.trigger(this, 'dropItem', {item: event.item, unit: event.unit});
+                }.bind(this))
+            }.bind(this))
         },
 
         this.addItem = function(item) {

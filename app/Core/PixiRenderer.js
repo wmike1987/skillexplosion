@@ -326,7 +326,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 				//Text
 				if(something.indexOf('TEXT:') >= 0) {
-					return new PIXI.Text(something.substring(something.indexOf('TEXT:')+5), options.style);
+					var t = new PIXI.Text(something.substring(something.indexOf('TEXT:')+5), options.style);
+					t.resolution = 2;
+					return t;
 				}
 
 				//Attempt to load from preloaded texture or spine asset

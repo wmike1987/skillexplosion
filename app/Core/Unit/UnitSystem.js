@@ -413,7 +413,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                     var attacking = false;
                     $.each(this.selectedBodies, function(key, body) {
-                        if(body.isAttacker && singleAttackTarget) {
+                        if(body.isAttacker && singleAttackTarget && singleAttackTarget != body.unit && singleAttackTarget.team != body.team) {
                             body.unit.attackSpecificTarget(canvasPoint, singleAttackTarget)
                             attacking = true;
                         }

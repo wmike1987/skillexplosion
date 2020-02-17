@@ -35,7 +35,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/PixiRenderer', 'core/GameLoop'], fu
     		$('#gameTheater').text("Loading");
     		var loadingCallback = PIXI.Loader.shared.onLoad.add(() => {
     		    $('#gameTheater').text($('#gameTheater').text() + '.');
-    		}); // called once per loaded/errored file
+    		}); // called once per loaded/errored filec
 		}
 
 		//create one response to asset loading completion

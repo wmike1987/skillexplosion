@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
-'utils/GameUtils', 'unitcore/CommandQueue', 'unitcore/Command'],
+'utils/GameUtils', 'unitcore/CommandQueue', 'unitcore/Command', 'unitcore/ItemUtils'],
 
-    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, CommandQueue, Command) {
+    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, CommandQueue, Command, ItemUtils) {
 
         var hoverShader = `
             precision mediump float;
@@ -79,7 +79,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             sufferAttack: function(damage) {
                 this.currentHealth -= damage;
                 if (this.currentHealth <= 0) {
-                    this.death();
+                    this._death();
                 } else {
                     this.showLifeBar(true);
                     if(!this.barTimer) {
@@ -95,20 +95,74 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 Matter.Events.trigger(this, 'sufferedAttack', damage);
             },
 
+            _death: function() {
+                $.each(this.currentItems, function(i, item) {
+                    this.dropItem(item);
+                }.bind(this))
+                this.death();
+            },
+
             canTargetUnit: function(unit) {
                 return unit.isAttackable && this.team != unit.team;
             },
 
             pickupItem: function(item) {
                 if(this.canPickupItem(item)) {
-                    this.currentItems.push(item);
+                    //set ownership
+                    item.owningUnit = this;
+
+                    //add benefits
                     this.equipItem(item);
+
+                    //remove item and its body
                     currentGame.removeItem(item);
+
+                    //add item to unit's item list
+                    var insertedItem = false;
+                    for(var i = 0; i < this.currentItems.length; i++) {
+                        if(this.currentItems[i] == null) {
+                            this.currentItems[i] = item;
+                            insertedItem = true;
+                            break;
+                        }
+                    }
+                    if(!insertedItem) {
+                        this.currentItems.push(item);
+                    }
                 }
             },
 
+            dropItem: function(item) {
+                //remove ownership
+                item.owningUnit = null;
+
+                //spawn new item of same type
+                var spawnPosition = {};
+                do {
+                    spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)}
+                } while (!utils.isPositionWithinPlayableBounds(spawnPosition))
+                ItemUtils.spawn({name: item.name.replace(/ /g,''), position: spawnPosition})
+
+                //remove added benefits
+                this.unequipItem(item);
+
+                //remove from current item list
+                var index = this.currentItems.indexOf(item);
+                this.currentItems[index] = null;
+
+                Matter.Events.trigger(this, 'dropItem', {item: item, unit: this});
+            },
+
             canPickupItem: function() {
-                return this.currentItems.length < this.maxItems;
+                var notFull = this.currentItems.length < this.maxItems;
+                var emptySpot = false;
+                for(var i = 0; i < this.currentItems.length; i++) {
+                    if(this.currentItems[i] == null) {
+                        emptySpot = true;
+                        break;
+                    }
+                }
+                return notFull || emptySpot;
             },
 
             equipItem: function(item) {

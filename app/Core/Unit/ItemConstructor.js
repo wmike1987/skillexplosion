@@ -16,9 +16,18 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
         var newItem = $.extend({}, baseItem, options);
         newItem.isItem = true;
         newItem.icon = utils.createDisplayObject(options.icon);
-        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description});
-        newItem.body = Matter.Bodies.circle(0, 0, 10, {
-            isStatic: true
+        var ctrlClickToDropMessage = '(Ctrl + Click to drop item)';
+
+        newItem.icon.interactive = true;
+        newItem.icon.on('mousedown', function(event) {
+            if(keyStates['Control']) {
+                newItem.owningUnit.dropItem(newItem);
+            }
+        }.bind(this))
+
+        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
+        newItem.body = Matter.Bodies.circle(0, 0, 30, {
+            isSensor: true
         });
 
         //Make renderlings accessible from wherever
@@ -40,8 +49,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
             id: 'itemFootprint',
             data: 'GlassMarble',
             scale: {
-                x: .3,
-                y: .3
+                x: .4,
+                y: .4
             },
             rotate: 'none',
             visible: true,
@@ -49,7 +58,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
         {
             id: 'shadow',
             data: 'IsoShadowBlurred',
-            scale: {x: .4, y: .4},
+            scale: {x: .6, y: .6},
             visible: true,
             rotate: 'none',
             stage: "StageNTwo",

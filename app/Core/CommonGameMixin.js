@@ -248,6 +248,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
          */
         startGame: function(options) {
 
+             //initialize unitSystem, this creates the selection box, dispatches unit events, etc
+             if(this.unitSystem)
+                 this.unitSystem.initialize();
+
+             if(this.itemSystem)
+                 this.itemSystem.initialize();
+
             //disable right click during game
             $('body').on("contextmenu.common", function(e){
                 e.preventDefault();
@@ -319,13 +326,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 }.bind(this), false, true);
             }
 
-            //initialize unitSystem, this creates the selection box, dispatches unit events, etc
-            if(this.unitSystem)
-                this.unitSystem.initialize();
-
-            if(this.itemSystem)
-                this.itemSystem.initialize();
-
             this.regulationPlay = $.Deferred();
             this.regulationPlay.done(this.endGame.bind(this));
         },
@@ -378,6 +378,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //This is an important stage in a unit's lifecycle as it now has the initial set of renderChildren realized
             Matter.Events.trigger(unit, 'addUnit', {});
+
+            //Trigger this from the game itself too
+            Matter.Events.trigger(this, 'addUnit', {unit: unit});
         },
 
         removeUnit: function(unit) {

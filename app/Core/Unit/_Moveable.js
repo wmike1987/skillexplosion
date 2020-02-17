@@ -53,6 +53,8 @@ function($, Matter, PIXI, utils, Command) {
 
         move: function(destination, commandObj) {
 
+            Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
+
             //if command is given, we're being executed as part of a command queue, else, fake the command object
             if(!commandObj) {
                 commandObj = {
@@ -67,8 +69,6 @@ function($, Matter, PIXI, utils, Command) {
             //don't do anything if they're already at their destination
             if (this.body.position.x == destination.x && this.body.position.y == destination.y)
                 return;
-
-            Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
 
             //set state
             this.destination = destination;

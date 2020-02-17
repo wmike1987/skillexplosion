@@ -71,6 +71,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     this.updateUnitItems();
                 }
             }.bind(this))
+
+            Matter.Events.on(currentGame.itemSystem, 'dropItem', function(event) {
+                if(this.prevailingUnit == event.unit) {
+                    event.item.icon.tooltipObj.destroy();
+                    utils.removeSomethingFromRenderer(event.item.icon);
+                }
+            }.bind(this))
         }
 
         //listen for when the selected group changes
@@ -210,6 +217,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     unitPanel.prototype.updateUnitItems = function() {
         if(this.prevailingUnit && this.prevailingUnit.currentItems.length > 0) {
             $.each(this.prevailingUnit.currentItems, function(i, item) {
+                if(item == null)
+                    return;
                 var icon = item.icon;
                 var x = i % 2 == 0 ? this.itemCenterX : this.itemCenterX + this.itemXSpacing;
                 var yLevel = Math.floor(i / 2);
@@ -227,7 +236,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     unitPanel.prototype.clearUnitItems = function() {
         if(this.prevailingUnit && this.prevailingUnit.currentItems.length > 0) {
             $.each(this.prevailingUnit.currentItems, function(i, item) {
-                item.icon.visible = false;
+                if(item) {
+                    item.icon.visible = false;
+                }
             })
         }
     };
