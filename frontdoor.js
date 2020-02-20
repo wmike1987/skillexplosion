@@ -80,6 +80,8 @@ requirejs(['jquery'], function($) {
                         previousGame.renderer.stats.hook.release();
                     }
                     previousGame.nuke({noMercy: true});
+                    previousGame.gameLoop.stop();
+                    Howler._howls = [];
                 }
     	        $('#gameTheater').empty();
 

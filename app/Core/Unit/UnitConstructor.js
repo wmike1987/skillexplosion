@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
 'utils/GameUtils', 'unitcore/UnitBase'],
 
-    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, ub) {
+    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, unitBase) {
 
         /*
          *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior and returns the unit
@@ -14,7 +14,14 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
         function UnitConstructor(options) {
 
             //mixin the unit options into the unit base
-            var newUnit = $.extend(true, {}, ub, options.unit);
+            var newUnit = $.extend(true, {}, unitBase, options.unit);
+
+            //death pact slaves
+            if(options.slaves) {
+                $.each(options.slaves, function(i, sound) {
+                    utils.deathPact(newUnit, sound);
+                })
+            }
 
             //extrapolate unit ability to key mappings
             newUnit.eventKeyMappings = {};

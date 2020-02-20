@@ -43,7 +43,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         //}
 
         var tick = function(time) {
-            frameRequestId = _requestAnimationFrame(tick);
+            this.frameRequestId = _requestAnimationFrame(tick);
 
             if(!this.lastTime) { //initial frame
                 this.lastTime = time - this.desiredFrameTime;

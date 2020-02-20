@@ -231,6 +231,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         //Dash
         var dashVelocity = .8;
         var dashSound = utils.getSound('dashsound.wav', {volume: .02, rate: 1.4});
+
         var dash = function(destination, commandObj) {
             this.stop(); //stop any movement
             this._becomePeaceful(); //prevent us from honing/attacking
@@ -240,6 +241,18 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
             Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
             dashSound.play();
+
+            //play animation
+            var dashAnimation = utils.getAnimationB({
+                spritesheetName: 'bloodswipes1',
+                animationName: 'dash',
+                speed: .3,
+                transform: [this.position.x, this.position.y, 3.5, 2.5]
+            });
+
+            dashAnimation.play();
+            dashAnimation.rotation = utils.pointInDirection(this.position, destination, 'north');
+            utils.addSomethingToRenderer(dashAnimation, 'StageNOne');
 
             var self = this;
             self.dashTimer = currentGame.addTimer({
@@ -318,7 +331,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     });
                     knifeImpactSound.play();
                     bloodPierceAnimation.play();
-                    bloodPierceAnimation.rotation = utils.pointInDirection(knife.position, knife.destination, 'east'),
+                    bloodPierceAnimation.rotation = utils.pointInDirection(knife.position, knife.destination, 'east');
                     utils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                     currentGame.removeBody(knife);
                 }
@@ -355,6 +368,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 radius: options.radius || 28,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+                slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
                 unit: {
                     unitType: 'Marine',
                     health: 50,

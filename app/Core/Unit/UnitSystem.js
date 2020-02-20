@@ -84,6 +84,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             var unitSystem = this;
 
             Object.defineProperty(this, 'selectedUnit', {
+                configurable: true,
+
                 get: function(){
                     return this._selectedUnit;
                 },

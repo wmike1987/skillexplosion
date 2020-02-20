@@ -409,7 +409,6 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 					}
 				}.bind(this));
 			}
-
 		};
 
 		//helper method for removing the child from its parent and calling the destroy method on the object being removed

@@ -479,7 +479,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
         },
 
         //This method has the heart but is poorly designed I think
-        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, and finally functions to execute
+        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, functions to execute, and howerl sounds
         removeSlaves: function(slaves) {
             $.each(slaves, function(index, slave) {
                 if(slave.isUnit) {
@@ -501,6 +501,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 else if(slave instanceof Function) {
                     //console.info("removing " + slave)
                     slave();
+                } else if(slave.unload) {
+                    console.info("removing sounds!" + slave)
+                    slave.unload();
                 }
             }.bind(this));
         },
@@ -546,6 +549,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             if(this.nukeExtension) {
                 this.nukeExtension(options);
             }
+
+            Matter.Events.off(this);
 
             if(!this.world) return;
 

@@ -43,7 +43,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         },
         {
             id: 'shadow',
-            data: 'IsoShadowBlurred',
+            data: options.shadowIcon || 'IsoShadowBlurred',
             scale: options.shadowScale || {x: 1, y: 1},
             visible: true,
             avoidIsoMgr: true,

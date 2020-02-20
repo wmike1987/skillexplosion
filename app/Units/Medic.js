@@ -234,6 +234,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 radius: rad,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+                slaves: [healsound],
                 unit: {
                     unitType: 'Medic',
                     health: 25,

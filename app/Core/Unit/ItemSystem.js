@@ -73,6 +73,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                 Matter.Events.on(event.unit, 'dropItem', function(event) {
                     //rethrow this event from the item system
+                    console.info('dropping item');
                     itemDrop.play();
                     Matter.Events.trigger(this, 'dropItem', {item: event.item, unit: event.unit});
                 }.bind(this))

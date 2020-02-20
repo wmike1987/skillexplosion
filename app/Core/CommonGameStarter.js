@@ -53,8 +53,9 @@ define(['jquery', 'matter-js', 'pixi', 'core/PixiRenderer', 'core/GameLoop'], fu
         		engine.world.gravity.y = latestGameOptions.gravity;
 
 				//create our game loop (default step rate is 60fps) and start the loop
-				var fixedStep = new GameLoop({engine: engine, isFixed: true});
-				fixedStep.start();
+				var gameLoop = new GameLoop({engine: engine, isFixed: true});
+				gameLoop.start();
+				game.gameLoop = gameLoop;
 
         		// Start the renderer: this starts the pixi Application and establishes a callback to update sprites with an associated body (event triggered by the GameLoop)
         		pixiRenderer = new PixiRenderer(engine, latestGameOptions);

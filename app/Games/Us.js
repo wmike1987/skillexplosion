@@ -41,7 +41,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             //create some Doodads
             var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
-                                    shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
+                                    shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
 
             utils.addAmbientLightsToBackground([0x660000, 0x00cc44, 0x660066, 0x00cc44, 0x660000, 0x660000, 0x4d79ff], null, .3);
 
@@ -50,13 +50,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         play: function(options) {
             this.nextLevel();
 
-            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'skelly', stage: 'stage', scale: {x: .3, y: .3}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 0}})
+            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'skelly', stage: 'stage', scale: {x: .3, y: .3}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 0}})
 
-            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
+            var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
-            this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
-
-            }.bind(this)});
+            // this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
+            //
+            // }.bind(this)});
         },
 
         nextLevel: function() {

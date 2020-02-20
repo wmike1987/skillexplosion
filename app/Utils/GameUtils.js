@@ -759,6 +759,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         pointInDirection: function(origin, destination, orientation) {
             if(orientation == 'east')
                 orientation = {x: origin.x + 1, y: origin.y}
+            else if(orientation == 'north')
+                orientation = {x: origin.x, y: origin.y + 1}
+            else if(orientation == 'west')
+                orientation = {x: origin.x - 1, y: origin.y}
+            else if(orientation == 'south')
+                orientation = {x: origin.x, y: origin.y - 1}
+
             var originAngle = Matter.Vector.angle(origin, orientation || {x: origin.x, y: origin.y + 1});
             var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
 
