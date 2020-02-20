@@ -251,6 +251,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             });
 
             dashAnimation.play();
+            dashAnimation.alpha = .8;
             dashAnimation.rotation = utils.pointInDirection(this.position, destination, 'north');
             utils.addSomethingToRenderer(dashAnimation, 'StageNOne');
 
