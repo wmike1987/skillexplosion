@@ -266,11 +266,29 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     attackAnimations: healAnimations,
                     cooldown: 180,
                     honeRange: 300,
-                    range: rad*2 + 1,
+                    range: rad*2 + 10,
                     healAmount: 1,
                     attack: function(target) {
                         healsound.play();
-                        //play animation
+                        //play animations
+                        // var healBeamAnimation = utils.getAnimationB({
+                        //     spritesheetName: 'bloodswipes1',
+                        //     animationName: 'healbeam',
+                        //     speed: 1,
+                        //     transform: [this.position.x, this.position.y, 1, 1]
+                        // });
+                        // healBeamAnimation.play();
+                        //
+                        // var gunPosition = {x: 0, y: 0};
+                        // $.each(this.renderlings[this.isoManager.currentDirection].stateData.skeletonData.slots, function(i, slot) {
+                        //     if(slot.name == 'Gun Glow') {
+                        //         gunPosition = Matter.Vector.add(this.position, {x: slot.boneData.x, y: slot.boneData.y});
+                        //     }
+                        // }.bind(this))
+                        // healBeamAnimation.position = gunPosition ;
+                        // healBeamAnimation.rotation = utils.pointInDirection(gunPosition, target.position, 'north');
+                        // utils.addSomethingToRenderer(healBeamAnimation, 'StageOne');
+
                         var healAnimation = utils.getAnimationB({
                             spritesheetName: 'bloodswipes1',
                             animationName: 'heal',
