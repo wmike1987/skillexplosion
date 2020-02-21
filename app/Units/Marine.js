@@ -322,8 +322,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             utils.deathPact(knife, removeSelf);
             Matter.Events.on(knife, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
-                if(otherBody != this.body && otherBody.isAttackable) {
-                    otherBody.unit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
+                var otherUnit = otherBody.unit;
+                if(otherUnit != this && otherUnit && otherUnit.isAttackable) {
+                    otherUnit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
                     var bloodPierceAnimation = utils.getAnimationB({
                         spritesheetName: 'bloodswipes1',
                         animationName: 'pierce',
@@ -366,7 +367,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         return UC({
                 renderChildren: rc,
-                radius: options.radius || 28,
+                radius: options.radius || 20,
+                collisionWidth: 28,
+                collisionHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],

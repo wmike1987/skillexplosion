@@ -227,11 +227,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "StageNTwo",
             offset: {x: 0, y: 22}}];
 
-        var rad = options.radius || 28;
+        var rad = options.radius || 20;
         var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
         return UC({
                 renderChildren: rc,
                 radius: rad,
+                collisionWidth: 28,
+                collisionHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [healsound],

@@ -375,6 +375,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
         addUnit: function(unit) {
             this.addBody(unit.body);
+            this.addBody(unit.selectionBody);
 
             //This is an important stage in a unit's lifecycle as it now has the initial set of renderChildren realized
             Matter.Events.trigger(unit, 'addUnit', {});
@@ -486,9 +487,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     this.removeUnit(slave);
                     //console.info("removing " + slave)
                 }
-                else if(slave.render) {
+                else if(slave.render) { //is body
                     this.removeBody(slave);
-                    //console.info("removing " + slave)
+                    // console.info("removing " + slave)
                 }
                 else if(slave.isTickCallback) {
                     this.removeTickCallback(slave);

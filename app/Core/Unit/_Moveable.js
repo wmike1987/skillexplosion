@@ -28,7 +28,7 @@ function($, Matter, PIXI, utils, Command) {
             }
 
             //Create body sensor - the selection box collides with a slightly smaller body size
-            this.smallerBody = Matter.Bodies.circle(0, 0, this.body.circleRadius - 8, {
+            this.smallerBody = Matter.Bodies.circle(0, 0, this.body.circleRadius, {
                 isSensor: true,
                 noWire: true
             });
@@ -206,11 +206,13 @@ function($, Matter, PIXI, utils, Command) {
         //This will move me out of the way if I'm not moving and a moving object is colliding with me.
         avoidCallback: function(pair) {
             //if we're busy with something, don't avoid anything
-            if (this.isMoving || this.isAttacking || this.isHoning || this.isSleeping) return;
+            var myUnit = this.unit;
+            if (myUnit.isMoving || myUnit.isAttacking || myUnit.isHoning || myUnit.isSleeping) return;
 
             //otherwise, let's avoid the mover
             var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
-            if (otherBody.isMoveable && otherBody.isMoving /*&& otherBody.destination != this.destination*/ && otherBody.speed > 0) {
+            var otherUnit = otherBody.unit;
+            if (otherUnit && otherUnit.isMoveable && otherUnit.isMoving /*&& otherBody.destination != this.destination*/ && otherBody.speed > 0) {
                 var m = otherBody.velocity.y / otherBody.velocity.x;
                 var x = this.position.x - otherBody.position.x;
                 var b = otherBody.position.y;
@@ -229,20 +231,21 @@ function($, Matter, PIXI, utils, Command) {
                         swapY = -1;
                 }
 
-                var maxScatterDistance = this.circleRadius * 1.8;
+                var maxScatterDistance = this.circleRadius * 3;
+                var minScatterDistance = this.circleRadius;
                 var newVelocity = Matter.Vector.normalise({x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY});
 
                 var movePercentage = Math.PI/2.0 - utils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position))
                 //movePercentage = Math.max(.2, movePercentage);
-                newVelocity = Matter.Vector.mult(newVelocity, movePercentage*maxScatterDistance);
+                newVelocity = Matter.Vector.mult(newVelocity, Math.max(minScatterDistance, movePercentage*maxScatterDistance));
 
-                if(!this.isAttacker) {
-                    this.unit.move(Matter.Vector.add(this.position, newVelocity));
-                    this.isSoloMover = true;
+                if(!myUnit.isAttacker) {
+                    myUnit.move(Matter.Vector.add(this.position, newVelocity));
+                    myUnit.isSoloMover = true;
                 }
                 else {
-                    this.unit.attackMove(Matter.Vector.add(this.position, newVelocity));
-                    this.isSoloMover = true;
+                    myUnit.attackMove(Matter.Vector.add(this.position, newVelocity));
+                    myUnit.isSoloMover = true;
                 }
             }
         },

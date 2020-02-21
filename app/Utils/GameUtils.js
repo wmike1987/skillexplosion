@@ -351,8 +351,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         attachSomethingToBody: function(something, body, offset) {
+            offset = offset || {x: 0, y: 0};
             var tick = currentGame.addTickCallback(function() {
-                something.position = Matter.Vector.add((body.interpolatedPosition || body.position), offset);
+                if(something.type && something.type == 'body') {
+                    Matter.Body.setPosition(something, Matter.Vector.add((body.interpolatedPosition || body.position), offset));
+                } else {
+                    something.position = Matter.Vector.add((body.interpolatedPosition || body.position), offset);
+                }
             }, false, 'afterRenderWorld');
             something.bodyAttachment = tick;
             this.deathPact(body, tick);

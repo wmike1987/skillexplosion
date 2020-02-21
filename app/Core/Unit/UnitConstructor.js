@@ -36,18 +36,31 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 });
             }
 
-            // create body
+            // create collision body
             var body = Matter.Bodies.circle(0, 0, options.radius, {
                 restitution: .95,
                 frictionAir: .9,
                 mass: options.mass || 5,
                 originalMass: options.mass || 5
             });
-
             body.drawWire = false;
-
+            body.collisionFilter.mask -= 0x0002;
             body.unit = newUnit; //reference to parent
-            newUnit.body = body; //reference to body
+
+            // create selection body
+            var selectionBody = Matter.Bodies.rectangle(5, 5, options.collisionWidth || 20, options.collisionHeight || 20, {
+                isSensor: true,
+            });
+            selectionBody.isSelectionBody = true;
+            selectionBody.noWire = true;
+            selectionBody.collisionFilter.mask = 0x0002;
+            selectionBody.unit = newUnit;
+            utils.attachSomethingToBody(selectionBody, body, {x: 0, y: -8});
+            utils.deathPact(newUnit, selectionBody);
+
+            //back references
+            newUnit.body = body;
+            newUnit.selectionBody = selectionBody;
 
             //Set infrastructure attributes
             if (options.renderChildren)
@@ -61,37 +74,37 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
              * so let's setup getters on a couple things to reference back to the unit so that we can effectively
              * access these from the body.
              */
-            Object.defineProperty(body, 'isSelectable', {
+            Object.defineProperty(selectionBody, 'isSelectable', {
                 get: function() {
                     return this.unit.isSelectable;
                 }
             });
-            Object.defineProperty(body, 'isAttacker', {
+            Object.defineProperty(selectionBody, 'isAttacker', {
                 get: function() {
                     return this.unit.isAttacker;
                 }
             });
-            Object.defineProperty(body, 'isAttackable', {
+            Object.defineProperty(selectionBody, 'isAttackable', {
                 get: function() {
                     return this.unit.isAttacker;
                 }
             });
-            Object.defineProperty(body, 'isMoveable', {
+            Object.defineProperty(selectionBody, 'isMoveable', {
                 get: function() {
                     return this.unit.isMoveable;
                 }
             });
-            Object.defineProperty(body, 'isMoving', {
+            Object.defineProperty(selectionBody, 'isMoving', {
                 get: function() {
                     return this.unit.isMoving;
                 }
             });
-            Object.defineProperty(body, 'isAttacking', {
+            Object.defineProperty(selectionBody, 'isAttacking', {
                 get: function() {
                     return this.unit.isAttacking;
                 }
             });
-            Object.defineProperty(body, 'isHoning', {
+            Object.defineProperty(selectionBody, 'isHoning', {
                 get: function() {
                     return this.unit.isHoning;
                 }
@@ -114,12 +127,12 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     return this.unit.destination;
                 }
             });
-            Object.defineProperty(body, 'isSoloMover', {
+            Object.defineProperty(selectionBody, 'isSoloMover', {
                 set: function(v) {
                     this.unit.isSoloMover = v;
                 }
             });
-            Object.defineProperty(body, 'team', {
+            Object.defineProperty(selectionBody, 'team', {
                 get: function() {
                     return this.unit.team;
                 }
@@ -131,7 +144,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             });
             Object.defineProperty(newUnit, 'id', {
                 get: function() {
-                    return this.body.id;
+                    return this.selectionBody.id;
                 }
             });
 
