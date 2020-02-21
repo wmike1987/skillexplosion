@@ -215,34 +215,34 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 var currentHoneDistance = null;
                 var currentAttackDistance = null;
 
-                currentGame.applyToBodiesByTeam(function(team) {
+                utils.applyToUnitsByTeam(function(team) {
                     if(this.attackHoneTeamPredicate)
                         return this.attackHoneTeamPredicate(team);
                     else
                         return this.team != team;
-                }.bind(this), function(body) {
-                    if(body.unit) {
-                        return this.canTargetUnit(body.unit);
+                }.bind(this), function(unit) {
+                    if(unit) {
+                        return this.canTargetUnit(unit);
                     } else {
                         return false;
                     }
-                }.bind(this), function(body) {
+                }.bind(this), function(unit) {
                     //if we have a target specific, ignore other units, forcing currentTarget to be the specified unit
-                    if (this.specifiedAttackTarget && body.unit != this.specifiedAttackTarget) {
+                    if (this.specifiedAttackTarget && unit != this.specifiedAttackTarget) {
                         return;
                     }
 
-                    var dist = utils.distanceBetweenBodies(this.body, body);
+                    var dist = utils.distanceBetweenBodies(this.body, unit.body);
                     if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
 
                     //determine the closest honable target
                     if (!currentHoneDistance) {
                         currentHoneDistance = dist;
-                        this.currentHone = body;
+                        this.currentHone = unit;
                     } else {
                         if (dist < currentHoneDistance) {
                             currentHoneDistance = dist;
-                            this.currentHone = body;
+                            this.currentHone = unit;
                         }
                     }
 
@@ -250,11 +250,11 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                     if (dist <= this.range) {
                         if (!currentAttackDistance) {
                             currentAttackDistance = dist;
-                            this.currentTarget = body.unit;
+                            this.currentTarget = unit;
                         } else {
                             if (dist < currentAttackDistance) {
                                 currentAttackDistance = dist;
-                                this.currentTarget = body.unit;
+                                this.currentTarget = unit;
                             }
                         }
                     }

@@ -64,7 +64,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.loseLifeSound = utils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
             this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
             var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
-            this.bodiesByTeam = {};
+            this.unitsByTeam = {};
 
             /*
              * Incorporate UnitSystem if specified
@@ -377,6 +377,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.addBody(unit.body);
             this.addBody(unit.selectionBody);
 
+            //track the team this unit is on
+            if(unit.team) {
+                if(!this.unitsByTeam[unit.team]) {
+                    this.unitsByTeam[unit.team] = [unit];
+                } else {
+                    this.unitsByTeam[unit.team].push(unit);
+                }
+            }
+
             //This is an important stage in a unit's lifecycle as it now has the initial set of renderChildren realized
             Matter.Events.trigger(unit, 'addUnit', {});
 
@@ -389,6 +398,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             //clear slaves (deathPact())
             if(unit.slaves) {
                 this.removeSlaves(unit.slaves);
+            }
+
+            //Handle unitsByTeam. Since unitsByTeam is a loopable datastructure let's grep instead of splice
+            //(don't want to alter the array since we might be iterating over it)
+            if(unit.team) {
+                var bbtindex = this.unitsByTeam[unit.team].indexOf(unit);
+                if(bbtindex > -1)
+                    this.unitsByTeam[unit.team] = $.grep(this.unitsByTeam[unit.team], function(obj, index) {
+                            return index != bbtindex;
+                    })
             }
             this.removeBody(unit.body);
             Matter.Events.off(unit);
@@ -416,15 +435,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             //if we've added a unit, call down to its body
             if(body.isUnit) {
                 body = body.body;
-            }
-
-            //track the team this unit is on
-            if(body.team) {
-                if(!this.bodiesByTeam[body.team]) {
-                    this.bodiesByTeam[body.team] = [body];
-                } else {
-                    this.bodiesByTeam[body.team].push(body);
-                }
             }
 
             if(body.vertices)
@@ -457,16 +467,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             var index = this.verticeHistories.indexOf(body);
             if(index > -1)
                 this.verticeHistories.splice(index, 1);
-
-            //Handle bodiesByTeam. Since bodiesByTeam is a loopable datastructure let's grep instead of splice
-            //(don't want to alter the array since we might be iterating over it)
-            if(body.team) {
-                var bbtindex = this.bodiesByTeam[body.team].indexOf(body);
-                if(bbtindex > -1)
-                    this.bodiesByTeam[body.team] = $.grep(this.bodiesByTeam[body.team], function(obj, index) {
-                            return index != bbtindex;
-                    })
-            }
 
             //for internal use
             body.hasBeenRemoved = true;
@@ -509,21 +509,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             }.bind(this));
         },
 
-        //apply something to bodies by team
-        applyToBodiesByTeam: function(teamPredicate, bodyPredicate, f) {
-            teamPredicate = teamPredicate || function(team) {return true};
-            bodyPredicate = bodyPredicate || function(body) {return true};
-            $.each(this.bodiesByTeam, function(i, team) {
-                if(teamPredicate(i)) {
-                    $.each(team, function(i, body) {
-                        if(bodyPredicate(body)) {
-                            f(body);
-                        }
-                    })
-                }
-            })
-        },
-
         /*
          * Method to...
          * Clean up unwanted DOM/pixi-interactive listeners
@@ -557,10 +542,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //Remove units safely (removeUnit())
             var unitsToRemove = [];
-            utils.applyToBodiesByTeam(null, function(body) {
-                return body.unit;
-            }, function(body) {
-                unitsToRemove.push(body.unit);
+            utils.applyToUnitsByTeam(null, function(unit) {
+                return unit;
+            }, function(unit) {
+                unitsToRemove.push(unit);
             }.bind(this));
 
             $.each(unitsToRemove, function(i, unit) {

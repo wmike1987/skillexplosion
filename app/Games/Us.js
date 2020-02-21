@@ -30,7 +30,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //currentGame.renderer.background.filters = [this.simpleLightShader];
 
             //map the background
-            var grassColor = 'Green';
+            var grassColor = 'Yellow';
             var backgroundTiles = [];
             for(var x = 0; x < 6; x++) {
                 backgroundTiles.push(grassColor + 'Grass' + (x+1));

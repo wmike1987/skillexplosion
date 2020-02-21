@@ -24,7 +24,7 @@ function($, Matter, PIXI, utils, Command) {
         moveableInit: function() {
             this.eventClickMappings[this.commands.move.key] = this.move;
             this.eventClickStateGathering[this.commands.move.key] = function() {
-                return {isSoloMover: Object.keys(currentGame.unitSystem.selectedBodies).length == 1};
+                return {isSoloMover: Object.keys(currentGame.unitSystem.selectedUnits).length == 1};
             }
 
             //Create body sensor - the selection box collides with a slightly smaller body size
@@ -32,6 +32,7 @@ function($, Matter, PIXI, utils, Command) {
                 isSensor: true,
                 noWire: true
             });
+            this.smallerBody.isSelectionBody = true;
             this.smallerBody.collisionFilter.category = this.smallerBodyCollisionCategory;
             this.smallerBody.collisionFilter.mask = 0x0002; //this.smallerBody.collisionFilter.mask - (this.team || 4);
             this.smallerBody.isSmallerBody = true;

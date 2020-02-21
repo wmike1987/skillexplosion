@@ -14,7 +14,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
         function UnitConstructor(options) {
 
             //mixin the unit options into the unit base
-            var newUnit = $.extend(true, {}, unitBase, options.unit);
+            var newUnit = $.extend(true, {unitId: utils.uuidv4()}, unitBase, options.unit);
 
             //death pact slaves
             if(options.slaves) {

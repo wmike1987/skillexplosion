@@ -90,21 +90,23 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 		var blastRadius = radius*4;
 
 		baneling.attack = function(target) {
-			var deathAnim = utils.getAnimationB({
-				spritesheetName: 'deathAnimations',
-				animationName: 'bane',
-				speed: .45,
-				transform: [this.position.x, this.position.y, 1.3, 1.3]
+			var deathAnimation = utils.getAnimationB({
+				spritesheetName: 'bloodswipes1',
+				animationName: 'banedeath',
+				speed: 2,
+				transform: [this.position.x, this.position.y, 1.5, 1.5]
 			});
-			deathAnim.play();
-			utils.addSomethingToRenderer(deathAnim);
+
+			deathAnimation.rotation = Math.random() * Math.PI;
+			deathAnimation.play();
+			utils.addSomethingToRenderer(deathAnimation, 'StageOne');
 			var nextLevelGo = false;
 
 			var bodiesToDamage = [];
-			currentGame.applyToBodiesByTeam(function(team) {return baneling.team != team}, function(body) {
-				return (utils.distanceBetweenBodies(this.body, body) <= blastRadius && body.isAttackable);
-			}.bind(this), function(body) {
-				body.unit.sufferAttack(baneling.damage);
+			utils.applyToUnitsByTeam(function(team) {return baneling.team != team}, function(unit) {
+				return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isAttackable);
+			}.bind(this), function(unit) {
+				unit.sufferAttack(baneling.damage);
 			});
 			this.alreadyAttacked = true;
 			if(!this.alreadyDied)

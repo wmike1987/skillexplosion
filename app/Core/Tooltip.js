@@ -102,7 +102,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
                 if(!displayObject.tooltipObj.isDestroyed) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
-            }.bind(this), 225)
+            }.bind(this), 100)
         }.bind(this))
 
         displayObject.on('mouseout', function(event) {

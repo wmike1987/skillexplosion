@@ -435,14 +435,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         //apply something to bodies by team
-        applyToBodiesByTeam: function(teamPredicate, bodyPredicate, f) {
+        applyToUnitsByTeam: function(teamPredicate, unitPredicate, f) {
             teamPredicate = teamPredicate || function(team) {return true};
-            bodyPredicate = bodyPredicate || function(body) {return true};
-            $.each(currentGame.bodiesByTeam, function(i, team) {
+            unitPredicate = unitPredicate || function(unit) {return true};
+            $.each(currentGame.unitsByTeam, function(i, team) {
                 if(teamPredicate(i)) {
-                    $.each(team, function(i, body) {
-                        if(bodyPredicate(body)) {
-                            f(body);
+                    $.each(team, function(i, unit) {
+                        if(unitPredicate(unit)) {
+                            f(unit);
                         }
                     })
                 }

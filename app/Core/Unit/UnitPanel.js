@@ -81,32 +81,36 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         }
 
         //listen for when the selected group changes
-        Matter.Events.on(this.unitSystem, 'selectedBodiesChange', function(event) {
+        Matter.Events.on(this.unitSystem, 'selectedUnitsChange', function(event) {
             this.updateUnitGroup(event.orderedSelection);
         }.bind(this))
 
         Matter.Events.on(this.unitSystem, 'unitSystemEventDispatch', function(event) {
             var abilityTint = 0x80ba80;
-            $.each(this.prevailingUnit.abilities, function(i, ability) {
-                if(ability.key == event.id && ability.type == event.type) {
-                    utils.makeSpriteBlinkTint({sprite: ability.icon, tint: abilityTint, speed: 100})
-                }
-            }.bind(this))
-
-            var commandTint = 0xa2fa93;
-            $.each(this.prevailingUnit.commands, function(name, command) {
-                if(command.key == event.id && command.type == event.type) {
-                    if(name == 'attack') {
-                        utils.makeSpriteBlinkTint({sprite: this.attackMoveIcon, tint: commandTint, speed: 100});
-                    } else if(name == 'move') {
-                        utils.makeSpriteBlinkTint({sprite: this.moveIcon, tint: commandTint, speed: 100})
-                    } else if(name == 'stop') {
-                        utils.makeSpriteBlinkTint({sprite: this.stopIcon, tint: commandTint, speed: 100})
-                    } else if(name == 'holdPosition') {
-                        utils.makeSpriteBlinkTint({sprite: this.holdPositionIcon, tint: commandTint, speed: 100})
+            if(this.prevailingUnit.abilities) {
+                $.each(this.prevailingUnit.abilities, function(i, ability) {
+                    if(ability.key == event.id && ability.type == event.type) {
+                        utils.makeSpriteBlinkTint({sprite: ability.icon, tint: abilityTint, speed: 100})
                     }
-                }
-            }.bind(this))
+                }.bind(this))
+            }
+
+            if(this.prevailingUnit.commands) {
+                var commandTint = 0xa2fa93;
+                $.each(this.prevailingUnit.commands, function(name, command) {
+                    if(command.key == event.id && command.type == event.type) {
+                        if(name == 'attack') {
+                            utils.makeSpriteBlinkTint({sprite: this.attackMoveIcon, tint: commandTint, speed: 100});
+                        } else if(name == 'move') {
+                            utils.makeSpriteBlinkTint({sprite: this.moveIcon, tint: commandTint, speed: 100})
+                        } else if(name == 'stop') {
+                            utils.makeSpriteBlinkTint({sprite: this.stopIcon, tint: commandTint, speed: 100})
+                        } else if(name == 'holdPosition') {
+                            utils.makeSpriteBlinkTint({sprite: this.holdPositionIcon, tint: commandTint, speed: 100})
+                        }
+                    }
+                }.bind(this))
+            }
         }.bind(this))
     };
 
@@ -144,10 +148,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
     unitPanel.prototype.highlightGroupUnit = function(prevailingUnit) {
         $.each(this.selectedUnits, function(i, unit) {
-            if(unit == prevailingUnit && unit.wireframe) {
-                utils.makeSpriteSize(unit.wireframe, this.wireframeSize*1.6);
-            } else {
-                utils.makeSpriteSize(unit.wireframe, this.wireframeSize);
+            if(unit.wireframe) {
+                if(unit == prevailingUnit) {
+                    utils.makeSpriteSize(unit.wireframe, this.wireframeSize*1.6);
+                } else {
+                    utils.makeSpriteSize(unit.wireframe, this.wireframeSize);
+                }
             }
         }.bind(this))
     };
@@ -176,7 +182,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.clearUnitItems();
 
         //turn off portrait
-        this.currentPortrait.visible = false;
+        if(this.currentPortrait)
+            this.currentPortrait.visible = false;
 
         //blank out unit stat panel
         this.unitNameText.text = '--';
@@ -204,6 +211,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
     unitPanel.prototype.displayUnitPortrait = function() {
         this.currentPortrait = this.prevailingUnit.portrait;
+        if(!this.currentPortrait) return;
 
         if(!this.currentPortrait.parent) {
             utils.addSomethingToRenderer(this.currentPortrait, 'hudOne');
@@ -249,7 +257,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             this.updateUnitStatTick = currentGame.addTickCallback(function() {
                 if(this.prevailingUnit) {
                     //name
-                    this.unitNameText.text = this.prevailingUnit.name;
+                    this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
 
                     //health
                     this.unitHealthText.text = this.prevailingUnit.currentHealth + "/" + this.prevailingUnit.maxHealth;
