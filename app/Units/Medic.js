@@ -270,6 +270,17 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     healAmount: 1,
                     attack: function(target) {
                         healsound.play();
+                        //play animation
+                        var healAnimation = utils.getAnimationB({
+                            spritesheetName: 'bloodswipes1',
+                            animationName: 'heal',
+                            speed: 1.5,
+                            transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 10), 1, 1]
+                        });
+
+                        healAnimation.alpha = Math.max(.7, Math.random());
+                        healAnimation.play();
+                        utils.addSomethingToRenderer(healAnimation, 'StageOne');
                         target.currentHealth += this.healAmount;
                         if(target.currentHealth >= target.maxHealth)
                             target.currentHealth = target.maxHealth;
@@ -278,7 +289,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         return this.team == team;
                     },
                     canTargetUnit: function(unit) {
-                        if(unit.isAttackable && unit != this) {
+                        if(unit.isAttackable && unit != this && unit.team == this.team) {
                             return unit.maxHealth - unit.currentHealth;
                         }
                         return false;

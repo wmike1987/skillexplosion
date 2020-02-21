@@ -143,12 +143,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             var lastScaleY = 1;
 
             //common method for changing the selection state (and visuals) of a group of bodies
-            var changeSelectionState = function(bodies, state, newValue) {
-                if(bodies.isSelectable && bodies.renderlings && bodies.renderlings[state]) {
-                    bodies.renderlings[state].visible = newValue;
+            var changeSelectionState = function(singleUnitOrBodies, state, newValue) {
+                if(singleUnitOrBodies.renderlings && singleUnitOrBodies.renderlings[state]) {
+                    if(singleUnitOrBodies.isSelectable)
+                        singleUnitOrBodies.renderlings[state].visible = newValue;
                 }//if we were supplied just one body
                 else { //we have many
-                    $.each(bodies, function(key, body) {
+                    $.each(singleUnitOrBodies, function(key, body) {
                         body = body.unit;
                         if(body != null && body.isSelectable && body.renderlings && body.renderlings[state])
                             body.renderlings[state].visible = newValue;
@@ -293,13 +294,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), this.box.originalPoint);
                     }
 
+                    bodies = $.grep(bodies, function(body) {
+                        return body.isSelectionBody;
+                    })
+
                     //Note: Mouse down should only select the front-most unit
                     //This is a perma body which we'll add to the pending selection, or we're trying to attack a singular target
                     var singleAttackTarget = null;
                     var yOfUnit = 0;
                     var lastChosenBody = null;
                     $.each(bodies, function(key, body) {
-                        if(body.isSelectable && !this.attackMove && !this.abilityDispatch) {
+                        if(!this.attackMove && !this.abilityDispatch) {
                             if(yOfUnit && yOfUnit >= body.position.y) {
                                 return;
                             }
@@ -420,6 +425,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), currentGame.mousePosition);
                     }
 
+                    bodies = $.grep(bodies, function(body) {
+                        return body.isSelectionBody;
+                    })
+
                     var singleAttackTarget = null;
                     $.each(bodies, function(index, body) {
                         if(body.isAttackable) {
@@ -518,15 +527,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
             Matter.Events.on(this.box, 'onCollideEnd', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
-                if(!otherBody.isMoving && otherBody.isSelectable && otherBody != this.box.permaPendingBody) {
+                var otherUnit = otherBody.unit || {};
+                if(!otherUnit.isMoving && otherUnit.isSelectable && otherBody != this.box.permaPendingBody) {
                     changeSelectionState(otherBody.unit, 'selectionPending', false);
                     delete this.box.pendingSelections[otherBody.id];
                 }
-                if(otherBody.isSmallerBody && otherBody.unit.isMoving && otherBody.unit.selectionBody != this.box.permaPendingBody) {
+                if(otherBody.isSmallerBody && otherUnit.isSelectable && otherUnit.isMoving && otherUnit.selectionBody != this.box.permaPendingBody) {
                     changeSelectionState(otherBody.unit, 'selectionPending', false);
                     delete this.box.pendingSelections[otherBody.unit.selectionBody.id];
                 }
-                if((otherBody.isSmallerBody && otherBody.unit.selectionBody == this.box.permaPendingBody && otherBody.unit.isSelectable) ||
+                if((otherBody.isSmallerBody && otherUnit.selectionBody == this.box.permaPendingBody && otherUnit.isSelectable) ||
                     otherBody.isSelectable && otherBody == this.box.permaPendingBody)
                 {
                         this.box.boxContainsPermaPending = false;
@@ -557,7 +567,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                     }
 
                     bodies = $.grep(bodies, function(body, index) {
-                        return body.isSelectable;
+                        return body.unit && body.isSelectable;
                     })
 
                     //reset past, non-perma bodies we were hovering over previously
@@ -604,6 +614,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 } else {
                     bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), currentGame.mousePosition);
                 }
+
+                bodies = $.grep(bodies, function(body) {
+                    return body.isSelectionBody;
+                })
 
                 //will only dispatch hover to the front-most unit
                 var frontMostUnit = null;
