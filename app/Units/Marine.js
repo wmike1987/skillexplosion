@@ -368,7 +368,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         return UC({
                 renderChildren: rc,
                 radius: options.radius || 20,
-                hitboxWidth: 28,
+                hitboxWidth: 45,
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],

@@ -350,7 +350,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                     //Dispatch ability on this click
                     if(this.abilityDispatch) {
-                        if(this.selectedUnit && this.abilityDispatch != 'a') {
+                        if(this.selectedUnit) {
                             if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
                                 this.box.invalidateNextMouseUp = true;
                                 if(this.abilityDispatch == 'm') {
@@ -570,6 +570,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                     //reset past, non-perma bodies we were hovering over previously
                     $.each(pastHoveredUnitsHover, function(index, unit) {
                         changeSelectionState(unit, 'selectionPending', false);
+                        utils.setCursorStyle('auto');
                     }.bind(this))
 
                     //set state of bodies under our mouse and identify them as pastHoveredUnitsHover for the next tick
@@ -592,6 +593,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         this.box.pendingSelections[unit.unitId] = unit;
                         changeSelectionState(unit, 'selectionPending', true);
                         pastHoveredUnitsHover = [unit];
+                        utils.setCursorStyle('pointer');
                     }.bind(this))
                 }
             }.bind(this));
@@ -672,7 +674,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
              //dispatch generic key events
              $('body').on('keydown.unitSystem', function( event ) {
                  var key = event.key.toLowerCase();
-                 if(key == 'shift' || key == 'tab' || key =='alt') return;
+                 if(key == 'shift' || key == 'tab' || key =='alt' || key == 'a') return;
                  this.abilityDispatch = event.key.toLowerCase();
                  if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
                      $.each(this.selectedUnits, function(key, unit) {
