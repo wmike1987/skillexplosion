@@ -54,9 +54,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
-            // this.addTimer({name: 'newbane', gogogo: true, timeLimit: 4000, callback: function() {
-            //
-            // }.bind(this)});
+            this.addTimer({name: 'newbane', gogogo: true, timeLimit: 6000, callback: function() {
+                this.createBane(2, true);
+            }.bind(this)});
         },
 
         nextLevel: function() {
@@ -76,17 +76,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             //increment level
             this.level += 1;
-            //start increasing speed if we've got lots of units on the map
-            var levelCap = 18;
-            if(this.level < levelCap) {
-                this.baneSpeed = Math.min(2.5, this.baneSpeed+.05);
-                var numberOfDrones = 3 + this.level * 2; //add two drones per level
-                var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
-            } else {
-                this.baneSpeed = Math.min(3.2, this.baneSpeed+.03);
-                var numberOfDrones = 3 + levelCap * 2; //add two drones per level
-                var numberOfBanes = Math.floor(numberOfDrones*.75); // three fourths-ish
-            }
 
             this.createMarine(1);
             this.createMedic(1);
@@ -96,6 +85,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 this.simpleLightShader.uniforms.lightTwoPosition = this.marine.position;
             }.bind(this));
             utils.deathPact(this.medic, posUpdate);
+
+
         },
 
         createMarine: function(number) {
@@ -120,13 +111,15 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             }
         },
 
-        createBane: function(number) {
+        createBane: function(number, autoHone) {
             for(x = 0; x < number; x++) {
                 //var tint = x%2==0 ? 0xff0000 : null;
                 var bane = Baneling({team: 4, isSelectable: false});
+                if(autoHone)
+                    bane.honeRange = 1400;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
-                if(x == 1) {
+                if(utils.flipCoin() && utils.flipCoin()) {
                     ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
                 }
             }

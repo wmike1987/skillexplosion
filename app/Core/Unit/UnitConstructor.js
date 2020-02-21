@@ -48,13 +48,15 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             body.unit = newUnit; //reference to parent
 
             // create selection body
-            var selectionBody = Matter.Bodies.rectangle(5, 5, options.collisionWidth || 20, options.collisionHeight || 20, {
+            var selectionBody = Matter.Bodies.rectangle(5, 5, options.hitboxWidth || 20, options.hitboxHeight || 20, {
                 isSensor: true,
             });
             selectionBody.isSelectionBody = true;
             selectionBody.noWire = true;
             selectionBody.collisionFilter.mask = 0x0002;
             selectionBody.unit = newUnit;
+            selectionBody.wwidth = options.hitboxWidth || 20,
+            selectionBody.hheight = options.hitboxHeight || 20,
             utils.attachSomethingToBody(selectionBody, body, {x: 0, y: -8});
             utils.deathPact(newUnit, selectionBody);
 

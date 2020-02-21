@@ -232,8 +232,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         return UC({
                 renderChildren: rc,
                 radius: rad,
-                collisionWidth: 28,
-                collisionHeight: 60,
+                hitboxWidth: 28,
+                hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [healsound],

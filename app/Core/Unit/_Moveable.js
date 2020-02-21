@@ -28,7 +28,7 @@ function($, Matter, PIXI, utils, Command) {
             }
 
             //Create body sensor - the selection box collides with a slightly smaller body size
-            this.smallerBody = Matter.Bodies.circle(0, 0, this.body.circleRadius, {
+            this.smallerBody = Matter.Bodies.rectangle(0, 0, this.selectionBody.wwidth/7*6, this.selectionBody.hheight/5*3, {
                 isSensor: true,
                 noWire: true
             });
