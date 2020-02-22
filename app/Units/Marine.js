@@ -140,7 +140,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             id: 'selected',
             data: 'IsometricSelected',
             scale: {x: .8, y: .8},
-            stage: 'StageNOne',
+            stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -150,7 +150,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             id: 'selectionPending',
             data: 'IsometricSelectedPending',
             scale: {x: 1, y: 1},
-            stage: 'StageNOne',
+            stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -223,7 +223,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
-            stage: "StageNTwo",
+            stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
         var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
@@ -253,7 +253,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             dashAnimation.play();
             dashAnimation.alpha = .8;
             dashAnimation.rotation = utils.pointInDirection(this.position, destination, 'north');
-            utils.addSomethingToRenderer(dashAnimation, 'StageNOne');
+            utils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
             var self = this;
             self.dashTimer = currentGame.addTimer({
@@ -306,7 +306,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 scale: {x: 10/256, y: 50/256},
                 offset: {x: 15, y: 25},
                 rotate: utils.pointInDirection(knife.position, destination),
-    			stage: "StageNTwo",
+    			stage: "stageNTwo",
             }]
             currentGame.addBody(knife);
 

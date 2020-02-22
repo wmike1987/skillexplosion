@@ -15,7 +15,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             this.box.collisionFilter.category = 0x0002;
             this.box.permaPendingUnit = null;
             this.box.pendingSelections = {};
-            this.box.renderChildren = [{id: 'box', data: 'SelectionBox', stage: 'StageOne'}];
+            this.box.renderChildren = [{id: 'box', data: 'SelectionBox', stage: 'stageOne'}];
 
             //other unit system variables
             this.selectedUnits = {};
@@ -78,7 +78,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
             //prevailing-unit visual indicator
             var prevailingTint = 0x86FF1B;
-            this.prevailingUnitCircle = utils.addSomethingToRenderer('PrevailingUnitIndicator', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
+            this.prevailingUnitCircle = utils.addSomethingToRenderer('PrevailingUnitIndicator', 'stageNOne', {x: -50, y: -50, tint: prevailingTint});
             this.prevailingUnitCircle.timer = currentGame.addTimer({
                 name: 'prevailingUnitFadeInOut',
                 gogogo: true,

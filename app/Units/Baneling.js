@@ -41,21 +41,21 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 		            visible: true,
 		            avoidIsoMgr: true,
 		            rotate: 'none',
-		            stage: "StageNTwo",
+		            stage: "stageNTwo",
 		            offset: {x: 0, y: 22}
 				}, {
     			    id: 'selected',
     			    data: 'MarbleSelected',
     			    scale: {x: (radius+5)*2/64, y: (radius+5)*2/64},
     			    tint: selectionTint,
-    			    stage: 'StageNOne',
+    			    stage: 'stageNOne',
     			    visible: false,
     			    rotate: 'none'
     			}, {
     			    id: 'selectionPending',
     			    data: 'MarbleSelectedPending',
     			    scale: {x: (radius+8)*2/64, y: (radius+8)*2/64},
-    			    stage: 'StageNOne',
+    			    stage: 'stageNOne',
     			    visible: false,
     			    tint: pendingSelectionTint,
     			    rotate: 'continuous'
@@ -99,7 +99,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 
 			deathAnimation.rotation = Math.random() * Math.PI;
 			deathAnimation.play();
-			utils.addSomethingToRenderer(deathAnimation, 'StageOne');
+			utils.addSomethingToRenderer(deathAnimation, 'stageOne');
 			var nextLevelGo = false;
 
 			var bodiesToDamage = [];

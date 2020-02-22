@@ -196,7 +196,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'utils/TargetSpaw
 			    visible: true,
 			    rotate: 'none',
 			    tint: tint,
-			    stage: "StageNTwo",
+			    stage: "stageNTwo",
 			    offset: shadowOffset,
     			}
 			];

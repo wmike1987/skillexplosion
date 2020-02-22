@@ -2,7 +2,7 @@
 
 "AbilityTarget.png":
 {
-	"frame": {"x":301,"y":1150,"w":32,"h":26},
+	"frame": {"x":1,"y":1,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -10,7 +10,7 @@
 },
 "AmbientLight1.png":
 {
-	"frame": {"x":1,"y":1203,"w":512,"h":512},
+	"frame": {"x":303,"y":227,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -18,7 +18,7 @@
 },
 "AmbientLight2.png":
 {
-	"frame": {"x":103,"y":1,"w":512,"h":512},
+	"frame": {"x":817,"y":303,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -26,7 +26,7 @@
 },
 "AmbientLight3.png":
 {
-	"frame": {"x":103,"y":515,"w":512,"h":512},
+	"frame": {"x":1331,"y":303,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -34,7 +34,7 @@
 },
 "AttackIcon.png":
 {
-	"frame": {"x":462,"y":1029,"w":32,"h":32},
+	"frame": {"x":309,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +42,7 @@
 },
 "AttackTarget.png":
 {
-	"frame": {"x":103,"y":1153,"w":32,"h":26},
+	"frame": {"x":35,"y":1,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -50,7 +50,7 @@
 },
 "BombIcon.png":
 {
-	"frame": {"x":515,"y":1029,"w":300,"h":300},
+	"frame": {"x":1206,"y":1,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -58,7 +58,7 @@
 },
 "DashIcon.png":
 {
-	"frame": {"x":360,"y":1029,"w":100,"h":100},
+	"frame": {"x":643,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -66,7 +66,7 @@
 },
 "GunAttackIcon.png":
 {
-	"frame": {"x":1,"y":1717,"w":100,"h":100},
+	"frame": {"x":745,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -74,7 +74,7 @@
 },
 "HealIcon.png":
 {
-	"frame": {"x":515,"y":1331,"w":300,"h":300},
+	"frame": {"x":1508,"y":1,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -82,7 +82,7 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":267,"y":1150,"w":28,"h":32},
+	"frame": {"x":103,"y":1,"w":28,"h":32},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":0,"w":28,"h":32},
@@ -90,7 +90,7 @@
 },
 "IsoShadowBlurred.png":
 {
-	"frame": {"x":426,"y":1131,"w":64,"h":32},
+	"frame": {"x":343,"y":1,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -98,7 +98,7 @@
 },
 "IsoTreeShadow1.png":
 {
-	"frame": {"x":360,"y":1131,"w":64,"h":47},
+	"frame": {"x":577,"y":1,"w":64,"h":47},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":11,"w":64,"h":47},
@@ -106,7 +106,7 @@
 },
 "KnifeIcon.png":
 {
-	"frame": {"x":103,"y":1717,"w":100,"h":100},
+	"frame": {"x":847,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -114,7 +114,7 @@
 },
 "MarineRedHat.png":
 {
-	"frame": {"x":103,"y":1029,"w":128,"h":122},
+	"frame": {"x":1076,"y":1,"w":128,"h":122},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":128,"h":122},
@@ -122,7 +122,7 @@
 },
 "MedicGreenEyes.png":
 {
-	"frame": {"x":233,"y":1029,"w":119,"h":125},
+	"frame": {"x":949,"y":1,"w":119,"h":125},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":3,"w":119,"h":125},
@@ -130,7 +130,7 @@
 },
 "MoveIcon.png":
 {
-	"frame": {"x":462,"y":1063,"w":32,"h":32},
+	"frame": {"x":409,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -138,7 +138,7 @@
 },
 "MoveTarget.png":
 {
-	"frame": {"x":137,"y":1153,"w":32,"h":26},
+	"frame": {"x":69,"y":1,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -146,7 +146,7 @@
 },
 "PrevailingUnitIndicator.png":
 {
-	"frame": {"x":426,"y":1165,"w":64,"h":32},
+	"frame": {"x":443,"y":1,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -154,7 +154,7 @@
 },
 "SneakIcon.png":
 {
-	"frame": {"x":515,"y":1633,"w":300,"h":300},
+	"frame": {"x":1,"y":227,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -162,7 +162,7 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":462,"y":1097,"w":32,"h":32},
+	"frame": {"x":509,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -170,7 +170,7 @@
 },
 "TintableSquare.png":
 {
-	"frame": {"x":233,"y":1150,"w":32,"h":32},
+	"frame": {"x":543,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -178,11 +178,27 @@
 },
 "UnitPanelFrame.png":
 {
-	"frame": {"x":1,"y":1,"w":1200,"h":100},
-	"rotated": true,
+	"frame": {"x":1,"y":125,"w":1200,"h":100},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":100},
 	"sourceSize": {"w":1200,"h":100}
+},
+"Vial.png":
+{
+	"frame": {"x":137,"y":1,"w":28,"h":84},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
+	"sourceSize": {"w":28,"h":84}
+},
+"Vial2.png":
+{
+	"frame": {"x":223,"y":1,"w":28,"h":84},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
+	"sourceSize": {"w":28,"h":84}
 }},
 "animations": {
 	"AmbientLight": ["AmbientLight1.png","AmbientLight2.png","AmbientLight3.png"]
@@ -192,8 +208,8 @@
 	"version": "1.0",
 	"image": "IsoSheet2.png",
 	"format": "RGBA8888",
-	"size": {"w":816,"h":1934},
+	"size": {"w":1844,"h":816},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:e8a8e7e9d49302f85d86fb088f94c871:fddfda10f611915aa0c0bb6065e03cf8:46c875579d242a0b1cfceb19946da616$"
+	"smartupdate": "$TexturePacker:SmartUpdate:1a3444c759483cfe288608bd935a7ef2:afe5a63065e2b15768a22ccea5ed5fb2:46c875579d242a0b1cfceb19946da616$"
 }
 }

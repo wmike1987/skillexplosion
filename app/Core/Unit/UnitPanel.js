@@ -28,6 +28,55 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.unitHealthText = utils.addSomethingToRenderer('TEXT: --', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitHealthStyle});
         this.unitEnergyText = utils.addSomethingToRenderer('TEXT: --', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitEnergyStyle});
 
+        //health vial
+        this.vialDimensions = {w: 24, h: 90};
+        this.healthVialCenterY = this.centerY;
+        this.healthVialCenterX = this.centerX - 58;
+        this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
+        this.healthVial = utils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
+        utils.makeSpriteSize(this.healthVial, this.vialDimensions);
+
+        this.healthBubbles = utils.getAnimationB({
+            spritesheetName: 'bloodswipes1',
+            animationName: 'bubbles',
+            speed: .9,
+            playThisManyTimes: 'loop',
+            transform: [this.healthVialPosition.x, this.healthVialPosition.y + 10, 1.5, 1.5],
+        });
+        utils.makeSpriteSize(this.healthBubbles, {w: 40, h: 80});
+        this.healthBubbles.alpha = 1;
+        this.healthBubbles.play();
+        utils.addSomethingToRenderer(this.healthBubbles, 'hud');
+
+        this.healthVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x00cc00, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
+        this.healthVialSquare.position = {x: this.healthVialPosition.x, y: utils.getCanvasHeight()}
+        utils.makeSpriteSize(this.healthVialSquare, this.vialDimensions);
+        utils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
+
+        //energy vial
+        this.energyVialCenterY = this.centerY;
+        this.energyVialCenterX = this.centerX + 58;
+        this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
+        this.energyVial = utils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
+        utils.makeSpriteSize(this.energyVial, this.vialDimensions);
+
+        this.energyBubbles = utils.getAnimationB({
+            spritesheetName: 'bloodswipes1',
+            animationName: 'bubbles',
+            speed: .5,
+            playThisManyTimes: 'loop',
+            transform: [this.energyVialPosition.x, this.energyVialPosition.y + 10, 1.5, 1.5]
+        });
+        utils.makeSpriteSize(this.energyBubbles, {w: 40, h: 80});
+        this.energyBubbles.alpha = .5;
+        this.energyBubbles.play();
+        utils.addSomethingToRenderer(this.energyBubbles, 'hud');
+
+        this.energyVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x006699, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
+        this.energyVialSquare.position = {x: this.energyVialPosition.x, y: utils.getCanvasHeight()}
+        utils.makeSpriteSize(this.energyVialSquare, this.vialDimensions);
+        utils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
+
         //unit ability variables
         this.abilitySpacing = 77;
         this.abilityOneCenterX = this.centerX + 185
@@ -268,6 +317,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 }
             }.bind(this));
         }
+
+        //health vial
+        if(!this.updateHealthAndEnergyVialTick) {
+            this.updateHealthAndEnergyVialTick = currentGame.addTickCallback(function() {
+                if(this.prevailingUnit) {
+                    this.healthVialSquare.visible = true;
+                    this.healthBubbles.visible = true;
+                    this.energyVialSquare.visible = true;
+                    this.energyBubbles.visible = true;
+                    var healthPercent = this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth;
+                    utils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
+
+                    if(this.prevailingUnit.maxEnergy > 0) {
+                        var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
+                        utils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
+                    }
+                } else {
+                    this.healthVialSquare.visible = false;
+                    this.healthBubbles.visible = false;
+                    this.energyVialSquare.visible = false;
+                    this.energyBubbles.visible = false;
+                }
+            }.bind(this));
+        }
     };
 
     unitPanel.prototype.displayUnitAbilities = function() {
@@ -322,6 +395,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
     unitPanel.prototype.cleanUp = function() {
         currentGame.removeTickCallback(this.updateUnitStatTick);
+        currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
     };
 
     return unitPanel;

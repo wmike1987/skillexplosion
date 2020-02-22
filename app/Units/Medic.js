@@ -141,7 +141,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             id: 'selected',
             data: 'IsometricSelected',
             scale: {x: .8, y: .8},
-            stage: 'StageNOne',
+            stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -151,7 +151,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             id: 'selectionPending',
             data: 'IsometricSelectedPending',
             scale: {x: 1, y: 1},
-            stage: 'StageNOne',
+            stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -224,7 +224,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
-            stage: "StageNTwo",
+            stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
         var rad = options.radius || 20;
@@ -282,7 +282,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
                             healAnimation.alpha = Math.max(.7, Math.random());
                             healAnimation.play();
-                            utils.addSomethingToRenderer(healAnimation, 'StageOne');
+                            utils.addSomethingToRenderer(healAnimation, 'stageOne');
 
                             this.currentEnergy -= 1;
                             target.currentHealth += this.healAmount;

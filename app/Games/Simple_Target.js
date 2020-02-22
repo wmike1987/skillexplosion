@@ -34,8 +34,8 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 
 			//create ghost target indicator
 			this.addEventListener('mousedown', function(event) {
-				this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'StageNTwo');
-				this.ghostTargetCenter = this.ghostTargetCenter || utils.addSomethingToRenderer('bluetarget2CenterGhost', 'StageNTwo');
+				this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
+				this.ghostTargetCenter = this.ghostTargetCenter || utils.addSomethingToRenderer('bluetarget2CenterGhost', 'stageNTwo');
 				this.ghostTarget.position.x = this.ball.positionCopy.x;
 				this.ghostTarget.position.y = this.ball.positionCopy.y;
 				this.ghostTarget.scale.x = this.ghostTarget.scale.y = this.ball.circleRadius*2/128;

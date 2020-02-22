@@ -306,7 +306,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.scale = options.scale;
             if(options.anchor) {
                 something.anchor = options.anchor;
-            } else {
+            } else if(!something.overrideDefaultAnchor){
                 something.anchor = {x: .5, y: .5};
             }
             if(options.tint)
@@ -328,7 +328,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         createDisplayObject: function(something, options) {
-            return this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
+            var obj = this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
+            if(options && options.anchor) {
+                obj.overrideDefaultAnchor = true;
+            }
+            return obj;
         },
 
         addDisplayObjectToRenderer: function(dobj, where) {
@@ -339,6 +343,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(!sprite.texture) return;
             var scaleX = null;
             var scaleY = null;
+            if(!size.w && !size.h && size.x && size.y) {
+                size.w = size.x;
+                size.h = size.y;
+            }
 
             if(size.w) {
                 scaleX = size.w/sprite.texture.width;

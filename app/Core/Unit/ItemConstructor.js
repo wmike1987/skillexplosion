@@ -61,7 +61,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
             scale: {x: .6, y: .6},
             visible: true,
             rotate: 'none',
-            stage: "StageNTwo",
+            stage: "stageNTwo",
             offset: {x: 0, y: 10}
         }];
 
