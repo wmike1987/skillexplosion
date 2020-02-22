@@ -84,11 +84,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 gogogo: true,
                 timeLimit: 100,
                 callback: function() {
-                    if(this.prevailingUnitCircle.alpha <= .6) {
+                    if(this.prevailingUnitCircle.alpha <= .5) {
                         this.prevailingUnitCircle.alphaChange = .1;
                     }
                     if(this.prevailingUnitCircle.alpha >= 1) {
-                        this.prevailingUnitCircle.alphaChange = -.01;
+                        this.prevailingUnitCircle.alphaChange = -.015;
                     }
 
                     this.prevailingUnitCircle.alpha += this.prevailingUnitCircle.alphaChange;

@@ -264,7 +264,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     this.unitHealthText.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
 
                     //energy
-                    this.unitEnergyText.text = this.prevailingUnit.currentEnergy + "/" + this.prevailingUnit.maxEnergy;
+                    this.unitEnergyText.text = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
                 }
             }.bind(this));
         }

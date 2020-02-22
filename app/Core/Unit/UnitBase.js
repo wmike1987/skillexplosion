@@ -488,6 +488,19 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         utils.deathPact(this, updateEnergyTick);
                     }
                 }.bind(this));
+
+                //regen energy
+                this.energyRegen = currentGame.addTimer({
+                    name: 'energyRegen' + this.unitId,
+                    gogogo: true,
+                    timeLimit: 100,
+                    callback: function() {
+                        if(this.currentEnergy < this.maxEnergy) {
+                            this.currentEnergy = Math.min(this.currentEnergy + .1, this.maxEnergy);
+                        }
+                    }.bind(this)
+                });
+                utils.deathPact(this, this.energyRegen);
             }
         }
 
