@@ -77,9 +77,23 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             utils.deathPact(this.box, this.box.abilityTargetSprite.timer);
 
             //prevailing-unit visual indicator
-            var prevailingTint = 0x0051AD;
-            this.prevailingUnitCircle = utils.addSomethingToRenderer('IsometricSelected', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
-            this.prevailingUnitCircle2 = utils.addSomethingToRenderer('IsometricSelected', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
+            var prevailingTint = 0x86FF1B;
+            this.prevailingUnitCircle = utils.addSomethingToRenderer('PrevailingUnitIndicator', 'StageNOne', {x: -50, y: -50, tint: prevailingTint});
+            this.prevailingUnitCircle.timer = currentGame.addTimer({
+                name: 'prevailingUnitFadeInOut',
+                gogogo: true,
+                timeLimit: 100,
+                callback: function() {
+                    if(this.prevailingUnitCircle.alpha <= .6) {
+                        this.prevailingUnitCircle.alphaChange = .1;
+                    }
+                    if(this.prevailingUnitCircle.alpha >= 1) {
+                        this.prevailingUnitCircle.alphaChange = -.01;
+                    }
+
+                    this.prevailingUnitCircle.alpha += this.prevailingUnitCircle.alphaChange;
+                }.bind(this)
+            });
 
             var unitSystem = this;
 
@@ -93,8 +107,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 set: function(value) {
                     if(this._selectedUnit) {
                         utils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
-                        utils.detachSomethingFromBody(this.prevailingUnitCircle2, this._selectedUnit);
                     }
+
+                    this.prevailingUnitCircle.alpha = 1;
 
                     var fromUnit = this._selectedUnit || null;
                     this._selectedUnit = value;
@@ -104,14 +119,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                     if(body) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
-                        this.prevailingUnitCircle2.scale = Matter.Vector.mult(body.renderlings.selected.scale, .9);
                         utils.attachSomethingToBody(this.prevailingUnitCircle, body, body.renderlings.selected.offset);
-                        utils.attachSomethingToBody(this.prevailingUnitCircle2, body, body.renderlings.selected.offset);
                     } else {
                         utils.detachSomethingFromBody(this.prevailingUnitCircle);
-                        utils.detachSomethingFromBody(this.prevailingUnitCircle2);
                         this.prevailingUnitCircle.position = utils.offScreenPosition();
-                        this.prevailingUnitCircle2.position = utils.offScreenPosition();
                     }
                 }
             });
@@ -693,6 +704,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                      utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
                              unit.showingBarsWithAlt = true;
                              unit.showLifeBar(true);
+                             unit.showEnergyBar(true);
                          })
                  }
             }.bind(this));
@@ -746,6 +758,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                     utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
                          unit.showingBarsWithAlt = false;
                          unit.showLifeBar(false);
+                         unit.showEnergyBar(false);
                      })
              }
             }.bind(this));
@@ -781,6 +794,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             //don't hold onto any bodies
             this.selectedUnits = {};
             this.orderedUnits = [];
+
+            //kill this timer
+            if(this.prevailingUnitCircle.timer) {
+                currentGame.invalidateTimer(this.prevailingUnitCircle.timer);
+            }
 
             //clear jquery events
             $('body').off('mousedown.unitSystem');

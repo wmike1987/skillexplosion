@@ -73,6 +73,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             eventClickMappings: {},
             eventClickStateGathering: {},
             eventKeyMappings: {},
+            eventKeyStateGathering: {},
             currentItems: [],
             maxItems: 6,
 
@@ -206,17 +207,36 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     if(event.type == 'click') {
                         if(this.eventClickMappings[event.id]) {
                             var eventState = {};
+
+                            //determine current state of things and store it in a command object
                             if(this.eventClickStateGathering[event.id]) {
                                 eventState = this.eventClickStateGathering[event.id]();
                             }
-                            var newCommand = Command({
-                                queue: this.commandQueue,
-                                method: this.eventClickMappings[event.id],
-                                context: this,
-                                type: 'click',
-                                target: event.target,
-                                state: eventState,
-                            })
+
+                            //the mappings can be simply a function, or a more complicated object
+                            var newCommand = null;
+                            if(typeof this.eventClickMappings[event.id] === "function") {
+                                newCommand = Command({
+                                    queue: this.commandQueue,
+                                    method: this.eventClickMappings[event.id],
+                                    context: this,
+                                    type: 'click',
+                                    target: event.target,
+                                    state: eventState,
+                                })
+                            } else //we have a more complex object
+                            {
+                                newCommand = Command({
+                                    queue: this.commandQueue,
+                                    context: this,
+                                    type: 'click',
+                                    target: event.target,
+                                    state: eventState,
+                                })
+
+                                $.extend(newCommand, this.eventClickMappings[event.id]);
+                            }
+
                             if(keyStates['Shift']) {
                                 this.commandQueue.enqueue(newCommand);
                             }
@@ -227,13 +247,37 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         }
                     } else if(event.type == 'key') {
                         if(this.eventKeyMappings[event.id]) {
-                            var newCommand = Command({
-                                queue: this.commandQueue,
-                                method: this.eventKeyMappings[event.id],
-                                context: this,
-                                type: 'key',
-                                target: event.target
-                            })
+                            var eventState = {};
+
+                            //determine current state of things and store it in a command object
+                            if(this.eventKeyStateGathering[event.id]) {
+                                eventState = this.eventKeyStateGathering[event.id]();
+                            }
+
+                            //the mappings can be simply a function, or a more complicated object
+                            var newCommand = null;
+                            if(typeof this.eventKeyMappings[event.id] === "function") {
+                                newCommand = Command({
+                                    queue: this.commandQueue,
+                                    method: this.eventKeyMappings[event.id],
+                                    context: this,
+                                    type: 'key',
+                                    target: event.target,
+                                    state: eventState,
+                                })
+                            } else //we have a more complex object
+                            {
+                                newCommand = Command({
+                                    queue: this.commandQueue,
+                                    context: this,
+                                    type: 'key',
+                                    target: event.target,
+                                    state: eventState,
+                                })
+
+                                $.extend(newCommand, this.eventClickMappings[event.id]);
+                            }
+
                             if(keyStates['Shift']) {
                                 this.commandQueue.enqueue(newCommand);
                             }
@@ -245,10 +289,15 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }
                 };
 
-                Matter.Events.on(currentGame.unitSystem, 'unitSystemEventDispatch', function(event) {
+                var handleEvent = function(event) {
                     if(this == event.unit)
                         this.handleEvent(event);
-                }.bind(this));
+                }.bind(this);
+
+                Matter.Events.on(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
+                Matter.Events.on(this, "onremove", function() {
+                    Matter.Events.off(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
+                });
 
                 //add filter on the main render sprite
                 var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});
@@ -298,6 +347,15 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }
                 };
 
+                this.showEnergyBar = function(value) {
+                    if(value !== false)
+                        value = true;
+                    if(this.renderlings['energybarbackground']) {
+                        this.renderlings['energybarbackground'].visible = value;
+                        this.renderlings['energybar'].visible = value;
+                    }
+                };
+
                 Matter.Events.on(this, 'addUnit', function() {
 
                     //start unit as idling upon add
@@ -314,7 +372,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     var backgroundScaleX = 1.8;
                     var barScaleXMultiplier = .96;
                     var healthBorderScale = .16;
-                    var healthBarScale = .08;
+                    var healthBarScale = .1;
+                    var healthBarYOffset = this.energy ? -20 : -13;
                     if (this.health && this.isAttackable) {
                         this.renderChildren.push({
                             id: 'healthbarbackground',
@@ -325,7 +384,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                             },
                             offset: {
                                 x: -32 * backgroundScaleX / 2,
-                                y: -this.unitHeight / 2 - 13
+                                y: -this.unitHeight / 2 + healthBarYOffset
                             },
                             anchor: {
                                 x: 0,
@@ -345,7 +404,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                             },
                             offset: {
                                 x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
-                                y: -this.unitHeight / 2 - 13
+                                y: -this.unitHeight / 2 + healthBarYOffset
                             },
                             anchor: {
                                 x: 0,
@@ -371,12 +430,64 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                         utils.deathPact(this, updateHealthTick);
                     }
+
+                    //create energy bar
+                    if (this.energy) {
+                        this.renderChildren.push({
+                            id: 'energybarbackground',
+                            data: 'HealthEnergyBackground',
+                            scale: {
+                                x: backgroundScaleX,
+                                y: healthBorderScale
+                            },
+                            offset: {
+                                x: -32 * backgroundScaleX / 2,
+                                y: -this.unitHeight / 2 - 13
+                            },
+                            anchor: {
+                                x: 0,
+                                y: .5
+                            },
+                            stage: 'foreground',
+                            rotate: 'none',
+                            tint: 0x000000,
+                            avoidIsoMgr: true,
+                            visible: false,
+                        }, {
+                            id: 'energybar',
+                            data: 'HealthEnergyBackground',
+                            scale: {
+                                x: backgroundScaleX * barScaleXMultiplier,
+                                y: healthBarScale
+                            },
+                            offset: {
+                                x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
+                                y: -this.unitHeight / 2 - 13
+                            },
+                            anchor: {
+                                x: 0,
+                                y: .5
+                            },
+                            stage: 'foreground',
+                            rotate: 'none',
+                            avoidIsoMgr: true,
+                            tint: 0xDCDBD1,
+                            visible: false
+                        });
+
+                        var updateEnergyTick = currentGame.addTickCallback(function() {
+                            var percentage = this.currentEnergy / this.maxEnergy;
+                            if (this.renderlings['energybar']) {
+                                this.renderlings['energybar'].scale = {
+                                    x: backgroundScaleX * barScaleXMultiplier * percentage,
+                                    y: healthBarScale
+                                };
+                            }
+                        }.bind(this))
+
+                        utils.deathPact(this, updateEnergyTick);
+                    }
                 }.bind(this));
-
-                //create energy bar
-                if (this.energy) {
-
-                }
             }
         }
 

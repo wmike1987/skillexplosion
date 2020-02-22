@@ -14,6 +14,7 @@ define(['jquery'], function($) {
                 this.executeCommand(commandObj);
             }
         },
+
         queue.next = function(command) {
             //ignore rogue next requests
             if(this.queue.length == 0 || (this.queue[0].id != command.id))
@@ -32,11 +33,32 @@ define(['jquery'], function($) {
 
         //Execute the command, and pass the command object as a parameter
         queue.executeCommand = function(commandObj) {
-            if(commandObj.command.type == 'click') {
-                commandObj.command.method.call(commandObj.command.context, commandObj.command.target, commandObj);
-            } else if(commandObj.command.type == 'key') {
-                commandObj.command.method.call(commandObj.command.context, commandObj);
+            //run predicates
+            var goForthAndExecute = true;
+            $.each(commandObj.command.predicates, function(i, predicate) {
+                goForthAndExecute = predicate();
+                return goForthAndExecute;
+            })
+
+
+            if(goForthAndExecute) {
+                $.each(commandObj.command.preExecuteInterceptors, function(i, pre) {
+                    pre();
+                })
+
+                if(commandObj.command.type == 'click') {
+                    commandObj.command.method.call(commandObj.command.context, commandObj.command.target, commandObj);
+                } else if(commandObj.command.type == 'key') {
+                    commandObj.command.method.call(commandObj.command.context, commandObj);
+                }
+
+                $.each(commandObj.command.postExecuteInterceptors, function(i, post) {
+                    post();
+                })
+            } else {
+                commandObj.command.done();
             }
+
         },
         queue.clear = function() {
             this.queue = [];

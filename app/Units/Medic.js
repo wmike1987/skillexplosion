@@ -269,46 +269,33 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     range: rad*2 + 10,
                     healAmount: 1,
                     attack: function(target) {
-                        healsound.play();
-                        //play animations
-                        // var healBeamAnimation = utils.getAnimationB({
-                        //     spritesheetName: 'bloodswipes1',
-                        //     animationName: 'healbeam',
-                        //     speed: 1,
-                        //     transform: [this.position.x, this.position.y, 1, 1]
-                        // });
-                        // healBeamAnimation.play();
-                        //
-                        // var gunPosition = {x: 0, y: 0};
-                        // $.each(this.renderlings[this.isoManager.currentDirection].stateData.skeletonData.slots, function(i, slot) {
-                        //     if(slot.name == 'Gun Glow') {
-                        //         gunPosition = Matter.Vector.add(this.position, {x: slot.boneData.x, y: slot.boneData.y});
-                        //     }
-                        // }.bind(this))
-                        // healBeamAnimation.position = gunPosition ;
-                        // healBeamAnimation.rotation = utils.pointInDirection(gunPosition, target.position, 'north');
-                        // utils.addSomethingToRenderer(healBeamAnimation, 'StageOne');
+                        if(this.currentEnergy >= 1) {
 
-                        var healAnimation = utils.getAnimationB({
-                            spritesheetName: 'bloodswipes1',
-                            animationName: 'heal',
-                            speed: 1.5,
-                            transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 10), 1, 1]
-                        });
+                            healsound.play();
 
-                        healAnimation.alpha = Math.max(.7, Math.random());
-                        healAnimation.play();
-                        utils.addSomethingToRenderer(healAnimation, 'StageOne');
-                        target.currentHealth += this.healAmount;
-                        if(target.currentHealth >= target.maxHealth)
-                            target.currentHealth = target.maxHealth;
+                            var healAnimation = utils.getAnimationB({
+                                spritesheetName: 'bloodswipes1',
+                                animationName: 'heal',
+                                speed: 1.5,
+                                transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 10), 1, 1]
+                            });
+
+                            healAnimation.alpha = Math.max(.7, Math.random());
+                            healAnimation.play();
+                            utils.addSomethingToRenderer(healAnimation, 'StageOne');
+
+                            this.currentEnergy -= 1;
+                            target.currentHealth += this.healAmount;
+                            if(target.currentHealth >= target.maxHealth)
+                                target.currentHealth = target.maxHealth;
+                        }
                     },
                     attackHoneTeamPredicate: function(team) {
                         return this.team == team;
                     },
                     canTargetUnit: function(unit) {
                         if(unit.isAttackable && unit != this && unit.team == this.team) {
-                            return unit.maxHealth - unit.currentHealth;
+                            return (unit.currentHealth < unit.maxHealth);
                         }
                         return false;
                     },

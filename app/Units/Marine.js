@@ -276,7 +276,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             method: dash,
             title: 'Dash',
             description: 'Quickly move throughout the battlefield.',
-            hotkey: 'D'
+            hotkey: 'D',
+            energyCost: 3
         })
 
         //Knife
@@ -358,7 +359,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             method: throwKnife,
             title: 'Throwing Knife',
             description: 'Throw a knife, dealing 20 damage.',
-            hotkey: 'F'
+            hotkey: 'F',
+            energyCost: 5
         })
 
         var setSleeping = function() {

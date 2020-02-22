@@ -17,6 +17,9 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
         newCommand.target = options.target;
         newCommand.type = options.type;
         newCommand.state = options.state;
+        newCommand.predicates = options.predicates || []; //needs to be an array
+        newCommand.preExecuteInterceptors = options.preExecuteInterceptors || []; //needs to be an array
+        newCommand.postExecuteInterceptors = options.postExecuteInterceptors || []; //needs to be an array
         newCommand.done = function() {
             options.queue.next(this);
         }

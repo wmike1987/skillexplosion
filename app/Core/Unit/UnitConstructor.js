@@ -29,9 +29,25 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             if(newUnit.abilities) {
                 $.each(newUnit.abilities, function(i, ability) {
                     if(ability.type == 'key') {
-                        newUnit.eventKeyMappings[ability.key] = ability.method;
+                        newUnit.eventKeyMappings[ability.key] = {
+                            method: ability.method,
+                            predicates: [function() {
+                                return (newUnit.energy >= (ability.energyCost || 0));
+                            }],
+                            preExecuteInterceptors: [function() {
+                                newUnit.energy -= (ability.energyCost || 0);
+                            }]
+                        }
                     } else if(ability.type == 'click') {
-                        newUnit.eventClickMappings[ability.key] = ability.method;
+                        newUnit.eventClickMappings[ability.key] = {
+                            method: ability.method,
+                            predicates: [function() {
+                                return (newUnit.currentEnergy >= (ability.energyCost || 0));
+                            }],
+                            preExecuteInterceptors: [function() {
+                                newUnit.currentEnergy -= (ability.energyCost || 0);
+                            }]
+                        }
                     }
                 });
             }
@@ -72,43 +88,11 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 newUnit.mainRenderSprite = options.mainRenderSprite;
 
             /*
-             * We cycle through matter bodies rather than units in many places (PixiRenderer mainly),
-             * so let's setup getters on a couple things to reference back to the unit so that we can effectively
-             * access these from the body.
+             * Convenience getters to access certain properties from the unit's body and vice-versa
              */
-            Object.defineProperty(selectionBody, 'isSelectable', {
+            Object.defineProperty(newUnit, 'isSleeping', {
                 get: function() {
-                    return this.unit.isSelectable;
-                }
-            });
-            Object.defineProperty(selectionBody, 'isAttacker', {
-                get: function() {
-                    return this.unit.isAttacker;
-                }
-            });
-            Object.defineProperty(selectionBody, 'isAttackable', {
-                get: function() {
-                    return this.unit.isAttacker;
-                }
-            });
-            Object.defineProperty(selectionBody, 'isMoveable', {
-                get: function() {
-                    return this.unit.isMoveable;
-                }
-            });
-            Object.defineProperty(selectionBody, 'isMoving', {
-                get: function() {
-                    return this.unit.isMoving;
-                }
-            });
-            Object.defineProperty(selectionBody, 'isAttacking', {
-                get: function() {
-                    return this.unit.isAttacking;
-                }
-            });
-            Object.defineProperty(selectionBody, 'isHoning', {
-                get: function() {
-                    return this.unit.isHoning;
+                    return this.body.isSleeping;
                 }
             });
             Object.defineProperty(body, 'renderlings', {
@@ -129,24 +113,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     return this.unit.destination;
                 }
             });
-            Object.defineProperty(selectionBody, 'isSoloMover', {
-                set: function(v) {
-                    this.unit.isSoloMover = v;
-                }
-            });
-            Object.defineProperty(selectionBody, 'team', {
-                get: function() {
-                    return this.unit.team;
-                }
-            });
             Object.defineProperty(newUnit, 'position', {
                 get: function() {
                     return this.body.position;
-                }
-            });
-            Object.defineProperty(newUnit, 'id', {
-                get: function() {
-                    return this.selectionBody.id;
                 }
             });
 

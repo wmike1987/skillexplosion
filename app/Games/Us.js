@@ -77,7 +77,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //increment level
             this.level += 1;
 
-            this.createMarine(3);
+            this.createMarine(1);
             this.createMedic(1);
             this.createBane(4);
             var posUpdate = this.addRunnerCallback(function() {
