@@ -69,12 +69,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             transform: [this.energyVialPosition.x, this.energyVialPosition.y + 10, 1.5, 1.5]
         });
         utils.makeSpriteSize(this.energyBubbles, {w: 40, h: 80});
-        this.energyBubbles.tint = 0xffff66;
+        this.energyBubbles.tint = 0xB6D7F9;
         this.energyBubbles.alpha = .5;
         this.energyBubbles.play();
         utils.addSomethingToRenderer(this.energyBubbles, 'hud');
 
-        this.energyVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x9966ff, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
+        this.energyVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x155194, scale: {x: 1, y: 1}, alpha: .9, anchor: {x: .5, y: 1}});
         this.energyVialSquare.position = {x: this.energyVialPosition.x, y: utils.getCanvasHeight()}
         utils.makeSpriteSize(this.energyVialSquare, this.vialDimensions);
         utils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
