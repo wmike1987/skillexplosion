@@ -236,13 +236,15 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
           });
 
           currentGame.addBody(shadow);
-          this.stop();
           Matter.Body.setPosition(shadow, this.position);
+          utils.sendBodyToDestinationAtSpeed(shadow, destination, 25, true, true);
 
           var originalOrigin = {x: this.position.x, y: this.position.y};
           var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
-          utils.sendBodyToDestinationAtSpeed(shadow, destination, 25, true, true);
+          Matter.Body.setPosition(this.body, {x: 10000, y: 10000});
+          this.stop();
+
           var removeSelf = currentGame.addTickCallback(function() {
               if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
                   var x = shadow.position.x;
