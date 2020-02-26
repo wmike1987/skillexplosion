@@ -235,6 +235,12 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
               isSensor: true
           });
 
+          shadow.renderChildren = [{
+              id: 'shadow',
+              data: 'IsoShadowBlurred',
+              scale: {x: .8, y: .8}
+          }];
+
           currentGame.addBody(shadow);
           Matter.Body.setPosition(shadow, this.position);
           utils.sendBodyToDestinationAtSpeed(shadow, destination, 25, true, true);
