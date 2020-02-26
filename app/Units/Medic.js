@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils'], function($, PIXI, UC, Matter, utils) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
 
     return function Medic(options) {
         var options = options || {};
@@ -227,6 +227,49 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
+        var silentStep = function(destination) {
+          var shadow = Matter.Bodies.circle(0, 0, 4, {
+              restitution: .95,
+              frictionAir: 0,
+              mass: options.mass || 5,
+              isSensor: true
+          });
+
+          currentGame.addBody(shadow);
+          this.stop();
+          Matter.Body.setPosition(shadow, this.position);
+
+          var originalOrigin = {x: this.position.x, y: this.position.y};
+          var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
+
+          utils.sendBodyToDestinationAtSpeed(shadow, destination, 25, true, true);
+          var removeSelf = currentGame.addTickCallback(function() {
+              if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
+                  var x = shadow.position.x;
+                  var y = shadow.position.y;
+                  if(x < 0) x = 5;
+                  if(x > utils.getPlayableWidth()) x = utils.getPlayableWidth()-5;
+                  if(y < 0) y = 5;
+                  if(y > utils.getPlayableHeight()) y = utils.getPlayableHeight()-5;
+                  Matter.Body.setPosition(this.body, {x: x, y: y});
+                  currentGame.removeBody(shadow);
+              }
+          }.bind(this))
+          utils.deathPact(shadow, removeSelf);
+        }
+
+        var silentStepAbility = new Ability({
+            name: 'Silent Step',
+            key: 'd',
+            type: 'click',
+            icon: utils.createDisplayObject('SneakIcon'),
+            method: silentStep,
+            title: 'Silent Step',
+            description: 'Quickly relocate and become untargetable for two seconds.',
+            hotkey: 'D',
+            energyCost: 15
+        })
+
         var rad = options.radius || 20;
         var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
         return UC({
@@ -246,6 +289,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     team: options.team || 4,
                     name: options.name,
                     heightAnimation: 'up',
+                    abilities: [silentStepAbility],
                     death: function() {
                         var self = this;
                         var anim = utils.getAnimationB({

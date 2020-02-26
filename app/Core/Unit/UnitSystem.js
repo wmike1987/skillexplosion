@@ -796,7 +796,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             this.orderedUnits = [];
 
             //kill this timer
-            if(this.prevailingUnitCircle.timer) {
+            if(this.prevailingUnitCircle && this.prevailingUnitCircle.timer) {
                 currentGame.invalidateTimer(this.prevailingUnitCircle.timer);
             }
 

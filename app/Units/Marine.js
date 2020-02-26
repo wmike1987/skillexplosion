@@ -257,7 +257,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             var self = this;
             self.dashTimer = currentGame.addTimer({
-                name: 'dashDoneTimer' + self.id,
+                name: 'dashDoneTimer' + self.unitId,
                 runs: 1,
                 timeLimit: 280,
                 callback: function() {

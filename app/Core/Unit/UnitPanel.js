@@ -357,6 +357,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             ability.icon.visible = true;
             if(!ability.icon.parent) {
                 utils.addSomethingToRenderer(ability.icon, 'hudOne');
+                if(ability.energyCost) {
+                  ability.systemMessage = ability.energyCost + ' energy';
+                }
                 Tooltip.makeTooltippable(ability.icon, ability);
             }
         }.bind(this))

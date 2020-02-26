@@ -13,6 +13,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return Math.sqrt(a*a + b*b);
         },
 
+        distanceBetweenPoints: function(A, B) {
+          return (Matter.Vector.magnitude(Matter.Vector.sub(A, B)));
+        },
+
         //Deprecated: replace remaining calls with getAnimationB, then rename that method to getAnimation
         getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames, startFrameNumber, bufferUnderTen) {
             var frames = [];
