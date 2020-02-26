@@ -320,7 +320,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             }.bind(this));
         }
 
-        //health vial
+        //health vial and engery vial
         if(!this.updateHealthAndEnergyVialTick) {
             this.updateHealthAndEnergyVialTick = currentGame.addTickCallback(function() {
                 if(this.prevailingUnit) {
@@ -360,6 +360,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 Tooltip.makeTooltippable(ability.icon, ability);
             }
         }.bind(this))
+
+        var unavailableTint = 0x4C4949;
+        if(!this.abilityAvailableTick) {
+            this.abilityAvailableTick = currentGame.addTickCallback(function() {
+                if(this.prevailingUnit) {
+                  var currentEnergy = this.prevailingUnit.currentEnergy;
+                    $.each(this.currentAbilities, function(i, ability) {
+                      if(ability.energyCost > currentEnergy) {
+                        ability.icon.tint = unavailableTint;
+                      } else if(ability.icon.tint == unavailableTint) {
+                        ability.icon.tint = 0xFFFFFF;
+                      }
+                    })
+                }
+            }.bind(this));
+        }
     };
 
     unitPanel.prototype.displayCommands = function() {
@@ -398,6 +414,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     unitPanel.prototype.cleanUp = function() {
         currentGame.removeTickCallback(this.updateUnitStatTick);
         currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
+        currentGame.removeTickCallback(this.abilityAvailableTick);
     };
 
     return unitPanel;
