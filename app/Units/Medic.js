@@ -261,8 +261,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
           var removeSelf = currentGame.addTickCallback(function() {
               if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
                   this.getAbilityByName("Silent Step").enable(1);
-                  var x = destination.x;
-                  var y = destination.y;
+                  var x = shadow.position.x;
+                  var y = shadow.position.y;
                   if(x < 0) x = 5;
                   if(x > utils.getPlayableWidth()) x = utils.getPlayableWidth()-5;
                   if(y < 0) y = 5;

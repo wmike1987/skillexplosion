@@ -400,9 +400,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         bodyRanOffStage: function(body) {
             if(body.velocity.x < 0 && body.bounds.max.x < 0)
                 return true;
-            if(body.velocity.x > 0 && body.bounds.min.x > currentGame.canvasEl.getBoundingClientRect().width)
+            if(body.velocity.x > 0 && body.bounds.min.x > this.getPlayableWidth())
                 return true;
-            if(body.velocity.y > 0 && body.bounds.min.y > currentGame.canvasEl.getBoundingClientRect().height)
+            if(body.velocity.y > 0 && body.bounds.min.y > this.getPlayableHeight())
                 return true;
             if(body.velocity.y < 0 && body.bounds.max.y < 0)
                 return true;
