@@ -84,10 +84,11 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
     			}
 
 				var drawPosition = null;
-				if(tickEvent.interpolate) {
+				if(tickEvent.interpolate && !body.oneFrameOverrideInterpolation) {
 					drawPosition = interpolatePosition(body, tickEvent.percentOfNextFrame);
 				}
 				else {
+					body.oneFrameOverrideInterpolation = false;
 					drawPosition = body.position;
 				}
 

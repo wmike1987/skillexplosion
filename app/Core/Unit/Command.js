@@ -11,12 +11,7 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
     var commandFactory = function(options) {
         var newCommand = {};
         newCommand.id = utils.uuidv4();
-        newCommand.queue = options.queue;
-        newCommand.method = options.method;
-        newCommand.context = options.context;
-        newCommand.target = options.target;
-        newCommand.type = options.type;
-        newCommand.state = options.state;
+        $.extend(newCommand, options);
         newCommand.predicates = options.predicates || []; //needs to be an array
         newCommand.preExecuteInterceptors = options.preExecuteInterceptors || []; //needs to be an array
         newCommand.postExecuteInterceptors = options.postExecuteInterceptors || []; //needs to be an array

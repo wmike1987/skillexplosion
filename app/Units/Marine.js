@@ -379,6 +379,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     unitType: 'Marine',
                     health: 50,
                     energy: 20,
+                    energyRegenerationRate: 2,
                     portrait: utils.createDisplayObject('MarineRedHat'),
                     wireframe: utils.createDisplayObject('MarineRedHat'),
                     team: options.team || 4,

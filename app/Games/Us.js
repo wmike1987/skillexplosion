@@ -54,9 +54,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
-            this.addTimer({name: 'newbane', gogogo: true, timeLimit: 6000, callback: function() {
-                // this.createBane(2, true);
-            }.bind(this)});
+            // this.addTimer({name: 'newbane', gogogo: true, timeLimit: 3000, callback: function() {
+            //     this.createBane(2, true);
+            // }.bind(this)});
         },
 
         nextLevel: function() {
@@ -80,11 +80,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.createMarine(1);
             this.createMedic(1);
             this.createBane(4);
-            var posUpdate = this.addRunnerCallback(function() {
-                this.simpleLightShader.uniforms.lightOnePosition = this.medic.position;
-                this.simpleLightShader.uniforms.lightTwoPosition = this.marine.position;
-            }.bind(this));
-            utils.deathPact(this.medic, posUpdate);
+
+            // var posUpdate = this.addRunnerCallback(function() {
+            //     this.simpleLightShader.uniforms.lightOnePosition = this.medic.position;
+            //     this.simpleLightShader.uniforms.lightTwoPosition = this.marine.position;
+            // }.bind(this));
+            // utils.deathPact(this.medic, posUpdate);
 
 
         },
@@ -96,7 +97,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 marine.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(marine, 4);
                 this.addUnit(marine, true);
-                this.marine = marine;
+                //this.marine = marine;
             }
         },
 
@@ -107,7 +108,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 medic.directional = true;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(medic, 4);
                 this.addUnit(medic, true);
-                this.medic = medic;
+                //this.medic = medic;
             }
         },
 
@@ -119,7 +120,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     bane.honeRange = 1400;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
-                if(utils.flipCoin() && utils.flipCoin()) {
+                if(false) {
                     ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
                 }
             }

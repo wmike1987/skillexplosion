@@ -140,11 +140,12 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 this.specifiedAttackTarget = null;
             }.bind(this);
             var callback = Matter.Events.on(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+            this.specifiedAttackTargetStop = callback;
 
             //But if we die first, remove the onremove listener
             utils.deathPact(this, function() {
                 Matter.Events.off(target, 'onremove', this.specifiedCallback);
-            });
+            }, 'removeSpecifiedAttackTarget');
 
             //move unit
             this.rawMove(destination);
@@ -293,7 +294,13 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
         _becomePeaceful: function() {
             this.currentTarget = null;
-            this.specifiedAttackTarget = null;
+
+            //nullify specified attack target
+            if (this.specifiedAttackTarget) {
+                Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                this.specifiedAttackTarget = null;
+            };
+            
             this.attackMoving = false;
 
             if(this.honeAndTargetSensorCallback)

@@ -426,6 +426,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             Matter.Events.trigger(item, "onremove", {});
             Matter.Events.off(item);
 
+            if(item.slaves) {
+                this.removeSlaves(item.slaves);
+            }
+
             this.itemSystem.removeItem(item);
 
             this.removeBody(item.body);
@@ -448,6 +452,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //just in case?
             if(body.hasBeenRemoved) return;
+
+            body.isSleeping = false;
 
             //trigger our own event
             Matter.Events.trigger(body, "onremove", {});

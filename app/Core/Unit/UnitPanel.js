@@ -368,13 +368,19 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         if(!this.abilityAvailableTick) {
             this.abilityAvailableTick = currentGame.addTickCallback(function() {
                 if(this.prevailingUnit) {
-                  var currentEnergy = this.prevailingUnit.currentEnergy;
                     $.each(this.currentAbilities, function(i, ability) {
-                      if(ability.energyCost > currentEnergy) {
-                        ability.icon.tint = unavailableTint;
-                      } else if(ability.icon.tint == unavailableTint) {
-                        ability.icon.tint = 0xFFFFFF;
-                      }
+                        var enabled = true;
+                        if(ability.enablers) {
+                            $.each(ability.enablers, function(i, enabler) {
+                                enabled = enabler();
+                                return enabled;
+                            })
+                        }
+                        if(!enabled) {
+                            ability.icon.tint = unavailableTint;
+                        } else if(ability.icon.tint == unavailableTint) {
+                            ability.icon.tint = 0xFFFFFF;
+                        }
                     })
                 }
             }.bind(this));

@@ -84,7 +84,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 } else {
                     this.showLifeBar(true);
                     if(!this.barTimer) {
-                        this.barTimer = currentGame.addTimer({name: this.id + 'barTimer', timeLimit: 650, runs: 1, callback: function() {
+                        this.barTimer = currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 650, runs: 1, callback: function() {
                             if(!this.showingBarsWithAlt)
                             this.showLifeBar(false);
                         }.bind(this)})
@@ -98,7 +98,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
             _death: function() {
                 $.each(this.currentItems, function(i, item) {
-                    this.dropItem(item);
+                    if(item) {
+                        this.dropItem(item);
+                    }
                 }.bind(this))
                 this.death();
             },
@@ -174,6 +176,19 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 item.unequip(this);
             },
 
+            getAbilityByName: function(name) {
+                var ret = null;
+                if(this.abilities) {
+                    $.each(this.abilities, function(i, ability) {
+                        if(ability.name == name) {
+                            ret = ability;
+                        }
+                        return ret == null;
+                    })
+                }
+                return ret;
+            },
+
             initUnit: function() {
 
                 Object.defineProperty(this, 'maxHealth', {
@@ -223,6 +238,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                                     type: 'click',
                                     target: event.target,
                                     state: eventState,
+                                    unit: this,
                                 })
                             } else //we have a more complex object
                             {
@@ -232,6 +248,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                                     type: 'click',
                                     target: event.target,
                                     state: eventState,
+                                    unit: this,
                                 })
 
                                 $.extend(newCommand, this.eventClickMappings[event.id]);
@@ -264,6 +281,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                                     type: 'key',
                                     target: event.target,
                                     state: eventState,
+                                    unit: this,
                                 })
                             } else //we have a more complex object
                             {
@@ -273,9 +291,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                                     type: 'key',
                                     target: event.target,
                                     state: eventState,
+                                    unit: this,
                                 })
 
-                                $.extend(newCommand, this.eventClickMappings[event.id]);
+                                $.extend(newCommand, this.eventKeyMappings[event.id]);
                             }
 
                             if(keyStates['Shift']) {
@@ -496,7 +515,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     timeLimit: 100,
                     callback: function() {
                         if(this.currentEnergy < this.maxEnergy) {
-                            this.currentEnergy = Math.min(this.currentEnergy + .1, this.maxEnergy);
+                            this.currentEnergy = Math.min(this.currentEnergy + this.energyRegenerationRate/10 || 0, this.maxEnergy);
                         }
                     }.bind(this)
                 });

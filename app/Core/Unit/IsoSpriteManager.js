@@ -62,12 +62,12 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 			var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 			self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true});
 
-			this.idleTimer = currentGame.addTimer({name: 'idleTimer' + this.unit.id, gogogo: true, timeLimit: 2000, callback: function() {
+			this.idleTimer = currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
 				this.timeLimit = 2000 + Math.random() * 2000;
 				var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 				self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true, idle: true});
 			}})
-			utils.deathPact(this.unit, this.idleTimer);
+			utils.deathPact(this.unit, this.idleTimer, this.idleTimer.name);
 		}
 	}
 

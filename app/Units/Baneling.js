@@ -80,7 +80,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 					honeRange: 200,
 					cooldown: 1,
 					range: radius*2+10,
-					damage: 20,
+					damage: 10,
 					attack: function() {
 
 					}
@@ -115,8 +115,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 
 		baneling.death = function() {
 			if(this.alreadyDied) return;
-			var shard = utils.addSomethingToRenderer('glassShards', 'background', {position: baneling.position, scale: {x: .65, y: .65}, tint: tint, rotation: Math.random()*6});
-				currentGame.addTimer({name: 'shardDisappear' + baneling.id, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
+			var shard = utils.addSomethingToRenderer('glassShards', 'stageNOne', {position: baneling.position, scale: {x: .65, y: .65}, tint: tint, rotation: Math.random()*6});
+				currentGame.addTimer({name: 'shardDisappear' + baneling.unitId, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
 					shard.alpha -= .05;
 						}, totallyDoneCallback: function() {
 							utils.removeSomethingFromRenderer(shard);

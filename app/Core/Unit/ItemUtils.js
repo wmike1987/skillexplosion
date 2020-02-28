@@ -13,6 +13,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             } else {
                 utils.placeBodyWithinRadiusAroundCanvasCenter(newItem.body, 200);
             }
+
+            var t = currentGame.addTimer({name: 'itemRemove' + newItem.body.id, runs: 1, timeLimit: 5000, callback: function() {
+                currentGame.removeItem(newItem);
+            }.bind(this)})
+
+            utils.deathPact(newItem, t);
         })
     }
 

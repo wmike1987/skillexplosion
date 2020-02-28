@@ -227,40 +227,50 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
-        var silentStep = function(destination) {
-          var shadow = Matter.Bodies.circle(0, 0, 4, {
+        var silentStep = function(destination, commandObj) {
+          var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
               restitution: .95,
               frictionAir: 0,
               mass: options.mass || 5,
               isSensor: true
           });
 
+          shadow.isShadow = true;
+
           shadow.renderChildren = [{
               id: 'shadow',
               data: 'IsoShadowBlurred',
-              scale: {x: .8, y: .8}
+              scale: {x: .75, y: .75},
+              stage: "stageNTwo",
+              offset: {x: 0, y: 22}
           }];
 
           currentGame.addBody(shadow);
-          Matter.Body.setPosition(shadow, this.position);
+          shadow.oneFrameOverrideInterpolation = true;
           utils.sendBodyToDestinationAtSpeed(shadow, destination, 25, true, true);
 
           var originalOrigin = {x: this.position.x, y: this.position.y};
           var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
-          Matter.Body.setPosition(this.body, {x: 10000, y: 10000});
+          this.body.oneFrameOverrideInterpolation = true;
+          Matter.Body.setPosition(this.body, {x: -100, y: -100});
           this.stop();
+
+          this.getAbilityByName("Silent Step").disable(1);
 
           var removeSelf = currentGame.addTickCallback(function() {
               if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
-                  var x = shadow.position.x;
-                  var y = shadow.position.y;
+                  this.getAbilityByName("Silent Step").enable(1);
+                  var x = destination.x;
+                  var y = destination.y;
                   if(x < 0) x = 5;
                   if(x > utils.getPlayableWidth()) x = utils.getPlayableWidth()-5;
                   if(y < 0) y = 5;
                   if(y > utils.getPlayableHeight()) y = utils.getPlayableHeight()-5;
                   Matter.Body.setPosition(this.body, {x: x, y: y});
+                  this.visible = true;
                   currentGame.removeBody(shadow);
+                  commandObj.command.done();
               }
           }.bind(this))
           utils.deathPact(shadow, removeSelf);
@@ -275,7 +285,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Silent Step',
             description: 'Quickly relocate and become untargetable for two seconds.',
             hotkey: 'D',
-            energyCost: 15
+            energyCost: 15,
+            predicates: [function(commandObj) {
+                return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
+            }]
         })
 
         var rad = options.radius || 20;
@@ -292,6 +305,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     unitType: 'Medic',
                     health: 25,
                     energy: 60,
+                    energyRegenerationRate: 4,
                     portrait: utils.createDisplayObject('MedicGreenEyes'),
                     wireframe: utils.createDisplayObject('MedicGreenEyes'),
                     team: options.team || 4,
@@ -336,7 +350,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             healAnimation.play();
                             utils.addSomethingToRenderer(healAnimation, 'stageOne');
 
-                            this.currentEnergy -= 1;
+                            this.currentEnergy -= 2;
                             target.currentHealth += this.healAmount;
                             if(target.currentHealth >= target.maxHealth)
                                 target.currentHealth = target.maxHealth;

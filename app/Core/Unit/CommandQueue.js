@@ -1,4 +1,6 @@
-define(['jquery'], function($) {
+define(['jquery', 'utils/GameUtils'], function($, utils) {
+
+    var failedPredicate = utils.getSound('cantpickup.wav', {volume: .01, rate: 1.3});
 
     //Defines a Command queue
     var CommandQueue = function() {
@@ -36,10 +38,9 @@ define(['jquery'], function($) {
             //run predicates
             var goForthAndExecute = true;
             $.each(commandObj.command.predicates, function(i, predicate) {
-                goForthAndExecute = predicate();
+                goForthAndExecute = predicate(commandObj);
                 return goForthAndExecute;
             })
-
 
             if(goForthAndExecute) {
                 $.each(commandObj.command.preExecuteInterceptors, function(i, pre) {
@@ -56,6 +57,7 @@ define(['jquery'], function($) {
                     post();
                 })
             } else {
+                failedPredicate.play();
                 commandObj.command.done();
             }
 
