@@ -94,7 +94,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 mass: options.mass || 5,
                 originalMass: options.mass || 5
             });
-            body.drawWire = false;
+            // body.drawWire = true;
             body.collisionFilter.mask -= 0x0002;
             body.unit = newUnit; //reference to parent
 

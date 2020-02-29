@@ -232,7 +232,15 @@ function($, Matter, PIXI, utils, Command) {
                         swapY = -1;
                 }
 
-                var maxScatterDistance = this.circleRadius * 3;
+                var maxScatterDistance = this.circleRadius * 2;
+
+                //if the moving-unit's destination doesn't go beyond the still-unit, we don't want to move the still-unit too much
+                var moverToDestination = utils.distanceBetweenPoints(otherUnit.position, otherUnit.destination);
+                var moverToMe = utils.distanceBetweenPoints(myUnit.position, otherUnit.position);
+                if(moverToDestination < moverToMe) {
+                    maxScatterDistance = this.circleRadius;
+                }
+
                 var minScatterDistance = this.circleRadius;
                 var newVelocity = Matter.Vector.normalise({x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY});
 

@@ -55,7 +55,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
 
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 6000, callback: function() {
-                this.createBane(2, true);
+                //this.createBane(2, true);
             }.bind(this)});
         },
 
