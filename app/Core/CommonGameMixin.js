@@ -176,6 +176,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         if(value.runs > 0) {
                             value.percentDone = 0;
                             value.timeElapsed -= value.timeLimit;
+                            value.currentRun = value.originalRuns - value.runs;
                             if(value.callback) value.callback();
                             value.runs--;
 
@@ -187,7 +188,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                             else {
                                 value.done = true;
                                 if(value.totallyDoneCallback) value.totallyDoneCallback.call(value);
-                                if(value.killsSelf) this.invalidateTimer(value); //I don't think this really does anything
+                                if(value.killsSelf) this.invalidateTimer(value);
                             }
                         }
                     }
@@ -423,15 +424,21 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
         },
 
         removeItem: function(item) {
+            //trigger remove event
             Matter.Events.trigger(item, "onremove", {});
+
+            //clear events
             Matter.Events.off(item);
 
+            //clear slaves
             if(item.slaves) {
                 this.removeSlaves(item.slaves);
             }
 
+            //remove item from item system
             this.itemSystem.removeItem(item);
 
+            //remove attached body
             this.removeBody(item.body);
         },
 
@@ -486,14 +493,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
         },
 
         //This method has the heart but is poorly designed I think
-        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, functions to execute, and howerl sounds
+        //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, functions to execute, howerl sounds, and sprites
         removeSlaves: function(slaves) {
             $.each(slaves, function(index, slave) {
                 if(slave.isUnit) {
                     this.removeUnit(slave);
                     //console.info("removing " + slave)
                 }
-                else if(slave.render) { //is body
+                else if(slave.type == 'body') { //is body
                     this.removeBody(slave);
                     // console.info("removing " + slave)
                 }
@@ -511,6 +518,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 } else if(slave.unload) {
                     console.info("removing sounds!" + slave)
                     slave.unload();
+                } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
+                    utils.removeSomethingFromRenderer(slave);
                 }
             }.bind(this));
         },

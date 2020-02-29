@@ -26,6 +26,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     if(item.body.renderlings['itemFootprint'].originalTint) {
                         item.renderlings['itemFootprint'].tint = item.renderlings['itemFootprint'].originalTint;
                         item.renderlings['itemFootprint'].originalTint = null;
+                        item.showName(false);
                     }
                     return item.body;
                 })
@@ -35,9 +36,27 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     $.each(itemBodiesUnderMouse, function(i, body) {
                         body.renderlings['itemFootprint'].originalTint = body.renderlings['itemFootprint'].tint;
                         body.renderlings['itemFootprint'].tint = highlightTint;
+                        body.item.showName(true);
                     })
                 }
 
+            }.bind(this));
+
+            //toggle life bars with Alt
+            $('body').on('keydown.itemSystem', function( event ) {
+                 if(event.key == 'Alt') {
+                     $.each(this.items, function(i, item) {
+                         item.showName(true);
+                     })
+                 }
+            }.bind(this));
+
+            $('body').on('keyup.itemSystem', function( event ) {
+                 if(event.key == 'Alt') {
+                     $.each(this.items, function(i, item) {
+                         item.showName(false);
+                     })
+                 }
             }.bind(this));
 
             Matter.Events.on(currentGame, 'addUnit', function(event) {

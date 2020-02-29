@@ -14,7 +14,29 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 utils.placeBodyWithinRadiusAroundCanvasCenter(newItem.body, 200);
             }
 
-            var t = currentGame.addTimer({name: 'itemRemove' + newItem.body.id, runs: 1, timeLimit: 5000, callback: function() {
+            var t = currentGame.addTimer({name: 'itemRemove' + newItem.body.id, runs: 160, timeLimit: 50,
+            callback: function() {
+                $.each(newItem.renderlings, function(i, rl) {
+                    if(this.currentRun > 80) {
+                        if(this.currentRun < 130) {
+                            if(this.currentRun % 4 == 0 || this.currentRun-1 % 4 == 0) {
+                                rl.alpha = .3;
+                            } else {
+                                rl.alpha = 1;
+                            }
+                        } else if(this.currentRun % 2 == 0) {
+                            $.each(newItem.renderlings, function(i, rl) {
+                                rl.alpha = .3;
+                            })
+                        } else {
+                            rl.alpha = 1;
+                        }
+                    } else {
+                        rl.alpha = 1;
+                    }
+                }.bind(this))
+            },
+            totallyDoneCallback: function() {
                 currentGame.removeItem(newItem);
             }.bind(this)})
 

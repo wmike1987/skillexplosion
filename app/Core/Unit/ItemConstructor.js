@@ -30,6 +30,30 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
             isSensor: true
         });
 
+        //create name display (shown upon alt or hover)
+        var baseTint = 0x00042D;
+        newItem.nameDisplayBase = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
+        newItem.nameDisplay = utils.createDisplayObject('TEXT:' + newItem.name)
+        utils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 55});
+
+        newItem.showName = function(bool) {
+            if(!newItem.nameDisplay.parent) {
+                utils.addDisplayObjectToRenderer(newItem.nameDisplay, 'hudText');
+                utils.addDisplayObjectToRenderer(newItem.nameDisplayBase, 'hud')
+            }
+
+            newItem.nameDisplayBase.visible = bool;
+            newItem.nameDisplay.visible = bool;
+
+            if(bool) {
+                newItem.nameDisplayBase.position = {x: newItem.body.position.x, y: newItem.body.position.y - 40};
+                newItem.nameDisplay.position = {x: newItem.body.position.x, y: newItem.body.position.y - 40};
+            }
+        }
+
+        utils.deathPact(newItem, newItem.nameDisplayBase);
+        utils.deathPact(newItem, newItem.nameDisplay);
+
         //Make renderlings accessible from wherever
         Object.defineProperty(newItem.body, 'renderlings', {
             get: function() {
