@@ -453,18 +453,23 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                     })
                     if(attacking) return;
 
-                    //Dispatch move event
-                    $.each(this.selectedUnits, function(key, unit) {
-                        if(unit.isMoveable) {
-                            var e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};
-                            Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
-                            this.box.moveTargetSprite.timer.execute({runs: 1});
-                            if(Object.keys(this.selectedUnits).length == 1)
+                    //Dispatch move event if we're not using right-click as a cancel
+                    if(this.attackMove || this.abilityDispatch) {
+                        this.abilityDispatch = false;
+                        this.attackMove = false;
+                    } else {
+                        $.each(this.selectedUnits, function(key, unit) {
+                            if(unit.isMoveable) {
+                                var e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};
+                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                                this.box.moveTargetSprite.timer.execute({runs: 1});
+                                if(Object.keys(this.selectedUnits).length == 1)
                                 unit.isSoloMover = true;
-                            else
+                                else
                                 unit.isSoloMover = false;
-                        }
-                    }.bind(this))
+                            }
+                        }.bind(this))
+                    }
                 }
             }.bind(this));
 
@@ -581,7 +586,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                     //reset past, non-perma bodies we were hovering over previously
                     $.each(pastHoveredUnitsHover, function(index, unit) {
                         changeSelectionState(unit, 'selectionPending', false);
-                        utils.setCursorStyle('auto');
                     }.bind(this))
 
                     //set state of bodies under our mouse and identify them as pastHoveredUnitsHover for the next tick
@@ -604,8 +608,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         this.box.pendingSelections[unit.unitId] = unit;
                         changeSelectionState(unit, 'selectionPending', true);
                         pastHoveredUnitsHover = [unit];
-                        utils.setCursorStyle('pointer');
                     }.bind(this))
+
+                    if(!this.attackMove && !this.abilityDispatch) {
+                        if(units.length > 0) {
+                            utils.setCursorStyle('server:OverUnitCursor.png', '16 16');
+                        } else {
+                            utils.setCursorStyle('server:MainCursor.png');
+                        }
+                    }
                 }
             }.bind(this));
 
@@ -660,10 +671,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
              Object.defineProperty(this, 'attackMove', {set: function(value) {
                  this._attackMove = value;
                  if(value) {
-                     utils.setCursorStyle('crosshair');
+                     utils.setCursorStyle('server:AttackCursor.png');
                  }
                  else
-                     utils.setCursorStyle('auto');
+                     utils.setCursorStyle('server:MainCursor.png');
              }.bind(this), get: function() {
                  return this._attackMove;
              }});
@@ -685,6 +696,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
              //dispatch generic key events
              $('body').on('keydown.unitSystem', function( event ) {
                  var key = event.key.toLowerCase();
+                 if(key == 'escape') {
+                     this.abilityDispatch = false;
+                     this.attackMove = false;
+                     return;
+                 }
                  if(key == 'shift' || key == 'tab' || key =='alt' || key == 'a') return;
                  this.abilityDispatch = event.key.toLowerCase();
                  if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
@@ -694,7 +710,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                      }.bind(this))
                  } else if(this.selectedUnit) {
                      var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit};
-                     Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                     if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
+                         utils.setCursorStyle('server:TargetCursor.png');
+                         Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                     } else {
+                         this.abilityDispatch = null;
+                     }
                  }
              }.bind(this));
 

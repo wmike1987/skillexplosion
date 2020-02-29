@@ -667,7 +667,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             });
         },
 
-        setCursorStyle: function(style) {
+        setCursorStyle: function(style, hotspot) {
+            if(style.indexOf('server:') > -1) {
+                style = style.replace('server:', window.location.origin + '/app/Textures/');
+                style = 'url(' + style + ')' + (hotspot ? ' ' + hotspot : '') + ', auto';
+            }
             $('*').css('cursor', style);
         },
 

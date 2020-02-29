@@ -324,7 +324,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             Matter.Events.on(knife, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
-                if(otherUnit != this && otherUnit && otherUnit.isAttackable) {
+                if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
                     otherUnit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
                     var bloodPierceAnimation = utils.getAnimationB({
                         spritesheetName: 'bloodswipes1',
@@ -344,7 +344,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 name: 'knifeDoneTimer' + knife.id,
                 runs: 1,
                 killsSelf: true,
-                timeLimit: 150,
+                timeLimit: 125,
                 callback: function() {
                     commandObj.command.done();
                 }
@@ -379,7 +379,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     unitType: 'Marine',
                     health: 50,
                     energy: 20,
-                    energyRegenerationRate: 2,
+                    energyRegenerationRate: 1,
                     portrait: utils.createDisplayObject('MarineRedHat'),
                     wireframe: utils.createDisplayObject('MarineRedHat'),
                     team: options.team || 4,
