@@ -23,14 +23,30 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
+},
+"RingOfReason.png":
+{
+	"frame": {"x":103,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"RingOfWellBeing.png":
+{
+	"frame": {"x":137,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Items.png",
 	"format": "RGBA8888",
-	"size": {"w":102,"h":34},
+	"size": {"w":170,"h":34},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:91baed3144a99516583d7b038c377f67:c07a127879e0178224d7e2c09b41c3fa:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:30afa2106c42c7f203de2a231bad175c:a4c3b123dda5cedebf898d5bb9693aa6:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

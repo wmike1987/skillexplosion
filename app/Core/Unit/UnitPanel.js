@@ -125,8 +125,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
             Matter.Events.on(currentGame.itemSystem, 'dropItem', function(event) {
                 if(this.prevailingUnit == event.unit) {
-                    event.item.icon.tooltipObj.destroy();
-                    utils.removeSomethingFromRenderer(event.item.icon);
+                    event.item.icon.tooltipObj.hide();
+                    event.item.icon.visible = false;
                 }
             }.bind(this))
         }
@@ -286,6 +286,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                     utils.makeSpriteSize(icon, 27);
                 } else {
+                    icon.position = {x: x, y: y};
                     icon.visible = true;
                 }
             }.bind(this))
@@ -311,7 +312,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
 
                     //health
-                    this.unitHealthText.text = this.prevailingUnit.currentHealth + "/" + this.prevailingUnit.maxHealth;
+                    this.unitHealthText.text = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
                     this.unitHealthText.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
 
                     //energy

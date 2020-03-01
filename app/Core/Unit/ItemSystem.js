@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], function($, utils, Matter, ItemUtils) {
 
     var highlightTint = 0xa6ff29;
     var itemPickup = utils.getSound('itempickup.wav', {volume: .04, rate: 1});
@@ -12,7 +12,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         $.extend(this, properties);
 
         this.unitSystem = currentGame.unitSystem;
-        this.items = []; //represents items on the ground
+        this.itemsOnGround = []; //represents items on the ground
+        this.items = new Set();
         this.targetedItem = null;
 
         this.initialize = function(options) {
@@ -22,7 +23,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.hoverCallback = currentGame.addTickCallback(function(event) {
 
                 //collect all item bodies and reset their tints
-                var itemBodies = $.map(this.items, function(item) {
+                var itemBodies = $.map(this.itemsOnGround, function(item) {
                     if(item.body.renderlings['itemFootprint'].originalTint) {
                         item.renderlings['itemFootprint'].tint = item.renderlings['itemFootprint'].originalTint;
                         item.renderlings['itemFootprint'].originalTint = null;
@@ -42,10 +43,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
             }.bind(this));
 
-            //toggle life bars with Alt
+            //toggle item name-banner with 'alt'
             $('body').on('keydown.itemSystem', function( event ) {
                  if(event.key == 'Alt') {
-                     $.each(this.items, function(i, item) {
+                     $.each(this.itemsOnGround, function(i, item) {
                          item.showName(true);
                      })
                  }
@@ -53,18 +54,23 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
             $('body').on('keyup.itemSystem', function( event ) {
                  if(event.key == 'Alt') {
-                     $.each(this.items, function(i, item) {
+                     $.each(this.itemsOnGround, function(i, item) {
                          item.showName(false);
                      })
                  }
             }.bind(this));
 
+            Matter.Events.on(this, 'dropItem', function(event) {
+                this.addItemOnGround(event.item);
+            }.bind(this))
+
+            //Annoint units with functionality to detect and pickup an item
             Matter.Events.on(currentGame, 'addUnit', function(event) {
                 if(!event.unit.isMoveable) return;
 
                 Matter.Events.on(event.unit, 'unitMove', function(moveEvent) {
                     if(!event.unit.attackMoving && this.unitSystem.selectedUnit == event.unit) {
-                        var itemBodies = $.map(this.items, function(item) {
+                        var itemBodies = $.map(this.itemsOnGround, function(item) {
                             return item.body;
                         })
 
@@ -83,38 +89,49 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             itemPickup.play();
                             event.unit.pickupItem(event.unit.targetedItem);
                             Matter.Events.trigger(this, 'pickupItem', {item: event.unit.targetedItem, unit: event.unit});
+                            this.removeItemFromGround(event.unit.targetedItem);
                         } else {
                             cantpickup.play();
                         }
                         event.unit.targetedItem = null;
                     }
                 }.bind(this))
-
-                Matter.Events.on(event.unit, 'dropItem', function(event) {
-                    //rethrow this event from the item system
-                    console.info('dropping item');
-                    itemDrop.play();
-                    Matter.Events.trigger(this, 'dropItem', {item: event.item, unit: event.unit});
-                }.bind(this))
             }.bind(this))
         },
 
-        this.addItem = function(item) {
-            this.items.push(item);
+        this.addItemOnGround = function(item) {
+            this.itemsOnGround.push(item);
+            ItemUtils.initiateBlinkDeath({item: item});
+            itemDrop.play();
+        },
+
+        this.registerItem = function(item) {
+            this.items.add(item);
+        },
+
+        this.removeItemFromGround = function(item) {
+            var index = this.itemsOnGround.indexOf(item);
+            if(index > -1) {
+                item.removePhysicalForm();
+                this.itemsOnGround.splice(index, 1);
+            }
         },
 
         this.removeItem = function(item) {
-            var index = this.items.indexOf(item);
-            if(index > -1) {
-                this.items.splice(index, 1);
-            }
-        },
+            this.removeItemFromGround(item);
+            this.items.delete(item);
+            // console.info(this.items.size)
+            item.destroy();
+        }
 
         this.cleanUp = function() {
 
             Matter.Events.off(this);
 
-            this.items = [];
+            this.itemsOnGround = [];
+            for (let item of this.items) {
+                item.destroy();
+            }
 
             if(this.hoverCallback)
                 currentGame.removeTickCallback(this.hoverCallback);

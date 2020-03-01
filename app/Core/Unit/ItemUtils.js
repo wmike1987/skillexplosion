@@ -1,47 +1,49 @@
 define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
     // options {
-    //     name: string,
-    //     position
+    //     item: item
+    //     totalLife: number (default 8000 millis)
     // }
-    var spawn = function(options) {
-        require(['items/'+options.name], function(item) {
-            var newItem = item();
-            currentGame.addItem(newItem);
-            if(options.position) {
-                Matter.Body.setPosition(newItem.body, options.position);
-            } else {
-                utils.placeBodyWithinRadiusAroundCanvasCenter(newItem.body, 200);
-            }
-
-            var t = currentGame.addTimer({name: 'itemRemove' + newItem.body.id, runs: 160, timeLimit: 50,
-            callback: function() {
-                $.each(newItem.renderlings, function(i, rl) {
-                    if(this.currentRun > 80) {
-                        if(this.currentRun < 130) {
-                            if(this.currentRun % 4 == 0 || this.currentRun-1 % 4 == 0) {
-                                rl.alpha = .3;
-                            } else {
-                                rl.alpha = 1;
-                            }
-                        } else if(this.currentRun % 2 == 0) {
-                            $.each(newItem.renderlings, function(i, rl) {
-                                rl.alpha = .3;
-                            })
+    var initiateBlinkDeath = function(options) {
+        var time = options.time || 8000;
+        var timerTime = time/50;
+        var item = options.item;
+        //create item removal and blink
+        var t = currentGame.addTimer({name: 'itemRemove' + item.body.id, runs: timerTime, timeLimit: 50,
+        callback: function() {
+            $.each(item.renderlings, function(i, rl) {
+                if(this.totalPercentDone > .5) {
+                    if(this.totalPercentDone < .8) {
+                        if(this.currentRun % 4 == 0 || this.currentRun-1 % 4 == 0) {
+                            rl.alpha = .3;
                         } else {
                             rl.alpha = 1;
                         }
+                    } else if(this.currentRun % 2 == 0) {
+                        $.each(item.renderlings, function(i, rl) {
+                            rl.alpha = .3;
+                        })
                     } else {
                         rl.alpha = 1;
                     }
-                }.bind(this))
-            },
-            totallyDoneCallback: function() {
-                currentGame.removeItem(newItem);
-            }.bind(this)})
+                } else {
+                    rl.alpha = 1;
+                }
+            }.bind(this))
+        },
+        totallyDoneCallback: function() {
+            currentGame.removeItem(item);
+        }.bind(this)})
 
-            utils.deathPact(newItem, t);
-        })
+        item.deathTimer = t;
+        var originalCollect = item.removePhysicalForm;
+        item.removePhysicalForm = function() {
+            if(this.deathTimer) {
+                currentGame.invalidateTimer(this.deathTimer);
+            }
+            originalCollect.call(item);
+        }
+        utils.deathPact(item, t);
     }
 
     var giveUnitItem = function(options) {
@@ -51,9 +53,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             options.name = options.name[index];
         }
         require(['items/'+options.name], function(item) {
-            options.unit.pickupItem(item());
+            if(options.unit.unitIsDead) {
+                var item = item();
+                item.drop(options.unit.position);
+                Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item, unit: options.unit});
+            } else {
+                options.unit.pickupItem(item());
+            }
         })
     }
 
-    return {spawn: spawn, giveUnitItem: giveUnitItem};
+    return {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem};
 })

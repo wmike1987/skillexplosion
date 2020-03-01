@@ -110,7 +110,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 			});
 			this.alreadyAttacked = true;
 			if(!this.alreadyDied)
-				this.death();
+				this.sufferAttack(10000);
 		};
 
 		baneling.death = function() {

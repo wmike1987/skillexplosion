@@ -42,6 +42,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             isoManaged: true,
             maxHealth: 20,
             currentHealth: 20,
+            energyRegenerationRate: 0,
+            healthRegenerationRate: 0,
             maxEnergy: 0,
             currentEnergy: 0,
             isSelectable: true,
@@ -102,6 +104,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         this.dropItem(item);
                     }
                 }.bind(this))
+                this.unitIsDead = true;
                 this.death();
             },
 
@@ -116,9 +119,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                     //add benefits
                     this.equipItem(item);
-
-                    //remove item and its body
-                    currentGame.removeItem(item);
 
                     //add item to unit's item list
                     var insertedItem = false;
@@ -144,7 +144,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 do {
                     spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)}
                 } while (!utils.isPositionWithinPlayableBounds(spawnPosition))
-                ItemUtils.spawn({name: item.name.replace(/ /g,''), position: spawnPosition})
+
+                item.drop(spawnPosition);
+                Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item, unit: this});
 
                 //remove added benefits
                 this.unequipItem(item);
@@ -152,8 +154,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 //remove from current item list
                 var index = this.currentItems.indexOf(item);
                 this.currentItems[index] = null;
-
-                Matter.Events.trigger(this, 'dropItem', {item: item, unit: this});
             },
 
             canPickupItem: function() {
@@ -520,6 +520,19 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }.bind(this)
                 });
                 utils.deathPact(this, this.energyRegen);
+
+                //regen energy
+                this.healthRegen = currentGame.addTimer({
+                    name: 'healthRegen' + this.unitId,
+                    gogogo: true,
+                    timeLimit: 100,
+                    callback: function() {
+                        if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
+                            this.currentHealth = Math.min(this.currentHealth + this.healthRegenerationRate/10 || 0, this.maxHealth);
+                        }
+                    }.bind(this)
+                });
+                utils.deathPact(this, this.healthRegen);
             }
         }
 

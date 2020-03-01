@@ -380,6 +380,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         removeSomethingFromRenderer: function(something, where) {
+            //if we just have a display object that has not been added to the renderer, destroy this mf'er
+            if(!something.where && !where && !something.myLayer) {
+                if(something.destroy && !something._destroyed) {
+                    something.destroy();
+                }
+            }
+
+            //otherwise remove from stage and destroy
             where = where || something.myLayer || 'stage';
             currentGame.renderer.removeFromPixiStage(something, where);
         },

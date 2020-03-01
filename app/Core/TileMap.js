@@ -11,7 +11,7 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
             utils.addSomethingToRenderer(tile, options);
         })
 
-        console.info("initialized " + this.tiles.length + " tiles")
+        // console.info("initialized " + this.tiles.length + " tiles")
     };
 
     tileMap.prototype.addTile = function(displayObject) {

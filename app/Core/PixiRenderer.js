@@ -419,7 +419,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			if(child.constructor.name == 'Particle') {
 				child.emitter.cleanup();
 			}
-		    else if(child.destroy)
+		    else if(child.destroy && !child._destroyed)
 				child.destroy(); //i'm unsure if I need to check for a destroy method first
 		}
 

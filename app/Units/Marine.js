@@ -377,7 +377,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
                 unit: {
                     unitType: 'Marine',
-                    health: 50,
+                    health: 999999,
                     energy: 20,
                     energyRegenerationRate: 1,
                     portrait: utils.createDisplayObject('MarineRedHat'),
@@ -404,10 +404,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     walkAnimations: walkAnimations,
                 }, attacker: {
                     attackAnimations: attackAnimations,
-                    cooldown: 650,
+                    cooldown: 50,
                     honeRange: 300,
                     range: 180,
-                    damage: 10,
+                    damage: 80,
                     attack: function(target) {
                         target.sufferAttack(this.damage);
                         fireSound.play();

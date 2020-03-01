@@ -160,11 +160,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     if(value.done || value.paused || value.invalidated || value.runs === 0) return;
 
                     if(!value.timeElapsed) value.timeElapsed = 0;
-                    if(!value.runs) value.runs = value.gogogo ? 999999 : 1;
+                    if(!value.runs) value.runs = value.gogogo ? 9999999 : 1;
 
                     value.started = true;
                     value.timeElapsed += event.deltaTime;
                     value.percentDone = Math.min(value.timeElapsed/value.timeLimit, 1);
+                    value.totalPercentDone = Math.min(value.currentRun/value.originalRuns, 1);
 
                     if(value.tickCallback) value.tickCallback(event.deltaTime);
                     if(value.immediateStart) {
@@ -415,9 +416,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
         },
 
         addItem: function(item) {
-            this.addBody(item.body);
-
-            this.itemSystem.addItem(item);
+            this.itemSystem.registerItem(item);
 
             //This is an important stage in a unit's lifecycle as it now has the initial set of renderChildren realized
             Matter.Events.trigger(item, 'addItem', {});
@@ -437,9 +436,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //remove item from item system
             this.itemSystem.removeItem(item);
-
-            //remove attached body
-            this.removeBody(item.body);
         },
 
         addBody: function(body) {
@@ -516,10 +512,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     //console.info("removing " + slave)
                     slave();
                 } else if(slave.unload) {
-                    console.info("removing sounds!" + slave)
+                    //console.info("removing sounds!" + slave)
                     slave.unload();
                 } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
-                    utils.removeSomethingFromRenderer(slave);
+                    if(slave.myLayer) {
+                        utils.removeSomethingFromRenderer(slave);
+                    }
+                    else if(slave.destroy) {
+                        slave.destroy();
+                    }
                 }
             }.bind(this));
         },
@@ -624,6 +625,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 var options = options || {};
                 this.timeElapsed = 0;
                 this.percentDone = 0;
+                this.totalPercentDone = 0;
 
                 if(this.runs == 0)
                     this.runs = null;

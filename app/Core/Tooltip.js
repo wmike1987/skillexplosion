@@ -99,7 +99,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
             }
 
             stopTimeout = setTimeout(function() {
-                if(!displayObject.tooltipObj.isDestroyed) {
+                if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
             }.bind(this), 100)
