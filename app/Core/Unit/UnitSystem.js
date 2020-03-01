@@ -364,6 +364,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                         if(this.selectedUnit) {
                             if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
                                 this.box.invalidateNextMouseUp = true;
+                                this.box.invalidateNextBox = true;
                                 if(this.abilityDispatch == 'm') {
                                     $.each(this.selectedUnits, function(key, unit) {
                                         if(Object.keys(this.selectedUnits).length == 1)
@@ -723,10 +724,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             $('body').on('keydown.unitSystem', function( event ) {
                  if(event.key == 'Alt') {
                      utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
-                             unit.showingBarsWithAlt = true;
-                             unit.showLifeBar(true);
-                             unit.showEnergyBar(true);
-                         })
+                         unit.showingBarsWithAlt = true;
+                         unit.showLifeBar(true);
+                         unit.showEnergyBar(true);
+                     })
                  }
             }.bind(this));
 

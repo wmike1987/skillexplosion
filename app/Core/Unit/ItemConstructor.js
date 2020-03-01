@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, utils, Tooltip, Matter) {
+define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'], function($, utils, Tooltip, Matter, styles) {
 
     var baseItem = {
         equip: function() {
@@ -33,8 +33,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
         //create name display (shown upon alt or hover)
         var baseTint = 0x00042D;
         newItem.nameDisplayBase = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
-        newItem.nameDisplay = utils.createDisplayObject('TEXT:' + newItem.name)
-        utils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 55});
+        newItem.nameDisplay = utils.createDisplayObject('TEXT:' + newItem.name, {style: styles.abilityText})
+        utils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 25});
 
         newItem.showName = function(bool) {
             if(!newItem.nameDisplay.parent) {
@@ -46,8 +46,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js',], function($, 
             newItem.nameDisplay.visible = bool;
 
             if(bool) {
-                newItem.nameDisplayBase.position = {x: newItem.body.position.x, y: newItem.body.position.y - 40};
-                newItem.nameDisplay.position = {x: newItem.body.position.x, y: newItem.body.position.y - 40};
+                newItem.nameDisplayBase.position = {x: newItem.body.position.x, y: newItem.body.position.y - 30};
+                newItem.nameDisplay.position = {x: newItem.body.position.x, y: newItem.body.position.y - 30};
             }
         }
 
