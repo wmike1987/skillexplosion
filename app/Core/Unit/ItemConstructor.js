@@ -57,9 +57,29 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
 
         newItem.drop = function(position) {
             //create item body
-            this.body = Matter.Bodies.circle(position.x, position.y, 30, {
+            this.body = Matter.Bodies.circle(position.x, position.y, 20, {
                 isSensor: true
             });
+
+            var item = this;
+
+            //play animation
+            this.itemDrop = utils.getAnimationB({
+                spritesheetName: 'bloodswipes1',
+                animationName: 'ItemDrop',
+                speed: 1.2,
+                playThisManyTimes: 1,
+                transform: [position.x, position.y],
+                onComplete: function() {
+                    utils.removeSomethingFromRenderer(this);
+                    currentGame.addBody(item.body);
+                    Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item});
+                }
+            });
+            utils.makeSpriteSize(this.itemDrop, {w: 60, h: 60});
+            this.itemDrop.alpha = .65;
+            this.itemDrop.play();
+            utils.addSomethingToRenderer(this.itemDrop, 'stage');
 
             //Make renderlings accessible from wherever
             Object.defineProperty(newItem.body, 'renderlings', {
@@ -97,7 +117,6 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
             }];
 
             newItem.body.item = newItem;
-            currentGame.addBody(newItem.body);
         },
 
         newItem.destroy = function() {

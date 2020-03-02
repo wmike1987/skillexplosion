@@ -103,6 +103,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
             this.itemsOnGround.push(item);
             ItemUtils.initiateBlinkDeath({item: item});
             itemDrop.play();
+            item.owningUnit = null;
         },
 
         this.registerItem = function(item) {

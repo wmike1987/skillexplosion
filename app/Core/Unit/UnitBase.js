@@ -136,9 +136,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
 
             dropItem: function(item) {
-                //remove ownership
-                item.owningUnit = null;
-
                 //spawn new item of same type
                 var spawnPosition = {};
                 do {
@@ -146,7 +143,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 } while (!utils.isPositionWithinPlayableBounds(spawnPosition))
 
                 item.drop(spawnPosition);
-                Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item, unit: this});
+                Matter.Events.trigger(currentGame.itemSystem, 'unitDroppedItem', {item: item, unit: this});
 
                 //remove added benefits
                 this.unequipItem(item);

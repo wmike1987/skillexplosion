@@ -123,7 +123,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 }
             }.bind(this))
 
-            Matter.Events.on(currentGame.itemSystem, 'dropItem', function(event) {
+            Matter.Events.on(currentGame.itemSystem, 'unitDroppedItem', function(event) {
                 if(this.prevailingUnit == event.unit) {
                     event.item.icon.tooltipObj.hide();
                     event.item.icon.visible = false;
