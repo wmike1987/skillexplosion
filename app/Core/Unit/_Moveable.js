@@ -28,7 +28,7 @@ function($, Matter, PIXI, utils, Command) {
             }
 
             //Create body sensor - the selection box collides with a slightly smaller body size
-            this.smallerBody = Matter.Bodies.rectangle(0, 0, this.selectionBody.wwidth/7*4, this.selectionBody.hheight/5*3, {
+            this.smallerBody = Matter.Bodies.rectangle(0, 0, this.selectionBody.wwidth/7*4, this.selectionBody.hheight/5*4, {
                 isSensor: true,
                 noWire: true
             });
@@ -37,19 +37,14 @@ function($, Matter, PIXI, utils, Command) {
             this.smallerBody.collisionFilter.mask = 0x0002; //this.smallerBody.collisionFilter.mask - (this.team || 4);
             this.smallerBody.isSmallerBody = true;
             this.smallerBody.unit = this;
-            var smallerCallback = currentGame.addTickCallback(function() {
-                Matter.Body.setPosition(this.smallerBody, {
-                    x: this.body.position.x,
-                    y: this.body.position.y
-                });
-            }.bind(this));
+
+            utils.attachSomethingToBody(this.smallerBody, this.body, {x: 0, y: -8});
             currentGame.addBody(this.smallerBody);
 
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
 
             //Deathpact these entities
             utils.deathPact(this, this.smallerBody);
-            utils.deathPact(this, smallerCallback);
         },
 
         move: function(destination, commandObj) {

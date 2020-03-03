@@ -267,6 +267,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                   if(x > utils.getPlayableWidth()) x = utils.getPlayableWidth()-5;
                   if(y < 0) y = 5;
                   if(y > utils.getPlayableHeight()) y = utils.getPlayableHeight()-5;
+
+                  this.body.oneFrameOverrideInterpolation = true;
                   Matter.Body.setPosition(this.body, {x: x, y: y});
                   this.visible = true;
                   currentGame.removeBody(shadow);
