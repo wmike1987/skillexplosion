@@ -56,7 +56,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             if(options.unit.unitIsDead) {
                 var item = item();
                 item.drop(options.unit.position);
-                Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item, unit: options.unit});
             } else {
                 options.unit.pickupItem(item());
             }
