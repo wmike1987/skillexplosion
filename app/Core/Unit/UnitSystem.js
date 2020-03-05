@@ -702,19 +702,27 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                      this.attackMove = false;
                      return;
                  }
+
+                 //if we're a reserved key, do nothing
                  if(key == 'shift' || key == 'tab' || key =='alt' || key == 'a') return;
+
                  this.abilityDispatch = event.key.toLowerCase();
+                 //if we're s or h, dispatch to all selected units, this is a special case
                  if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
                      $.each(this.selectedUnits, function(key, unit) {
                          var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: unit};
                          Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
+                         this.abilityDispatch = null;
                      }.bind(this))
                  } else if(this.selectedUnit) {
-                     var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit};
-                     if(this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
-                         utils.setCursorStyle('server:TargetCursor.png');
+                     //else if we have a selected unit, see if we can dispatch this immediately (key event) or prep for the click dispatch
+                     if(this.selectedUnit.eventKeyMappings[this.abilityDispatch]) {
+                         var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit};
                          Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
-                     } else {
+                         this.abilityDispatch = null;
+                     } else if(this.selectedUnit.eventClickMappings[this.abilityDispatch]){
+                         utils.setCursorStyle('server:TargetCursor.png');
+                     } else { //the selected unit cannot handle the event
                          this.abilityDispatch = null;
                      }
                  }
@@ -734,6 +742,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             //cycle through selected units, changing the prevailing-unit
             $('body').on('keydown.unitSystem', function( event ) {
                  if(event.key == 'Tab') {
+                     this.abilityDispatch = null;
                      this.annointNextPrevailingUnit();
                  }
             }.bind(this));
