@@ -261,7 +261,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 runs: 1,
                 timeLimit: 280,
                 callback: function() {
-                    self.stop();
+                    if(self.commandQueue.currentCommand.id == commandObj.command.id) {
+                        //only stop if we're still on the current dash command
+                        self.stop();
+                    }
                     commandObj.command.done();
                 }
             })
