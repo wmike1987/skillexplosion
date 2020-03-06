@@ -285,12 +285,28 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             icon: utils.createDisplayObject('SneakIcon'),
             method: silentStep,
             title: 'Silent Step',
-            description: 'Quickly relocate and become untargetable for two seconds.',
+            description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
             energyCost: 15,
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
             }]
+        })
+
+        var mine = function() {
+            console.info('layed a mine!')
+        }
+
+        var mineAbility = new Ability({
+            name: 'Mine',
+            key: 'f',
+            type: 'key',
+            icon: utils.createDisplayObject('BombIcon'),
+            method: mine,
+            title: 'Mine',
+            description: 'Lay an explosive mine.',
+            hotkey: 'F',
+            energyCost: 15,
         })
 
         var rad = options.radius || 22;
@@ -313,7 +329,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     team: options.team || 4,
                     name: options.name,
                     heightAnimation: 'up',
-                    abilities: [silentStepAbility],
+                    abilities: [silentStepAbility, mineAbility],
                     death: function() {
                         var self = this;
                         var anim = utils.getAnimationB({

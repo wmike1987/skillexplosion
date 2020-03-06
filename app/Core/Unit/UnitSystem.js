@@ -712,8 +712,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                      $.each(this.selectedUnits, function(key, unit) {
                          var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: unit};
                          Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
-                         this.abilityDispatch = null;
                      }.bind(this))
+                     this.abilityDispatch = null;
                  } else if(this.selectedUnit) {
                      //else if we have a selected unit, see if we can dispatch this immediately (key event) or prep for the click dispatch
                      if(this.selectedUnit.eventKeyMappings[this.abilityDispatch]) {

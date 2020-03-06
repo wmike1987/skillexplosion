@@ -53,7 +53,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                                 return enabled;
                             }],
                             preExecuteInterceptors: [function() {
-                                newUnit.energy -= (ability.energyCost || 0);
+                                newUnit.currentEnergy -= (ability.energyCost || 0);
                             }]
                         }
                         if(ability.predicates) {
