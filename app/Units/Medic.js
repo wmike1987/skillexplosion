@@ -314,7 +314,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         return UC({
                 renderChildren: rc,
                 radius: rad,
-                hitboxWidth: 45,
+                hitboxWidth: 30,
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
@@ -346,6 +346,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 moveable: {
                     moveSpeed: 2.15,
                     walkAnimations: walkAnimations,
+                    smallerBodyHeightChange: true,
                 }, attacker: {
                     attackAnimations: healAnimations,
                     cooldown: 180,

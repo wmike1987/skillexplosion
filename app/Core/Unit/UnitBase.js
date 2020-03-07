@@ -48,6 +48,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             currentEnergy: 0,
             isSelectable: true,
             isAttackable: true,
+            smallerBodyWidthChange: false,
+            smallerBodyHeightChange: false,
             abilities: [],
             commands: {
                 attack: {

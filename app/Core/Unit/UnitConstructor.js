@@ -4,8 +4,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
     function($, Matter, PIXI, Moveable, Attacker, Iso, utils, unitBase) {
 
         /*
-         *	This function creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior.
-         *  It also builds the event click and event key mapping objects from more user-friendly ability and command specs.
+         *  This module aims to assemble all the pieces of a unit. It creates a new object, mixes the specific unit-options with the unitBase, then:
+         *	Creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior.
+         *  Builds the event click and event key mapping objects from more user-friendly ability and command specs.
          *  Finally, it returns the unit.
          * options contains:
          * unit {}
