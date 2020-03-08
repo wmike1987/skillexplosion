@@ -116,6 +116,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
             pickupItem: function(item) {
                 if(this.canPickupItem(item)) {
+
                     //set ownership
                     item.owningUnit = this;
 

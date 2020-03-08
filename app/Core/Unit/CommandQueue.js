@@ -1,6 +1,6 @@
 define(['jquery', 'utils/GameUtils'], function($, utils) {
 
-    var failedPredicate = utils.getSound('cantpickup.wav', {volume: .01, rate: 1.3});
+    var failedPredicate = utils.getSound('cantpickup.wav', {volume: .02, rate: 1.3});
 
     //Defines a Command queue
     var CommandQueue = function() {

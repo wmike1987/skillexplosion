@@ -62,28 +62,28 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
     			}];
 
 		var baneling = UC({
-				renderChildren: rc,
-				mainRenderSprite: 'marble',
-				radius: radius,
-				unit: {
-					unitType: 'Baneling',
-					isoManaged: false,
-					health: 40,
-					energy: 0,
-					team: options.team || 4,
-					isSelectable: options.isSelectable,
-				},
-				moveable: {
-					moveSpeed: 1.8
-				},
-				attacker: {
-					honeRange: 200,
-					cooldown: 1,
-					range: radius*2+10,
-					damage: 10,
-					attack: function() {
+			renderChildren: rc,
+			mainRenderSprite: 'marble',
+			radius: radius,
+			unit: {
+				unitType: 'Baneling',
+				isoManaged: false,
+				health: 40,
+				energy: 0,
+				team: options.team || 4,
+				isSelectable: options.isSelectable,
+			},
+			moveable: {
+				moveSpeed: 1.8
+			},
+			attacker: {
+				honeRange: 200,
+				cooldown: 1,
+				range: radius*2+10,
+				damage: 10,
+				attack: function() {
 
-					}
+				}
 		}});
 
 		//create attack blast radius

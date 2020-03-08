@@ -12,6 +12,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         icon: 'required'
     }
 
+    var itemDrop = utils.getSound('itempickup.wav', {volume: .04, rate: .75});
+    var itemPickup = utils.getSound('itempickup.wav', {volume: .04, rate: 1.2});
+
     return function(options) {
         var newItem = $.extend({}, baseItem, options);
         newItem.isItem = true;
@@ -55,6 +58,11 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
             this.body = null;
         },
 
+        newItem.pickup = function() {
+            this.removePhysicalForm();
+            itemPickup.play();
+        },
+
         newItem.drop = function(position) {
             //create item body
             this.body = Matter.Bodies.circle(position.x, position.y, 20, {
@@ -76,6 +84,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                     Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item});
                 }
             });
+
+            itemDrop.play();
             utils.makeSpriteSize(this.itemDrop, {w: 60, h: 60});
             this.itemDrop.alpha = .65;
             this.itemDrop.play();

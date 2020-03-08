@@ -341,6 +341,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     utils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                     currentGame.removeBody(knife);
                 }
+
+                if(otherBody.isMine) {
+                    otherBody.explode();
+                }
             }.bind(this))
 
             currentGame.addTimer({

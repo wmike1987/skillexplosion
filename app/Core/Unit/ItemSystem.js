@@ -1,9 +1,7 @@
 define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], function($, utils, Matter, ItemUtils) {
 
     var highlightTint = 0xa6ff29;
-    var itemPickup = utils.getSound('itempickup.wav', {volume: .04, rate: 1});
-    var itemDrop = utils.getSound('itempickup.wav', {volume: .04, rate: .8});
-    var cantpickup = utils.getSound('cantpickup.wav', {volume: .01, rate: 1.3});
+    var cantpickup = utils.getSound('cantpickup.wav', {volume: .02, rate: 1.3});
 
     //This module manages all things item-related
     var itemSystem = function(properties) {
@@ -86,10 +84,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                     var otherBody = pair.pair.bodyB == event.unit ? pair.pair.bodyA : pair.pair.bodyB;
                     if(event.unit.targetedItem && otherBody == event.unit.targetedItem.body) {
                         if(event.unit.canPickupItem(event.unit.targetedItem)) {
-                            itemPickup.play();
                             event.unit.pickupItem(event.unit.targetedItem);
                             Matter.Events.trigger(this, 'pickupItem', {item: event.unit.targetedItem, unit: event.unit});
-                            this.removeItemFromGround(event.unit.targetedItem);
+                            this.pickupItem(event.unit.targetedItem);
                         } else {
                             cantpickup.play();
                         }
@@ -102,7 +99,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
         this.addItemOnGround = function(item) {
             this.itemsOnGround.push(item);
             ItemUtils.initiateBlinkDeath({item: item});
-            itemDrop.play();
             item.owningUnit = null;
         },
 
@@ -110,10 +106,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
             this.items.add(item);
         },
 
+        this.pickupItem = function(item) {
+            item.pickup();
+            this.removeItemFromGround(item);
+        }
+
         this.removeItemFromGround = function(item) {
             var index = this.itemsOnGround.indexOf(item);
             if(index > -1) {
-                item.removePhysicalForm();
                 this.itemsOnGround.splice(index, 1);
             }
         },
@@ -121,12 +121,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
         this.removeItem = function(item) {
             this.removeItemFromGround(item);
             this.items.delete(item);
-            // console.info(this.items.size)
             item.destroy();
         }
 
         this.cleanUp = function() {
-
             Matter.Events.off(this);
 
             this.itemsOnGround = [];

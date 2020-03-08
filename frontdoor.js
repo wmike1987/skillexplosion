@@ -172,9 +172,10 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.DiamondFlashFrameCount = 4;
         	loader.SquareWithBorderDeathFrameCount = 5;
 
-        	//blood animations
+        	//more animations
         	loader.add('deathAnimations', 'app/Textures/DeathAnimations.json');
         	loader.add('bloodswipes1', 'app/Textures/bloodswipes1.json');
+        	loader.add('animations2', 'app/Textures/animations2.json');
 
         	//odds and ends
         	loader.add('unitMisc', 'app/Textures/UnitMisc.json');

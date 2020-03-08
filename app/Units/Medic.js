@@ -234,7 +234,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
               mass: options.mass || 5,
               isSensor: true
           });
-
           shadow.isShadow = true;
 
           shadow.renderChildren = [{
@@ -244,6 +243,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
               stage: "stageNTwo",
               offset: {x: 0, y: 22}
           }];
+
+          //medic reference to shadow
+          this.shadow = shadow;
 
           currentGame.addBody(shadow);
           shadow.oneFrameOverrideInterpolation = true;
@@ -270,7 +272,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
                   this.body.oneFrameOverrideInterpolation = true;
                   Matter.Body.setPosition(this.body, {x: x, y: y});
-                  this.visible = true;
+                  this.shadow = null;
                   currentGame.removeBody(shadow);
                   commandObj.command.done();
               }
@@ -293,8 +295,94 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }]
         })
 
-        var mine = function() {
-            console.info('layed a mine!')
+
+        var mineSound = utils.getSound('laymine.mp3', {volume: .06, rate: .8});
+        var mineBeep = utils.getSound('minebeep.wav', {volume: .03, rate: 7});
+        var mineExplosion = utils.getSound('mineexplosion2.wav', {volume: .35, rate: 1.7});
+        var layMine = function(commandObj) {
+            mineSound.play();
+
+            var position = (this.shadow ? {x: this.shadow.position.x, y: this.shadow.position.y} : {x: this.position.x, y: this.position.y});
+            var mine = Matter.Bodies.circle(position.x, position.y+20, 15, {
+                isSensor: true,
+                noWire: true,
+            });
+            mine.isMine = true;
+
+            currentGame.addBody(mine);
+
+            var stateZero = utils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});
+            var stateOne = utils.createDisplayObject('MineOne', {scale: {x: .75, y: .75}, alpha: .8});
+            var stateTwo = utils.createDisplayObject('MineTwo', {scale: {x: .75, y: .75}, alpha: .8});
+            var stateThree = utils.createDisplayObject('MineThree', {scale: {x: .75, y: .75}, alpha: .8});
+
+            var medic = this;
+            var mineState = {state: 0, id: utils.uuidv4(), position: mine.position, blastRadius: 120, damage: 25, primaryExplosionRadius: 60};
+            utils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
+
+            //explode animation
+            var mineExplosionAnimation = utils.getAnimationB({
+				spritesheetName: 'animations2',
+				animationName: 'mineexplosion',
+				speed: 2.8,
+				transform: [mineState.position.x, mineState.position.y, 1.5, 1.5]
+			});
+            utils.makeSpriteSize(mineExplosionAnimation, {x: 240, y: 240})
+			mineExplosionAnimation.rotation = Math.random() * Math.PI;
+            mineExplosionAnimation.alpha = .9;
+            // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
+            //     isSensor: true,
+            // });
+            // currentGame.addBody(mine2);
+
+            var mineTimer = currentGame.addTimer({
+                name: mineState.id,
+                runs: 4,
+                timeLimit: 650,
+                killsSelf: true,
+                callback: function() {
+                    if(mineState.state === 0) {
+                        mineBeep.play();
+                        utils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
+                        utils.removeSomethingFromRenderer(stateZero);
+                        mineState.state += 1;
+                    } else if(mineState.state == 1) {
+                        mineBeep.play();
+                        utils.addSomethingToRenderer(stateTwo, 'stage', {position: mineState.position})
+                        utils.removeSomethingFromRenderer(stateOne);
+                        mineState.state += 1;
+                    } else if(mineState.state == 2) {
+                        mineBeep.play();
+                        utils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
+                        utils.removeSomethingFromRenderer(stateTwo);
+                        mineState.state += 1;
+                    } else if(mineState.state == 3) {
+                        mine.explode();
+                    }
+                }
+            })
+            utils.deathPact(mine, mineTimer);
+
+            mine.explode = function() {
+                mineExplosion.play();
+                utils.applyToUnitsByTeam(function(team) {return medic.team != team}, function(unit) {
+                    return (utils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isAttackable);
+                }.bind(this), function(unit) {
+                    var dmg = mineState.damage;
+                    if(utils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {
+                        dmg = dmg*2;
+                    }
+                    unit.sufferAttack(dmg);
+                });
+                mineExplosionAnimation.play();
+                utils.addSomethingToRenderer(mineExplosionAnimation, 'stageOne');
+                utils.removeSomethingFromRenderer(stateZero);
+                utils.removeSomethingFromRenderer(stateOne);
+                utils.removeSomethingFromRenderer(stateTwo);
+                utils.removeSomethingFromRenderer(stateThree);
+                currentGame.removeBody(mine);
+            }
+            commandObj.command.done();
         }
 
         var mineAbility = new Ability({
@@ -302,7 +390,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             key: 'f',
             type: 'key',
             icon: utils.createDisplayObject('BombIcon'),
-            method: mine,
+            method: layMine,
             title: 'Mine',
             description: 'Lay an explosive mine.',
             hotkey: 'F',
@@ -318,7 +406,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [healsound],
+                slaves: [healsound, mineSound, mineBeep, mineExplosion],
                 unit: {
                     unitType: 'Medic',
                     health: 25,
