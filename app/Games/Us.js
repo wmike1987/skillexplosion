@@ -62,6 +62,14 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             }.bind(this)});
         },
 
+        engageSceneTransition: function() {
+
+        },
+
+        createCamp: function() {
+
+        },
+
         nextLevel: function() {
 
             if(this.lives == 0) return;

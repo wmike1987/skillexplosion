@@ -504,11 +504,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 }
             }.bind(this));
 
+            var smallBoxThreshold = 3;
             Matter.Events.on(this.box, 'onCollideActive', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 if(!otherBody.isSelectionBody) return;
                 var otherUnit = otherBody.unit || {};
-                if(otherUnit.isMoving && this.box.bounds.max.x-this.box.bounds.min.x < 25 && this.box.bounds.max.y-this.box.bounds.min.y < 25) return;
+                if(otherUnit.isMoving && this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) return;
                 if(!otherUnit.isMoving && otherUnit.isSelectable) {
                     changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
@@ -526,7 +527,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             Matter.Events.on(this.box, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit || {};
-                if(otherUnit.isMoving && this.box.bounds.max.x-this.box.bounds.min.x < 25 && this.box.bounds.max.y-this.box.bounds.min.y < 25) return;
+                if(otherUnit.isMoving && this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) return;
                 if(!otherUnit.isMoving && otherUnit.isSelectable) {
                     changeSelectionState(otherBody.unit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;

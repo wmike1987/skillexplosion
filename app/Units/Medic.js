@@ -402,14 +402,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         return UC({
                 renderChildren: rc,
                 radius: rad,
-                hitboxWidth: 30,
+                hitboxWidth: 35,
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [healsound, mineSound, mineBeep, mineExplosion],
                 unit: {
                     unitType: 'Medic',
-                    health: 25,
+                    health: 40,
                     energy: 60,
                     energyRegenerationRate: 4,
                     portrait: utils.createDisplayObject('MedicGreenEyes'),

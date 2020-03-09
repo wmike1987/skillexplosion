@@ -377,14 +377,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         return UC({
                 renderChildren: rc,
                 radius: options.radius || 22,
-                hitboxWidth: 30,
+                hitboxWidth: 35,
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
                 unit: {
                     unitType: 'Marine',
-                    health: 500000,
+                    health: 75,
                     energy: 20,
                     energyRegenerationRate: 1,
                     portrait: utils.createDisplayObject('MarineRedHat'),
@@ -415,7 +415,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     cooldown: 650,
                     honeRange: 300,
                     range: 180,
-                    damage: 30,
+                    damage: 10,
                     attack: function(target) {
                         target.sufferAttack(this.damage);
                         fireSound.play();
