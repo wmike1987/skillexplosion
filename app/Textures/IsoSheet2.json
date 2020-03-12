@@ -2,7 +2,7 @@
 
 "AbilityTarget.png":
 {
-	"frame": {"x":1161,"y":417,"w":32,"h":26},
+	"frame": {"x":1153,"y":205,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -42,8 +42,8 @@
 },
 "AttackTarget.png":
 {
-	"frame": {"x":1153,"y":205,"w":32,"h":26},
-	"rotated": false,
+	"frame": {"x":1751,"y":205,"w":32,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -128,6 +128,14 @@
 	"spriteSourceSize": {"x":6,"y":3,"w":119,"h":125},
 	"sourceSize": {"w":128,"h":128}
 },
+"MineCracks.png":
+{
+	"frame": {"x":1161,"y":417,"w":32,"h":27},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":27},
+	"sourceSize": {"w":32,"h":32}
+},
 "MineOne.png":
 {
 	"frame": {"x":1150,"y":333,"w":30,"h":16},
@@ -170,7 +178,7 @@
 },
 "MoveTarget.png":
 {
-	"frame": {"x":1751,"y":205,"w":32,"h":26},
+	"frame": {"x":1717,"y":235,"w":32,"h":26},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -242,6 +250,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1934,"h":816},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:665000e708ebd3cdcdaaaa951e025d4f:b92a0aab4476645c207abb03c158f2c0:46c875579d242a0b1cfceb19946da616$"
+	"smartupdate": "$TexturePacker:SmartUpdate:90183b73f85627aecf4c87162239778b:bb904865df11c5b6b2bd8a5fb054ed13:46c875579d242a0b1cfceb19946da616$"
 }
 }

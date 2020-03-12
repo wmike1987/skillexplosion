@@ -67,7 +67,7 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
         }
 
         queue.getCurrentCommand = function() {
-            return this.queue[0];
+            return this.queue[0] || {id: 'empty'};
         }
 
         return queue;

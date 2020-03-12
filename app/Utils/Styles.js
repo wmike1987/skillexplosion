@@ -175,7 +175,7 @@ define(function() {
 		}),
 
 		regularItemName: new PIXI.TextStyle({
-			fill: "#EBEBEB",
+			fill: "#D3D7E8",
 			fontFamily: "Tahoma, Geneva, sans-serif",
 			fontSize: 16,
 			strokeThickness: 1

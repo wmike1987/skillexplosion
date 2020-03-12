@@ -58,7 +58,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
              * Create banes
              */
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 5000, callback: function() {
-                // this.createBane(2, true);
+                this.createBane(2, true);
             }.bind(this)});
         },
 

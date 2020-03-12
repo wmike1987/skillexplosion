@@ -311,6 +311,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             currentGame.addBody(mine);
 
+            var mineCracks = utils.createDisplayObject('MineCracks', {scale: {x: .75, y: .75}, alpha: 1});
             var stateZero = utils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});
             var stateOne = utils.createDisplayObject('MineOne', {scale: {x: .75, y: .75}, alpha: .8});
             var stateTwo = utils.createDisplayObject('MineTwo', {scale: {x: .75, y: .75}, alpha: .8});
@@ -319,6 +320,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var medic = this;
             var mineState = {state: 0, id: utils.uuidv4(), position: mine.position, blastRadius: 120, damage: 25, primaryExplosionRadius: 60};
             utils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
+            utils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position})
 
             //explode animation
             var mineExplosionAnimation = utils.getAnimationB({
@@ -380,6 +382,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 utils.removeSomethingFromRenderer(stateOne);
                 utils.removeSomethingFromRenderer(stateTwo);
                 utils.removeSomethingFromRenderer(stateThree);
+                utils.removeSomethingFromRenderer(mineCracks);
                 currentGame.removeBody(mine);
             }
             commandObj.command.done();
