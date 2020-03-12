@@ -66,7 +66,7 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
             this.queue = [];
         }
 
-        queue.currentCommand = function() {
+        queue.getCurrentCommand = function() {
             return this.queue[0];
         }
 

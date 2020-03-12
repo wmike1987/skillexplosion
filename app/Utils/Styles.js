@@ -123,7 +123,7 @@ define(function() {
 		unitNameStyle: new PIXI.TextStyle({
 			fill: "white",
 			fillGradientType: 1,
-			fontFamily: "Times New Roman",
+			fontFamily: "Helvetica",
 			fontSize: 20,
 			strokeThickness: 4
 		}),
@@ -133,6 +133,29 @@ define(function() {
 			fillGradientType: 1,
 			fontFamily: "Helvetica",
 			fontSize: 18,
+			strokeThickness: 2
+		}),
+
+		unitLevelStyle: new PIXI.TextStyle({
+			fill: "#D59E31",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
+		}),
+
+		unitDamageStyle: new PIXI.TextStyle({
+			fill: "#DB2323",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
+			strokeThickness: 2
+		}),
+
+		unitDefenseStyle: new PIXI.TextStyle({
+			fill: "#0CA5D4",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
 			strokeThickness: 2
 		}),
 
@@ -151,10 +174,33 @@ define(function() {
 			strokeThickness: 1
 		}),
 
+		regularItemName: new PIXI.TextStyle({
+			fill: "#EBEBEB",
+			fontFamily: "Tahoma, Geneva, sans-serif",
+			fontSize: 16,
+			strokeThickness: 1
+		}),
+
 		abilityText: new PIXI.TextStyle({
-			fill: "#FFFFFF",
+			fill: "#D3D7E8",
 			fillGradientType: 1,
     		fontFamily: "Tahoma, Geneva, sans-serif",
+			fontSize: 14,
+			strokeThickness: 1
+		}),
+
+		HPTTStyle: new PIXI.TextStyle({
+			fill: "#FFFFFF",
+			fillGradientType: 1,
+			fontFamily: "Tahoma, Geneva, sans-serif",
+			fontSize: 14,
+			strokeThickness: 1
+		}),
+
+		EnergyTTStyle: new PIXI.TextStyle({
+			fill: "#E948EF",
+			fillGradientType: 1,
+			fontFamily: "Tahoma, Geneva, sans-serif",
 			fontSize: 14,
 			strokeThickness: 1
 		}),
@@ -163,7 +209,7 @@ define(function() {
 			fill: "#7DD4FF",
 			fillGradientType: 1,
 			fontFamily: "Tahoma, Geneva, sans-serif",
-			fontSize: 10,
+			fontSize: 12,
 			strokeThickness: 1
 		}),
 	}

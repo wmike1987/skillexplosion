@@ -411,6 +411,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     unitType: 'Medic',
                     health: 40,
                     energy: 60,
+                    damageLabel: "Heal: ",
+                    damageMember: "healAmount",
                     energyRegenerationRate: 4,
                     portrait: utils.createDisplayObject('MedicGreenEyes'),
                     wireframe: utils.createDisplayObject('MedicGreenEyes'),

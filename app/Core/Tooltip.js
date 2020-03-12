@@ -12,16 +12,27 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
 
         this.title = utils.createDisplayObject('TEXT:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
 
-        this.description = utils.createDisplayObject('TEXT:' + options.description, {style: styles.abilityText, anchor: textAnchor});
+        this.description = utils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor});
 
         if(options.systemMessage) {
             this.systemMessage = utils.createDisplayObject('TEXT:' + options.systemMessage, {style: styles.systemMessageText, anchor: textAnchor});
         }
 
+        this.updaters = options.updaters || {};
+        var self = this;
+        if(options.updaters) {
+            var tt = this;
+            $.each(options.updaters, function(key, updater) {
+                this.updaters[key] = currentGame.addTickCallback(function() {
+                    tt[key].text = updater(self);
+                })
+            }.bind(this))
+        }
+
         var baseTint = 0x00042D;
 
         this.base = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
-        utils.makeSpriteSize(this.base, {w: this.description.width + 15, h: 55 + (options.systemMessage ? 12 : 0)});
+        utils.makeSpriteSize(this.base, {w: Math.max(this.description.width + 15, (this.systemMessage ? this.systemMessage.width + 15 : 0)), h: 55 + (options.systemMessage ? 12 : 0)});
     };
 
     //set title, text, backgroundColor, etc
@@ -38,6 +49,11 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
             utils.removeSomethingFromRenderer(this.systemMessage);
         }
         utils.removeSomethingFromRenderer(this.base);
+
+        $.each(this.updaters, function(key, updater) {
+            currentGame.removeTickCallback(updater);
+        }.bind(this))
+
         this.isDestroyed = true;
     };
 

@@ -19,14 +19,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.unitPortraitPosition = {x: this.centerX, y: this.centerY};
 
         //unit status variables
-        this.unitStatSpacing = 26;
-        this.unitFrameCenterX = this.centerX - 115;
-        this.unitNamePosition = {x: this.unitFrameCenterX, y: this.centerY - this.unitStatSpacing};
-        this.unitHealthPosition = {x: this.unitFrameCenterX, y: this.centerY};
-        this.unitEnergyPosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatSpacing};
-        this.unitNameText = utils.addSomethingToRenderer('TEXT: --', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
-        this.unitHealthText = utils.addSomethingToRenderer('TEXT: --', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitHealthStyle});
-        this.unitEnergyText = utils.addSomethingToRenderer('TEXT: --', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitEnergyStyle});
+        this.unitStatSpacing = 20;
+        this.unitStatYOffset = -10;
+        this.unitFrameCenterX = this.centerX - 155;
+        this.unitNamePosition = {x: this.unitFrameCenterX, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
+        this.unitLevelPosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatYOffset};
+        this.unitDamagePosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+        this.unitArmorPosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+        this.unitNameText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
+        this.unitLevelText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
+        this.unitDamageText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
+        this.unitDefenseText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
 
         //health vial
         this.vialDimensions = {w: 24, h: 90};
@@ -34,6 +37,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.healthVialCenterX = this.centerX - 58;
         this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
         this.healthVial = utils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
+        Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, updaters: {description: function(tooltip) {
+            if(this.prevailingUnit) {
+                var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
+                tooltip.description.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
+            }
+            return txt;
+        }.bind(this), systemMessage: function() {
+            if(this.prevailingUnit)
+                var txt = "+" + this.prevailingUnit.healthRegenerationRate + " hp/sec";
+            return txt;
+        }.bind(this)}})
         utils.makeSpriteSize(this.healthVial, this.vialDimensions);
 
         this.healthBubbles = utils.getAnimationB({
@@ -59,6 +73,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.energyVialCenterX = this.centerX + 58;
         this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
         this.energyVial = utils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
+        Tooltip.makeTooltippable(this.energyVial, {title: "Energy", systemMessage: "+X energy/sec", descriptionStyle: styles.EnergyTTStyle, updaters: {description: function(tooltip) {
+            if(this.prevailingUnit) {
+                var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
+            }
+            return txt;
+        }.bind(this), systemMessage: function() {
+            if(this.prevailingUnit)
+                var txt = "+" + this.prevailingUnit.energyRegenerationRate + " energy/sec";
+            return txt;
+        }.bind(this)}})
         utils.makeSpriteSize(this.energyVial, this.vialDimensions);
 
         this.energyBubbles = utils.getAnimationB({
@@ -238,9 +262,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //blank out unit stat panel
         this.unitNameText.text = '--';
-        this.unitHealthText.style.fill = "#2EA003";
-        this.unitHealthText.text = '--';
-        this.unitEnergyText.text = '--';
+        this.unitLevelText.text = '--';
+        this.unitDamageText.text = '--';
+        this.unitDefenseText.text = '--';
 
         //clear unit ability icons
         if(this.currentAbilities) {
@@ -311,12 +335,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     //name
                     this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
 
-                    //health
-                    this.unitHealthText.text = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
-                    this.unitHealthText.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
+                    //level
+                    this.unitLevelText.text = "Lvl: " + this.prevailingUnit.level;
 
-                    //energy
-                    this.unitEnergyText.text = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
+                    //damage
+                    this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage);
+
+                    //armor
+                    this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
                 }
             }.bind(this));
         }

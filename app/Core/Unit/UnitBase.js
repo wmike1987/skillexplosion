@@ -42,6 +42,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             isoManaged: true,
             maxHealth: 20,
             currentHealth: 20,
+            defense: 0,
+            level: 1,
             energyRegenerationRate: 0,
             healthRegenerationRate: 0,
             maxEnergy: 0,

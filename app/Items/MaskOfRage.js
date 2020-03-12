@@ -13,7 +13,7 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, ut
             equip: equip,
             unequip: unequip,
             name: "Mask Of Rage",
-            description: "Add 10 to base damage.",
+            description: "Add 8 to base damage.",
             icon: 'MaskOfRage'
         })
     };
