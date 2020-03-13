@@ -287,6 +287,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var knifeThrowSound = utils.getSound('knifethrow.wav', {volume: .03, rate: 1.5});
         var knifeImpactSound = utils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
         var knifeSpeed = 15;
+        var knifeDamage = 20;
         var throwKnife = function(destination, commandObj) {
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {
@@ -328,7 +329,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
                 if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
-                    otherUnit.sufferAttack(10); //we can make the assumption that a body is part of a unit if it's attackable
+                    otherUnit.sufferAttack(knifeDamage); //we can make the assumption that a body is part of a unit if it's attackable
                     var bloodPierceAnimation = utils.getAnimationB({
                         spritesheetName: 'bloodswipes1',
                         animationName: 'pierce',
@@ -365,7 +366,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             icon: utils.createDisplayObject('KnifeIcon'),
             method: throwKnife,
             title: 'Throwing Knife',
-            description: 'Throw a knife, dealing 20 damage.',
+            description: 'Throw a knife, dealing ' + knifeDamage + ' damage.',
             hotkey: 'F',
             energyCost: 5
         })
@@ -384,7 +385,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
                 unit: {
                     unitType: 'Marine',
-                    health: 750000,
+                    health: 75,
+                    defense: 1,
                     energy: 20,
                     energyRegenerationRate: 1,
                     portrait: utils.createDisplayObject('MarineRedHat'),

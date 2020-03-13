@@ -84,7 +84,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             maxItems: 6,
 
             sufferAttack: function(damage) {
-                this.currentHealth -= damage;
+                this.currentHealth -= Math.max(0, (damage - this.defense));
                 if (this.currentHealth <= 0) {
                     this._death();
                 } else {

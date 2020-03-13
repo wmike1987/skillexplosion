@@ -10,13 +10,29 @@
 },
 "JewelOfLife.png":
 {
-	"frame": {"x":35,"y":1,"w":32,"h":32},
+	"frame": {"x":1,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "MaskOfRage.png":
+{
+	"frame": {"x":1,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"MedalOfDefense.png":
+{
+	"frame": {"x":35,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"MedalOfGrit.png":
 {
 	"frame": {"x":69,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -26,7 +42,7 @@
 },
 "RingOfReason.png":
 {
-	"frame": {"x":103,"y":1,"w":32,"h":32},
+	"frame": {"x":35,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +50,15 @@
 },
 "RingOfWellBeing.png":
 {
-	"frame": {"x":137,"y":1,"w":32,"h":32},
+	"frame": {"x":35,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"SteadySyringe.png":
+{
+	"frame": {"x":69,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -45,8 +69,8 @@
 	"version": "1.0",
 	"image": "Items.png",
 	"format": "RGBA8888",
-	"size": {"w":170,"h":34},
+	"size": {"w":102,"h":102},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b9b33eb4f8c6c8567deff022e1253969:a4c3b123dda5cedebf898d5bb9693aa6:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:3cceb6d6251d406432f49feaa151f8ec:0b9c02f9dce32360e554e0d420a163ee:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

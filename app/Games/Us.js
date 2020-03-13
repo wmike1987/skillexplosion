@@ -58,7 +58,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
              * Create banes
              */
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 5000, callback: function() {
-                // this.createBane(2, true);
+                this.createBane(2, true);
             }.bind(this)});
         },
 
@@ -131,10 +131,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     bane.honeRange = 1400;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
-                if(utils.flipCoin() && utils.flipCoin()) {
-                    ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                if(utils.flipCoin() && utils.flipCoin() || true) {
+                    // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
                 }
-                ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
             }
         },
 

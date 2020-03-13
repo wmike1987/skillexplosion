@@ -412,7 +412,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 slaves: [healsound, mineSound, mineBeep, mineExplosion],
                 unit: {
                     unitType: 'Medic',
-                    health: 4000000,
+                    health: 40,
                     energy: 60,
                     damageLabel: "Heal: ",
                     damageMember: "healAmount",
