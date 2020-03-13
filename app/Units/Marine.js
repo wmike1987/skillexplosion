@@ -384,7 +384,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
                 unit: {
                     unitType: 'Marine',
-                    health: 75,
+                    health: 750000,
                     energy: 20,
                     energyRegenerationRate: 1,
                     portrait: utils.createDisplayObject('MarineRedHat'),

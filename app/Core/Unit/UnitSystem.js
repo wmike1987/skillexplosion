@@ -619,7 +619,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                     if(!this.attackMove && !this.abilityDispatch) {
                         if(units.length > 0) {
                             utils.setCursorStyle('server:OverUnitCursor.png', '16 16');
-                        } else {
+                        } else if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)){
                             utils.setCursorStyle('server:MainCursor.png');
                         }
                     }

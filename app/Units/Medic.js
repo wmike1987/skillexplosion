@@ -412,11 +412,11 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 slaves: [healsound, mineSound, mineBeep, mineExplosion],
                 unit: {
                     unitType: 'Medic',
-                    health: 40,
+                    health: 4000000,
                     energy: 60,
                     damageLabel: "Heal: ",
                     damageMember: "healAmount",
-                    energyRegenerationRate: 4,
+                    energyRegenerationRate: 2,
                     portrait: utils.createDisplayObject('MedicGreenEyes'),
                     wireframe: utils.createDisplayObject('MedicGreenEyes'),
                     team: options.team || 4,
@@ -446,6 +446,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     honeRange: 300,
                     range: rad*2 + 10,
                     healAmount: 1,
+                    healCost: 1,
                     attack: function(target) {
                         if(this.currentEnergy >= 1) {
 
@@ -462,7 +463,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             healAnimation.play();
                             utils.addSomethingToRenderer(healAnimation, 'stageOne');
 
-                            this.currentEnergy -= 2;
+                            this.currentEnergy -= this.healCost;
                             target.currentHealth += this.healAmount;
                             if(target.currentHealth >= target.maxHealth)
                                 target.currentHealth = target.maxHealth;

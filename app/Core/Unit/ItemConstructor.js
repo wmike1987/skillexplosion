@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'], function($, utils, Tooltip, Matter, styles) {
+define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles', 'pixi'], function($, utils, Tooltip, Matter, styles, PIXI) {
 
     var baseItem = {
         equip: function() {
@@ -23,12 +23,50 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         newItem.icon = utils.createDisplayObject(options.icon); //note that this icon will not die upon removing the item
         var ctrlClickToDropMessage = '(Ctrl + Click to drop item)';
         newItem.icon.interactive = true;
+        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
+
+        //cursor change
+        newItem.controlDown = function(event) {
+            if(event.key == 'Control') {
+                if(newItem.mouseInside) {
+                    utils.setCursorStyle('server:GenericActionCursor.png');
+                }
+            }
+        }
+        newItem.controlUp = function(event) {
+            if(event.key == 'Control') {
+                if(newItem.mouseInside) {
+                    utils.setCursorStyle('server:MainCursor.png');
+                }
+            }
+        }
+        window.addEventListener("keydown", newItem.controlDown);
+        window.addEventListener("keyup", newItem.controlUp);
+        newItem.cursorListener = currentGame.addTickCallback(function() {
+            if(!newItem.icon.visible) return;
+
+            var localPoint = newItem.icon.toLocal(new PIXI.Point(currentGame.mousePosition.x, currentGame.mousePosition.y));
+            if(newItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
+                if(keyStates['Control']) {
+                    utils.setCursorStyle('server:GenericActionCursor.png');
+                }
+                newItem.mouseInside = true;
+            } else {
+                if(newItem.mouseInside) {
+                    utils.setCursorStyle('server:MainCursor.png');
+                }
+                newItem.mouseInside = false;
+            }
+        })
+
+        //drop item
         newItem.icon.on('mousedown', function(event) {
             if(keyStates['Control']) {
                 newItem.owningUnit.dropItem(newItem);
+                newItem.mouseInside = false;
+                utils.setCursorStyle('server:MainCursor.png');
             }
         }.bind(this))
-        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
 
         //create name display (shown upon alt or hover)
         var baseTint = 0x00042D;
@@ -136,6 +174,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
             if(newItem.body) {
                 currentGame.removeBody(newItem.body);
             }
+            window.removeEventListener('keydown', this.controlDown);
+            window.removeEventListener('keyup', this.controlUp);
+            currentGame.removeTickCallback(newItem.cursorListener);
         },
 
         currentGame.addItem(newItem);
