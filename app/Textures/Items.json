@@ -24,7 +24,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"MedalOfDefense.png":
+"MedalOfGrit.png":
 {
 	"frame": {"x":35,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -32,7 +32,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"MedalOfGrit.png":
+"MedalOfMerit.png":
 {
 	"frame": {"x":69,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -71,6 +71,6 @@
 	"format": "RGBA8888",
 	"size": {"w":102,"h":102},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:3cceb6d6251d406432f49feaa151f8ec:0b9c02f9dce32360e554e0d420a163ee:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:1e0d22318b967ba2aee98c11c8a71c92:41a4d928cc3b648ff710309a825599ac:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

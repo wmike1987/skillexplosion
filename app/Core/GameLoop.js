@@ -22,7 +22,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         this.fps = options.fps || 60;
         this.desiredFrameTime = 1000/this.fps;
         this.isFixed = options.isFixed;
-        this.maxDelta = 1000;
+        this.maxDelta = 500;
+        this.paused = false;
 
         if(options.interpolate === false) {
             this.interpolate = false;
@@ -49,6 +50,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 this.lastTime = time - this.desiredFrameTime;
             }
 
+            if(this.paused) {
+                this.lastTime = time;
+                return;
+            }
+
             var event = {
                 timestamp: options.engine.timing.timestamp
             };
@@ -59,8 +65,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime)
             if(willUpdate) {
                 Matter.Events.trigger(this, 'beforeUpdate', event);
-            } else {
-                //console.info('missedFrame');
             }
 
             var hasUpdated = false;

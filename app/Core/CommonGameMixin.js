@@ -135,6 +135,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.lastDeltaText.visible = false;
             this.fpsText.visible = false;
 
+            //create paused game text and hide initially
+            var pausedGameText = utils.addSomethingToRenderer("TEXT:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+            pausedGameText.visible = false;
+
+            //keydown listener for ctrl shift f and ctrl shift x
             $('body').on('keydown', function( event ) {
                 if(keyStates['Shift'] && keyStates['Control']) {
                     if(event.key == 'f' || event.key == 'F') {
@@ -145,6 +150,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         } else {
                             this.renderer.stats.stats.dom.style.visibility = 'visible';
                         }
+                    }
+                }
+
+                if(keyStates['Shift'] && keyStates['Control']) {
+                    if(event.key == 'x' || event.key == 'X') {
+                        currentGame.gameLoop.paused = !currentGame.gameLoop.paused;
+                        pausedGameText.visible = currentGame.gameLoop.paused;
                     }
                 }
 

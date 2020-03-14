@@ -207,6 +207,20 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }
                 });
 
+                Object.defineProperty(this, 'maxEnergy', {
+                    get: function() {
+                        return this._maxEnergy || 0;
+                    },
+
+                    set: function(value) {
+                        var currentPercentage = 100;
+                        if(this._maxEnergy)
+                            currentPercentage = this.currentEnergy/this._maxEnergy;
+                        this._maxEnergy = value;
+                        this.currentEnergy = Math.round(this._maxEnergy * currentPercentage);
+                    }
+                });
+
                 // setup health and energy
                 if (this.health) {
                     this.maxHealth = this.health;

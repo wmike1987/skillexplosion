@@ -12,7 +12,16 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
 
         this.title = utils.createDisplayObject('TEXT:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
 
-        this.description = utils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor});
+        //build descriptions
+        this.description = [];
+        if($.isArray(options.description)) {
+            $.each(options.description, function(i, descr) {
+                this.description.push(utils.createDisplayObject('TEXT:' + descr, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
+            }.bind(this))
+        } else {
+            this.description.push(utils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
+        }
+        this.mainDescription = this.description[0];
 
         if(options.systemMessage) {
             this.systemMessage = utils.createDisplayObject('TEXT:' + options.systemMessage, {style: styles.systemMessageText, anchor: textAnchor});
@@ -24,7 +33,15 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
             var tt = this;
             $.each(options.updaters, function(key, updater) {
                 this.updaters[key] = currentGame.addTickCallback(function() {
-                    tt[key].text = updater(self);
+                    var result = updater(self);
+                    if(result === null || result === undefined) {
+                        return;
+                    }
+                    if(result.index) {
+                        tt[key][result.index].text = result.value;
+                    } else {
+                        tt[key].text = result;
+                    }
                 })
             }.bind(this))
         }
@@ -32,19 +49,26 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
         var baseTint = 0x00042D;
 
         this.base = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
-        utils.makeSpriteSize(this.base, {w: Math.max(this.description.width + 15, (this.systemMessage ? this.systemMessage.width + 15 : 0)), h: 55 + (options.systemMessage ? 12 : 0)});
+        var descriptionWidth = 0;
+        var systemMessageWidth = this.systemMessage ? this.systemMessage.width : 0;
+        $.each(this.description, function(i, descr) {
+            descriptionWidth = Math.max(descriptionWidth, descr.width);
+        })
+        utils.makeSpriteSize(this.base, {w: Math.max(descriptionWidth, systemMessageWidth) + 15, h: 30 + (this.description.length*25) + (options.systemMessage ? 12 : 0)});
     };
 
     //set title, text, backgroundColor, etc
     Tooltip.prototype.update = function(options) {
         this.title.text = options.text;
-        this.description.text = options.text;
+        this.description[0].text = options.text;
     };
 
     //set title, text, backgroundColor, etc
     Tooltip.prototype.destroy = function(options) {
         utils.removeSomethingFromRenderer(this.title);
-        utils.removeSomethingFromRenderer(this.description);
+        $.each(this.description, function(i, descr) {
+            utils.removeSomethingFromRenderer(descr);
+        })
         if(this.systemMessage) {
             utils.removeSomethingFromRenderer(this.systemMessage);
         }
@@ -73,7 +97,9 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
 
         if(!this.base.parent) {
             utils.addDisplayObjectToRenderer(this.title, 'hudText');
-            utils.addDisplayObjectToRenderer(this.description, 'hudText');
+            $.each(this.description, function(i, descr) {
+                utils.addDisplayObjectToRenderer(descr, 'hudText');
+            })
             if(this.systemMessage)
                 utils.addDisplayObjectToRenderer(this.systemMessage, 'hudText');
             utils.addDisplayObjectToRenderer(this.base, 'hudThree');
@@ -81,13 +107,17 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
 
         var buffer = 5;
         this.title.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + buffer/2};
-        this.description.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + 30};
+        $.each(this.description, function(i, descr) {
+            descr.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + 30 + (i * 15)};
+        }.bind(this))
         if(this.systemMessage)
-            this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + 48};
+            this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + (this.description.length-1)*20 + 48};
         this.base.position = position;
 
         this.title.visible = true;
-        this.description.visible = true;
+        $.each(this.description, function(i, descr) {
+            descr.visible = true;
+        })
         if(this.systemMessage)
             this.systemMessage.visible = true;
         this.base.visible = true;
@@ -96,7 +126,9 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
     Tooltip.prototype.hide = function() {
         this.visible = false;
         this.title.visible = false;
-        this.description.visible = false;
+        $.each(this.description, function(i, descr) {
+            descr.visible = false;
+        })
         if(this.systemMessage)
             this.systemMessage.visible = false;
         this.base.visible = false;

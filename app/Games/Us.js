@@ -133,8 +133,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 this.addUnit(bane, true);
                 if(utils.flipCoin() && utils.flipCoin() || true) {
                     // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
                 }
             }
         },

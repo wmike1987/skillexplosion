@@ -37,10 +37,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.healthVialCenterX = this.centerX - 58;
         this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
         this.healthVial = utils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
-        Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, updaters: {description: function(tooltip) {
+        Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, updaters: {mainDescription: function(tooltip) {
             if(this.prevailingUnit) {
                 var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
-                tooltip.description.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
+                tooltip.mainDescription.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
             }
             return txt;
         }.bind(this), systemMessage: function() {
@@ -73,7 +73,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.energyVialCenterX = this.centerX + 58;
         this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
         this.energyVial = utils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
-        Tooltip.makeTooltippable(this.energyVial, {title: "Energy", systemMessage: "+X energy/sec", descriptionStyle: styles.EnergyTTStyle, updaters: {description: function(tooltip) {
+        Tooltip.makeTooltippable(this.energyVial, {title: "Energy", systemMessage: "+X energy/sec", descriptionStyle: styles.EnergyTTStyle, updaters: {mainDescription: function(tooltip) {
             if(this.prevailingUnit) {
                 var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
             }

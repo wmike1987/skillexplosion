@@ -1,11 +1,15 @@
 define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles', 'pixi'], function($, utils, Tooltip, Matter, styles, PIXI) {
 
     var baseItem = {
-        equip: function() {
-            //override me
+        equip: function(unit) {
+            $.each(this.manipulations, function(key, value) {
+                unit[key] += value;
+            })
         },
-        unequip: function() {
-            //override me
+        unequip: function(unit) {
+            $.each(this.manipulations, function(key, value) {
+                unit[key] -= value;
+            })
         },
         name: 'generic item name',
         description: 'generic item description',
