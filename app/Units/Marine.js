@@ -330,6 +330,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 var otherUnit = otherBody.unit;
                 if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
                     otherUnit.sufferAttack(knifeDamage); //we can make the assumption that a body is part of a unit if it's attackable
+                    if(otherUnit.unitIsDead) {
+                        Matter.Events.trigger(this, 'knifeKill');
+                    }
                     var bloodPierceAnimation = utils.getAnimationB({
                         spritesheetName: 'bloodswipes1',
                         animationName: 'pierce',

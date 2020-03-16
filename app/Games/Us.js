@@ -58,7 +58,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
              * Create banes
              */
             this.addTimer({name: 'newbane', gogogo: true, timeLimit: 5000, callback: function() {
-                this.createBane(2, true);
+                // this.createBane(2, true);
             }.bind(this)});
         },
 
@@ -90,7 +90,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             this.createMarine(1);
             this.createMedic(1);
-            this.createBane(2);
+            this.createBane(8);
 
             // var posUpdate = this.addRunnerCallback(function() {
             //     this.simpleLightShader.uniforms.lightOnePosition = this.medic.position;
@@ -134,8 +134,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 if(utils.flipCoin() && utils.flipCoin() || true) {
                     // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
                     // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SereneStar"], unit: bane});
                 }
             }
         },

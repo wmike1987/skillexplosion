@@ -221,6 +221,26 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }
                 });
 
+                Object.defineProperty(this, 'currentHealth', {
+                    get: function() {
+                        return this._currentHealth || 0;
+                    },
+
+                    set: function(value) {
+                        this._currentHealth = Math.min(value, this.maxHealth);
+                    }
+                });
+
+                Object.defineProperty(this, 'currentEnergy', {
+                    get: function() {
+                        return this._currentEnergy || 0;
+                    },
+
+                    set: function(value) {
+                        this._currentEnergy = Math.min(value, this.maxEnergy);
+                    }
+                });
+
                 // setup health and energy
                 if (this.health) {
                     this.maxHealth = this.health;

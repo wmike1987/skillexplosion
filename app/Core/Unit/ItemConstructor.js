@@ -3,13 +3,30 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
     var baseItem = {
         equip: function(unit) {
             $.each(this.manipulations, function(key, value) {
-                unit[key] += value;
-            })
+                if(key == "events") {
+                    $.each(value, function(k, v) {
+                        this.eventFunctions[k] = function() {
+                            $.each(v, function(kk, vv) {
+                                unit[kk] += vv;
+                            })
+                        }
+                        Matter.Events.on(unit, k, this.eventFunctions[k]);
+                    }.bind(this))
+                } else {
+                    unit[key] += value;
+                }
+            }.bind(this))
         },
         unequip: function(unit) {
             $.each(this.manipulations, function(key, value) {
-                unit[key] -= value;
-            })
+                if(key == "events") {
+                    $.each(value, function(k, v) {
+                        Matter.Events.off(unit, k, this.eventFunctions[k]);
+                    }.bind(this))
+                } else {
+                    unit[key] -= value;
+                }
+            }.bind(this))
         },
         name: 'generic item name',
         description: 'generic item description',
@@ -22,6 +39,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
     return function(options) {
         var newItem = $.extend({}, baseItem, options);
         newItem.isItem = true;
+        newItem.id = utils.uuidv4();
+        newItem.eventFunctions = {};
 
         //create icon
         newItem.icon = utils.createDisplayObject(options.icon); //note that this icon will not die upon removing the item
