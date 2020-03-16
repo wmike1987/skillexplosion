@@ -3,11 +3,15 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
     var baseItem = {
         equip: function(unit) {
             $.each(this.manipulations, function(key, value) {
-                if(key == "events") {
+                if(key == 'events') {
                     $.each(value, function(k, v) {
                         this.eventFunctions[k] = function() {
                             $.each(v, function(kk, vv) {
-                                unit[kk] += vv;
+                                if(kk == 'callback') {
+                                    vv(unit);
+                                } else {
+                                    unit[kk] += vv;
+                                }
                             })
                         }
                         Matter.Events.on(unit, k, this.eventFunctions[k]);

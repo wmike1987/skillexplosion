@@ -390,6 +390,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             //otherwise remove from stage and destroy
             where = where || something.myLayer || 'stage';
             currentGame.renderer.removeFromPixiStage(something, where);
+
+            Matter.Events.trigger(something, "destroy");
         },
 
         scaleBody: function(body, x, y) {
