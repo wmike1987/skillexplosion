@@ -711,6 +711,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                  //if we're a reserved key, do nothing
                  if(key == 'shift' || key == 'tab' || key =='alt' || key == 'a') return;
 
+                 //if we don't have a selected unit, just return
+                 if(Object.keys(this.selectedUnits).length == 0) return;
+
                  this.abilityDispatch = event.key.toLowerCase();
                  //if we're s or h, dispatch to all selected units, this is a special case
                  if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {

@@ -61,6 +61,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         if(options.autoAdd) {
             currentGame.addBody(this.body);
         }
+
+        this.cleanUp = function() {
+            currentGame.removeBody(this.body);
+        }
     }
 
     return doodad;

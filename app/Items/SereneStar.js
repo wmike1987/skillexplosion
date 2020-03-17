@@ -5,14 +5,16 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor', 'matter-js'], f
         energyRegenerationRate: 1,
         events: {knifeKill: {currentEnergy: 5, callback: function(unit) {
             var manaStealAnimation = utils.getAnimationB({
-                spritesheetName: 'animations2',
+                spritesheetName: 'animations3',
                 animationName: 'manasteal',
-                speed: .8,
-                transform: [unit.position.x, unit.position.y, 1.5, 1.8]
+                speed: Math.random() + .5,
+                transform: [unit.position.x, unit.position.y, 1, 1]
             });
+
+            manaStealAnimation.tint = 0x1a1aff;
             manaStealAnimation.play();
             manaStealAnimation.alpha = 1;
-            utils.attachSomethingToBody(manaStealAnimation, unit.body, {x: 2, y: 25});
+            utils.attachSomethingToBody(manaStealAnimation, unit.body, {x: Math.random()*50-25, y: 25-(Math.random()*5)});
             utils.addSomethingToRenderer(manaStealAnimation, 'foreground');
             Matter.Events.on(manaStealAnimation, "destroy", function() {
                 utils.detachSomethingFromBody(manaStealAnimation);

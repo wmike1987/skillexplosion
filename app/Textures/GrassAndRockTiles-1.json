@@ -1,0 +1,182 @@
+{"frames": {
+
+"Dirt Ramp/Dirt Ramp East/rocks_level_1.png":
+{
+	"frame": {"x":1812,"y":1,"w":159,"h":198},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":223,"w":159,"h":198},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt Ramp/Dirt Ramp East/rocks_level_2.png":
+{
+	"frame": {"x":1803,"y":485,"w":159,"h":198},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":223,"w":159,"h":198},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt Ramp/Dirt Ramp East/roots_level_3.png":
+{
+	"frame": {"x":1523,"y":251,"w":232,"h":295},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":212,"w":232,"h":295},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt Ramp/Dirt Ramp South/roots_level_2.png":
+{
+	"frame": {"x":1569,"y":485,"w":232,"h":294},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":280,"y":213,"w":232,"h":294},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt/grass_level_2.png":
+{
+	"frame": {"x":306,"y":1,"w":511,"h":302},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":210,"w":511,"h":302},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt/grass_level_3.png":
+{
+	"frame": {"x":1,"y":1,"w":511,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":209,"w":511,"h":303},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt/grass_top_level_2.png":
+{
+	"frame": {"x":1,"y":514,"w":512,"h":285},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":285},
+	"sourceSize": {"w":512,"h":512}
+},
+"Dirt/grass_top_level_3.png":
+{
+	"frame": {"x":515,"y":514,"w":512,"h":285},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":285},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp East/rocks_level_1.png":
+{
+	"frame": {"x":1803,"y":646,"w":152,"h":191},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":230,"w":152,"h":191},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp East/rocks_level_2.png":
+{
+	"frame": {"x":1820,"y":162,"w":152,"h":191},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":230,"w":152,"h":191},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp East/rocks_level_3.png":
+{
+	"frame": {"x":1820,"y":316,"w":152,"h":191},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":230,"w":152,"h":191},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp East/roots_level_1.png":
+{
+	"frame": {"x":1319,"y":512,"w":248,"h":287},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":225,"w":248,"h":287},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp East/roots_level_2.png":
+{
+	"frame": {"x":1523,"y":1,"w":248,"h":287},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":225,"w":248,"h":287},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp East/roots_level_3.png":
+{
+	"frame": {"x":1029,"y":512,"w":248,"h":288},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":224,"w":248,"h":288},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass Ramp/Grass Ramp South/roots_level_2.png":
+{
+	"frame": {"x":1569,"y":485,"w":232,"h":294},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":280,"y":213,"w":232,"h":294},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass/grass_level_2.png":
+{
+	"frame": {"x":306,"y":1,"w":511,"h":302},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":210,"w":511,"h":302},
+	"sourceSize": {"w":512,"h":512}
+},
+"Grass/grass_level_3.png":
+{
+	"frame": {"x":1,"y":1,"w":511,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":209,"w":511,"h":303},
+	"sourceSize": {"w":512,"h":512}
+},
+"Rock/roots_level_1.png":
+{
+	"frame": {"x":915,"y":1,"w":509,"h":302},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":210,"w":509,"h":302},
+	"sourceSize": {"w":512,"h":512}
+},
+"Rock/roots_level_2.png":
+{
+	"frame": {"x":1219,"y":1,"w":509,"h":302},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":210,"w":509,"h":302},
+	"sourceSize": {"w":512,"h":512}
+},
+"Rock/roots_level_3.png":
+{
+	"frame": {"x":610,"y":1,"w":509,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":209,"w":509,"h":303},
+	"sourceSize": {"w":512,"h":512}
+}},
+"animations": {
+	"Dirt Ramp/Dirt Ramp East/rocks_level": ["Dirt Ramp/Dirt Ramp East/rocks_level_1.png","Dirt Ramp/Dirt Ramp East/rocks_level_2.png"],
+	"Dirt/grass_level": ["Dirt/grass_level_2.png","Dirt/grass_level_3.png"],
+	"Dirt/grass_top_level": ["Dirt/grass_top_level_2.png","Dirt/grass_top_level_3.png"],
+	"Grass Ramp/Grass Ramp East/rocks_level": ["Grass Ramp/Grass Ramp East/rocks_level_1.png","Grass Ramp/Grass Ramp East/rocks_level_2.png","Grass Ramp/Grass Ramp East/rocks_level_3.png"],
+	"Grass Ramp/Grass Ramp East/roots_level": ["Grass Ramp/Grass Ramp East/roots_level_1.png","Grass Ramp/Grass Ramp East/roots_level_2.png","Grass Ramp/Grass Ramp East/roots_level_3.png"],
+	"Grass/grass_level": ["Grass/grass_level_2.png","Grass/grass_level_3.png"],
+	"Rock/roots_level": ["Rock/roots_level_1.png","Rock/roots_level_2.png","Rock/roots_level_3.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "GrassAndRockTiles-1.png",
+	"format": "RGBA8888",
+	"size": {"w":2012,"h":800},
+	"scale": "0.5",
+	"related_multi_packs": [ "GrassAndRockTiles-0.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:9786ff1d3943168d2355c8ab0389feaf:5819d5af30dbc1252c93d3569fdf038a:ab8f28c43ada53078008807f8ce02772$"
+}
+}

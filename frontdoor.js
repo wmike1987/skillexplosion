@@ -176,6 +176,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.add('deathAnimations', 'app/Textures/DeathAnimations.json');
         	loader.add('bloodswipes1', 'app/Textures/bloodswipes1.json');
         	loader.add('animations2', 'app/Textures/animations2.json');
+        	loader.add('animations3', 'app/Textures/animations3.json');
 
         	//odds and ends
         	loader.add('unitMisc', 'app/Textures/UnitMisc.json');
@@ -186,6 +187,10 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.add('glassShards', 'app/Textures/glassShards.png');
         	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
         	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
+
+            //tiles
+        	loader.add('grassAndRocks1', 'app/Textures/GrassAndRockTiles-0.json');
+            loader.add('grassAndRocks2', 'app/Textures/GrassAndRockTiles-1.json');
 
             //items
         	loader.add('items', 'app/Textures/Items.json');

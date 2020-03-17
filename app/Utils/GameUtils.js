@@ -450,10 +450,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         addAmbientLightsToBackground: function(hexColorArray, where, intensity) {
             var numberOfLights = hexColorArray.length;
             var spacing = this.getCanvasWidth()/(numberOfLights*2);
+            var lights = [];
             $.each(hexColorArray, function(i, color) {
-                this.addSomethingToRenderer("AmbientLight" + (i%3 + 1), where || 'backgroundOne',
+                var l = this.addSomethingToRenderer("AmbientLight" + (i%3 + 1), where || 'backgroundOne',
                     {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: this.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color, alpha: intensity || .25});
+                lights.push(l);
             }.bind(this))
+            return lights;
         },
 
         //apply something to bodies by team
