@@ -409,6 +409,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
         removeUnit: function(unit) {
             Matter.Events.trigger(unit, "onremove", {});
+            
             //clear slaves (deathPact())
             if(unit.slaves) {
                 this.removeSlaves(unit.slaves);

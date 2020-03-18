@@ -11,6 +11,7 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
             utils.addSomethingToRenderer(tile, options);
         })
 
+        this.initialized = true;
         // console.info("initialized " + this.tiles.length + " tiles")
     };
 
@@ -18,7 +19,11 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
         this.tiles.push(displayObject);
     };
 
-    //other utility methods?
+    tileMap.prototype.cleanUp = function() {
+        $.each(this.tiles, function(i, tile) {
+            utils.removeSomethingFromRenderer(tile);
+        })
+    };
 
     return tileMap;
 })

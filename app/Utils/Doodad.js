@@ -57,9 +57,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         if(!options.collides)
             this.body.collisionFilter.category = 0;
 
+        this.initialize = function() {
+            currentGame.addBody(this.body);
+            this.initialized = true;
+        }
+
         //automatically add if specified
         if(options.autoAdd) {
-            currentGame.addBody(this.body);
+            this.initialize();
         }
 
         this.cleanUp = function() {

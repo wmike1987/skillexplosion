@@ -325,9 +325,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.persists = true;
 
             //add options to escape without adding it to the renderer
-            if(options.dontAdd) return something;
+            if(options.dontAdd) {
+                something.where = where;
+                return something;
+            }
 
-            currentGame.renderer.addToPixiStage(something, where);
+            currentGame.renderer.addToPixiStage(something, where || something.where);
             return something;
         },
 
@@ -447,13 +450,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return position;
         },
 
-        addAmbientLightsToBackground: function(hexColorArray, where, intensity) {
+        createAmbientLights: function(hexColorArray, where, intensity) {
             var numberOfLights = hexColorArray.length;
             var spacing = this.getCanvasWidth()/(numberOfLights*2);
             var lights = [];
             $.each(hexColorArray, function(i, color) {
-                var l = this.addSomethingToRenderer("AmbientLight" + (i%3 + 1), where || 'backgroundOne',
-                    {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: this.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color, alpha: intensity || .25});
+                var l = this.createDisplayObject("AmbientLight" + (i%3 + 1),
+                    {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: this.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color,
+                    where: where || 'backgroundOne', alpha: intensity || .25});
                 lights.push(l);
             }.bind(this))
             return lights;

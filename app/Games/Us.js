@@ -1,7 +1,8 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper, Doodad, ItemUtils) {
+'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper,
+    Doodad, ItemUtils, Scene) {
 
     var targetScore = 1;
 
@@ -14,25 +15,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         enableItemSystem: true,
         noClickIndicator: true,
         tileSize: 225,
-        scene: {
-            objs: [],
-            add: function(objOrArray) {
-                if(!$.isArray(objOrArray)) {
-                    objOrArray = [objOrArray];
-                }
-                $.merge(this.objs, objOrArray);
-            },
-            clear: function() {
-                $.each(this.objs, function(i, obj) {
-                    if(obj.cleanUp) {
-                        obj.cleanUp();
-                    } else {
-                        utils.removeSomethingFromRenderer(obj);
-                    }
-                })
-                this.objs = [];
-            }
-        },
+        currentScene: null,
 
         initExtension: function() {
             //wave begin sound
@@ -54,49 +37,39 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create some Doodads
             // var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
             // shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
-
-            // this.createCamp();
         },
 
         play: function(options) {
+            this.currentScene = new Scene(); //empty scene
             this.initialLevel();
-            // this.nextLevel();
-
-            // var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'skelly', stage: 'stage', scale: {x: .3, y: .3}, offset: {x: 0, y: -50}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 0}})
-
-            // var tree1 = new Doodad({drawWire: false, collides: true, radius: 20, texture: 'avsnowtree7', stage: 'stage', scale: {x: 1, y: 1}, offset: {x: -6, y: -55}, sortYOffset: 75, shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 2, y: 28}})
-
-            /*
-             * Create banes
-             */
-            this.addTimer({name: 'newbane', gogogo: true, timeLimit: 5000, callback: function() {
-                // this.createBane(2, true);
-            }.bind(this)});
         },
 
         initialLevel: function() {
-            this.createCamp();
-            this.createMarine(1);
-            this.createMedic(1);
+            var campScene = this.createCampScene();
+            this.currentScene.transitionToScene({newScene: campScene});
+            this.currentScene = campScene;
+            Matter.Events.on(campScene, 'initialize', function() {
+                this.createMarine(1);
+                this.createMedic(1);
+            }.bind(this))
         },
 
-        createCamp: function() {
+        createCampScene: function() {
+            var campScene = new Scene();
             var tileWidth = this.tileSize;
 
             backgroundTiles = ['Dirt/dirt_base'];
             var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth});
-            tileMap.initialize({where: 'background'});
-            this.scene.add(tileMap.tiles);
+            campScene.add(tileMap);
 
             backgroundTiles = ['Dirt/grass_top_level_1', 'Dirt/grass_top_level_2', 'Dirt/grass_top_level_3'];
             var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth});
-            tileMap2.initialize({where: 'background'});
-            this.scene.add(tileMap2.tiles);
+            campScene.add(tileMap2);
 
-            var l1 = utils.addAmbientLightsToBackground([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .55);
-            this.scene.add(l1);
-            var l2 = utils.addAmbientLightsToBackground([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
-            this.scene.add(l2);
+            var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .55);
+            campScene.add(l1);
+            var l2 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
+            campScene.add(l2);
 
             var treeOptions = {};
             treeOptions.start = {x: 0, y: 0};
@@ -104,22 +77,31 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             treeOptions.height = utils.getPlayableHeight()+50;
             treeOptions.density = .65;
             treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6', 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
-            this.fillAreaWithTrees(treeOptions)
+            campScene.add(this.fillAreaWithTrees(treeOptions));
 
             treeOptions.start = {x: utils.getPlayableWidth()-250, y: 0};
-            this.fillAreaWithTrees(treeOptions)
+            campScene.add(this.fillAreaWithTrees(treeOptions));
 
-            var bush = new Doodad({collides: true, radius: 20, texture: 'avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
-            shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
-            this.scene.add(bush);
+            var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
+                shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
+            campScene.add(bush);
 
+            //create next level options
             var nextLevelOptions = {
                 possibleTiles: [],
-                enemySet: {}
+                realTileWidth: 370,
+                enemySet: []
             }
+
             for(var i = 1; i < 7; i++) {
                 nextLevelOptions.possibleTiles.push('YellowGrass'+i);
             }
+
+            nextLevelOptions.enemySet.push({
+                constructor: Baneling,
+                spawn: {total: 5, n: 2, hz: 6000, maxOnField: 5},
+                item: {type: 'basic', total: 3}
+            });
 
             var nextLevelInitiated = false;
             Matter.Events.on(bush.body, 'onCollide', function(pair) {
@@ -131,6 +113,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     nextLevelInitiated = true;
                 }
             }.bind(this));
+
+            return campScene;
         },
 
         /* options
@@ -140,13 +124,15 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
          * possibleTrees []
          */
         fillAreaWithTrees: function(options) {
+            var trees = [];
             for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
                 for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-                    var tree = new Doodad({collides: true, radius: 20, texture: utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
+                    var tree = new Doodad({collides: true, autoAdd: false, radius: 20, texture: utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
                     shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
-                    this.scene.add(tree);
+                    trees.push(tree);
                 }
             }
+            return trees;
         },
 
         /*
@@ -155,42 +141,34 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
          * enemy set
          */
         nextLevel: function(options) {
-            this.engageSceneTransition(this.createNextLevelScene.bind(this, options));
+            if(this.currentSpawner) {
+                this.currentSpawner.cleanUp();
+            }
+            if(options.enemySet) {
+                this.currentSpawer = this.createUnitSpawner(options.enemySet);
+            }
+
+            var nextLevelScene = this.createNextLevelScene(options);
+            this.currentScene.transitionToScene(nextLevelScene);
+            Matter.Events.on(nextLevelScene, 'initialize', function() {
+                this.currentSpawer.initialize();
+            }.bind(this))
+            this.currentScene = nextLevelScene;
+            this.level += 1;
         },
 
         createNextLevelScene: function(options) {
-            //clear scene
-            this.scene.clear();
+            var nextLevel = new Scene();
 
             //new tile map
-            var tileMap = TileMapper.produceTileMap({possibleTextures: options.possibleTiles, tileWidth: this.tileSize, realTileWidth: 370});
-            tileMap.initialize({where: 'background'});
-            this.scene.add(tileMap.tiles)
+            var tileMap = TileMapper.produceTileMap({possibleTextures: options.possibleTiles, tileWidth: this.tileSize, realTileWidth: options.realTileWidth});
+            nextLevel.add(tileMap.tiles)
 
             //new lights
-            var l2 = utils.addAmbientLightsToBackground([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
-            this.scene.add(l2);
+            var l1 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
+            nextLevel.add(l1);
 
-            //create enemies
-            this.createBane(10);
-        },
-
-        engageSceneTransition: function(callback) {
-            this.tint = utils.addSomethingToRenderer('TintableSquare', 'hudText');
-            utils.makeSpriteSize(this.tint, utils.getCanvasWH());
-            this.tint.position = utils.getCanvasCenter();
-            this.tint.tint = 0x000000;
-            this.tint.alpha = 0;
-            var tintRuns = 20;
-            currentGame.addTimer({name: 'tint', runs: tintRuns, timeLimit: 50, killsSelf: true, callback: function() {
-                this.tint.alpha += 1/tintRuns;
-            }.bind(this), totallyDoneCallback: function() {
-                callback();
-                currentGame.addTimer({name: 'untint', runs: tintRuns, timeLimit: 50, killsSelf: true, callback: function() {
-                    this.tint.alpha -= 1/tintRuns;
-                }.bind(this)})
-            }.bind(this)});
-
+            return nextLevel;
         },
 
         createMarine: function(number) {
@@ -231,6 +209,45 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     ItemUtils.giveUnitItem({name: ["SereneStar"], unit: bane});
                 }
             }
+        },
+
+        createUnitSpawner: function(enemySet) {
+            var spawner = {};
+            spawner.id = utils.uuidv4();
+
+            spawner.timers = [];
+
+            spawner.initialize = function() {
+                $.each(enemySet, function(i, enemy) {
+                    var total = 0;
+                    var spawnTimer = currentGame.addTimer({
+                        name: 'spawner' + i + spawner.id + enemy.type,
+                        gogogo: true,
+                        timeLimit: enemy.spawn.hz,
+                        callback: function() {
+                            for(var x = 0; x < enemy.spawn.n; x++) {
+                                if(total >= enemy.spawn.total) {
+                                    this.invalidated = true;
+                                    enemy.fulfilled = true;
+                                    return;
+                                }
+                                newUnit = enemy.constructor({team: 4, isSelectable: false});
+                                utils.placeBodyWithinRadiusAroundCanvasCenter(newUnit, 800, 600);
+                                newUnit.honeRange = 1400;
+                                total++;
+                                currentGame.addUnit(newUnit);
+                            }
+                        }
+                    })
+                    spawner.timers.push(spawnTimer);
+                })
+            }
+
+            spawner.cleanUp = function() {
+                currentGame.invalidateTimers(this.timers);
+            }
+
+            return spawner;
         },
 
         resetGameExtension: function() {
