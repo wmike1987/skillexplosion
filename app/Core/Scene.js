@@ -51,12 +51,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
      */
     Scene.prototype.transitionToScene = function(options) {
         var newScene = null;
-        var transitionLength = 2000;
+        var transitionLength = 1000;
         if(options.isScene) {
             newScene = options;
         } else {
             newScene = options.newScene;
-            transitionLength = options.transitionLength || 2000;
+            transitionLength = options.transitionLength || transitionLength;
         }
 
         this.tint = utils.addSomethingToRenderer('TintableSquare', 'hudText');

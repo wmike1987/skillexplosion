@@ -330,7 +330,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 var otherUnit = otherBody.unit;
                 if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
                     otherUnit.sufferAttack(knifeDamage); //we can make the assumption that a body is part of a unit if it's attackable
-                    if(otherUnit.unitIsDead) {
+                    if(otherUnit.isDead) {
                         Matter.Events.trigger(this, 'knifeKill');
                     }
                     var bloodPierceAnimation = utils.getAnimationB({
@@ -408,7 +408,12 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         });
                         utils.addSomethingToRenderer(anim);
                         anim.play();
-                        currentGame.removeUnit(this);
+
+                        this.isAttackable = false;
+                        utils.moveUnitOffScreen(this);
+                        this.stop();
+                        currentGame.unitSystem.deselectUnit(this);
+                        //currentGame.removeUnit(this);
                     }
                 },
                 moveable: {

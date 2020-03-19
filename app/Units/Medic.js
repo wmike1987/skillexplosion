@@ -254,8 +254,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
           var originalOrigin = {x: this.position.x, y: this.position.y};
           var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
-          this.body.oneFrameOverrideInterpolation = true;
-          Matter.Body.setPosition(this.body, {x: -100, y: -100});
+          utils.moveUnitOffScreen(this);
           this.stop();
 
           this.getAbilityByName("Silent Step").disable(1);
@@ -433,7 +432,12 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         });
                         utils.addSomethingToRenderer(anim);
                         anim.play();
-                        currentGame.removeUnit(this);
+
+                        this.isAttackable = false;
+                        utils.moveUnitOffScreen(this);
+                        this.stop();
+                        currentGame.unitSystem.deselectUnit(this);
+                        //currentGame.removeUnit(this);
                     }
                 },
                 moveable: {

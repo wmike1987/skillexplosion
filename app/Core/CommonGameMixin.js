@@ -409,7 +409,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
         removeUnit: function(unit) {
             Matter.Events.trigger(unit, "onremove", {});
-            
+
             //clear slaves (deathPact())
             if(unit.slaves) {
                 this.removeSlaves(unit.slaves);
@@ -656,8 +656,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
         },
         invalidateTimer: function(timer) {
             if(!timer) return;
-            timer.invalidated = true;
-            delete this.timers[timer.name];
+            if($.isArray(timer)) {
+                $.each(timer, function(i, timer) {
+                    timer.invalidated = true;
+                    delete this.timers[timer.name];
+                }.bind(this))
+            } else {
+                timer.invalidated = true;
+                delete this.timers[timer.name];
+            }
         },
         addToTimer: function(timer, amount) {
             timer.timeElapsed -= amount;

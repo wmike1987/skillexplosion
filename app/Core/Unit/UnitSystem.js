@@ -140,7 +140,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 //remove body from these data structures
                 if(removedBody.unit) {
                     delete this.selectedUnits[removedBody.unit.unitId];
-                    updateOrderedUnits(this.selectedUnits);
+                    this.updateOrderedUnits(this.selectedUnits);
                     delete this.box.pendingSelections[removedBody.unit.unitId];
                     Matter.Events.trigger(this, 'selectedUnitsChange', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
                 }
@@ -152,20 +152,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             var scaleY = 1;
             var lastScaleX = 1;
             var lastScaleY = 1;
-
-            //common method for changing the selection state (and visuals) of a group of bodies
-            var changeSelectionState = function(units, state, newValue) {
-                if(units.renderlings && units.renderlings[state]) { //if we were supplied just one unit
-                    if(units.isSelectable)
-                        units.renderlings[state].visible = newValue;
-                }
-                else { //we have many
-                    $.each(units, function(key, unit) {
-                        if(unit != null && unit.isSelectable && unit.renderlings && unit.renderlings[state])
-                            unit.renderlings[state].visible = newValue;
-                    })
-                }
-            };
 
             //transfer bodies from pending to selected
             var executeSelection = function() {
@@ -186,35 +172,35 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 if(keyStates['Shift']) {
                     //If one, already-selected body is requested here, remove from selection
                     if(loneSoldier && ($.inArray(loneSoldier.unitId.toString(), Object.keys(this.selectedUnits)) > -1)) {
-                        changeSelectionState(loneSoldier, 'selected', false);
+                        this.changeSelectionState(loneSoldier, 'selected', false);
                         if(this.selectedUnit == loneSoldier) {
                             this.annointNextPrevailingUnit({onRemove: true});
                         }
                         delete this.selectedUnits[loneSoldier.unitId];
-                        updateOrderedUnits(this.selectedUnits);
+                        this.updateOrderedUnits(this.selectedUnits);
                     }
                     else {
                         //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
                         //in which case we'll exclude it from the pending selections
                         if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
-                            changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
+                            this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                             delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
                         }
 
                         //Add pending bodies to current selection
                         $.extend(this.selectedUnits, this.box.pendingSelections)
-                        updateOrderedUnits(this.selectedUnits);
+                        this.updateOrderedUnits(this.selectedUnits);
                     }
                 } else {
                     //Else create a brand new selection (don't add to current selection)
                     //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
                     if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
-                        changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
+                        this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                         delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
                     }
-                    changeSelectionState(this.selectedUnits, 'selected', false);
+                    this.changeSelectionState(this.selectedUnits, 'selected', false);
                     this.selectedUnits = $.extend({}, this.box.pendingSelections);
-                    updateOrderedUnits(this.selectedUnits);
+                    this.updateOrderedUnits(this.selectedUnits);
                 }
 
                 var firstOfTheSelectedUnits = this.selectedUnits[Object.keys(this.selectedUnits)[0]];
@@ -241,8 +227,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 }
 
                 //Update visuals
-                changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
-                changeSelectionState(this.selectedUnits, 'selected', true);
+                this.changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
+                this.changeSelectionState(this.selectedUnits, 'selected', true);
 
                 //Refresh state
                 this.box.permaPendingUnit = null;
@@ -260,25 +246,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                 Matter.Events.trigger(this, 'executeSelection', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
                 Matter.Events.trigger(this, 'selectedUnitsChange', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
-
-            }.bind(this);
-
-            var updateOrderedUnits = function(selectedUnits) {
-                this.orderedUnits = $.grep(this.orderedUnits, function(ounit) {
-                    var found = false;
-                    $.each(selectedUnits, function(key, unit) {
-                        if(unit && unit == ounit)
-                            found = true;
-                    })
-                    return found;
-                })
-
-                $.each(selectedUnits, function(key, unit) {
-                    if(!unit) return;
-                    if(!this.orderedUnits.includes(unit)) {
-                        this.orderedUnits.push(unit);
-                    }
-                }.bind(this))
 
             }.bind(this);
 
@@ -321,10 +288,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                             if(lastChosenUnit) {
                                 delete this.box.pendingSelections[lastChosenUnit.unitId];
-                                changeSelectionState(lastChosenUnit, 'selectionPending', false);
+                                this.changeSelectionState(lastChosenUnit, 'selectionPending', false);
                             }
                             lastChosenUnit = unit;
-                            changeSelectionState(unit, 'selectionPending', true);
+                            this.changeSelectionState(unit, 'selectionPending', true);
                             this.box.pendingSelections[unit.unitId] = unit; //needed for a special case when the game starts - no longer need this (i think)
                             this.box.permaPendingUnit = unit;
                         } else if(this.attackMove && unit.isAttackable) {
@@ -513,13 +480,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
                     pendingBodyCount > 0) return;
                 if(!otherUnit.isMoving && otherUnit.isSelectable) {
-                    changeSelectionState(otherUnit, 'selectionPending', true);
+                    this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
                     if(otherUnit == this.box.permaPendingUnit)
                         this.box.boxContainsPermaPending = true;
                 }
                 if(otherBody.isSmallerBody && otherUnit.isMoving && otherUnit.isSelectable) {
-                    changeSelectionState(otherUnit, 'selectionPending', true);
+                    this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
                     if(otherUnit == this.box.permaPendingUnit)
                         this.box.boxContainsPermaPending = true;
@@ -533,13 +500,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
                     pendingBodyCount > 0) return;
                 if(!otherUnit.isMoving && otherUnit.isSelectable) {
-                    changeSelectionState(otherBody.unit, 'selectionPending', true);
+                    this.changeSelectionState(otherBody.unit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
                     if(otherUnit == this.box.permaPendingUnit)
                         this.box.boxContainsPermaPending = true;
                 }
                 if(otherBody.isSmallerBody && otherUnit.isMoving && otherUnit.isSelectable) {
-                    changeSelectionState(otherUnit, 'selectionPending', true);
+                    this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
                     if(otherUnit == this.box.permaPendingUnit)
                         this.box.boxContainsPermaPending = true;
@@ -550,11 +517,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit || {};
                 if(!otherUnit.isMoving && otherUnit.isSelectable && otherUnit != this.box.permaPendingUnit) {
-                    changeSelectionState(otherUnit, 'selectionPending', false);
+                    this.changeSelectionState(otherUnit, 'selectionPending', false);
                     delete this.box.pendingSelections[otherUnit.unitId];
                 }
                 if(otherBody.isSmallerBody && otherUnit.isSelectable && otherUnit.isMoving && otherUnit != this.box.permaPendingUnit) {
-                    changeSelectionState(otherUnit, 'selectionPending', false);
+                    this.changeSelectionState(otherUnit, 'selectionPending', false);
                     delete this.box.pendingSelections[otherUnit.unitId];
                 }
                 if((otherBody.isSmallerBody && otherUnit == this.box.permaPendingUnit && otherUnit.isSelectable) ||
@@ -591,7 +558,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                     //reset past, non-perma bodies we were hovering over previously
                     $.each(pastHoveredUnitsHover, function(index, unit) {
-                        changeSelectionState(unit, 'selectionPending', false);
+                        this.changeSelectionState(unit, 'selectionPending', false);
                     }.bind(this))
 
                     //set state of bodies under our mouse and identify them as pastHoveredUnitsHover for the next tick
@@ -607,12 +574,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
 
                         if(lastChosenUnit) {
                             delete this.box.pendingSelections[lastChosenUnit.unitId];
-                            changeSelectionState(lastChosenUnit, 'selectionPending', false);
+                            this.changeSelectionState(lastChosenUnit, 'selectionPending', false);
                         }
                         lastChosenUnit = unit;
                         yOfUnit = unit.position.y;
                         this.box.pendingSelections[unit.unitId] = unit;
-                        changeSelectionState(unit, 'selectionPending', true);
+                        this.changeSelectionState(unit, 'selectionPending', true);
                         pastHoveredUnitsHover = [unit];
                     }.bind(this))
 
@@ -803,7 +770,54 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
             }.bind(this));
 
             currentGame.addBody(this.box);
-        }
+        };
+
+        this.deselectUnit = function(unit) {
+            //Re-assign the selected unit if needed
+            if(this.selectedUnit == unit) {
+                this.annointNextPrevailingUnit({onRemove: true});
+            }
+
+            //remove body from these data structures
+            delete this.selectedUnits[unit.unitId];
+            this.updateOrderedUnits(this.selectedUnits);
+            delete this.box.pendingSelections[unit.unitId];
+            this.changeSelectionState(unit, 'selected', false);
+            Matter.Events.trigger(this, 'selectedUnitsChange', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
+        };
+
+        this.updateOrderedUnits = function(selectedUnits) {
+            this.orderedUnits = $.grep(this.orderedUnits, function(ounit) {
+                var found = false;
+                $.each(selectedUnits, function(key, unit) {
+                    if(unit && unit == ounit)
+                        found = true;
+                })
+                return found;
+            })
+
+            $.each(selectedUnits, function(key, unit) {
+                if(!unit) return;
+                if(!this.orderedUnits.includes(unit)) {
+                    this.orderedUnits.push(unit);
+                }
+            }.bind(this))
+
+        }.bind(this);
+
+        //common method for changing the selection state (and visuals) of a group of bodies
+        this.changeSelectionState = function(units, state, newValue) {
+            if(units.renderlings && units.renderlings[state]) { //if we were supplied just one unit
+                if(units.isSelectable)
+                    units.renderlings[state].visible = newValue;
+            }
+            else { //we have many
+                $.each(units, function(key, unit) {
+                    if(unit != null && unit.isSelectable && unit.renderlings && unit.renderlings[state])
+                        unit.renderlings[state].visible = newValue;
+                })
+            }
+        };
 
         /*
          * Cleanup any listeners we've created

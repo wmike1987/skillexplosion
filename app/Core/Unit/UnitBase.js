@@ -108,7 +108,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         this.dropItem(item);
                     }
                 }.bind(this))
-                this.unitIsDead = true;
+                this.isDead = true;
                 this.death();
             },
 
@@ -353,6 +353,14 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 Matter.Events.on(this, "onremove", function() {
                     Matter.Events.off(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
                 });
+
+                Matter.Events.on(this, "onremove", function() {
+                    $.each(this.currentItems, function(i, item) {
+                        if(item) {
+                            currentGame.removeItem(item);
+                        }
+                    })
+                }.bind(this));
 
                 //add filter on the main render sprite
                 var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});

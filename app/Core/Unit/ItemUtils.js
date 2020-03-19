@@ -53,7 +53,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             options.name = options.name[index];
         }
         require(['items/'+options.name], function(item) {
-            if(options.unit.unitIsDead) {
+            if(options.unit.isDead) {
                 var item = item();
                 item.drop(options.unit.position);
             } else {

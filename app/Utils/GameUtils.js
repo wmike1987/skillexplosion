@@ -478,6 +478,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             })
         },
 
+        moveUnitOffScreen: function(unit) {
+            unit.body.oneFrameOverrideInterpolation = true;
+            unit.position = {x: 8000, y: 8000};
+        },
+
         calculateRandomPlacementForBodyWithinCanvasBounds: function(body, neatly) {
             var placement = {};
             var bodyWidth = (body.bounds.max.x - body.bounds.min.x);

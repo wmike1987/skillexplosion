@@ -40,21 +40,53 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         },
 
         play: function(options) {
-            this.currentScene = new Scene(); //empty scene
             this.initialLevel();
         },
 
         initialLevel: function() {
+            //create our units
+            this.createShane();
+            this.createUrsula();
+
+            //create empty scene and transition to camp scene
+            this.currentScene = new Scene(); //empty scene
             var campScene = this.createCampScene();
             this.currentScene.transitionToScene({newScene: campScene});
             this.currentScene = campScene;
+
+            //move shane and urs into place when we're ready
             Matter.Events.on(campScene, 'initialize', function() {
-                this.createMarine(1);
-                this.createMedic(1);
+                this.shane.position = utils.getCanvasCenter();
+                this.ursula.position = utils.getCanvasCenter();
+                this.addUnit(this.shane);
+                this.addUnit(this.ursula);
+            }.bind(this))
+        },
+
+        gotoCamp: function() {
+            var camp = this.createCampScene();
+            this.currentScene.transitionToScene(camp);
+            this.currentScene = camp;
+
+            Matter.Events.on(camp, 'initialize', function() {
+                //clear enemies
+                utils.applyToUnitsByTeam(function(team) {
+                    return (team != currentGame.playerTeam);
+                }, null, function(unit) {
+                    currentGame.removeUnit(unit);
+                })
+
+                //reset shane and urs
+                this.resetUnit(this.shane);
+                this.resetUnit(this.ursula);
             }.bind(this))
         },
 
         createCampScene: function() {
+            if(this.currentSpawner) {
+                this.currentSpawner.cleanUp();
+            }
+
             var campScene = new Scene();
             var tileWidth = this.tileSize;
 
@@ -99,7 +131,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 5, n: 2, hz: 6000, maxOnField: 5},
+                spawn: {total: 3, n: 2, hz: 1000, maxOnField: 5},
                 item: {type: 'basic', total: 3}
             });
 
@@ -109,30 +141,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     var otherBody = pair.pair.bodyB == bush.body ? pair.pair.bodyA : pair.pair.bodyB;
                     if(otherBody.unit) {
                         this.nextLevel(nextLevelOptions);
+                        nextLevelInitiated = true;
                     }
-                    nextLevelInitiated = true;
                 }
             }.bind(this));
 
             return campScene;
-        },
-
-        /* options
-         * start {x: , y: }
-         * width, height
-         * density (0-1)
-         * possibleTrees []
-         */
-        fillAreaWithTrees: function(options) {
-            var trees = [];
-            for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
-                for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-                    var tree = new Doodad({collides: true, autoAdd: false, radius: 20, texture: utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
-                    shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
-                    trees.push(tree);
-                }
-            }
-            return trees;
         },
 
         /*
@@ -141,20 +155,52 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
          * enemy set
          */
         nextLevel: function(options) {
+
+            this.levelState = options;
+
             if(this.currentSpawner) {
                 this.currentSpawner.cleanUp();
             }
             if(options.enemySet) {
-                this.currentSpawer = this.createUnitSpawner(options.enemySet);
+                this.currentSpawner = this.createUnitSpawner(options.enemySet);
             }
 
             var nextLevelScene = this.createNextLevelScene(options);
             this.currentScene.transitionToScene(nextLevelScene);
             Matter.Events.on(nextLevelScene, 'initialize', function() {
-                this.currentSpawer.initialize();
+                this.currentSpawner.initialize();
+                //reset shane and urs
+                this.resetUnit(this.shane);
+                this.resetUnit(this.ursula);
             }.bind(this))
             this.currentScene = nextLevelScene;
             this.level += 1;
+
+            var winCondition = this.addTickCallback(function() {
+                var enemySet = this.levelState.enemySet;
+                enemySetsFulfilled = false;
+                $.each(enemySet, function(i, enemy) {
+                    enemySetsFulfilled = enemy.fulfilled;
+                    return enemySetsFulfilled;
+                })
+
+                var unitsOfOpposingTeamExist = false;
+                if(this.unitsByTeam[4] && this.unitsByTeam[4].length > 0) {
+                    unitsOfOpposingTeamExist = true;
+                }
+
+                if(!unitsOfOpposingTeamExist && enemySetsFulfilled) {
+                    this.removeTickCallback(winCondition);
+                    this.gotoCamp();
+                }
+            }.bind(this))
+
+            var lossCondition = this.addTickCallback(function() {
+                if(this.shane.isDead && this.ursula.isDead) {
+                    this.removeTickCallback(lossCondition);
+                    this.gotoCamp();
+                }
+            }.bind(this))
         },
 
         createNextLevelScene: function(options) {
@@ -171,26 +217,26 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             return nextLevel;
         },
 
-        createMarine: function(number) {
-            for(x = 0; x < number; x++) {
-                var marine = Marine({team: currentGame.playerTeam, name: 'Shane'});
-                marine.typeId = 34;
-                marine.directional = true;
-                utils.placeBodyWithinRadiusAroundCanvasCenter(marine, 4);
-                this.addUnit(marine, true);
-                this.marine = marine;
-            }
+        createShane: function() {
+             this.shane = Marine({team: this.playerTeam, name: 'Shane'});
+             // this.shane2 = Marine({team: currentGame.playerTeam, name: 'Shane'});
+             // this.addUnit(this.shane2);
+             // this.shane2.position = utils.getCanvasCenter();
+             return this.shane;
         },
 
-        createMedic: function(number) {
-            for(x = 0; x < number; x++) {
-                var medic = Medic({team: currentGame.playerTeam, name: 'Ursula'});
-                medic.typeId = 35;
-                medic.directional = true;
-                utils.placeBodyWithinRadiusAroundCanvasCenter(medic, 4);
-                this.addUnit(medic, true);
-                this.medic = medic;
-            }
+        createUrsula: function() {
+            this.ursula = Medic({team: this.playerTeam, name: 'Ursula'});
+            return this.ursula;
+        },
+
+        //used just for shane/urs
+        resetUnit: function(unit) {
+            unit.isDead = false;
+            unit.isAttackable = true;
+            unit.position = utils.getCanvasCenter();
+            unit.currentHealth = 1000;
+            unit.currentEnergy = 1000;
         },
 
         createBane: function(number, autoHone) {
@@ -211,11 +257,31 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             }
         },
 
+        /* options
+         * start {x: , y: }
+         * width, height
+         * density (0-1)
+         * possibleTrees []
+         */
+        fillAreaWithTrees: function(options) {
+            var trees = [];
+            for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
+                for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
+                    var tree = new Doodad({collides: true, autoAdd: false, radius: 20, texture: utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
+                    shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
+                    trees.push(tree);
+                }
+            }
+            return trees;
+        },
+
         createUnitSpawner: function(enemySet) {
             var spawner = {};
             spawner.id = utils.uuidv4();
 
             spawner.timers = [];
+
+            var self = this;
 
             spawner.initialize = function() {
                 $.each(enemySet, function(i, enemy) {
@@ -244,7 +310,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             }
 
             spawner.cleanUp = function() {
-                currentGame.invalidateTimers(this.timers);
+                currentGame.invalidateTimer(this.timers);
             }
 
             return spawner;
