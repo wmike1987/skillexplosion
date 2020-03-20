@@ -286,7 +286,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         //Knife
         var knifeThrowSound = utils.getSound('knifethrow.wav', {volume: .03, rate: 1.5});
         var knifeImpactSound = utils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
-        var knifeSpeed = 16;
+        var knifeSpeed = 22;
         var knifeDamage = 20;
         var throwKnife = function(destination, commandObj) {
             //create knife body
