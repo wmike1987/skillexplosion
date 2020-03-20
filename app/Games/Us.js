@@ -131,7 +131,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 3, n: 2, hz: 1000, maxOnField: 5},
+                spawn: {total: 10, n: 2, hz: 6000, maxOnField: 5},
                 item: {type: 'basic', total: 3}
             });
 
@@ -247,11 +247,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     bane.honeRange = 1400;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
-                if(utils.flipCoin() && utils.flipCoin() || true) {
+                if(true) {
                     // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
-                    // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
-                    // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
-                    // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["SereneStar"], unit: bane});
                 }
             }
@@ -298,6 +298,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                                     return;
                                 }
                                 newUnit = enemy.constructor({team: 4, isSelectable: false});
+                                // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
+                                ItemUtils.giveUnitItem({name: ["SereneStar"], unit: newUnit});
                                 utils.placeBodyWithinRadiusAroundCanvasCenter(newUnit, 800, 600);
                                 newUnit.honeRange = 1400;
                                 total++;

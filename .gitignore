@@ -1,1 +1,4 @@
 *.bat
+/es6test/*
+*.py
+es6*

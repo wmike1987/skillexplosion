@@ -286,7 +286,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         //Knife
         var knifeThrowSound = utils.getSound('knifethrow.wav', {volume: .03, rate: 1.5});
         var knifeImpactSound = utils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
-        var knifeSpeed = 15;
+        var knifeSpeed = 16;
         var knifeDamage = 20;
         var throwKnife = function(destination, commandObj) {
             //create knife body
@@ -300,15 +300,15 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             Matter.Body.setPosition(knife, this.position);
             knife.renderChildren = [{
                 id: 'knife',
-                data: 'Knife',
-                scale: {x: .8, y: .8},
+                data: 'ThrowingDagger',
+                scale: {x: .7, y: .7},
                 rotate: utils.pointInDirection(knife.position, destination),
             },
             {
                 id: 'shadow',
                 data: 'MarbleShadow',
                 scale: {x: 10/256, y: 50/256},
-                offset: {x: 15, y: 25},
+                offset: {x: 15, y: 20},
                 rotate: utils.pointInDirection(knife.position, destination),
     			      stage: "stageNTwo",
             }]

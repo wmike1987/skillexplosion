@@ -2,8 +2,8 @@
 
 "AbilityTarget.png":
 {
-	"frame": {"x":1153,"y":205,"w":32,"h":26},
-	"rotated": false,
+	"frame": {"x":1785,"y":205,"w":32,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -42,7 +42,7 @@
 },
 "AttackTarget.png":
 {
-	"frame": {"x":1751,"y":205,"w":32,"h":26},
+	"frame": {"x":1813,"y":205,"w":32,"h":26},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -82,7 +82,7 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":1717,"y":205,"w":28,"h":32},
+	"frame": {"x":1153,"y":203,"w":28,"h":32},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":0,"w":28,"h":32},
@@ -90,7 +90,7 @@
 },
 "IsoShadowBlurred.png":
 {
-	"frame": {"x":1150,"y":233,"w":64,"h":32},
+	"frame": {"x":1161,"y":351,"w":64,"h":32},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -170,7 +170,7 @@
 },
 "MoveIcon.png":
 {
-	"frame": {"x":1153,"y":103,"w":32,"h":32},
+	"frame": {"x":1153,"y":169,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -178,15 +178,15 @@
 },
 "MoveTarget.png":
 {
-	"frame": {"x":1717,"y":235,"w":32,"h":26},
-	"rotated": true,
+	"frame": {"x":1819,"y":1,"w":32,"h":26},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
 "PrevailingUnitIndicator.png":
 {
-	"frame": {"x":1161,"y":351,"w":64,"h":32},
+	"frame": {"x":1153,"y":103,"w":64,"h":32},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -202,15 +202,23 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":1153,"y":137,"w":32,"h":32},
+	"frame": {"x":1717,"y":205,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
+"ThrowingDagger.png":
+{
+	"frame": {"x":1150,"y":233,"w":32,"h":64},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
 "TintableSquare.png":
 {
-	"frame": {"x":1153,"y":171,"w":32,"h":32},
+	"frame": {"x":1751,"y":205,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -250,6 +258,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1934,"h":816},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:90183b73f85627aecf4c87162239778b:bb904865df11c5b6b2bd8a5fb054ed13:46c875579d242a0b1cfceb19946da616$"
+	"smartupdate": "$TexturePacker:SmartUpdate:5884af566c561ebd872b0ee3399a20d2:7eb93c91ceedea287b862b1a39fde1ce:46c875579d242a0b1cfceb19946da616$"
 }
 }
