@@ -426,15 +426,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             this.currentCommands.push({name: 'move', icon: this.attackMoveIcon});
             Tooltip.makeTooltippable(this.attackMoveIcon, {title: 'Attack-move', hotkey: 'A', description: "Attack-move to a destination."})
 
-            this.holdPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
-            utils.makeSpriteSize(this.holdPositionIcon, 25);
-            this.currentCommands.push({name: 'holdPosition', icon: this.holdPositionIcon});
-            Tooltip.makeTooltippable(this.holdPositionIcon, {title: 'Hold Position', hotkey: 'H', description: "Prevent any automatic movement."})
-
-            this.stopIcon = utils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
+            this.stopIcon = utils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
             utils.makeSpriteSize(this.stopIcon, 25);
             this.currentCommands.push({name: 'stop', icon: this.stopIcon});
             Tooltip.makeTooltippable(this.stopIcon, {title: 'Stop', hotkey: 'S', description: "Halt current command."})
+
+            this.holdPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
+            utils.makeSpriteSize(this.holdPositionIcon, 25);
+            this.currentCommands.push({name: 'holdPosition', icon: this.holdPositionIcon});
+            Tooltip.makeTooltippable(this.holdPositionIcon, {title: 'Hold Position', hotkey: 'H', description: "Prevent any automatic movement."})
         } else {
             $.each(this.currentCommands, function(i, command) {
                 command.icon.visible = false;

@@ -8,13 +8,13 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor', 'matter-js'], f
                 spritesheetName: 'animations3',
                 animationName: 'manasteal',
                 speed: Math.random() + .5,
-                transform: [unit.position.x, unit.position.y, 1, 1]
+                transform: [unit.position.x, unit.position.y, 1.3, 1.3]
             });
 
-            manaStealAnimation.tint = 0x1a1aff;
+            manaStealAnimation.tint = 0xA6E5D8;
             manaStealAnimation.play();
             manaStealAnimation.alpha = 1;
-            utils.attachSomethingToBody(manaStealAnimation, unit.body, {x: Math.random()*50-25, y: 25-(Math.random()*5)});
+            utils.attachSomethingToBody(manaStealAnimation, unit.body, {x: Math.random()*40-20, y: 25-(Math.random()*5)});
             utils.addSomethingToRenderer(manaStealAnimation, 'foreground');
             Matter.Events.on(manaStealAnimation, "destroy", function() {
                 utils.detachSomethingFromBody(manaStealAnimation);

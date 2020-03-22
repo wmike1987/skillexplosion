@@ -53,6 +53,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             smallerBodyWidthChange: false,
             smallerBodyHeightChange: false,
             abilities: [],
+            abilityAugments: [],
             commands: {
                 attack: {
                     name: "attack",
@@ -577,6 +578,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }.bind(this)
                 });
                 utils.deathPact(this, this.healthRegen);
+
+                if(this._init) {
+                    this._init(); //per-unit hook
+                }
             }
         }
 

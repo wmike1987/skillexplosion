@@ -313,7 +313,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var mineCracks = utils.createDisplayObject('MineCracks', {scale: {x: .75, y: .75}, alpha: 1});
             var stateZero = utils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});
             var stateOne = utils.createDisplayObject('MineOne', {scale: {x: .75, y: .75}, alpha: .8});
-            var stateTwo = utils.createDisplayObject('MineTwo', {scale: {x: .75, y: .75}, alpha: .8});
+            var stateTwo = utils.createDisplayObject('MineTwo', {scale: {x: .75, y: .75}, alpha: 1});
             var stateThree = utils.createDisplayObject('MineThree', {scale: {x: .75, y: .75}, alpha: .8});
 
             var medic = this;
@@ -325,9 +325,18 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var mineExplosionAnimation = utils.getAnimationB({
 				spritesheetName: 'animations2',
 				animationName: 'mineexplosion',
-				speed: 2.8,
+				speed: 3,
 				transform: [mineState.position.x, mineState.position.y, 1.5, 1.5]
 			});
+
+            //smoke animation
+            var smokeExplosionAnimation = utils.getAnimationB({
+                spritesheetName: 'animations2',
+                animationName: 'explosion-c',
+                speed: .35,
+                transform: [mineState.position.x, mineState.position.y, 4, 4]
+            });
+            smokeExplosionAnimation.alpha = .3;
             utils.makeSpriteSize(mineExplosionAnimation, {x: 240, y: 240})
 			mineExplosionAnimation.rotation = Math.random() * Math.PI;
             mineExplosionAnimation.alpha = .9;
@@ -374,9 +383,20 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         dmg = dmg*2;
                     }
                     unit.sufferAttack(dmg);
+                    var scratchAnim = utils.getAnimationB({
+                        spritesheetName: 'bloodswipes1',
+                        animationName: 'scratch',
+                        speed: .35,
+                        transform: [unit.position.x, unit.position.y, .3, .3]
+                    });
+                    scratchAnim.rotation = Math.random() * Math.PI;
+                    scratchAnim.play();
+                    utils.addSomethingToRenderer(scratchAnim, 'stageOne');
                 });
                 mineExplosionAnimation.play();
                 utils.addSomethingToRenderer(mineExplosionAnimation, 'stageOne');
+                smokeExplosionAnimation.play();
+                utils.addSomethingToRenderer(smokeExplosionAnimation, 'stageOne');
                 utils.removeSomethingFromRenderer(stateZero);
                 utils.removeSomethingFromRenderer(stateOne);
                 utils.removeSomethingFromRenderer(stateTwo);

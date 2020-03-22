@@ -1,5 +1,77 @@
 {"frames": {
 
+"explosion-c1.png":
+{
+	"frame": {"x":1198,"y":1067,"w":13,"h":13},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":8,"w":13,"h":13},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c2.png":
+{
+	"frame": {"x":1878,"y":1009,"w":19,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":4,"w":19,"h":22},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c3.png":
+{
+	"frame": {"x":1817,"y":1040,"w":24,"h":28},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":1,"w":24,"h":28},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c4.png":
+{
+	"frame": {"x":1229,"y":1011,"w":22,"h":25},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":1,"w":22,"h":25},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c5.png":
+{
+	"frame": {"x":1848,"y":1009,"w":28,"h":24},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":24},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c6.png":
+{
+	"frame": {"x":1817,"y":1070,"w":25,"h":21},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":25,"h":21},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c7.png":
+{
+	"frame": {"x":1198,"y":1041,"w":27,"h":24},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":2,"w":27,"h":24},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c8.png":
+{
+	"frame": {"x":1198,"y":1011,"w":29,"h":28},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":28},
+	"sourceSize": {"w":30,"h":29}
+},
+"explosion-c9.png":
+{
+	"frame": {"x":1817,"y":1009,"w":29,"h":29},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":29},
+	"sourceSize": {"w":30,"h":29}
+},
 "mineexplosion_0.png":
 {
 	"frame": {"x":1414,"y":1010,"w":193,"h":200},
@@ -465,6 +537,7 @@
 	"sourceSize": {"w":200,"h":200}
 }},
 "animations": {
+	"explosion-c": ["explosion-c1.png","explosion-c2.png","explosion-c3.png","explosion-c4.png","explosion-c5.png","explosion-c6.png","explosion-c7.png","explosion-c8.png","explosion-c9.png"],
 	"mineexplosion": ["mineexplosion_0.png","mineexplosion_1.png","mineexplosion_2.png","mineexplosion_3.png","mineexplosion_4.png","mineexplosion_5.png","mineexplosion_6.png","mineexplosion_7.png","mineexplosion_8.png","mineexplosion_9.png","mineexplosion_10.png","mineexplosion_11.png","mineexplosion_12.png","mineexplosion_13.png","mineexplosion_14.png","mineexplosion_15.png","mineexplosion_16.png","mineexplosion_17.png","mineexplosion_18.png","mineexplosion_19.png","mineexplosion_20.png","mineexplosion_21.png","mineexplosion_22.png","mineexplosion_23.png","mineexplosion_24.png","mineexplosion_25.png","mineexplosion_26.png","mineexplosion_27.png","mineexplosion_28.png","mineexplosion_29.png","mineexplosion_30.png","mineexplosion_31.png","mineexplosion_32.png","mineexplosion_33.png","mineexplosion_34.png","mineexplosion_35.png","mineexplosion_36.png","mineexplosion_37.png","mineexplosion_38.png","mineexplosion_39.png","mineexplosion_40.png","mineexplosion_41.png","mineexplosion_42.png","mineexplosion_43.png","mineexplosion_44.png","mineexplosion_45.png","mineexplosion_46.png","mineexplosion_47.png","mineexplosion_48.png","mineexplosion_49.png","mineexplosion_50.png","mineexplosion_51.png","mineexplosion_52.png","mineexplosion_53.png","mineexplosion_54.png","mineexplosion_55.png","mineexplosion_56.png","mineexplosion_57.png"]
 },
 "meta": {
@@ -474,6 +547,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2015,"h":1204},
 	"scale": "0.5",
-	"smartupdate": "$TexturePacker:SmartUpdate:314d3bce7a92b0d81fdf5fe884d3f35a:200ac83b9cf6b434dc15e91533d364af:f69912f6539d092c3b326e8718377652$"
+	"smartupdate": "$TexturePacker:SmartUpdate:dc5a8072105848bcf8f10d94e9ff0a6a:11ba045f52e06fac3c84c7c390b04682:f69912f6539d092c3b326e8718377652$"
 }
 }

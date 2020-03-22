@@ -289,6 +289,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var knifeSpeed = 22;
         var knifeDamage = 20;
         var throwKnife = function(destination, commandObj) {
+            //get current augment
+            var currentAugment = null;
+            $.each(this.abilities, function(i, ability) {
+                if(ability.name == 'Throw Knife') {
+                    currentAugment = ability.currentAugment || {name: 'null'};
+                }
+            })
+
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {
                 restitution: .95,
@@ -296,6 +304,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 mass: options.mass || 5,
                 isSensor: true
             });
+            if(currentAugment.name == 'pierce') {
+                knife.lives = currentAugment.lives;
+            }
 
             Matter.Body.setPosition(knife, this.position);
             knife.renderChildren = [{
@@ -343,7 +354,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     bloodPierceAnimation.play();
                     bloodPierceAnimation.rotation = utils.pointInDirection(knife.position, knife.destination, 'east');
                     utils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
-                    currentGame.removeBody(knife);
+                    if(currentAugment && currentAugment.name == 'pierce') {
+                        knife.lives -= 1;
+                        if(knife.lives == 0) {
+                            currentGame.removeBody(knife);
+                        }
+                    } else {
+                        currentGame.removeBody(knife);
+                    }
                 }
 
                 if(otherBody.isMine) {
@@ -371,7 +389,17 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Throwing Knife',
             description: 'Throw a knife, dealing ' + knifeDamage + ' damage.',
             hotkey: 'F',
-            energyCost: 5
+            energyCost: 5,
+            activeAugment: null,
+            augments: [
+                {
+                    name: 'pierce',
+                    lives: 3,
+                    icon: utils.createDisplayObject('PiercingKnife'),
+                    title: 'Piercing Blow',
+                    description: 'Allows a single knife to pierce multiple enemies.'
+                }
+            ],
         })
 
         var setSleeping = function() {

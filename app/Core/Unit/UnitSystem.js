@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], function($, utils, Matter, UnitPanel) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcore/UnitConfigurationPanel'], function($, utils, Matter, UnitPanel, UnitConfigurationPanel) {
 
     var unitSystem = function(properties) {
 
@@ -26,6 +26,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel'], functio
                 systemRef: this,
                 position: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight() - currentGame.worldOptions.unitPanelHeight/2}});
             this.unitPanel.initialize();
+
+            //create UnitConfigurationPanel
+            this.unitConfigurationPanel = new UnitConfigurationPanel()
+            this.unitConfigurationPanel.initialize();
 
             //destination marker
             this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});

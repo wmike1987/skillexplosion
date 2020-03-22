@@ -95,7 +95,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             campScene.add(tileMap);
 
             backgroundTiles = ['Dirt/grass_top_level_1', 'Dirt/grass_top_level_2', 'Dirt/grass_top_level_3'];
-            var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth});
+            var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
             campScene.add(tileMap2);
 
             var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .55);
@@ -107,11 +107,19 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             treeOptions.start = {x: 0, y: 0};
             treeOptions.width = 300;
             treeOptions.height = utils.getPlayableHeight()+50;
-            treeOptions.density = .65;
-            treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6', 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
+            treeOptions.density = .3;
+            treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5'];//, 'avgoldtree6', 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
             campScene.add(this.fillAreaWithTrees(treeOptions));
 
-            treeOptions.start = {x: utils.getPlayableWidth()-250, y: 0};
+            var mapTable = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'TableWithMap', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
+                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 0, y: 20}, position: {x: utils.getCanvasCenter().x+150, y: utils.getPlayableHeight()-250}})
+            campScene.add(mapTable);
+
+            var equipStation = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'smallcactus1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 10, y: -38}, sortYOffset: 35,
+                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 0, y: 20}, position: {x: utils.getCanvasCenter().x-150, y: utils.getPlayableHeight()-280}})
+            campScene.add(equipStation);
+
+            treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
             campScene.add(this.fillAreaWithTrees(treeOptions));
 
             var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
@@ -131,7 +139,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 10, n: 2, hz: 6000, maxOnField: 5},
+                spawn: {total: 50, n: 10, hz: 6000, maxOnField: 5},
                 item: {type: 'basic', total: 3}
             });
 
@@ -143,6 +151,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                         this.nextLevel(nextLevelOptions);
                         nextLevelInitiated = true;
                     }
+                }
+            }.bind(this));
+
+            Matter.Events.on(equipStation.body, 'onCollide', function(pair) {
+                var otherBody = pair.pair.bodyB == equipStation.body ? pair.pair.bodyA : pair.pair.bodyB;
+                if(otherBody.unit) {
+                    this.unitSystem.unitConfigurationPanel.showForUnit(otherBody.unit);
                 }
             }.bind(this));
 
@@ -267,8 +282,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             var trees = [];
             for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
                 for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-                    var tree = new Doodad({collides: true, autoAdd: false, radius: 20, texture: utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
-                    shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
+                    var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
+                    shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 4, y: 4}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
                     trees.push(tree);
                 }
             }
