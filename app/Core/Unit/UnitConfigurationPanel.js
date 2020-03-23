@@ -69,6 +69,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
             if(ability.augments) {
                 $.each(ability.augments, function(j, augment) {
                     augment.icon.visible = false;
+                    augment.icon.tooltipObj.hide();
                 }.bind(this))
             }
         }.bind(this))

@@ -75,7 +75,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 				experienceWorth: 50,
 			},
 			moveable: {
-				moveSpeed: .2
+				moveSpeed: 1
 			},
 			attacker: {
 				honeRange: 200,

@@ -290,12 +290,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var knifeDamage = 20;
         var throwKnife = function(destination, commandObj) {
             //get current augment
-            var currentAugment = null;
-            $.each(this.abilities, function(i, ability) {
-                if(ability.name == 'Throw Knife') {
-                    currentAugment = ability.currentAugment || {name: 'null'};
-                }
-            })
+            var thisAbility = this.getAbilityByName('Throw Knife');
+            var currentAugment = thisAbility.currentAugment || {name: 'null'};
 
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {

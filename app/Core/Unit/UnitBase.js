@@ -629,7 +629,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 if(this.currentExperience >= this.nextLevelExp) {
                     this.levelUp();
                 }
-            }
+            },
         }
 
         return UnitBase;

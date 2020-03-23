@@ -291,7 +291,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energyCost: 15,
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
-            }]
+            }],
         })
 
 
@@ -299,7 +299,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var mineBeep = utils.getSound('minebeep.wav', {volume: .03, rate: 7});
         var mineExplosion = utils.getSound('mineexplosion2.wav', {volume: .35, rate: 1.7});
         var layMine = function(commandObj) {
-            mineSound.play();
+            //get current augment
+            var thisAbility = this.getAbilityByName('Mine');
+            var currentAugment = thisAbility.currentAugment || {name: 'null'};
 
             var position = (this.shadow ? {x: this.shadow.position.x, y: this.shadow.position.y} : {x: this.position.x, y: this.position.y});
             var mine = Matter.Bodies.circle(position.x, position.y+20, 15, {
@@ -309,6 +311,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             mine.isMine = true;
 
             currentGame.addBody(mine);
+            mineSound.play();
 
             var mineCracks = utils.createDisplayObject('MineCracks', {scale: {x: .75, y: .75}, alpha: 1});
             var stateZero = utils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});
@@ -383,23 +386,50 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         dmg = dmg*2;
                     }
                     unit.sufferAttack(dmg, medic);
-                    var scratchAnim = utils.getAnimationB({
-                        spritesheetName: 'bloodswipes1',
-                        animationName: 'scratch',
-                        speed: .35,
-                        transform: [unit.position.x, unit.position.y, .3, .3]
-                    });
-                    scratchAnim.rotation = Math.random() * Math.PI;
-                    scratchAnim.play();
-                    utils.addSomethingToRenderer(scratchAnim, 'stageOne');
+                    if(currentAugment.name == 'maim') {
+                        var moveDelta = Math.min(unit.moveSpeed, currentAugment.slowAmount);
+                        if(moveDelta == unit.moveSpeed) moveDelta = moveDelta/2;
+                        unit.moveSpeed -= moveDelta;
+                        currentGame.addTimer({
+                            name: 'mineSlow' + unit.unitId + mineState.id,
+                            runs: 1,
+                            timeLimit: currentAugment.duration,
+                            killsSelf: true,
+                            callback: function() {
+                                unit.moveSpeed += moveDelta;
+                            }
+                        })
+                    }
+
+                    if(currentAugment.name == 'maim') {
+                        var variation = Math.random()*.3;
+                        var maimBlast = utils.getAnimationB({
+                            spritesheetName: 'animations3',
+                            animationName: 'maimblast',
+                            speed: .4+variation,
+                            transform: [unit.position.x, unit.position.y, 1+variation, 1+variation]
+                        });
+                        maimBlast.rotation = Math.random() * Math.PI;
+                        maimBlast.play();
+                        utils.addSomethingToRenderer(maimBlast, 'stageOne');
+                    } else {
+                        var scratchAnim = utils.getAnimationB({
+                            spritesheetName: 'bloodswipes1',
+                            animationName: 'scratch',
+                            speed: .35,
+                            transform: [unit.position.x, unit.position.y, .3, .3]
+                        });
+                        scratchAnim.rotation = Math.random() * Math.PI;
+                        scratchAnim.play();
+                        utils.addSomethingToRenderer(scratchAnim, 'stageOne');
+                    }
+
                 });
+
                 mineExplosionAnimation.play();
                 utils.addSomethingToRenderer(mineExplosionAnimation, 'stageOne');
                 smokeExplosionAnimation.play();
                 utils.addSomethingToRenderer(smokeExplosionAnimation, 'stageOne');
-                utils.removeSomethingFromRenderer(stateZero);
-                utils.removeSomethingFromRenderer(stateOne);
-                utils.removeSomethingFromRenderer(stateTwo);
                 utils.removeSomethingFromRenderer(stateThree);
                 utils.removeSomethingFromRenderer(mineCracks);
                 currentGame.removeBody(mine);
@@ -417,6 +447,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             description: 'Lay an explosive mine.',
             hotkey: 'F',
             energyCost: 15,
+            augments: [{
+                name: 'maim',
+                slowAmount: .5,
+                duration: 3000,
+                icon: utils.createDisplayObject('Maim'),
+                title: 'Maim',
+                descrtiption: 'Slow enemies hit by the blast for 2 seconds.'
+            }]
         })
 
         var rad = options.radius || 22;
