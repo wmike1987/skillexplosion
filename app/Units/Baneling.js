@@ -72,6 +72,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 				energy: 0,
 				team: options.team || 4,
 				isSelectable: options.isSelectable,
+				experienceWorth: 50,
 			},
 			moveable: {
 				moveSpeed: .2
@@ -106,7 +107,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 			utils.applyToUnitsByTeam(function(team) {return baneling.team != team}, function(unit) {
 				return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isAttackable);
 			}.bind(this), function(unit) {
-				unit.sufferAttack(baneling.damage);
+				unit.sufferAttack(baneling.damage, baneling);
 			});
 			this.alreadyAttacked = true;
 			if(!this.alreadyDied)

@@ -848,6 +848,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             if(this.unitPanel)
                 this.unitPanel.cleanUp();
 
+            //and the unit configuration panel
+            if(this.unitConfigurationPanel)
+                this.unitConfigurationPanel.cleanUp();
+
             //don't hold onto any bodies
             this.selectedUnits = {};
             this.orderedUnits = [];

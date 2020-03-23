@@ -36,6 +36,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             }
         `;
 
+        var levelUpSound = utils.getSound('levelup.wav', {volume: 1, rate: .8});
+
         //default unit attributes
         var UnitBase = {
             isUnit: true,
@@ -44,6 +46,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             currentHealth: 20,
             defense: 0,
             level: 1,
+            currentExperience: 0,
+            nextLevelExp: 100,
+            lastLevelExp: 0,
+            expendableSkillPoints: 0,
             energyRegenerationRate: 0,
             healthRegenerationRate: 0,
             maxEnergy: 0,
@@ -84,10 +90,13 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             currentItems: [],
             maxItems: 6,
 
-            sufferAttack: function(damage) {
+            sufferAttack: function(damage, attackingUnit) {
                 this.currentHealth -= Math.max(0, (damage - this.defense));
                 if (this.currentHealth <= 0) {
                     this._death();
+                    if(attackingUnit) {
+                        Matter.Events.trigger(attackingUnit, 'kill', {killedUnit: this})
+                    }
                 } else {
                     this.showLifeBar(true);
                     if(!this.barTimer) {
@@ -553,6 +562,13 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }
                 }.bind(this));
 
+                //kill handler
+                Matter.Events.on(this, 'kill', function(event) {
+                    if(!this.isDead) {
+                        this.giveExperience(event.killedUnit.experienceWorth || 0);
+                    }
+                }.bind(this))
+
                 //regen energy
                 this.energyRegen = currentGame.addTimer({
                     name: 'energyRegen' + this.unitId,
@@ -581,6 +597,37 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                 if(this._init) {
                     this._init(); //per-unit hook
+                }
+            },
+
+            levelUp: function() {
+                this.level++;
+                this.lastLevelExp = this.nextLevelExp;
+                this.nextLevelExp *= 2.25;
+
+                var levelUpAnimation = utils.getAnimationB({
+                    spritesheetName: 'animations3',
+                    animationName: 'levelup',
+                    speed: 2.5,
+                    transform: [this.position.x, this.position.y, .8, 1]
+                });
+                levelUpAnimation.play();
+                utils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
+                utils.attachSomethingToBody(levelUpAnimation, this.body);
+                Matter.Events.on(levelUpAnimation, "destroy", function() {
+                    utils.detachSomethingFromBody(levelUpAnimation);
+                })
+                levelUpSound.play();
+                this.currentHealth = this.maxHealth;
+                this.currentEnergy = this.maxEnergy;
+
+                this.expendableSkillPoints += 2;
+            },
+
+            giveExperience: function(exp) {
+                this.currentExperience += exp;
+                if(this.currentExperience >= this.nextLevelExp) {
+                    this.levelUp();
                 }
             }
         }

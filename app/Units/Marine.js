@@ -336,11 +336,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 }
             })
             utils.deathPact(knife, removeSelf);
+
+            var self = this;
             Matter.Events.on(knife, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
                 if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
-                    otherUnit.sufferAttack(knifeDamage); //we can make the assumption that a body is part of a unit if it's attackable
+                    otherUnit.sufferAttack(knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
                     if(otherUnit.isDead) {
                         Matter.Events.trigger(this, 'knifeKill');
                     }
@@ -398,7 +400,23 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     icon: utils.createDisplayObject('PiercingKnife'),
                     title: 'Piercing Blow',
                     description: 'Allows a single knife to pierce multiple enemies.'
-                }
+                },
+                {
+                    name: 'poison tip',
+                    seconds: 3,
+                    damage: 20,
+                    icon: utils.createDisplayObject('PoisonTip'),
+                    title: 'Poison Tip',
+                    description: 'Deal an additional 20 damage over 3 seconds.'
+                },
+                {
+                    name: 'multi throw',
+                    knives: 3,
+                    damage: 20,
+                    icon: utils.createDisplayObject('MultiShot'),
+                    title: 'Multi-throw',
+                    description: 'Throw multiple knives in a fan.'
+                },
             ],
         })
 
@@ -454,8 +472,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     honeRange: 300,
                     range: 180,
                     damage: 10,
-                    attack: function(target) {
-                        target.sufferAttack(this.damage);
+                    attackExtension: function(target) {
                         fireSound.play();
 
                         //bullet emitter

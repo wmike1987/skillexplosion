@@ -388,12 +388,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 if(something.destroy && !something._destroyed) {
                     something.destroy();
                 }
+            } else {
+                //otherwise remove from stage and destroy
+                where = where || something.myLayer || 'stage';
+                currentGame.renderer.removeFromPixiStage(something, where);
             }
 
-            //otherwise remove from stage and destroy
-            where = where || something.myLayer || 'stage';
-            currentGame.renderer.removeFromPixiStage(something, where);
-
+            //always trigger a destroy
             Matter.Events.trigger(something, "destroy");
         },
 

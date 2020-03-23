@@ -382,7 +382,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     if(utils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {
                         dmg = dmg*2;
                     }
-                    unit.sufferAttack(dmg);
+                    unit.sufferAttack(dmg, medic);
                     var scratchAnim = utils.getAnimationB({
                         spritesheetName: 'bloodswipes1',
                         animationName: 'scratch',

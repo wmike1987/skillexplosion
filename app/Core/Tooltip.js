@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles) {
+define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, utils, styles, Matter) {
 
     // options {
     //     title
@@ -159,6 +159,10 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles'], function($, utils, styles)
                 clearTimeout(stopTimeout);
             }
         }.bind(this))
+
+        Matter.Events.on(displayObject, 'destroy', function() {
+            displayObject.tooltipObj.destroy();
+        })
     }
 
     return Tooltip;

@@ -14,7 +14,10 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
         //default
         attack: function(target) {
-            target.sufferAttack(this.damage);
+            target.sufferAttack(this.damage, this);
+            if(this.attackExtension) {
+                this.attackExtension(target);
+            }
         },
 
         //user defined
@@ -300,7 +303,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
                 this.specifiedAttackTarget = null;
             };
-            
+
             this.attackMoving = false;
 
             if(this.honeAndTargetSensorCallback)

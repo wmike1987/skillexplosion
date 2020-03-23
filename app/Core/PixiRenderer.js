@@ -419,8 +419,12 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			if(child.constructor.name == 'Particle') {
 				child.emitter.cleanup();
 			}
-		    else if(child.destroy && !child._destroyed)
+		    else if(child.destroy && !child._destroyed) {
+				Matter.Events.trigger(child, 'destroy', {});
 				child.destroy(); //i'm unsure if I need to check for a destroy method first
+			} else if(child._destroyed) {
+				console.info("removing object that's already been destroyed")
+			}
 		}
 
 		//destroy the whole pixi app

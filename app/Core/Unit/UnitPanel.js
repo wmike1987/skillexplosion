@@ -31,6 +31,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.unitDamageText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
         this.unitDefenseText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
 
+        //experience meter
+        this.experienceMeter = utils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: utils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
+        this.experienceMeter.alpha = .5;
+        this.experienceMeter.visible = false;
+
         //health vial
         this.vialDimensions = {w: 24, h: 90};
         this.healthVialCenterY = this.centerY;
@@ -343,6 +348,19 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
                     //armor
                     this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
+                }
+            }.bind(this));
+        }
+
+        //experience meter
+        if(!this.updateExperienceMeterTick) {
+            this.updateExperienceMeterTick = currentGame.addTickCallback(function() {
+                if(this.prevailingUnit) {
+                    this.experienceMeter.visible = true;
+                    var expPercent = (this.prevailingUnit.currentExperience-this.prevailingUnit.lastLevelExp) / (this.prevailingUnit.nextLevelExp-this.prevailingUnit.lastLevelExp);
+                    utils.makeSpriteSize(this.experienceMeter, {x: utils.getPlayableWidth()*expPercent, y: 8});
+                } else {
+                    this.experienceMeter.visible = false;
                 }
             }.bind(this));
         }
