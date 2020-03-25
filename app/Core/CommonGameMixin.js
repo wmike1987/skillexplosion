@@ -110,10 +110,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             });
 
             //mouse position
+            // this.addEventListener('mousemove', function(event) {
+            //     this.mousePosition.x = event.data.global.x;
+            //     this.mousePosition.y = event.data.global.y;
+            // }.bind(this), true, true);
+
             this.addEventListener('mousemove', function(event) {
-                this.mousePosition.x = event.data.global.x;
-                this.mousePosition.y = event.data.global.y;
-            }.bind(this), true, true);
+                var rect = this.canvasEl.getBoundingClientRect();
+				this.mousePosition.x = event.clientX - rect.left;
+				this.mousePosition.y = event.clientY - rect.top;
+            }.bind(this), false, false);
 
             //fps (crtl + shift + f to toggle)
             this.lastDeltaText = utils.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
@@ -731,10 +737,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             return listener;
         },
         removeListener: function(listener) {
-            if(this.eventListeners.indexOf(listener) > 0)
+            if(this.eventListeners.indexOf(listener) > 0) {
                 this.canvasEl.removeEventListener(this.eventListeners[this.eventListeners.indexOf(listener)].eventName, this.eventListeners[this.eventListeners.indexOf(listener)].handler);
                 this.renderer.interactiveObject && this.renderer.interactiveObject.removeListener(this.eventListeners[this.eventListeners.indexOf(listener)].eventName, this.eventListeners[this.eventListeners.indexOf(listener)].handler);
                 this.eventListeners.splice(this.eventListeners.indexOf(listener), 1);
+            }
         },
         clearListeners: function(noMercy) {
             this.eventListeners.forEach(function(listener) {

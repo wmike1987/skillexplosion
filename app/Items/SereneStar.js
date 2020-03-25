@@ -27,7 +27,8 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor', 'matter-js'], f
             manipulations: manipulations,
             name: "Serene Star",
             description: ["Add +8 to maximum energy.", "Regenerate +1 energy per second.", "Gain 5 energy after knife kill."],
-            icon: 'SereneStar'
+            icon: 'SereneStar',
+            unitType: 'Marine'
         })
     };
 })

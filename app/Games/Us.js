@@ -47,6 +47,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create our units
             this.createShane();
             this.createUrsula();
+            this.createBane(3);
 
             //create empty scene and transition to camp scene
             this.currentScene = new Scene(); //empty scene
@@ -109,7 +110,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             treeOptions.height = utils.getPlayableHeight()+50;
             treeOptions.density = .3;
             treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5'];//, 'avgoldtree6', 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
-            campScene.add(this.fillAreaWithTrees(treeOptions));
+            // campScene.add(this.fillAreaWithTrees(treeOptions));
 
             var mapTable = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'TableWithMap', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
                 shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 0, y: 20}, position: {x: utils.getCanvasCenter().x+150, y: utils.getPlayableHeight()-250}})
@@ -120,7 +121,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             campScene.add(equipStation);
 
             treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
-            campScene.add(this.fillAreaWithTrees(treeOptions));
+            // campScene.add(this.fillAreaWithTrees(treeOptions));
 
             var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
                 shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
@@ -139,7 +140,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 50, n: 10, hz: 6000, maxOnField: 5},
+                spawn: {total: 103, n: 3, hz: 2000, maxOnField: 5},
                 item: {type: 'basic', total: 3}
             });
 
@@ -263,11 +264,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
                 if(true) {
-                    // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["SereneStar"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SteadySyringe"], unit: bane});
                 }
             }
         },
@@ -313,8 +314,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                                     return;
                                 }
                                 newUnit = enemy.constructor({team: 4, isSelectable: false});
-                                // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
+                                ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
                                 ItemUtils.giveUnitItem({name: ["SereneStar"], unit: newUnit});
+
                                 utils.placeBodyWithinRadiusAroundCanvasCenter(newUnit, 800, 600);
                                 newUnit.honeRange = 1400;
                                 total++;

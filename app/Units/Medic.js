@@ -249,7 +249,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
           currentGame.addBody(shadow);
           shadow.oneFrameOverrideInterpolation = true;
-          utils.sendBodyToDestinationAtSpeed(shadow, destination, 25, true, true);
+          utils.sendBodyToDestinationAtSpeed(shadow, destination, 10, true, true);
 
           var originalOrigin = {x: this.position.x, y: this.position.y};
           var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
@@ -430,6 +430,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 utils.addSomethingToRenderer(mineExplosionAnimation, 'stageOne');
                 smokeExplosionAnimation.play();
                 utils.addSomethingToRenderer(smokeExplosionAnimation, 'stageOne');
+                utils.removeSomethingFromRenderer(stateZero);
+                utils.removeSomethingFromRenderer(stateOne);
+                utils.removeSomethingFromRenderer(stateTwo);
                 utils.removeSomethingFromRenderer(stateThree);
                 utils.removeSomethingFromRenderer(mineCracks);
                 currentGame.removeBody(mine);

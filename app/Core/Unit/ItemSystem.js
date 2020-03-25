@@ -62,6 +62,66 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 this.addItemOnGround(event.item);
             }.bind(this))
 
+
+            Matter.Events.on(this, "usergrab", function(event) {
+                var item = event.item;
+                item.icon.visible = true;
+                item.icon.tooltipObj.disabled = true;
+                item.icon.sortYOffset = 1000;
+                item.grabCallback = currentGame.addTickCallback(function() {
+                    item.icon.position = {x: currentGame.mousePosition.x - 10, y: currentGame.mousePosition.y - 10};
+                })
+                this.grabbedItem = item;
+
+            }.bind(this))
+
+            this.grabDropListener = currentGame.addListener('mousedown', function(event) {
+                if(!this.grabbedItem || event.which != 1 || keyStates['Control']) return;
+                var item = this.grabbedItem;
+                if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)) {
+                    var variationX = Math.random()*60;
+                    var variationY = Math.random()*60;
+                    item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}));
+                    currentGame.removeTickCallback(item.grabCallback);
+                    item.icon.visible = false;
+                    item.icon.alpha = 1;
+                    item.icon.tooltipObj.disabled = false;
+                    this.grabbedItem = null;
+                } else {
+                    var mouseOverSlottedItem = false;
+                    var prevailingUnit = currentGame.unitSystem.selectedUnit;
+                    var allItems = prevailingUnit.currentItems.concat(prevailingUnit.currentBackpack).concat(prevailingUnit.currentSpecialtyItems);
+                    item.icon.alpha = 1;
+                    item.icon.tooltipObj.disabled = false;
+                    this.grabbedItem = null;
+                    var found = false;
+                    $.each(allItems, function(i, loopItem) {
+                        currentGame.removeTickCallback(item.grabCallback);
+                        if(loopItem && loopItem != item) {
+                            if(loopItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
+                                prevailingUnit.unequipItem(loopItem);
+                                Matter.Events.trigger(this, 'usergrab', {item: loopItem})
+                                prevailingUnit.pickupItem(item, loopItem.currentSpot);
+                                loopItem.currentSpot = null;
+                                found = true;
+                            }
+                        }
+                    }.bind(this))
+                    if(!found) {
+                        if(!prevailingUnit.pickupItem(item, item.currentSpot)) {
+                            var variationX = Math.random()*60;
+                            var variationY = Math.random()*60;
+                            item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}));
+                            currentGame.removeTickCallback(item.grabCallback);
+                            item.icon.visible = false;
+                            item.icon.alpha = 1;
+                            item.icon.tooltipObj.disabled = false;
+                            this.grabbedItem = null;
+                        }
+                    }
+                }
+            }.bind(this))
+
             //Annoint units with functionality to detect and pickup an item
             Matter.Events.on(currentGame, 'addUnit', function(event) {
                 if(!event.unit.isMoveable) return;
@@ -83,9 +143,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 Matter.Events.on(event.unit.body, 'onCollideActive', function(pair) {
                     var otherBody = pair.pair.bodyB == event.unit ? pair.pair.bodyA : pair.pair.bodyB;
                     if(event.unit.targetedItem && otherBody == event.unit.targetedItem.body) {
-                        if(event.unit.canPickupItem(event.unit.targetedItem)) {
+                        if(event.unit.findItemSpot(event.unit.targetedItem)) {
                             event.unit.pickupItem(event.unit.targetedItem);
-                            Matter.Events.trigger(this, 'pickupItem', {item: event.unit.targetedItem, unit: event.unit});
                             this.pickupItem(event.unit.targetedItem);
                         } else {
                             cantpickup.play();
@@ -109,6 +168,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
         this.pickupItem = function(item) {
             item.pickup();
             this.removeItemFromGround(item);
+        }
+
+        this.isGrabbing = function() {
+            return this.grabbedItem;
         }
 
         this.removeItemFromGround = function(item) {
@@ -137,6 +200,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
 
             if(this.pickupTick)
                 currentGame.removeTickCallback(this.pickupTick);
+
+            if(this.grabDropListener) {
+                currentGame.removeListener(this.grabDropListener);
+            }
 
             //clear jquery events
             $('body').off('mousedown.itemSystem');

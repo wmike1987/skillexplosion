@@ -125,10 +125,20 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.groupSpacing = 8 + this.wireframeSize;
 
         //item variables
-        this.itemCenterX = this.centerX + 86;
+        this.itemCenterX = this.centerX + 85.5;
         this.itemCenterY = utils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
         this.itemXSpacing = 30;
         this.itemYSpacing = 30;
+
+        //specialty item variables
+        this.spItemCenterX = this.centerX - 85.5;
+        this.spItemCenterY = utils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
+        this.spItemYSpacing = 30;
+
+        //backpack item variables
+        this.bpItemCenterX = this.centerX + 408;
+        this.bpItemCenterY = this.centerY + 21;
+        this.bpItemXSpacing = 30;
 
         //create frame
         this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
@@ -152,7 +162,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 }
             }.bind(this))
 
-            Matter.Events.on(currentGame.itemSystem, 'unitDroppedItem', function(event) {
+            Matter.Events.on(currentGame.itemSystem, 'unitUnequippedItem', function(event) {
                 if(this.prevailingUnit == event.unit) {
                     event.item.icon.tooltipObj.hide();
                     event.item.icon.visible = false;
@@ -303,14 +313,50 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     };
 
     unitPanel.prototype.updateUnitItems = function() {
-        if(this.prevailingUnit && this.prevailingUnit.currentItems.length > 0) {
+        if(this.prevailingUnit) {
+            //regular items
             $.each(this.prevailingUnit.currentItems, function(i, item) {
                 if(item == null)
                     return;
                 var icon = item.icon;
+                icon.alpha = 1;
                 var x = i % 2 == 0 ? this.itemCenterX : this.itemCenterX + this.itemXSpacing;
                 var yLevel = Math.floor(i / 2);
                 var y = this.itemCenterY + this.itemXSpacing * yLevel;
+                if(!icon.parent) {
+                    utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                    utils.makeSpriteSize(icon, 27);
+                } else {
+                    icon.position = {x: x, y: y};
+                    icon.visible = true;
+                }
+            }.bind(this))
+
+            //specialy items
+            $.each(this.prevailingUnit.currentSpecialtyItems, function(i, item) {
+                if(item == null)
+                    return;
+                var icon = item.icon;
+                icon.alpha = 1;
+                var x = this.spItemCenterX;
+                var y = this.itemCenterY + this.spItemYSpacing * i;
+                if(!icon.parent) {
+                    utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                    utils.makeSpriteSize(icon, 27);
+                } else {
+                    icon.position = {x: x, y: y};
+                    icon.visible = true;
+                }
+            }.bind(this))
+
+            //backpack
+            $.each(this.prevailingUnit.currentBackpack, function(i, item) {
+                if(item == null)
+                    return;
+                var icon = item.icon;
+                icon.alpha = .5;
+                var x = this.bpItemCenterX + this.bpItemXSpacing * i;
+                var y = this.bpItemCenterY;
                 if(!icon.parent) {
                     utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                     utils.makeSpriteSize(icon, 27);
@@ -323,8 +369,27 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     };
 
     unitPanel.prototype.clearUnitItems = function() {
+        //clear regular items
         if(this.prevailingUnit && this.prevailingUnit.currentItems.length > 0) {
             $.each(this.prevailingUnit.currentItems, function(i, item) {
+                if(item) {
+                    item.icon.visible = false;
+                }
+            })
+        }
+
+        //clear specialty items
+        if(this.prevailingUnit && this.prevailingUnit.currentSpecialtyItems.length > 0) {
+            $.each(this.prevailingUnit.currentSpecialtyItems, function(i, item) {
+                if(item) {
+                    item.icon.visible = false;
+                }
+            })
+        }
+
+        //clearn backpack items
+        if(this.prevailingUnit && this.prevailingUnit.currentBackpack.length > 0) {
+            $.each(this.prevailingUnit.currentBackpack, function(i, item) {
                 if(item) {
                     item.icon.visible = false;
                 }

@@ -87,8 +87,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             eventClickStateGathering: {},
             eventKeyMappings: {},
             eventKeyStateGathering: {},
-            currentItems: [],
-            maxItems: 6,
+            currentItems: [null, null, null, null, null, null],
+            currentSpecialtyItems: [null, null, null],
+            currentBackpack: [null, null, null],
 
             sufferAttack: function(damage, attackingUnit) {
                 this.currentHealth -= Math.max(0, (damage - this.defense));
@@ -118,6 +119,16 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         this.dropItem(item);
                     }
                 }.bind(this))
+                $.each(this.currentSpecialtyItems, function(i, item) {
+                    if(item) {
+                        this.dropItem(item);
+                    }
+                }.bind(this))
+                $.each(this.currentBackpack, function(i, item) {
+                    if(item) {
+                        this.dropItem(item);
+                    }
+                }.bind(this))
                 this.isDead = true;
                 this.death();
             },
@@ -126,28 +137,23 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 return unit.isAttackable && this.team != unit.team;
             },
 
-            pickupItem: function(item) {
-                if(this.canPickupItem(item)) {
-
+            pickupItem: function(item, explicitSpot) {
+                var spot = explicitSpot || this.findItemSpot(item);
+                if(spot) {
                     //set ownership
                     item.owningUnit = this;
 
-                    //add benefits
-                    this.equipItem(item);
+                    //add benefits (if necessary)
+                    if(spot.active)
+                        this.equipItem(item);
 
                     //add item to unit's item list
-                    var insertedItem = false;
-                    for(var i = 0; i < this.currentItems.length; i++) {
-                        if(this.currentItems[i] == null) {
-                            this.currentItems[i] = item;
-                            insertedItem = true;
-                            break;
-                        }
-                    }
-                    if(!insertedItem) {
-                        this.currentItems.push(item);
-                    }
+                    spot.location[spot.index] = item;
+                    item.currentSpot = spot;
+
+                    Matter.Events.trigger(currentGame.itemSystem, 'pickupItem', {item: item, unit: this});
                 }
+                return spot;
             },
 
             dropItem: function(item) {
@@ -158,26 +164,37 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 } while (!utils.isPositionWithinPlayableBounds(spawnPosition))
 
                 item.drop(spawnPosition);
-                Matter.Events.trigger(currentGame.itemSystem, 'unitDroppedItem', {item: item, unit: this});
 
-                //remove added benefits
+                //remove added benefits (if necessary)
                 this.unequipItem(item);
-
-                //remove from current item list
-                var index = this.currentItems.indexOf(item);
-                this.currentItems[index] = null;
             },
 
-            canPickupItem: function() {
-                var notFull = this.currentItems.length < this.maxItems;
-                var emptySpot = false;
-                for(var i = 0; i < this.currentItems.length; i++) {
-                    if(this.currentItems[i] == null) {
-                        emptySpot = true;
-                        break;
+            findItemSpot: function(item) {
+                var emptySpot = null;
+                if(item.unitType == null) { //if we're a regular item
+                    for(var i = 0; i < this.currentItems.length; i++) {
+                        if(this.currentItems[i] == null) {
+                            emptySpot = {location: this.currentItems, index: i, active: true};
+                            break;
+                        }
+                    }
+                } else if(item.unitType == this.unitType) {
+                    for(var i = 0; i < this.currentSpecialtyItems.length; i++) {
+                        if(this.currentSpecialtyItems[i] == null) {
+                            emptySpot = {location: this.currentSpecialtyItems, index: i, active: true};
+                            break;
+                        }
                     }
                 }
-                return notFull || emptySpot;
+                if(!emptySpot) {
+                    for(var i = 0; i < this.currentBackpack.length; i++) {
+                        if(this.currentBackpack[i] == null) {
+                            emptySpot = {location: this.currentBackpack, index: i, active: false};
+                            break;
+                        }
+                    }
+                }
+                return emptySpot;
             },
 
             equipItem: function(item) {
@@ -185,7 +202,13 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
 
             unequipItem: function(item) {
-                item.unequip(this);
+                if(item.currentSpot.active)
+                    item.unequip(this);
+
+                //nullify the item's slot
+                item.currentSpot.location[item.currentSpot.index] = null;
+
+                Matter.Events.trigger(currentGame.itemSystem, 'unitUnequippedItem', {item: item, unit: this});
             },
 
             getAbilityByName: function(name) {

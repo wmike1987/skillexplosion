@@ -70,9 +70,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         window.addEventListener("keydown", newItem.controlDown);
         window.addEventListener("keyup", newItem.controlUp);
         newItem.cursorListener = currentGame.addTickCallback(function() {
-            if(!newItem.icon.visible) return;
+            if(!newItem.icon.visible || currentGame.itemSystem.grabbedItem == newItem) return;
 
-            var localPoint = newItem.icon.toLocal(new PIXI.Point(currentGame.mousePosition.x, currentGame.mousePosition.y));
             if(newItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
                 if(keyStates['Control']) {
                     utils.setCursorStyle('server:GenericActionCursor.png');
@@ -89,7 +88,10 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         //drop item
         newItem.icon.on('mousedown', function(event) {
             if(keyStates['Control']) {
-                newItem.owningUnit.dropItem(newItem);
+                if(currentGame.itemSystem.isGrabbing()) return;
+
+                newItem.owningUnit.unequipItem(newItem);
+                Matter.Events.trigger(currentGame.itemSystem, "usergrab", {item: newItem})
                 newItem.mouseInside = false;
                 utils.setCursorStyle('server:MainCursor.png');
             }
@@ -147,6 +149,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                     utils.removeSomethingFromRenderer(this);
                     currentGame.addBody(item.body);
                     Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item});
+                    item.currentSpot = null;
                 }
             });
 

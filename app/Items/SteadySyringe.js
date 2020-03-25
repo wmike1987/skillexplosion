@@ -9,7 +9,8 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, ut
             manipulations: manipulations,
             name: "Steady Syringe",
             description: "Increase heal amount by 0.5.",
-            icon: 'SteadySyringe'
+            icon: 'SteadySyringe',
+            unitType: 'Medic'
         })
     };
 })

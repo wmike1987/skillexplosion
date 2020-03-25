@@ -141,7 +141,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
 
         var stopTimeout = null;
         displayObject.on('mousemove', function(event) {
-            if(displayObject.tooltipObj.visible) return;
+            if(displayObject.tooltipObj.visible || displayObject.tooltipObj.disabled) return;
             if(stopTimeout) {
                 clearTimeout(stopTimeout);
             }
