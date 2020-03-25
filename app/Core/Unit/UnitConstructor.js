@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
-'utils/GameUtils', 'unitcore/UnitBase'],
+'utils/GameUtils', 'unitcore/UnitBase', 'items/EmptySlot'],
 
-    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, unitBase) {
+    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, unitBase, EmptySlot) {
 
         /*
          *  This module aims to assemble all the pieces of a unit. It creates a new object, mixes the specific unit-options with the unitBase, then:
@@ -186,6 +186,36 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 newUnit.isoManager = new Iso({
                     unit: newUnit
                 });
+            }
+
+            //Fill inventory with empty items which represent empty slots
+            newUnit.emptyRegularSlots = [];
+            for(var i = 0; i < newUnit.currentItems.length; i++) {
+                var item = EmptySlot();
+                item.icon.tooltipObj.disabled = true;
+                item.currentSlot = {location: newUnit.currentItems, index: i, active: true, slotDef: item, type: 'common'}
+                newUnit.emptyRegularSlots.push(item);
+                newUnit.currentItems[i] = item;
+            }
+
+            //start with blank items
+            newUnit.emptySpecialtySlots = [];
+            for(var i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
+                var item = EmptySlot();
+                item.icon.tooltipObj.disabled = true;
+                item.currentSlot = {location: newUnit.currentSpecialtyItems, index: i, active: true, slotDef: item, type: newUnit.unitType}
+                newUnit.emptySpecialtySlots.push(item);
+                newUnit.currentSpecialtyItems[i] = item;
+            }
+
+            //start with blank items
+            newUnit.emptyBackpackSlots = [];
+            for(var i = 0; i < newUnit.currentBackpack.length; i++) {
+                var item = EmptySlot();
+                item.icon.tooltipObj.disabled = true;
+                item.currentSlot = {location: newUnit.currentBackpack, index: i, active: false, slotDef: item, type: 'universal'}
+                newUnit.emptyBackpackSlots.push(item);
+                newUnit.currentBackpack[i] = item;
             }
 
             //initialize any starting behavior

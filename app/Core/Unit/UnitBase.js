@@ -137,26 +137,28 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 return unit.isAttackable && this.team != unit.team;
             },
 
-            pickupItem: function(item, explicitSpot) {
-                var spot = explicitSpot || this.findItemSpot(item);
-                if(spot) {
+            pickupItem: function(item, explicitSlot) {
+                var slot = explicitSlot || this.findItemSlot(item);
+                if(slot) {
                     //set ownership
                     item.owningUnit = this;
 
                     //add benefits (if necessary)
-                    if(spot.active)
+                    if(slot.active)
                         this.equipItem(item);
 
                     //add item to unit's item list
-                    spot.location[spot.index] = item;
-                    item.currentSpot = spot;
+                    slot.location[slot.index] = item;
+                    item.currentSlot = slot;
 
                     Matter.Events.trigger(currentGame.itemSystem, 'pickupItem', {item: item, unit: this});
                 }
-                return spot;
+                return slot;
             },
 
             dropItem: function(item) {
+                if(item.isEmpty) return; //do nothing with a blank item
+
                 //spawn new item of same type
                 var spawnPosition = {};
                 do {
@@ -169,32 +171,27 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 this.unequipItem(item);
             },
 
-            findItemSpot: function(item) {
-                var emptySpot = null;
-                if(item.unitType == null) { //if we're a regular item
-                    for(var i = 0; i < this.currentItems.length; i++) {
-                        if(this.currentItems[i] == null) {
-                            emptySpot = {location: this.currentItems, index: i, active: true};
-                            break;
-                        }
+            findItemSlot: function(itemToPlace) {
+                var finalSlot = null;
+                var workableSlots = []
+                $.each(this.getAllItems(), function(i, item) {
+                    if(item.isEmpty && itemToPlace.worksWithSlot(item.currentSlot)) {
+                        workableSlots.push(item.currentSlot);
                     }
-                } else if(item.unitType == this.unitType) {
-                    for(var i = 0; i < this.currentSpecialtyItems.length; i++) {
-                        if(this.currentSpecialtyItems[i] == null) {
-                            emptySpot = {location: this.currentSpecialtyItems, index: i, active: true};
-                            break;
+                })
+
+                //default to the first found workable slot, but search to see
+                //if there's an active available slot too, and prefer that slot if it exists
+                if(workableSlots.length > 0) {
+                    finalSlot = workableSlots[0];
+                    $.each(workableSlots, function(i, slot) {
+                        if(slot.active) {
+                            finalSlot = slot;
+                            return false;
                         }
-                    }
+                    })
                 }
-                if(!emptySpot) {
-                    for(var i = 0; i < this.currentBackpack.length; i++) {
-                        if(this.currentBackpack[i] == null) {
-                            emptySpot = {location: this.currentBackpack, index: i, active: false};
-                            break;
-                        }
-                    }
-                }
-                return emptySpot;
+                return finalSlot;
             },
 
             equipItem: function(item) {
@@ -202,11 +199,11 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
 
             unequipItem: function(item) {
-                if(item.currentSpot.active)
+                if(item.currentSlot.active)
                     item.unequip(this);
 
-                //nullify the item's slot
-                item.currentSpot.location[item.currentSpot.index] = null;
+                //empty the item's slot
+                item.currentSlot.location[item.currentSlot.index] = item.currentSlot.slotDef;
 
                 Matter.Events.trigger(currentGame.itemSystem, 'unitUnequippedItem', {item: item, unit: this});
             },
@@ -272,6 +269,12 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     set: function(value) {
                         this._currentEnergy = Math.min(value, this.maxEnergy);
                     }
+                });
+
+                Object.defineProperty(this, 'emptySlots', {
+                    get: function() {
+                        return this.emptyRegularSlots.concat(this.emptySpecialtySlots).concat(this.emptyBackpackSlots);
+                    },
                 });
 
                 // setup health and energy
@@ -388,7 +391,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 });
 
                 Matter.Events.on(this, "onremove", function() {
-                    $.each(this.currentItems, function(i, item) {
+                    $.each(this.getAllItems(true), function(i, item) {
                         if(item) {
                             currentGame.removeItem(item);
                         }
@@ -652,6 +655,13 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 if(this.currentExperience >= this.nextLevelExp) {
                     this.levelUp();
                 }
+            },
+
+            getAllItems: function(includeBlank) {
+                var items = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems);
+                if(includeBlank)
+                    items.concat(this.emptySlots);
+                return items;
             },
         }
 

@@ -5,7 +5,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
     //     totalLife: number (default 8000 millis)
     // }
     var initiateBlinkDeath = function(options) {
-        var time = options.time || 90000;
+        var time = options.time || 8000;
         var timerTime = time/50;
         var item = options.item;
         //create item removal and blink

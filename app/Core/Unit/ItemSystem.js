@@ -62,27 +62,33 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 this.addItemOnGround(event.item);
             }.bind(this))
 
-
             Matter.Events.on(this, "usergrab", function(event) {
                 var item = event.item;
                 item.icon.visible = true;
+                item.icon.alpha = .6;
                 item.icon.tooltipObj.disabled = true;
                 item.icon.sortYOffset = 1000;
                 item.grabCallback = currentGame.addTickCallback(function() {
-                    item.icon.position = {x: currentGame.mousePosition.x - 10, y: currentGame.mousePosition.y - 10};
+                    item.icon.position = {x: currentGame.mousePosition.x - 0, y: currentGame.mousePosition.y - 0};
                 })
                 this.grabbedItem = item;
+                this.canDropGrabbedItem = false;
 
             }.bind(this))
 
             this.grabDropListener = currentGame.addListener('mousedown', function(event) {
-                if(!this.grabbedItem || event.which != 1 || keyStates['Control']) return;
+                if(!this.canDropGrabbedItem) { //this is so confusingly dumb
+                    this.canDropGrabbedItem = true;
+                    return;
+                }
+
+                if(!this.grabbedItem || event.which != 1) return;
                 var item = this.grabbedItem;
+                currentGame.removeTickCallback(item.grabCallback);
                 if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)) {
                     var variationX = Math.random()*60;
                     var variationY = Math.random()*60;
                     item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}));
-                    currentGame.removeTickCallback(item.grabCallback);
                     item.icon.visible = false;
                     item.icon.alpha = 1;
                     item.icon.tooltipObj.disabled = false;
@@ -90,29 +96,46 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 } else {
                     var mouseOverSlottedItem = false;
                     var prevailingUnit = currentGame.unitSystem.selectedUnit;
-                    var allItems = prevailingUnit.currentItems.concat(prevailingUnit.currentBackpack).concat(prevailingUnit.currentSpecialtyItems);
+                    var allItems = prevailingUnit.getAllItems();
                     item.icon.alpha = 1;
                     item.icon.tooltipObj.disabled = false;
                     this.grabbedItem = null;
                     var found = false;
+
+                    //loop exiting items and see if we need to swap the grab
                     $.each(allItems, function(i, loopItem) {
-                        currentGame.removeTickCallback(item.grabCallback);
-                        if(loopItem && loopItem != item) {
+                        if(loopItem && loopItem != item && !loopItem.isEmpty) {
                             if(loopItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
-                                prevailingUnit.unequipItem(loopItem);
-                                Matter.Events.trigger(this, 'usergrab', {item: loopItem})
-                                prevailingUnit.pickupItem(item, loopItem.currentSpot);
-                                loopItem.currentSpot = null;
-                                found = true;
+                                if(item.worksWithSlot(loopItem.currentSlot)) {
+                                    prevailingUnit.unequipItem(loopItem);
+                                    Matter.Events.trigger(this, 'usergrab', {item: loopItem})
+                                    prevailingUnit.pickupItem(item, loopItem.currentSlot);
+                                    loopItem.currentSlot = null;
+                                    this.canDropGrabbedItem = true;
+                                    found = true;
+                                }
                             }
                         }
                     }.bind(this))
+
+                    //loop blank items and see if we're explicity placing something
                     if(!found) {
-                        if(!prevailingUnit.pickupItem(item, item.currentSpot)) {
+                        $.each(prevailingUnit.emptySlots, function(i, blankItem) {
+                            if(blankItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
+                                if(item.worksWithSlot(blankItem.currentSlot)) {
+                                    prevailingUnit.pickupItem(item, blankItem.currentSlot);
+                                    found = true;
+                                }
+                            }
+                        }.bind(this))
+                    }
+
+                    //else return item to it's current location
+                    if(!found) {
+                        if(!prevailingUnit.pickupItem(item, item.currentSlot)) {
                             var variationX = Math.random()*60;
                             var variationY = Math.random()*60;
                             item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}));
-                            currentGame.removeTickCallback(item.grabCallback);
                             item.icon.visible = false;
                             item.icon.alpha = 1;
                             item.icon.tooltipObj.disabled = false;
@@ -143,7 +166,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 Matter.Events.on(event.unit.body, 'onCollideActive', function(pair) {
                     var otherBody = pair.pair.bodyB == event.unit ? pair.pair.bodyA : pair.pair.bodyB;
                     if(event.unit.targetedItem && otherBody == event.unit.targetedItem.body) {
-                        if(event.unit.findItemSpot(event.unit.targetedItem)) {
+                        if(event.unit.findItemSlot(event.unit.targetedItem)) {
                             event.unit.pickupItem(event.unit.targetedItem);
                             this.pickupItem(event.unit.targetedItem);
                         } else {

@@ -330,6 +330,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     icon.position = {x: x, y: y};
                     icon.visible = true;
                 }
+
+                if(item.isEmpty) {
+                    icon.alpha = 0;
+                }
             }.bind(this))
 
             //specialy items
@@ -347,6 +351,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     icon.position = {x: x, y: y};
                     icon.visible = true;
                 }
+
+                if(item.isEmpty) {
+                    icon.alpha = 0;
+                }
             }.bind(this))
 
             //backpack
@@ -363,6 +371,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 } else {
                     icon.position = {x: x, y: y};
                     icon.visible = true;
+                }
+
+                if(item.isEmpty) {
+                    icon.alpha = 0;
                 }
             }.bind(this))
         }
@@ -387,12 +399,19 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             })
         }
 
-        //clearn backpack items
+        //clear backpack items
         if(this.prevailingUnit && this.prevailingUnit.currentBackpack.length > 0) {
             $.each(this.prevailingUnit.currentBackpack, function(i, item) {
                 if(item) {
                     item.icon.visible = false;
                 }
+            })
+        }
+
+        //clear empty slots icons
+        if(this.prevailingUnit) {
+            $.each(this.prevailingUnit.emptySlots, function(i, emptyItemSlot) {
+                emptyItemSlot.icon.visible = false;
             })
         }
     };
