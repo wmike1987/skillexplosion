@@ -1,7 +1,8 @@
 define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], function($, utils, Matter, ItemUtils) {
 
     var highlightTint = 0xa6ff29;
-    var cantpickup = utils.getSound('cantpickup.wav', {volume: .02, rate: 1.3});
+    var cantpickup = utils.getSound('cantpickup.wav', {volume: .03, rate: 1.3});
+    var itemGrab = utils.getSound('itemgrab.wav', {volume: .02, rate: 1});
 
     //This module manages all things item-related
     var itemSystem = function(properties) {
@@ -73,6 +74,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 })
                 this.grabbedItem = item;
                 this.canDropGrabbedItem = false;
+                itemGrab.play();
 
             }.bind(this))
 

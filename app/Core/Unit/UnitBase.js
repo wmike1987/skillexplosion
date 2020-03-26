@@ -37,6 +37,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
         `;
 
         var levelUpSound = utils.getSound('levelup.wav', {volume: 1, rate: .8});
+        var itemPlaceSound = utils.getSound('itemgrab.wav', {volume: 1, rate: .8});
 
         //default unit attributes
         var UnitBase = {
@@ -146,6 +147,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     //add benefits (if necessary)
                     if(slot.active)
                         this.equipItem(item);
+
+                    //play Sound
+                    itemPlaceSound.play();
 
                     //add item to unit's item list
                     slot.location[slot.index] = item;
