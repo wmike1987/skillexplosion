@@ -480,6 +480,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     portrait: utils.createDisplayObject('MedicGreenEyes'),
                     wireframe: utils.createDisplayObject('MedicGreenEyes'),
                     team: options.team || 4,
+                    priority: 40,
                     name: options.name,
                     heightAnimation: 'up',
                     abilities: [silentStepAbility, mineAbility],

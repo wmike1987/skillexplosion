@@ -1,4 +1,5 @@
-define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles', 'pixi'], function($, utils, Tooltip, Matter, styles, PIXI) {
+define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles', 'pixi', 'unitcore/ItemUtils'],
+    function($, utils, Tooltip, Matter, styles, PIXI, ItemUtils) {
 
     var baseItem = {
         equip: function(unit) {
@@ -45,8 +46,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         }
     }
 
-    var itemDrop = utils.getSound('itempickup.wav', {volume: .04, rate: .75});
-    var itemPickup = utils.getSound('itempickup.wav', {volume: .04, rate: 1.2});
+    var itemDrop = utils.getSound('itemdrop.wav', {volume: .04, rate: .75});
 
     return function(options) {
         var newItem = $.extend({}, baseItem, options);
@@ -121,10 +121,12 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
 
         newItem.pickup = function() {
             this.removePhysicalForm();
-            itemPickup.play();
         },
 
-        newItem.drop = function(position) {
+        newItem.drop = function(position, options) {
+            if(!options) options = {};
+            options = $.extend({}, {fleeting: true}, options)
+
             //create item body
             this.body = Matter.Bodies.circle(position.x, position.y, 20, {
                 isSensor: true
@@ -143,11 +145,16 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                     utils.removeSomethingFromRenderer(this);
                     currentGame.addBody(item.body);
                     Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item});
+                    item.isDropping = false;
                     item.currentSlot = null;
+                    if(options.fleeting)
+                        ItemUtils.initiateBlinkDeath({item: item});
                 }
             });
 
             itemDrop.play();
+            item.isDropping = true;
+
             utils.makeSpriteSize(this.itemDrop, {w: 60, h: 60});
             this.itemDrop.alpha = .65;
             this.itemDrop.play();
@@ -199,6 +206,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                 currentGame.removeBody(newItem.body);
             }
             currentGame.removeTickCallback(newItem.hoverListener);
+            if(this.itemDrop)
+                utils.removeSomethingFromRenderer(this.itemDrop);
         },
 
         currentGame.addItem(newItem);

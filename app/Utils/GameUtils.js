@@ -609,6 +609,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return {x: this.getCanvasCenter().x, y: this.getPlayableHeight() + currentGame.unitPanelHeight/2};
         },
 
+        getUnitPanelHeight: function() {
+            return currentGame.unitPanelHeight;
+        },
+
         getSound: function(name, options) {
             options = options || {};
             options.src = '/app/Sounds/' + name;
@@ -782,6 +786,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         //red to green
         percentAsHexColor: function(percentage) {
             return this.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
+        },
+
+        flattenObjectToArray: function(object) {
+            var array = $.map(object, function(obj, key) {
+                return [obj];
+            })
+
+            return array;
         },
 
         sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {

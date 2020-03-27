@@ -207,10 +207,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     this.updateOrderedUnits(this.selectedUnits);
                 }
 
-                var firstOfTheSelectedUnits = this.selectedUnits[Object.keys(this.selectedUnits)[0]];
                 //if our selectedUnit doesn't exist, or doesn't exist within the new selection, we need to set it to something relevant
                 if(!this.selectedUnit || !Object.keys(this.selectedUnits).includes(this.selectedUnit.unitId.toString())) {
-                    this.selectedUnit = firstOfTheSelectedUnits ? firstOfTheSelectedUnits : null;
+                    this.selectedUnit = this.findHighestPriorityUnit(this.selectedUnits);
                 }
 
                 //Show group destination of selected
@@ -808,6 +807,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             }.bind(this))
 
         }.bind(this);
+
+        this.findHighestPriorityUnit = function(units) {
+            var priorityUnit = units[Object.keys(units)[0]];
+
+            $.each(units, function(i, unit) {
+                if(!priorityUnit) {
+                    priorityUnit = unit;
+                } else {
+                    if(unit.priority > priorityUnit.priority) {
+                        priorityUnit = unit;
+                    }
+                }
+            })
+
+            return priorityUnit;
+        }
 
         //common method for changing the selection state (and visuals) of a group of bodies
         this.changeSelectionState = function(units, state, newValue) {

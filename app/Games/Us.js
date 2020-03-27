@@ -10,7 +10,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         gameName: 'Us',
         level: 1,
         // victoryCondition: {type: 'timed', limit: 5},
-        victoryCondition: {type: 'lives', limit: 5},
+        victoryCondition: {type: 'lives', limit: 3},
         enableUnitSystem: true,
         enableItemSystem: true,
         noClickIndicator: true,
@@ -140,7 +140,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 103, n: 3, hz: 2000, maxOnField: 5},
+                spawn: {total: 1, n: 3, hz: 2000, maxOnField: 5},
                 item: {type: 'basic', total: 3}
             });
 
@@ -192,6 +192,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.currentScene = nextLevelScene;
             this.level += 1;
 
+            var lossCondition = null;
+            var winCondition = null;
             var winCondition = this.addTickCallback(function() {
                 var enemySet = this.levelState.enemySet;
                 enemySetsFulfilled = false;
@@ -205,8 +207,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                     unitsOfOpposingTeamExist = true;
                 }
 
-                if(!unitsOfOpposingTeamExist && enemySetsFulfilled) {
+                if(!unitsOfOpposingTeamExist && enemySetsFulfilled && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
                     this.removeTickCallback(winCondition);
+                    this.removeTickCallback(lossCondition);
                     this.gotoCamp();
                 }
             }.bind(this))
@@ -214,6 +217,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             var lossCondition = this.addTickCallback(function() {
                 if(this.shane.isDead && this.ursula.isDead) {
                     this.removeTickCallback(lossCondition);
+                    this.itemSystem.removeAllItemsOnGround(true);
+                    this.removeTickCallback(winCondition);
                     this.gotoCamp();
                 }
             }.bind(this))

@@ -2,7 +2,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
 
     var highlightTint = 0xa6ff29;
     var cantpickup = utils.getSound('cantpickup.wav', {volume: .03, rate: 1.3});
-    var itemGrab = utils.getSound('itemgrab.wav', {volume: .02, rate: 1});
+    var itemGrab = utils.getSound('itemgrab.wav', {volume: .045, rate: 1});
 
     //This module manages all things item-related
     var itemSystem = function(properties) {
@@ -182,7 +182,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
 
         this.addItemOnGround = function(item) {
             this.itemsOnGround.push(item);
-            ItemUtils.initiateBlinkDeath({item: item});
             item.owningUnit = null;
         },
 
@@ -210,7 +209,31 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
             this.removeItemFromGround(item);
             this.items.delete(item);
             item.destroy();
-        }
+        },
+
+        this.removeAllItemsOnGround = function(includeDroppingItems) {
+            $.each(this.itemsOnGround, function(i, item) {
+                this.items.delete(item);
+                item.destroy();
+            }.bind(this))
+            this.itemsOnGround = [];
+
+            if(includeDroppingItems) {
+                $.each(this.getDroppingItems(), function(i, item) {
+                    item.destroy();
+                })
+            }
+        },
+
+        this.getDroppingItems = function() {
+            var droppingItems = [];
+            this.items.forEach(function(item, v, s) {
+                if(item.isDropping) {
+                    droppingItems.push(item);
+                }
+            })
+            return droppingItems;
+        },
 
         this.cleanUp = function() {
             Matter.Events.off(this);

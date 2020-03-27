@@ -37,7 +37,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
         `;
 
         var levelUpSound = utils.getSound('levelup.wav', {volume: 1, rate: .8});
-        var itemPlaceSound = utils.getSound('itemgrab.wav', {volume: 1, rate: .8});
+        var itemPlaceSound = utils.getSound('itemplace.wav', {volume: .06, rate: 1});
 
         //default unit attributes
         var UnitBase = {
@@ -149,7 +149,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         this.equipItem(item);
 
                     //play Sound
-                    itemPlaceSound.play();
+                    if(this.team == currentGame.playerTeam)
+                        itemPlaceSound.play();
 
                     //add item to unit's item list
                     slot.location[slot.index] = item;

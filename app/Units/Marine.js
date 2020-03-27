@@ -437,6 +437,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     portrait: utils.createDisplayObject('MarineRedHat'),
                     wireframe: utils.createDisplayObject('MarineRedHat'),
                     team: options.team || 4,
+                    priority: 50,
                     name: options.name,
                     heightAnimation: 'up',
                     abilities: [dashAbility, knifeAbility],

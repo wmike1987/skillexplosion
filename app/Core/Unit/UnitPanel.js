@@ -70,7 +70,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         this.healthVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x800000, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
         this.healthVialSquare.position = {x: this.healthVialPosition.x, y: utils.getCanvasHeight()}
-        utils.makeSpriteSize(this.healthVialSquare, this.vialDimensions);
+        utils.makeSpriteSize(this.healthVialSquare,  {x: 0, y: 0});
         utils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
 
         //energy vial
@@ -105,7 +105,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         this.energyVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x155194, scale: {x: 1, y: 1}, alpha: .9, anchor: {x: .5, y: 1}});
         this.energyVialSquare.position = {x: this.energyVialPosition.x, y: utils.getCanvasHeight()}
-        utils.makeSpriteSize(this.energyVialSquare, this.vialDimensions);
+        utils.makeSpriteSize(this.energyVialSquare, {x: 0, y: 0});
         utils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
 
         //unit ability variables
@@ -142,9 +142,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //create frame
         this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
+        this.frameBacking = utils.createDisplayObject('TintableSquare', {persists: true, position: this.position, tint: 0x5e5e5b});
+        utils.makeSpriteSize(this.frameBacking, {w: utils.getCanvasWidth(), h: utils.getUnitPanelHeight()});
     };
 
     unitPanel.prototype.initialize = function(options) {
+
+        //add frame-backing to world
+        utils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
 
         //add frame to world
         utils.addSomethingToRenderer(this.frame, 'hud');
