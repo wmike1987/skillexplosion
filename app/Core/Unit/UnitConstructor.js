@@ -155,7 +155,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 },
                 set: function(value) {
                     Matter.Body.setPosition(this.body, value);
-                }
+                },
+                configurable: true
             });
             Object.defineProperty(body, 'visible', {
                 get: function() {

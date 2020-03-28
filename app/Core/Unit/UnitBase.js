@@ -91,6 +91,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             currentItems: [null, null, null, null, null, null],
             currentSpecialtyItems: [null, null, null],
             currentBackpack: [null, null, null],
+            dropItemsOnDeath: true,
 
             sufferAttack: function(damage, attackingUnit) {
                 this.currentHealth -= Math.max(0, (damage - this.defense));
@@ -115,21 +116,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
 
             _death: function() {
-                $.each(this.currentItems, function(i, item) {
-                    if(item) {
-                        this.dropItem(item);
-                    }
-                }.bind(this))
-                $.each(this.currentSpecialtyItems, function(i, item) {
-                    if(item) {
-                        this.dropItem(item);
-                    }
-                }.bind(this))
-                $.each(this.currentBackpack, function(i, item) {
-                    if(item) {
-                        this.dropItem(item);
-                    }
-                }.bind(this))
+
+                if(this.dropItemsOnDeath) {
+                    this.dropAllItems();
+                }
                 this.isDead = true;
                 this.death();
             },
@@ -174,6 +164,24 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                 //remove added benefits (if necessary)
                 this.unequipItem(item);
+            },
+
+            dropAllItems: function() {
+                $.each(this.currentItems, function(i, item) {
+                    if(item) {
+                        this.dropItem(item);
+                    }
+                }.bind(this))
+                $.each(this.currentSpecialtyItems, function(i, item) {
+                    if(item) {
+                        this.dropItem(item);
+                    }
+                }.bind(this))
+                $.each(this.currentBackpack, function(i, item) {
+                    if(item) {
+                        this.dropItem(item);
+                    }
+                }.bind(this))
             },
 
             findItemSlot: function(itemToPlace) {

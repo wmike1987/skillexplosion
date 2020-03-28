@@ -82,9 +82,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 				cooldown: 1,
 				range: radius*2+10,
 				damage: 10,
-				attack: function() {
-
-				}
 		}});
 
 		//create attack blast radius

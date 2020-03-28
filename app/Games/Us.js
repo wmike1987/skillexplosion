@@ -239,7 +239,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         },
 
         createShane: function() {
-             this.shane = Marine({team: this.playerTeam, name: 'Shane'});
+             this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
              // this.shane2 = Marine({team: currentGame.playerTeam, name: 'Shane'});
              // this.addUnit(this.shane2);
              // this.shane2.position = utils.getCanvasCenter();
@@ -247,7 +247,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         },
 
         createUrsula: function() {
-            this.ursula = Medic({team: this.playerTeam, name: 'Ursula'});
+            this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
             return this.ursula;
         },
 
@@ -266,6 +266,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var bane = Baneling({team: 4, isSelectable: false});
                 if(autoHone)
                     bane.honeRange = 1400;
+                bane.damage = 100;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
                 if(true) {

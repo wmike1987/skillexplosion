@@ -1,5 +1,7 @@
 define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
 
+    var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
+
     return function Medic(options) {
         var options = options || {};
 
@@ -294,7 +296,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }],
         })
 
-
         var mineSound = utils.getSound('laymine.mp3', {volume: .06, rate: .8});
         var mineBeep = utils.getSound('minebeep.wav', {volume: .03, rate: 7});
         var mineExplosion = utils.getSound('mineexplosion2.wav', {volume: .35, rate: 1.7});
@@ -303,8 +304,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var thisAbility = this.getAbilityByName('Mine');
             var currentAugment = thisAbility.currentAugment || {name: 'null'};
 
-            var position = (this.shadow ? {x: this.shadow.position.x, y: this.shadow.position.y} : {x: this.position.x, y: this.position.y});
-            var mine = Matter.Bodies.circle(position.x, position.y+20, 15, {
+            var mine = Matter.Bodies.circle(this.position.x, this.position.y+20, 15, {
                 isSensor: true,
                 noWire: true,
             });
@@ -461,7 +461,50 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         })
 
         var rad = options.radius || 22;
-        var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
+        var unitProperties = $.extend({
+            unitType: 'Medic',
+            health: 40,
+            energy: 60,
+            damageLabel: "Heal: ",
+            damageMember: "healAmount",
+            energyRegenerationRate: 2,
+            portrait: utils.createDisplayObject('MedicGreenEyes'),
+            wireframe: utils.createDisplayObject('MedicGreenEyes'),
+            team: options.team || 4,
+            priority: 40,
+            name: options.name,
+            heightAnimation: 'up',
+            abilities: [silentStepAbility, mineAbility],
+            death: function() {
+                var self = this;
+                var anim = utils.getAnimationB({
+                    spritesheetName: 'deathAnimations',
+                    animationName: 'bloodsplat',
+                    speed: .3,
+                    transform: [self.position.x, self.position.y, .3, .3]
+                });
+                utils.addSomethingToRenderer(anim);
+                anim.play();
+
+                this.isAttackable = false;
+                utils.moveUnitOffScreen(this);
+                this.stop();
+                currentGame.unitSystem.deselectUnit(this);
+                //currentGame.removeUnit(this);
+            },
+            _init: function() {
+                Object.defineProperty(this, 'position', {
+                    get: function() {
+                        var me = this.shadow || this.body;
+                        return me.position;
+                    },
+                    set: function(value) {
+                        Matter.Body.setPosition(this.body, value);
+                    }
+                });
+            }
+            }, options);
+
         return UC({
                 renderChildren: rc,
                 radius: rad,
@@ -470,38 +513,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [healsound, mineSound, mineBeep, mineExplosion],
-                unit: {
-                    unitType: 'Medic',
-                    health: 40,
-                    energy: 60,
-                    damageLabel: "Heal: ",
-                    damageMember: "healAmount",
-                    energyRegenerationRate: 2,
-                    portrait: utils.createDisplayObject('MedicGreenEyes'),
-                    wireframe: utils.createDisplayObject('MedicGreenEyes'),
-                    team: options.team || 4,
-                    priority: 40,
-                    name: options.name,
-                    heightAnimation: 'up',
-                    abilities: [silentStepAbility, mineAbility],
-                    death: function() {
-                        var self = this;
-                        var anim = utils.getAnimationB({
-                            spritesheetName: 'deathAnimations',
-                            animationName: 'bloodsplat',
-                            speed: .3,
-                            transform: [self.position.x, self.position.y, .3, .3]
-                        });
-                        utils.addSomethingToRenderer(anim);
-                        anim.play();
-
-                        this.isAttackable = false;
-                        utils.moveUnitOffScreen(this);
-                        this.stop();
-                        currentGame.unitSystem.deselectUnit(this);
-                        //currentGame.removeUnit(this);
-                    }
-                },
+                unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.15,
                     walkAnimations: walkAnimations,

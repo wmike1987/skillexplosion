@@ -15,7 +15,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             this.box.collisionFilter.category = 0x0002;
             this.box.permaPendingUnit = null;
             this.box.pendingSelections = {};
-            this.box.renderChildren = [{id: 'box', data: 'SelectionBox', stage: 'stageOne'}];
+            this.box.renderChildren = [{id: 'box', data: 'TintableSquare', stage: 'stageOne', alpha: .4}];
 
             //other unit system variables
             this.selectedUnits = {};

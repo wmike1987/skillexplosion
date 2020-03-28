@@ -420,6 +420,37 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             Matter.Sleeping.set(this.body, !this.body.isSleeping);
         }
 
+        var unitProperties = $.extend({
+            unitType: 'Marine',
+            health: 75,
+            defense: 1,
+            energy: 20,
+            energyRegenerationRate: 1,
+            portrait: utils.createDisplayObject('MarineRedHat'),
+            wireframe: utils.createDisplayObject('MarineRedHat'),
+            team: options.team || 4,
+            priority: 50,
+            name: options.name,
+            heightAnimation: 'up',
+            abilities: [dashAbility, knifeAbility],
+            death: function() {
+                var self = this;
+                var anim = utils.getAnimationB({
+                    spritesheetName: 'deathAnimations',
+                    animationName: 'bloodsplat',
+                    speed: .3,
+                    transform: [self.position.x, self.position.y, .3, .3]
+                });
+                utils.addSomethingToRenderer(anim);
+                anim.play();
+
+                this.isAttackable = false;
+                utils.moveUnitOffScreen(this);
+                this.stop();
+                currentGame.unitSystem.deselectUnit(this);
+                //currentGame.removeUnit(this);
+            }
+            }, options);
         return UC({
                 renderChildren: rc,
                 radius: options.radius || 22,
@@ -428,37 +459,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
-                unit: {
-                    unitType: 'Marine',
-                    health: 75,
-                    defense: 1,
-                    energy: 20,
-                    energyRegenerationRate: 1,
-                    portrait: utils.createDisplayObject('MarineRedHat'),
-                    wireframe: utils.createDisplayObject('MarineRedHat'),
-                    team: options.team || 4,
-                    priority: 50,
-                    name: options.name,
-                    heightAnimation: 'up',
-                    abilities: [dashAbility, knifeAbility],
-                    death: function() {
-                        var self = this;
-                        var anim = utils.getAnimationB({
-                            spritesheetName: 'deathAnimations',
-                            animationName: 'bloodsplat',
-                            speed: .3,
-                            transform: [self.position.x, self.position.y, .3, .3]
-                        });
-                        utils.addSomethingToRenderer(anim);
-                        anim.play();
-
-                        this.isAttackable = false;
-                        utils.moveUnitOffScreen(this);
-                        this.stop();
-                        currentGame.unitSystem.deselectUnit(this);
-                        //currentGame.removeUnit(this);
-                    }
-                },
+                unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.35,
                     walkAnimations: walkAnimations,
