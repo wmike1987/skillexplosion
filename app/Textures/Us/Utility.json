@@ -1,0 +1,95 @@
+{"frames": {
+
+"AmbientLight1.png":
+{
+	"frame": {"x":1,"y":1,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"AmbientLight2.png":
+{
+	"frame": {"x":515,"y":1,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"AmbientLight3.png":
+{
+	"frame": {"x":1029,"y":1,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"MouseX.png":
+{
+	"frame": {"x":1263,"y":515,"w":42,"h":42},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
+	"sourceSize": {"w":128,"h":128}
+},
+"MouseXGreen.png":
+{
+	"frame": {"x":1263,"y":559,"w":42,"h":42},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
+	"sourceSize": {"w":128,"h":128}
+},
+"TintableSquare.png":
+{
+	"frame": {"x":1203,"y":606,"w":1,"h":1},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
+	"sourceSize": {"w":1,"h":1}
+},
+"TransparentSquare.png":
+{
+	"frame": {"x":1203,"y":601,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1,"h":1}
+},
+"UnitPanelFrame.png":
+{
+	"frame": {"x":1,"y":515,"w":1200,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":100},
+	"sourceSize": {"w":1200,"h":100}
+},
+"Vial.png":
+{
+	"frame": {"x":1203,"y":515,"w":28,"h":84},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
+	"sourceSize": {"w":28,"h":84}
+},
+"Vial2.png":
+{
+	"frame": {"x":1233,"y":515,"w":28,"h":84},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
+	"sourceSize": {"w":28,"h":84}
+}},
+"animations": {
+	"AmbientLight": ["AmbientLight1.png","AmbientLight2.png","AmbientLight3.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Utility.png",
+	"format": "RGBA8888",
+	"size": {"w":1542,"h":616},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3f3d68b66dd24ef1b11d90741672e3a4:55603e91525b62d7aa5540de4be02329:5fc1c354e515b85ac7861bddc1d6600b$"
+}
+}

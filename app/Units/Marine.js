@@ -1,4 +1,5 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable'],
+    function($, PIXI, UC, Matter, utils, Ability, rv) {
 
     return function Marine(options) {
         var options = options || {};
@@ -244,7 +245,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             //play animation
             var dashAnimation = utils.getAnimationB({
-                spritesheetName: 'bloodswipes1',
+                spritesheetName: 'MarineAnimations1',
                 animationName: 'dash',
                 speed: .3,
                 transform: [this.position.x, this.position.y, 3.5, 2.5]
@@ -343,7 +344,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         Matter.Events.trigger(this, 'knifeKill');
                     }
                     var bloodPierceAnimation = utils.getAnimationB({
-                        spritesheetName: 'bloodswipes1',
+                        spritesheetName: 'UtilityAnimations1',
                         animationName: 'pierce',
                         speed: .95,
                         transform: [knife.position.x, knife.position.y, .25, .25]
@@ -436,7 +437,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
-                    spritesheetName: 'deathAnimations',
+                    spritesheetName: 'BaseUnitAnimations1',
                     animationName: 'bloodsplat',
                     speed: .3,
                     transform: [self.position.x, self.position.y, .3, .3]
@@ -449,8 +450,12 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 this.stop();
                 currentGame.unitSystem.deselectUnit(this);
                 //currentGame.removeUnit(this);
-                }
-            }, options);
+            },
+            _init: function() {
+                $.extend(this, rv);
+                this.revivableInit();
+
+            }}, options);
         return UC({
                 renderChildren: rc,
                 radius: options.radius || 22,
@@ -590,7 +595,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         bloodEmitter.playOnceAndDestroy();
                     },
                 },
-                mixins: ['unitcore/_Revivable']
         });
     }
 })

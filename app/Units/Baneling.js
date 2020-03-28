@@ -89,7 +89,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 
 		baneling.attack = function(target) {
 			var deathAnimation = utils.getAnimationB({
-				spritesheetName: 'bloodswipes1',
+				spritesheetName: 'BanelingAnimations1',
 				animationName: 'banedeath',
 				speed: 2,
 				transform: [this.position.x, this.position.y, 1.5, 1.5]

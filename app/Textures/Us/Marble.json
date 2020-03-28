@@ -1,0 +1,68 @@
+{"frames": {
+
+"GlassMarble.png":
+{
+	"frame": {"x":229,"y":259,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
+"MarbleBodyHighlights.png":
+{
+	"frame": {"x":259,"y":199,"w":58,"h":54},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":5,"w":58,"h":54},
+	"sourceSize": {"w":64,"h":64}
+},
+"MarbleHighlight.png":
+{
+	"frame": {"x":259,"y":1,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
+"MarbleSelected.png":
+{
+	"frame": {"x":259,"y":67,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
+"MarbleSelectedPending.png":
+{
+	"frame": {"x":259,"y":133,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
+"MarbleShadow.png":
+{
+	"frame": {"x":1,"y":1,"w":256,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
+	"sourceSize": {"w":256,"h":256}
+},
+"MarbleShadowHighlight.png":
+{
+	"frame": {"x":1,"y":259,"w":208,"h":226},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":25,"y":13,"w":208,"h":226},
+	"sourceSize": {"w":256,"h":256}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Marble.png",
+	"format": "RGBA8888",
+	"size": {"w":324,"h":468},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:793d9916a348d8891f2b017d6f5a94ee:315166e6cace35442d094cd097b50bb3:fc821f33ed97bd4b6378c0660e5cc0f1$"
+}
+}

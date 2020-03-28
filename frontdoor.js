@@ -150,54 +150,62 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.loaderDeferred = $.Deferred();
 
         	//backgrounds
-        	loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
-        	loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
-        	loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
-        	loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
-        	loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
-        	loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
-        	loader.add('GrassTiles', 'app/Textures/GrassTiles.json');
+        	// loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
+        	// loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
+        	// loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
+        	// loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
+
+        	// loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
+        	// loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
+        	// loader.add('GrassTiles', 'app/Textures/GrassTiles.json'); remove
 
         	//animations
-        	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
+        	// loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
         	loader.ssBlueDeathFrameCount = 6;
 
-        	loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
+        	// loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
         	loader.blueCollapseFrameCount = 6;
 
-        	loader.add('raindropflash', 'app/Textures/DropletFlash.json');
+        	// loader.add('raindropflash', 'app/Textures/DropletFlash.json');
         	loader.raindropflashFrameCount = 3;
 
-        	loader.add('gauntlet', 'app/Textures/Gauntlet.json');
+        	// loader.add('gauntlet', 'app/Textures/Gauntlet.json');
         	loader.DiamondFlashFrameCount = 4;
         	loader.SquareWithBorderDeathFrameCount = 5;
 
         	//more animations
-        	loader.add('deathAnimations', 'app/Textures/DeathAnimations.json');
-        	loader.add('bloodswipes1', 'app/Textures/bloodswipes1.json');
-        	loader.add('animations2', 'app/Textures/animations2.json');
-        	loader.add('animations3', 'app/Textures/animations3.json');
+        	// loader.add('raindrop2', 'app/Textures/Raindrop2.png');
+        	// loader.add('alpha', 'app/Textures/alpha.png');
+        	// loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
+        	// loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
 
-        	//odds and ends
-        	loader.add('unitMisc', 'app/Textures/UnitMisc.json');
-        	loader.add('iso1', 'app/Textures/IsometricSheet1.json');
-            loader.add('iso2', 'app/Textures/IsoSheet2.json');
-        	loader.add('raindrop2', 'app/Textures/Raindrop2.png');
-        	loader.add('alpha', 'app/Textures/alpha.png');
-        	loader.add('glassShards', 'app/Textures/glassShards.png');
-        	loader.add('snowflakeSheet', 'app/Textures/SnowflakeSheet.json');
-        	loader.add('dullLandscape', 'app/Textures/DullLandscapeLess.jpg');
-
-            //tiles
-        	loader.add('grassAndRocks1', 'app/Textures/GrassAndRockTiles-0.json');
-            loader.add('grassAndRocks2', 'app/Textures/GrassAndRockTiles-1.json');
+            //unit animations
+            loader.add('BaseUnit', 'app/Textures/Us/BaseUnit.json');
+            loader.add('BaseUnitAnimations1', 'app/Textures/Us/BaseUnitAnimations1.json');
+            loader.add('Marine', 'app/Textures/Us/Marine.json');
+            loader.add('MarineAnimations1', 'app/Textures/Us/MarineAnimations1.json');
+            loader.add('Medic', 'app/Textures/Us/Medic.json');
+            loader.add('MedicAnimations1', 'app/Textures/Us/MedicAnimations1.json');
+            loader.add('Baneling', 'app/Textures/Us/Baneling.json');
+            loader.add('BanelingAnimations1', 'app/Textures/Us/BanelingAnimations1.json');
+            loader.add('Marble', 'app/Textures/Us/Marble.json');
 
             //items
-        	loader.add('items', 'app/Textures/Items.json');
+            loader.add('Items', 'app/Textures/Us/Items.json');
+            loader.add('ItemAnimations1', 'app/Textures/Us/ItemAnimations1.json');
 
-            //foliage
-        	loader.add('foliage1', 'app/Textures/FoliagePack1.json');
-        	loader.add('foliage2', 'app/Textures/avtrees.json');
+            //generic textures and animations
+            loader.add('Utility', 'app/Textures/Us/Utility.json');
+            loader.add('UtilityAnimations1', 'app/Textures/Us/UtilityAnimations1.json');
+
+            //terrain and doodads
+            loader.add('Terrain0', 'app/Textures/Us/Terrain-0.json');
+            loader.add('Terrain1', 'app/Textures/Us/Terrain-1.json');
+            loader.add('Terrain2', 'app/Textures/Us/Terrain-2.json');
+            loader.add('Terrain3', 'app/Textures/Us/Terrain-3.json');
+            loader.add('Terrain4', 'app/Textures/Us/Terrain-4.json');
+            loader.add('Terrain5', 'app/Textures/Us/Terrain-5.json');
+            loader.add('Terrain6', 'app/Textures/Us/Terrain-6.json');
 
             //spine assets
             loader.add('marineN', 'app/SpineAssets/Marine Exports/MarineN/N.json');

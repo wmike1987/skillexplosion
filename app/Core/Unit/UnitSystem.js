@@ -657,6 +657,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
              //'A' or 'a' dispatch (reserved for attack/move)
              $('body').on('keydown.unitSystem', function( event ) {
+                 if(event.key == 'X' || event.key == 'x') {
+                     if(keyStates['Control']) {
+                         if(this.selectedUnit) {
+                             this.selectedUnit.sufferAttack(1000);
+                         }
+                     }
+                 }
                  if(event.key == 'a' || event.key == 'A') {
                      $.each(this.selectedUnits, function(prop, unit) {
                          if(unit.isAttacker) {

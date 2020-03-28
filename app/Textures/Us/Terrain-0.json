@@ -1,0 +1,115 @@
+{"frames": {
+
+"Doodads/avgoldtree5.png":
+{
+	"frame": {"x":1027,"y":1819,"w":225,"h":360},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":225,"h":360},
+	"sourceSize": {"w":225,"h":361}
+},
+"Doodads/avgoldtree6.png":
+{
+	"frame": {"x":1389,"y":1819,"w":216,"h":285},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":216,"h":285},
+	"sourceSize": {"w":216,"h":286}
+},
+"Doodads/avsnowtree8.png":
+{
+	"frame": {"x":1836,"y":1819,"w":152,"h":220},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":152,"h":220},
+	"sourceSize": {"w":152,"h":221}
+},
+"Doodads/avsnowtree9.png":
+{
+	"frame": {"x":1676,"y":1819,"w":158,"h":224},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":158,"h":224},
+	"sourceSize": {"w":158,"h":225}
+},
+"GrassAndRock1/Dirt/dirt_base.png":
+{
+	"frame": {"x":1,"y":1,"w":1024,"h":1024},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":1024},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Dirt/grass_level_1.png":
+{
+	"frame": {"x":1027,"y":1,"w":1020,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":420,"w":1020,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Dirt/grass_level_2.png":
+{
+	"frame": {"x":1027,"y":607,"w":1020,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":420,"w":1020,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Dirt/grass_level_3.png":
+{
+	"frame": {"x":1027,"y":1213,"w":1020,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":420,"w":1020,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass/grass_level_1.png":
+{
+	"frame": {"x":1027,"y":1,"w":1020,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":420,"w":1020,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass/grass_level_2.png":
+{
+	"frame": {"x":1027,"y":607,"w":1020,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":420,"w":1020,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass/grass_level_3.png":
+{
+	"frame": {"x":1027,"y":1213,"w":1020,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":420,"w":1020,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Rock/rock_base.png":
+{
+	"frame": {"x":1,"y":1027,"w":1024,"h":980},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":16,"w":1024,"h":980},
+	"sourceSize": {"w":1024,"h":1024}
+}},
+"animations": {
+	"Doodads/avgoldtree": ["Doodads/avgoldtree5.png","Doodads/avgoldtree6.png"],
+	"Doodads/avsnowtree": ["Doodads/avsnowtree8.png","Doodads/avsnowtree9.png"],
+	"GrassAndRock1/Dirt/grass_level": ["GrassAndRock1/Dirt/grass_level_1.png","GrassAndRock1/Dirt/grass_level_2.png","GrassAndRock1/Dirt/grass_level_3.png"],
+	"GrassAndRock1/Grass/grass_level": ["GrassAndRock1/Grass/grass_level_1.png","GrassAndRock1/Grass/grass_level_2.png","GrassAndRock1/Grass/grass_level_3.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Terrain-0.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":2045},
+	"scale": "1",
+	"related_multi_packs": [ "Terrain-1.json", "Terrain-2.json", "Terrain-3.json", "Terrain-4.json", "Terrain-5.json", "Terrain-6.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:b1e4434e35ce914a066513a06f0a5151:b2664d58d0c1a9a85aa3f76189fae41b:b1c65d6bccfc4596a83a2089aace944d$"
+}
+}

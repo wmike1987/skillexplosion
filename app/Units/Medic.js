@@ -1,4 +1,5 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility'], function($, PIXI, UC, Matter, utils, Ability) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable'],
+    function($, PIXI, UC, Matter, utils, Ability, rv) {
 
     var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 
@@ -285,7 +286,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             name: 'Silent Step',
             key: 'd',
             type: 'click',
-            icon: utils.createDisplayObject('SneakIcon'),
+            icon: utils.createDisplayObject('SilentStepIcon'),
             method: silentStep,
             title: 'Silent Step',
             description: 'Safely relocate to anywhere on the map.',
@@ -326,7 +327,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             //explode animation
             var mineExplosionAnimation = utils.getAnimationB({
-				spritesheetName: 'animations2',
+				spritesheetName: 'MedicAnimations1',
 				animationName: 'mineexplosion',
 				speed: 3,
 				transform: [mineState.position.x, mineState.position.y, 1.5, 1.5]
@@ -334,7 +335,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             //smoke animation
             var smokeExplosionAnimation = utils.getAnimationB({
-                spritesheetName: 'animations2',
+                spritesheetName: 'MedicAnimations1',
                 animationName: 'explosion-c',
                 speed: .35,
                 transform: [mineState.position.x, mineState.position.y, 4, 4]
@@ -404,7 +405,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     if(currentAugment.name == 'maim') {
                         var variation = Math.random()*.3;
                         var maimBlast = utils.getAnimationB({
-                            spritesheetName: 'animations3',
+                            spritesheetName: 'MedicAnimations1',
                             animationName: 'maimblast',
                             speed: .4+variation,
                             transform: [unit.position.x, unit.position.y, 1+variation, 1+variation]
@@ -414,7 +415,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         utils.addSomethingToRenderer(maimBlast, 'stageOne');
                     } else {
                         var scratchAnim = utils.getAnimationB({
-                            spritesheetName: 'bloodswipes1',
+                            spritesheetName: 'UtilityAnimations1',
                             animationName: 'scratch',
                             speed: .35,
                             transform: [unit.position.x, unit.position.y, .3, .3]
@@ -444,7 +445,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             name: 'Mine',
             key: 'f',
             type: 'key',
-            icon: utils.createDisplayObject('BombIcon'),
+            icon: utils.createDisplayObject('MineIcon'),
             method: layMine,
             title: 'Mine',
             description: 'Lay an explosive mine.',
@@ -478,7 +479,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
-                    spritesheetName: 'deathAnimations',
+                    spritesheetName: 'BaseUnitAnimations1',
                     animationName: 'bloodsplat',
                     speed: .3,
                     transform: [self.position.x, self.position.y, .3, .3]
@@ -502,8 +503,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         Matter.Body.setPosition(this.body, value);
                     }
                 });
-            }
-            }, options);
+
+                $.extend(this, rv);
+                this.revivableInit();
+            }}, options);
 
         return UC({
                 renderChildren: rc,
@@ -531,7 +534,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             healsound.play();
 
                             var healAnimation = utils.getAnimationB({
-                                spritesheetName: 'bloodswipes1',
+                                spritesheetName: 'MedicAnimations1',
                                 animationName: 'heal',
                                 speed: 1.5,
                                 transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 10), 1, 1]
@@ -557,7 +560,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         return false;
                     },
                 },
-                mixins: ['unitcore/_Revivable']
         });
     }
 })

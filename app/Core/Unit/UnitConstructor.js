@@ -182,19 +182,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 })
             }
 
-            if(options.mixins) {
-                $.each(options.mixins, function(i, mixin) {
-                    require([mixin], function(m) {
-                        $.extend(newUnit, m);
-                        Matter.Events.on(newUnit, 'addUnit', function() {
-                            var split = mixin.indexOf('/')+1;
-                            var cname = mixin.substring(split);
-                            newUnit[cname+'Init']();
-                        })
-                    })
-                })
-            }
-
             // associate an iso manager if desired
             if (newUnit.isoManaged) {
                 newUnit.isoManager = new Iso({

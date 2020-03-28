@@ -645,7 +645,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 this.nextLevelExp *= 2.25;
 
                 var levelUpAnimation = utils.getAnimationB({
-                    spritesheetName: 'animations3',
+                    spritesheetName: 'BaseUnitAnimations1',
                     animationName: 'levelup',
                     speed: 2.5,
                     transform: [this.position.x, this.position.y, .8, 1]

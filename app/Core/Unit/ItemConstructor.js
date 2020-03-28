@@ -136,7 +136,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
 
             //play animation
             this.itemDrop = utils.getAnimationB({
-                spritesheetName: 'bloodswipes1',
+                spritesheetName: 'ItemAnimations1',
                 animationName: 'ItemDrop',
                 speed: 1.2,
                 playThisManyTimes: 1,

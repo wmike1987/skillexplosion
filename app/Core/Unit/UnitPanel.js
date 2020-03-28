@@ -56,7 +56,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         utils.makeSpriteSize(this.healthVial, this.vialDimensions);
 
         this.healthBubbles = utils.getAnimationB({
-            spritesheetName: 'bloodswipes1',
+            spritesheetName: 'UtilityAnimations1',
             animationName: 'bubbles',
             speed: .9,
             playThisManyTimes: 'loop',
@@ -91,7 +91,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         utils.makeSpriteSize(this.energyVial, this.vialDimensions);
 
         this.energyBubbles = utils.getAnimationB({
-            spritesheetName: 'bloodswipes1',
+            spritesheetName: 'UtilityAnimations1',
             animationName: 'bubbles',
             speed: .5,
             playThisManyTimes: 'loop',

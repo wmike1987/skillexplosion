@@ -1,0 +1,72 @@
+{"frames": {
+
+"Doodads/avdeadtree1.png":
+{
+	"frame": {"x":1027,"y":1819,"w":221,"h":665},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":221,"h":665},
+	"sourceSize": {"w":221,"h":666}
+},
+"Doodads/avgoldtree1.png":
+{
+	"frame": {"x":1694,"y":1819,"w":160,"h":348},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":160,"h":348},
+	"sourceSize": {"w":160,"h":349}
+},
+"GrassAndRock1/Grass/grass_base.png":
+{
+	"frame": {"x":1,"y":1,"w":1024,"h":1024},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":1024},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Rock/rock_base_dirt_top.png":
+{
+	"frame": {"x":1,"y":1027,"w":1024,"h":980},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":16,"w":1024,"h":980},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Rock/roots_level_1.png":
+{
+	"frame": {"x":1027,"y":1,"w":1017,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":420,"w":1017,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Rock/roots_level_2.png":
+{
+	"frame": {"x":1027,"y":607,"w":1017,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":420,"w":1017,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Rock/roots_level_3.png":
+{
+	"frame": {"x":1027,"y":1213,"w":1017,"h":604},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":420,"w":1017,"h":604},
+	"sourceSize": {"w":1024,"h":1024}
+}},
+"animations": {
+	"GrassAndRock1/Rock/roots_level": ["GrassAndRock1/Rock/roots_level_1.png","GrassAndRock1/Rock/roots_level_2.png","GrassAndRock1/Rock/roots_level_3.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Terrain-1.png",
+	"format": "RGBA8888",
+	"size": {"w":2045,"h":2041},
+	"scale": "1",
+	"related_multi_packs": [ "Terrain-0.json", "Terrain-2.json", "Terrain-3.json", "Terrain-4.json", "Terrain-5.json", "Terrain-6.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:b1e4434e35ce914a066513a06f0a5151:b2664d58d0c1a9a85aa3f76189fae41b:b1c65d6bccfc4596a83a2089aace944d$"
+}
+}

@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, PIXI, utils) {
 
     return {
-        _RevivableInit: function() {
+        revivableInit: function() {
             var reviveTime = 5000;
             var reviveTickTime = 100;
             var originalDeath = this.death;

@@ -1,0 +1,223 @@
+{"frames": {
+
+"Doodads/avbush1.png":
+{
+	"frame": {"x":1564,"y":1549,"w":204,"h":178},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":204,"h":178},
+	"sourceSize": {"w":204,"h":179}
+},
+"Doodads/avgoldtree4.png":
+{
+	"frame": {"x":1564,"y":1384,"w":163,"h":211},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":211},
+	"sourceSize": {"w":163,"h":212}
+},
+"Doodads/avgreentree2.png":
+{
+	"frame": {"x":772,"y":1026,"w":229,"h":376},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":229,"h":376},
+	"sourceSize": {"w":229,"h":377}
+},
+"Doodads/TableWithMap.png":
+{
+	"frame": {"x":1521,"y":1729,"w":163,"h":163},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":163,"h":163},
+	"sourceSize": {"w":169,"h":169}
+},
+"GrassAndRock1/Dirt Ramp/Dirt Ramp East/rocks_level_3.png":
+{
+	"frame": {"x":772,"y":1404,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level_1.png":
+{
+	"frame": {"x":1003,"y":1081,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":707,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level_2.png":
+{
+	"frame": {"x":1125,"y":1721,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":707,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level_3.png":
+{
+	"frame": {"x":1168,"y":1398,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":707,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level_1.png":
+{
+	"frame": {"x":361,"y":1746,"w":301,"h":380},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":461,"w":301,"h":380},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level_2.png":
+{
+	"frame": {"x":743,"y":1746,"w":301,"h":380},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":461,"w":301,"h":380},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level_3.png":
+{
+	"frame": {"x":1399,"y":1081,"w":301,"h":380},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":461,"w":301,"h":380},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp South/grass_ramp_south_base.png":
+{
+	"frame": {"x":1,"y":1,"w":1024,"h":1023},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":1023},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level_1.png":
+{
+	"frame": {"x":1003,"y":1081,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":707,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level_2.png":
+{
+	"frame": {"x":1125,"y":1721,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":707,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level_3.png":
+{
+	"frame": {"x":1168,"y":1398,"w":315,"h":394},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":707,"y":447,"w":315,"h":394},
+	"sourceSize": {"w":1024,"h":1024}
+},
+"LushGrass1/GreenGrass3.png":
+{
+	"frame": {"x":1027,"y":1,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/GreenGrass6.png":
+{
+	"frame": {"x":1438,"y":1,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/OrangeGrass3.png":
+{
+	"frame": {"x":1027,"y":361,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/OrangeGrass6.png":
+{
+	"frame": {"x":1438,"y":361,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/RedGrass3.png":
+{
+	"frame": {"x":1027,"y":721,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/RedGrass6.png":
+{
+	"frame": {"x":1438,"y":721,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/TealGrass3.png":
+{
+	"frame": {"x":1,"y":1081,"w":409,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/TealGrass6.png":
+{
+	"frame": {"x":1,"y":1492,"w":409,"h":358},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/YellowGrass3.png":
+{
+	"frame": {"x":361,"y":1026,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+},
+"LushGrass1/YellowGrass6.png":
+{
+	"frame": {"x":361,"y":1386,"w":409,"h":358},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":48,"y":81,"w":409,"h":358},
+	"sourceSize": {"w":500,"h":500}
+}},
+"animations": {
+	"GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level": ["GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level_1.png","GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level_2.png","GrassAndRock1/Dirt Ramp/Dirt Ramp South/rocks_level_3.png"],
+	"GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level": ["GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level_1.png","GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level_2.png","GrassAndRock1/Grass Ramp/Grass Ramp East/rocks_level_3.png"],
+	"GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level": ["GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level_1.png","GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level_2.png","GrassAndRock1/Grass Ramp/Grass Ramp South/rocks_level_3.png"],
+	"LushGrass1/GreenGrass": ["LushGrass1/GreenGrass3.png","LushGrass1/GreenGrass6.png"],
+	"LushGrass1/OrangeGrass": ["LushGrass1/OrangeGrass3.png","LushGrass1/OrangeGrass6.png"],
+	"LushGrass1/RedGrass": ["LushGrass1/RedGrass3.png","LushGrass1/RedGrass6.png"],
+	"LushGrass1/TealGrass": ["LushGrass1/TealGrass3.png","LushGrass1/TealGrass6.png"],
+	"LushGrass1/YellowGrass": ["LushGrass1/YellowGrass3.png","LushGrass1/YellowGrass6.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Terrain-6.png",
+	"format": "RGBA8888",
+	"size": {"w":1848,"h":2048},
+	"scale": "1",
+	"related_multi_packs": [ "Terrain-0.json", "Terrain-1.json", "Terrain-2.json", "Terrain-3.json", "Terrain-4.json", "Terrain-5.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:b1e4434e35ce914a066513a06f0a5151:b2664d58d0c1a9a85aa3f76189fae41b:b1c65d6bccfc4596a83a2089aace944d$"
+}
+}

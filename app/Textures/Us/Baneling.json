@@ -1,0 +1,20 @@
+{"frames": {
+
+"glassShards.png":
+{
+	"frame": {"x":1,"y":1,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Baneling.png",
+	"format": "RGBA8888",
+	"size": {"w":66,"h":66},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1dd977c43cbf2aaa143c2f96eeff1f57:e5f8c46c061081419e968fce691e0aca:9fc29bfa9d0b556570ca0501085fd872$"
+}
+}

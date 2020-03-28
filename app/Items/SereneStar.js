@@ -5,7 +5,7 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor', 'matter-js'], f
         energyRegenerationRate: 1,
         events: {knifeKill: {currentEnergy: 5, callback: function(unit) {
             var manaStealAnimation = utils.getAnimationB({
-                spritesheetName: 'animations3',
+                spritesheetName: 'UtilityAnimations1',
                 animationName: 'manasteal',
                 speed: Math.random() + .5,
                 transform: [unit.position.x, unit.position.y, 1.3, 1.3]
