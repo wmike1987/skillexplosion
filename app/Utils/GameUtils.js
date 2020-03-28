@@ -319,6 +319,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.rotation = options.rotation;
             if(options.sortYOffset)
                 something.sortYOffset = options.sortYOffset;
+            if(options.offset)
+                something.offset = options.offset;
             if(options.alpha != undefined)
                 something.alpha = options.alpha;
             if(options.persists)
@@ -646,6 +648,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return newParts;
         },
 
+        clonePosition: function(vector, offset) {
+            offset = $.extend({x: 0, y: 0}, offset);
+            return {x: vector.x + offset.x, y: vector.y + offset.y};
+        },
+
         floatSprite: function(sprite) {
             sprite.alpha = 1.4;
             currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 34, callback: function() {
@@ -783,9 +790,28 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return "0x" + r + g + b;
         },
 
-        //red to green
-        percentAsHexColor: function(percentage) {
-            return this.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
+        //red to green is default
+        //options contain start rgb to final rgb
+        percentAsHexColor: function(percentage, options) {
+            if(!options) {
+                options = {};
+                options.start = {r: 255, g: 0, b: 0};
+                options.final = {r: 0, g: 255, b: 0};
+            }
+
+            var sr = options.start.r;
+            var sg = options.start.g;
+            var sb = options.start.b;
+
+            var fr = options.final.r;
+            var fg = options.final.g;
+            var fb = options.final.b;
+
+            var newR = sr + (fr - sr) * percentage;
+            var newG = sg + (fg - sg) * percentage;
+            var newB = sb + (fb - sb) * percentage;
+            // return this.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
+            return this.rgbToHex(newR, newG, newB);
         },
 
         flattenObjectToArray: function(object) {
@@ -856,6 +882,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
     //aliases
     utils.offStage = utils.bodyRanOffStage;
     utils.getIntBetween = utils.getRandomIntInclusive;
+    utils.distanceBetweenUnits = utils.distanceBetweenBodies;
 
     return utils;
 })

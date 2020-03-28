@@ -557,6 +557,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         return false;
                     },
                 },
+                mixins: ['unitcore/_Revivable']
         });
     }
 })

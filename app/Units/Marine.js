@@ -449,7 +449,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 this.stop();
                 currentGame.unitSystem.deselectUnit(this);
                 //currentGame.removeUnit(this);
-            }
+                }
             }, options);
         return UC({
                 renderChildren: rc,
@@ -590,6 +590,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         bloodEmitter.playOnceAndDestroy();
                     },
                 },
+                mixins: ['unitcore/_Revivable']
         });
     }
 })
