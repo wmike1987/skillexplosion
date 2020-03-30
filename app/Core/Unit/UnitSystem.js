@@ -463,19 +463,54 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             $('body').on('mouseup.unitSystem', function(event) {
                 if(event.which == 1) {
                     this.box.mouseDown = false;
-                    Matter.Body.setPosition(this.box, {x: -500, y: -1000});
                     if(!this.box.invalidateNextMouseUp) {
+                        this.checkFinalBoxCollision();
                         executeSelection();
+                        currentGame.equipStation.body.renderlings.mainData.tint = utils.getRandomHexColor();
                     } else {
                         this.box.invalidateNextMouseUp = false;
                         this.box.invalidateNextBox = false
                     }
+                    Matter.Body.setPosition(this.box, {x: -500, y: -1000});
                     this.box.selectionBoxActive = false;
                 }
             }.bind(this));
 
+            /*
+             * On a mouseup event we need to do a final box/unit collision check before we execute the selection since
+             * this collision check won't happen in a subsequent physics step (since our mouseup intention is to execute a selection).
+             * In essense, without this, our box's final size (the size at mouseup time) will not have had a chance to collide with units.
+             */
             var smallBoxThreshold = 3;
-            Matter.Events.on(this.box, 'onCollideActive', function(pair) {
+            this.checkFinalBoxCollision = function() {
+                if(!this.box.selectionBoxActive) return;
+                utils.applyToUnitsByTeam(null, function(unit) {
+                    return unit.isSelectable;
+                }, function(unit) {
+                    var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
+                    if(unit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold
+                        || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) && pendingBodyCount > 0)
+                            return;
+
+                    var collisionBody = null;
+                    if(unit.isMoving) {
+                        collisionBody = unit.smallerBody || this.selectionBody;
+                    } else {
+                        collisionBody = unit.selectionBody;
+                    }
+
+                    var collision = Matter.SAT.collides(this.box, collisionBody);
+                    if(collision.collided) {
+                        this.changeSelectionState(unit, 'selectionPending', true);
+                        this.box.pendingSelections[unit.unitId] = unit;
+                        if(unit == this.box.permaPendingUnit)
+                            this.box.boxContainsPermaPending = true;
+                    }
+                }.bind(this))
+            }
+
+            //Add unit to pending selections onCollide and onCollideActive
+            Matter.Events.on(this.box, 'onCollideActive onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 if(!otherBody.isSelectionBody) return;
                 var otherUnit = otherBody.unit || {};
@@ -484,26 +519,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     pendingBodyCount > 0) return;
                 if(!otherUnit.isMoving && otherUnit.isSelectable) {
                     this.changeSelectionState(otherUnit, 'selectionPending', true);
-                    this.box.pendingSelections[otherUnit.unitId] = otherUnit;
-                    if(otherUnit == this.box.permaPendingUnit)
-                        this.box.boxContainsPermaPending = true;
-                }
-                if(otherBody.isSmallerBody && otherUnit.isMoving && otherUnit.isSelectable) {
-                    this.changeSelectionState(otherUnit, 'selectionPending', true);
-                    this.box.pendingSelections[otherUnit.unitId] = otherUnit;
-                    if(otherUnit == this.box.permaPendingUnit)
-                        this.box.boxContainsPermaPending = true;
-                }
-            }.bind(this));
-
-            Matter.Events.on(this.box, 'onCollide', function(pair) {
-                var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
-                var otherUnit = otherBody.unit || {};
-                var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
-                if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
-                    pendingBodyCount > 0) return;
-                if(!otherUnit.isMoving && otherUnit.isSelectable) {
-                    this.changeSelectionState(otherBody.unit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
                     if(otherUnit == this.box.permaPendingUnit)
                         this.box.boxContainsPermaPending = true;

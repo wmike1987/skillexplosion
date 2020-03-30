@@ -790,6 +790,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return "0x" + r + g + b;
         },
 
+        getRandomHexColor: function() {
+            return this.rgbToHex(Math.random()*255, Math.random()*255, Math.random()*255);
+        },
+
         //red to green is default
         //options contain start rgb to final rgb
         percentAsHexColor: function(percentage, options) {

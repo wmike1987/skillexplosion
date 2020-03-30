@@ -35,6 +35,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
         //setup the body's render children
         this.body.renderChildren = [{
+            id: 'mainData',
             data: options.texture,
             offset: options.offset || {x: 0, y: 0},
             scale: options.scale,

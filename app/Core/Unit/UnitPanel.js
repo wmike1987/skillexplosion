@@ -42,7 +42,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.healthVialCenterX = this.centerX - 58;
         this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
         this.healthVial = utils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
-        Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, updaters: {mainDescription: function(tooltip) {
+        var hvtt = Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, updaters: {mainDescription: function(tooltip) {
             if(this.prevailingUnit) {
                 var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
                 tooltip.mainDescription.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
@@ -63,6 +63,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             transform: [this.healthVialPosition.x, this.healthVialPosition.y + 10, 1.5, 1.5],
         });
         utils.makeSpriteSize(this.healthBubbles, {w: 40, h: 80});
+        this.healthBubbles.visible = false;
         this.healthBubbles.tint = 0xff8080;
         this.healthBubbles.alpha = 1;
         this.healthBubbles.play();
@@ -98,6 +99,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             transform: [this.energyVialPosition.x, this.energyVialPosition.y + 10, 1.5, 1.5]
         });
         utils.makeSpriteSize(this.energyBubbles, {w: 40, h: 80});
+        this.energyBubbles.visible = false;
         this.energyBubbles.tint = 0xB6D7F9;
         this.energyBubbles.alpha = .5;
         this.energyBubbles.play();
@@ -107,6 +109,32 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.energyVialSquare.position = {x: this.energyVialPosition.x, y: utils.getCanvasHeight()}
         utils.makeSpriteSize(this.energyVialSquare, {x: 0, y: 0});
         utils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
+
+        //health vial and engery vial
+        this.updateHealthAndEnergyVialTick = currentGame.addTickCallback(function() {
+            if(this.prevailingUnit) {
+                this.healthVialSquare.visible = true;
+                this.healthBubbles.visible = true;
+                this.energyVialSquare.visible = true;
+                this.energyBubbles.visible = true;
+                this.healthVial.tooltipObj.disabled = false;
+                this.energyVial.tooltipObj.disabled = false;
+                var healthPercent = this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth;
+                utils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
+
+                if(this.prevailingUnit.maxEnergy > 0) {
+                    var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
+                    utils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
+                }
+            } else {
+                this.healthVialSquare.visible = false;
+                this.healthBubbles.visible = false;
+                this.energyVialSquare.visible = false;
+                this.energyBubbles.visible = false;
+                this.healthVial.tooltipObj.disabled = true;
+                this.energyVial.tooltipObj.disabled = true;
+            }
+        }.bind(this));
 
         //unit ability variables
         this.abilitySpacing = 77;
@@ -450,30 +478,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     utils.makeSpriteSize(this.experienceMeter, {x: utils.getPlayableWidth()*expPercent, y: 8});
                 } else {
                     this.experienceMeter.visible = false;
-                }
-            }.bind(this));
-        }
-
-        //health vial and engery vial
-        if(!this.updateHealthAndEnergyVialTick) {
-            this.updateHealthAndEnergyVialTick = currentGame.addTickCallback(function() {
-                if(this.prevailingUnit) {
-                    this.healthVialSquare.visible = true;
-                    this.healthBubbles.visible = true;
-                    this.energyVialSquare.visible = true;
-                    this.energyBubbles.visible = true;
-                    var healthPercent = this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth;
-                    utils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
-
-                    if(this.prevailingUnit.maxEnergy > 0) {
-                        var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
-                        utils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
-                    }
-                } else {
-                    this.healthVialSquare.visible = false;
-                    this.healthBubbles.visible = false;
-                    this.energyVialSquare.visible = false;
-                    this.energyBubbles.visible = false;
                 }
             }.bind(this));
         }

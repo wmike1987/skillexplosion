@@ -117,8 +117,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             campScene.add(mapTable);
 
             var equipStation = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'Doodads/avsnowtree8', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 10, y: -38}, sortYOffset: 35,
-                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 0, y: 20}, position: {x: utils.getCanvasCenter().x-150, y: utils.getPlayableHeight()-280}})
+                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 10, y: 20}, position: {x: utils.getCanvasCenter().x-150, y: utils.getPlayableHeight()-280}})
             campScene.add(equipStation);
+            this.equipStation = equipStation;
 
             treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
             // campScene.add(this.fillAreaWithTrees(treeOptions));

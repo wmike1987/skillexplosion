@@ -163,6 +163,8 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         Matter.Events.on(displayObject, 'destroy', function() {
             displayObject.tooltipObj.destroy();
         })
+
+        return displayObject.tooltipObj;
     }
 
     return Tooltip;
