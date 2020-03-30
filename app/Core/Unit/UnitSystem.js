@@ -498,10 +498,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     } else {
                         collisionBody = unit.selectionBody;
                     }
-
                     var collision = Matter.SAT.collides(this.box, collisionBody);
+
                     if(collision.collided) {
                         this.changeSelectionState(unit, 'selectionPending', true);
+                        var unitAlreadyContainedInBox = false;
+                        // Leaving here for now for debugging purposes in the future
+                        // $.each(this.box.pendingSelections, function(key, obj) {
+                        //     if(unit == obj) {
+                        //         unitAlreadyContainedInBox = true;
+                        //         console.info("unit already contained")
+                        //     }
+                        // })
+                        // if(!unitAlreadyContainedInBox) {
+                        //
+                        //     console.info("this is doing something!")
+                        // }
                         this.box.pendingSelections[unit.unitId] = unit;
                         if(unit == this.box.permaPendingUnit)
                             this.box.boxContainsPermaPending = true;
@@ -509,7 +521,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                 }.bind(this))
             }
 
-            //Add unit to pending selections onCollide and onCollideActive
             Matter.Events.on(this.box, 'onCollideActive onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 if(!otherBody.isSelectionBody) return;
