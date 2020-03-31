@@ -183,6 +183,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                     y: .4
                 },
                 rotate: 'none',
+                sortYOffset: 8,
                 visible: true,
             },
             {

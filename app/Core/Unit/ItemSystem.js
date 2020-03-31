@@ -90,7 +90,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)) {
                     var variationX = Math.random()*60;
                     var variationY = Math.random()*60;
-                    item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}));
+                    item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}), {fleeting: false});
                     item.icon.visible = false;
                     item.icon.alpha = 1;
                     item.icon.tooltipObj.disabled = false;

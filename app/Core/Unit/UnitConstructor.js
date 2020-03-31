@@ -30,7 +30,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 $.each(newUnit.abilities, function(i, ability) {
                     ability.enablers = ability.enablers || [];
                     ability.enablers.push(function() {
-                        return newUnit.currentEnergy >= ability.energyCost;
+                        return (!ability.energyCost || newUnit.currentEnergy >= ability.energyCost);
                     })
                 }.bind(this))
             }
@@ -40,6 +40,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             newUnit.eventClickMappings = {};
             if(newUnit.abilities) {
                 $.each(newUnit.abilities, function(i, ability) {
+                    if(ability.manualHandling) return;
                     if(ability.type == 'key') {
                         newUnit.eventKeyMappings[ability.key] = {
                             method: ability.method,

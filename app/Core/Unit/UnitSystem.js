@@ -466,7 +466,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     if(!this.box.invalidateNextMouseUp) {
                         this.checkFinalBoxCollision();
                         executeSelection();
-                        currentGame.equipStation.body.renderlings.mainData.tint = utils.getRandomHexColor();
                     } else {
                         this.box.invalidateNextMouseUp = false;
                         this.box.invalidateNextBox = false

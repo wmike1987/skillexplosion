@@ -461,6 +461,24 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }]
         })
 
+        var healAbility = new Ability({
+            name: 'Heal',
+            icon: utils.createDisplayObject('HealIcon'),
+            title: 'Heal',
+            description: 'Heal a friendly unit.',
+            hotkey: 'A',
+            energyCost: 1,
+            manualHandling: true,
+            // augments: [{
+            //     name: 'maim',
+            //     slowAmount: .5,
+            //     duration: 3000,
+            //     icon: utils.createDisplayObject('Maim'),
+            //     title: 'Maim',
+            //     descrtiption: 'Slow enemies hit by the blast for 2 seconds.'
+            // }]
+        })
+
         var rad = options.radius || 22;
         var unitProperties = $.extend({
             unitType: 'Medic',
@@ -475,7 +493,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             priority: 40,
             name: options.name,
             heightAnimation: 'up',
-            abilities: [silentStepAbility, mineAbility],
+            abilities: [healAbility, silentStepAbility, mineAbility],
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
@@ -530,7 +548,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     healCost: 1,
                     attack: function(target) {
                         if(this.currentEnergy >= 1) {
-
+                            var abilityTint = 0x80ba80;
+                            utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Heal').icon, tint: abilityTint, speed: 100});
                             healsound.play();
 
                             var healAnimation = utils.getAnimationB({

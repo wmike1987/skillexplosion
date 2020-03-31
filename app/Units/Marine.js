@@ -421,6 +421,41 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             Matter.Sleeping.set(this.body, !this.body.isSleeping);
         }
 
+        var gunAbility = new Ability({
+            name: 'Rifle',
+            manualHandling: true,
+            icon: utils.createDisplayObject('GunIcon'),
+            title: 'Rifle',
+            description: 'Deal damage to an enemy unit.',
+            hotkey: 'A',
+            activeAugment: null,
+            // augments: [
+            //     {
+            //         name: 'pierce',
+            //         lives: 3,
+            //         icon: utils.createDisplayObject('PiercingKnife'),
+            //         title: 'Piercing Blow',
+            //         description: 'Allows a single knife to pierce multiple enemies.'
+            //     },
+            //     {
+            //         name: 'poison tip',
+            //         seconds: 3,
+            //         damage: 20,
+            //         icon: utils.createDisplayObject('PoisonTip'),
+            //         title: 'Poison Tip',
+            //         description: 'Deal an additional 20 damage over 3 seconds.'
+            //     },
+            //     {
+            //         name: 'multi throw',
+            //         knives: 3,
+            //         damage: 20,
+            //         icon: utils.createDisplayObject('MultiShot'),
+            //         title: 'Multi-throw',
+            //         description: 'Throw multiple knives in a fan.'
+            //     },
+            // ],
+        })
+
         var unitProperties = $.extend({
             unitType: 'Marine',
             health: 75,
@@ -433,7 +468,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             priority: 50,
             name: options.name,
             heightAnimation: 'up',
-            abilities: [dashAbility, knifeAbility],
+            abilities: [gunAbility, dashAbility, knifeAbility],
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
@@ -476,6 +511,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     range: 180,
                     damage: 10,
                     attackExtension: function(target) {
+                        var abilityTint = 0x80ba80;
+                        utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
                         fireSound.play();
 
                         //bullet emitter

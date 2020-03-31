@@ -8,9 +8,17 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
 	"sourceSize": {"w":100,"h":100}
 },
-"KnifeIcon.png":
+"GunIcon.png":
 {
 	"frame": {"x":233,"y":1,"w":100,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
+	"sourceSize": {"w":100,"h":100}
+},
+"KnifeIcon.png":
+{
+	"frame": {"x":335,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -26,7 +34,7 @@
 },
 "MultiShot.png":
 {
-	"frame": {"x":335,"y":67,"w":32,"h":32},
+	"frame": {"x":437,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +42,7 @@
 },
 "PiercingKnife.png":
 {
-	"frame": {"x":369,"y":1,"w":32,"h":32},
+	"frame": {"x":471,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +50,7 @@
 },
 "PoisonTip.png":
 {
-	"frame": {"x":369,"y":35,"w":32,"h":32},
+	"frame": {"x":471,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -50,7 +58,7 @@
 },
 "ThrowingDagger.png":
 {
-	"frame": {"x":335,"y":1,"w":32,"h":64},
+	"frame": {"x":437,"y":1,"w":32,"h":64},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":64},
@@ -61,8 +69,8 @@
 	"version": "1.0",
 	"image": "Marine.png",
 	"format": "RGBA8888",
-	"size": {"w":402,"h":124},
+	"size": {"w":504,"h":124},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:9e8f36deea46fb59b5b2e3da5fa6643c:13833e9cfc75fdfa6d3901f26302abf4:1b146a7d1a1c5cd95f0c69a03767d9cf$"
+	"smartupdate": "$TexturePacker:SmartUpdate:4e258aaa9675f86f0225d291dd697213:6de5fcb8fc1a25e151ed157a22b325ab:1b146a7d1a1c5cd95f0c69a03767d9cf$"
 }
 }

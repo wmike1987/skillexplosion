@@ -40,7 +40,28 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
         },
 
         play: function(options) {
-            this.initialLevel();
+            this.initialCutScene();
+            // this.initialLevel();
+        },
+
+        initialCutScene: function() {
+            this.currentScene = new Scene(); //empty scene to transition from
+            var cutScene = new Scene();
+            var background = utils.createDisplayObject('TintableSquare', {tint: 0x004A26, anchor: {x: 0, y: 0}});
+            utils.makeSpriteSize(background, utils.getPlayableWH())
+            cutScene.add(background);
+
+            this.currentScene.transitionToScene({newScene: cutScene});
+            this.currentScene = cutScene;
+
+            $('body').on('keydown.us', function( event ) {
+                console.info("create keydown us")
+                var key = event.key.toLowerCase();
+                if(key == 'escape') {
+                    this.initialLevel();
+                }
+                $('body').off('keydown.us');
+            }.bind(this))
         },
 
         initialLevel: function() {
@@ -50,7 +71,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.createBane(3);
 
             //create empty scene and transition to camp scene
-            this.currentScene = new Scene(); //empty scene
             var campScene = this.createCampScene();
             this.currentScene.transitionToScene({newScene: campScene});
             this.currentScene = campScene;
@@ -344,6 +364,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
         resetGameExtension: function() {
             this.level = 0;
+        },
+
+        nukeExtension: function() {
+            console.info("nuked and destroyed keydown us")
+            $('body').off('keydown.us');
         }
     }
 

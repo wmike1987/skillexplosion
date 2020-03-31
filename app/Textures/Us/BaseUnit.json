@@ -26,10 +26,10 @@
 },
 "Grave.png":
 {
-	"frame": {"x":67,"y":1,"w":50,"h":60},
+	"frame": {"x":67,"y":1,"w":50,"h":59},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":7,"y":2,"w":50,"h":60},
+	"spriteSourceSize": {"x":7,"y":5,"w":50,"h":59},
 	"sourceSize": {"w":64,"h":64}
 },
 "HealthEnergyBackground.png":
@@ -145,6 +145,6 @@
 	"format": "RGBA8888",
 	"size": {"w":128,"h":236},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:7ce17d4687b76dc41bf3a5b9294ca795:8ccd2a7562dd8931d5f1544a8380a2b8:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:42e3291961debc9e782eb1812b873a62:c91b4d94efb7a7ca93430f21dab2de9c:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

@@ -1,8 +1,16 @@
 {"frames": {
 
+"HealIcon.png":
+{
+	"frame": {"x":1,"y":128,"w":100,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
+	"sourceSize": {"w":100,"h":100}
+},
 "Maim.png":
 {
-	"frame": {"x":326,"y":1,"w":32,"h":32},
+	"frame": {"x":205,"y":135,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -18,7 +26,7 @@
 },
 "MineCracks.png":
 {
-	"frame": {"x":326,"y":35,"w":32,"h":27},
+	"frame": {"x":205,"y":169,"w":32,"h":27},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":27},
@@ -26,7 +34,7 @@
 },
 "MineIcon.png":
 {
-	"frame": {"x":122,"y":1,"w":100,"h":100},
+	"frame": {"x":103,"y":128,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -59,14 +67,14 @@
 "MineZero.png":
 {
 	"frame": {"x":218,"y":103,"w":30,"h":16},
-	"rotated": false,
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
 	"sourceSize": {"w":32,"h":32}
 },
 "SilentStepIcon.png":
 {
-	"frame": {"x":224,"y":1,"w":100,"h":100},
+	"frame": {"x":122,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -77,8 +85,8 @@
 	"version": "1.0",
 	"image": "Medic.png",
 	"format": "RGBA8888",
-	"size": {"w":359,"h":127},
+	"size": {"w":238,"h":229},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:35b5462436fbb915db3453d8825d8de2:c6426457613893996a52e29e400dfebb:8d3e890b84ab07faa58797fc50fc9b0a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:cca55fd41c7c19c4f38fd0e04e9de870:1ae72e18cc4d2af41be1f588d4b6c7ad:8d3e890b84ab07faa58797fc50fc9b0a$"
 }
 }
