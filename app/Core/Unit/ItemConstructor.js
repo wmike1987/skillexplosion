@@ -46,7 +46,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         }
     }
 
-    var itemDrop = utils.getSound('itemdrop.wav', {volume: .04, rate: .75});
+    var itemDropSound = utils.getSound('itemdrop.wav', {volume: .04, rate: 1});
+    var itemSwoosh = utils.getSound('itemSwoosh.wav', {volume: .04, rate: 1.1});
 
     return function(options) {
         var newItem = $.extend({}, baseItem, options);
@@ -149,15 +150,17 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                     item.currentSlot = null;
                     if(options.fleeting)
                         ItemUtils.initiateBlinkDeath({item: item});
+                    itemDropSound.play();
                 }
             });
 
-            itemDrop.play();
             item.isDropping = true;
+            itemSwoosh.play();
 
-            utils.makeSpriteSize(this.itemDrop, {w: 60, h: 60});
+            utils.makeSpriteSize(this.itemDrop, {w: 110, h: 110});
             this.itemDrop.alpha = .65;
             this.itemDrop.play();
+            this.itemDrop.anchor.set(.5, .75);
             utils.addSomethingToRenderer(this.itemDrop, 'stage');
 
             //Make renderlings accessible from wherever

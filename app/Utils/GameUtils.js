@@ -310,7 +310,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.scale = options.scale;
             if(options.anchor) {
                 something.anchor = options.anchor;
-            } else if(!something.overrideDefaultAnchor){
+            } else if(!something.overrideDefaultAnchor && (something.anchor.x == 0 && something.anchor.y == 0)){
                 something.anchor = {x: .5, y: .5};
             }
             if(options.tint)
