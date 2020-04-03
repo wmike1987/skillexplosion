@@ -160,7 +160,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 }
 
                 if(keyStates['Shift'] && keyStates['Control']) {
-                    if(event.key == 'x' || event.key == 'X') {
+                    if(event.key == 'p' || event.key == 'P') {
                         currentGame.gameLoop.paused = !currentGame.gameLoop.paused;
                         pausedGameText.visible = currentGame.gameLoop.paused;
                     }

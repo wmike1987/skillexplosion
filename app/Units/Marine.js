@@ -229,6 +229,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
 
+        //poison
+        var poisonSound = utils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
+
         //Dash
         var dashVelocity = .8;
         var dashSound = utils.getSound('dashsound.wav', {volume: .02, rate: 1.4});
@@ -289,10 +292,20 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var knifeImpactSound = utils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
         var knifeSpeed = 22;
         var knifeDamage = 20;
-        var throwKnife = function(destination, commandObj) {
+        var throwKnife = function(destination, commandObj, childKnife) {
             //get current augment
             var thisAbility = this.getAbilityByName('Throw Knife');
             var currentAugment = thisAbility.currentAugment || {name: 'null'};
+
+            if(!childKnife && currentAugment.name == 'multi throw') {
+                var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(destination, this.position)));
+                var start = (currentAugment.knives-1)/-2;
+                var spacing = 25;
+                for(n = start; n < start+currentAugment.knives; n++) {
+                    if(n == 0) continue;
+                    thisAbility.method.call(this, Matter.Vector.add(destination, Matter.Vector.mult(perpVector, n*spacing)), null, true);
+                }
+            }
 
             //create knife body
             var knife = Matter.Bodies.circle(0, 0, 4, {
@@ -301,16 +314,30 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 mass: options.mass || 5,
                 isSensor: true
             });
+
             if(currentAugment.name == 'pierce') {
                 knife.lives = currentAugment.lives;
             }
 
             Matter.Body.setPosition(knife, this.position);
+            var knifeTint = 0xFFFFFF;
+            if(currentAugment.name == 'poison tip') {
+                knifeTint = 0x009933;
+            } else if(currentAugment.name == 'pierce') {
+                knifeTint = 0x6666ff;
+            }
             knife.renderChildren = [{
                 id: 'knife',
-                data: 'ThrowingDagger',
+                data: 'ThrowingDaggerBase',
                 scale: {x: .7, y: .7},
                 rotate: utils.pointInDirection(knife.position, destination),
+            },
+            {
+                id: 'knifeblade',
+                data: 'ThrowingDaggerBlade',
+                scale: {x: .7, y: .7},
+                rotate: utils.pointInDirection(knife.position, destination),
+                tint: knifeTint,
             },
             {
                 id: 'shadow',
@@ -339,6 +366,32 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
                 if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
+                    if(currentAugment.name == 'poison tip') {
+                        knife.poisonTimer = currentGame.addTimer({
+                            name: 'poisonTimer' + knife.id,
+                            runs: currentAugment.seconds*2,
+                            killsSelf: true,
+                            timeLimit: 500,
+                            callback: function() {
+                                if(otherUnit.isDead) {
+                                    currentGame.invalidateTimer(this);
+                                    return;
+                                }
+                                poisonSound.play();
+                                var poisonAnimation = utils.getAnimationB({
+                                    spritesheetName: 'UtilityAnimations2',
+                                    animationName: 'poisonhit1',
+                                    speed: 2.1,
+                                    transform: [otherUnit.position.x, otherUnit.position.y, .4, .4]
+                                });
+                                poisonAnimation.rotation = Math.random() * Math.PI*2;
+                                utils.addSomethingToRenderer(poisonAnimation, 'stageOne');
+                                poisonAnimation.play();
+                                otherUnit.sufferAttack(currentAugment.damage/(currentAugment.seconds*2), self);
+                            }
+                        })
+                    }
+
                     otherUnit.sufferAttack(knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
                     if(otherUnit.isDead) {
                         Matter.Events.trigger(this, 'knifeKill');
@@ -368,15 +421,17 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 }
             }.bind(this))
 
-            currentGame.addTimer({
-                name: 'knifeDoneTimer' + knife.id,
-                runs: 1,
-                killsSelf: true,
-                timeLimit: 125,
-                callback: function() {
-                    commandObj.command.done();
-                }
-            })
+            if(commandObj) {
+                currentGame.addTimer({
+                    name: 'knifeDoneTimer' + knife.id,
+                    runs: 1,
+                    killsSelf: true,
+                    timeLimit: 125,
+                    callback: function() {
+                        commandObj.command.done();
+                    }
+                })
+            }
         };
 
         var knifeAbility = new Ability({
@@ -400,15 +455,15 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 },
                 {
                     name: 'poison tip',
-                    seconds: 3,
-                    damage: 20,
+                    seconds: 5,
+                    damage: 40,
                     icon: utils.createDisplayObject('PoisonTip'),
                     title: 'Poison Tip',
-                    description: 'Deal an additional 20 damage over 3 seconds.'
+                    description: 'Deal an additional 40 damage over 5 seconds.'
                 },
                 {
                     name: 'multi throw',
-                    knives: 3,
+                    knives: 5,
                     damage: 20,
                     icon: utils.createDisplayObject('MultiShot'),
                     title: 'Multi-throw',
@@ -425,35 +480,41 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             name: 'Rifle',
             manualHandling: true,
             icon: utils.createDisplayObject('GunIcon'),
-            title: 'Rifle',
+            title: 'M14 Rifle',
             description: 'Deal damage to an enemy unit.',
             hotkey: 'A',
             activeAugment: null,
-            // augments: [
-            //     {
-            //         name: 'pierce',
-            //         lives: 3,
-            //         icon: utils.createDisplayObject('PiercingKnife'),
-            //         title: 'Piercing Blow',
-            //         description: 'Allows a single knife to pierce multiple enemies.'
-            //     },
-            //     {
-            //         name: 'poison tip',
-            //         seconds: 3,
-            //         damage: 20,
-            //         icon: utils.createDisplayObject('PoisonTip'),
-            //         title: 'Poison Tip',
-            //         description: 'Deal an additional 20 damage over 3 seconds.'
-            //     },
-            //     {
-            //         name: 'multi throw',
-            //         knives: 3,
-            //         damage: 20,
-            //         icon: utils.createDisplayObject('MultiShot'),
-            //         title: 'Multi-throw',
-            //         description: 'Throw multiple knives in a fan.'
-            //     },
-            // ],
+            augments: [
+                {
+                    name: 'bloodlust',
+                    delta: -150,
+                    icon: utils.createDisplayObject('BloodlustIcon'),
+                    title: 'Bloodlust',
+                    description: 'Increase rate of fire.',
+                    equip: function(unit) {
+                        unit.cooldown += this.delta;
+                    },
+                    dequip: function(unit) {
+                        unit.cooldown -= this.delta;
+                    }
+                },
+                {
+                    name: 'hooded peep',
+                    chance: .2,
+                    multiplier: 2,
+                    icon: utils.createDisplayObject('HoodedPeepIcon'),
+                    title: 'Hooded Peep',
+                    description: '20% chance to deal a critical hit (2x damage).'
+                },
+                {
+                    name: 'first aid pouch',
+                    healAmount: 15,
+                    chance: .5,
+                    icon: utils.createDisplayObject('FirstAidPouchIcon'),
+                    title: 'First Aid Pouch',
+                    description: '50% chance to heal self and nearby allies for 15 hp after rifle kill.'
+                },
+            ],
         })
 
         var unitProperties = $.extend({

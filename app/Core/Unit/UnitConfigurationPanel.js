@@ -1,7 +1,8 @@
 define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, utils, Tooltip, Matter) {
 
-    var equipShow = utils.getSound('openEquipStation.wav', {volume: .1, rate: 1});
+    var equipShow = utils.getSound('openEquipStation.wav', {volume: .15, rate: .8});
     var equip = utils.getSound('augmentEquip.wav', {volume: .1, rate: 1.2});
+    var hoverAugmentSound = utils.getSound('augmenthover.wav', {volume: .03, rate: 1});
 
     var ConfigPanel = function() {
     }
@@ -11,6 +12,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
 
         this.initialYOffset = -31;
         this.spacing = -65;
+
+        //hide panel upon escape
         $('body').on('keydown.unitConfigurationPanel', function( event ) {
             var key = event.key.toLowerCase();
             if(key == 'escape') {
@@ -29,34 +32,84 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
     }
 
     ConfigPanel.prototype.showForUnit = function(unit) {
+        if(unit == this.currentUnit) return;
+
+        //remove the move listener for last unit
+        if(this.currentUnit && this.currentUnit.equipHideFunction) {
+            Matter.Events.off(this.currentUnit, 'unitMove', this.currentUnit.equipHideFunction);
+        }
+
+        //occupy unit
+        unit.isOccupied = true;
+
+        //hide for last unit
         this.hideForUnit(this.currentUnit);
 
+        //setup move listener for new unit
+        unit.equipHideFunction = function(event) {
+            this.hideForUnit(event.unit)
+        }.bind(this)
+        Matter.Events.on(unit, 'unitMove', unit.equipHideFunction);
+
         this.currentUnit = unit;
+        unit.stop();
         equipShow.play();
         this.showAugments(unit);
-        //this.showStats
+        //this.showStats - TODO
     };
 
     ConfigPanel.prototype.showAugments = function(unit) {
-
         $.each(unit.abilities, function(i, ability) {
             var currentAugment = ability.currentAugment;
             if(ability.augments) {
                 ability.currentAugmentBorder = utils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
                 ability.currentAugmentBorder.visible = false;
                 ability.currentAugmentBorder.sortYOffset = 1000;
+                var alphaAugment = .8;
                 $.each(ability.augments, function(j, augment) {
                     if(!augment.icon.parent) {
                         utils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+                        augment.actionBox = utils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+                        utils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
                         augment.border = utils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
-                        augment.icon.interactive = true;
-                        augment.icon.on('mouseup', function(event) {
-                            ability.currentAugment = augment;
-                            ability.currentAugmentBorder.position = this.position;
-                            ability.currentAugmentBorder.visible = true;
-                            equip.play();
+                        augment.border.sortYOffset = -10;
+                        augment.actionBox.interactive = true;
+                        augment.actionBox.on('mouseup', function(event) {
+                            if(ability.currentAugment != augment) {
+                                //dequip existing augment
+                                if(ability.currentAugment && ability.currentAugment.dequip) {
+                                    ability.currentAugment.dequip(this.currentUnit);
+                                }
+
+                                ability.currentAugmentBorder.position = augment.icon.position;
+                                ability.currentAugmentBorder.visible = true;
+
+                                //equip augment
+                                ability.currentAugment = augment;
+                                if(ability.currentAugment.equip) {
+                                    ability.currentAugment.equip(this.currentUnit);
+                                }
+                                equip.play();
+
+                                //trigger event and trigger ability panel update
+                                Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.currentUnit})
+                                currentGame.unitSystem.unitPanel.updateUnitAbilities();
+                            }
+                        }.bind(this))
+                        augment.actionBox.on('mouseover', function(event) {
+                            if(ability.currentAugment != augment) {
+                                augment.border.alpha = 1;
+                                augment.border.scale = {x: 1.1, y: 1.1};
+                                hoverAugmentSound.play();
+                            }
                         })
-                        Tooltip.makeTooltippable(augment.icon, {title: augment.title});
+                        augment.actionBox.on('mouseout', function(event) {
+                            if(ability.currentAugment != augment) {
+                                augment.border.scale = {x: 1, y: 1};
+                                augment.border.alpha = alphaAugment;
+                            }
+                        })
+                        Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description});
 
                     }
                     if(currentAugment == augment) {
@@ -66,11 +119,12 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                         ability.currentAugmentBorder.visible = true;
                         ability.currentAugmentBorder.position = augment.border.position;
                     } else {
-                        augment.icon.alpha = .8;
-                        augment.border.alpha = 1;
+                        augment.icon.alpha = 1;
+                        augment.border.alpha = alphaAugment;
                         augment.border.visible = true;
                     }
                     augment.icon.visible = true;
+                    augment.actionBox.visible = true;
                 }.bind(this))
 
                 //show ability bases
@@ -83,6 +137,17 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
     ConfigPanel.prototype.hideForUnit = function(unit) {
         if(!unit) return;
 
+        //release current unit
+        this.currentUnit = null;
+
+        //remove the move listener for unit
+        if(unit.equipHideFunction) {
+            Matter.Events.off(unit, 'unitMove', unit.equipHideFunction);
+        }
+
+        //de-occupy unit
+        unit.isOccupied = false;
+
         //hide infrastructure
         $.each(this.abilityBases, function(i, base) {
             base.visible = false;
@@ -94,7 +159,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                 $.each(ability.augments, function(j, augment) {
                     augment.icon.visible = false;
                     augment.border.visible = false;
-                    augment.icon.tooltipObj.hide();
+                    augment.actionBox.tooltipObj.hide();
+                    augment.actionBox.visible = false;
                 }.bind(this))
             }
             if(ability.currentAugmentBorder) {

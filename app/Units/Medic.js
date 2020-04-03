@@ -342,7 +342,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             });
             smokeExplosionAnimation.alpha = .3;
             utils.makeSpriteSize(mineExplosionAnimation, {x: 240, y: 240})
-			mineExplosionAnimation.rotation = Math.random() * Math.PI;
+			mineExplosionAnimation.rotation = Math.random() * Math.PI*2;
             mineExplosionAnimation.alpha = .9;
             // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
             //     isSensor: true,

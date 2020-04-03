@@ -11,7 +11,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.currentCommands = [];
         this.itemSystem = null;
 
-        this.barOffset = 9; //top bar offset;
+        this.barOffset = 8; //top bar offset;
         this.centerX = utils.getUnitPanelCenter().x;
         this.centerY = utils.getUnitPanelCenter().y + this.barOffset/2;
 
@@ -38,7 +38,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //health vial
         this.vialDimensions = {w: 24, h: 90};
-        this.healthVialCenterY = this.centerY;
+        this.healthVialCenterY = this.centerY + 1;
         this.healthVialCenterX = this.centerX - 58;
         this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
         this.healthVial = utils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
@@ -75,7 +75,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         utils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
 
         //energy vial
-        this.energyVialCenterY = this.centerY;
+        this.energyVialCenterY = this.centerY + 1;
         this.energyVialCenterX = this.centerX + 58;
         this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
         this.energyVial = utils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
@@ -138,8 +138,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //unit ability variables
         this.abilitySpacing = 77;
-        this.abilityOneCenterX = this.centerX + 185
-        this.abilityOneCenterY = this.centerY;
+        this.abilityOneCenterX = this.centerX + 184;
+        this.abilityOneCenterY = this.centerY-1;
+        this.abililtyWithBorderWidth = 64;
+        this.abililtyWidth = 60;
+
+        //ability augment variables
+        // this.abilityAugmentLeft = this.centerX + 152;
+        // this.abilityAugmentBottom = this.centerY + 65/2;
 
         //basic command variables
         this.commandSpacing = 35;
@@ -318,6 +324,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         if(this.currentAbilities) {
             $.each(this.currentAbilities, function(i, ability) {
                 ability.icon.visible = false;
+                if(ability.currentAugmentIcon) {
+                    ability.currentAugmentIcon.visible = false;
+                    ability.currentAugmentBorderIcon.visible = false;
+                }
             })
         }
         this.currentAbilities = null;
@@ -475,7 +485,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 if(this.prevailingUnit) {
                     this.experienceMeter.visible = true;
                     var expPercent = (this.prevailingUnit.currentExperience-this.prevailingUnit.lastLevelExp) / (this.prevailingUnit.nextLevelExp-this.prevailingUnit.lastLevelExp);
-                    utils.makeSpriteSize(this.experienceMeter, {x: utils.getPlayableWidth()*expPercent, y: 8});
+                    utils.makeSpriteSize(this.experienceMeter, {x: utils.getPlayableWidth()*expPercent, y: this.barOffset-1});
                 } else {
                     this.experienceMeter.visible = false;
                 }
@@ -490,7 +500,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //place, scale and enable abilility icons
         $.each(this.currentAbilities, function(i, ability) {
-            ability.icon.scale = utils.makeSpriteSize(ability.icon, 61);
+            ability.icon.scale = utils.makeSpriteSize(ability.icon, this.abililtyWidth);
             ability.icon.position = {x: this.abilityOneCenterX + (this.abilitySpacing * i), y: this.abilityOneCenterY};
             ability.icon.visible = true;
             if(!ability.icon.parent) {
@@ -499,6 +509,35 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                   ability.systemMessage = ability.energyCost + ' energy';
                 }
                 Tooltip.makeTooltippable(ability.icon, ability);
+            }
+
+            var augmentSize = 20;
+            var augmentBorderSize = augmentSize+4;
+            if(ability.augments) {
+                $.each(ability.augments, function(i, augment) {
+                    var bottomRightOfAbility = {x: ability.position.x + this.abililtyWithBorderWidth/2, y: ability.position.y + this.abililtyWithBorderWidth/2};
+                    var agumentPosition = utils.addScalarToPosition(bottomRightOfAbility, -augmentBorderSize/2);
+                    if(!augment.smallerIcon) {
+                        augment.smallerIcon = utils.addSomethingToRenderer(augment.icon.texture, {position: agumentPosition, where: 'hudTwo'});
+                        Tooltip.makeTooltippable(augment.smallerIcon, {title: augment.title, description: augment.description});
+                        augment.smallerBorder = utils.addSomethingToRenderer('AugmentBorder', {position: agumentPosition, where: 'hudTwo'});
+                        utils.makeSpriteSize(augment.smallerIcon, augmentSize);
+                        utils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);
+                    }
+                    if(ability.currentAugment == augment) {
+                        augment.smallerIcon.visible = true;
+                        augment.smallerBorder.visible = true;
+                        ability.currentAugmentIcon = augment.smallerIcon;
+                        ability.currentAugmentBorderIcon = augment.smallerBorder;
+
+                        //don't forget to match current ability tint
+                        augment.smallerIcon.tint = ability.tint || 0xFFFFFF;
+                        augment.smallerBorder.tint = ability.tint || 0xFFFFFF;
+                    } else {
+                        augment.smallerIcon.visible = false;
+                        augment.smallerBorder.visible = false;
+                    }
+                }.bind(this))
             }
         }.bind(this))
 
@@ -516,8 +555,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                         }
                         if(!enabled) {
                             ability.icon.tint = unavailableTint;
+                            if(ability.currentAugment) {
+                                ability.currentAugmentIcon.tint = unavailableTint;
+                                ability.currentAugmentBorderIcon.tint = unavailableTint;
+                            }
                         } else if(ability.icon.tint == unavailableTint) {
                             ability.icon.tint = 0xFFFFFF;
+                            if(ability.currentAugment) {
+                                ability.currentAugmentIcon.tint = 0xFFFFFF;
+                                ability.currentAugmentBorderIcon.tint = 0xFFFFFF;
+                            }
                         }
                     })
                 }
@@ -563,6 +610,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
         currentGame.removeTickCallback(this.abilityAvailableTick);
     };
+
+    unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;
 
     return unitPanel;
 })

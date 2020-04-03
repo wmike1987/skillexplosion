@@ -92,6 +92,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 this.canAttack = false;
                 this.cooldownTimer.reset();
                 this.cooldownTimer.runs = 1;
+                this.cooldownTimer.timeLimit = this.cooldown;
                 this.isHoning = false;
 
                 //call attack

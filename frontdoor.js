@@ -197,6 +197,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             //generic textures and animations
             loader.add('Utility', 'app/Textures/Us/Utility.json');
             loader.add('UtilityAnimations1', 'app/Textures/Us/UtilityAnimations1.json');
+            loader.add('UtilityAnimations2', 'app/Textures/Us/UtilityAnimations2.json');
 
             //terrain and doodads
             loader.add('Terrain0', 'app/Textures/Us/Terrain-0.json');

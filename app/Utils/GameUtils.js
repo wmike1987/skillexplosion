@@ -414,13 +414,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         bodyRanOffStage: function(body) {
-            if(body.velocity.x < 0 && body.bounds.max.x < 0)
+            var buffer = 50;
+            if(body.velocity.x < 0 && body.bounds.max.x < -buffer)
                 return true;
-            if(body.velocity.x > 0 && body.bounds.min.x > this.getPlayableWidth())
+            if(body.velocity.x > 0 && body.bounds.min.x > this.getPlayableWidth() + buffer)
                 return true;
-            if(body.velocity.y > 0 && body.bounds.min.y > this.getPlayableHeight())
+            if(body.velocity.y > 0 && body.bounds.min.y > this.getPlayableHeight() + buffer)
                 return true;
-            if(body.velocity.y < 0 && body.bounds.max.y < 0)
+            if(body.velocity.y < 0 && body.bounds.max.y < -buffer)
                 return true;
         },
 
@@ -651,6 +652,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         clonePosition: function(vector, offset) {
             offset = $.extend({x: 0, y: 0}, offset);
             return {x: vector.x + offset.x, y: vector.y + offset.y};
+        },
+
+        addScalarToPosition: function(position, scalar, reverseY) {
+            reverseY = reverseY ? -1 : 1;
+            return {x: position.x + scalar, y: position.y + scalar*reverseY};
         },
 
         floatSprite: function(sprite) {

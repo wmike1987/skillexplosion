@@ -55,12 +55,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             this.currentScene = cutScene;
 
             $('body').on('keydown.us', function( event ) {
-                console.info("create keydown us")
                 var key = event.key.toLowerCase();
                 if(key == 'escape') {
                     this.initialLevel();
+                    $('body').off('keydown.us');
                 }
-                $('body').off('keydown.us');
             }.bind(this))
         },
 
@@ -156,12 +155,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             }
 
             for(var i = 1; i < 7; i++) {
-                nextLevelOptions.possibleTiles.push('LushGrash1/YellowGrass'+i);
+                nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
             }
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 1, n: 3, hz: 2000, maxOnField: 5},
+                spawn: {total: 30, n: 4, hz: 2000, maxOnField: 5},
                 item: {type: 'basic', total: 3}
             });
 
@@ -178,11 +177,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             Matter.Events.on(equipStation.body, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == equipStation.body ? pair.pair.bodyA : pair.pair.bodyB;
-                if(otherBody.unit) {
+                if(otherBody.unit && this.unitSystem.selectedUnit == otherBody.unit) {
+                    console.info('collide with equip station ' + otherBody.unit.unitType)
                     this.unitSystem.unitConfigurationPanel.showForUnit(otherBody.unit);
                 }
             }.bind(this));
-
             return campScene;
         },
 
@@ -291,11 +290,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
                 if(true) {
-                    ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["SteadySyringe"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: bane});
                 }
             }
         },
@@ -341,8 +340,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                                     return;
                                 }
                                 newUnit = enemy.constructor({team: 4, isSelectable: false});
-                                ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
-                                ItemUtils.giveUnitItem({name: ["SereneStar"], unit: newUnit});
+                                // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
+                                ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: newUnit});
 
                                 utils.placeBodyWithinRadiusAroundCanvasCenter(newUnit, 800, 600);
                                 newUnit.honeRange = 1400;
