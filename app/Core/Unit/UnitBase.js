@@ -121,6 +121,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     this.dropAllItems();
                 }
                 this.isDead = true;
+                Matter.Events.trigger(this, 'death', {});
                 this.death();
             },
 

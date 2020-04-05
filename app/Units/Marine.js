@@ -1,5 +1,5 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable'],
-    function($, PIXI, UC, Matter, utils, Ability, rv) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'utils/styles'],
+    function($, PIXI, UC, Matter, utils, Ability, rv, styles) {
 
     return function Marine(options) {
         var options = options || {};
@@ -232,11 +232,19 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         //poison
         var poisonSound = utils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
 
+        //crit
+        var criticalHitSound = utils.getSound('criticalhit.wav', {volume: .02, rate: 1});
+        var criticalHitSound2 = utils.getSound('criticalhit2.wav', {volume: .01, rate: .7});
+
         //Dash
         var dashVelocity = .8;
         var dashSound = utils.getSound('dashsound.wav', {volume: .02, rate: 1.4});
 
         var dash = function(destination, commandObj) {
+            //get current augment
+            var thisAbility = this.getAbilityByName('Dash');
+            var currentAugment = thisAbility.currentAugment || {name: 'null'};
+
             this.stop(); //stop any movement
             this._becomePeaceful(); //prevent us from honing/attacking
             this.moveSpeedAugment = this.moveSpeed;
@@ -272,6 +280,35 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     commandObj.command.done();
                 }
             })
+
+            if(currentAugment.name == 'defensive posture') {
+                if(!self.defensivePostureActive)
+                    self.defense += 2;
+                self.defensivePostureActive = true;
+                self.dashTimer = currentGame.addTimer({
+                    name: 'defensePostureTimerEnd' + self.unitId,
+                    runs: 1,
+                    timeLimit: 2000,
+                    callback: function() {
+                        self.defense -= 2;
+                        self.defensivePostureActive = false;
+                    }
+                })
+            } else if(currentAugment.name == 'death wish') {
+                if(!self.deathWishActive)
+                    self.damage += 10;
+                self.deathWishActive = true;
+                self.dashTimer = currentGame.addTimer({
+                    name: 'deathWishTimerEnd' + self.unitId,
+                    runs: 1,
+                    timeLimit: 2000,
+                    callback: function() {
+                        self.damage -= 10;
+                        self.deathWishActive = false;
+                    }
+                })
+            }
+
             utils.deathPact(this, self.dashTimer, 'dashDoneTimer');
         }
 
@@ -284,7 +321,46 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Dash',
             description: 'Quickly move throughout the battlefield.',
             hotkey: 'D',
-            energyCost: 3
+            energyCost: 3,
+            augments: [
+                {
+                    name: 'vital reserves',
+                    icon: utils.createDisplayObject('VitalReserves'),
+                    title: 'Vital Reserves',
+                    description: 'Alter dash cost to 2 hp, 1 energy.',
+                    equip: function(unit) {
+                        this.oldEnergyCost = this.ability.energyCost;
+                        this.ability.energyCost = 1;
+                        this.ability.hpEnable = this.ability.enablers.push(function() {
+                            return unit.currentHealth > 2;
+                        })
+                        this.ability.hpCost = this.ability.costs.push(function() {
+                            return unit.currentHealth -= 2;
+                        })
+                    },
+                    unequip: function(unit) {
+                        this.ability.energyCost = this.oldEnergyCost;
+                        this.ability.enablers.splice(this.ability.enablers.indexOf(this.ability.hpEnable), 1);
+                        this.ability.costs.splice(this.ability.costs.indexOf(this.ability.hpCost), 1);
+                    }
+                },
+                {
+                    name: 'defensive posture',
+                    chance: .2,
+                    multiplier: 2,
+                    icon: utils.createDisplayObject('DefensivePosture'),
+                    title: 'Defensive Posture',
+                    description: 'Gain 2 defense upon dashing for 2 seconds.'
+                },
+                {
+                    name: 'death wish',
+                    healAmount: 15,
+                    chance: .5,
+                    icon: utils.createDisplayObject('DeathWish'),
+                    title: 'Death Wish',
+                    description: 'Increase damage by 10 upon dashing for 2 seconds.'
+                },
+            ],
         })
 
         //Knife
@@ -451,19 +527,19 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     lives: 3,
                     icon: utils.createDisplayObject('PiercingKnife'),
                     title: 'Piercing Blow',
-                    description: 'Allows a single knife to pierce multiple enemies.'
+                    description: 'Pierce 3 enemies with a single knife.'
                 },
                 {
                     name: 'poison tip',
                     seconds: 5,
-                    damage: 40,
+                    damage: 30,
                     icon: utils.createDisplayObject('PoisonTip'),
                     title: 'Poison Tip',
-                    description: 'Deal an additional 40 damage over 5 seconds.'
+                    description: 'Deal an additional 30 damage over 5 seconds.'
                 },
                 {
                     name: 'multi throw',
-                    knives: 5,
+                    knives: 3,
                     damage: 20,
                     icon: utils.createDisplayObject('MultiShot'),
                     title: 'Multi-throw',
@@ -479,22 +555,22 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var gunAbility = new Ability({
             name: 'Rifle',
             manualHandling: true,
-            icon: utils.createDisplayObject('GunIcon'),
+            icon: utils.createDisplayObject('M14Icon'),
             title: 'M14 Rifle',
             description: 'Deal damage to an enemy unit.',
             hotkey: 'A',
             activeAugment: null,
             augments: [
                 {
-                    name: 'bloodlust',
-                    delta: -150,
-                    icon: utils.createDisplayObject('BloodlustIcon'),
-                    title: 'Bloodlust',
+                    name: 'fully auto',
+                    delta: -190,
+                    icon: utils.createDisplayObject('FullyAuto'),
+                    title: 'Full Auto',
                     description: 'Increase rate of fire.',
                     equip: function(unit) {
                         unit.cooldown += this.delta;
                     },
-                    dequip: function(unit) {
+                    unequip: function(unit) {
                         unit.cooldown -= this.delta;
                     }
                 },
@@ -504,15 +580,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     multiplier: 2,
                     icon: utils.createDisplayObject('HoodedPeepIcon'),
                     title: 'Hooded Peep',
-                    description: '20% chance to deal a critical hit (2x damage).'
+                    description: 'Gain a 20% chance to deal 2x damage.'
                 },
                 {
                     name: 'first aid pouch',
-                    healAmount: 15,
-                    chance: .5,
+                    healAmount: 1,
                     icon: utils.createDisplayObject('FirstAidPouchIcon'),
                     title: 'First Aid Pouch',
-                    description: '50% chance to heal self and nearby allies for 15 hp after rifle kill.'
+                    description: 'Heal self and nearby allies for 1 hp after firing rifle.'
                 },
             ],
         })
@@ -559,7 +634,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound],
+                slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound, poisonSound, criticalHitSound, criticalHitSound2],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.35,
@@ -571,10 +646,55 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     honeRange: 300,
                     range: 180,
                     damage: 10,
-                    attackExtension: function(target) {
+                    attack: function(target) {
+                        var rifleAbility = this.getAbilityByName('Rifle');
+                        var currentAugment = rifleAbility.currentAugment || {name: ""};
+
+                        var crit = 1;
+                        var critActive = false
+                        if(currentAugment.name == 'hooded peep') {
+                            if(Math.random() < currentAugment.chance) {
+                                crit = currentAugment.multiplier;
+                                critActive = true;
+                            }
+                        }
+
+                        var self = this;
+                        if(currentAugment.name == 'first aid pouch') {
+                            utils.applyToUnitsByTeam(function(team) {
+                                return self.team == team;
+                            }, function(unit) {
+                                return utils.distanceBetweenUnits(self, unit) <= 100;
+                            }, function(unit) {
+                                var lifeUpAnimation = utils.getAnimationB({
+                                    spritesheetName: 'UtilityAnimations1',
+                                    animationName: 'manasteal',
+                                    speed: .8,
+                                    transform: [unit.position.x, unit.position.y, 1, 1]
+                                });
+
+                                lifeUpAnimation.tint = 0xF80202;
+                                lifeUpAnimation.play();
+                                lifeUpAnimation.alpha = 1;
+                                utils.attachSomethingToBody(lifeUpAnimation, unit.body, {x: Math.random()*40-20, y: 25-(Math.random()*5)});
+                                utils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
+                                Matter.Events.on(lifeUpAnimation, "destroy", function() {
+                                    utils.detachSomethingFromBody(lifeUpAnimation);
+                                })
+
+                                unit.currentHealth+=1;
+                            })
+                        }
+
+                        target.sufferAttack(this.damage*crit, this);
+                        if(critActive) {
+                            criticalHitSound.play();
+                            criticalHitSound2.play();
+                            utils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText});
+                        }
+                        fireSound.play();
                         var abilityTint = 0x80ba80;
                         utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
-                        fireSound.play();
 
                         //bullet emitter
                         var emitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
@@ -642,7 +762,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         		"end": 1
                         	},
                         	"scale": {
-                        		"start": 0.1,
+                        		"start": 0.1 * crit,
                         		"end": 0.01,
                         		"minimumScaleMultiplier": 1
                         	},
@@ -676,7 +796,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         	"blendMode": "normal",
                         	"frequency": 0.01,
                         	"emitterLifetime": 0.2,
-                        	"maxParticles": 2,
+                        	"maxParticles": 2*(Math.pow(crit, 3)),
                         	"pos": {
                         		"x": 0,
                         		"y": 0

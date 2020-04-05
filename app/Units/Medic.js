@@ -295,6 +295,26 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
             }],
+            // augments: [{
+            //     name: 'pure priorities',
+            //     icon: utils.createDisplayObject('PurePriorities'),
+            //     title: 'Pure Priorities',
+            //     description: 'Healing hp below 50% costs no energy.'
+            // },
+            // {
+            //     name: 'lightest touch',
+            //     rangeDelta: 30,
+            //     healDelta: 1,
+            //     icon: utils.createDisplayObject('LightestTouch'),
+            //     title: 'Lightest Touch',
+            //     description: 'Increase healing range and healing amount.'
+            // },
+            // {
+            //     name: 'Sacrifice',
+            //     icon: utils.createDisplayObject('Sacrifice'),
+            //     title: 'Sacrifice',
+            //     description: ['Heal all hp and energy of friendly units upon death.', 'Halve time to revive.']
+            // }]
         })
 
         var mineSound = utils.getSound('laymine.mp3', {volume: .06, rate: .8});
@@ -457,7 +477,19 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 duration: 3000,
                 icon: utils.createDisplayObject('Maim'),
                 title: 'Maim',
-                descrtiption: 'Slow enemies hit by the blast for 2 seconds.'
+                description: 'Slow enemies hit by blast for 2 seconds.'
+            },
+            {
+                name: 'pressured plate',
+                icon: utils.createDisplayObject('PressuredPlate'),
+                title: 'Pressured Plate',
+                description: 'Cause enemy contact to detonate mine.'
+            },
+            {
+                name: 'shrapnel',
+                icon: utils.createDisplayObject('Shrapnel'),
+                title: 'Shrapnel',
+                description: 'Increase blast radius.'
             }]
         })
 
@@ -469,14 +501,52 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             hotkey: 'A',
             energyCost: 1,
             manualHandling: true,
-            // augments: [{
-            //     name: 'maim',
-            //     slowAmount: .5,
-            //     duration: 3000,
-            //     icon: utils.createDisplayObject('Maim'),
-            //     title: 'Maim',
-            //     descrtiption: 'Slow enemies hit by the blast for 2 seconds.'
-            // }]
+            augments: [{
+                name: 'pure priorities',
+                hpThreshold: .5,
+                icon: utils.createDisplayObject('PurePriorities'),
+                title: 'Pure Priorities',
+                description: 'Healing hp below 50% costs no energy.',
+            },
+            {
+                name: 'lightest touch',
+                rangeDelta: 30,
+                healDelta: .5,
+                icon: utils.createDisplayObject('LightestTouch'),
+                title: 'Lightest Touch',
+                description: 'Increase healing range and healing amount.',
+                equip: function(unit) {
+                    unit.range += this.rangeDelta;
+                    unit.healAmount += this.healDelta;
+                },
+                unequip: function(unit) {
+                    unit.range -= this.rangeDelta;
+                    unit.healAmount -= this.healDelta;
+                }
+            },
+            {
+                name: 'Sacrifice',
+                icon: utils.createDisplayObject('Sacrifice'),
+                title: 'Sacrifice',
+                reviveMultiplier: .5,
+                description: ['Heal all hp and energy of friendly units upon death.', 'Halve time to revive.'],
+                equip: function(unit) {
+                    unit.sacrificeFunction = function(event) {
+                        utils.applyToUnitsByTeam(function(team) {
+                            return unit.team == team
+                        }, null, function(unit) {
+                            unit.currentHealth = unit.maxHealth;
+                            unit.currentEnergy = unit.maxEnergy;
+                        })
+                    }
+                    Matter.Events.on(unit, 'death', unit.sacrificeFunction);
+                    unit.reviveTime *= this.reviveMultiplier;
+                },
+                unequip: function(unit) {
+                    Matter.Events.off(unit, 'death', unit.sacrificeFunction)
+                    unit.reviveTime *= 1/this.reviveMultiplier;
+                }
+            }]
         })
 
         var rad = options.radius || 22;
@@ -547,7 +617,12 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     healAmount: 1,
                     healCost: 1,
                     attack: function(target) {
-                        if(this.currentEnergy >= 1) {
+                        //get current augment
+                        var thisAbility = this.getAbilityByName('Heal');
+                        var currentAugment = thisAbility.currentAugment || {name: 'null'};
+                        var ppBypass = (currentAugment.name == 'pure priorities' && (target.currentHealth < (target.maxHealth * currentAugment.hpThreshold)));
+
+                        if(this.currentEnergy >= 1 || ppBypass) {
                             var abilityTint = 0x80ba80;
                             utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Heal').icon, tint: abilityTint, speed: 100});
                             healsound.play();
@@ -563,7 +638,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             healAnimation.play();
                             utils.addSomethingToRenderer(healAnimation, 'stageOne');
 
-                            this.currentEnergy -= this.healCost;
+                            if(!ppBypass)
+                                this.currentEnergy -= this.healCost;
+
                             target.currentHealth += this.healAmount;
                             if(target.currentHealth >= target.maxHealth)
                                 target.currentHealth = target.maxHealth;

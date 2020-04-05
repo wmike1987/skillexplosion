@@ -14,10 +14,10 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
         //default
         attack: function(target) {
-            target.sufferAttack(this.damage, this);
             if(this.attackExtension) {
                 this.attackExtension(target);
             }
+            target.sufferAttack(this.damage, this);
         },
 
         //user defined

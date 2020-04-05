@@ -676,7 +676,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             } else {
                 newStyle = styles.style;
             }
-            var startGameText = utils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: this.canvas.width/2, y: this.canvas.height/2});
+            var startGameText = utils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: this.getCanvasWidth()/2, y: this.getCanvasHeight()/2});
             startGameText.position = position;
             startGameText.alpha = 1.4;
             currentGame.addTimer({name: this.uuidv4(), timeLimit: 32, runs: options.runs || 30, callback: function() {

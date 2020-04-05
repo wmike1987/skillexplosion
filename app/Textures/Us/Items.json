@@ -8,7 +8,15 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"JewelOfLife.png":
+"CamoCanteen.png":
+{
+	"frame": {"x":1,"y":35,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Dogtags1.png":
 {
 	"frame": {"x":35,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -16,9 +24,41 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"MaskOfRage.png":
+"FieldVisor.png":
+{
+	"frame": {"x":1,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"GoldenDogTags.png":
+{
+	"frame": {"x":35,"y":35,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"GreenBeret.png":
 {
 	"frame": {"x":69,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"JewelOfLife.png":
+{
+	"frame": {"x":35,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"MaskOfRage.png":
+{
+	"frame": {"x":69,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +74,15 @@
 },
 "MedalOfMerit.png":
 {
-	"frame": {"x":137,"y":1,"w":32,"h":32},
+	"frame": {"x":69,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"PillBottle.png":
+{
+	"frame": {"x":103,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +90,7 @@
 },
 "RingOfReason.png":
 {
-	"frame": {"x":171,"y":1,"w":32,"h":32},
+	"frame": {"x":137,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -50,7 +98,7 @@
 },
 "RingOfWellBeing.png":
 {
-	"frame": {"x":205,"y":1,"w":32,"h":32},
+	"frame": {"x":103,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -58,7 +106,7 @@
 },
 "SereneStar.png":
 {
-	"frame": {"x":239,"y":1,"w":32,"h":32},
+	"frame": {"x":137,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -66,7 +114,7 @@
 },
 "SteadySyringe.png":
 {
-	"frame": {"x":273,"y":1,"w":32,"h":32},
+	"frame": {"x":171,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -74,19 +122,21 @@
 },
 "SturdyCanteen.png":
 {
-	"frame": {"x":307,"y":1,"w":32,"h":32},
+	"frame": {"x":137,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 }},
+"animations": {
+},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Items.png",
 	"format": "RGBA8888",
-	"size": {"w":340,"h":34},
+	"size": {"w":204,"h":102},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:c77934de616c895f4db05d1b145c3295:e4371a93dea33dffca0970fe46727162:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:e7fe7248a70d8ab642a80ef992e5789d:3826cb88e0d370a505e4e288583dad9f:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

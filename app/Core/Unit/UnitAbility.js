@@ -3,6 +3,11 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
     return function(options) {
         $.extend(this, options);
 
+        if(options.augments) {
+            options.augments.forEach(augment => augment.ability = this);
+        }
+
+        this.costs = [];
         this.disables = {};
         this.disable = function(id) {
             var disable = function() {

@@ -67,7 +67,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create our units
             this.createShane();
             this.createUrsula();
-            this.createBane(3);
+            this.createBane(10);
 
             //create empty scene and transition to camp scene
             var campScene = this.createCampScene();
@@ -286,7 +286,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 var bane = Baneling({team: 4, isSelectable: false});
                 if(autoHone)
                     bane.honeRange = 1400;
-                bane.damage = 100;
+                bane.damage = 20;
                 utils.placeBodyWithinRadiusAroundCanvasCenter(bane, 600, 400);
                 this.addUnit(bane, true);
                 if(true) {

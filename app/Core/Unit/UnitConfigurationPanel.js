@@ -76,9 +76,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                         augment.actionBox.interactive = true;
                         augment.actionBox.on('mouseup', function(event) {
                             if(ability.currentAugment != augment) {
-                                //dequip existing augment
-                                if(ability.currentAugment && ability.currentAugment.dequip) {
-                                    ability.currentAugment.dequip(this.currentUnit);
+                                //unequip existing augment
+                                if(ability.currentAugment && ability.currentAugment.unequip) {
+                                    ability.currentAugment.unequip(this.currentUnit);
                                 }
 
                                 ability.currentAugmentBorder.position = augment.icon.position;

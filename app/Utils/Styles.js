@@ -212,5 +212,26 @@ define(function() {
 			fontSize: 12,
 			strokeThickness: 1
 		}),
+
+		critHitText: new PIXI.TextStyle({
+		    dropShadowAlpha: 0.6,
+		    dropShadowAngle: 0,
+		    dropShadowColor: "#e644ea",
+		    dropShadowDistance: 2,
+		    fill: [
+		        "#ff3e3e",
+		    ],
+		    fillGradientStops: [
+		        0.7
+		    ],
+		    fontFamily: "Courier New",
+		    fontSize: 20,
+		    fontStyle: "italic",
+		    lineJoin: "bevel",
+		    miterLimit: 28,
+		    strokeThickness: 4,
+		    wordWrap: true,
+		    wordWrapWidth: 110
+		}),
 	}
 })

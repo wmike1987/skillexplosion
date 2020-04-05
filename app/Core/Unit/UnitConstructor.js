@@ -54,8 +54,14 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                                 }
                                 return enabled;
                             }],
+                            //defaults the pre exec interceptor to subtract energy and run any cost function on the ability
                             preExecuteInterceptors: [function() {
                                 newUnit.currentEnergy -= (ability.energyCost || 0);
+                                if(ability.costs) {
+                                    ability.costs.forEach(cost => {
+                                        cost();
+                                    });
+                                }
                             }]
                         }
                         if(ability.predicates) {
@@ -78,6 +84,11 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                             }],
                             preExecuteInterceptors: [function() {
                                 newUnit.currentEnergy -= (ability.energyCost || 0);
+                                if(ability.costs) {
+                                    ability.costs.forEach(cost => {
+                                        cost();
+                                    });
+                                }
                             }]
                         }
                         if(ability.predicates) {

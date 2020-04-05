@@ -2,7 +2,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
     return {
         revivableInit: function() {
-            var reviveTime = 5000;
+            this.reviveTime = 6000;
             var reviveTickTime = 100;
             var originalDeath = this.death;
             var revivableDeath = function() {
@@ -30,7 +30,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
                         if(canRevive) {
                             this.reviveAmount += reviveTickTime;
-                            this.revivePercent = this.reviveAmount/reviveTime;
+                            this.revivePercent = this.reviveAmount/this.reviveTime;
                             this.grave.tint = utils.percentAsHexColor(this.revivePercent, {start: {r: 255, g: 0, b: 0}, final: {r: 255, g: 255, b: 255}});
                             if(this.revivePercent >= 1) {
                                 this.revive();

@@ -54,7 +54,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         $.each(this.description, function(i, descr) {
             descriptionWidth = Math.max(descriptionWidth, descr.width);
         })
-        utils.makeSpriteSize(this.base, {w: Math.max(descriptionWidth, systemMessageWidth) + 15, h: 30 + (this.description.length*25) + (options.systemMessage ? 12 : 0)});
+        utils.makeSpriteSize(this.base, {w: Math.max(descriptionWidth, systemMessageWidth) + 15, h: 40 + (this.description.length*15) + (options.systemMessage ? 12 : 0)});
     };
 
     //set title, text, backgroundColor, etc
@@ -111,7 +111,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
             descr.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + 30 + (i * 15)};
         }.bind(this))
         if(this.systemMessage)
-            this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + (this.description.length-1)*20 + 48};
+            this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + (this.description.length-1)*25 + 48};
         this.base.position = position;
 
         this.title.visible = true;

@@ -1,40 +1,48 @@
 {"frames": {
 
-"BloodlustIcon.png":
+"DashIcon.png":
 {
-	"frame": {"x":471,"y":1,"w":32,"h":32},
+	"frame": {"x":1,"y":125,"w":100,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
+	"sourceSize": {"w":100,"h":100}
+},
+"DeathWish.png":
+{
+	"frame": {"x":148,"y":225,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"DashIcon.png":
+"DefensivePosture.png":
 {
-	"frame": {"x":131,"y":1,"w":100,"h":100},
+	"frame": {"x":169,"y":103,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
-	"sourceSize": {"w":100,"h":100}
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
 },
 "FirstAidPouchIcon.png":
 {
-	"frame": {"x":471,"y":35,"w":32,"h":32},
+	"frame": {"x":169,"y":137,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"GunIcon.png":
+"FullyAuto.png":
 {
-	"frame": {"x":233,"y":1,"w":100,"h":100},
+	"frame": {"x":169,"y":171,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
-	"sourceSize": {"w":100,"h":100}
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
 },
 "HoodedPeepIcon.png":
 {
-	"frame": {"x":471,"y":69,"w":32,"h":32},
+	"frame": {"x":203,"y":103,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,11 +50,19 @@
 },
 "KnifeIcon.png":
 {
-	"frame": {"x":335,"y":1,"w":100,"h":100},
+	"frame": {"x":131,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
 	"sourceSize": {"w":100,"h":100}
+},
+"M14Icon.png":
+{
+	"frame": {"x":103,"y":125,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
 },
 "MarineRedHat.png":
 {
@@ -58,7 +74,7 @@
 },
 "MultiShot.png":
 {
-	"frame": {"x":505,"y":1,"w":32,"h":32},
+	"frame": {"x":203,"y":137,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -66,7 +82,7 @@
 },
 "PiercingKnife.png":
 {
-	"frame": {"x":505,"y":35,"w":32,"h":32},
+	"frame": {"x":203,"y":171,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -74,7 +90,7 @@
 },
 "PoisonTip.png":
 {
-	"frame": {"x":505,"y":69,"w":32,"h":32},
+	"frame": {"x":182,"y":205,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -82,8 +98,8 @@
 },
 "ThrowingDagger.png":
 {
-	"frame": {"x":437,"y":1,"w":32,"h":64},
-	"rotated": false,
+	"frame": {"x":103,"y":191,"w":32,"h":64},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":64},
 	"sourceSize": {"w":64,"h":64}
@@ -98,19 +114,27 @@
 },
 "ThrowingDaggerBlade.png":
 {
-	"frame": {"x":437,"y":67,"w":32,"h":43},
-	"rotated": false,
+	"frame": {"x":103,"y":225,"w":32,"h":43},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":43},
 	"sourceSize": {"w":64,"h":64}
+},
+"VitalReserves.png":
+{
+	"frame": {"x":216,"y":205,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Marine.png",
 	"format": "RGBA8888",
-	"size": {"w":538,"h":124},
+	"size": {"w":249,"h":258},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:2749a4ce47b40a25de9bf9460d04a6e1:522071938adbdb421e9ed481e2257224:1b146a7d1a1c5cd95f0c69a03767d9cf$"
+	"smartupdate": "$TexturePacker:SmartUpdate:35d99c181dcecf2902933f8c11138130:4122646efef0c407c1c6e319256c29a9:1b146a7d1a1c5cd95f0c69a03767d9cf$"
 }
 }
