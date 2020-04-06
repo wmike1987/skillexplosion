@@ -48,6 +48,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
 	"sourceSize": {"w":50,"h":50}
 },
+"LockIcon.png":
+{
+	"frame": {"x":1289,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
 "MouseX.png":
 {
 	"frame": {"x":1452,"y":31,"w":42,"h":42},
@@ -66,7 +74,7 @@
 },
 "TintableSquare.png":
 {
-	"frame": {"x":1203,"y":99,"w":1,"h":1},
+	"frame": {"x":1540,"y":1,"w":1,"h":1},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
@@ -74,7 +82,7 @@
 },
 "TransparentSquare.png":
 {
-	"frame": {"x":1289,"y":69,"w":3,"h":3},
+	"frame": {"x":1323,"y":69,"w":3,"h":3},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
@@ -114,6 +122,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1542,"h":616},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ce351dc8c46157f9a62e4850daca8af6:9a307f42ec5976ef7a9e05d6f6ebc0ca:5fc1c354e515b85ac7861bddc1d6600b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b2a047014a17e88a863a1534255c39fc:f9c241f6c8eba805bab05b5a3c163af3:5fc1c354e515b85ac7861bddc1d6600b$"
 }
 }

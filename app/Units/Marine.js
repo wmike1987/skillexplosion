@@ -1,5 +1,5 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'utils/styles'],
-    function($, PIXI, UC, Matter, utils, Ability, rv, styles) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'utils/styles', 'unitcore/_Augmentable'],
+    function($, PIXI, UC, Matter, utils, Ability, rv, styles, aug) {
 
     return function Marine(options) {
         var options = options || {};
@@ -524,10 +524,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             augments: [
                 {
                     name: 'pierce',
-                    lives: 3,
+                    lives: 4,
                     icon: utils.createDisplayObject('PiercingKnife'),
                     title: 'Piercing Blow',
-                    description: 'Pierce 3 enemies with a single knife.'
+                    description: 'Pierce 4 enemies with a single knife.'
                 },
                 {
                     name: 'poison tip',
@@ -626,6 +626,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 $.extend(this, rv);
                 this.revivableInit();
 
+                $.extend(this, aug);
+                this.augmentableInit();
             }}, options);
         return UC({
                 renderChildren: rc,

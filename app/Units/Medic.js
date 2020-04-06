@@ -1,5 +1,5 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable'],
-    function($, PIXI, UC, Matter, utils, Ability, rv) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'unitcore/_Augmentable'],
+    function($, PIXI, UC, Matter, utils, Ability, rv, aug) {
 
     var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 
@@ -341,7 +341,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var stateThree = utils.createDisplayObject('MineThree', {scale: {x: .75, y: .75}, alpha: .8});
 
             var medic = this;
-            var mineState = {state: 0, id: utils.uuidv4(), position: mine.position, blastRadius: 120, damage: 25, primaryExplosionRadius: 60};
+            var blastRadius = currentAugment.name == 'shrapnel' ? 170 : 120;
+            var primaryExplosionRadius = currentAugment.name == 'shrapnel' ? 85 : 60;
+            var mineState = {state: 0, id: utils.uuidv4(), position: mine.position, blastRadius: blastRadius, damage: 25, primaryExplosionRadius: primaryExplosionRadius};
             utils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
             utils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position})
 
@@ -361,7 +363,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 transform: [mineState.position.x, mineState.position.y, 4, 4]
             });
             smokeExplosionAnimation.alpha = .3;
-            utils.makeSpriteSize(mineExplosionAnimation, {x: 240, y: 240})
+            if(currentAugment.name == 'shrapnel') {
+                mineExplosionAnimation.tint = 0xD7FFFA;
+            } else if(currentAugment.name == 'maim') {
+                mineExplosionAnimation.tint = 0x94FFF2;
+            }
+            utils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
+            utils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
 			mineExplosionAnimation.rotation = Math.random() * Math.PI*2;
             mineExplosionAnimation.alpha = .9;
             // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
@@ -369,33 +377,63 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             // });
             // currentGame.addBody(mine2);
 
-            var mineTimer = currentGame.addTimer({
-                name: mineState.id,
-                runs: 4,
-                timeLimit: 650,
-                killsSelf: true,
-                callback: function() {
-                    if(mineState.state === 0) {
-                        mineBeep.play();
-                        utils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
-                        utils.removeSomethingFromRenderer(stateZero);
-                        mineState.state += 1;
-                    } else if(mineState.state == 1) {
-                        mineBeep.play();
-                        utils.addSomethingToRenderer(stateTwo, 'stage', {position: mineState.position})
-                        utils.removeSomethingFromRenderer(stateOne);
-                        mineState.state += 1;
-                    } else if(mineState.state == 2) {
-                        mineBeep.play();
-                        utils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
-                        utils.removeSomethingFromRenderer(stateTwo);
-                        mineState.state += 1;
-                    } else if(mineState.state == 3) {
+            if(currentAugment.name == 'pressured plate') {
+                Matter.Events.on(mine, 'onCollide', function(pair) {
+                    var otherBody = pair.pair.bodyB == mine ? pair.pair.bodyA : pair.pair.bodyB;
+                    var otherUnit = otherBody.unit;
+                    if(otherUnit && otherUnit.team != this.team) {
                         mine.explode();
                     }
-                }
-            })
-            utils.deathPact(mine, mineTimer);
+                }.bind(this))
+                utils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
+                utils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
+                var mineTimer = currentGame.addTimer({
+                    name: mineState.id,
+                    gogogo: true,
+                    timeLimit: 1000,
+                    killsSelf: true,
+                    callback: function() {
+                        if(mineState.state === 0) {
+                            stateThree.visible = false;
+                            stateZero.visible = false;
+                            mineState.state = 1;
+                        } else if(mineState.state == 1) {
+                            stateThree.visible = true;
+                            stateZero.visible = false;
+                            mineState.state = 0;
+                        }
+                    }
+                })
+                utils.deathPact(mine, mineTimer);
+            } else {
+                var mineTimer = currentGame.addTimer({
+                    name: mineState.id,
+                    runs: 4,
+                    timeLimit: 650,
+                    killsSelf: true,
+                    callback: function() {
+                        if(mineState.state === 0) {
+                            mineBeep.play();
+                            utils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
+                            utils.removeSomethingFromRenderer(stateZero);
+                            mineState.state += 1;
+                        } else if(mineState.state == 1) {
+                            mineBeep.play();
+                            utils.addSomethingToRenderer(stateTwo, 'stage', {position: mineState.position})
+                            utils.removeSomethingFromRenderer(stateOne);
+                            mineState.state += 1;
+                        } else if(mineState.state == 2) {
+                            mineBeep.play();
+                            utils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
+                            utils.removeSomethingFromRenderer(stateTwo);
+                            mineState.state += 1;
+                        } else if(mineState.state == 3) {
+                            mine.explode();
+                        }
+                    }
+                })
+                utils.deathPact(mine, mineTimer);
+            }
 
             mine.explode = function() {
                 mineExplosion.play();
@@ -506,7 +544,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hpThreshold: .5,
                 icon: utils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: 'Healing hp below 50% costs no energy.',
+                description: 'Reduce healing cost to 0 when target\'s life is below 50%.',
             },
             {
                 name: 'lightest touch',
@@ -594,6 +632,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
                 $.extend(this, rv);
                 this.revivableInit();
+
+                $.extend(this, aug);
+                this.augmentableInit();
             }}, options);
 
         return UC({

@@ -660,8 +660,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 levelUpSound.play();
                 this.currentHealth = this.maxHealth;
                 this.currentEnergy = this.maxEnergy;
-
                 this.expendableSkillPoints += 2;
+
+                Matter.Events.trigger(this, 'levelup', {unit: this});
             },
 
             giveExperience: function(exp) {

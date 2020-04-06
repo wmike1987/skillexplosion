@@ -69,16 +69,21 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                 $.each(ability.augments, function(j, augment) {
                     if(!augment.icon.parent) {
                         utils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+                        augment.lock = utils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                         augment.actionBox = utils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                         utils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
                         augment.border = utils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
                         augment.border.sortYOffset = -10;
                         augment.actionBox.interactive = true;
                         augment.actionBox.on('mouseup', function(event) {
-                            if(ability.currentAugment != augment) {
+                            if(ability.currentAugment != augment && augment.unlocked) {
                                 //unequip existing augment
-                                if(ability.currentAugment && ability.currentAugment.unequip) {
-                                    ability.currentAugment.unequip(this.currentUnit);
+                                if(ability.currentAugment) {
+                                    if(ability.currentAugment.unequip)
+                                        ability.currentAugment.unequip(this.currentUnit);
+                                    ability.currentAugment.border.scale = {x: 1, y: 1};
+                                    ability.currentAugment.border.alpha = alphaAugment;
+                                    ability.currentAugment.border.visible = true;
                                 }
 
                                 ability.currentAugmentBorder.position = augment.icon.position;
@@ -94,6 +99,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                                 //trigger event and trigger ability panel update
                                 Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.currentUnit})
                                 currentGame.unitSystem.unitPanel.updateUnitAbilities();
+                            } else if(!augment.unlocked && unit.canUnlockAugment(augment)) {
+                                unit.unlockAugment(augment);
+                                augment.lock.visible = false;
                             }
                         }.bind(this))
                         augment.actionBox.on('mouseover', function(event) {
@@ -122,6 +130,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                         augment.icon.alpha = 1;
                         augment.border.alpha = alphaAugment;
                         augment.border.visible = true;
+                        if(!augment.unlocked) {
+                            augment.lock.visible = true;
+                        }
                     }
                     augment.icon.visible = true;
                     augment.actionBox.visible = true;
@@ -161,6 +172,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                     augment.border.visible = false;
                     augment.actionBox.tooltipObj.hide();
                     augment.actionBox.visible = false;
+                    augment.lock.visible = false;
                 }.bind(this))
             }
             if(ability.currentAugmentBorder) {
