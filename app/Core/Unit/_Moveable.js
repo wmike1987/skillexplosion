@@ -13,6 +13,7 @@ function($, Matter, PIXI, utils, Command) {
         overshootBuffer: 2, //pixels
         smallerBodyCollisionCategory: 0x4000,
         noProgressBuffer: 15, //pixels
+        canMove: true,
 
         //user defined
         moveSpeed: null,
@@ -66,6 +67,9 @@ function($, Matter, PIXI, utils, Command) {
 
             //don't do anything if they're already at their destination
             if (this.body.position.x == destination.x && this.body.position.y == destination.y)
+                return;
+
+            if(!this.canMove)
                 return;
 
             //set state

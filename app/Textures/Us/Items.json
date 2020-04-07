@@ -127,6 +127,14 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
+},
+"WalkieTalkie1.png":
+{
+	"frame": {"x":171,"y":35,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
 }},
 "animations": {
 },
@@ -137,6 +145,6 @@
 	"format": "RGBA8888",
 	"size": {"w":204,"h":102},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:e7fe7248a70d8ab642a80ef992e5789d:3826cb88e0d370a505e4e288583dad9f:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:31fd236b98953f9e38e6c9c46139d0aa:ceacd83d0977515707fc5dd5d9ab2af7:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

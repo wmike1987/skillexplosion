@@ -186,6 +186,18 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 }
             });
 
+            Object.defineProperty(anim, 'alpha', {
+                set: function(v) {
+                    options.spine.alpha = v;
+                }
+            });
+
+            Object.defineProperty(anim, 'tint', {
+                set: function(v) {
+                    options.spine.tint = v;
+                }
+            });
+
             anim.play = function() {
                 if(!options.canInterruptSelf && options.spine.currentAnimation == options.animationName) {
                     return;

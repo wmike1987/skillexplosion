@@ -46,8 +46,10 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 					renderling.visible = false;
 			}.bind(this));
 
-			//turn one on
+			//turn one on and give it certain global properties
 			this.currentAnimation = animation;
+			animation.alpha = this.unit.isoManagedAlpha || 1;
+			animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
 			animation.isStopped = false;
 			animation.visible = true;
 			if(options.stop) {

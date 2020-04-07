@@ -2,6 +2,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
     function($, PIXI, UC, Matter, utils, Ability, rv, styles, aug) {
 
     return function Marine(options) {
+        var marine = {};
+
         var options = options || {};
 
         //animation settings
@@ -322,6 +324,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             description: 'Quickly move throughout the battlefield.',
             hotkey: 'D',
             energyCost: 3,
+            enablers: [function(commandObj) {
+                return marine.canMove;
+            }.bind(this)],
             augments: [
                 {
                     name: 'vital reserves',
@@ -521,6 +526,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             hotkey: 'F',
             energyCost: 5,
             activeAugment: null,
+            enablers: [function(commandObj) {
+                return marine.canAttack;
+            }.bind(this)],
             augments: [
                 {
                     name: 'pierce',
@@ -629,7 +637,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 $.extend(this, aug);
                 this.augmentableInit();
             }}, options);
+            
         return UC({
+                givenUnitObj: marine,
                 renderChildren: rc,
                 radius: options.radius || 22,
                 hitboxWidth: 35,

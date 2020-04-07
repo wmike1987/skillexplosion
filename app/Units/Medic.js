@@ -4,6 +4,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
     var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 
     return function Medic(options) {
+        var medic = {};
+
         var options = options || {};
 
         //animation settings
@@ -231,38 +233,68 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             offset: {x: 0, y: 22}}];
 
         var silentStep = function(destination, commandObj) {
-          var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
+            //get current augment
+            var thisAbility = this.getAbilityByName('Silent Step');
+            var currentAugment = thisAbility.currentAugment || {name: 'null'};
+
+            var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
               restitution: .95,
               frictionAir: 0,
               mass: options.mass || 5,
               isSensor: true
-          });
-          shadow.isShadow = true;
+            });
+            shadow.isShadow = true;
 
-          shadow.renderChildren = [{
+            shadow.renderChildren = [{
               id: 'shadow',
               data: 'IsoShadowBlurred',
               scale: {x: .75, y: .75},
               stage: "stageNTwo",
               offset: {x: 0, y: 22}
-          }];
+            }];
 
-          //medic reference to shadow
-          this.shadow = shadow;
+            //medic reference to shadow
+            this.shadow = shadow;
 
-          currentGame.addBody(shadow);
-          shadow.oneFrameOverrideInterpolation = true;
-          utils.sendBodyToDestinationAtSpeed(shadow, destination, 10, true, true);
+            currentGame.addBody(shadow);
+            shadow.oneFrameOverrideInterpolation = true;
 
-          var originalOrigin = {x: this.position.x, y: this.position.y};
-          var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
+            var silentStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
+            utils.sendBodyToDestinationAtSpeed(shadow, destination, silentStepSpeed, true, true);
 
-          utils.moveUnitOffScreen(this);
-          this.stop();
+            if(currentAugment.name == 'petrify') {
+                Matter.Events.on(shadow, 'onCollide', function(pair) {
+                    var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
+                    var otherUnit = otherBody.unit;
+                    if(otherUnit && otherUnit.team != this.team) {
+                        otherUnit.stop();
+                        otherUnit.canMove = false;
+                        otherUnit.canAttack = false;
+                        otherUnit.isAttackable = false;
+                        currentGame.addTimer({
+                            name: 'petrified' + otherUnit.unitId,
+                            runs: 1,
+                            timeLimit: currentAugment.duration,
+                            killsSelf: true,
+                            callback: function() {
+                                otherUnit.canMove = true;
+                                otherUnit.canAttack = true;
+                                otherUnit.isAttackable = true;
+                            }
+                        })
+                    }
+                })
+            }
 
-          this.getAbilityByName("Silent Step").disable(1);
+            var originalOrigin = {x: this.position.x, y: this.position.y};
+            var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
-          var removeSelf = currentGame.addTickCallback(function() {
+            utils.moveUnitOffScreen(this);
+            this.stop();
+
+            this.getAbilityByName("Silent Step").disable(1);
+
+            var removeSelf = currentGame.addTickCallback(function() {
               if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
                   this.getAbilityByName("Silent Step").enable(1);
                   var x = shadow.position.x;
@@ -277,9 +309,26 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                   this.shadow = null;
                   currentGame.removeBody(shadow);
                   commandObj.command.done();
+
+                  var self = this;
+                  if(currentAugment.name == 'soft landing') {
+                      this.isAttackable = false;
+                      this.isoManager.currentAnimation.alpha = .4;
+                      this.isoManagedAlpha = .4;
+                      currentGame.addTimer({
+                          name: 'softLanding' + self.unitId,
+                          runs: 1,
+                          timeLimit: currentAugment.duration,
+                          killsSelf: true,
+                          callback: function() {
+                              self.isoManagedAlpha = null;
+                              self.isAttackable = true;
+                          }
+                      })
+                  }
               }
-          }.bind(this))
-          utils.deathPact(shadow, removeSelf);
+            }.bind(this))
+            utils.deathPact(shadow, removeSelf);
         }
 
         var silentStepAbility = new Ability({
@@ -291,30 +340,30 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Silent Step',
             description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
-            energyCost: 15,
+            energyCost: 10,
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
             }],
-            // augments: [{
-            //     name: 'pure priorities',
-            //     icon: utils.createDisplayObject('PurePriorities'),
-            //     title: 'Pure Priorities',
-            //     description: 'Healing hp below 50% costs no energy.'
-            // },
-            // {
-            //     name: 'lightest touch',
-            //     rangeDelta: 30,
-            //     healDelta: 1,
-            //     icon: utils.createDisplayObject('LightestTouch'),
-            //     title: 'Lightest Touch',
-            //     description: 'Increase healing range and healing amount.'
-            // },
-            // {
-            //     name: 'Sacrifice',
-            //     icon: utils.createDisplayObject('Sacrifice'),
-            //     title: 'Sacrifice',
-            //     description: ['Heal all hp and energy of friendly units upon death.', 'Halve time to revive.']
-            // }]
+            augments: [
+            {
+                name: 'fleet feet',
+                icon: utils.createDisplayObject('FleetFeet'),
+                title: 'Fleet Feet',
+                description: 'Silent step very quickly.'
+            },{
+                name: 'petrify',
+                duration: 3000,
+                icon: utils.createDisplayObject('Petrify'),
+                title: 'Petrify',
+                description: 'Render enemy invulnerable but incapable of movement for 3 seconds by stepping through them.'
+            },
+            {
+                name: 'soft landing',
+                icon: utils.createDisplayObject('SoftLanding'),
+                title: 'Soft Landing',
+                duration: 2000,
+                description: 'Remain invulnerable for 2 seconds after stepping.'
+            }]
         })
 
         var mineSound = utils.getSound('laymine.mp3', {volume: .06, rate: .8});
@@ -341,8 +390,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var stateThree = utils.createDisplayObject('MineThree', {scale: {x: .75, y: .75}, alpha: .8});
 
             var medic = this;
-            var blastRadius = currentAugment.name == 'shrapnel' ? 170 : 120;
-            var primaryExplosionRadius = currentAugment.name == 'shrapnel' ? 85 : 60;
+            var blastRadius = currentAugment.name == 'shrapnel' ? 180 : 120;
+            var primaryExplosionRadius = currentAugment.name == 'shrapnel' ? 90 : 60;
             var mineState = {state: 0, id: utils.uuidv4(), position: mine.position, blastRadius: blastRadius, damage: 25, primaryExplosionRadius: primaryExplosionRadius};
             utils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
             utils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position})
@@ -371,13 +420,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             utils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
             utils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
 			mineExplosionAnimation.rotation = Math.random() * Math.PI*2;
-            mineExplosionAnimation.alpha = .9;
+            mineExplosionAnimation.alpha = 1;
             // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
             //     isSensor: true,
             // });
             // currentGame.addBody(mine2);
 
-            if(currentAugment.name == 'pressured plate') {
+            if(currentAugment.name == 'pressure plate') {
                 Matter.Events.on(mine, 'onCollide', function(pair) {
                     var otherBody = pair.pair.bodyB == mine ? pair.pair.bodyA : pair.pair.bodyB;
                     var otherUnit = otherBody.unit;
@@ -518,9 +567,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 description: 'Slow enemies hit by blast for 2 seconds.'
             },
             {
-                name: 'pressured plate',
+                name: 'pressure plate',
                 icon: utils.createDisplayObject('PressuredPlate'),
-                title: 'Pressured Plate',
+                title: 'Pressure Plate',
                 description: 'Cause enemy contact to detonate mine.'
             },
             {
@@ -638,6 +687,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }}, options);
 
         return UC({
+                givenUnitObj: medic,
                 renderChildren: rc,
                 radius: rad,
                 hitboxWidth: 35,

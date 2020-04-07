@@ -7,10 +7,11 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
         isHoning: false,
         currentTarget: null,
         currentHone: null,
-        canAttack: true,
+        attackReady: true,
         randomizeHone: true,
         honableTargets: null, //this prevents the need for honing sensor (which can have a negative performance impact). This may not be relevant anymore
         specifiedAttackTarget: null,
+        canAttack: true,
 
         //default
         attack: function(target) {
@@ -33,7 +34,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 runs: 0,
                 timeLimit: this.cooldown,
                 callback: function() {
-                    this.canAttack = true;
+                    this.attackReady = true;
                 }.bind(this)
             });
             utils.deathPact(this, this.cooldownTimer);
@@ -82,14 +83,17 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
         },
 
         _attack: function(target) {
-            if (this.canAttack && this.attack) {
+            if(!this.canAttack)
+                return;
+
+            if (this.attackReady && this.attack) {
                 this.rawStop();
 
                 //set state
                 Matter.Sleeping.set(this.body, true);
                 this.isAttacking = true;
                 this.attackMoving = false;
-                this.canAttack = false;
+                this.attackReady = false;
                 this.cooldownTimer.reset();
                 this.cooldownTimer.runs = 1;
                 this.cooldownTimer.timeLimit = this.cooldown;
@@ -186,7 +190,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             //unless we have a target, move towards currentHone
             this.attackHoneTick = currentGame.addTickCallback(function() {
                 //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
-                if (this.currentHone && this.lastHone != this.currentHone && !this.currentTarget && this.canAttack && !this.specifiedAttackTarget) {
+                if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady && !this.specifiedAttackTarget) {
                     this.lastHone = this.currentHone;
                     this.rawMove(this.currentHone.position);
                     this.isHoning = true;
@@ -266,7 +270,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 }.bind(this))
 
                 //If we were attacking but no longer have a target
-                if(!this.currentTarget && this.canAttack && this.isAttacking) {
+                if(!this.currentTarget && this.attackReady && this.isAttacking) {
                     Matter.Sleeping.set(this.body, false);
                     this.isAttacking = false;
                 }
@@ -279,7 +283,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 //If we were given a "specific target" to attack, we we only want to naturally stop if we can no longer attack it
                 if (!this.currentHone && !this.currentTarget) {
                     //given attack move, reissue the attack move
-                    if(this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.canAttack) {
+                    if(this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
                         this.attackMove(this.attackMoveDestination, commandObj);
                     //we were still, let's stop
                     } else if(!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {

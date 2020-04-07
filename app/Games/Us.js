@@ -67,7 +67,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create our units
             this.createShane();
             this.createUrsula();
-            this.createBane(10);
+            this.createBane(1);
 
             //create empty scene and transition to camp scene
             var campScene = this.createCampScene();
@@ -118,8 +118,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
             campScene.add(tileMap2);
 
-            var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .55);
-            campScene.add(l1);
+            // var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .55);
+            // campScene.add(l1);
             var l2 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
             campScene.add(l2);
 

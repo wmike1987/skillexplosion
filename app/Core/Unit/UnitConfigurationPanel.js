@@ -70,6 +70,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                     if(!augment.icon.parent) {
                         utils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
                         augment.lock = utils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+                        augment.lock.visible = false;
+                        augment.unlocked = true; //for debugging
                         augment.actionBox = utils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                         utils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
                         augment.border = utils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});

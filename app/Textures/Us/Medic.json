@@ -1,8 +1,16 @@
 {"frames": {
 
+"FleetFeet.png":
+{
+	"frame": {"x":230,"y":67,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
 "HealIcon.png":
 {
-	"frame": {"x":122,"y":1,"w":100,"h":100},
+	"frame": {"x":128,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -10,7 +18,7 @@
 },
 "LightestTouch.png":
 {
-	"frame": {"x":224,"y":67,"w":32,"h":32},
+	"frame": {"x":362,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -18,7 +26,7 @@
 },
 "Maim.png":
 {
-	"frame": {"x":258,"y":67,"w":32,"h":32},
+	"frame": {"x":264,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,7 +34,7 @@
 },
 "MaimTiny.png":
 {
-	"frame": {"x":122,"y":103,"w":18,"h":18},
+	"frame": {"x":262,"y":101,"w":18,"h":18},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":7,"w":18,"h":18},
@@ -35,14 +43,14 @@
 "MedicGreenEyes.png":
 {
 	"frame": {"x":1,"y":1,"w":119,"h":125},
-	"rotated": false,
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":3,"w":119,"h":125},
 	"sourceSize": {"w":128,"h":128}
 },
 "MineCracks.png":
 {
-	"frame": {"x":326,"y":67,"w":32,"h":27},
+	"frame": {"x":332,"y":67,"w":32,"h":27},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":27},
@@ -50,7 +58,7 @@
 },
 "MineIcon.png":
 {
-	"frame": {"x":224,"y":1,"w":64,"h":64},
+	"frame": {"x":230,"y":1,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -58,7 +66,7 @@
 },
 "MineOne.png":
 {
-	"frame": {"x":142,"y":103,"w":30,"h":16},
+	"frame": {"x":128,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -66,7 +74,7 @@
 },
 "MineThree.png":
 {
-	"frame": {"x":174,"y":103,"w":30,"h":16},
+	"frame": {"x":160,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -74,7 +82,7 @@
 },
 "MineTwo.png":
 {
-	"frame": {"x":206,"y":103,"w":30,"h":16},
+	"frame": {"x":192,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -82,15 +90,23 @@
 },
 "MineZero.png":
 {
-	"frame": {"x":238,"y":101,"w":30,"h":16},
+	"frame": {"x":230,"y":101,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
 	"sourceSize": {"w":32,"h":32}
 },
+"Petrify.png":
+{
+	"frame": {"x":396,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
 "PressuredPlate.png":
 {
-	"frame": {"x":356,"y":1,"w":32,"h":32},
+	"frame": {"x":298,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -98,7 +114,7 @@
 },
 "PurePriorities.png":
 {
-	"frame": {"x":356,"y":35,"w":32,"h":32},
+	"frame": {"x":362,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -106,7 +122,7 @@
 },
 "Sacrifice.png":
 {
-	"frame": {"x":292,"y":69,"w":32,"h":32},
+	"frame": {"x":396,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -114,7 +130,7 @@
 },
 "Shrapnel.png":
 {
-	"frame": {"x":355,"y":69,"w":32,"h":32},
+	"frame": {"x":361,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -122,19 +138,27 @@
 },
 "SilentStepIcon.png":
 {
-	"frame": {"x":290,"y":1,"w":64,"h":64},
+	"frame": {"x":296,"y":1,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
 	"sourceSize": {"w":64,"h":64}
+},
+"SoftLanding.png":
+{
+	"frame": {"x":395,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Medic.png",
 	"format": "RGBA8888",
-	"size": {"w":389,"h":127},
+	"size": {"w":429,"h":121},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:bcbc7574f20d3de2694a1d62024d8825:30de65e8c238455306616c54c7789e9a:8d3e890b84ab07faa58797fc50fc9b0a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:a0149ed0bb98fccada5d2f25fa8d7bc3:08bdaeb5b3497d4bc6c98c992d6df924:8d3e890b84ab07faa58797fc50fc9b0a$"
 }
 }
