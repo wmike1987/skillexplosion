@@ -266,7 +266,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 Matter.Events.on(shadow, 'onCollide', function(pair) {
                     var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
                     var otherUnit = otherBody.unit;
-                    if(otherUnit && otherUnit.team != this.team) {
+                    if(otherUnit && otherUnit.team != medic.team) {
                         otherUnit.stop();
                         otherUnit.canMove = false;
                         otherUnit.canAttack = false;
@@ -289,6 +289,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var originalOrigin = {x: this.position.x, y: this.position.y};
             var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
+
+            this.isAttackable = false;
             utils.moveUnitOffScreen(this);
             this.stop();
 
@@ -306,6 +308,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
                   this.body.oneFrameOverrideInterpolation = true;
                   Matter.Body.setPosition(this.body, {x: x, y: y});
+                  this.isAttackable = true;
                   this.shadow = null;
                   currentGame.removeBody(shadow);
                   commandObj.command.done();

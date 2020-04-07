@@ -631,13 +631,15 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 //currentGame.removeUnit(this);
             },
             _init: function() {
-                $.extend(this, rv);
-                this.revivableInit();
+                if(!this.bypassRevival) {
+                    $.extend(this, rv);
+                    this.revivableInit();
+                }
 
                 $.extend(this, aug);
                 this.augmentableInit();
             }}, options);
-            
+
         return UC({
                 givenUnitObj: marine,
                 renderChildren: rc,

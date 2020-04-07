@@ -160,9 +160,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
 
             nextLevelOptions.enemySet.push({
                 constructor: Baneling,
-                spawn: {total: 30, n: 4, hz: 2000, maxOnField: 5},
+                spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
+                item: {type: 'basic', total: 3}});
+            nextLevelOptions.enemySet.push({
+                constructor: Marine,
+                spawn: {total: 5, n: 1, hz: 10000, maxOnField: 1},
                 item: {type: 'basic', total: 3}
-            });
+            })
 
             var nextLevelInitiated = false;
             Matter.Events.on(bush.body, 'onCollide', function(pair) {
@@ -278,6 +282,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             unit.position = utils.getCanvasCenter();
             unit.currentHealth = 1000;
             unit.currentEnergy = 1000;
+            unit.canMove = true;
+            unit.canAttack = true;
         },
 
         createBane: function(number, autoHone) {
@@ -339,7 +345,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                                     enemy.fulfilled = true;
                                     return;
                                 }
-                                newUnit = enemy.constructor({team: 4, isSelectable: false});
+                                newUnit = enemy.constructor({team: 4, isSelectable: false, bypassRevival: true});
+                                if(newUnit.isoManaged) {
+                                    newUnit.isoManagedTint = 0x020C0E;
+                                }
                                 // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
                                 ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: newUnit});
 
