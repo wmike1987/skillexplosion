@@ -67,7 +67,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create our units
             this.createShane();
             this.createUrsula();
-            this.createBane(1);
+            this.createBane(6);
 
             //create empty scene and transition to camp scene
             var campScene = this.createCampScene();
@@ -284,12 +284,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             unit.currentEnergy = 1000;
             unit.canMove = true;
             unit.canAttack = true;
+            unit.hideGrave();
         },
 
         createBane: function(number, autoHone) {
             for(x = 0; x < number; x++) {
                 //var tint = x%2==0 ? 0xff0000 : null;
-                var bane = Baneling({team: 4, isSelectable: false});
+                var bane = Baneling({team: 4});
                 if(autoHone)
                     bane.honeRange = 1400;
                 bane.damage = 20;

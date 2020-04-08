@@ -57,6 +57,15 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             this.isAttackable = true;
             this.canAttack = true;
             this.canMove = true;
+        },
+
+        hideGrave: function() {
+            if(this.grave) {
+                utils.removeSomethingFromRenderer(this.grave);
+                utils.removeSomethingFromRenderer(this.graveShadow);
+                this.grave = null;
+                this.graveShadow = null;
+            }
         }
     }
 })

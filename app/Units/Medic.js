@@ -639,7 +639,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }]
         })
 
-        var rad = options.radius || 22;
+        var rad = options.radius || 25;
         var unitProperties = $.extend({
             unitType: 'Medic',
             health: 40,

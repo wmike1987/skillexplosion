@@ -172,16 +172,43 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     return;
                 }
 
+                //group my units and enemy units
+                var myUnits = {};
+                var myEnemies = {};
+                $.each(this.box.pendingSelections, function(key, obj) {
+                    if(obj.team == currentGame.playerTeam) {
+                        myUnits[key] = obj;
+                    } else {
+                        myEnemies[key] = obj;
+                    }
+                })
+
+                //if we have any of our units pending, act upon them and disregard any enemy pending units
+                var addingEnemies = false;
+                if(Object.keys(myUnits).length > 0) {
+                    this.box.pendingSelections = myUnits;
+                    if(this.hasEnemySelected()) {
+                        this.deselectUnit(this.selectedUnit);
+                    }
+                } else if(Object.keys(myEnemies).length > 0) {
+                    //only allow one enemy unit to be selected
+                    var highestPriorityEnemy = this.findHighestPriorityUnit(myEnemies);
+                    this.box.pendingSelections = {};
+                    this.box.pendingSelections[highestPriorityEnemy.unitId] = highestPriorityEnemy;
+                    addingEnemies = true;
+                }
+
                 //handle shift functionality
                 if(keyStates['Shift']) {
                     //If one, already-selected body is requested here, remove from selection
                     if(loneSoldier && ($.inArray(loneSoldier.unitId.toString(), Object.keys(this.selectedUnits)) > -1)) {
-                        this.changeSelectionState(loneSoldier, 'selected', false);
-                        if(this.selectedUnit == loneSoldier) {
-                            this.annointNextPrevailingUnit({onRemove: true});
-                        }
-                        delete this.selectedUnits[loneSoldier.unitId];
-                        this.updateOrderedUnits(this.selectedUnits);
+                        this.deselectUnit(loneSoldier);
+                        // this.changeSelectionState(loneSoldier, 'selected', false);
+                        // if(this.selectedUnit == loneSoldier) {
+                        //     this.annointNextPrevailingUnit({onRemove: true});
+                        // }
+                        // delete this.selectedUnits[loneSoldier.unitId];
+                        // this.updateOrderedUnits(this.selectedUnits);
                     }
                     else {
                         //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
@@ -191,7 +218,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                             delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
                         }
 
-                        //Add pending bodies to current selection
+                        //Add pending bodies to current selection, unless we have an enemy selected, in which case we'll deselect it
+                        if(this.hasEnemySelected()) {
+                            this.deselectUnit(this.selectedUnit);
+                        } else if(this.hasMyUnitSelected() && addingEnemies) {
+                            //else if we have one of our own units and we're adding enemy units, disregard this command
+                            return;
+                        }
                         $.extend(this.selectedUnits, this.box.pendingSelections)
                         this.updateOrderedUnits(this.selectedUnits);
                     }
@@ -428,7 +461,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     if(this.attackMove || this.abilityDispatch) {
                         this.abilityDispatch = false;
                         this.attackMove = false;
-                    } else {
+                    } else if(!this.hasEnemySelected()){
                         $.each(this.selectedUnits, function(key, unit) {
                             if(unit.isMoveable) {
                                 var e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};
@@ -689,6 +722,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                          }
                      }
                  }
+
+                 if(this.hasEnemySelected()) return;
                  if(event.key == 'a' || event.key == 'A') {
                      $.each(this.selectedUnits, function(prop, unit) {
                          if(unit.isAttacker) {
@@ -712,6 +747,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
                  //if we're a reserved key, do nothing
                  if(key == 'shift' || key == 'tab' || key =='alt' || key == 'a') return;
+
+                 //if we have an enemy selected, do nothing
+                 if(this.hasEnemySelected()) return;
 
                  //if we don't have a selected unit, just return
                  if(Object.keys(this.selectedUnits).length == 0) return;
@@ -820,6 +858,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             this.changeSelectionState(unit, 'selected', false);
             Matter.Events.trigger(this, 'selectedUnitsChange', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
         };
+
+        this.hasEnemySelected = function() {
+            if(this.selectedUnit)
+                return this.selectedUnit.team != currentGame.playerTeam;
+        };
+
+        this.hasMyUnitSelected = function() {
+            if(this.selectedUnit)
+                return this.selectedUnit.team == currentGame.playerTeam;
+        }
 
         this.updateOrderedUnits = function(selectedUnits) {
             this.orderedUnits = $.grep(this.orderedUnits, function(ounit) {

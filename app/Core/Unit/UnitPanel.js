@@ -124,8 +124,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
                 if(this.prevailingUnit.maxEnergy > 0) {
                     var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
-                    utils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
+                } else {
+                    var energyPercent = 0;
                 }
+                utils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
             } else {
                 this.healthVialSquare.visible = false;
                 this.healthBubbles.visible = false;
