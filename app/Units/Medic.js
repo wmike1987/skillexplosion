@@ -289,7 +289,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var originalOrigin = {x: this.position.x, y: this.position.y};
             var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
-
             this.isAttackable = false;
             utils.moveUnitOffScreen(this);
             this.stop();
@@ -358,7 +357,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 duration: 3000,
                 icon: utils.createDisplayObject('Petrify'),
                 title: 'Petrify',
-                description: 'Render enemy invulnerable but incapable of movement for 3 seconds by stepping through them.'
+                description: ['Render unit hidden and incapable of movement for 3 seconds', 'by silent stepping through them.']
             },
             {
                 name: 'soft landing',

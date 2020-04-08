@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
-'units/Marine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
+'units/Marine', 'units/EnemyMarine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling, filters, utils, Medic, lightShader, TileMapper,
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, TileMapper,
     Doodad, ItemUtils, Scene) {
 
     var targetScore = 1;
@@ -67,7 +67,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
             //create our units
             this.createShane();
             this.createUrsula();
-            this.createBane(6);
+            this.createBane(0);
 
             //create empty scene and transition to camp scene
             var campScene = this.createCampScene();
@@ -163,7 +163,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                 spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
                 item: {type: 'basic', total: 3}});
             nextLevelOptions.enemySet.push({
-                constructor: Marine,
+                constructor: EnemyMarine,
                 spawn: {total: 5, n: 1, hz: 10000, maxOnField: 1},
                 item: {type: 'basic', total: 3}
             })
@@ -346,7 +346,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, Baneling,
                                     enemy.fulfilled = true;
                                     return;
                                 }
-                                newUnit = enemy.constructor({team: 4, isSelectable: false, bypassRevival: true});
+                                newUnit = enemy.constructor({team: 4});
                                 if(newUnit.isoManaged) {
                                     newUnit.isoManagedTint = 0x020C0E;
                                 }

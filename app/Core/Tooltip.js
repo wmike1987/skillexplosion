@@ -86,7 +86,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
 
         //lean our tooltip left or right so that it doesn't go off the screen
         var xOffset = 0;
-        if(position.x > utils.getPlayableWidth()*3/4) {
+        if(position.x + this.base.width >= utils.getPlayableWidth() - 15) {
             this.base.anchor = {x: 1, y: 1};
             xOffset = this.base.width
             this.leftLeaning = true;
