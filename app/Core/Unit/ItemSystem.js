@@ -220,8 +220,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
 
             if(includeDroppingItems) {
                 $.each(this.getDroppingItems(), function(i, item) {
+                    this.items.delete(item);
                     item.destroy();
-                })
+                }.bind(this))
             }
         },
 

@@ -339,6 +339,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             type: 'click',
             icon: utils.createDisplayObject('SilentStepIcon'),
             method: silentStep,
+            handlesOwnBlink: true,
             title: 'Silent Step',
             description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
@@ -363,8 +364,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 name: 'soft landing',
                 icon: utils.createDisplayObject('SoftLanding'),
                 title: 'Soft Landing',
-                duration: 2000,
-                description: 'Remain invulnerable for 2 seconds after stepping.'
+                duration: 3000,
+                description: 'Become hidden for 3 seconds after stepping.'
             }]
         })
 

@@ -216,11 +216,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             this.updateUnitGroup(event.orderedSelection);
         }.bind(this))
 
+        //listen for event dispatch and blink sprites if needed
         Matter.Events.on(this.unitSystem, 'unitSystemEventDispatch', function(event) {
             var abilityTint = 0x80ba80;
             if(this.prevailingUnit.abilities) {
                 $.each(this.prevailingUnit.abilities, function(i, ability) {
-                    if(ability.key == event.id && ability.type == event.type) {
+                    if(ability.key == event.id && ability.type == event.type && !ability.handlesOwnBlink) {
                         utils.makeSpriteBlinkTint({sprite: ability.icon, tint: abilityTint, speed: 100})
                     }
                 }.bind(this))

@@ -277,7 +277,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         //used just for shane/urs
         resetUnit: function(unit) {
-            unit.isDead = false;
+            if(unit.isDead) {
+                unit.revive();
+            }
             unit.isAttackable = true;
             unit.position = utils.getCanvasCenter();
             unit.currentHealth = 1000;
