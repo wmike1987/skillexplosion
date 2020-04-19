@@ -27,6 +27,8 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
             this.systemMessage = utils.createDisplayObject('TEXT:' + options.systemMessage, {style: styles.systemMessageText, anchor: textAnchor});
         }
 
+        this.noDelay = options.noDelay;
+
         this.updaters = options.updaters || {};
         var self = this;
         if(options.updaters) {
@@ -63,7 +65,6 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         this.description[0].text = options.text;
     };
 
-    //set title, text, backgroundColor, etc
     Tooltip.prototype.destroy = function(options) {
         utils.removeSomethingFromRenderer(this.title);
         $.each(this.description, function(i, descr) {
@@ -146,11 +147,17 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
                 clearTimeout(stopTimeout);
             }
 
-            stopTimeout = setTimeout(function() {
+            if(displayObject.tooltipObj.noDelay) {
                 if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
-            }.bind(this), 100)
+            } else {
+                stopTimeout = setTimeout(function() {
+                    if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
+                        displayObject.tooltipObj.display(event.data.global);
+                    }
+                }.bind(this), 100)
+            }
         }.bind(this))
 
         displayObject.on('mouseout', function(event) {
