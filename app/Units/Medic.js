@@ -232,6 +232,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
+
+        var footstepSound = utils.getSound('footstep2.wav', {volume: .02, rate: 1.1});
+        var shroudSound = utils.getSound('cloakshroud.wav', {volume: .2, rate: 1});
         var silentStep = function(destination, commandObj) {
             //get current augment
             var thisAbility = this.getAbilityByName('Silent Step');
@@ -250,7 +253,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
               data: 'IsoShadowBlurred',
               scale: {x: .75, y: .75},
               stage: "stageNTwo",
-              offset: {x: 0, y: 22}
+              offset: {x: 0, y: 22},
+              alpha: 0.5
             }];
 
             //medic reference to shadow
@@ -261,6 +265,32 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             var silentStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
             utils.sendBodyToDestinationAtSpeed(shadow, destination, silentStepSpeed, true, true);
+
+            //create footprints
+            var footprintFrequency = currentAugment.name == 'fleet feet' ? 30 : 60;
+            var footprintDirection = utils.pointInDirection(this.position, destination);
+            var lastFootprint = null;
+            footstepSound.play();
+            var everyOther = true;
+            shroudSound.play();
+            var footprintTimer = currentGame.addTimer({
+                name: 'footprints' + this.unitId,
+                gogogo: true,
+                timeLimit: footprintFrequency,
+                callback: function() {
+                    var footprint = utils.createDisplayObject('Footprint', {where: 'stageNOne', position: utils.clonePosition(shadow.position, {x: 0, y: 22}), alpha: .7, scale: {x:.7, y:.7}});
+                    footprint.rotation = footprintDirection;
+                    utils.addSomethingToRenderer(footprint);
+                    utils.fadeSprite(footprint, .006);
+                    footprint.visible = false;
+                    if(everyOther)
+                        footstepSound.play();
+                    everyOther = !everyOther;
+                    if(lastFootprint)
+                        lastFootprint.visible = true;
+                    lastFootprint = footprint;
+                }
+            })
 
             if(currentAugment.name == 'petrify') {
                 Matter.Events.on(shadow, 'onCollide', function(pair) {
@@ -310,6 +340,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                   this.isAttackable = true;
                   this.shadow = null;
                   currentGame.removeBody(shadow);
+                  currentGame.invalidateTimer(footprintTimer);
                   commandObj.command.done();
 
                   var self = this;
@@ -697,7 +728,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [healsound, mineSound, mineBeep, mineExplosion],
+                slaves: [healsound, mineSound, mineBeep, mineExplosion, footstepSound, shroudSound],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.15,

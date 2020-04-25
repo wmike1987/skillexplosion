@@ -331,8 +331,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 something.rotation = options.rotation;
             if(options.sortYOffset)
                 something.sortYOffset = options.sortYOffset;
-            if(options.offset)
-                something.offset = options.offset;
             if(options.alpha != undefined)
                 something.alpha = options.alpha;
             if(options.persists)
@@ -398,11 +396,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         removeSomethingFromRenderer: function(something, where) {
             //if we just have a display object that has not been added to the renderer, destroy this mf'er
-            if(something.currentFrame) {
-                if(something.currentFrame < something.totalFrames-1) {
-                    debugger;
-                }
-            }
             if(!something.where && !where && !something.myLayer) {
                 if(something.destroy && !something._destroyed) {
                     something.destroy();
@@ -676,9 +669,18 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return {x: position.x + scalar, y: position.y + scalar*reverseY};
         },
 
+        fadeSprite: function(sprite, rate) {
+            sprite.alpha = sprite.alpha || 1.0;
+            currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 1.0/rate, killsSelf: true, callback: function() {
+                sprite.alpha -= rate;
+            }, totallyDoneCallback: function() {
+                utils.removeSomethingFromRenderer(sprite);
+            }.bind(this)})
+        },
+
         floatSprite: function(sprite) {
             sprite.alpha = 1.4;
-            currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 34, callback: function() {
+            currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 34, killsSelf: true, callback: function() {
                 sprite.position.y -= 1;
                 sprite.alpha -= 1.4/34;
             }, totallyDoneCallback: function() {
@@ -696,7 +698,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var startGameText = utils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: this.getCanvasWidth()/2, y: this.getCanvasHeight()/2});
             startGameText.position = position;
             startGameText.alpha = 1.4;
-            currentGame.addTimer({name: this.uuidv4(), timeLimit: 32, runs: options.runs || 30, callback: function() {
+            currentGame.addTimer({name: this.uuidv4(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
                 if(!options.stationary) {
                     startGameText.position.y -= 1;
                 }

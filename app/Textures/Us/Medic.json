@@ -8,6 +8,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
+"Footprint.png":
+{
+	"frame": {"x":230,"y":101,"w":18,"h":32},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":0,"w":18,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
 "HealIcon.png":
 {
 	"frame": {"x":128,"y":1,"w":100,"h":100},
@@ -26,7 +34,7 @@
 },
 "Maim.png":
 {
-	"frame": {"x":264,"y":67,"w":32,"h":32},
+	"frame": {"x":396,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +42,7 @@
 },
 "MaimTiny.png":
 {
-	"frame": {"x":262,"y":101,"w":18,"h":18},
+	"frame": {"x":296,"y":101,"w":18,"h":18},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":7,"w":18,"h":18},
@@ -90,7 +98,7 @@
 },
 "MineZero.png":
 {
-	"frame": {"x":230,"y":101,"w":30,"h":16},
+	"frame": {"x":264,"y":101,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -98,7 +106,7 @@
 },
 "Petrify.png":
 {
-	"frame": {"x":396,"y":1,"w":32,"h":32},
+	"frame": {"x":264,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -159,6 +167,6 @@
 	"format": "RGBA8888",
 	"size": {"w":429,"h":121},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:a0149ed0bb98fccada5d2f25fa8d7bc3:08bdaeb5b3497d4bc6c98c992d6df924:8d3e890b84ab07faa58797fc50fc9b0a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:f1b3921e8e623e5b0369edcb4d7c01cc:1f1d1795fdc908fc5937322d59bd9769:8d3e890b84ab07faa58797fc50fc9b0a$"
 }
 }

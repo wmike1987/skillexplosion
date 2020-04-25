@@ -240,7 +240,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         //Dash
         var dashVelocity = .8;
-        var dashSound = utils.getSound('dashsound.wav', {volume: .02, rate: 1.4});
+        var dashSound = utils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
 
         var dash = function(destination, commandObj) {
             //get current augment
