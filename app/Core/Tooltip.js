@@ -14,6 +14,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
 
         //build descriptions
         this.description = [];
+        this.systemMessages = [];
         if($.isArray(options.description)) {
             $.each(options.description, function(i, descr) {
                 this.description.push(utils.createDisplayObject('TEXT:' + descr, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
@@ -23,9 +24,15 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         }
         this.mainDescription = this.description[0];
 
-        if(options.systemMessage) {
-            this.systemMessage = utils.createDisplayObject('TEXT:' + options.systemMessage, {style: styles.systemMessageText, anchor: textAnchor});
+        //build system messages
+        if($.isArray(options.systemMessage)) {
+            $.each(options.systemMessage, function(i, sysMessage) {
+                this.systemMessages.push(utils.createDisplayObject('TEXT:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
+            }.bind(this))
+        } else if(options.systemMessage){
+            this.systemMessages.push(utils.createDisplayObject('TEXT:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
         }
+        this.mainSystemMessage = this.systemMessages[0];
 
         this.noDelay = options.noDelay;
 
@@ -48,15 +55,24 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
             }.bind(this))
         }
 
+        //create base and size it
         var baseTint = 0x00042D;
-
         this.base = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
         var descriptionWidth = 0;
-        var systemMessageWidth = this.systemMessage ? this.systemMessage.width : 0;
+        var descriptionHeight = 0;
+        var systemMessageWidth = 0;
+        var systemMessageHeight = 0;
+        this.systemMessageBuffer = 5;
+        this.buffer = 5;
+        $.each(this.systemMessages, function(i, sysMessage) {
+            systemMessageWidth = Math.max(systemMessageWidth, sysMessage.width);
+            systemMessageHeight += sysMessage.height;
+        })
         $.each(this.description, function(i, descr) {
             descriptionWidth = Math.max(descriptionWidth, descr.width);
+            descriptionHeight += descr.height;
         })
-        utils.makeSpriteSize(this.base, {w: Math.max(descriptionWidth, systemMessageWidth) + 15, h: 40 + (this.description.length*15) + (options.systemMessage ? 12 : 0)});
+        utils.makeSpriteSize(this.base, {w: Math.max(descriptionWidth, systemMessageWidth) + 15, h: this.title.height + this.buffer/2 + descriptionHeight + this.buffer + systemMessageHeight + (this.systemMessages.length ? this.buffer : 0) + this.buffer});
     };
 
     //set title, text, backgroundColor, etc
@@ -101,26 +117,38 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
             $.each(this.description, function(i, descr) {
                 utils.addDisplayObjectToRenderer(descr, 'hudText');
             })
-            if(this.systemMessage)
-                utils.addDisplayObjectToRenderer(this.systemMessage, 'hudText');
+            $.each(this.systemMessages, function(i, sysMessage) {
+                utils.addDisplayObjectToRenderer(sysMessage, 'hudText');
+            })
+            // if(this.systemMessage)
+            //     utils.addDisplayObjectToRenderer(this.systemMessage, 'hudText');
             utils.addDisplayObjectToRenderer(this.base, 'hudThree');
         }
 
-        var buffer = 5;
-        this.title.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + buffer/2};
+        //place descriptions
+        this.title.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.buffer/2};
         $.each(this.description, function(i, descr) {
-            descr.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + 30 + (i * 15)};
+            descr.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.title.height + this.buffer/2 + this.buffer + (i * descr.height)};
         }.bind(this))
-        if(this.systemMessage)
-            this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + (this.description.length-1)*25 + 48};
+
+        //place system messages
+        $.each(this.systemMessages, function(i, sysMessage) {
+            sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.description.length)*this.description[0].height + this.systemMessageBuffer + (i * sysMessage.height)};
+        }.bind(this))
+        // if(this.systemMessage)
+        //     this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + (this.description.length-1)*25 + 48};
+
         this.base.position = position;
 
         this.title.visible = true;
         $.each(this.description, function(i, descr) {
             descr.visible = true;
         })
-        if(this.systemMessage)
-            this.systemMessage.visible = true;
+        $.each(this.systemMessages, function(i, sysMessage) {
+            sysMessage.visible = true;
+        })
+        // if(this.systemMessage)
+        //     this.systemMessage.visible = true;
         this.base.visible = true;
     };
 
@@ -130,8 +158,11 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         $.each(this.description, function(i, descr) {
             descr.visible = false;
         })
-        if(this.systemMessage)
-            this.systemMessage.visible = false;
+        $.each(this.systemMessages, function(i, sysMessage) {
+            sysMessage.visible = false;
+        })
+        // if(this.systemMessage)
+        //     this.systemMessage.visible = false;
         this.base.visible = false;
     };
 

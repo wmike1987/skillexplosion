@@ -617,11 +617,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             name: 'Heal',
             icon: utils.createDisplayObject('HealIcon'),
             title: 'Heal',
-            description: 'Heal a friendly unit.',
+            description: ['Heal a friendly unit.'],
             hotkey: 'A',
             energyCost: 1,
             manualDispatch: true,
             autoCastEnabled: true,
+            getAutoCastVariable: function() {
+                return this.attackAutocast;
+            }.bind(medic),
             autoCast: function() {
                 this.attackAutocast = !this.attackAutocast;
             }.bind(medic),

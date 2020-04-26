@@ -10,6 +10,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.currentAbilities = [];
         this.currentCommands = [];
         this.itemSystem = null;
+        this.autoCastSound = utils.getSound('autocasttoggle.wav', {volume: .03, rate: 1.0});
 
         this.barOffset = 8; //top bar offset;
         this.centerX = utils.getUnitPanelCenter().x;
@@ -48,7 +49,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 tooltip.mainDescription.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
             }
             return txt;
-        }.bind(this), systemMessage: function() {
+        }.bind(this), mainSystemMessage: function() {
             if(this.prevailingUnit)
                 var txt = "+" + this.prevailingUnit.healthRegenerationRate + " hp/sec";
             return txt;
@@ -84,7 +85,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
             }
             return txt;
-        }.bind(this), systemMessage: function() {
+        }.bind(this), mainSystemMessage: function() {
             if(this.prevailingUnit)
                 var txt = "+" + this.prevailingUnit.energyRegenerationRate + " energy/sec";
             return txt;
@@ -331,6 +332,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     ability.currentAugmentIcon.visible = false;
                     ability.currentAugmentBorderIcon.visible = false;
                 }
+                if(ability.abilityBorder) {
+                    ability.abilityBorder.visible = false;
+                }
             })
         }
         this.currentAbilities = null;
@@ -509,15 +513,32 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             if(!ability.icon.parent) {
                 utils.addSomethingToRenderer(ability.icon, 'hudOne');
                 if(ability.energyCost) {
-                  ability.systemMessage = ability.energyCost + ' energy';
+                  ability.systemMessage = [ability.energyCost + ' energy'];
                 }
-                Tooltip.makeTooltippable(ability.icon, ability);
+
+                //autocast init
                 if(ability.autoCastEnabled) {
+                    ability.systemMessage.push('Ctrl+Click to toggle autocast')
+                    ability.abilityBorder = utils.addSomethingToRenderer('TintableAbilityBorder', 'hudOne', {position: ability.icon.position});
+                    ability.autoCastTimer = utils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300)
+                    ability.abilityBorder.visible = ability.getAutoCastVariable;
                     ability.icon.interactive = true;
-                    ability.icon.on('rightup', function(event) {
-                        ability.autoCast();
+                    ability.icon.on('mouseup', function(event) {
+                        if(keyStates['Control']) {
+                            ability.autoCast();
+                            ability.abilityBorder.visible = ability.getAutoCastVariable();
+                            ability.autoCastTimer.reset();
+                            this.autoCastSound.play();
+                        }
                     }.bind(this))
                 }
+            }
+
+            Tooltip.makeTooltippable(ability.icon, ability);
+
+            //refresh autocast state
+            if(ability.abilityBorder) {
+                ability.abilityBorder.visible = ability.getAutoCastVariable();
             }
 
             var augmentSize = 20;
@@ -618,6 +639,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         currentGame.removeTickCallback(this.updateUnitStatTick);
         currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
         currentGame.removeTickCallback(this.abilityAvailableTick);
+
+        this.autoCastSound.unload();
+
+        //the auto cast timer should die upon nuke...
     };
 
     unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;

@@ -2,7 +2,7 @@
 
 "AmbientLight1.png":
 {
-	"frame": {"x":1,"y":103,"w":512,"h":512},
+	"frame": {"x":1,"y":1,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -10,7 +10,7 @@
 },
 "AmbientLight2.png":
 {
-	"frame": {"x":515,"y":103,"w":512,"h":512},
+	"frame": {"x":515,"y":1,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -18,7 +18,7 @@
 },
 "AmbientLight3.png":
 {
-	"frame": {"x":1029,"y":103,"w":512,"h":512},
+	"frame": {"x":1029,"y":1,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -26,7 +26,7 @@
 },
 "AugmentArmPanel.png":
 {
-	"frame": {"x":1203,"y":1,"w":66,"h":195},
+	"frame": {"x":1203,"y":515,"w":66,"h":195},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":66,"h":195},
@@ -34,7 +34,7 @@
 },
 "AugmentBorder.png":
 {
-	"frame": {"x":1496,"y":45,"w":36,"h":36},
+	"frame": {"x":1518,"y":515,"w":36,"h":36},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":36,"h":36},
@@ -42,7 +42,7 @@
 },
 "AugmentBorderGold.png":
 {
-	"frame": {"x":1400,"y":31,"w":50,"h":50},
+	"frame": {"x":1466,"y":515,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -50,7 +50,7 @@
 },
 "LockIcon.png":
 {
-	"frame": {"x":1289,"y":69,"w":32,"h":32},
+	"frame": {"x":1203,"y":583,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -58,7 +58,7 @@
 },
 "MouseX.png":
 {
-	"frame": {"x":1452,"y":31,"w":42,"h":42},
+	"frame": {"x":1466,"y":567,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
@@ -66,15 +66,23 @@
 },
 "MouseXGreen.png":
 {
-	"frame": {"x":1496,"y":1,"w":42,"h":42},
+	"frame": {"x":1510,"y":567,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
 	"sourceSize": {"w":128,"h":128}
 },
+"TintableAbilityBorder.png":
+{
+	"frame": {"x":1400,"y":515,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
 "TintableSquare.png":
 {
-	"frame": {"x":1540,"y":1,"w":1,"h":1},
+	"frame": {"x":1548,"y":173,"w":1,"h":1},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
@@ -82,7 +90,7 @@
 },
 "TransparentSquare.png":
 {
-	"frame": {"x":1323,"y":69,"w":3,"h":3},
+	"frame": {"x":1543,"y":173,"w":3,"h":3},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
@@ -90,7 +98,7 @@
 },
 "UnitPanelFrame.png":
 {
-	"frame": {"x":1,"y":1,"w":1200,"h":100},
+	"frame": {"x":1,"y":515,"w":1200,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":100},
@@ -98,16 +106,16 @@
 },
 "Vial.png":
 {
-	"frame": {"x":1203,"y":69,"w":28,"h":84},
-	"rotated": true,
+	"frame": {"x":1543,"y":1,"w":28,"h":84},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
 	"sourceSize": {"w":28,"h":84}
 },
 "Vial2.png":
 {
-	"frame": {"x":1400,"y":1,"w":28,"h":84},
-	"rotated": true,
+	"frame": {"x":1543,"y":87,"w":28,"h":84},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
 	"sourceSize": {"w":28,"h":84}
@@ -120,8 +128,8 @@
 	"version": "1.0",
 	"image": "Utility.png",
 	"format": "RGBA8888",
-	"size": {"w":1542,"h":616},
+	"size": {"w":1572,"h":616},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:3ccc9811a7d273d4403ac7b42e1844e6:68eab683fa8e6f86ccfbc904b5c200e5:5fc1c354e515b85ac7861bddc1d6600b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:9dae31324c8f68da9524c95b6d048c06:649e9d663b94b0f80634708f341290ed:5fc1c354e515b85ac7861bddc1d6600b$"
 }
 }

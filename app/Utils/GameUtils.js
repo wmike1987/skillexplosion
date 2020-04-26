@@ -815,6 +815,19 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return "0x" + r + g + b;
         },
 
+        //https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+        hexToRgb: function(hex) {
+            var r = (hex >> 16) & 255;
+            var g = (hex >> 8) & 255;
+            var b = hex & 255;
+
+            return {
+                r: r,
+                g: g,
+                b: b
+            }
+        },
+
         getRandomHexColor: function() {
             return this.rgbToHex(Math.random()*255, Math.random()*255, Math.random()*255);
         },
@@ -826,6 +839,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 options = {};
                 options.start = {r: 255, g: 0, b: 0};
                 options.final = {r: 0, g: 255, b: 0};
+            }
+
+            if(!(typeof options.start == 'object')) {
+                options.start = this.hexToRgb(options.start);
+            }
+
+            if(!(typeof options.final == 'object')) {
+                options.final = this.hexToRgb(options.final);
             }
 
             var sr = options.start.r;
@@ -841,6 +862,30 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var newB = sb + (fb - sb) * percentage;
             // return this.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
             return this.rgbToHex(newR, newG, newB);
+        },
+
+        graduallyTint: function(tintable, startColor, finalColor, transitionTime) {
+            var utils = this;
+            var forward = true;
+            return currentGame.addTimer({
+                name: 'gradualTint' + this.uuidv4(),
+                runs: 1,
+                timeLimit: transitionTime,
+                resetExtension: function() {
+                    forward = true;
+                },
+                tickCallback: function() {
+                    var s = forward ? startColor : finalColor;
+                    var f = forward ? finalColor : startColor;
+                    var color = utils.percentAsHexColor(this.percentDone, {start: s, final: f})
+                    tintable.tint = color;
+                },
+                totallyDoneCallback: function() {
+                    var tempForward = !forward;
+                    this.reset();
+                    forward = tempForward;
+                }
+            })
         },
 
         flattenObjectToArray: function(object) {
