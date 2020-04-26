@@ -512,6 +512,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                   ability.systemMessage = ability.energyCost + ' energy';
                 }
                 Tooltip.makeTooltippable(ability.icon, ability);
+                if(ability.autoCastEnabled) {
+                    ability.icon.interactive = true;
+                    ability.icon.on('rightup', function(event) {
+                        ability.autoCast();
+                    }.bind(this))
+                }
             }
 
             var augmentSize = 20;

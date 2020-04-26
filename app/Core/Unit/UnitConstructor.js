@@ -46,7 +46,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             newUnit.eventClickMappings = {};
             if(newUnit.abilities) {
                 $.each(newUnit.abilities, function(i, ability) {
-                    if(ability.manualHandling) return;
+                    if(ability.manualDispatch) return;
                     if(ability.type == 'key') {
                         newUnit.eventKeyMappings[ability.key] = {
                             method: ability.method,

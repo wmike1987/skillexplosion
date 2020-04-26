@@ -67,7 +67,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //create our units
             this.createShane();
             this.createUrsula();
-            this.createBane(0);
+            this.createBane(3);
 
             //create empty scene and transition to camp scene
             var campScene = this.createCampScene();

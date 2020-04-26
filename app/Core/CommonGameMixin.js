@@ -531,7 +531,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     //console.info("removing " + slave)
                     slave();
                 } else if(slave.unload) {
-                    //console.info("removing sounds!" + slave)
+                    console.info("removing sounds!" + slave)
                     slave.unload();
                 } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
                     if(slave.myLayer) {

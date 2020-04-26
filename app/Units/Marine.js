@@ -235,8 +235,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var poisonSound = utils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
 
         //crit
-        var criticalHitSound = utils.getSound('criticalhit.wav', {volume: .02, rate: 1});
-        var criticalHitSound2 = utils.getSound('criticalhit2.wav', {volume: .01, rate: .7});
+        var criticalHitSound = utils.getSound('criticalhit.wav', {volume: .2, rate: .9});
+        var criticalHitSound2 = utils.getSound('criticalhit2.wav', {volume: .1, rate: .7});
 
         //Dash
         var dashVelocity = .8;
@@ -562,7 +562,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         var gunAbility = new Ability({
             name: 'Rifle',
-            manualHandling: true,
+            manualDispatch: true,
             icon: utils.createDisplayObject('M14Icon'),
             title: 'M14 Rifle',
             description: 'Deal damage to an enemy unit.',

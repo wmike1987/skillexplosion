@@ -9,6 +9,8 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
 
         this.costs = [];
         this.disables = {};
+
+        //convenience method for enabling and disabling an ability
         this.disable = function(id) {
             var disable = function() {
                 return false;

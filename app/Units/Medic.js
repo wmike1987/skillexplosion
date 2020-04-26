@@ -1,8 +1,6 @@
 define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'unitcore/_Augmentable'],
     function($, PIXI, UC, Matter, utils, Ability, rv, aug) {
 
-    var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
-
     return function Medic(options) {
         var medic = {};
 
@@ -232,9 +230,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
+        var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 
         var footstepSound = utils.getSound('footstep2.wav', {volume: .02, rate: 1.1});
-        var shroudSound = utils.getSound('cloakshroud.wav', {volume: .2, rate: 1});
+        var shroudSound = utils.getSound('cloakshroud.wav', {volume: .1, rate: 1.5});
         var silentStep = function(destination, commandObj) {
             //get current augment
             var thisAbility = this.getAbilityByName('Silent Step');
@@ -621,7 +620,11 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             description: 'Heal a friendly unit.',
             hotkey: 'A',
             energyCost: 1,
-            manualHandling: true,
+            manualDispatch: true,
+            autoCastEnabled: true,
+            autoCast: function() {
+                this.attackAutocast = !this.attackAutocast;
+            }.bind(medic),
             augments: [{
                 name: 'pure priorities',
                 hpThreshold: .5,

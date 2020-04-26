@@ -12,6 +12,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
         honableTargets: null, //this prevents the need for honing sensor (which can have a negative performance impact). This may not be relevant anymore
         specifiedAttackTarget: null,
         canAttack: true,
+        attackAutocast: true,
 
         //default
         attack: function(target) {
@@ -201,17 +202,17 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             /*
              * Attacking callbacks
              */
-            if (this.attackMoveTick) {
-                currentGame.removeTickCallback(this.attackMoveTick);
+            if (this.attackTick) {
+                currentGame.removeTickCallback(this.attackTick);
             }
             //if we have a target, attack it
-            this.attackMoveTick = currentGame.addTickCallback(function() {
+            this.attackTick = currentGame.addTickCallback(function() {
                 if (this.currentTarget) {
                     this.lastHone = null; //if we're attacking something, reset the lastHoned unit
                     this._attack(this.currentTarget);
                 }
             }.bind(this))
-            utils.deathPact(this, this.attackMoveTick, 'attackMoveTick')
+            utils.deathPact(this, this.attackTick, 'attackTick')
         },
 
         setupHoneAndTargetSensing: function(commandObj) {
@@ -236,10 +237,16 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                         return false;
                     }
                 }.bind(this), function(unit) {
+                    //if autocast is off and we don't have a specified target, don't continue
+                    if (this.attackAutocast === false && !this.specifiedAttackTarget) {
+                        return;
+                    }
+
                     //if we have a target specific, ignore other units, forcing currentTarget to be the specified unit
                     if (this.specifiedAttackTarget && unit != this.specifiedAttackTarget) {
                         return;
                     }
+
 
                     var dist = utils.distanceBetweenBodies(this.body, unit.body);
                     if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
@@ -255,7 +262,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                         }
                     }
 
-                    //figure out who (if anyone) is within range to attack
+                    //figure out who (if anyone) is within range to attack and set current target to be the closest one
                     if (dist <= this.range) {
                         if (!currentAttackDistance) {
                             currentAttackDistance = dist;
@@ -277,7 +284,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
                 //This clause is important:
                 //If we're here, we're on alert...
-                //Either we were given an attack move command, "still" and on alert, or were given a specific target
+                //Either we were given an attack move command, "still" and on-alert, or were given a specific target
                 //If we were given an "attack move" command and no longer have a target or a hone, let's issue an identical attackMove command
                 //If we were "still" and no longer have a target or a hone, let's stop.
                 //If we were given a "specific target" to attack, we we only want to naturally stop if we can no longer attack it
@@ -314,8 +321,8 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             if(this.honeAndTargetSensorCallback)
                 currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
 
-            if (this.attackMoveTick) {
-                currentGame.removeTickCallback(this.attackMoveTick);
+            if (this.attackTick) {
+                currentGame.removeTickCallback(this.attackTick);
             }
             if (this.attackHoneTick) {
                 currentGame.removeTickCallback(this.attackHoneTick);
