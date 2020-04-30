@@ -1,0 +1,146 @@
+
+S.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+FrontM_0000_Layer-17-copy
+  rotate: false
+  xy: 521, 400
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+FrontM_0001_Layer-17
+  rotate: false
+  xy: 615, 477
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+FrontM_0002_Layer-16-copy
+  rotate: false
+  xy: 521, 412
+  size: 19, 54
+  orig: 19, 54
+  offset: 0, 0
+  index: -1
+FrontM_0003_Layer-18
+  rotate: true
+  xy: 188, 32
+  size: 19, 54
+  orig: 19, 54
+  offset: 0, 0
+  index: -1
+FrontM_0004_Layer-14
+  rotate: true
+  xy: 188, 2
+  size: 28, 40
+  orig: 28, 40
+  offset: 0, 0
+  index: -1
+FrontM_0005_Layer-14-copy
+  rotate: true
+  xy: 230, 2
+  size: 28, 40
+  orig: 28, 40
+  offset: 0, 0
+  index: -1
+FrontM_0007_Layer-35
+  rotate: false
+  xy: 461, 468
+  size: 102, 42
+  orig: 102, 42
+  offset: 0, 0
+  index: -1
+FrontM_0008_Layer-24-copy
+  rotate: true
+  xy: 615, 489
+  size: 21, 40
+  orig: 21, 40
+  offset: 0, 0
+  index: -1
+FrontM_0009_Layer-23-copy
+  rotate: false
+  xy: 542, 434
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+FrontM_0010_Layer-24
+  rotate: false
+  xy: 461, 296
+  size: 21, 40
+  orig: 21, 40
+  offset: 0, 0
+  index: -1
+FrontM_0011_Layer-23
+  rotate: true
+  xy: 268, 35
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+FrontM_0012_Layer-22-copy
+  rotate: true
+  xy: 244, 32
+  size: 19, 22
+  orig: 19, 22
+  offset: 0, 0
+  index: -1
+FrontM_0013_Layer-22
+  rotate: true
+  xy: 657, 491
+  size: 19, 22
+  orig: 19, 22
+  offset: 0, 0
+  index: -1
+FrontM_0014_Layer-9
+  rotate: false
+  xy: 461, 395
+  size: 58, 71
+  orig: 58, 71
+  offset: 0, 0
+  index: -1
+FrontM_0015_Layer-13
+  rotate: false
+  xy: 486, 347
+  size: 13, 46
+  orig: 13, 46
+  offset: 0, 0
+  index: -1
+FrontM_0016_Layer-31
+  rotate: true
+  xy: 565, 472
+  size: 38, 48
+  orig: 38, 48
+  offset: 0, 0
+  index: -1
+FrontM_0017_Layer-26
+  rotate: false
+  xy: 461, 338
+  size: 23, 55
+  orig: 23, 55
+  offset: 0, 0
+  index: -1
+Gun
+  rotate: false
+  xy: 124, 13
+  size: 62, 38
+  orig: 62, 38
+  offset: 0, 0
+  index: -1
+Gun Glow
+  rotate: false
+  xy: 2, 53
+  size: 457, 457
+  orig: 457, 457
+  offset: 0, 0
+  index: -1
+drop shadow
+  rotate: false
+  xy: 2, 5
+  size: 120, 46
+  orig: 120, 46
+  offset: 0, 0
+  index: -1

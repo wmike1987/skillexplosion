@@ -1,0 +1,118 @@
+
+N.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Back_0000_Layer-4
+  rotate: false
+  xy: 140, 91
+  size: 39, 48
+  orig: 39, 48
+  offset: 0, 0
+  index: -1
+Back_0001_Layer-10-copy
+  rotate: false
+  xy: 79, 3
+  size: 28, 33
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Back_0002_Layer-10
+  rotate: false
+  xy: 417, 416
+  size: 28, 33
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Back_0003_Layer-16-copy
+  rotate: false
+  xy: 2, 88
+  size: 136, 51
+  orig: 136, 51
+  offset: 0, 0
+  index: -1
+Back_0004_Layer-12-copy
+  rotate: false
+  xy: 109, 49
+  size: 25, 37
+  orig: 25, 37
+  offset: 0, 0
+  index: -1
+Back_0005_Layer-12
+  rotate: true
+  xy: 330, 293
+  size: 33, 29
+  orig: 33, 29
+  offset: 0, 0
+  index: -1
+Back_0006_Layer-6
+  rotate: false
+  xy: 330, 374
+  size: 54, 75
+  orig: 54, 75
+  offset: 0, 0
+  index: -1
+Back_0007_Layer-11-copy
+  rotate: false
+  xy: 386, 408
+  size: 29, 41
+  orig: 29, 41
+  offset: 0, 0
+  index: -1
+Back_0008_Layer-11
+  rotate: false
+  xy: 181, 98
+  size: 29, 41
+  orig: 29, 41
+  offset: 0, 0
+  index: -1
+Back_0009_Layer-8-copy
+  rotate: true
+  xy: 452, 469
+  size: 28, 48
+  orig: 28, 48
+  offset: 0, 0
+  index: -1
+Back_0010_Layer-7-copy
+  rotate: false
+  xy: 330, 328
+  size: 31, 44
+  orig: 31, 44
+  offset: 0, 0
+  index: -1
+Back_0011_Layer-8
+  rotate: false
+  xy: 79, 38
+  size: 28, 48
+  orig: 29, 48
+  offset: 0, 0
+  index: -1
+Back_0012_Layer-7
+  rotate: false
+  xy: 2, 2
+  size: 75, 84
+  orig: 75, 84
+  offset: 0, 0
+  index: -1
+Back_0013_Layer-18
+  rotate: true
+  xy: 363, 343
+  size: 29, 19
+  orig: 29, 19
+  offset: 0, 0
+  index: -1
+drop shadow
+  rotate: false
+  xy: 330, 451
+  size: 120, 46
+  orig: 120, 46
+  offset: 0, 0
+  index: -1
+muzzle flash
+  rotate: false
+  xy: 2, 141
+  size: 326, 356
+  orig: 326, 356
+  offset: 0, 0
+  index: -1

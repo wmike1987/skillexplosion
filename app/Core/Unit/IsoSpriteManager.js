@@ -31,6 +31,15 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 			}.bind(this))
 		}
 
+		this.playSpecifiedAnimation = function(animationName, direction) {
+			if(this.unit[animationName+'Animations']) {
+				this.switchAnimation(this.unit.throwAnimations[direction])
+				this.currentDirection = direction;
+			} else {
+				return;
+			}
+		}
+
 		this.switchAnimation = function(animation, options) {
 			options = options || {};
 

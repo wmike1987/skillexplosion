@@ -209,17 +209,17 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('Terrain6', 'app/Textures/Us/Terrain-6.json');
 
             //spine assets
-            loader.add('marineN', 'app/SpineAssets/Marine Exports/MarineN/N.json');
-            loader.add('marineNW', 'app/SpineAssets/Marine Exports/MarineNW/NW.json');
-            loader.add('marineS', 'app/SpineAssets/Marine Exports/MarineS/S.json');
-            loader.add('marineSW', 'app/SpineAssets/Marine Exports/MarineSW/SW.json');
-            loader.add('marineW', 'app/SpineAssets/Marine Exports/MarineW/W.json');
+            loader.add('marineN', 'app/SpineAssets/Marine Exports/N/N.json');
+            loader.add('marineNW', 'app/SpineAssets/Marine Exports/NW/NW.json');
+            loader.add('marineS', 'app/SpineAssets/Marine Exports/S/S.json');
+            loader.add('marineSW', 'app/SpineAssets/Marine Exports/SW/SW.json');
+            loader.add('marineW', 'app/SpineAssets/Marine Exports/W/W.json');
 
-            loader.add('medicN', 'app/SpineAssets/Medic Exports/MedicN/N.json');
-            loader.add('medicNW', 'app/SpineAssets/Medic Exports/MedicNW/NW.json');
-            loader.add('medicS', 'app/SpineAssets/Medic Exports/MedicS/S.json');
-            loader.add('medicSW', 'app/SpineAssets/Medic Exports/MedicSW/SW.json');
-            loader.add('medicW', 'app/SpineAssets/Medic Exports/MedicW/W.json');
+            loader.add('medicN', 'app/SpineAssets/Medic Exports/N/N.json');
+            loader.add('medicNW', 'app/SpineAssets/Medic Exports/NW/NW.json');
+            loader.add('medicS', 'app/SpineAssets/Medic Exports/S/S.json');
+            loader.add('medicSW', 'app/SpineAssets/Medic Exports/SW/SW.json');
+            loader.add('medicW', 'app/SpineAssets/Medic Exports/W/W.json');
 
             loader.load();
             loader.once('complete', function() {

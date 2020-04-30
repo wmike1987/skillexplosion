@@ -1,0 +1,104 @@
+
+Northwest.png
+size: 272,1222
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Neck
+  rotate: false
+  xy: 144, 318
+  size: 96, 207
+  orig: 96, 207
+  offset: 0, 0
+  index: -1
+NorthWest_0000_Layer-1---1
+  rotate: false
+  xy: 173, 40
+  size: 81, 89
+  orig: 81, 89
+  offset: 0, 0
+  index: -1
+NorthWest_0001_Layer-1---2
+  rotate: false
+  xy: 147, 129
+  size: 96, 77
+  orig: 96, 77
+  offset: 0, 0
+  index: -1
+NorthWest_0002_Layer-1---4
+  rotate: false
+  xy: 0, 61
+  size: 173, 68
+  orig: 173, 68
+  offset: 0, 0
+  index: -1
+NorthWest_0003_Layer-1---5
+  rotate: false
+  xy: 0, 0
+  size: 165, 61
+  orig: 165, 61
+  offset: 0, 0
+  index: -1
+NorthWest_0004_Layer-1---6
+  rotate: false
+  xy: 0, 708
+  size: 169, 277
+  orig: 169, 277
+  offset: 0, 0
+  index: -1
+NorthWest_0005_Layer-1---7
+  rotate: false
+  xy: 0, 985
+  size: 269, 237
+  orig: 269, 237
+  offset: 0, 0
+  index: -1
+NorthWest_0006_Layer-1---8
+  rotate: false
+  xy: 169, 755
+  size: 103, 230
+  orig: 103, 230
+  offset: 0, 0
+  index: -1
+NorthWest_0007_Layer-1---9
+  rotate: false
+  xy: 0, 129
+  size: 147, 189
+  orig: 147, 189
+  offset: 0, 0
+  index: -1
+NorthWest_0008_Layer-1---10
+  rotate: false
+  xy: 0, 510
+  size: 144, 198
+  orig: 144, 198
+  offset: 0, 0
+  index: -1
+NorthWest_0009_Layer-1---11
+  rotate: false
+  xy: 169, 525
+  size: 103, 230
+  orig: 103, 230
+  offset: 0, 0
+  index: -1
+NorthWest_0010_Layer-1---15
+  rotate: false
+  xy: 58, 391
+  size: 84, 119
+  orig: 84, 119
+  offset: 0, 0
+  index: -1
+NorthWest_0011_Layer-1---20
+  rotate: false
+  xy: 147, 206
+  size: 77, 112
+  orig: 77, 112
+  offset: 0, 0
+  index: -1
+North_0005_Layer-1---7
+  rotate: false
+  xy: 0, 321
+  size: 58, 189
+  orig: 58, 189
+  offset: 0, 0
+  index: -1

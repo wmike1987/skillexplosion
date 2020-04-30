@@ -680,6 +680,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
         }
 
-        return UnitBase;
+        return function() {
+            return $.extend(true, {}, UnitBase);
+        };
     }
 )

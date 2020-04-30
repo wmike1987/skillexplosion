@@ -131,12 +131,62 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }),
         }
 
+        var throwAnimations = {
+            up: utils.getSpineAnimation({
+                spine: spineNorth,
+                animationName: 'throw',
+                speed: 0.5,
+            }),
+            upRight: utils.getSpineAnimation({
+                spine: spineNorthEast,
+                animationName: 'throw',
+                times: 1,
+                speed: 0.5,
+            }),
+            right: utils.getSpineAnimation({
+                spine: spineEast,
+                animationName: 'throw',
+                times: 1,
+                speed: 0.5,
+            }),
+            downRight: utils.getSpineAnimation({
+                spine: spineSouthEast,
+                animationName: 'heal',
+                speed: .5,
+            }),
+            down: utils.getSpineAnimation({
+                spine: spineSouth,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            downLeft: utils.getSpineAnimation({
+                spine: spineSouthWest,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            left: utils.getSpineAnimation({
+                spine: spineWest,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            upLeft: utils.getSpineAnimation({
+                spine: spineNorthWest,
+                animationName: 'throw',
+                speed: .5,
+            }),
+        }
+
         var otherAnimations = {
 
         }
 
-        var sc = {x: .35, y: .35};
-        var adjustedUpDownsc = {x: .38, y: .38};
+        var sc = {x: .33, y: .33};
+        var updiagsc = {x: .345, y: .345};
+        var flipupdiagsc = {x: -1 * updiagsc.x, y: updiagsc.y};
+        var downdiagsc = {x: .325, y: .325};
+        var flipdowndiagsc = {x: -1 * downdiagsc.x, y: downdiagsc.y};
+        var adjustedDownsc = {x: .35, y: .35};
+        var adjustedUpsc = {x: .36, y: .37};
         var flipsc = {x: -1 * sc.x, y: sc.y};
         var yOffset = 22;
         var rc = [
@@ -177,7 +227,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'up',
             data: spineNorth,
-            scale: adjustedUpDownsc,
+            scale: adjustedUpsc,
             rotate: 'none',
             visible: false,
             offset: {x: 0, y: yOffset}
@@ -185,7 +235,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'down',
             data: spineSouth,
-            scale: adjustedUpDownsc,
+            scale: adjustedDownsc,
             rotate: 'none',
             visible: false,
             offset: {x: 0, y: yOffset}
@@ -193,7 +243,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'upLeft',
             data: spineNorthWest,
-            scale: sc,
+            scale: updiagsc,
             rotate: 'none',
             visible: false,
             offset: {x: 0, y: yOffset}
@@ -201,7 +251,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'upRight',
             data: spineNorthEast,
-            scale: flipsc,
+            scale: flipupdiagsc,
             rotate: 'none',
             visible: false,
             offset: {x: 0, y: yOffset}
@@ -209,14 +259,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'downRight',
             data: spineSouthEast,
-            scale: flipsc,
+            scale: flipdowndiagsc,
             rotate: 'none',
             visible: false,
             offset: {x: 0, y: yOffset}
         }, {
             id: 'downLeft',
             data: spineSouthWest,
-            scale: sc,
+            scale: downdiagsc,
             rotate: 'none',
             visible: false,
             offset: {x: 0, y: yOffset}
@@ -415,6 +465,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             currentGame.addBody(mine);
             mineSound.play();
+
+            //play spine animation
+            this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
 
             var mineCracks = utils.createDisplayObject('MineCracks', {scale: {x: .75, y: .75}, alpha: 1});
             var stateZero = utils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});
@@ -690,6 +743,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             priority: 40,
             name: options.name,
             heightAnimation: 'up',
+            throwAnimations: throwAnimations,
             abilities: [healAbility, silentStepAbility, mineAbility],
             death: function() {
                 var self = this;

@@ -218,7 +218,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 //Loop if desired
                 if(options.loop) {
                     options.spine.state.setAnimation(0, options.animationName, options.loop);
-                } else if(options.times) {
+                } else if(options.times || 1) {
                     //Otherwise queue the animation so many times
                     $.each(new Array(options.times), function() {
                         var entry = options.spine.state.addAnimation(0, options.animationName, false, 0);

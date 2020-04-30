@@ -130,6 +130,51 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }),
         }
 
+        var throwAnimations = {
+            up: utils.getSpineAnimation({
+                spine: spineNorth,
+                animationName: 'throw',
+                speed: 0.5,
+            }),
+            upRight: utils.getSpineAnimation({
+                spine: spineNorthEast,
+                animationName: 'throw',
+                times: 1,
+                speed: 0.5,
+            }),
+            right: utils.getSpineAnimation({
+                spine: spineEast,
+                animationName: 'throw',
+                times: 1,
+                speed: 0.5,
+            }),
+            downRight: utils.getSpineAnimation({
+                spine: spineSouthEast,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            down: utils.getSpineAnimation({
+                spine: spineSouth,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            downLeft: utils.getSpineAnimation({
+                spine: spineSouthWest,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            left: utils.getSpineAnimation({
+                spine: spineWest,
+                animationName: 'throw',
+                speed: .5,
+            }),
+            upLeft: utils.getSpineAnimation({
+                spine: spineNorthWest,
+                animationName: 'throw',
+                speed: .5,
+            }),
+        }
+
         var otherAnimations = {
 
         }
@@ -442,6 +487,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             })
             utils.deathPact(knife, removeSelf);
 
+            //play spine animation
+            this.isoManager.playSpecifiedAnimation('throw', utils.isoDirectionBetweenPositions(this.position, destination));
+
             var self = this;
             Matter.Events.on(knife, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
@@ -524,7 +572,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Throwing Knife',
             description: 'Throw a knife, dealing ' + knifeDamage + ' damage.',
             hotkey: 'F',
-            energyCost: 5,
+            energyCost: 0,
             activeAugment: null,
             enablers: [function(commandObj) {
                 return marine.canAttack;
@@ -612,6 +660,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             priority: 50,
             name: options.name,
             heightAnimation: 'up',
+            throwAnimations: throwAnimations,
             abilities: [gunAbility, dashAbility, knifeAbility],
             death: function() {
                 var self = this;

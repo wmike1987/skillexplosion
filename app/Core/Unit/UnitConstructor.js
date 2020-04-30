@@ -22,7 +22,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             }
 
             //mixin the unit options into the unit base
-            var newUnit = $.extend(true, originalUnit, unitBase, options.unit);
+            var newUnit = $.extend(originalUnit, unitBase(), options.unit);
 
             //death pact slaves
             if(options.slaves) {
