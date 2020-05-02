@@ -71,7 +71,12 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 		this.idle = function() {
 			var self = this;
 			var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
-			self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true});
+			var randomAnimation = self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]];
+			self.switchAnimation(randomAnimation, {stop: true});
+
+			randomAnimation.spine.state.clearTrack(0);
+            randomAnimation.spine.lastTime = null;
+            randomAnimation.spine.skeleton.setToSetupPose()
 
 			this.idleTimer = currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
 				this.timeLimit = 2000 + Math.random() * 2000;

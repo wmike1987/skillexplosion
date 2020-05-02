@@ -221,6 +221,18 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('medicSW', 'app/SpineAssets/Medic Exports/SW/SW.json');
             loader.add('medicW', 'app/SpineAssets/Medic Exports/W/W.json');
 
+            loader.add('critterN', 'app/SpineAssets/Critter Exports/N/North.json');
+            loader.add('critterNW', 'app/SpineAssets/Critter Exports/NW/Northwest.json');
+            loader.add('critterS', 'app/SpineAssets/Critter Exports/S/South.json');
+            loader.add('critterSW', 'app/SpineAssets/Critter Exports/SW/Southwest.json');
+            loader.add('critterW', 'app/SpineAssets/Critter Exports/W/West.json');
+
+            // loader.add('alienN', 'app/SpineAssets/Alien Export/N/N.json');
+            // loader.add('alienNW', 'app/SpineAssets/Alien Export/NW/NW.json');
+            // loader.add('alienS', 'app/SpineAssets/Alien Export/S/S.json');
+            // loader.add('alienSW', 'app/SpineAssets/Alien Export/SW/SW.json');
+            // loader.add('alienW', 'app/SpineAssets/Alien Export/W/W.json');
+
             loader.load();
             loader.once('complete', function() {
                 loader.loaderDeferred.resolve();

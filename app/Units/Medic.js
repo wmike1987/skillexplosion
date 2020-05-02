@@ -467,7 +467,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             mineSound.play();
 
             //play spine animation
-            this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
+            // this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
 
             var mineCracks = utils.createDisplayObject('MineCracks', {scale: {x: .75, y: .75}, alpha: 1});
             var stateZero = utils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});

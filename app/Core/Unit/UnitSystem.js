@@ -13,6 +13,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             //create selection box rectangle
             this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false});
             this.box.collisionFilter.category = 0x0002;
+            this.box.toggleCollideAndHideNextFrame = function() {
+                this.collisionFilter.category = 0x0000;
+                utils.executeSomethingNextFrame(function() {
+                    this.oneFrameOverrideInterpolation = true;
+                    Matter.Body.setPosition(this, {x: -500, y: -1000});
+                    this.collisionFilter.category = 0x0002;
+                }.bind(this), 1)
+            }
             this.box.permaPendingUnit = null;
             this.box.pendingSelections = {};
             this.box.renderChildren = [{id: 'box', data: 'TintableSquare', stage: 'stageOne', alpha: .4}];
@@ -154,8 +162,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             var originalY = 0;
             var scaleX = 1;
             var scaleY = 1;
-            var lastScaleX = 1;
-            var lastScaleY = 1;
 
             //transfer bodies from pending to selected
             var executeSelection = function() {
@@ -482,14 +488,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     this.box.selectionBoxActive = true;
                     var newPoint = {x: 0, y: 0};
                     this.renderer.interaction.mapPositionToPoint(newPoint, event.clientX, event.clientY);
-                    this.box.renderlings.box.scale.x = newPoint.x - this.box.originalPoint.x;
-                    this.box.renderlings.box.scale.y = newPoint.y - this.box.originalPoint.y;
-                    var newScaleX = (newPoint.x - this.box.originalPoint.x) || 1;
-                    var newScaleY = (newPoint.y - this.box.originalPoint.y) || 1;
-                    Matter.Body.scale(this.box, newScaleX/lastScaleX, newScaleY/lastScaleY); //scale to new value
-                    Matter.Body.setPosition(this.box, {x: newPoint.x - (newPoint.x - this.box.originalPoint.x)/2, y: newPoint.y - (newPoint.y - this.box.originalPoint.y)/2});
-                    lastScaleX = newScaleX;
-                    lastScaleY = newScaleY;
+                    this.sizeBox(newPoint);
                 }
             }.bind(this));
 
@@ -503,15 +502,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                         this.box.invalidateNextMouseUp = false;
                         this.box.invalidateNextBox = false
                     }
-                    Matter.Body.setPosition(this.box, {x: -500, y: -1000});
+
+                    // Matter.Body.setPosition(this.box, {x: -500, y: -1000});
+                    this.box.toggleCollideAndHideNextFrame();
                     this.box.selectionBoxActive = false;
                 }
             }.bind(this));
 
+            var lastScaleX = 1;
+            var lastScaleY = 1;
+            this.sizeBox = function(newPoint) {
+                this.box.renderlings.box.scale.x = newPoint.x - this.box.originalPoint.x;
+                this.box.renderlings.box.scale.y = newPoint.y - this.box.originalPoint.y;
+                var newScaleX = (newPoint.x - this.box.originalPoint.x) || 1;
+                var newScaleY = (newPoint.y - this.box.originalPoint.y) || 1;
+                Matter.Body.scale(this.box, newScaleX/lastScaleX, newScaleY/lastScaleY); //scale to new value
+                Matter.Body.setPosition(this.box, {x: newPoint.x - (newPoint.x - this.box.originalPoint.x)/2, y: newPoint.y - (newPoint.y - this.box.originalPoint.y)/2});
+                lastScaleX = newScaleX;
+                lastScaleY = newScaleY;
+            };
+
             /*
              * On a mouseup event we need to do a final box/unit collision check before we execute the selection since
              * this collision check won't happen in a subsequent physics step (since our mouseup intention is to execute a selection).
-             * In essense, without this, our box's final size (the size at mouseup time) will not have had a chance to collide with units.
+             * In essence, without this, our box's final size (the size at mouseup time) will not have had a chance to collide with units.
              */
             var smallBoxThreshold = 3;
             this.checkFinalBoxCollision = function() {

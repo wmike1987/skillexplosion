@@ -1,8 +1,8 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/EnemyMarine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene'],
+'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, TileMapper,
-    Doodad, ItemUtils, Scene) {
+    Doodad, ItemUtils, Scene, Critter) {
 
     var targetScore = 1;
 
@@ -67,7 +67,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //create our units
             this.createShane();
             this.createUrsula();
-            this.createBane(3);
+            this.createBane(0);
+            this.createCritter(5);
+
 
             //create empty scene and transition to camp scene
             var campScene = this.createCampScene();
@@ -159,7 +161,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             }
 
             nextLevelOptions.enemySet.push({
-                constructor: Baneling,
+                constructor: Critter,
                 spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
                 item: {type: 'basic', total: 3}});
             nextLevelOptions.enemySet.push({
@@ -292,7 +294,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         createBane: function(number, autoHone) {
             for(x = 0; x < number; x++) {
                 //var tint = x%2==0 ? 0xff0000 : null;
-                var bane = Baneling({team: 4});
+                var bane = Baneling({team: this.playerTeam});
                 if(autoHone)
                     bane.honeRange = 1400;
                 bane.damage = 20;
@@ -304,6 +306,24 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
                     // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: bane});
+                }
+            }
+        },
+
+        createCritter: function(number, autoHone) {
+            for(x = 0; x < number; x++) {
+                //var tint = x%2==0 ? 0xff0000 : null;
+                var critter = Critter({team: 4});
+                if(autoHone)
+                    critter.honeRange = 1400;
+                utils.placeBodyWithinRadiusAroundCanvasCenter(critter, 600, 400);
+                this.addUnit(critter, true);
+                if(true) {
+                    // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: critter});
                 }
             }
         },

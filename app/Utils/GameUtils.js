@@ -178,7 +178,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         getSpineAnimation(options) {
             options = $.extend({canInterruptSelf: true}, options)
-            var anim = {};
+            var anim = {spine: options.spine};
 
             Object.defineProperty(anim, 'visible', {
                 set: function(v) {
@@ -786,6 +786,24 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             //normalize to 16.6666 ms per frame
             var normalizedVelocity = (currentGame.engine.delta / (1000/60)) * velocity;
             Matter.Body.setVelocity(body, normalizedVelocity);
+        },
+
+        executeSomethingNextFrame: function(callback, frameCount) {
+            var limit = frameCount || 1;
+            currentGame.addTimer({
+                name: this.uuidv4(),
+                killsSelf: true,
+                timeLimit: 200,
+                gogogo: true,
+                tickCallback: function() {
+                    if(frameCount > 0) {
+                        frameCount--;
+                    } else {
+                        callback();
+                        currentGame.invalidateTimer(this);
+                    }
+                },
+            })
         },
 
         signalNewWave: function(wave, deferred) {
