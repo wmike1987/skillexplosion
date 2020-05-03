@@ -189,6 +189,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('Baneling', 'app/Textures/Us/Baneling.json');
             loader.add('BanelingAnimations1', 'app/Textures/Us/BanelingAnimations1.json');
             loader.add('Marble', 'app/Textures/Us/Marble.json');
+            loader.add('Critter', 'app/Textures/Us/Critter.json');
 
             //items
             loader.add('Items', 'app/Textures/Us/Items.json');
