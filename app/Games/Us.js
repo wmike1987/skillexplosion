@@ -160,13 +160,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
             }
 
-            nextLevelOptions.enemySet.push({
-                constructor: Critter,
-                spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
-                item: {type: 'basic', total: 3}});
+            // nextLevelOptions.enemySet.push({
+            //     constructor: Critter,
+            //     spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
+            //     item: {type: 'basic', total: 3}});
             nextLevelOptions.enemySet.push({
                 constructor: EnemyMarine,
-                spawn: {total: 5, n: 1, hz: 10000, maxOnField: 1},
+                spawn: {total: 5, n: 1, hz: 2000, maxOnField: 1},
                 item: {type: 'basic', total: 3}
             })
 
@@ -370,7 +370,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                 }
                                 newUnit = enemy.constructor({team: 4});
                                 if(newUnit.isoManaged) {
-                                    newUnit.isoManagedTint = 0x020C0E;
+                                    // newUnit.isoManagedTint = 0x020C0E;
                                 }
                                 // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
                                 ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: newUnit});

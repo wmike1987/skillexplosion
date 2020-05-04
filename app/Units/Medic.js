@@ -423,7 +423,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Silent Step',
             description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
-            energyCost: 10,
+            energyCost: 0,
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
             }],

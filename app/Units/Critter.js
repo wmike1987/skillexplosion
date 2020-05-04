@@ -230,7 +230,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
-        var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
+        var fireSound = utils.getSound('critterhit.wav', {volume: .05, rate: 1.5});
 
         var unitProperties = $.extend({
             unitType: 'Critter',
@@ -280,7 +280,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     range: options.radius*2+10,
                     damage: 6,
                     attackExtension: function(target) {
-
+                        fireSound.play();
                     },
                 },
         });
