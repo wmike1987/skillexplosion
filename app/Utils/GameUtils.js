@@ -346,11 +346,16 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return something;
         },
 
+        //This method was prone to creating memory leaks since we'd create a Sprite but not add
+        //it to a stage or a body (sometimes) meaning it wouldn't get cleaned up. Now, we're keeping
+        //track of any object created via this method and will call a removeSomethingFromRenderer upon
+        //nuking the current game.
         createDisplayObject: function(something, options) {
             var obj = this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
             if(options && options.anchor) {
                 obj.overrideDefaultAnchor = true;
             }
+            currentGame.possiblyUnrealizedDisplayObjects.push(obj);
             return obj;
         },
 

@@ -68,7 +68,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createShane();
             this.createUrsula();
             this.createBane(0);
-            this.createCritter(5);
+            this.createCritter(10);
 
 
             //create empty scene and transition to camp scene
@@ -184,7 +184,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             Matter.Events.on(equipStation.body, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == equipStation.body ? pair.pair.bodyA : pair.pair.bodyB;
                 if(otherBody.unit && this.unitSystem.selectedUnit == otherBody.unit) {
-                    console.info('collide with equip station ' + otherBody.unit.unitType)
                     this.unitSystem.unitConfigurationPanel.showForUnit(otherBody.unit);
                 }
             }.bind(this));
@@ -398,7 +397,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         },
 
         nukeExtension: function() {
-            console.info("nuked and destroyed keydown us")
+            // console.info("nuked and destroyed keydown us")
             $('body').off('keydown.us');
         }
     }

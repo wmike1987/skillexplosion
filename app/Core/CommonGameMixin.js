@@ -65,6 +65,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
             var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
             this.unitsByTeam = {};
+            this.possiblyUnrealizedDisplayObjects = [];
 
             /*
              * Incorporate UnitSystem if specified
@@ -534,12 +535,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     // console.info("removing sounds!" + slave)
                     slave.unload();
                 } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
-                    if(slave.myLayer) {
-                        utils.removeSomethingFromRenderer(slave);
-                    }
-                    else if(slave.destroy) {
-                        slave.destroy();
-                    }
+                    utils.removeSomethingFromRenderer(slave);
+                    // if(slave.myLayer) {
+                    //     utils.removeSomethingFromRenderer(slave);
+                    // }
+                    // else if(slave.destroy) {
+                    //     slave.destroy();
+                    // }
                 }
             }.bind(this));
         },
@@ -598,6 +600,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //Clear the renderer, save persistables
             this.renderer.clear(options.noMercy, options.savePersistables);
+
+            //Clean any possiblyUnrealizedDisplayObjects
+            $.each(this.possiblyUnrealizedDisplayObjects, function(i, obj) {
+                utils.removeSomethingFromRenderer(obj);
+            })
+            this.possiblyUnrealizedDisplayObjects = [];
 
             //Clear listeners, save invincible listeners
             this.clearListeners(options.noMercy);

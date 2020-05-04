@@ -37,10 +37,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         this.frameRequestId = null;
 
         //if(debug) {
-            console.info("Runner configuration:");
-            console.info("fixed: " + this.isFixed);
-            console.info("interpolating: " + this.interpolate);
-            console.info("desired fps: " + this.fps);
+            // console.info("Runner configuration:");
+            // console.info("fixed: " + this.isFixed);
+            // console.info("interpolating: " + this.interpolate);
+            // console.info("desired fps: " + this.fps);
         //}
 
         var tick = function(time) {

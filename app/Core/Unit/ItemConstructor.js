@@ -206,6 +206,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
             this.icon.tooltipObj.destroy();
             utils.removeSomethingFromRenderer(this.nameDisplayBase);
             utils.removeSomethingFromRenderer(this.nameDisplay);
+            utils.removeSomethingFromRenderer(this.icon);
             if(newItem.body) {
                 currentGame.removeBody(newItem.body);
             }

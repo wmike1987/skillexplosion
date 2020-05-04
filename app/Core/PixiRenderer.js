@@ -173,11 +173,11 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			this.canvasEl = this.pixiApp.renderer.view;
 
 			//add-on gstats (ctrl + shift + f to show)
-			var pixiHooks = new GStats.PIXIHooks(this.pixiApp);
-			this.stats = new GStats.StatsJSAdapter(pixiHooks);
-			document.body.appendChild(this.stats.stats.dom || this.stats.stats.domElement);
-			this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
-			this.stats.stats.dom.style.visibility = 'hidden';
+			// var pixiHooks = new GStats.PIXIHooks(this.pixiApp);
+			// this.stats = new GStats.StatsJSAdapter(pixiHooks);
+			// document.body.appendChild(this.stats.stats.dom || this.stats.stats.domElement);
+			// this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
+			// this.stats.stats.dom.style.visibility = 'hidden';
 
 			//setup pixi interaction
 			this.interaction = this.pixiApp.renderer.plugins.interaction;
