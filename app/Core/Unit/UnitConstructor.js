@@ -24,6 +24,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             //mixin the unit options into the unit base
             var newUnit = $.extend(originalUnit, unitBase(), options.unit);
 
+            //mixin hitbox attributes
+            $.extend(newUnit, {hitboxWidth: options.hitboxWidth, hitboxHeight: options.hitboxHeight, hitboxYOffset: options.hitboxYOffset});
+
             //death pact slaves
             if(options.slaves) {
                 $.each(options.slaves, function(i, sound) {
@@ -127,7 +130,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             selectionBody.unit = newUnit;
             selectionBody.wwidth = options.hitboxWidth || 20,
             selectionBody.hheight = options.hitboxHeight || 20,
-            utils.attachSomethingToBody(selectionBody, body, {x: 0, y: -8});
+            utils.attachSomethingToBody(selectionBody, body, {x: 0, y: options.hitboxYOffset || -8});
             utils.deathPact(newUnit, selectionBody);
 
             //back references

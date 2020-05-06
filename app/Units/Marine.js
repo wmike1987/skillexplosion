@@ -672,12 +672,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 });
                 utils.addSomethingToRenderer(anim);
                 anim.play();
-
-                this.isAttackable = false;
-                utils.moveUnitOffScreen(this);
-                this.stop();
-                currentGame.unitSystem.deselectUnit(this);
-                //currentGame.removeUnit(this);
             },
             _init: function() {
                 if(!this.bypassRevival) {

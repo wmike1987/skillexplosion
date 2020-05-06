@@ -382,15 +382,25 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return sprite.scale;
         },
 
+        /* If we're attaching a body, don't worry about interpolation. Note: attaching
+         * a body to another body only updates the attached body after an engine update, so any
+         * manual moves of the master body won't take effect until an afterUpdate is triggered
+         *
+         * If we're attaching a sprite, hitch onto interpolation
+         */
         attachSomethingToBody: function(something, body, offset) {
             offset = offset || {x: 0, y: 0};
+            var callbackLocation = 'afterRenderWorld';
+            if(something.type && something.type == 'body') {
+                callbackLocation = 'afterUpdate';
+            }
             var tick = currentGame.addTickCallback(function() {
                 if(something.type && something.type == 'body') {
-                    Matter.Body.setPosition(something, Matter.Vector.add((body.interpolatedPosition || body.position), offset));
+                    Matter.Body.setPosition(something, Matter.Vector.add(body.position, offset));
                 } else {
-                    something.position = Matter.Vector.add((body.interpolatedPosition || body.position), offset);
+                    something.position = Matter.Vector.add(body.lastDrawPosition || body.position, offset);
                 }
-            }, false, 'afterRenderWorld');
+            }, false, callbackLocation);
             something.bodyAttachment = tick;
             this.deathPact(body, tick);
         },
@@ -500,6 +510,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         moveUnitOffScreen: function(unit) {
             unit.body.oneFrameOverrideInterpolation = true;
             unit.position = {x: 8000, y: 8000};
+            if(unit.selectionBody)
+                Matter.Body.setPosition(unit.selectionBody, unit.position);
+            if(unit.smallerBody)
+                Matter.Body.setPosition(unit.smallerBody, unit.position);
         },
 
         calculateRandomPlacementForBodyWithinCanvasBounds: function(body, neatly) {

@@ -141,21 +141,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
             //update selected bodies upon body removal
             this.bodyRemoveCallback = Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
-
                 var removedBody = event.object[0];
 
-                //Re-assign the selected unit if needed
-                if(this.selectedUnit == removedBody.unit) {
-                    this.annointNextPrevailingUnit({onRemove: true});
-                }
-
-                //remove body from these data structures
                 if(removedBody.unit) {
-                    delete this.selectedUnits[removedBody.unit.unitId];
-                    this.updateOrderedUnits(this.selectedUnits);
-                    delete this.box.pendingSelections[removedBody.unit.unitId];
-                    Matter.Events.trigger(this, 'selectedUnitsChange', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
+                    this.deselectUnit(removedBody.unit);
                 }
+            }.bind(this));
+
+            this.manualRemoveCallback = Matter.Events.on(this, 'removeUnitFromSelectionSystem', function(event) {
+                var removedUnit = event.unit;
+                this.deselectUnit(removedUnit);
             }.bind(this));
 
             var originalX = 0;
@@ -572,14 +567,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                 if(!otherBody.isSelectionBody) return;
                 var otherUnit = otherBody.unit || {};
                 var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
+
                 if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
                     pendingBodyCount > 0) return;
-                if(!otherUnit.isMoving && otherUnit.isSelectable) {
+
+                if(!otherUnit.isMoving && !otherBody.isSmallerBody && otherUnit.isSelectable) {
                     this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
                     if(otherUnit == this.box.permaPendingUnit)
                         this.box.boxContainsPermaPending = true;
                 }
+
                 if(otherBody.isSmallerBody && otherUnit.isMoving && otherUnit.isSelectable) {
                     this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
@@ -591,7 +589,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             Matter.Events.on(this.box, 'onCollideEnd', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit || {};
-                if(!otherUnit.isMoving && otherUnit.isSelectable && otherUnit != this.box.permaPendingUnit) {
+                if(!otherUnit.isMoving && otherUnit.isSelectable && otherUnit != this.box.permaPendingUnit && !otherBody.isSmallerBody) {
                     this.changeSelectionState(otherUnit, 'selectionPending', false);
                     delete this.box.pendingSelections[otherUnit.unitId];
                 }
@@ -944,6 +942,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             if(this.box) {
                 Matter.Events.off(this.box);
                 Matter.Events.off(this.engine.world, this.bodyRemoveCallback)
+                Matter.Events.off(this, this.manualRemoveCallback)
                 currentGame.removeBody(this.box);
                 this.box = null;
             }
@@ -979,9 +978,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             $('body').off('keypress.unitSystem');
         },
 
+        //return units attached to the main selection body
         this.convertBodiesToSelectionEnabledUnits = function(bodies) {
             bodies = $.grep(bodies, function(body) {
-                return body.isSelectionBody;
+                return body.isSelectionBody && !body.isSmallerBody;
             })
 
             bodies = $.map(bodies, function(body) {

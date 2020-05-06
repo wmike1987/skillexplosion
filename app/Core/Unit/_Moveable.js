@@ -29,7 +29,7 @@ function($, Matter, PIXI, utils, Command) {
             }
 
             //Create body sensor - the selection box collides with a slightly smaller body size
-            var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight/10*9 : this.selectionBody.hheight;
+            var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight/10*8 : this.selectionBody.hheight;
             var swidth = this.smallerBodyWidthChange ? this.selectionBody.wwidth/7*4 : this.selectionBody.wwidth;
             this.smallerBody = Matter.Bodies.rectangle(0, 0, swidth, sheight, {
                 isSensor: true,
@@ -41,7 +41,7 @@ function($, Matter, PIXI, utils, Command) {
             this.smallerBody.isSmallerBody = true;
             this.smallerBody.unit = this;
 
-            utils.attachSomethingToBody(this.smallerBody, this.body, {x: 0, y: -8});
+            utils.attachSomethingToBody(this.smallerBody, this.body, {x: 0, y: this.hitboxYOffset || -8});
             currentGame.addBody(this.smallerBody);
 
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);

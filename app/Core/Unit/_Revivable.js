@@ -11,10 +11,16 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 this.graveShadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stage', position: utils.clonePosition(this.position, {y: 15})});
                 this.reviveCenter = utils.clonePosition(this.position);
                 this.grave.tint = utils.percentAsHexColor(0, {start: {r: 255, g: 0, b: 0}, final: {r: 255, g: 255, b: 255}});
+
                 this.canAttack = false;
                 this.canMove = false;
                 this.isAttackable = false;
+                utils.moveUnitOffScreen(this);
+                Matter.Events.trigger(currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this})
+                this.stop();
+
                 originalDeath.call(this);
+
                 this.reviveTimer = currentGame.addTimer({
                     name: 'revive' + this.unitId,
                     gogogo: true,
