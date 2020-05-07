@@ -9,6 +9,33 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 		this.unit = options.unit;
 		this.currentDirection = null;
 
+		var isoManager = this;
+		Object.defineProperty(this.unit, 'isoManagedAlpha', {
+			get: function() {
+				return this._isoManagedAlpha;
+			},
+			set: function(value) {
+				this._isoManagedAlpha = value;
+				if(isoManager.currentAnimation) {
+					isoManager.currentAnimation.alpha = value || 1;
+				}
+			},
+			configurable: true
+		});
+
+		Object.defineProperty(this.unit, 'isoManagedTint', {
+			get: function() {
+				return this._isoManagedTint;
+			},
+			set: function(value) {
+				this._isoManagedTint = value;
+				if(isoManager.currentAnimation) {
+					isoManager.currentAnimation.tint = value || 0xFFFFFF;
+				}
+			},
+			configurable: true
+		});
+
 		//attach listeners (using the matter event system)
 		if(this.unit.isMoveable) {
 			Matter.Events.on(this.unit, 'move', function(event) {
@@ -55,10 +82,8 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 					renderling.visible = false;
 			}.bind(this));
 
-			//turn one on and give it certain global properties
+			//turn one on
 			this.currentAnimation = animation;
-			animation.alpha = this.unit.isoManagedAlpha || 1;
-			animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
 			animation.isStopped = false;
 			animation.visible = true;
 			if(options.stop) {
@@ -66,6 +91,10 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 			} else {
 				animation.play();
 			}
+
+			//ensure the current animation has the current iso properties
+			animation.alpha = this.unit.isoManagedAlpha || 1;
+			animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
 		}
 
 		this.idle = function() {
