@@ -117,6 +117,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                 },
 
                 set: function(value) {
+                    if(!value) {
+                        unitSystem.abilityDispatch = null;
+                    }
+
                     if(this._selectedUnit) {
                         utils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
                     }
@@ -204,12 +208,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     //If one, already-selected body is requested here, remove from selection
                     if(loneSoldier && ($.inArray(loneSoldier.unitId.toString(), Object.keys(this.selectedUnits)) > -1)) {
                         this.deselectUnit(loneSoldier);
-                        // this.changeSelectionState(loneSoldier, 'selected', false);
-                        // if(this.selectedUnit == loneSoldier) {
-                        //     this.annointNextPrevailingUnit({onRemove: true});
-                        // }
-                        // delete this.selectedUnits[loneSoldier.unitId];
-                        // this.updateOrderedUnits(this.selectedUnits);
                     }
                     else {
                         //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
@@ -814,6 +812,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                 var selectedUnitCount = Object.keys(this.selectedUnits).length;
                 var annointNextUnit = false;
                 var firstUnit = null;
+                this.abilityDispatch = null;
+
+                //Figure out the next unit
                 if(!selectedUnitCount) {
                     this.selectedUnit = null;
                     return;

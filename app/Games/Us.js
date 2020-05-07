@@ -68,7 +68,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createShane();
             this.createUrsula();
             this.createBane(0);
-            this.createCritter(1);
+            this.createCritter(10);
 
 
             //create empty scene and transition to camp scene

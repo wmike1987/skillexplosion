@@ -345,22 +345,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 Matter.Events.on(shadow, 'onCollide', function(pair) {
                     var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
                     var otherUnit = otherBody.unit;
-                    if(otherUnit && otherUnit.team != medic.team) {
-                        otherUnit.stop();
-                        otherUnit.canMove = false;
-                        otherUnit.canAttack = false;
-                        otherUnit.isAttackable = false;
-                        currentGame.addTimer({
-                            name: 'petrified' + otherUnit.unitId,
-                            runs: 1,
-                            timeLimit: currentAugment.duration,
-                            killsSelf: true,
-                            callback: function() {
-                                otherUnit.canMove = true;
-                                otherUnit.canAttack = true;
-                                otherUnit.isAttackable = true;
-                            }
-                        })
+                    if(otherUnit && otherUnit != medic) {
+                        otherUnit.petrify(currentAugment.duration);
                     }
                 })
             }

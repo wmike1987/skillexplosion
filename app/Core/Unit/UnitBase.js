@@ -38,6 +38,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
         var levelUpSound = utils.getSound('levelup.wav', {volume: 1, rate: .8});
         var itemPlaceSound = utils.getSound('itemplace.wav', {volume: .06, rate: 1});
+        var petrifySound = utils.getSound('petrify.wav', {volume: .07, rate: 1});
 
         //default unit attributes
         var UnitBase = {
@@ -400,11 +401,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 }.bind(this);
 
                 Matter.Events.on(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
-                Matter.Events.on(this, "onremove", function() {
-                    Matter.Events.off(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
-                });
 
                 Matter.Events.on(this, "onremove", function() {
+                    Matter.Events.off(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
                     $.each(this.getAllItems(true), function(i, item) {
                         if(item) {
                             currentGame.removeItem(item);
@@ -677,6 +676,41 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 if(includeBlank)
                     items.concat(this.emptySlots);
                 return items;
+            },
+
+            petrify: function(duration) {
+                this.stop();
+                this.canMove = false;
+                this.canAttack = false;
+                this.isAttackable = false;
+                this.isoManagedAlpha = .6;
+                this.idleCancel = true;
+                Matter.Sleeping.set(this.body, true);
+                if(this.petrifyTintTimer) {
+                    currentGame.invalidateTimer(this.petrifyTintTimer);
+                }
+                this.petrifyTintTimer = utils.graduallyTint(this, 0x18bb96, 0xb0b0b0, 3000, 'isoManagedTint');
+                utils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
+
+                var unit = this;
+                petrifySound.play();
+                currentGame.addTimer({
+                    name: 'petrified' + this.unitId,
+                    runs: 1,
+                    timeLimit: duration || 2000,
+                    killsSelf: true,
+                    callback: function() {
+                        Matter.Sleeping.set(unit.body, false);
+                        unit.canMove = true;
+                        unit.canAttack = true;
+                        unit.isAttackable = true;
+                        unit.idleCancel = false;
+                        currentGame.invalidateTimer(unit.petrifyTintTimer);
+                        this.petrifyTimer = null;
+                        unit.isoManagedTint = null;
+                        unit.isoManagedAlpha = null;
+                    }
+                })
             },
         }
 

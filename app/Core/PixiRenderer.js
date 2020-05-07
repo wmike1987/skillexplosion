@@ -117,6 +117,9 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 				//loop through fully fledged sprites and latch them to the body's coordinates
 				$.each(body.renderlings, function(property, sprite) {
+					if(sprite.independentRender) {
+						return;
+					}
 
     				sprite.position.x = drawPosition.x + sprite.offset.x;
     				sprite.position.y = drawPosition.y + sprite.offset.y;

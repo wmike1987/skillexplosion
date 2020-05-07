@@ -616,6 +616,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             description: 'Deal damage to an enemy unit.',
             hotkey: 'A',
             activeAugment: null,
+            enablers: [function(commandObj) {
+                return marine.canAttack;
+            }.bind(this)],
             augments: [
                 {
                     name: 'fully auto',

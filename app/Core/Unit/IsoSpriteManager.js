@@ -22,7 +22,6 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 			},
 			configurable: true
 		});
-
 		Object.defineProperty(this.unit, 'isoManagedTint', {
 			get: function() {
 				return this._isoManagedTint;
@@ -109,6 +108,9 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 
 			this.idleTimer = currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
 				this.timeLimit = 2000 + Math.random() * 2000;
+				if(self.unit.idleCancel) {
+					return;
+				}
 				var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 				self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true, idle: true});
 			}})

@@ -901,7 +901,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return this.rgbToHex(newR, newG, newB);
         },
 
-        graduallyTint: function(tintable, startColor, finalColor, transitionTime) {
+        graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName) {
             var utils = this;
             var forward = true;
             return currentGame.addTimer({
@@ -915,7 +915,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     var s = forward ? startColor : finalColor;
                     var f = forward ? finalColor : startColor;
                     var color = utils.percentAsHexColor(this.percentDone, {start: s, final: f})
-                    tintable.tint = color;
+                    tintable[tintableName || 'tint'] = color;
                 },
                 totallyDoneCallback: function() {
                     var tempForward = !forward;
@@ -923,6 +923,27 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     forward = tempForward;
                 }
             })
+        },
+
+        shakeSprite: function(sprite, duration) {
+            var shakeFrameLength = 32;
+            var position = this.clonePosition(sprite.position);
+            sprite.independentRender = true; //in case we're on a body
+            currentGame.addTimer(
+                {
+                    name: 'shake' + this.uuidv4(),
+                    timeLimit: shakeFrameLength,
+                    runs: Math.ceil(duration/shakeFrameLength),
+                    killsSelf: true,
+                    callback: function() {
+                        sprite.position = {x: position.x + (this.runs%2==0 ? 1.5 : -1.5)*2, y: position.y}
+                    },
+                    totallyDoneCallback: function() {
+                        sprite.position = position;
+                        sprite.independentRender = false;
+                    }
+                }
+            )
         },
 
         flattenObjectToArray: function(object) {
