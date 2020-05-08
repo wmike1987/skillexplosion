@@ -1,8 +1,8 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/EnemyMarine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter'],
+'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter', 'units/AlienGuard'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, TileMapper,
-    Doodad, ItemUtils, Scene, Critter) {
+    Doodad, ItemUtils, Scene, Critter, AlienGuard) {
 
     var targetScore = 1;
 
@@ -68,7 +68,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createShane();
             this.createUrsula();
             this.createBane(0);
-            this.createCritter(10);
+            this.createCritter(1);
+            this.createAlienGuard(1);
 
 
             //create empty scene and transition to camp scene
@@ -318,11 +319,25 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 utils.placeBodyWithinRadiusAroundCanvasCenter(critter, 600, 400);
                 this.addUnit(critter, true);
                 if(true) {
+                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: critter});
+                }
+            }
+        },
+
+        createAlienGuard: function(number, autoHone) {
+            for(x = 0; x < number; x++) {
+                //var tint = x%2==0 ? 0xff0000 : null;
+                var guard = AlienGuard({team: this.playerTeam});
+                if(autoHone)
+                    guard.honeRange = 1400;
+                utils.placeBodyWithinRadiusAroundCanvasCenter(guard, 600, 400);
+                this.addUnit(guard, true);
+                if(true) {
                     // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
                     // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
                     // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
                     // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: critter});
+                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: guard});
                 }
             }
         },

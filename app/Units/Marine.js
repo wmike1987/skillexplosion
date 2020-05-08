@@ -286,7 +286,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         //Dash
         var dashVelocity = .8;
         var dashSound = utils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
-
         var dash = function(destination, commandObj) {
             //get current augment
             var thisAbility = this.getAbilityByName('Dash');
@@ -358,7 +357,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             utils.deathPact(this, self.dashTimer, 'dashDoneTimer');
         }
-
         var dashAbility = new Ability({
             name: 'Dash',
             key: 'd',
@@ -608,6 +606,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             Matter.Sleeping.set(this.body, !this.body.isSleeping);
         }
 
+        //Main Attack
         var gunAbility = new Ability({
             name: 'Rifle',
             manualDispatch: true,
