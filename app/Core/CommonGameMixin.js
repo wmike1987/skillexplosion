@@ -532,7 +532,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     //console.info("removing " + slave)
                     slave();
                 } else if(slave.unload) {
-                    // console.info("removing sounds!" + slave)
+                    // console.info("unload sounds: " + slave._src)
                     slave.unload();
                 } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
                     utils.removeSomethingFromRenderer(slave);
@@ -606,6 +606,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 utils.removeSomethingFromRenderer(obj);
             })
             this.possiblyUnrealizedDisplayObjects = [];
+
+            //Unload sounds we've created
+            this.endGameSound.unload();
+            this.loseLifeSound.unload();
 
             //Clear listeners, save invincible listeners
             this.clearListeners(options.noMercy);

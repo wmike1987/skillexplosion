@@ -648,6 +648,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         getSound: function(name, options) {
             options = options || {};
             options.src = '/app/Sounds/' + name;
+            // console.info("loading: " + options.src);
             return new h.Howl(options);
         },
 

@@ -18,12 +18,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         currentScene: null,
 
         initExtension: function() {
-            //wave begin sound
-            this.nextWave = utils.getSound('rush1.wav');
-
-            //blow up sound
-            this.pop = utils.getSound('pop1.wav');
-
             //create blue glow filter
             this.simpleLightShader = new PIXI.Filter(null, lightShader, {
                 lightOnePosition: {x: -10000.0, y: -10000.0},
@@ -69,7 +63,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createUrsula();
             this.createBane(0);
             this.createCritter(1);
-            this.createAlienGuard(1);
+            this.createAlienGuard(12);
 
 
             //create empty scene and transition to camp scene
@@ -382,7 +376,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                     enemy.fulfilled = true;
                                     return;
                                 }
-                                newUnit = enemy.constructor({team: 4});
+                                var newUnit = enemy.constructor({team: 4});
                                 if(newUnit.isoManaged) {
                                     // newUnit.isoManagedTint = 0x020C0E;
                                 }
