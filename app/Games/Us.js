@@ -1,8 +1,8 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/EnemyMarine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter', 'units/AlienGuard'],
+'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter', 'units/AlienGuard', 'units/Slother'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, TileMapper,
-    Doodad, ItemUtils, Scene, Critter, AlienGuard) {
+    Doodad, ItemUtils, Scene, Critter, AlienGuard, Slother) {
 
     var targetScore = 1;
 
@@ -63,7 +63,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createUrsula();
             this.createBane(0);
             this.createCritter(1);
-            this.createAlienGuard(12);
+            this.createAlienGuard(0);
+            this.createSlother(1);
 
 
             //create empty scene and transition to camp scene
@@ -161,7 +162,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //     item: {type: 'basic', total: 3}});
             nextLevelOptions.enemySet.push({
                 constructor: EnemyMarine,
-                spawn: {total: 5, n: 1, hz: 2000, maxOnField: 1},
+                spawn: {total: 55, n: 1, hz: 300, maxOnField: 1},
                 item: {type: 'basic', total: 3}
             })
 
@@ -268,6 +269,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         createUrsula: function() {
             this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
+            this.ursula.idleCancel = true;
             return this.ursula;
         },
 
@@ -332,6 +334,24 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
                     // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
                     ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: guard});
+                }
+            }
+        },
+
+        createSlother: function(number, autoHone) {
+            for(x = 0; x < number; x++) {
+                //var tint = x%2==0 ? 0xff0000 : null;
+                var slother = Slother({team: 4});
+                if(autoHone)
+                    slother.honeRange = 1400;
+                utils.placeBodyWithinRadiusAroundCanvasCenter(slother, 600, 400);
+                this.addUnit(slother, true);
+                if(true) {
+                    // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
+                    // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
+                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: slother});
                 }
             }
         },
