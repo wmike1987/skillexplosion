@@ -717,8 +717,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                  if(value) {
                      utils.setCursorStyle('server:AttackCursor.png');
                  }
-                 else
+                 else {
                      utils.setCursorStyle('server:MainCursor.png');
+                 }
              }.bind(this), get: function() {
                  return this._attackMove;
              }});
@@ -764,7 +765,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                  //if we don't have a selected unit, just return
                  if(Object.keys(this.selectedUnits).length == 0) return;
 
+                 //set ability dispatch and possibly abandon a pending attack move
                  this.abilityDispatch = event.key.toLowerCase();
+                 this.attackMove = false
+
                  //if we're s or h, dispatch to all selected units, this is a special case
                  if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
                      $.each(this.selectedUnits, function(key, unit) {
