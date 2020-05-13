@@ -1,0 +1,20 @@
+{"frames": {
+
+"SlotherBullet.png":
+{
+	"frame": {"x":1,"y":1,"w":30,"h":30},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":30,"h":30},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Slother.png",
+	"format": "RGBA8888",
+	"size": {"w":32,"h":32},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:fa250cf27b01715ea5cf6dd73524bff1:fc520b7d4ff59fad597ef549d1962bb8:95e38d697955c782d98cddb729c7a4f7$"
+}
+}

@@ -281,9 +281,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         damage: 0,
                         attackExtension: function(target) {
                             var projectileOptions = {
-                                damage: 5,
-                                speed: 6,
-                                displayObject: utils.createDisplayObject('ThrowingDaggerBase'),
+                                damage: 15,
+                                speed: 12,
+                                displayObject: utils.createDisplayObject('SlotherBullet'),
                                 target: target,
                                 owningUnit: this,
                                 autoSend: true,

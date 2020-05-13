@@ -230,7 +230,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
-        var fireSound = utils.getSound('critterhit.wav', {volume: .05, rate: 1.5});
+        var attackSound = utils.getSound('critterhit.wav', {volume: .05, rate: 1.5});
 
         var unitProperties = $.extend({
             unitType: 'Critter',
@@ -268,7 +268,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxYOffset: 8,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [fireSound],
+                slaves: [attackSound, unitProperties.portrait, unitProperties.wireframe],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 3.00,
@@ -280,7 +280,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     range: options.radius*2+10,
                     damage: 6,
                     attackExtension: function(target) {
-                        fireSound.play();
+                        attackSound.play();
                     },
                 },
         });

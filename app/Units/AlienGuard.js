@@ -268,7 +268,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxYOffset: 8,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [fireSound],
+                slaves: [fireSound, unitProperties.portrait, unitProperties.wireframe],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 3.00,

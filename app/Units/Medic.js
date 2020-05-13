@@ -768,7 +768,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [healsound, mineSound, mineBeep, mineExplosion, footstepSound, shroudSound],
+                slaves: [healsound, mineSound, mineBeep, mineExplosion, footstepSound, shroudSound, unitProperties.portrait, unitProperties.wireframe],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.15,

@@ -11,7 +11,7 @@ requirejs.config({
         units: '../app/Units',
         items: '../app/Items',
         shaders: '../app/Shaders',
-    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.0/pixi", //4.8.6 last stable
+    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.4/pixi",
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min",
 	    //'matter-js': "matter/matter-timing",
@@ -190,6 +190,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('BanelingAnimations1', 'app/Textures/Us/BanelingAnimations1.json');
             loader.add('Marble', 'app/Textures/Us/Marble.json');
             loader.add('Critter', 'app/Textures/Us/Critter.json');
+            loader.add('Slother', 'app/Textures/Us/Slother.json');
 
             //items
             loader.add('Items', 'app/Textures/Us/Items.json');
