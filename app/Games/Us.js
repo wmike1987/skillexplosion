@@ -161,8 +161,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //     spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
             //     item: {type: 'basic', total: 3}});
             nextLevelOptions.enemySet.push({
-                constructor: EnemyMarine,
-                spawn: {total: 55, n: 1, hz: 300, maxOnField: 1},
+                constructor: Slother,
+                spawn: {total: 8, n: 1, hz: 1200, maxOnField: 1},
                 item: {type: 'basic', total: 3}
             })
 

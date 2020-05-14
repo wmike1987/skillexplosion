@@ -230,11 +230,11 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 stage: "stageNTwo",
                 offset: {x: 0, y: 22}}];
 
-            var fireSound = utils.getSound('critterhit.wav', {volume: .05, rate: 1.5});
+            var fireSound = utils.getSound('slotherfire.wav', {volume: .015, rate: 1});
 
             var unitProperties = $.extend({
-                unitType: 'Critter',
-                health: 20,
+                unitType: 'Slother',
+                health: 2000,
                 defense: 1,
                 energy: 0,
                 energyRegenerationRate: 1,
@@ -268,24 +268,27 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     hitboxYOffset: 8,
                     mass: options.mass || 8,
                     mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                    slaves: [fireSound],
+                    slaves: [fireSound, unitProperties.wireframe, unitProperties.portrait],
                     unit: unitProperties,
                     moveable: {
                         moveSpeed: 3.00,
                         walkAnimations: runAnimations,
                     }, attacker: {
                         attackAnimations: attackAnimations,
-                        cooldown: 1500,
+                        cooldown: 1400,
                         honeRange: 500,
                         range: 440,
                         damage: 0,
-                        attackExtension: function(target) {
+                        attack: function(target) {
+                            fireSound.play();
                             var projectileOptions = {
-                                damage: 15,
-                                speed: 12,
+                                damage: this.damage,
+                                speed: 5,
                                 displayObject: utils.createDisplayObject('SlotherBullet'),
                                 target: target,
+                                impactType: 'collision',
                                 owningUnit: this,
+                                originOffset: 30,
                                 autoSend: true,
                             }
                             var projectile = new Projectile(projectileOptions);

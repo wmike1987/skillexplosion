@@ -230,7 +230,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
-        var attackSound = utils.getSound('critterhit.wav', {volume: .05, rate: 1.5});
+        var attackSound = utils.getSound('critterhit.wav', {volume: .15, rate: 1});
 
         var unitProperties = $.extend({
             unitType: 'Critter',

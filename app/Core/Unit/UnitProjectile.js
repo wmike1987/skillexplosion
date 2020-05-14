@@ -4,8 +4,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js',], function($, utils, Matter) {
      * options:
      *  damage
      *  speed
-     *  track
+     *  trackTarget
      *  impactRemoveFunction
+     *  impactType {always, collision}
      *  impactFunction
      *  target
      *  owningUnit
@@ -16,15 +17,22 @@ define(['jquery', 'utils/GameUtils', 'matter-js',], function($, utils, Matter) {
     return function(options) {
         $.extend(this, {
             autoSend: false,
-            impactRemoveFunction: function(target) {
+            impactType: 'always',
+            impactRemoveFunction: function() {
                 currentGame.removeBody(this.body)
             },
             impactFunction: function(target) {
                 target.sufferAttack(this.damage, this.owningUnit);
+                if(this.impactExtension) {
+                    this.impactExtension(target);
+                }
             }.bind(this)
         }, options);
 
         var startPosition = utils.clonePosition(this.owningUnit.position);
+        if(this.originOffset) {
+            startPosition = utils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset)
+        }
         this.body = Matter.Bodies.circle(startPosition.x, startPosition.y, 4, {
                       frictionAir: 0,
                       mass: options.mass || 5,
@@ -36,13 +44,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js',], function($, utils, Matter) {
         this.send = function() {
             utils.sendBodyToDestinationAtSpeed(this.body, targetPosition, this.speed);
             var impactTick = currentGame.addTickCallback(function() {
-              if(utils.bodyRanOffStage(this.body) || utils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
+              if(utils.bodyRanOffStage(this.body)) {
                   currentGame.removeBody(this.body);
-                  this.impactRemoveFunction(this.target);
+              }
+
+              if(this.impactType == 'always' && utils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
+                  if(this.impactRemoveFunction) {
+                      this.impactRemoveFunction();
+                  }
                   this.impactFunction(this.target);
               }
+
             }.bind(this))
             utils.deathPact(this.body, impactTick);
+
+            if(this.impactType == 'collision') {
+                Matter.Events.on(this.body, 'onCollide', function(pair) {
+                    var otherBody = pair.pair.bodyB == this.body ? pair.pair.bodyA : pair.pair.bodyB;
+                    var otherUnit = otherBody.unit;
+                    if(otherUnit != this.owningUnit && otherUnit && otherUnit.isAttackable && otherUnit.team != this.owningUnit.team) {
+                        this.impactRemoveFunction();
+                        this.impactFunction(otherUnit);
+                    }
+                }.bind(this))
+            }
         }
 
         this.body.renderChildren = [{

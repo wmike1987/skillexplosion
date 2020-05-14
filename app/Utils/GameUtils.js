@@ -955,6 +955,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return array;
         },
 
+        //return new position
+        addScalarToVectorTowardDestination: function(start, destination, scalar) {
+            var subbed = Matter.Vector.sub(destination, start);
+            var normed = Matter.Vector.normalise(subbed);
+            var scaled = Matter.Vector.mult(normed, scalar);
+            return Matter.Vector.add(start, scaled);
+        },
+
         sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {
             //figure out the movement vector
             var velocityVector = Matter.Vector.sub(destination, body.position);
