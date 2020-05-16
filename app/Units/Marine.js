@@ -704,7 +704,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     cooldown: 650,
                     honeRange: 300,
                     range: 180,
-                    damage: 50,
+                    damage: 10,
                     attack: function(target) {
                         var rifleAbility = this.getAbilityByName('Rifle');
                         var currentAugment = rifleAbility.currentAugment || {name: ""};
