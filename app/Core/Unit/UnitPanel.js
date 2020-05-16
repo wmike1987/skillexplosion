@@ -532,9 +532,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                         }
                     }.bind(this))
                 }
+                Tooltip.makeTooltippable(ability.icon, ability);
             }
 
-            Tooltip.makeTooltippable(ability.icon, ability);
 
             //refresh autocast state
             if(ability.abilityBorder) {

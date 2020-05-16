@@ -86,9 +86,11 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         $.each(this.description, function(i, descr) {
             utils.removeSomethingFromRenderer(descr);
         })
-        if(this.systemMessage) {
-            utils.removeSomethingFromRenderer(this.systemMessage);
-        }
+
+        $.each(this.systemMessages, function(i, sysMessage) {
+            utils.removeSomethingFromRenderer(sysMessage);
+        })
+
         utils.removeSomethingFromRenderer(this.base);
 
         $.each(this.updaters, function(key, updater) {

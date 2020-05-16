@@ -355,7 +355,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             if(options && options.anchor) {
                 obj.overrideDefaultAnchor = true;
             }
-            currentGame.possiblyUnrealizedDisplayObjects.push(obj);
             return obj;
         },
 
@@ -983,6 +982,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             })
 
             return array;
+        },
+
+        spliceFromArray: function(array, item) {
+            var i = array.length;
+            while(i--) {
+                if(array[i] == item) {
+                    array.splice(i, 1);
+                }
+            }
         },
 
         //return new position

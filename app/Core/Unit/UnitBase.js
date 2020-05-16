@@ -94,7 +94,8 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             dropItemsOnDeath: true,
 
             sufferAttack: function(damage, attackingUnit) {
-                this.currentHealth -= Math.max(0, (damage - this.defense));
+                var alteredDamage = Math.max(1, (damage - this.defense));
+                this.currentHealth -= alteredDamage;
                 if (this.currentHealth <= 0) {
                     this._death();
                     if(attackingUnit) {
@@ -112,7 +113,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         this.barTimer.reset();
                     }
                 }
-                Matter.Events.trigger(this, 'sufferedAttack', damage);
+                Matter.Events.trigger(this, 'sufferedAttack', alteredDamage);
             },
 
             _death: function() {

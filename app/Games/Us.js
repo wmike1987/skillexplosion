@@ -285,6 +285,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             unit.canMove = true;
             unit.canAttack = true;
             unit.hideGrave();
+            unit.stop();
         },
 
         createBane: function(number, autoHone) {
