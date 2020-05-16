@@ -659,7 +659,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             portrait: utils.createDisplayObject('MarineRedHat'),
             wireframe: utils.createDisplayObject('MarineRedHat'),
             team: options.team || 4,
-            priority: 50,
+            priority: 10,
             name: options.name,
             heightAnimation: 'up',
             throwAnimations: throwAnimations,
@@ -704,7 +704,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     cooldown: 650,
                     honeRange: 300,
                     range: 180,
-                    damage: 10,
+                    damage: 50,
                     attack: function(target) {
                         var rifleAbility = this.getAbilityByName('Rifle');
                         var currentAugment = rifleAbility.currentAugment || {name: ""};

@@ -28,7 +28,9 @@ function($, Matter, PIXI, utils, Command) {
                 return {isSoloMover: Object.keys(currentGame.unitSystem.selectedUnits).length == 1};
             }
 
+            //**********************
             //Create body sensor - the selection box collides with a slightly smaller body size
+            //**********************
             var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight/10*8 : this.selectionBody.hheight;
             var swidth = this.smallerBodyWidthChange ? this.selectionBody.wwidth/7*4 : this.selectionBody.wwidth;
             this.smallerBody = Matter.Bodies.rectangle(0, 0, swidth, sheight, {

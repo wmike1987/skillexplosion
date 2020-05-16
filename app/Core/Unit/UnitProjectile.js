@@ -62,7 +62,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js',], function($, utils, Matter) {
                 Matter.Events.on(this.body, 'onCollide', function(pair) {
                     var otherBody = pair.pair.bodyB == this.body ? pair.pair.bodyA : pair.pair.bodyB;
                     var otherUnit = otherBody.unit;
-                    if(otherUnit != this.owningUnit && otherUnit && otherUnit.isAttackable && otherUnit.team != this.owningUnit.team) {
+                    if(otherUnit != this.owningUnit && otherUnit && otherUnit.isTargetable && otherUnit.team != this.owningUnit.team) {
                         this.impactRemoveFunction();
                         this.impactFunction(otherUnit);
                     }

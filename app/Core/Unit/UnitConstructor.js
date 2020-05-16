@@ -109,7 +109,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 });
             }
 
+            //**********************
             // create collision body
+            //**********************
             var body = Matter.Bodies.circle(0, 0, options.radius, {
                 restitution: .95,
                 frictionAir: .9,
@@ -120,7 +122,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             body.collisionFilter.mask -= 0x0002;
             body.unit = newUnit; //reference to parent
 
+            //**********************
             // create selection body
+            //**********************
             var selectionBody = Matter.Bodies.rectangle(5, 5, options.hitboxWidth || 20, options.hitboxHeight || 20, {
                 isSensor: true,
             });

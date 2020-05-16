@@ -570,6 +570,36 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return placement;
         },
 
+        placeBodyJustOffscreen: function(body, direction, variation) {
+            //if we've added a unit, call down to its body
+            if(body.isUnit) {
+                body = body.body;
+            }
+            var placement = {};
+            var randomPlacement = this.getRandomPlacementWithinCanvasBounds();
+            var offscreenAmount = 50;
+            var variation = Math.random() * (variation || offscreenAmount);
+            offscreenAmount += variation;
+            if(direction == 'random' || !direction) {
+                direction = utils.getRandomIntInclusive(1, 4);
+            }
+            if(direction == 'top' || direction == 1) {
+                placement.y = 0 - (offscreenAmount);
+                placement.x = randomPlacement.x;
+            } else if(direction == 'left' || direction == 2) {
+                placement.y = randomPlacement.y;
+                placement.x = 0 - offscreenAmount;
+            } else if(direction == 'right' || direction == 3) {
+                placement.y = randomPlacement.y;
+                placement.x = this.getCanvasWidth() + offscreenAmount;
+            } else if(direction == 'bottom' || direction == 4) {
+                placement.y = this.getPlayableHeight() + offscreenAmount;
+                placement.x = randomPlacement.x;
+            }
+            Matter.Body.setPosition(body, placement);
+            return placement;
+        },
+
         offScreenPosition: function() {
             return {x: -9999, y: -9999};
         },

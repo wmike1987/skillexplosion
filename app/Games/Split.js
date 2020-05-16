@@ -81,7 +81,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveab
     			$.extend(marble, Moveable);
     			marble.isSelectable = true;
     			marble.isMoveable = true;
-    			marble.isAttackable = true;
+    			marble.isTargetable = true;
     			marble.moveSpeed = 2.5;
     			marble.stop();
     			var tintIndex = this.getRandomIntInclusive(0, this.acceptableTints.length-1);
@@ -203,14 +203,14 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveab
     			marble.blastTargets = new Set();
                 Matter.Events.on(blastSensor, 'onCollide', function(pair) {
     		        var otherBody = pair.pair.bodyA == blastSensor ? pair.pair.bodyB : pair.pair.bodyA;
-    		        if(otherBody.isAttackable && marble.team != otherBody.team) {
+    		        if(otherBody.isTargetable && marble.team != otherBody.team) {
     	                marble.blastTargets.add(otherBody);
     		        }
     		    });
 
                 Matter.Events.on(blastSensor, 'onCollideEnd', function(pair) {
     		        var otherBody = pair.pair.bodyA == blastSensor ? pair.pair.bodyB : pair.pair.bodyA;
-    		        if(otherBody.isAttackable && marble.team != otherBody.team) {
+    		        if(otherBody.isTargetable && marble.team != otherBody.team) {
     	                marble.blastTargets.delete(otherBody);
     		        }
     		    });

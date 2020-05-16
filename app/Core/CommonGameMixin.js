@@ -308,6 +308,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 if(!this.noRightWall)
                     border.push(Matter.Bodies.rectangle(this.canvas.width+5, this.canvas.height/2, 10, this.canvas.height, { isStatic: true, noWire: true}));
 
+                border.forEach(function(el, index) {
+                    el.collisionFilter.category = 0x0004;
+                })
                 this.addBodies(border);
             }
 

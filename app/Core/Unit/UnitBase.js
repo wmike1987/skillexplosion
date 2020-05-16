@@ -57,7 +57,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             maxEnergy: 0,
             currentEnergy: 0,
             isSelectable: true,
-            isAttackable: true,
             smallerBodyWidthChange: false,
             smallerBodyHeightChange: false,
             abilities: [],
@@ -127,7 +126,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
 
             canTargetUnit: function(unit) {
-                return unit.isAttackable && this.team != unit.team;
+                return unit.isTargetable && this.team != unit.team;
             },
 
             pickupItem: function(item, explicitSlot) {
@@ -413,7 +412,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                 //add filter on the main render sprite
                 var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});
-                // var hoverShad = new PIXI.Shader(hoverFrag.program, {});
                 if(this.mainRenderSprite) {
                     if($.isArray(this.mainRenderSprite)) {
                         $.each(this.mainRenderSprite, function(i, spriteId) {
@@ -468,6 +466,30 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     }
                 };
 
+                Object.defineProperty(this, 'isTargetable', {
+                    get: function() {
+                        return this._isTargetable && utils.isPositionWithinPlayableBounds(this.position);
+                    },
+
+                    set: function(value) {
+                        this._isTargetable = value;
+                    },
+        			configurable: true
+                });
+                this.isTargetable = true;
+
+                Object.defineProperty(this, 'isAttackable', {
+                    get: function() {
+                        return this._isAttackable && utils.isPositionWithinPlayableBounds(this.position);
+                    },
+
+                    set: function(value) {
+                        this._isAttackable = value;
+                    },
+        			configurable: true
+                });
+                this.isAttackable = true;
+
                 Matter.Events.on(this, 'addUnit', function() {
 
                     //start unit as idling upon add
@@ -486,7 +508,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     var healthBorderScale = .16;
                     var healthBarScale = .1;
                     var healthBarYOffset = this.energy ? -20 : -13;
-                    if (this.health && this.isAttackable) {
+                    if (this.health && this.isTargetable) {
                         this.renderChildren.push({
                             id: 'healthbarbackground',
                             data: 'HealthEnergyBackground',
@@ -682,7 +704,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 this.stop();
                 this.canMove = false;
                 this.canAttack = false;
-                this.isAttackable = false;
+                this.isTargetable = false;
                 this.isoManagedAlpha = .6;
                 this.idleCancel = true;
                 Matter.Sleeping.set(this.body, true);
@@ -703,7 +725,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         Matter.Sleeping.set(unit.body, false);
                         unit.canMove = true;
                         unit.canAttack = true;
-                        unit.isAttackable = true;
+                        unit.isTargetable = true;
                         unit.idleCancel = false;
                         currentGame.invalidateTimer(unit.petrifyTintTimer);
                         this.petrifyTimer = null;

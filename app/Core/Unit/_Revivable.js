@@ -14,7 +14,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
                 this.canAttack = false;
                 this.canMove = false;
-                this.isAttackable = false;
+                this.isTargetable = false;
                 utils.moveUnitOffScreen(this);
                 Matter.Events.trigger(currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this})
                 this.stop();
@@ -60,7 +60,7 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             this.currentEnergy = this.maxEnergy/2;
             this.currentHealth = this.maxHealth/2;
             this.position = this.reviveCenter;
-            this.isAttackable = true;
+            this.isTargetable = true;
             this.canAttack = true;
             this.canMove = true;
         },

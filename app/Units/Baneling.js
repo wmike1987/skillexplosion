@@ -102,7 +102,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'utils/GameUtils'], functi
 
 			var bodiesToDamage = [];
 			utils.applyToUnitsByTeam(function(team) {return baneling.team != team}, function(unit) {
-				return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isAttackable);
+				return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
 			}.bind(this), function(unit) {
 				unit.sufferAttack(baneling.damage, baneling);
 			});

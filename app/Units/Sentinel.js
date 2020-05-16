@@ -1,8 +1,8 @@
 define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'utils/styles', 'unitcore/_Augmentable', 'unitcore/UnitProjectile'],
     function($, PIXI, UC, Matter, utils, Ability, styles, aug, Projectile) {
 
-        return function Critter(options) {
-            var critter = {};
+        return function Sentinel(options) {
+            var sentinel = {};
 
             var options = options || {};
             $.extend(options, {radius: 25}, options)
@@ -230,10 +230,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 stage: "stageNTwo",
                 offset: {x: 0, y: 22}}];
 
-            var fireSound = utils.getSound('slotherfire.wav', {volume: .015, rate: 1});
+            var fireSound = utils.getSound('sentinelfire.wav', {volume: .015, rate: 1});
 
             var unitProperties = $.extend({
-                unitType: 'Slother',
+                unitType: 'Sentinel',
                 health: 2000,
                 defense: 1,
                 energy: 0,
@@ -260,7 +260,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 }}, options);
 
             return UC({
-                    givenUnitObj: critter,
+                    givenUnitObj: sentinel,
                     renderChildren: rc,
                     radius: options.radius,
                     hitboxWidth: 35,
@@ -284,7 +284,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             var projectileOptions = {
                                 damage: this.damage,
                                 speed: 5,
-                                displayObject: utils.createDisplayObject('SlotherBullet'),
+                                displayObject: utils.createDisplayObject('SentinelBullet'),
                                 target: target,
                                 impactType: 'collision',
                                 owningUnit: this,

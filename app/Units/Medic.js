@@ -354,7 +354,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var originalOrigin = {x: this.position.x, y: this.position.y};
             var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
-            this.isAttackable = false;
+            this.isTargetable = false;
             utils.moveUnitOffScreen(this);
             this.stop();
 
@@ -372,7 +372,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
                   this.body.oneFrameOverrideInterpolation = true;
                   Matter.Body.setPosition(this.body, {x: x, y: y});
-                  this.isAttackable = true;
+                  this.isTargetable = true;
                   this.shadow = null;
                   currentGame.removeBody(shadow);
                   currentGame.invalidateTimer(footprintTimer);
@@ -380,7 +380,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
                   var self = this;
                   if(currentAugment.name == 'soft landing') {
-                      this.isAttackable = false;
+                      this.isTargetable = false;
                       this.isoManager.currentAnimation.alpha = .4;
                       this.isoManagedAlpha = .4;
                       currentGame.addTimer({
@@ -390,7 +390,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                           killsSelf: true,
                           callback: function() {
                               self.isoManagedAlpha = null;
-                              self.isAttackable = true;
+                              self.isTargetable = true;
                           }
                       })
                   }
@@ -559,7 +559,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             mine.explode = function() {
                 mineExplosion.play();
                 utils.applyToUnitsByTeam(function(team) {return medic.team != team}, function(unit) {
-                    return (utils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isAttackable);
+                    return (utils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isTargetable);
                 }.bind(this), function(unit) {
                     var dmg = mineState.damage;
                     if(utils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {
@@ -815,7 +815,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         return this.team == team;
                     },
                     canTargetUnit: function(unit) {
-                        if(unit.isAttackable && unit != this && unit.team == this.team) {
+                        if(unit.isTargetable && unit != this && unit.team == this.team) {
                             return (unit.currentHealth < unit.maxHealth);
                         }
                         return false;

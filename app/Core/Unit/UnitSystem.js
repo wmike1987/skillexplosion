@@ -329,7 +329,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                             this.changeSelectionState(unit, 'selectionPending', true);
                             this.box.pendingSelections[unit.unitId] = unit; //needed for a special case when the game starts - no longer need this (i think)
                             this.box.permaPendingUnit = unit;
-                        } else if(this.attackMove && unit.isAttackable) {
+                        } else if(this.attackMove && unit.isTargetable) {
                             singleAttackTarget = unit;
                         }
                     }.bind(this));
@@ -441,7 +441,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
                     var singleAttackTarget = null;
                     $.each(units, function(index, unit) {
-                        if(unit.isAttackable) {
+                        if(unit.isTargetable) {
                             singleAttackTarget = unit;
                             return false; //break out of each loop
                         }
