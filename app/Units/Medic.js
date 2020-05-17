@@ -559,7 +559,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             mine.explode = function() {
                 mineExplosion.play();
                 utils.applyToUnitsByTeam(function(team) {return medic.team != team}, function(unit) {
-                    return (utils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isTargetable);
+                    return (utils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isAttackable);
                 }.bind(this), function(unit) {
                     var dmg = mineState.damage;
                     if(utils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {

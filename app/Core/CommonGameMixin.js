@@ -171,7 +171,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             //setup timing utility
             this.addTickCallback(function(event) {
 
-                $.each(this.timers, function(key, value) {
+                //Create a temp object so that there are no bad effects of invalidating a timer
+                //from within another timer. I actually need to make sure this matters.
+                var tempTimers = $.extend({}, this.timers);
+                $.each(tempTimers, function(key, value) {
 
                     if(!value) return;
 

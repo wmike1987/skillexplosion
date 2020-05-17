@@ -126,6 +126,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             anim.loop = options.playThisManyTimes == 'loop';
             anim.playThisManyTimes = options.playThisManyTimes;
             anim.currentPlayCount = options.playThisManyTimes;
+            anim.anchor = options.anchor || {x: .5, y: .5};
 
             if(options.rotation)
                 anim.rotation = options.rotation;
@@ -150,14 +151,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }
             if(options.onManyComplete) {
                 anim.onManyComplete = options.onManyComplete;
-            }
-
-            //if body is given, let's apply the same anchor to this animation
-            var rendOptions = {};
-            if(options.body) {
-                rendOptions.anchor = {};
-                rendOptions.anchor.x = options.body.render.sprite.xOffset;
-                rendOptions.anchor.y = options.body.render.sprite.yOffset;
             }
 
             return anim;
@@ -292,6 +285,72 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         /*
          * Renderer utils
          */
+        // addSomethingToRendererOld: function(something, where, options) {
+        //     if($.type(where) == 'object') {
+        //         options = where;
+        //         where = options.where;
+        //     }
+        //     options = options || {};
+        //
+        //     something = currentGame.renderer.itsMorphinTime(something, options);
+        //
+        //     if(options.position) {
+        //         options.x = options.position.x;
+        //         options.y = options.position.y;
+        //     }
+        //     if(options.filter) {
+        //         options.filter.uniforms.mouse = {x: 50, y: 50};
+        //         options.filter.uniforms.resolution = {x: currentGame.canvas.width, y: currentGame.canvas.height};
+        //         something.filters = [options.filter];
+        //     }
+        //     if(options.height)
+        //         something.height = options.height;
+        //     if(options.width)
+        //         something.width = options.width;
+        //     if(options.x)
+        //         something.position.x = options.x;
+        //     if(options.y)
+        //         something.position.y = options.y;
+        //     if(options.scale)
+        //         something.scale = options.scale;
+        //     if(options.anchor) {
+        //         something.anchor = options.anchor;
+        //     } else if(!something.overrideDefaultAnchor && (something.anchor.x == 0 && something.anchor.y == 0)){
+        //         something.anchor = {x: .5, y: .5};
+        //     }
+        //     if(options.tint)
+        //         something.tint = options.tint;
+        //     if(options.rotation)
+        //         something.rotation = options.rotation;
+        //     if(options.sortYOffset)
+        //         something.sortYOffset = options.sortYOffset;
+        //     if(options.alpha != undefined)
+        //         something.alpha = options.alpha;
+        //     if(options.persists)
+        //         something.persists = true;
+        //
+        //     //add options to escape without adding it to the renderer
+        //     if(options.dontAdd) {
+        //         something.where = where;
+        //         return something;
+        //     }
+        //
+        //     currentGame.renderer.addToPixiStage(something, where || something.where);
+        //     return something;
+        // },
+
+        //This method was prone to creating memory leaks since we'd create a Sprite but not add
+        //it to a stage or a body (sometimes) meaning it wouldn't get cleaned up. Now, we're keeping
+        //track of any object created via this method and will call a removeSomethingFromRenderer upon
+        //nuking the current game.
+        // createDisplayObjectOld: function(something, options) {
+        //     var obj = this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
+        //     if(options && options.anchor) {
+        //         obj.overrideDefaultAnchor = true;
+        //     }
+        //     return obj;
+        // },
+
         addSomethingToRenderer: function(something, where, options) {
             if($.type(where) == 'object') {
                 options = where;
@@ -299,63 +358,38 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }
             options = options || {};
 
-            something = currentGame.renderer.itsMorphinTime(something, options);
+            var displayObject = this.createDisplayObject(something, options);
+            currentGame.renderer.addToPixiStage(displayObject, where || displayObject.where);
+            return displayObject;
+        },
 
-            if(options.position) {
-                options.x = options.position.x;
-                options.y = options.position.y;
+        /*
+         * This method is prone to creating memory leaks since we'll create a Sprite but not add
+         * it to a stage or a body (sometimes) meaning it won't get cleaned up naturally. Be sure
+         * to death pact this to something.
+         */
+        createDisplayObject: function(something, options) {
+            options = options || {};
+
+            var displayObject = currentGame.renderer.itsMorphinTime(something, options);
+            var alreadyBorn = something == displayObject;
+
+            $.extend(displayObject, options);
+
+            //Default anchor to {.5, .5} if anchor wasn't specified in the options AND
+            //if we're not already a real display object. This is so that adding an already
+            //created object via addSomethingToRenderer doesn't override the previously set anchor.
+            //This means that it's assumed that an already-created object has a relevant anchor.
+            if(!options.anchor && !alreadyBorn) {
+                displayObject.anchor = {x: .5, y: .5};
             }
             if(options.filter) {
                 options.filter.uniforms.mouse = {x: 50, y: 50};
                 options.filter.uniforms.resolution = {x: currentGame.canvas.width, y: currentGame.canvas.height};
-                something.filters = [options.filter];
-            }
-            if(options.height)
-                something.height = options.height;
-            if(options.width)
-                something.width = options.width;
-            if(options.x)
-                something.position.x = options.x;
-            if(options.y)
-                something.position.y = options.y;
-            if(options.scale)
-                something.scale = options.scale;
-            if(options.anchor) {
-                something.anchor = options.anchor;
-            } else if(!something.overrideDefaultAnchor && (something.anchor.x == 0 && something.anchor.y == 0)){
-                something.anchor = {x: .5, y: .5};
-            }
-            if(options.tint)
-                something.tint = options.tint;
-            if(options.rotation)
-                something.rotation = options.rotation;
-            if(options.sortYOffset)
-                something.sortYOffset = options.sortYOffset;
-            if(options.alpha != undefined)
-                something.alpha = options.alpha;
-            if(options.persists)
-                something.persists = true;
-
-            //add options to escape without adding it to the renderer
-            if(options.dontAdd) {
-                something.where = where;
-                return something;
+                displayObject.filters = [options.filter];
             }
 
-            currentGame.renderer.addToPixiStage(something, where || something.where);
-            return something;
-        },
-
-        //This method was prone to creating memory leaks since we'd create a Sprite but not add
-        //it to a stage or a body (sometimes) meaning it wouldn't get cleaned up. Now, we're keeping
-        //track of any object created via this method and will call a removeSomethingFromRenderer upon
-        //nuking the current game.
-        createDisplayObject: function(something, options) {
-            var obj = this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
-            if(options && options.anchor) {
-                obj.overrideDefaultAnchor = true;
-            }
-            return obj;
+            return displayObject;
         },
 
         addDisplayObjectToRenderer: function(dobj, where) {
@@ -837,6 +871,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             Matter.Body.setVelocity(body, normalizedVelocity);
         },
 
+        /*
+         * Keep in mind where this is being called from since it could execute in the "same
+         * frame" if this is called before the tick that the timers attach to.
+         */
         executeSomethingNextFrame: function(callback, frameCount) {
             var limit = frameCount || 1;
             currentGame.addTimer({
@@ -982,15 +1020,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             })
 
             return array;
-        },
-
-        spliceFromArray: function(array, item) {
-            var i = array.length;
-            while(i--) {
-                if(array[i] == item) {
-                    array.splice(i, 1);
-                }
-            }
         },
 
         //return new position

@@ -509,7 +509,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                     var healthBorderScale = .16;
                     var healthBarScale = .1;
                     var healthBarYOffset = this.energy ? -20 : -13;
-                    if (this.health && this.isTargetable) {
+                    if (this.health) {
                         this.renderChildren.push({
                             id: 'healthbarbackground',
                             data: 'HealthEnergyBackground',
@@ -729,11 +729,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         unit.isTargetable = true;
                         unit.idleCancel = false;
                         currentGame.invalidateTimer(unit.petrifyTintTimer);
-                        this.petrifyTimer = null;
                         unit.isoManagedTint = null;
                         unit.isoManagedAlpha = null;
                     }
-                })
+                });
             },
         }
 

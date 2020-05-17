@@ -62,7 +62,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createShane();
             this.createUrsula();
             // this.createBane(0);
-            // this.createCritter(1, true);
+            this.createCritter(1);
             // this.createAlienGuard(1);
             // this.createSentinel(1);
 
@@ -314,7 +314,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 critter.body.collisionFilter.mask -= 0x0004;
                 if(autoHone)
                     critter.honeRange = 5000;
-                utils.placeBodyJustOffscreen(critter);
+                critter.position = {x: 100, y: 100};
                 this.addUnit(critter, true);
                 if(true) {
                     ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: critter});
@@ -400,6 +400,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                 }
                                 var newUnit = enemy.constructor({team: 4});
                                 newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
+
                                 utils.placeBodyJustOffscreen(newUnit);
 
                                 // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
