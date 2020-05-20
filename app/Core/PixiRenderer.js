@@ -12,20 +12,21 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 		//create stages (these don't handle sorting, see the laying group below)
 		this.stages = {
-			background: new PIXI.Container,
-			backgroundOne: new PIXI.Container,
-			stageNTwo: new PIXI.Container,
-			stageNOne: new PIXI.Container,
-			stage: new PIXI.Container,
-			stageOne: new PIXI.Container,
-			foreground: new PIXI.Container,
-			hudNTwo: new PIXI.Container,
-			hudNOne: new PIXI.Container,
-			hud: new PIXI.Container,
-			hudOne: new PIXI.Container,
-			hudTwo: new PIXI.Container,
-			hudThree: new PIXI.Container,
-			hudText: new PIXI.Container};
+			background: new PIXI.Container(),
+			backgroundOne: new PIXI.Container(),
+			stageNTwo: new PIXI.Container(),
+			stageNOne: new PIXI.Container(),
+			stage: new PIXI.Container(),
+			stageOne: new PIXI.Container(),
+			foreground: new PIXI.Container(),
+			// nonHud: new PIXI.Container(),
+			hudNTwo: new PIXI.Container(),
+			hudNOne: new PIXI.Container(),
+			hud: new PIXI.Container(),
+			hudOne: new PIXI.Container(),
+			hudTwo: new PIXI.Container(),
+			hudThree: new PIXI.Container(),
+			hudText: new PIXI.Container()};
 
 		//create the layering groups
 		var i = 0;
@@ -40,12 +41,16 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 		//create the display stage
 		this.stage = new PIXI.display.Stage();
-
 		//Add the stages, and create a layer for the associated group as well. The layer API is very confusing...
 		$.each(this.layerGroups, function(key, layerGroup) {
 			this.stage.addChild(new PIXI.display.Layer(layerGroup));
 			this.stage.addChild(this.stages[key]);
 		}.bind(this))
+
+
+		//group some stages for filtering
+		// this.nonHud = this.stages.nonHud;
+		// this.nonHud.addChild(this.stages.stage);
 
 		this.setBackground = function(imagePath, options) {
 			var background = this.itsMorphinTime(imagePath);
@@ -72,17 +77,17 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 
 		this.renderWorld = function(engine, tickEvent) {
 			var bodies = Matter.Composite.allBodies(engine.world);
-			this.stages.background.filters = [];
+			// this.stages.background.filters = [];
 
 			bodies.forEach(function(body) {
     			//add filters - Can't remember why or how this works. Looks like a hack at the moment to me. This is needed for displacement sprites.
-    			if(body.render.filters) {
-    				if(!this.stages.background.filters) {
-    					this.stages.background.filters = body.render.filters;
-    				} else {
-    					this.stages.background.filters.push(body.render.filters[0]);
-    				}
-    			}
+    			// if(body.render.filters) {
+    			// 	if(!this.stages.background.filters) {
+    			// 		this.stages.background.filters = body.render.filters;
+    			// 	} else {
+    			// 		this.stages.background.filters.push(body.render.filters[0]);
+    			// 	}
+    			// }
 
 				var drawPosition = null;
 				if(tickEvent.interpolate && !body.oneFrameOverrideInterpolation) {

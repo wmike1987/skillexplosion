@@ -123,7 +123,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             anim.persists = true;
             anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
             anim.animationSpeed = options.speed;
-            anim.loop = options.playThisManyTimes == 'loop';
+            anim.loop = (options.playThisManyTimes == 'loop') || options.loop;
             anim.playThisManyTimes = options.playThisManyTimes;
             anim.currentPlayCount = options.playThisManyTimes;
             anim.anchor = options.anchor || {x: .5, y: .5};

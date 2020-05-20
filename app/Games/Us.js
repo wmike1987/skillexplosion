@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'units/Marine', 'units/EnemyMarine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter', 'units/AlienGuard', 'units/Sentinel'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, TileMapper,
+'shaders/CampfireShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter', 'units/AlienGuard', 'units/Sentinel'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, campfireShader, TileMapper,
     Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel) {
 
     var targetScore = 1;
@@ -24,13 +24,14 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 lightTwoPosition: {x: -10000.0, y: -10000.0},
                 stageResolution: utils.getCanvasWH()
             });
-            //currentGame.renderer.background.filters = [this.simpleLightShader];
+
+            this.campfireShader = new PIXI.Filter(null, campfireShader, {
+                lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasCenter().y-30},
+                stageResolution: utils.getCanvasWH()
+            });
+            currentGame.renderer.stages.background.filters = [this.campfireShader];
 
             //nice grass tile width = 370
-            // utils.addAmbientLightsToBackground([0x660000, 0x00cc44, 0x660066, 0x00cc44, 0x660000, 0x660000, 0x4d79ff], null, .3);
-            //create some Doodads
-            // var tree1 = new Doodad({collides: true, radius: 20, texture: 'avgoldtree1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: -75}, sortYOffset: 75,
-            // shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 2, y: 2}, shadowOffset: {x: -6, y: 20}})
         },
 
         play: function(options) {
@@ -116,10 +117,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
             campScene.add(tileMap2);
 
-            // var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .55);
+            var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'foreground', .5);
             // campScene.add(l1);
             var l2 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
-            campScene.add(l2);
+            // campScene.add(l2);
 
             var treeOptions = {};
             treeOptions.start = {x: 0, y: 0};
@@ -129,21 +130,35 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5'];//, 'avgoldtree6', 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
             // campScene.add(this.fillAreaWithTrees(treeOptions));
 
-            var mapTable = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'Doodads/TableWithMap', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
-                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 0, y: 20}, position: {x: utils.getCanvasCenter().x+150, y: utils.getPlayableHeight()-250}})
-            campScene.add(mapTable);
+            // var mapTable = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'Doodads/TableWithMap', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
+            //     shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 0, y: 20}, position: {x: utils.getCanvasCenter().x+150, y: utils.getPlayableHeight()-250}})
+            // campScene.add(mapTable);
 
-            var equipStation = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'Doodads/avsnowtree8', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 10, y: -38}, sortYOffset: 35,
-                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 10, y: 20}, position: {x: utils.getCanvasCenter().x-150, y: utils.getPlayableHeight()-280}})
-            campScene.add(equipStation);
-            this.equipStation = equipStation;
+            // var equipStation = new Doodad({collides: true, autoAdd: false, radius: 35, texture: 'Doodads/avsnowtree8', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 10, y: -38}, sortYOffset: 35,
+            //     shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 2, y: 2}, shadowOffset: {x: 10, y: 20}, position: {x: utils.getCanvasCenter().x-150, y: utils.getPlayableHeight()-280}})
+            // campScene.add(equipStation);
+            // this.equipStation = equipStation;
+
+            var fireAnimation = utils.getAnimationB({
+				spritesheetName: 'UtilityAnimations2',
+				animationName: 'campfire',
+				speed: .75,
+                loop: true,
+				transform: [0, 0, 1.5, 1.5]
+			});
+            fireAnimation.play();
+            var campfire = new Doodad({collides: true, autoAdd: false, radius: 20, texture: [fireAnimation, 'Logs'], stage: 'stage',
+                scale: {x: 1.5, y: 1.5}, shadowOffset: {x: -3, y: 25}, shadowScale: {x: 1.2, y: 1.2}, offset: {x: 0, y: 0}, sortYOffset: 35,
+                position: {x: utils.getCanvasCenter().x, y: utils.getCanvasCenter().y-30}})
+            campScene.add(campfire);
+            this.campfire = campfire;
 
             treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
             // campScene.add(this.fillAreaWithTrees(treeOptions));
 
-            var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'Doodads/avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
-                shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
-            campScene.add(bush);
+            // var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'Doodads/avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
+            //     shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
+            // campScene.add(bush);
 
             //create next level options
             var nextLevelOptions = {
@@ -167,22 +182,22 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             })
 
             var nextLevelInitiated = false;
-            Matter.Events.on(bush.body, 'onCollide', function(pair) {
-                if(!nextLevelInitiated) {
-                    var otherBody = pair.pair.bodyB == bush.body ? pair.pair.bodyA : pair.pair.bodyB;
-                    if(otherBody.unit) {
-                        this.nextLevel(nextLevelOptions);
-                        nextLevelInitiated = true;
-                    }
-                }
-            }.bind(this));
+            // Matter.Events.on(bush.body, 'onCollide', function(pair) {
+            //     if(!nextLevelInitiated) {
+            //         var otherBody = pair.pair.bodyB == bush.body ? pair.pair.bodyA : pair.pair.bodyB;
+            //         if(otherBody.unit) {
+            //             this.nextLevel(nextLevelOptions);
+            //             nextLevelInitiated = true;
+            //         }
+            //     }
+            // }.bind(this));
 
-            Matter.Events.on(equipStation.body, 'onCollide', function(pair) {
-                var otherBody = pair.pair.bodyB == equipStation.body ? pair.pair.bodyA : pair.pair.bodyB;
-                if(otherBody.unit && this.unitSystem.selectedUnit == otherBody.unit) {
-                    this.unitSystem.unitConfigurationPanel.showForUnit(otherBody.unit);
-                }
-            }.bind(this));
+            // Matter.Events.on(equipStation.body, 'onCollide', function(pair) {
+            //     var otherBody = pair.pair.bodyB == equipStation.body ? pair.pair.bodyA : pair.pair.bodyB;
+            //     if(otherBody.unit && this.unitSystem.selectedUnit == otherBody.unit) {
+            //         this.unitSystem.unitConfigurationPanel.showForUnit(otherBody.unit);
+            //     }
+            // }.bind(this));
             return campScene;
         },
 
