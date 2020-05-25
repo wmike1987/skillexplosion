@@ -2,7 +2,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'utils/TargetSpaw
 function($, Matter, PIXI, CommonGameMixin, zone, utils) {
 
 	var targetScore = 1;
-	
+
 	var game = {
 		gameName: 'LeftRight',
 		ball: null,
@@ -50,8 +50,15 @@ function($, Matter, PIXI, CommonGameMixin, zone, utils) {
 						this.incrementScore(targetScore);
 
 						//play death animation
-						utils.getAnimation('blueCollapse', [this.ball.position.x, this.ball.position.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .6).play();
-
+						// utils.getAnimation('blueCollapse', [this.ball.position.x, this.ball.position.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .03).play();
+						var collapseAnimation = utils.getAnimationB({
+							numberOfFrames: 8,
+							baseName: 'blueCollapse',
+							speed: 1,
+							transform: [this.ball.position.x, this.ball.position.y, this.ball.circleRadius*2/512, this.ball.circleRadius*2/512]
+						});
+						utils.addSomethingToRenderer(collapseAnimation);
+						collapseAnimation.play();
 						this.chain += 1;
 						this.hits[this.chain-1].play();
 
