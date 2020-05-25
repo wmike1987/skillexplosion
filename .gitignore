@@ -2,3 +2,4 @@
 /es6test/*
 *.py
 es6*
+*.DS_Store

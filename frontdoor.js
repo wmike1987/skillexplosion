@@ -151,11 +151,11 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
 
         	//backgrounds
         	// loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
-        	// loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
+        	 loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
         	// loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
         	// loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
 
-        	// loader.add('rainyBackgroundAndMarbles', 'app/Textures/RainyBackgroundAndMarbles.json');
+        	 loader.add('rainyBackgroundAndMarbles', 'app/Textures/legacy/RainyBackgroundAndMarbles.json');
         	// loader.add('GrayBackground', 'app/Textures/GrayBackground.png');
         	// loader.add('GrassTiles', 'app/Textures/GrassTiles.json'); remove
 
@@ -163,7 +163,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	// loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
         	loader.ssBlueDeathFrameCount = 6;
 
-        	// loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
+        	 loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
         	loader.blueCollapseFrameCount = 6;
 
         	// loader.add('raindropflash', 'app/Textures/DropletFlash.json');
