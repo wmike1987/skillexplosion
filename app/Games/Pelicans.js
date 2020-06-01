@@ -1,4 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin'], function($, Matter, PIXI, CommonGameMixin) {
+define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'utils/GameUtils'],
+function($, Matter, PIXI, CommonGameMixin, utils) {
 
 	var targetScore = 1;
 
@@ -39,7 +40,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin'], function($, Matt
 			this.palm.timer = this.addTimer({name: 'palmColorTimer', timeLimit: 150, done: true, persists: true,
 			    tickCallback: function() {
 			        var t = self.palm.tint;
-		        	self.palm.tint = self.shadeBlendConvert(this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length] || '#000000', self.colorCycle[self.palm.nextColor%self.colorCycle.length]);
+		        	self.palm.tint = utils.shadeBlendConvert(this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length] || '#000000', self.colorCycle[self.palm.nextColor%self.colorCycle.length]);
 			    },
 			    callback: function() {
 			        if(self.gameState != 'playing') return;
@@ -54,7 +55,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin'], function($, Matt
 		    var self = this;
 		    this.addTimer({name: 'fadeToBlackTimer', timeLimit: 150,
 			    tickCallback: function() {
-		        	self.palm.tint = self.shadeBlendConvert(this.percentDone > .98 ? .98 : this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length], '#000000');
+		        	self.palm.tint = utils.shadeBlendConvert(this.percentDone > .98 ? .98 : this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length], '#000000');
 			    },
 			});
 		},
@@ -71,7 +72,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin'], function($, Matt
 			//ran off stage listener
 			this.addTickListener(function(event) {
 			    $.each(this.birds, function(i, bird) {
-                    if(bird.correctBird && this.bodyRanOffStage(bird))
+                    if(bird.correctBird && utils.bodyRanOffStage(bird))
                         this.nextWave();
 			    }.bind(this))
 			}.bind(this));
@@ -99,14 +100,14 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin'], function($, Matt
             						var plusOne = utils.addSomethingToRenderer('PlusTwo', 'foreground');
             						plusOne.position = {x: x, y: y};
             						plusOne.position.y -= 50;
-            						this.floatSprite(plusOne);
+            						utils.floatSprite(plusOne);
     					            this.hits[2].play();
     					        } else if(this.timerBirdsHit == 1) { //add 1 second
         						    this.addToGameTimer(1000);
             						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
             						plusOne.position = {x: x, y: y};
             						plusOne.position.y -= 50;
-            						this.floatSprite(plusOne);
+            						utils.floatSprite(plusOne);
     					            this.hits[1].play();
     					        }
         						this.incrementScore(targetScore);
@@ -165,16 +166,16 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin'], function($, Matt
             }
             //scale bird
             var scale = Math.random() * .5 + .5;
-            this.scaleBody(bird, scale, scale);
+            utils.scaleBody(bird, scale, scale);
 
             //calculate and set position then flip the bird if it's moving left to right
             if(createBirdOffScreenRight)
 			    var xLoc = (this.canvasEl.getBoundingClientRect().width) + Math.random() * 20 + 20;
 			else
 			    var xLoc = Math.random() * -20 - 20;
-            yLoc = this.calculateRandomPlacementForBodyWithinCanvasBounds(bird).y;
+            yLoc = utils.calculateRandomPlacementForBodyWithinCanvasBounds(bird).y;
             if(!createBirdOffScreenRight)
-                this.scaleBody(bird, -1, 1);
+                utils.scaleBody(bird, -1, 1);
 
             //console.debug(Matter.Vertices.area(bird.vertices));
             Matter.Body.setPosition(bird, {x: xLoc, y: yLoc});
