@@ -121,7 +121,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 				this.mousePosition.y = event.clientY - rect.top;
             }.bind(this), false, false);
 
-            //fps (crtl + shift + f to toggle)
+            //fps (ctrl + shift + f to toggle)
             this.lastDeltaText = utils.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
             this.fpsText = utils.addSomethingToRenderer("TEXT:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
             this.fpsText.persists = true;
@@ -332,10 +332,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             }
 
             //timer overlay, if necessary
-            if(this.victoryCondition.type == 'timed') {
-                this.gameTime = utils.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
-            } else if (this.victoryCondition.type == 'lives') {
-                this.hudLives = utils.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+            if(!this.hideEndCondition) {
+                if(this.victoryCondition.type == 'timed') {
+                    this.gameTime = utils.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                } else if (this.victoryCondition.type == 'lives') {
+                    this.hudLives = utils.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                }
             }
 
             //call the game's play method

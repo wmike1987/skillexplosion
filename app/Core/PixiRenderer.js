@@ -19,7 +19,6 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			stage: new PIXI.Container(),
 			stageOne: new PIXI.Container(),
 			foreground: new PIXI.Container(),
-			// nonHud: new PIXI.Container(),
 			hudNTwo: new PIXI.Container(),
 			hudNOne: new PIXI.Container(),
 			hud: new PIXI.Container(),
@@ -32,6 +31,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		var i = 0;
 		this.layerGroups = {};
 		$.each(this.stages, function(key, stage) {
+			stage.stageName = key;
 			this.layerGroups[key] = new PIXI.display.Group(i, !options.noZSorting);
 			this.layerGroups[key].on('sort', (sprite) => {
 			    sprite.zOrder = sprite.y + (sprite.sortYOffset || 0);
@@ -42,15 +42,12 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 		//create the display stage
 		this.stage = new PIXI.display.Stage();
 		//Add the stages, and create a layer for the associated group as well. The layer API is very confusing...
+		this.layers = {};
 		$.each(this.layerGroups, function(key, layerGroup) {
-			this.stage.addChild(new PIXI.display.Layer(layerGroup));
+			this.layers[key] = new PIXI.display.Layer(layerGroup);
+			this.stage.addChild(this.layers[key]);
 			this.stage.addChild(this.stages[key]);
 		}.bind(this))
-
-
-		//group some stages for filtering
-		// this.nonHud = this.stages.nonHud;
-		// this.nonHud.addChild(this.stages.stage);
 
 		this.setBackground = function(imagePath, options) {
 			var background = this.itsMorphinTime(imagePath);
