@@ -51,7 +51,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 stage = item.stage || stage;
             }
             rchildren.push({
-                id: 'mainData' + i,
+                id: item.name || 'mainData' + i,
                 data: data,
                 offset: offset,
                 scale: scale,

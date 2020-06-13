@@ -19,13 +19,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         currentScene: null,
 
         initExtension: function() {
-            //create blue glow filter
-            // this.simpleLightShader = new PIXI.Filter(null, lightShader, {
-            //     lightOnePosition: {x: -10000.0, y: -10000.0},
-            //     lightTwoPosition: {x: -10000.0, y: -10000.0},
-            //     stageResolution: utils.getCanvasWH()
-            // });
-            //
+            this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
+            this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
             this.objectSingleLightShader = new PIXI.Filter(null, ObjectSingleLightShader, {
                 lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                 flameVariation: 0.0
@@ -39,28 +34,30 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 flameVariation: 0.0
             });
             this.campfireShader.myName = 'campfire';
-            this.renderer.layers.background.filters = [this.campfireShader];
-            this.renderer.layers.stage.filters = [this.objectSingleLightShader];
-            var flameTimer = currentGame.addTimer({
-                name: 'flame',
-                gogogo: true,
-                timeLimit: 80,
-                callback: function() {
-                    if(!this.lightPower)
+            if(false) {
+                this.renderer.layers.background.filters = [this.campfireShader];
+                this.renderer.layers.stage.filters = [this.objectSingleLightShader];
+                var flameTimer = currentGame.addTimer({
+                    name: 'flame',
+                    gogogo: true,
+                    timeLimit: 80,
+                    callback: function() {
+                        if(!this.lightPower)
                         this.lightPower = .5;
-                    this.lightPower += (.01+Math.random()*.015)*this.lightDirection;
-                    if(this.lightPower < 0.5) {
-                        this.lightDirection = 1;
-                    } else if(this.lightPower > 1.0) {
-                        this.lightDirection = -1;
-                    }
-                    this.campfireShader.uniforms.flameVariation = this.lightPower/1.0;
-                    this.objectSingleLightShader.uniforms.flameVariation = this.lightPower/1.0;
-                }.bind(this)
-            })
+                        this.lightPower += (.01+Math.random()*.015)*this.lightDirection;
+                        if(this.lightPower < 0.5) {
+                            this.lightDirection = 1;
+                        } else if(this.lightPower > 1.0) {
+                            this.lightDirection = -1;
+                        }
+                        this.campfireShader.uniforms.flameVariation = this.lightPower/1.0;
+                        this.objectSingleLightShader.uniforms.flameVariation = this.lightPower/1.0;
+                    }.bind(this)
+                })
 
-            this.campfireShader.uniforms.lightRadius = this.lightRadius;
-            this.objectSingleLightShader.uniforms.lightRadius = this.lightRadius;
+                this.campfireShader.uniforms.lightRadius = this.lightRadius;
+                this.objectSingleLightShader.uniforms.lightRadius = this.lightRadius;
+            }
 
             //nice grass tile width = 370
         },
@@ -94,7 +91,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.createShane();
             this.createUrsula();
             // this.createBane(0);
-            this.createCritter(1);
+            // this.createCritter(1);
             // this.createAlienGuard(1);
             // this.createSentinel(1);
 
@@ -105,6 +102,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
             //move shane and urs into place when we're ready
             Matter.Events.on(campScene, 'initialize', function() {
+                //play sound
+                this.entercamp.play();
                 this.shane.position = utils.getCanvasCenter();
                 this.ursula.position = utils.getCanvasCenter();
                 this.addUnit(this.shane);
@@ -118,6 +117,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.currentScene = camp;
 
             Matter.Events.on(camp, 'initialize', function() {
+                //play sound
+                this.entercamp.play();
+
                 //clear enemies
                 utils.applyToUnitsByTeam(function(team) {
                     return (team != currentGame.playerTeam);
@@ -157,10 +159,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             treeOptions.width = 300;
             treeOptions.height = utils.getPlayableHeight()+50;
             treeOptions.density = .3;
-            treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5'];//, 'avgoldtree6', 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
-            // campScene.add(this.fillAreaWithTrees(treeOptions));
-
-            // var tentFace = utils.createDisplayObject('TentFace', {where: 'stageNOne'});
+            treeOptions.possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6']//, 'avgreentree1', 'avgreentree2', 'avgreentree3', 'avgreentree4', 'avgreentree5'];
+            campScene.add(this.fillAreaWithTrees(treeOptions));
 
             var tent = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 120, texture: ['Tent'], stage: 'stage',
                 scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 30}, sortYOffset: 0,
@@ -193,11 +193,50 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 position: {x: utils.getCanvasCenter().x+50, y: utils.getCanvasCenter().y-175}})
             campScene.add(flag);
 
-            var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: ['MapTable'], stage: 'stage',
+            var mapTableSprite = utils.createDisplayObject('MapTable');
+            var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [mapTableSprite], stage: 'stage',
                 scale: {x: 1.2, y: 1.2}, offset: {x: 0, y: 0}, sortYOffset: 0,
                 shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: 0, y: 15},
                 position: {x: utils.getCanvasCenter().x-130, y: utils.getPlayableHeight()-190}})
             campScene.add(mapTable);
+
+            var mapHoverTick = currentGame.addTickCallback(function(event) {
+                if(Matter.Vertices.contains(mapTable.body.vertices, this.mousePosition)) {
+                    mapTableSprite.tint = 0xff33cc;
+                } else {
+                    mapTableSprite.tint = 0xFFFFFF;
+                }
+            }.bind(this));
+
+            this.mapSprite = utils.createDisplayObject('MapBase', {where: 'foreground', position: utils.getPlayableCenter()});
+            this.mapSprite.visible = false;
+            campScene.add(this.mapSprite);
+            var mapClickListener = this.addPriorityMouseDownEvent(function(event) {
+                var canvasPoint = {x: 0, y: 0};
+                this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
+
+				if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive) {
+                    this.openmap.play();
+                    this.mapSprite.visible = true;
+                    this.unitSystem.pause();
+                    this.mapActive = true;
+                }
+            }.bind(this));
+
+            $('body').on('keydown.map', function( event ) {
+                var key = event.key.toLowerCase();
+                if(key == 'escape' && this.mapSprite.visible) {
+                    this.unitSystem.unpause();
+                    this.mapSprite.visible = false;
+                    this.mapActive = false;
+                }
+            }.bind(this))
+            campScene._clearExtension = function() {
+                this.removeTickCallback(mapHoverTick);
+                this.removePriorityMouseDownEvent(mapClickListener);
+                $('body').off('mousedown.map');
+                $('body').off('keydown.map');
+            }.bind(this)
 
             var fireAnimation = utils.getAnimationB({
 				spritesheetName: 'UtilityAnimations2',
@@ -215,7 +254,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.campfire = campfire;
 
             treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
-            // campScene.add(this.fillAreaWithTrees(treeOptions));
+            campScene.add(this.fillAreaWithTrees(treeOptions));
 
             // var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'Doodads/avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
             //     shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
@@ -444,7 +483,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var trees = [];
             for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
                 for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-                    var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+utils.getRandomElementOfArray(options.possibleTrees), stage: 'stage', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
+                    var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+utils.getRandomElementOfArray(options.possibleTrees), stage: 'stageOne', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
                     shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 4, y: 4}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
                     trees.push(tree);
                 }
@@ -503,8 +542,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         },
 
         nukeExtension: function() {
-            // console.info("nuked and destroyed keydown us")
             $('body').off('keydown.us');
+            $('body').off('keydown.map');
+            this.openmap.unload();
+            this.entercamp.unload();
+            if(this.currentScene) {
+                this.currentScene.clear();
+            }
         }
     }
 

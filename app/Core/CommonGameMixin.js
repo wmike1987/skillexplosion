@@ -48,7 +48,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             $.extend(this, options);
 
             /*
-             * create some other variables
+             * Create some other variables
              */
             this.tickCallbacks = [],
             this.verticeHistories = [],
@@ -63,8 +63,25 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.endGameSound = utils.getSound('bells.wav', {volume: .05});
             this.loseLifeSound = utils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
             this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
-            var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
             this.unitsByTeam = {};
+            var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
+
+            //We'll attach a mousedown listener here which will execute before other listeners
+            this.priorityMouseDownEvents = [];
+            $('body').on('mousedown.priority', function(event) {
+                $.each(this.priorityMouseDownEvents, function(index, f) {
+                    f(event);
+                })
+            }.bind(this))
+            this.addPriorityMouseDownEvent = function(f) {
+                this.priorityMouseDownEvents.push(f);
+                return f;
+            }
+            this.removePriorityMouseDownEvent = function(f) {
+                var index = this.priorityMouseDownEvents.indexOf(f);
+                if(index > -1)
+                    this.priorityMouseDownEvents.splice(index, 1);
+            }
 
             /*
              * Incorporate UnitSystem if specified
@@ -572,6 +589,9 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
             //re-enable tab navigation
             $('body').off("keydown.common");
+
+            //destroy mousedown priority listener
+            $('body').off("mousedown.priority");
 
             //re-enable default click
             $('#gameTheater').off('mousedown.prevent');

@@ -39,6 +39,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 utils.removeSomethingFromRenderer(obj);
             }
         })
+        if(this._clearExtension) {
+            this._clearExtension();
+        }
         this.objects = [];
     };
 

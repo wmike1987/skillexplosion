@@ -237,7 +237,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             health: 20,
             defense: 1,
             energy: 0,
-            energyRegenerationRate: 1,
+            energyRegenerationRate: 0,
             portrait: utils.createDisplayObject('CritterPortrait'),
             wireframe: utils.createDisplayObject('CritterPortrait'),
             team: options.team || 4,
