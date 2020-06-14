@@ -18,7 +18,7 @@
 },
 "AmbientLight3.png":
 {
-	"frame": {"x":517,"y":1117,"w":512,"h":512},
+	"frame": {"x":529,"y":1117,"w":512,"h":512},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
@@ -26,7 +26,7 @@
 },
 "AugmentArmPanel.png":
 {
-	"frame": {"x":267,"y":1547,"w":66,"h":195},
+	"frame": {"x":280,"y":1461,"w":66,"h":195},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":66,"h":195},
@@ -42,7 +42,7 @@
 },
 "AugmentBorderGold.png":
 {
-	"frame": {"x":383,"y":1461,"w":50,"h":50},
+	"frame": {"x":477,"y":1461,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -58,7 +58,7 @@
 },
 "LockIcon.png":
 {
-	"frame": {"x":383,"y":1513,"w":32,"h":32},
+	"frame": {"x":334,"y":1529,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -66,8 +66,8 @@
 },
 "Logs.png":
 {
-	"frame": {"x":346,"y":1461,"w":52,"h":35},
-	"rotated": true,
+	"frame": {"x":280,"y":1529,"w":52,"h":35},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":37,"y":61,"w":52,"h":35},
 	"sourceSize": {"w":128,"h":128}
@@ -80,9 +80,33 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":600},
 	"sourceSize": {"w":1200,"h":600}
 },
+"MapGoldBattleToken.png":
+{
+	"frame": {"x":295,"y":1566,"w":63,"h":63},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":63,"h":63},
+	"sourceSize": {"w":64,"h":64}
+},
+"MapRedBattleToken.png":
+{
+	"frame": {"x":426,"y":1529,"w":62,"h":62},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":62,"h":62},
+	"sourceSize": {"w":64,"h":64}
+},
+"MapRoad.png":
+{
+	"frame": {"x":89,"y":1618,"w":8,"h":64},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":0,"w":8,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
 "MapTable.png":
 {
-	"frame": {"x":127,"y":1575,"w":57,"h":54},
+	"frame": {"x":155,"y":1575,"w":57,"h":54},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":57,"h":54},
@@ -106,7 +130,7 @@
 },
 "SleepingBags.png":
 {
-	"frame": {"x":186,"y":1575,"w":53,"h":79},
+	"frame": {"x":214,"y":1575,"w":53,"h":79},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":0,"w":53,"h":79},
@@ -138,7 +162,7 @@
 },
 "TintableAbilityBorder.png":
 {
-	"frame": {"x":280,"y":1461,"w":64,"h":64},
+	"frame": {"x":360,"y":1563,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -194,6 +218,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1304,"h":1630},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:681ec6a7fce16cc31de24e54b5e42967:e9acb87a4adb1135d1b07859e54704f3:5fc1c354e515b85ac7861bddc1d6600b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:497e30fb022a0a09c6143075bad29c5f:5cd2fe1922eabe88c68373b787c8dd1e:5fc1c354e515b85ac7861bddc1d6600b$"
 }
 }

@@ -67,6 +67,51 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             // this.initialLevel();
         },
 
+        generateEnemyCampLayout: function() {
+            var typeTokenMappings = {
+                normal: 'MapGoldBattleToken',
+                boss: 'MapRedBattleToken'
+            }
+
+            //create next level options
+            var nextLevelOptions = {
+                possibleTiles: [],
+                realTileWidth: 370,
+                enemySet: []
+            }
+
+            for(var i = 1; i < 7; i++) {
+                nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
+            }
+
+            nextLevelOptions.enemySet.push({
+                constructor: Critter,
+                spawn: {total: 18, n: 1, hz: 1200, maxOnField: 1},
+                item: {type: 'basic', total: 3}
+            })
+
+            var nextLevelInitiated = false;
+            var us = this;
+
+            var mapNode = function() {
+                this.mapPosition = utils.getPlayableCenter();
+                this.levelType = 'normal';
+                this.levelOptions = nextLevelOptions;
+                this.neighbors = [];
+                this.displayObject = utils.createDisplayObject(typeTokenMappings[this.levelType], {position: this.mapPosition});
+                this.displayObject.interactive = true;
+                this.displayObject.on('mousedown', function(event) {
+                    this.nextLevel(nextLevelOptions);
+                }.bind(us))
+            }
+
+            var graph = [];
+            var n1 = new mapNode();
+            graph.push(n1);
+
+            return graph;
+        },
+
         initialCutScene: function() {
             this.currentScene = new Scene(); //empty scene to transition from
             var cutScene = new Scene();
@@ -211,6 +256,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.mapSprite = utils.createDisplayObject('MapBase', {where: 'foreground', position: utils.getPlayableCenter()});
             this.mapSprite.visible = false;
             campScene.add(this.mapSprite);
+
+            //generate map graph
+            this.graph = this.generateEnemyCampLayout();
+
+            //establish map click listeners
             var mapClickListener = this.addPriorityMouseDownEvent(function(event) {
                 var canvasPoint = {x: 0, y: 0};
                 this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
@@ -219,6 +269,14 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     this.openmap.play();
                     this.mapSprite.visible = true;
                     this.unitSystem.pause();
+                    this.graph.forEach(node => {
+                        if(!node.displayObject.parent) {
+                            utils.addSomethingToRenderer(node.displayObject, {where: 'hudNTwo'});
+                            campScene.add(node.displayObject);
+                        } else {
+                            node.displayObject.visible = this.mapSprite.visible;
+                        }
+                    })
                     this.mapActive = true;
                 }
             }.bind(this));
@@ -226,9 +284,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             $('body').on('keydown.map', function( event ) {
                 var key = event.key.toLowerCase();
                 if(key == 'escape' && this.mapSprite.visible) {
-                    this.unitSystem.unpause();
-                    this.mapSprite.visible = false;
-                    this.mapActive = false;
+                    this.deactivateMap();
                 }
             }.bind(this))
             campScene._clearExtension = function() {
@@ -236,7 +292,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.removePriorityMouseDownEvent(mapClickListener);
                 $('body').off('mousedown.map');
                 $('body').off('keydown.map');
-            }.bind(this)
+            }.bind(this);
 
             var fireAnimation = utils.getAnimationB({
 				spritesheetName: 'UtilityAnimations2',
@@ -301,6 +357,15 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             return campScene;
         },
 
+        deactivateMap: function() {
+            this.unitSystem.unpause();
+            this.mapSprite.visible = false;
+            this.mapActive = false;
+            this.graph.forEach(node => {
+                node.displayObject.visible = this.mapSprite.visible;
+            })
+        },
+
         /*
          * options:
          * possible tiles
@@ -309,6 +374,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         nextLevel: function(options) {
 
             this.levelState = options;
+
+            this.deactivateMap();
 
             if(this.currentSpawner) {
                 this.currentSpawner.cleanUp();
