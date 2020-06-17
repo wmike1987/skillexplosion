@@ -42,8 +42,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         options.texture.forEach((item, i) => {
             var data = item;
             var offset = options.offset || {x: 0, y: 0};
-            var scale = options.scale || {x: 1, y: 1};
-            var stage = options.stage || 'foreground';
+            var scale = item.scale || options.scale || {x: 1, y: 1};
+            var stage = item.where || options.stage || 'foreground';
             if(item.doodadData) {
                 data = item.doodadData;
                 offset = item.offset || offset;
@@ -51,7 +51,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 stage = item.stage || stage;
             }
             rchildren.push({
-                id: 'mainData' + i,
+                id: item.name || 'mainData' + i,
                 data: data,
                 offset: offset,
                 scale: scale,

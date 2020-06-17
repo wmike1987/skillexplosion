@@ -48,36 +48,36 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 				var x = event.data.global.x;
 				var y = event.data.global.y;
 
-				    var hitSound = this.hit;
-					if(Matter.Vertices.contains(this.ballTarget.verticeCopy, {x: x, y: y})) {
-						this.addToGameTimer(1000);
+			    var hitSound = this.hit;
+				if(Matter.Vertices.contains(this.ballTarget.verticeCopy, {x: x, y: y})) {
+					this.addToGameTimer(1000);
 
-						//play sound
-						hitSound = this.bullseye;
+					//play sound
+					hitSound = this.bullseye;
 
-						//play special animation
-						utils.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], 1, null, 1).play();
-						utils.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], .6, null, 1, 0.785398).play(); //with rotation
-						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
-						plusOne.position = this.ballTarget.position;
-						plusOne.position.y -= 50;
-						utils.floatSprite(plusOne);
-					}
-					if(Matter.Vertices.contains(this.ball.verticeCopy, {x: x, y: y})) {
-						this.incrementScore(targetScore);
+					//play special animation
+					utils.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], 1, null, 1).play();
+					utils.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], .6, null, 1, 0.785398).play(); //with rotation
+					var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
+					plusOne.position = this.ballTarget.position;
+					plusOne.position.y -= 50;
+					utils.floatSprite(plusOne);
+				}
+				if(Matter.Vertices.contains(this.ball.verticeCopy, {x: x, y: y})) {
+					this.incrementScore(targetScore);
 
-						//play death animation
-						utils.getAnimation('blueCollapse', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .6).play();
+					//play death animation
+					utils.getAnimation('blueCollapse', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .6).play();
 
-						//play sound
-            hitSound.play();
-						//hitSound.fade(.75, 0, 750, );
+					//play sound
+            		hitSound.play();
+					//hitSound.fade(.75, 0, 750, );
 
-						this.removeBody(this.ball);
-						this.removeBody(this.ballCenter);
-						this.addBody(this.ball = this.createBodyAtRandomLocation(), true);
-						this.addBody(this.ballCenter = this.createBallCenter(this.ball), true);
-					}
+					this.removeBody(this.ball);
+					this.removeBody(this.ballCenter);
+					this.addBody(this.ball = this.createBodyAtRandomLocation(), true);
+					this.addBody(this.ballCenter = this.createBallCenter(this.ball), true);
+				}
 			}.bind(this), false, true);
 		},
 

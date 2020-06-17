@@ -662,6 +662,44 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 }
             },
 
+            addFilter: function(filter, filterArea) {
+                if(this.mainRenderSprite) {
+                    if($.isArray(this.mainRenderSprite)) {
+                        $.each(this.mainRenderSprite, function(i, spriteId) {
+                            $.each(this.renderlings, function(id, child) {
+                                if(id == spriteId) {
+                                    if(!child.filters) {
+                                        child.filters = filter;
+                                    }
+                                    else {
+                                        (child.filters.push(filter))
+                                    }
+
+                                    if(filterArea) {
+                                        child.filterArea = filterArea;
+                                    }
+                                }
+                            }.bind(this))
+                        }.bind(this))
+                    } else {
+                        $.each(this.renderlings, function(id, child) {
+                            if(id == this.mainRenderSprite) {
+                                if(!child.filters) {
+                                    child.filters = filter;
+                                }
+                                else {
+                                    (child.filters.push(filter))
+                                }
+
+                                if(filterArea) {
+                                    child.filterArea = filterArea;
+                                }
+                            }
+                        }.bind(this))
+                    }
+                };
+            },
+
             levelUp: function() {
                 this.level++;
                 this.lastLevelExp = this.nextLevelExp;

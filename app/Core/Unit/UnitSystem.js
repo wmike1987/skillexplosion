@@ -3,7 +3,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
     var unitSystem = function(properties) {
 
         //Share given properties
-        $.extend(this, properties);
+        $.extend(this, {active: true}, properties);
 
         this.initialize = function() {
             //just in case
@@ -286,6 +286,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
             //Mouse down event
             $('body').on('mousedown.unitSystem', function(event) {
+                if(!this.active) return;
+
                 var canvasPoint = {x: 0, y: 0};
                 this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
 
@@ -337,6 +339,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     //Attacker functionality, dispatch attackMove
                     if(this.attackMove && !this.box.selectionBoxActive) {
                         this.box.invalidateNextMouseUp = true;
+                        this.box.invalidateNextBox = true;
                         $.each(this.selectedUnits, function(key, unit) {
                             if(Object.keys(this.selectedUnits).length == 1)
                                 unit.isSoloMover = true;
@@ -477,6 +480,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             }.bind(this));
 
             $('body').on('mousemove.unitSystem', function(event) {
+                if(!this.active) return;
                 if(this.box.mouseDown && this.box.renderlings && !this.box.invalidateNextBox) {
                     this.box.selectionBoxActive = true;
                     var newPoint = {x: 0, y: 0};
@@ -486,6 +490,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             }.bind(this));
 
             $('body').on('mouseup.unitSystem', function(event) {
+                if(!this.active) return;
                 if(event.which == 1) {
                     this.box.mouseDown = false;
                     if(!this.box.invalidateNextMouseUp) {
@@ -496,7 +501,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                         this.box.invalidateNextBox = false
                     }
 
-                    // Matter.Body.setPosition(this.box, {x: -500, y: -1000});
                     this.box.toggleCollideAndHideNextFrame();
                     this.box.selectionBoxActive = false;
                 }
@@ -540,19 +544,20 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     var collision = Matter.SAT.collides(this.box, collisionBody);
 
                     if(collision.collided) {
-                        this.changeSelectionState(unit, 'selectionPending', true);
+                        //Don't bother setting the visual of the selected unit, this was actually causing a bug
+                        // this.changeSelectionState(unit, 'selectionPending', true);
                         var unitAlreadyContainedInBox = false;
                         // Leaving here for now for debugging purposes in the future
-                        // $.each(this.box.pendingSelections, function(key, obj) {
-                        //     if(unit == obj) {
-                        //         unitAlreadyContainedInBox = true;
-                        //         console.info("unit already contained")
-                        //     }
-                        // })
-                        // if(!unitAlreadyContainedInBox) {
-                        //
-                        //     console.info("this is doing something!")
-                        // }
+                        $.each(this.box.pendingSelections, function(key, obj) {
+                            if(unit == obj) {
+                                unitAlreadyContainedInBox = true;
+                                console.info("unit already contained")
+                            }
+                        })
+                        if(!unitAlreadyContainedInBox) {
+
+                            console.info("this is doing something!")
+                        }
                         this.box.pendingSelections[unit.unitId] = unit;
                         if(unit == this.box.permaPendingUnit)
                             this.box.boxContainsPermaPending = true;
@@ -605,6 +610,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             //Mouse hover
             var pastHoveredUnitsHover = [];
             currentGame.addTickCallback(function(event) {
+                if(!this.active) return;
                 if(!this.box.selectionBoxActive) {
 
                     //if we have a perma, we won't act on hovering pending selections, so break here
@@ -726,6 +732,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
              //'A' or 'a' dispatch (reserved for attack/move)
              $('body').on('keydown.unitSystem', function( event ) {
+                 if(!this.active) return;
+
                  if(event.key == 'X' || event.key == 'x') {
                      if(keyStates['Control']) {
                          if(this.selectedUnit) {
@@ -739,7 +747,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                      $.each(this.selectedUnits, function(prop, unit) {
                          if(unit.isAttacker) {
                              if(!this.box.selectionBoxActive) {
-                                 this.box.invalidateNextBox = true;
                                  this.attackMove = true;
                              }
                          }
@@ -749,6 +756,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
              //dispatch generic key events
              $('body').on('keydown.unitSystem', function( event ) {
+                 if(!this.active) return;
+
                  var key = event.key.toLowerCase();
                  if(key == 'escape') {
                      this.abilityDispatch = false;
@@ -792,21 +801,25 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
 
             //toggle life bars with Alt
             $('body').on('keydown.unitSystem', function( event ) {
-                 if(event.key == 'Alt') {
-                     utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
-                         unit.showingBarsWithAlt = true;
-                         unit.showLifeBar(true);
-                         unit.showEnergyBar(true);
-                     })
-                 }
+                if(!this.active) return;
+
+                if(event.key == 'Alt') {
+                 utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
+                     unit.showingBarsWithAlt = true;
+                     unit.showLifeBar(true);
+                     unit.showEnergyBar(true);
+                 })
+                }
             }.bind(this));
 
             //cycle through selected units, changing the prevailing-unit
             $('body').on('keydown.unitSystem', function( event ) {
-                 if(event.key == 'Tab') {
-                     this.abilityDispatch = null;
-                     this.annointNextPrevailingUnit();
-                 }
+                if(!this.active) return;
+
+                if(event.key == 'Tab') {
+                 this.abilityDispatch = null;
+                 this.annointNextPrevailingUnit();
+                }
             }.bind(this));
 
             //This is used when tabbing through the list, but also when a unit is removed. In the case of a remove,
@@ -933,6 +946,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                         unit.renderlings[state].visible = newValue;
                 })
             }
+        };
+
+        this.pause = function() {
+            this.active = false;
+            this.abilityDispatch = false;
+            this.attackMove = false;
+        };
+
+        this.unpause = function() {
+            this.active = true;
         };
 
         /*

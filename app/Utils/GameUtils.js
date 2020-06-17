@@ -282,75 +282,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             currentGame.addTimer(sprite.blinkTimer);
         },
 
-        /*
-         * Renderer utils
-         */
-        // addSomethingToRendererOld: function(something, where, options) {
-        //     if($.type(where) == 'object') {
-        //         options = where;
-        //         where = options.where;
-        //     }
-        //     options = options || {};
-        //
-        //     something = currentGame.renderer.itsMorphinTime(something, options);
-        //
-        //     if(options.position) {
-        //         options.x = options.position.x;
-        //         options.y = options.position.y;
-        //     }
-        //     if(options.filter) {
-        //         options.filter.uniforms.mouse = {x: 50, y: 50};
-        //         options.filter.uniforms.resolution = {x: currentGame.canvas.width, y: currentGame.canvas.height};
-        //         something.filters = [options.filter];
-        //     }
-        //     if(options.height)
-        //         something.height = options.height;
-        //     if(options.width)
-        //         something.width = options.width;
-        //     if(options.x)
-        //         something.position.x = options.x;
-        //     if(options.y)
-        //         something.position.y = options.y;
-        //     if(options.scale)
-        //         something.scale = options.scale;
-        //     if(options.anchor) {
-        //         something.anchor = options.anchor;
-        //     } else if(!something.overrideDefaultAnchor && (something.anchor.x == 0 && something.anchor.y == 0)){
-        //         something.anchor = {x: .5, y: .5};
-        //     }
-        //     if(options.tint)
-        //         something.tint = options.tint;
-        //     if(options.rotation)
-        //         something.rotation = options.rotation;
-        //     if(options.sortYOffset)
-        //         something.sortYOffset = options.sortYOffset;
-        //     if(options.alpha != undefined)
-        //         something.alpha = options.alpha;
-        //     if(options.persists)
-        //         something.persists = true;
-        //
-        //     //add options to escape without adding it to the renderer
-        //     if(options.dontAdd) {
-        //         something.where = where;
-        //         return something;
-        //     }
-        //
-        //     currentGame.renderer.addToPixiStage(something, where || something.where);
-        //     return something;
-        // },
-
-        //This method was prone to creating memory leaks since we'd create a Sprite but not add
-        //it to a stage or a body (sometimes) meaning it wouldn't get cleaned up. Now, we're keeping
-        //track of any object created via this method and will call a removeSomethingFromRenderer upon
-        //nuking the current game.
-        // createDisplayObjectOld: function(something, options) {
-        //     var obj = this.addSomethingToRenderer(something, $.extend(options, {dontAdd: true}))
-        //     if(options && options.anchor) {
-        //         obj.overrideDefaultAnchor = true;
-        //     }
-        //     return obj;
-        // },
-
         addSomethingToRenderer: function(something, where, options) {
             if($.type(where) == 'object') {
                 options = where;
@@ -366,7 +297,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         /*
          * This method is prone to creating memory leaks since we'll create a Sprite but not add
          * it to a stage or a body (sometimes) meaning it won't get cleaned up naturally. Be sure
-         * to death pact this to something.
+         * to death pact this to something, attach it to a body, or manually destroy.
          */
         createDisplayObject: function(something, options) {
             options = options || {};
@@ -865,11 +796,11 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         //method to normalize setting a matter js body
-        setVelocity: function(body, velocity) {
-            //normalize to 16.6666 ms per frame
-            var normalizedVelocity = (currentGame.engine.delta / (1000/60)) * velocity;
-            Matter.Body.setVelocity(body, normalizedVelocity);
-        },
+        // setVelocity: function(body, velocity) {
+        //     //normalize to 16.6666 ms per frame
+        //     var normalizedVelocity = (currentGame.engine.delta / (1000/60)) * velocity;
+        //     Matter.Body.setVelocity(body, normalizedVelocity);
+        // },
 
         /*
          * Keep in mind where this is being called from since it could execute in the "same

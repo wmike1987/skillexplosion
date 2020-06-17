@@ -1,5 +1,3 @@
-*.bat
-jeffs_server
 /es6test/*
 *.py
 es6*
