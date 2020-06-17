@@ -150,8 +150,8 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	loader.loaderDeferred = $.Deferred();
 
         	//backgrounds
-        	// loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
-        	 loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
+        	loader.add('pelicanSheet', 'app/Textures/PelicanSheetLess.json');
+        	loader.add('backgroundSheet', 'app/Textures/BackgroundSheet.json');
         	// loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
         	// loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
 
