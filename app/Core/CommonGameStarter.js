@@ -10,7 +10,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/PixiRenderer', 'core/GameLoop'], fu
 	var pendingGame;
 	var CommonGameStarter = function(game) {
 
-		var defaults = {width: 1200, height: 600, unitPanelHeight: 0, gravity: 1};
+		var defaults = {interpolate: true, width: 1200, height: 600, unitPanelHeight: 0, gravity: 1};
 		latestGameOptions = $.extend({}, defaults, game.worldOptions);
 
 		//kill engine and renderer
@@ -53,7 +53,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/PixiRenderer', 'core/GameLoop'], fu
         		engine.world.gravity.y = latestGameOptions.gravity;
 
 				//create our game loop (default step rate is 60fps) and start the loop
-				var gameLoop = new GameLoop({engine: engine, isFixed: true});
+				var gameLoop = new GameLoop({interpolate: latestGameOptions.interpolate, engine: engine, isFixed: true});
 				gameLoop.start();
 				game.gameLoop = gameLoop;
 

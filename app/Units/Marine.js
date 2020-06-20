@@ -469,7 +469,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 scale: {x: 10/256, y: 50/256},
                 offset: {x: 15, y: 20},
                 rotate: utils.pointInDirection(knife.position, destination),
-    			      stage: "stageNTwo",
+	            stage: "stageNTwo",
             }]
             currentGame.addBody(knife);
 

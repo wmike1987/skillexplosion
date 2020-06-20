@@ -29,7 +29,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.interpolate = false;
         }
         else {
-            this.interpolate = options.interoplate || this.isFixed;
+            this.interpolate = options.interpolate || this.isFixed;
         }
 
         this.lastTime = 0;
@@ -43,7 +43,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             // console.info("desired fps: " + this.fps);
         //}
 
-        var tick = function(time) {
+        var tick = function gameloopTick(time) {
             this.frameRequestId = _requestAnimationFrame(tick);
 
             if(!this.lastTime) { //initial frame

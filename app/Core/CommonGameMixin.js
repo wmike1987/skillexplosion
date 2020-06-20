@@ -105,10 +105,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     body.verticeCopy = utils.cloneVertices(body.vertices);
                     body.positionCopy = {x: body.position.x, y: body.position.y};
                     body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
-                    if(body.partsCopy) {
-                        body.partsDeeperCopy = body.partsCopy;
+                    if(!body.partsCopy) {
+                        body.partsCopy = [];
                     }
-                    body.partsCopy = utils.cloneParts(body.parts);
+                    body.partsCopy.push(utils.cloneParts(body.parts));
+                    if(body.partsCopy.length > 15) {
+                        body.partsCopy.shift();
+                    }
                 }.bind(this))
             }.bind(this), true, 'beforeStep');
 

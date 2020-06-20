@@ -86,9 +86,15 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			var xLoc = Math.random() * (this.canvasEl.getBoundingClientRect().width-radius*2) + radius;
 			var yLoc = Math.random() * (this.canvasEl.getBoundingClientRect().height-radius*2) + radius;
 			this.ball = Matter.Bodies.circle(xLoc, yLoc, radius, { restitution: .95, friction: .3});
-			this.ball.render.sprite.texture = 'blueTarget2';
-			this.ball.render.sprite.xScale = this.ball.render.sprite.yScale = radius*2/128;
+			var rchildren = [];
+			rchildren.push({
+				id: 'mainData',
+				data: 'blueTarget2',
+				scale: {x: radius*2/128, y: radius*2/128}
+			})
+			this.ball.renderChildren = rchildren;
 			this.ball.radius = radius;
+			// this.ball.drawWire = true;
 
 			var velocityRange = 5;
 			var xVelocity = Math.random() * velocityRange*10 ;
@@ -102,8 +108,14 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 
 		createBallCenter: function(ball) {
 			this.ballTarget = Matter.Bodies.circle(ball.position.x, ball.position.y, ball.radius/3, {isSensor: true, isStatic: true});
-			this.ballTarget.render.sprite.texture = 'bluetarget2Center';
-			this.ballTarget.render.sprite.xScale = this.ballTarget.render.sprite.yScale = ball.radius*2/3/32;
+			var rchildren = [];
+			rchildren.push({
+                id: 'mainData',
+                data: 'bluetarget2Center',
+                scale: {x: ball.radius*2/3/32, y: ball.radius*2/3/32},
+                stage: 'stageOne',
+            })
+			this.ballTarget.renderChildren = rchildren;
 			return this.ballTarget;
 		}
 	}
@@ -115,6 +127,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			background: {image: 'SteelBackground', scale: {x: 1.334, y: 1.334}},
 		        width: 1200,
 		        height: 600,
+				interpolate: true
 		       };
 
 	return $.extend({}, CommonGameMixin, game);

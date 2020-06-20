@@ -46,6 +46,7 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
 			        if(self.gameState != 'playing') return;
 			        self.palm.currentColor = self.palm.nextColor;
 					self.palm.nextColor += Math.floor(Math.random() * 2) + 1;
+					self.palm.nextColor = 1;
 					self.createBirds();
 				}
 			});
@@ -83,14 +84,17 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
 				var x = event.clientX - rect.left;
 				var y = event.clientY - rect.top;
 				$.each(this.birds, function(i, bird) {
-				    if(!bird.correctBird && !bird.timerBird) return;
-				    $.each(bird.partsCopy, function(i, part) {
+				    if(!bird.correctBird && !bird.timerBird && bird.partsCopy.length >= 5) return;
+				    $.each(bird.partsCopy[bird.partsCopy.length-2], function(i, part) {
+					// $.each(bird.parts, function(i, part) {
 					    if(i == 0) return;
     					if(Matter.Vertices.contains(part.vertices, {x: x, y: y})) {
     					    if(bird.timerBird) {
     					        if(!bird.alreadyHit) {
         					        bird.alreadyHit = true;
-        					        this.removeBody(bird);
+									// utils.executeSomethingNextFrame(function() {
+										this.removeBody(bird);
+									// }.bind(this), 2)
         					        this.hits[this.timerBirdsHit].play();
         					        this.timerBirdsHit++;
     					        }
@@ -113,7 +117,9 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
         						this.incrementScore(targetScore);
         						var s = this.waveRustle.play();
         						this.waveRustle.fade(Math.random() * .75 + .25, 0, 2000, s);
-        						this.nextWave();
+								// utils.executeSomethingNextFrame(function() {
+									this.nextWave();
+								// }.bind(this), 2)
     					    }
     						return false;
     					}
@@ -152,7 +158,17 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
 
             //create bird shape, giving it an initial location which allows the bounds to be properly calculated (bug?). With proper bounds we can call calculateRandomPlacementForBodyWithinCanvasBounds()
             var bird = Matter.Bodies.fromVertices(99999, 99999, Matter.Vertices.fromPath('115, -55  , 111, -39  , 105, -34  , 102, -19  , 126, -11  , 128, -7  , 123, -6  , 124, -3  , 83, -1  , 37, -15  , 29, -21  , 28, -25  , 0, -19  , 0, -24  , 4, -27  , 23, -34  , 30, -41  , 53, -42  , 49, -50  , 56, -73  , 58, -73  , 59, -63  , 63, -72  , 65, -72  , 66, -63  , 72, -67  , 72, -74  , 92, -107  , 98, -127  , 100, -127  , 100, -113  , 106, -128  , 108, -128  , 109, -121  , 107, -115  , 116, -126  , 116, -119  , 112, -111  , 123, -119  , 123, -115  , 118, -109  , 124, -109  , 124, -106  , 121, -103  , 122, -99  , 115, -82'), { frictionAir: 0});
-            bird.render.sprite.texture = 'Pelican';
+
+			//scale bird
+			var scale = Math.random() * .5 + .5;
+			utils.scaleBody(bird, scale, scale);
+
+			//offset the sprite to match the list of vertices... I think the "center" of the vertices is not the
+			//center of the sprite, but I haven't actually verified this.
+			bird.render.sprite.texture = 'Pelican';
+			bird.render.sprite.xOffset = 18 * scale;
+			bird.render.sprite.yOffset = -15 * scale;
+			// bird.drawWire = true;
 
             //tint the bird
             if(this.palm.currentColor%this.colorCycle.length == tint)
@@ -164,9 +180,6 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
                 bird.timerBird = true;
                 bird.render.sprite.tint = parseInt('870101', 16);;
             }
-            //scale bird
-            var scale = Math.random() * .5 + .5;
-            utils.scaleBody(bird, scale, scale);
 
             //calculate and set position then flip the bird if it's moving left to right
             if(createBirdOffScreenRight)
@@ -193,6 +206,8 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
 			if(this.wave > 100)
 			    velocityRange = 8;
 			var xVelocity = Math.random() * velocityRange * (createBirdOffScreenRight ? -1 : 1) + (createBirdOffScreenRight ? -4 : 4);
+
+			bird.render.sprite.xOffset *= (createBirdOffScreenRight ? -1 : 1);
 			Matter.Body.setVelocity(bird, {x: xVelocity , y: 0});
 
 			//no collisions!

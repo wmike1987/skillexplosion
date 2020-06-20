@@ -803,8 +803,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         // },
 
         /*
-         * Keep in mind where this is being called from since it could execute in the "same
-         * frame" if this is called before the tick that the timers attach to.
+         * Keep in mind where this is being called from. Calling this after the tick
+         * event will prevent the current frame from decrementing frameCount.
          */
         executeSomethingNextFrame: function(callback, frameCount) {
             var limit = frameCount || 1;
