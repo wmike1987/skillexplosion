@@ -99,17 +99,37 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                  this.itemSystem = new ItemSystem(options);
              }
 
-            //begin tracking body vertice histories
+            //begin tracking previous frame positions and attributes
             this.addTickCallback(function() {
                 $.each(this.verticeHistories, function(index, body) {
-                    body.verticeCopy = utils.cloneVertices(body.vertices);
-                    body.positionCopy = {x: body.position.x, y: body.position.y};
                     body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
+
+                    //Veritices
+                    body.verticeCopy = utils.cloneVertices(body.vertices);
+                    if(!body.verticiesCopy) {
+                        body.verticiesCopy = [];
+                    }
+                    body.verticiesCopy.push(utils.cloneVertices(body.vertices));
+                    if(body.verticiesCopy.length > 5) {
+                        body.verticiesCopy.shift();
+                    }
+
+                    //Positions
+                    body.positionCopy = {x: body.position.x, y: body.position.y};
+                    if(!body.positionsCopy) {
+                        body.positionsCopy = [];
+                    }
+                    body.positionsCopy.push(utils.clonePosition(body.position));
+                    if(body.positionsCopy.length > 5) {
+                        body.positionsCopy.shift();
+                    }
+
+                    //Parts
                     if(!body.partsCopy) {
                         body.partsCopy = [];
                     }
                     body.partsCopy.push(utils.cloneParts(body.parts));
-                    if(body.partsCopy.length > 15) {
+                    if(body.partsCopy.length > 5) {
                         body.partsCopy.shift();
                     }
                 }.bind(this))
@@ -635,8 +655,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.renderer.clear(options.noMercy, options.savePersistables);
 
             //Unload sounds we've created
-            this.endGameSound.unload();
-            this.loseLifeSound.unload();
+            if(options.noMercy) {
+                this.endGameSound.unload();
+                this.loseLifeSound.unload();
+            }
 
             //Clear listeners, save invincible listeners
             this.clearListeners(options.noMercy);

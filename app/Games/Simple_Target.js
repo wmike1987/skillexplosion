@@ -8,6 +8,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 		victoryCondition: {type: 'timed', limit: 35},
 		hideScore: false,
 		noClickIndicator: false,
+		outputLag: 3,
 
 		initExtension: function() {
 		    this.hit = utils.getSound('bellhit3.wav', {volume: .2, rate: 2});
@@ -27,20 +28,19 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 
 			this.addBody(this.ball, true);
 			this.addBody(this.ballCenter, true);
-			this.addTickListener(function() {
-			    if(this.ball && this.ballTarget)
-                    Matter.Body.setPosition(this.ballCenter, {x: this.ball.position.x, y: this.ball.position.y});
-			}.bind(this), false, 'afterUpdate');
 
 			//create ghost target indicator
 			this.addEventListener('mousedown', function(event) {
 				this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
 				this.ghostTargetCenter = this.ghostTargetCenter || utils.addSomethingToRenderer('bluetarget2CenterGhost', 'stageNTwo');
-				this.ghostTarget.position.x = this.ball.positionCopy.x;
-				this.ghostTarget.position.y = this.ball.positionCopy.y;
+				var vlen = this.ball.verticiesCopy.length;
+				var plen = this.ball.positionsCopy.length;
+				var framePosition = this.ball.positionsCopy[plen-this.outputLag];
+				this.ghostTarget.position.x = framePosition.x;
+				this.ghostTarget.position.y = framePosition.y;
 				this.ghostTarget.scale.x = this.ghostTarget.scale.y = this.ball.circleRadius*2/128;
-				this.ghostTargetCenter.position.x = this.ball.positionCopy.x;
-				this.ghostTargetCenter.position.y = this.ball.positionCopy.y;
+				this.ghostTargetCenter.position.x = framePosition.x;
+				this.ghostTargetCenter.position.y = framePosition.y;
 				this.ghostTargetCenter.scale.x = this.ghostTargetCenter.scale.y = this.ball.circleRadius*2/3/32;
 			}.bind(this), false, true);
 
@@ -49,25 +49,42 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 				var y = event.data.global.y;
 
 			    var hitSound = this.hit;
-				if(Matter.Vertices.contains(this.ballTarget.verticeCopy, {x: x, y: y})) {
+				var vlen = this.ball.verticiesCopy.length;
+				var plen = this.ball.positionsCopy.length;
+
+				var framePosition = this.ball.positionsCopy[plen-this.outputLag];
+				if(Matter.Vertices.contains(this.ballCenter.verticiesCopy[vlen-this.outputLag], {x: x, y: y})) {
 					this.addToGameTimer(1000);
 
 					//play sound
 					hitSound = this.bullseye;
 
-					//play special animation
-					utils.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], 1, null, 1).play();
-					utils.getAnimation('ssBlueDeath', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/32), (this.ball.circleRadius*2/32)], .6, null, 1, 0.785398).play(); //with rotation
+					//play animation
+					var deathanimation = utils.getAnimationB({
+						numberOfFrames: 8,
+						baseName: 'ssBlueDeath',
+						speed: 1,
+						transform: [framePosition.x, framePosition.y, 2, 2]
+					});
+					utils.addSomethingToRenderer(deathanimation, 'stageOne');
+					deathanimation.play();
 					var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
-					plusOne.position = this.ballTarget.position;
+					plusOne.position = framePosition;
 					plusOne.position.y -= 50;
 					utils.floatSprite(plusOne);
 				}
-				if(Matter.Vertices.contains(this.ball.verticeCopy, {x: x, y: y})) {
+				if(Matter.Vertices.contains(this.ball.verticiesCopy[vlen-this.outputLag], {x: x, y: y})) {
 					this.incrementScore(targetScore);
 
-					//play death animation
-					utils.getAnimation('blueCollapse', [this.ball.positionCopy.x, this.ball.positionCopy.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .6).play();
+					//play animation
+					var deathanimation = utils.getAnimationB({
+						numberOfFrames: 8,
+						baseName: 'blueCollapse',
+						speed: 1,
+						transform: [framePosition.x, framePosition.y, this.ball.circleRadius*2/512, this.ball.circleRadius*2/512]
+					});
+					utils.addSomethingToRenderer(deathanimation, 'stageOne');
+					deathanimation.play();
 
 					//play sound
             		hitSound.play();
@@ -75,6 +92,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 
 					this.removeBody(this.ball);
 					this.removeBody(this.ballCenter);
+					utils.removeSomethingFromRenderer(this.ballTargetSprite)
 					this.addBody(this.ball = this.createBodyAtRandomLocation(), true);
 					this.addBody(this.ballCenter = this.createBallCenter(this.ball), true);
 				}
@@ -94,7 +112,6 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			})
 			this.ball.renderChildren = rchildren;
 			this.ball.radius = radius;
-			// this.ball.drawWire = true;
 
 			var velocityRange = 5;
 			var xVelocity = Math.random() * velocityRange*10 ;
@@ -107,16 +124,12 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 		},
 
 		createBallCenter: function(ball) {
-			this.ballTarget = Matter.Bodies.circle(ball.position.x, ball.position.y, ball.radius/3, {isSensor: true, isStatic: true});
-			var rchildren = [];
-			rchildren.push({
-                id: 'mainData',
-                data: 'bluetarget2Center',
-                scale: {x: ball.radius*2/3/32, y: ball.radius*2/3/32},
-                stage: 'stageOne',
-            })
-			this.ballTarget.renderChildren = rchildren;
-			return this.ballTarget;
+			var ballCenter = Matter.Bodies.circle(ball.position.x, ball.position.y, ball.radius/3, {isSensor: true, isStatic: true});
+			ballCenter.noWire = true;
+			this.ballTargetSprite = utils.addSomethingToRenderer('bluetarget2Center', {where: 'stageOne', scale: {x: ball.radius*2/3/32, y: ball.radius*2/3/32}});
+			utils.attachSomethingToBody(this.ballTargetSprite, this.ball);
+			utils.attachSomethingToBody(ballCenter, this.ball);
+			return ballCenter;
 		}
 	}
 
@@ -127,7 +140,6 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			background: {image: 'SteelBackground', scale: {x: 1.334, y: 1.334}},
 		        width: 1200,
 		        height: 600,
-				interpolate: true
 		       };
 
 	return $.extend({}, CommonGameMixin, game);

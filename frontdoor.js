@@ -160,11 +160,9 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
         	// loader.add('GrassTiles', 'app/Textures/GrassTiles.json'); remove
 
         	//animations
-        	// loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
-        	loader.ssBlueDeathFrameCount = 6;
+        	loader.add('BlueTargetDeath', 'app/Textures/BlueTargetDeath.json');
 
-        	 loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
-        	loader.blueCollapseFrameCount = 6;
+        	loader.add('blueCollapse', 'app/Textures/blueCollapse.json');
 
         	// loader.add('raindropflash', 'app/Textures/DropletFlash.json');
         	loader.raindropflashFrameCount = 3;
