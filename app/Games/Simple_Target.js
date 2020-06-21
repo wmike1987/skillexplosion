@@ -8,7 +8,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 		victoryCondition: {type: 'timed', limit: 35},
 		hideScore: false,
 		noClickIndicator: false,
-		outputLag: 3,
+		outputLag: 2,
 
 		initExtension: function() {
 		    this.hit = utils.getSound('bellhit3.wav', {volume: .2, rate: 2});
