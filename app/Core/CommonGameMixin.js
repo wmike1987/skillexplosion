@@ -133,7 +133,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         body.partsCopy.shift();
                     }
                 }.bind(this))
-            }.bind(this), true, 'beforeUpdate');
+            }.bind(this), true, 'beforeTick');
 
             this['incr' + 'ement' + 'Sco' + 're'] = function(value) {
                 this.s.s += value*77;

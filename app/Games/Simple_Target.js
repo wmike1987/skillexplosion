@@ -8,7 +8,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 		victoryCondition: {type: 'timed', limit: 35},
 		hideScore: false,
 		noClickIndicator: false,
-		outputLag: 2,
+		outputLag: 3,
 
 		initExtension: function() {
 		    this.hit = utils.getSound('bellhit3.wav', {volume: .2, rate: 2});
@@ -140,6 +140,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			background: {image: 'SteelBackground', scale: {x: 1.334, y: 1.334}},
 		        width: 1200,
 		        height: 600,
+				interpolate: true,
 		       };
 
 	return $.extend({}, CommonGameMixin, game);

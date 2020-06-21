@@ -62,6 +62,8 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.deltaTime = Math.min(time - this.lastTime, this.maxDelta);
             this.lastTime = time;
 
+            Matter.Events.trigger(this, 'beforeTick', event);
+
             var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime)
             if(willUpdate) {
                 Matter.Events.trigger(this, 'beforeUpdate', event);
