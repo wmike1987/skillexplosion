@@ -28,6 +28,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
         frames: 0,
         frameSecondCounter: 0,
         playerTeam: 100,
+        lagCompensation: 2,
 
         /*
          * Game lifecycle
@@ -106,12 +107,12 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
 
                     //Veritices
                     body.verticeCopy = utils.cloneVertices(body.vertices);
-                    if(!body.verticiesCopy) {
-                        body.verticiesCopy = [];
+                    if(!body.verticesCopy) {
+                        body.verticesCopy = [];
                     }
-                    body.verticiesCopy.push(utils.cloneVertices(body.vertices));
-                    if(body.verticiesCopy.length > 5) {
-                        body.verticiesCopy.shift();
+                    body.verticesCopy.push(utils.cloneVertices(body.vertices));
+                    if(body.verticesCopy.length > 5) {
+                        body.verticesCopy.shift();
                     }
 
                     //Positions

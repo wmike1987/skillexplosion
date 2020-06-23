@@ -300,8 +300,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     var bodies = [];
                     if(currentGame.verticeHistories.length > 0) {
                         $.each(currentGame.verticeHistories, function(index, body) {
-                            if(!body.verticeCopy) return;// || !body.isSelectable) return;
-                            if(Matter.Vertices.contains(body.verticeCopy, this.box.originalPoint)) {
+                            var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                            if(!vertCopy) return;// || !body.isSelectable) return;
+                            if(Matter.Vertices.contains(vertCopy, canvasPoint)) {
                                 bodies.push(body);
                             }
                         }.bind(this));
@@ -431,8 +432,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     var bodies = [];
                     if(currentGame.verticeHistories.length > 0) {
                         $.each(currentGame.verticeHistories, function(index, body) {
-                            if(!body.verticeCopy) return;
-                            if(Matter.Vertices.contains(body.verticeCopy, currentGame.mousePosition)) {
+                            var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                            if(!vertCopy) return;// || !body.isSelectable) return;
+                            if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
                                 bodies.push(body);
                             }
                         }.bind(this));
@@ -551,12 +553,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                         $.each(this.box.pendingSelections, function(key, obj) {
                             if(unit == obj) {
                                 unitAlreadyContainedInBox = true;
-                                console.info("unit already contained")
+                                // console.info("unit already contained")
                             }
                         })
                         if(!unitAlreadyContainedInBox) {
-
-                            console.info("this is doing something!")
+                            // console.info("this is doing something!")
                         }
                         this.box.pendingSelections[unit.unitId] = unit;
                         if(unit == this.box.permaPendingUnit)
@@ -622,8 +623,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                     var bodies = [];
                     if(currentGame.verticeHistories.length > 0) {
                         $.each(currentGame.verticeHistories, function(index, body) {
-                            if(!body.verticeCopy) return;
-                            if(Matter.Vertices.contains(body.verticeCopy, currentGame.mousePosition)) {
+                            var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                            if(!vertCopy) return;// || !body.isSelectable) return;
+                            if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
                                 bodies.push(body);
                             }
                         }.bind(this));
@@ -678,8 +680,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
                 var bodies = [];
                 if(currentGame.verticeHistories.length > 0) {
                     $.each(currentGame.verticeHistories, function(index, body) {
-                        if(!body.verticeCopy) return;
-                        if(Matter.Vertices.contains(body.verticeCopy, currentGame.mousePosition)) {
+                        var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                        if(!vertCopy) return;// || !body.isSelectable) return;
+                        if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
                             bodies.push(body);
                         }
                     }.bind(this));

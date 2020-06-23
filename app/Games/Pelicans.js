@@ -46,7 +46,6 @@ function($, Matter, PIXI, CommonGameMixin, utils) {
 			        if(self.gameState != 'playing') return;
 			        self.palm.currentColor = self.palm.nextColor;
 					self.palm.nextColor += Math.floor(Math.random() * 2) + 1;
-					self.palm.nextColor = 1;
 					self.createBirds();
 				}
 			});

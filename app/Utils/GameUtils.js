@@ -373,6 +373,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             currentGame.removeTickCallback(something.bodyAttachment);
         },
 
+        getLagCompensatedVerticesForBody: function(body) {
+            if(body.verticesCopy && body.verticesCopy.length >= currentGame.lagCompensation) {
+                return body.verticesCopy[body.verticesCopy.length - currentGame.lagCompensation];
+            } else {
+                return null;
+            }
+        },
+
         removeSomethingFromRenderer: function(something, where) {
             //if we just have a display object that has not been added to the renderer, destroy this mf'er
             if(!something.where && !where && !something.myLayer) {

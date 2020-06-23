@@ -33,7 +33,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			this.addEventListener('mousedown', function(event) {
 				this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
 				this.ghostTargetCenter = this.ghostTargetCenter || utils.addSomethingToRenderer('bluetarget2CenterGhost', 'stageNTwo');
-				var vlen = this.ball.verticiesCopy.length;
+				var vlen = this.ball.verticesCopy.length;
 				var plen = this.ball.positionsCopy.length;
 				var framePosition = this.ball.positionsCopy[plen-this.outputLag];
 				this.ghostTarget.position.x = framePosition.x;
@@ -49,11 +49,11 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 				var y = event.data.global.y;
 
 			    var hitSound = this.hit;
-				var vlen = this.ball.verticiesCopy.length;
+				var vlen = this.ball.verticesCopy.length;
 				var plen = this.ball.positionsCopy.length;
 
 				var framePosition = this.ball.positionsCopy[plen-this.outputLag];
-				if(Matter.Vertices.contains(this.ballCenter.verticiesCopy[vlen-this.outputLag], {x: x, y: y})) {
+				if(Matter.Vertices.contains(this.ballCenter.verticesCopy[vlen-this.outputLag], {x: x, y: y})) {
 					this.addToGameTimer(1000);
 
 					//play sound
@@ -73,7 +73,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 					plusOne.position.y -= 50;
 					utils.floatSprite(plusOne);
 				}
-				if(Matter.Vertices.contains(this.ball.verticiesCopy[vlen-this.outputLag], {x: x, y: y})) {
+				if(Matter.Vertices.contains(this.ball.verticesCopy[vlen-this.outputLag], {x: x, y: y})) {
 					this.incrementScore(targetScore);
 
 					//play animation
