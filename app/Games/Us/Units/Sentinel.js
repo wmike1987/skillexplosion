@@ -234,7 +234,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
             var unitProperties = $.extend({
                 unitType: 'Sentinel',
-                health: 2000,
+                health: 35,
                 defense: 1,
                 energy: 0,
                 energyRegenerationRate: 1,

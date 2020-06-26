@@ -436,6 +436,17 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return placement;
         },
 
+        getRandomPlacementWithinPlayableBounds: function(buffer) {
+            if(buffer && !buffer.x) {
+                buffer = {x: buffer, y: buffer};
+            }
+            if(!buffer) buffer = {x: 0, y: 0};
+            var placement = {};
+            placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x*2));
+            placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y*2));
+            return placement;
+        },
+
         isPositionWithinPlayableBounds: function(position) {
             if(position.x > 0 && position.x < this.getPlayableWidth()) {
                 if(position.y > 0 && position.y < this.getPlayableHeight()) {

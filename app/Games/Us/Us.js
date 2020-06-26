@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
-'units/Marine', 'units/EnemyMarine', 'units/Baneling', 'pixi-filters', 'utils/GameUtils', 'units/Medic', 'shaders/SimpleLightFragmentShader',
-'shaders/CampfireShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'units/Critter', 'units/AlienGuard',
-'units/Sentinel', 'shaders/ObjectSingleLightShader'],
+'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic', 'shaders/SimpleLightFragmentShader',
+'shaders/CampfireShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
+'usunits/Sentinel', 'shaders/ObjectSingleLightShader'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, campfireShader, TileMapper,
     Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, ObjectSingleLightShader) {
 
@@ -17,6 +17,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         noClickIndicator: true,
         tileSize: 225,
         currentScene: null,
+        basicItems: ['JewelOfLife', 'RingOfThought', 'RingOfRenewal', 'SturdyCanteen', 'BootsOfHaste'],
 
         initExtension: function() {
             this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
@@ -73,41 +74,70 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 boss: 'MapRedBattleToken'
             }
 
-            //create next level options
-            var nextLevelOptions = {
-                possibleTiles: [],
-                realTileWidth: 370,
-                enemySet: []
-            }
-
-            for(var i = 1; i < 7; i++) {
-                nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
-            }
-
-            nextLevelOptions.enemySet.push({
-                constructor: Critter,
-                spawn: {total: 18, n: 1, hz: 1200, maxOnField: 1},
-                item: {type: 'basic', total: 3}
-            })
-
             var nextLevelInitiated = false;
             var us = this;
 
-            var mapNode = function() {
-                this.mapPosition = utils.getPlayableCenter();
+            var mapNode = function(position) {
+                //create next level options
+                var nextLevelOptions = {
+                    possibleTiles: [],
+                    realTileWidth: 370,
+                    enemySet: []
+                }
+
+                var grassTypes = ["Red", "Orange", "Yellow"]
+                for(var i = 1; i < 7; i++) {
+                    var gType = utils.getRandomElementOfArray(grassTypes);
+                    nextLevelOptions.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
+                }
+
+                nextLevelOptions.enemySet.push({
+                    constructor: Critter,
+                    spawn: {total: 10 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 1350, maxOnField: 1},
+                    item: {type: 'basic', total: 2}
+                })
+                nextLevelOptions.enemySet.push({
+                    constructor: Sentinel,
+                    spawn: {total: 1 + utils.getRandomIntInclusive(1, 3), n: 1, hz: 9000, maxOnField: 1},
+                })
+
+                this.mapPosition = position;
                 this.levelType = 'normal';
                 this.levelOptions = nextLevelOptions;
                 this.neighbors = [];
-                this.displayObject = utils.createDisplayObject(typeTokenMappings[this.levelType], {position: this.mapPosition});
+                this.displayObject = utils.createDisplayObject(typeTokenMappings[this.levelType], {position: this.mapPosition, scale: {x: .75, y: .75}});
                 this.displayObject.interactive = true;
+
+                this.displayObject.on('mouseover', function(event) {
+                    this.displayObject.tint = 0x20cd2c;
+                }.bind(this))
+                this.displayObject.on('mouseout', function(event) {
+                    this.displayObject.tint = 0xFFFFFF;
+                }.bind(this))
                 this.displayObject.on('mousedown', function(event) {
                     this.nextLevel(nextLevelOptions);
                 }.bind(us))
             }
 
             var graph = [];
-            var n1 = new mapNode();
-            graph.push(n1);
+
+            var nodeBuffer = 100;
+            for(var x = 0; x < 10; x++) {
+                var position;
+                var collision;
+                do {
+                    collision = false;
+                    position = utils.getRandomPlacementWithinPlayableBounds(50);
+                    for(let node of graph) {
+                        if(utils.distanceBetweenPoints(node.mapPosition, position) < nodeBuffer) {
+                            collision = true;
+                            break;
+                        }
+                    }
+                } while(collision)
+                var node = new mapNode(position);
+                graph.push(node);
+            }
 
             return graph;
         },
@@ -115,8 +145,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         initialCutScene: function() {
             this.currentScene = new Scene(); //empty scene to transition from
             var cutScene = new Scene();
-            var background = utils.createDisplayObject('TintableSquare', {tint: 0x004A26, anchor: {x: 0, y: 0}});
-            utils.makeSpriteSize(background, utils.getPlayableWH())
+            var background = utils.createDisplayObject('SplashRed', {where: 'hudTwo', anchor: {x: 0, y: 0}});
+            utils.makeSpriteSize(background, utils.getCanvasWH());
             cutScene.add(background);
 
             this.currentScene.transitionToScene({newScene: cutScene});
@@ -303,18 +333,14 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 			});
             fireAnimation.where = 'stageOne';
             fireAnimation.play();
-            var campfire = new Doodad({collides: true, autoAdd: false, radius: 40, texture: [fireAnimation, 'Logs'], stage: 'stageNOne',
-                scale: {x: 1.4, y: 1.4}, shadowOffset: {x: -3, y: 25}, shadowScale: {x: 1.3, y: 1.3}, offset: {x: 0, y: 0}, sortYOffset: 35,
+            var campfire = new Doodad({collides: true, autoAdd: false, radius: 40, texture: [fireAnimation, {doodadData: 'Logs', offset: {x: 2, y: 0}}], stage: 'stageNOne',
+                scale: {x: 1.4, y: 1.4}, shadowOffset: {x: 0, y: 25}, shadowScale: {x: 1.3, y: 1.3}, offset: {x: 0, y: 0}, sortYOffset: 35,
                 position: {x: utils.getCanvasCenter().x, y: utils.getCanvasCenter().y-40}})
             campScene.add(campfire);
             this.campfire = campfire;
 
             treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
             campScene.add(this.fillAreaWithTrees(treeOptions));
-
-            // var bush = new Doodad({collides: true, autoAdd: false, radius: 20, texture: 'Doodads/avsmallbush1', stage: 'stage', scale: {x: .6, y: .6}, offset: {x: 0, y: 0}, sortYOffset: 0,
-            //     shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -6, y: 10}, position: {x: utils.getCanvasCenter().x, y: utils.getPlayableHeight()-40}})
-            // campScene.add(bush);
 
             //create next level options
             var nextLevelOptions = {
@@ -327,10 +353,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
             }
 
-            // nextLevelOptions.enemySet.push({
-            //     constructor: Critter,
-            //     spawn: {total: 20, n: 3, hz: 3500, maxOnField: 5},
-            //     item: {type: 'basic', total: 3}});
             nextLevelOptions.enemySet.push({
                 constructor: Critter,
                 spawn: {total: 18, n: 1, hz: 1200, maxOnField: 1},
@@ -338,22 +360,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             })
 
             var nextLevelInitiated = false;
-            // Matter.Events.on(bush.body, 'onCollide', function(pair) {
-            //     if(!nextLevelInitiated) {
-            //         var otherBody = pair.pair.bodyB == bush.body ? pair.pair.bodyA : pair.pair.bodyB;
-            //         if(otherBody.unit) {
-            //             this.nextLevel(nextLevelOptions);
-            //             nextLevelInitiated = true;
-            //         }
-            //     }
-            // }.bind(this));
-
-            // Matter.Events.on(equipStation.body, 'onCollide', function(pair) {
-            //     var otherBody = pair.pair.bodyB == equipStation.body ? pair.pair.bodyA : pair.pair.bodyB;
-            //     if(otherBody.unit && this.unitSystem.selectedUnit == otherBody.unit) {
-            //         this.unitSystem.unitConfigurationPanel.showForUnit(otherBody.unit);
-            //     }
-            // }.bind(this));
             return campScene;
         },
 
@@ -575,6 +581,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                         timeLimit: enemy.spawn.hz,
                         callback: function() {
                             for(var x = 0; x < enemy.spawn.n; x++) {
+                                var lastUnit = false;
+                                if(total == (enemy.spawn.n-1)) lastUnit = true;
                                 if(total >= enemy.spawn.total) {
                                     this.invalidated = true;
                                     enemy.fulfilled = true;
@@ -585,8 +593,19 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
                                 utils.placeBodyJustOffscreen(newUnit);
 
-                                // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: newUnit});
-                                // ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: newUnit});
+                                if(enemy.item && enemy.item.total > 0) {
+                                    var giveItem = true;
+                                    if(lastUnit) {
+                                        giveItem = true;
+                                    } else {
+                                        giveItem = utils.flipCoin() && utils.flipCoin();
+                                    }
+                                    if(giveItem) {
+                                        ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(self.basicItems), unit: newUnit});
+                                        enemy.item.total--;
+                                    }
+                                }
+
                                 newUnit.honeRange = 5000;
                                 total++;
                                 currentGame.addUnit(newUnit);
@@ -625,7 +644,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
     game.worldOptions = {
             //background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
                 width: 1200,
-                height: 600, //600 playing area, 200 unit panel
+                height: 600, //600 playing area, 100 unit panel
                 unitPanelHeight: 100,
                 gravity: 0,
                };

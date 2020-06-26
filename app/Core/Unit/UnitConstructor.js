@@ -1,5 +1,5 @@
 define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
-'utils/GameUtils', 'unitcore/UnitBase', 'items/EmptySlot'],
+'utils/GameUtils', 'unitcore/UnitBase', 'unitcore/EmptySlot'],
 
     function($, Matter, PIXI, Moveable, Attacker, Iso, utils, unitBase, EmptySlot) {
 

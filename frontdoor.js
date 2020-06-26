@@ -16,6 +16,7 @@ requirejs.config({
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min",
 	    //'matter-js': "matter/matter-timing",
 	    'matter-js': "matter/matter",
+        'usunits': "../app/Games/Us/Units",
 	    matterCollisionPlugin: "https://cdn.jsdelivr.net/npm/matter-collision-events@0.1.7/build/matter-collision-events",
 	    particles: "pixi-particles/pixi-particles",
 		'pixi-filters': "pixi-filters/pixi-filters",

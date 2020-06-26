@@ -52,7 +52,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             var index = Math.floor(Math.random() * len);
             options.name = options.name[index];
         }
-        require(['items/'+options.name], function(item) {
+
+        //This is assuming a particular structure of the Item files within the project and game
+        var packagePrefix = options.gamePrefix ? 'app/Games/'+options.gamePrefix+'/' : "";
+        require([packagePrefix + 'Items/'+options.name], function(item) {
             if(options.unit.isDead) {
                 var item = item();
                 item.drop(options.unit.position);
