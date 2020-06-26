@@ -11,7 +11,6 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
         randomizeHone: true,
         honableTargets: null, //this prevents the need for honing sensor (which can have a negative performance impact). This may not be relevant anymore
         specifiedAttackTarget: null,
-        canAttack: true,
         attackAutocast: true,
 
         //default
@@ -79,6 +78,20 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
             this.eventClickMappings[this.commands.attack.key] = this.attackMove;
             this.eventClickMappings[this.commands.move.key] = this.move;
+
+            //Force canAttack'ing units to be in the playable bounds
+            Object.defineProperty(this, 'canAttack', {
+                get: function() {
+                    return this._canAttack && utils.isPositionWithinPlayableBounds(this.position, 10);
+                },
+
+                set: function(value) {
+                    this._canAttack = value;
+                },
+                configurable: true
+            });
+            this.canAttack = true;
+            this.isAttackable = true;
 
             this._becomeOnAlert();
         },

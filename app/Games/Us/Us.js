@@ -580,19 +580,19 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                         gogogo: true,
                         timeLimit: enemy.spawn.hz,
                         callback: function() {
+                            if(enemy.fulfilled) return;
                             for(var x = 0; x < enemy.spawn.n; x++) {
                                 var lastUnit = false;
-                                if(total == (enemy.spawn.n-1)) lastUnit = true;
-                                if(total >= enemy.spawn.total) {
-                                    this.invalidated = true;
-                                    enemy.fulfilled = true;
-                                    return;
-                                }
+                                if(total == (enemy.spawn.total-1)) lastUnit = true;
+                                total++;
+
+                                //Create unit
                                 var newUnit = enemy.constructor({team: 4});
                                 newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
-
+                                newUnit.honeRange = 5000;
                                 utils.placeBodyJustOffscreen(newUnit);
 
+                                //Give item to unit if chosen
                                 if(enemy.item && enemy.item.total > 0) {
                                     var giveItem = true;
                                     if(lastUnit) {
@@ -606,8 +606,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                     }
                                 }
 
-                                newUnit.honeRange = 5000;
-                                total++;
+                                if(lastUnit) {
+                                    this.invalidated = true;
+                                    enemy.fulfilled = true;
+                                }
                                 currentGame.addUnit(newUnit);
                             }
                         }

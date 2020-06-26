@@ -447,9 +447,13 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return placement;
         },
 
-        isPositionWithinPlayableBounds: function(position) {
-            if(position.x > 0 && position.x < this.getPlayableWidth()) {
-                if(position.y > 0 && position.y < this.getPlayableHeight()) {
+        isPositionWithinPlayableBounds: function(position, buffer) {
+            if(buffer && !buffer.x) {
+                buffer = {x: buffer, y: buffer};
+            }
+            if(!buffer) buffer = {x: 0, y: 0};
+            if(position.x > 0 + buffer.x && position.x < this.getPlayableWidth() - buffer.x) {
+                if(position.y > 0 + buffer.x && position.y < this.getPlayableHeight() - buffer.y) {
                     return true;
                 }
             }
