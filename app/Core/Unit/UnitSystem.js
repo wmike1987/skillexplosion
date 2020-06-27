@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcore/UnitConfigurationPanel'], function($, utils, Matter, UnitPanel, UnitConfigurationPanel) {
+define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
     var unitSystem = function(properties) {
 
@@ -30,14 +30,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             this.orderedUnits = [];
 
             //create UnitPanel
-            this.unitPanel = new UnitPanel({
+            this.unitPanel = new this.unitPanelConstructor({
                 systemRef: this,
                 position: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight() - currentGame.worldOptions.unitPanelHeight/2}});
             this.unitPanel.initialize();
-
-            //create UnitConfigurationPanel
-            this.unitConfigurationPanel = new UnitConfigurationPanel()
-            this.unitConfigurationPanel.initialize();
 
             //destination marker
             this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
@@ -986,10 +982,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/UnitPanel', 'unitcor
             //cleanup unit panel
             if(this.unitPanel)
                 this.unitPanel.cleanUp();
-
-            //and the unit configuration panel
-            if(this.unitConfigurationPanel)
-                this.unitConfigurationPanel.cleanUp();
 
             //don't hold onto any bodies
             this.selectedUnits = {};

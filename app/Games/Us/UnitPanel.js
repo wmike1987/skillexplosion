@@ -1,4 +1,4 @@
-define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'], function($, utils, Matter, styles, Tooltip) {
+define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip', 'games/Us/UnitConfigurationPanel'], function($, utils, Matter, styles, Tooltip, ucp) {
 
     //This module represents a tile map. This is produced by the tile mapper
     var unitPanel = function(options) {
@@ -184,6 +184,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     };
 
     unitPanel.prototype.initialize = function(options) {
+
+        //create UnitConfigurationPanel
+        this.unitConfigurationPanel = new ucp()
+        this.unitConfigurationPanel.initialize();
 
         //add frame-backing to world
         utils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
@@ -639,6 +643,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         currentGame.removeTickCallback(this.updateUnitStatTick);
         currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
         currentGame.removeTickCallback(this.abilityAvailableTick);
+
+        //unit configuration panel
+        if(this.unitConfigurationPanel)
+            this.unitConfigurationPanel.cleanUp();
 
         this.autoCastSound.unload();
 

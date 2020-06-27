@@ -1,9 +1,9 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic', 'shaders/SimpleLightFragmentShader',
 'shaders/CampfireShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
-'usunits/Sentinel', 'shaders/ObjectSingleLightShader'],
+'usunits/Sentinel', 'shaders/ObjectSingleLightShader', 'games/Us/UnitPanel'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, campfireShader, TileMapper,
-    Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, ObjectSingleLightShader) {
+    Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, ObjectSingleLightShader, unitpanel) {
 
     var targetScore = 1;
 
@@ -514,17 +514,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             for(x = 0; x < number; x++) {
                 //var tint = x%2==0 ? 0xff0000 : null;
                 var guard = AlienGuard({team: this.playerTeam});
-                if(autoHone)
-                    guard.honeRange = 2000;
-                utils.placeBodyJustOffscreen(guard, 'top');
-                this.addUnit(guard, true);
-                if(true) {
-                    // ItemUtils.giveUnitItem({name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: bane});
-                    // ItemUtils.giveUnitItem({name: ["SteadySyringe", "JewelOfLife", "MaskOfRage", "BootsOfHaste", "RingOfThought", "RingOfRenewal"], unit: bane});
-                    // ItemUtils.giveUnitItem({name: ["MedalOfGrit"], unit: bane});
-                    // ItemUtils.giveUnitItem({name: ["MedalOfMerit"], unit: bane});
-                    ItemUtils.giveUnitItem({name: ["SturdyCanteen"], unit: guard});
-                }
+                guard.position = utils.getPlayableCenter();
+                this.addUnit(guard);
             }
         },
 
@@ -649,6 +640,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 height: 600, //600 playing area, 100 unit panel
                 unitPanelHeight: 100,
                 gravity: 0,
+                unitPanelConstructor: unitpanel
                };
 
     //game.instructions = ['Split the purple marbles to avoid area of effect damage', 'If all purple marbles die, you lose a life'];
