@@ -4,7 +4,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
     var equip = utils.getSound('augmentEquip.wav', {volume: .1, rate: 1.2});
     var hoverAugmentSound = utils.getSound('augmenthover.wav', {volume: .03, rate: 1});
 
-    var ConfigPanel = function() {
+    var ConfigPanel = function(unitPanel) {
+        this.unitPanelRef = unitPanel;
     }
 
     ConfigPanel.prototype.initialize = function() {
@@ -17,7 +18,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
         $('body').on('keydown.unitConfigurationPanel', function( event ) {
             var key = event.key.toLowerCase();
             if(key == 'escape') {
-                this.hideForUnit(this.currentUnit);
+                this.hideForCurrentUnit();
             }
         }.bind(this));
 
@@ -29,33 +30,30 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
             this.abilityBases.push(base)
             base.sortYOffset = 1000;
         }
+
+        this.showButton = utils.createDisplayObject('AugmentNotificationPanel', {where: 'hud', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()-25}});
+        this.showButtonText = utils.createDisplayObject('TEXT:Augment', {where: 'hud', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()-25}});
+        this.showButton.interactive = true;
+        this.showButton.on('mouseup', function(event) {
+            this.showForUnit(this.unitPanelRef.prevailingUnit);
+        }.bind(this))
     }
 
     ConfigPanel.prototype.showForUnit = function(unit) {
-        if(unit == this.currentUnit) return;
-
-        //remove the move listener for last unit
-        if(this.currentUnit && this.currentUnit.equipHideFunction) {
-            Matter.Events.off(this.currentUnit, 'unitMove', this.currentUnit.equipHideFunction);
-        }
-
-        //occupy unit
-        unit.isOccupied = true;
+        //hide showbutton and text
+        this.hideOpenButton();
 
         //hide for last unit
-        this.hideForUnit(this.currentUnit);
+        this.hideForCurrentUnit();
 
-        //setup move listener for new unit
-        unit.equipHideFunction = function(event) {
-            this.hideForUnit(event.unit)
-        }.bind(this)
-        Matter.Events.on(unit, 'unitMove', unit.equipHideFunction);
-
+        //set current unit
         this.currentUnit = unit;
-        unit.stop();
+
+        //play sounds
         equipShow.play();
+
+        //show augments
         this.showAugments(unit);
-        //this.showStats - TODO
     };
 
     ConfigPanel.prototype.showAugments = function(unit) {
@@ -100,7 +98,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
 
                                 //trigger event and trigger ability panel update
                                 Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.currentUnit})
-                                currentGame.unitSystem.unitPanel.updateUnitAbilities();
+                                this.unitPanelRef.updateUnitAbilities();
                             } else if(!augment.unlocked && unit.canUnlockAugment(augment)) {
                                 unit.unlockAugment(augment);
                                 augment.lock.visible = false;
@@ -147,19 +145,14 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
         }.bind(this))
     }
 
-    ConfigPanel.prototype.hideForUnit = function(unit) {
-        if(!unit) return;
-
-        //release current unit
-        this.currentUnit = null;
-
-        //remove the move listener for unit
-        if(unit.equipHideFunction) {
-            Matter.Events.off(unit, 'unitMove', unit.equipHideFunction);
+    ConfigPanel.prototype.hideForCurrentUnit = function() {
+        if(!this.currentUnit) {
+            return;
         }
 
-        //de-occupy unit
-        unit.isOccupied = false;
+        //release current unit
+        var unit = this.currentUnit;
+        this.currentUnit = null;
 
         //hide infrastructure
         $.each(this.abilityBases, function(i, base) {
@@ -181,11 +174,31 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
                 ability.currentAugmentBorder.visible = false;
             }
         }.bind(this))
+
+        //show button again if we're still selecting something
+        if(this.unitPanelRef.prevailingUnit) {
+            this.showOpenButton();
+        }
+    };
+
+    ConfigPanel.prototype.showOpenButton = function() {
+        if(this.unitPanelRef.prevailingUnit && currentGame.campActive) {
+            utils.addOrShowDisplayObject(this.showButton);
+            utils.addOrShowDisplayObject(this.showButtonText);
+        }
+    };
+
+    ConfigPanel.prototype.hideOpenButton = function() {
+        this.showButton.visible = false;
+        this.showButtonText.visible = false;
     };
 
     ConfigPanel.prototype.cleanUp = function() {
         $('body').off('keydown.unitConfigurationPanel');
+        utils.removeSomethingFromRenderer(this.showButton);
+        utils.removeSomethingFromRenderer(this.showButtonText);
     };
+
 
     return ConfigPanel;
 })

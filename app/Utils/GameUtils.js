@@ -324,7 +324,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         addDisplayObjectToRenderer: function(dobj, where) {
-            currentGame.renderer.addToPixiStage(dobj, where);
+            currentGame.renderer.addToPixiStage(dobj, where || dobj.where);
+        },
+
+        addOrShowDisplayObject: function(displayObject) {
+            if(!displayObject.parent) {
+                this.addDisplayObjectToRenderer(displayObject);
+            } else {
+                displayObject.visible = true;
+            }
         },
 
         makeSpriteSize: function(sprite, size) {
@@ -1045,6 +1053,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
     utils.offStage = utils.bodyRanOffStage;
     utils.getIntBetween = utils.getRandomIntInclusive;
     utils.distanceBetweenUnits = utils.distanceBetweenBodies;
+    utils.getId = utils.uuidv4;
 
     return utils;
 })

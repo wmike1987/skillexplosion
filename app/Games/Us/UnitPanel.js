@@ -142,6 +142,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         //unit ability variables
         this.abilitySpacing = 77;
         this.abilityOneCenterX = this.centerX + 184;
+        this.abilityCenterX = this.centerX + 184 + this.abilitySpacing;
         this.abilityOneCenterY = this.centerY-1;
         this.abililtyWithBorderWidth = 64;
         this.abililtyWidth = 60;
@@ -186,7 +187,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     unitPanel.prototype.initialize = function(options) {
 
         //create UnitConfigurationPanel
-        this.unitConfigurationPanel = new ucp()
+        this.unitConfigurationPanel = new ucp(this);
         this.unitConfigurationPanel.initialize();
 
         //add frame-backing to world
@@ -249,6 +250,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 }.bind(this))
             }
         }.bind(this))
+
+        Matter.Events.on(currentGame, 'enteringCamp', this.enterCamp.bind(this));
+        Matter.Events.on(currentGame, 'enteringLevel', this.leaveCamp.bind(this));
     };
 
     //unit group
@@ -299,8 +303,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     unitPanel.prototype.updatePrevailingUnit = function(unit) {
 
         //flush
-        if(this.prevailingUnit)
+        if(this.prevailingUnit) {
             this.clearPrevailingUnit();
+            this.unitConfigurationPanel.hideForCurrentUnit();
+        }
 
         //fill
         if(unit) {
@@ -311,7 +317,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             this.displayCommands();
             this.highlightGroupUnit(unit);
             this.updateUnitItems(unit);
+
+            //show augment button
+            this.unitConfigurationPanel.showOpenButton();
         }
+
     };
 
     unitPanel.prototype.clearPrevailingUnit = function() {
@@ -638,6 +648,15 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             }.bind(this))
         }
     };
+
+    unitPanel.prototype.enterCamp = function() {
+        this.unitConfigurationPanel.showOpenButton();
+    },
+
+    unitPanel.prototype.leaveCamp = function() {
+        this.unitConfigurationPanel.hideForCurrentUnit();
+        this.unitConfigurationPanel.hideOpenButton();
+    },
 
     unitPanel.prototype.cleanUp = function() {
         currentGame.removeTickCallback(this.updateUnitStatTick);

@@ -179,6 +179,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             Matter.Events.on(campScene, 'initialize', function() {
                 //play sound
                 this.entercamp.play();
+                this.campActive = true;
                 this.shane.position = utils.getCanvasCenter();
                 this.ursula.position = utils.getCanvasCenter();
                 this.addUnit(this.shane);
@@ -192,8 +193,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.currentScene = camp;
 
             Matter.Events.on(camp, 'initialize', function() {
+                Matter.Events.trigger(this, 'enteringCamp');
+
                 //play sound
                 this.entercamp.play();
+                this.campActive = true;
 
                 //clear enemies
                 utils.applyToUnitsByTeam(function(team) {
@@ -393,6 +397,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var nextLevelScene = this.createNextLevelScene(options);
             this.currentScene.transitionToScene(nextLevelScene);
             Matter.Events.on(nextLevelScene, 'initialize', function() {
+                Matter.Events.trigger(this, 'enteringLevel');
+                this.campActive = false;
                 this.currentSpawner.initialize();
                 //reset shane and urs
                 this.resetUnit(this.shane);
@@ -636,8 +642,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
      */
     game.worldOptions = {
             //background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
-                width: 1200,
-                height: 600, //600 playing area, 100 unit panel
+                width: 1200, //1600
+                height: 600, //800 playing area, 100 unit panel
                 unitPanelHeight: 100,
                 gravity: 0,
                 unitPanelConstructor: unitpanel
