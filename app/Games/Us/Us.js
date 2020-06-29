@@ -193,11 +193,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.currentScene = camp;
 
             Matter.Events.on(camp, 'initialize', function() {
+                //set camp active and trigger event
+                this.campActive = true;
                 Matter.Events.trigger(this, 'enteringCamp');
 
                 //play sound
                 this.entercamp.play();
-                this.campActive = true;
 
                 //clear enemies
                 utils.applyToUnitsByTeam(function(team) {

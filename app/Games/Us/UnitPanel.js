@@ -180,6 +180,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //create frame
         this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
+        this.frame.interactive = true;
         this.frameBacking = utils.createDisplayObject('TintableSquare', {persists: true, position: this.position, tint: 0x5e5e5b});
         utils.makeSpriteSize(this.frameBacking, {w: utils.getCanvasWidth(), h: utils.getUnitPanelHeight()});
     };
@@ -319,7 +320,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             this.updateUnitItems(unit);
 
             //show augment button
-            this.unitConfigurationPanel.showOpenButton();
+            this.unitConfigurationPanel.lowerOpenButton();
         }
 
     };
@@ -332,6 +333,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         if(this.currentPortrait)
             this.currentPortrait.visible = false;
 
+        //hide augment button
+        this.unitConfigurationPanel.hideOpenButton();
+
         //blank out unit stat panel
         this.unitNameText.text = '--';
         this.unitLevelText.text = '--';
@@ -342,7 +346,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         if(this.currentAbilities) {
             $.each(this.currentAbilities, function(i, ability) {
                 ability.icon.visible = false;
+                ability.icon.tooltipObj.hide();
                 if(ability.currentAugmentIcon) {
+                    ability.currentAugmentIcon.tooltipObj.hide();
                     ability.currentAugmentIcon.visible = false;
                     ability.currentAugmentBorderIcon.visible = false;
                 }
@@ -358,7 +364,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             $.each(this.currentCommands, function(i, command) {
                 command.icon.visible = false;
             })
-        }
+        };
 
         this.prevailingUnit = null;
     };
@@ -534,7 +540,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                 if(ability.autoCastEnabled) {
                     ability.systemMessage.push('Ctrl+Click to toggle autocast')
                     ability.abilityBorder = utils.addSomethingToRenderer('TintableAbilityBorder', 'hudOne', {position: ability.icon.position});
-                    ability.autoCastTimer = utils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300)
+                    ability.autoCastTimer = utils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300, null, 500)
                     ability.abilityBorder.visible = ability.getAutoCastVariable;
                     ability.icon.interactive = true;
                     ability.icon.on('mouseup', function(event) {
@@ -650,7 +656,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
     };
 
     unitPanel.prototype.enterCamp = function() {
-        this.unitConfigurationPanel.showOpenButton();
+        this.unitConfigurationPanel.lowerOpenButton();
     },
 
     unitPanel.prototype.leaveCamp = function() {

@@ -327,6 +327,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             currentGame.renderer.addToPixiStage(dobj, where || dobj.where);
         },
 
+        changeDisplayObjectStage: function(dobj, where) {
+            currentGame.renderer.addToPixiStage(dobj, where);
+        },
+
         addOrShowDisplayObject: function(displayObject) {
             if(!displayObject.parent) {
                 this.addDisplayObjectToRenderer(displayObject);
@@ -931,7 +935,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return this.rgbToHex(newR, newG, newB);
         },
 
-        graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName) {
+        graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds) {
             var utils = this;
             var forward = true;
             return currentGame.addTimer({
@@ -949,8 +953,21 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 },
                 totallyDoneCallback: function() {
                     var tempForward = !forward;
-                    this.reset();
-                    forward = tempForward;
+                    if(pauseDurationAtEnds) {
+                        currentGame.addTimer({
+                            name: 'pause' + utils.getId(),
+                            runs: 1,
+                            timeLimit: pauseDurationAtEnds,
+                            killsSelf: true,
+                            totallyDoneCallback: function() {
+                                this.reset();
+                                forward = tempForward;
+                            }.bind(this)
+                        })
+                    } else {
+                        this.reset();
+                        forward = tempForward;
+                    }
                 }
             })
         },
