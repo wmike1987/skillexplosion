@@ -21,16 +21,26 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //unit status variables
         this.unitStatSpacing = 20;
-        this.unitStatYOffset = -10;
-        this.unitFrameCenterX = this.centerX - 155;
-        this.unitNamePosition = {x: this.unitFrameCenterX, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
-        this.unitLevelPosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatYOffset};
-        this.unitDamagePosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
-        this.unitArmorPosition = {x: this.unitFrameCenterX, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+        this.unitStatYOffset = -6;
+        this.unitFrameCenterX = this.centerX - 192;
+        this.unitFrameOffset = 41.5;
+        this.unitNamePosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
+        this.unitLevelPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
+        this.unitDamagePosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY + this.unitStatYOffset};
+        this.unitArmorPosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+        this.unitHealthPosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+        this.unitSPTextPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatYOffset};
+        this.unitSPPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+        this.unitEnergyPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+
         this.unitNameText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
         this.unitLevelText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
         this.unitDamageText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
         this.unitDefenseText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
+        this.unitHealthText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle});
+        this.unitSPText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitSPTextPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
+        this.unitSPAmount = utils.addSomethingToRenderer('TEXT:--', {position: this.unitSPPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
+        this.unitEnergyText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralStyle});
 
         //experience meter
         this.experienceMeter = utils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: utils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
@@ -146,10 +156,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.abilityOneCenterY = this.centerY-1;
         this.abililtyWithBorderWidth = 64;
         this.abililtyWidth = 60;
-
-        //ability augment variables
-        // this.abilityAugmentLeft = this.centerX + 152;
-        // this.abilityAugmentBottom = this.centerY + 65/2;
 
         //basic command variables
         this.commandSpacing = 35;
@@ -341,6 +347,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.unitLevelText.text = '--';
         this.unitDamageText.text = '--';
         this.unitDefenseText.text = '--';
+        this.unitHealthText.text = '--';
+        this.unitSPText.text = '--';
+        this.unitSPAmount.text = '--';
+        this.unitEnergyText.text = '--';
 
         //clear unit ability icons
         if(this.currentAbilities) {
@@ -495,13 +505,30 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
 
                     //level
-                    this.unitLevelText.text = "Lvl: " + this.prevailingUnit.level;
+                    this.unitLevelText.text = "Level " + this.prevailingUnit.level;
 
                     //damage
                     this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage);
 
                     //armor
                     this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
+
+                    //health
+                    this.unitHealthText.text = "♥ " + Math.floor(this.prevailingUnit.currentHealth);
+
+                    //SP text and points
+                    if(this.prevailingUnit.team == currentGame.playerTeam) {
+                        this.unitSPText.text = "Skill Points";
+                        this.unitSPAmount.text = "- " + this.prevailingUnit.expendableSkillPoints + " -";
+                    } else {
+                        this.unitSPText.text = "--";
+                        this.unitSPAmount.text = "--";
+                    }
+
+                    //energy
+                    this.unitEnergyText.text = "⯌ " + Math.floor(this.prevailingUnit.currentEnergy);
+
+
                 }
             }.bind(this));
         }

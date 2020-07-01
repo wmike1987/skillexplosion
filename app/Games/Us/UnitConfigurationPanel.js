@@ -22,6 +22,13 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
             }
         }.bind(this));
 
+        //close config windows when we click the canvas
+        currentGame.addListener("mousedown", function() {
+            if(currentGame.campActive) {
+                this.hideForCurrentUnit();
+            }
+        }.bind(this), false, true);
+
         this.abilityBases = [];
         for(var x = 0; x < 3; x++) {
             var base = utils.addSomethingToRenderer('AugmentArmPanel', {where: 'hud', anchor: {x: .5, y: 1}, scale: {x: 0, y: 0}});
@@ -31,18 +38,18 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
             base.sortYOffset = 1000;
         }
 
-        this.buttonSize = 202;
+        this.buttonSize = 204;
         this.showButton = utils.createDisplayObject('AugmentNotificationPanel', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.buttonSize/3}});
         // this.showButtonText = utils.createDisplayObject('TEXT:Augment', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.buttonSize/3}});
         this.showButton.interactive = true;
-        utils.graduallyTint(this.showButton, 0x62f6db, 0xd1b877, 4500, null, 2000);
+        utils.graduallyTint(this.showButton, 0x62f6db, 0xd1b877, 15000, null, 5000);
         this.showButton.on('mouseup', function(event) {
             if(this.showButton.state == 'lowered')
                 this.showForUnit(this.unitPanelRef.prevailingUnit);
         }.bind(this))
         this.showButton.on('mouseover', function(event) {
             if(this.showButton.state == 'lowered')
-                this.showButton.scale = {x: 1.02, y: 1.02};
+                this.showButton.scale = {x: 1.05, y: 1.05};
         }.bind(this))
         this.showButton.on('mouseout', function(event) {
             this.showButton.scale = {x: 1.00, y: 1.00};
@@ -195,7 +202,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
         if(this.unitPanelRef.prevailingUnit && currentGame.campActive) {
             utils.changeDisplayObjectStage(this.showButton, 'hudNOne');
             utils.addOrShowDisplayObject(this.showButton);
-            this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.buttonSize/2.5}
+            this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.buttonSize/2.75}
             this.showButton.state = "lowered";
         }
     };

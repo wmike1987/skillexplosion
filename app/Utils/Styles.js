@@ -120,43 +120,12 @@ define(function() {
             strokeThickness: 6
         }),
 
-		unitNameStyle: new PIXI.TextStyle({
-			fill: "white",
-			fillGradientType: 1,
-			fontFamily: "Helvetica",
-			fontSize: 20,
-			strokeThickness: 4
-		}),
-
 		unitHealthStyle: new PIXI.TextStyle({
 			fill: "#2EA003",
 			fillGradientType: 1,
 			fontFamily: "Helvetica",
 			fontSize: 18,
-			strokeThickness: 2
-		}),
-
-		unitLevelStyle: new PIXI.TextStyle({
-			fill: "#D59E31",
-			fillGradientType: 1,
-			fontFamily: "Helvetica",
-			fontSize: 14,
-		}),
-
-		unitDamageStyle: new PIXI.TextStyle({
-			fill: "#DB2323",
-			fillGradientType: 1,
-			fontFamily: "Helvetica",
-			fontSize: 14,
-			strokeThickness: 2
-		}),
-
-		unitDefenseStyle: new PIXI.TextStyle({
-			fill: "#0CA5D4",
-			fillGradientType: 1,
-			fontFamily: "Helvetica",
-			fontSize: 14,
-			strokeThickness: 2
+			strokeThickness: 2,
 		}),
 
 		unitEnergyStyle: new PIXI.TextStyle({
@@ -164,7 +133,62 @@ define(function() {
 			fillGradientType: 1,
 			fontFamily: "Helvetica",
 			fontSize: 16,
-			strokeThickness: 2
+			strokeThickness: 2,
+		}),
+
+		//Unit stat panel styles
+		unitNameStyle: new PIXI.TextStyle({
+			fill: "white",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 20,
+			strokeThickness: 4,
+    		textBaseline: "bottom",
+		}),
+
+		unitLevelStyle: new PIXI.TextStyle({
+			fill: "#d7ab52",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 16,
+			strokeThickness: 2,
+    		textBaseline: "bottom",
+		}),
+
+		unitGeneralStyle: new PIXI.TextStyle({
+			fill: "#adadad",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
+			strokeThickness: 2,
+    		textBaseline: "bottom",
+		}),
+
+		unitSkillPointStyle: new PIXI.TextStyle({
+			fill: "#aa7307",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
+			strokeThickness: 2,
+    		textBaseline: "bottom",
+		}),
+
+		unitDamageStyle: new PIXI.TextStyle({
+			fill: "#DB2323",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
+			strokeThickness: 2,
+    		textBaseline: "bottom",
+		}),
+
+		unitDefenseStyle: new PIXI.TextStyle({
+			fill: "#0CA5D4",
+			fillGradientType: 1,
+			fontFamily: "Helvetica",
+			fontSize: 14,
+			strokeThickness: 2,
+    		textBaseline: "bottom",
 		}),
 
 		abilityTitle: new PIXI.TextStyle({

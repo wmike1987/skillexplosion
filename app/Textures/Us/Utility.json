@@ -26,7 +26,7 @@
 },
 "AugmentArmPanel.png":
 {
-	"frame": {"x":497,"y":1305,"w":66,"h":195},
+	"frame": {"x":499,"y":1305,"w":66,"h":195},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":66,"h":195},
@@ -50,15 +50,15 @@
 },
 "AugmentNotificationPanel.png":
 {
-	"frame": {"x":259,"y":1305,"w":236,"h":202},
+	"frame": {"x":259,"y":1305,"w":238,"h":204},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":236,"h":202},
-	"sourceSize": {"w":236,"h":202}
+	"spriteSourceSize": {"x":0,"y":0,"w":238,"h":204},
+	"sourceSize": {"w":238,"h":204}
 },
 "Boxes1.png":
 {
-	"frame": {"x":565,"y":1305,"w":111,"h":112},
+	"frame": {"x":567,"y":1305,"w":111,"h":112},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":15,"y":5,"w":111,"h":112},
@@ -66,7 +66,7 @@
 },
 "LockIcon.png":
 {
-	"frame": {"x":910,"y":1305,"w":32,"h":32},
+	"frame": {"x":912,"y":1305,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -74,7 +74,7 @@
 },
 "Logs.png":
 {
-	"frame": {"x":631,"y":1419,"w":52,"h":35},
+	"frame": {"x":633,"y":1419,"w":52,"h":35},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":37,"y":61,"w":52,"h":35},
@@ -90,7 +90,7 @@
 },
 "MapGoldBattleToken.png":
 {
-	"frame": {"x":678,"y":1305,"w":63,"h":63},
+	"frame": {"x":680,"y":1305,"w":63,"h":63},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":63,"h":63},
@@ -98,7 +98,7 @@
 },
 "MapRedBattleToken.png":
 {
-	"frame": {"x":743,"y":1305,"w":62,"h":62},
+	"frame": {"x":745,"y":1305,"w":62,"h":62},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":62,"h":62},
@@ -114,7 +114,7 @@
 },
 "MapTable.png":
 {
-	"frame": {"x":807,"y":1305,"w":57,"h":54},
+	"frame": {"x":809,"y":1305,"w":57,"h":54},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":57,"h":54},
@@ -122,7 +122,7 @@
 },
 "MouseX.png":
 {
-	"frame": {"x":678,"y":1370,"w":42,"h":42},
+	"frame": {"x":680,"y":1370,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
@@ -130,7 +130,7 @@
 },
 "MouseXGreen.png":
 {
-	"frame": {"x":866,"y":1305,"w":42,"h":42},
+	"frame": {"x":868,"y":1305,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
@@ -162,7 +162,7 @@
 },
 "TintableAbilityBorder.png":
 {
-	"frame": {"x":565,"y":1419,"w":64,"h":64},
+	"frame": {"x":567,"y":1419,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -170,7 +170,7 @@
 },
 "TintableSquare.png":
 {
-	"frame": {"x":497,"y":1502,"w":1,"h":1},
+	"frame": {"x":499,"y":1502,"w":1,"h":1},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
@@ -202,7 +202,7 @@
 },
 "Vial2.png":
 {
-	"frame": {"x":259,"y":1509,"w":28,"h":84},
+	"frame": {"x":259,"y":1511,"w":28,"h":84},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
@@ -218,6 +218,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1818,"h":1602},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:51dd4b555964e9d2ee2ea062b3ab43f2:8bb4792a13b1f2318fafd6660bd0f55c:5fc1c354e515b85ac7861bddc1d6600b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:f7efff4ab6c0a635c0b024b150b97c8e:0c57651702a9e995c03983a4ae44cb19:5fc1c354e515b85ac7861bddc1d6600b$"
 }
 }
