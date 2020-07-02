@@ -203,8 +203,8 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             }
             //unless we have a target, move towards currentHone
             this.attackHoneTick = currentGame.addTickCallback(function() {
-                //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move
-                if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady && !this.specifiedAttackTarget) {
+                //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move (note the commented out part, not sure why i had that here, but we should want to hone a specified target)
+                if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
                     this.lastHone = this.currentHone;
                     this.rawMove(this.currentHone.position);
                     this.isHoning = true;
@@ -273,6 +273,11 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                             currentHoneDistance = dist;
                             this.currentHone = unit;
                         }
+                    }
+
+                    //force currentHone to be the specificAttackTarget
+                    if (this.specifiedAttackTarget) {
+                        this.currentHone = unit;
                     }
 
                     //figure out who (if anyone) is within range to attack and set current target to be the closest one

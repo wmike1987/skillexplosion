@@ -79,7 +79,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }),
         };
 
-        var attackAnimSpeed = 4;
+        var attackAnimSpeed = 3;
         var healAnimations = {
             up: utils.getSpineAnimation({
                 spine: spineNorth,
@@ -409,7 +409,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Silent Step',
             description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
-            energyCost: 0,
+            energyCost: 8,
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
             }],
@@ -776,10 +776,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     smallerBodyHeightChange: true,
                 }, attacker: {
                     attackAnimations: healAnimations,
-                    cooldown: 180,
+                    cooldown: 360,
                     honeRange: 300,
                     range: rad*2 + 10,
-                    healAmount: 1,
+                    healAmount: 2,
                     healCost: 1,
                     attack: function(target) {
                         //get current augment

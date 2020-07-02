@@ -150,7 +150,7 @@ define(function() {
 			fill: "#d7ab52",
 			fillGradientType: 1,
 			fontFamily: "Helvetica",
-			fontSize: 16,
+			fontSize: 14,
 			strokeThickness: 2,
     		textBaseline: "bottom",
 		}),

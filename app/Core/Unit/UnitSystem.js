@@ -736,7 +736,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                  if(event.key == 'X' || event.key == 'x') {
                      if(keyStates['Control']) {
                          if(this.selectedUnit) {
-                             this.selectedUnit.sufferAttack(1000);
+                             this.selectedUnit.sufferAttack(10);
                          }
                      }
                  }

@@ -242,6 +242,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 wireframe: utils.createDisplayObject('CritterPortrait'),
                 team: options.team || 4,
                 priority: 50,
+                experienceWorth: 20,
                 name: options.name,
                 heightAnimation: 'up',
                 idleSpecificAnimation: true,
@@ -278,7 +279,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         cooldown: 1400,
                         honeRange: 500,
                         range: 440,
-                        damage: 0,
+                        damage: 15,
                         attack: function(target) {
                             fireSound.play();
                             var projectileOptions = {
