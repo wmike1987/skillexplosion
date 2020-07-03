@@ -2,19 +2,19 @@
 
 "CritterPortrait.png":
 {
-	"frame": {"x":1,"y":1,"w":128,"h":126},
+	"frame": {"x":1,"y":1,"w":87,"h":90},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":0,"y":2,"w":128,"h":126},
-	"sourceSize": {"w":128,"h":128}
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":90},
+	"sourceSize": {"w":90,"h":90}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Critter.png",
 	"format": "RGBA8888",
-	"size": {"w":130,"h":128},
+	"size": {"w":89,"h":92},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:f12bd45c120778ea3938f1fce584b936:09f3adca22749b3481fb4938a8986824:d96c0ddfb255ac4766beb8f514496b3a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b877bc0feb17a075f5f28c8f5059f74a:d8fcecb530bad3ca63bd5c4cce3e3271:d96c0ddfb255ac4766beb8f514496b3a$"
 }
 }
