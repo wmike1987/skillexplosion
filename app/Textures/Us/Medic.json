@@ -2,7 +2,7 @@
 
 "FleetFeet.png":
 {
-	"frame": {"x":327,"y":1,"w":32,"h":32},
+	"frame": {"x":103,"y":89,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -10,8 +10,8 @@
 },
 "Footprint.png":
 {
-	"frame": {"x":361,"y":35,"w":18,"h":32},
-	"rotated": false,
+	"frame": {"x":1,"y":103,"w":18,"h":32},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":0,"w":18,"h":32},
 	"sourceSize": {"w":32,"h":32}
@@ -26,7 +26,7 @@
 },
 "LightestTouch.png":
 {
-	"frame": {"x":327,"y":35,"w":32,"h":32},
+	"frame": {"x":137,"y":89,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +34,7 @@
 },
 "Maim.png":
 {
-	"frame": {"x":195,"y":67,"w":32,"h":32},
+	"frame": {"x":171,"y":89,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +42,7 @@
 },
 "MaimTiny.png":
 {
-	"frame": {"x":65,"y":103,"w":18,"h":18},
+	"frame": {"x":35,"y":103,"w":18,"h":18},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":7,"w":18,"h":18},
@@ -50,15 +50,15 @@
 },
 "MedicPortrait.png":
 {
-	"frame": {"x":103,"y":1,"w":90,"h":90},
+	"frame": {"x":103,"y":1,"w":90,"h":86},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":4,"w":90,"h":86},
 	"sourceSize": {"w":90,"h":90}
 },
 "MineCracks.png":
 {
-	"frame": {"x":361,"y":1,"w":32,"h":27},
+	"frame": {"x":205,"y":85,"w":32,"h":27},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":27},
@@ -74,23 +74,23 @@
 },
 "MineOne.png":
 {
-	"frame": {"x":171,"y":93,"w":30,"h":16},
-	"rotated": true,
+	"frame": {"x":195,"y":67,"w":30,"h":16},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
 	"sourceSize": {"w":32,"h":32}
 },
 "MineThree.png":
 {
-	"frame": {"x":297,"y":67,"w":30,"h":16},
-	"rotated": true,
+	"frame": {"x":227,"y":67,"w":30,"h":16},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
 	"sourceSize": {"w":32,"h":32}
 },
 "MineTwo.png":
 {
-	"frame": {"x":1,"y":103,"w":30,"h":16},
+	"frame": {"x":259,"y":67,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -98,7 +98,7 @@
 },
 "MineZero.png":
 {
-	"frame": {"x":33,"y":103,"w":30,"h":16},
+	"frame": {"x":291,"y":67,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -106,7 +106,7 @@
 },
 "Petrify.png":
 {
-	"frame": {"x":103,"y":93,"w":32,"h":32},
+	"frame": {"x":327,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -114,7 +114,7 @@
 },
 "PressuredPlate.png":
 {
-	"frame": {"x":137,"y":93,"w":32,"h":32},
+	"frame": {"x":327,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -122,7 +122,7 @@
 },
 "PurePriorities.png":
 {
-	"frame": {"x":229,"y":67,"w":32,"h":32},
+	"frame": {"x":234,"y":85,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -130,7 +130,7 @@
 },
 "Sacrifice.png":
 {
-	"frame": {"x":263,"y":67,"w":32,"h":32},
+	"frame": {"x":268,"y":85,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -138,7 +138,7 @@
 },
 "Shrapnel.png":
 {
-	"frame": {"x":315,"y":69,"w":32,"h":32},
+	"frame": {"x":302,"y":85,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -154,7 +154,7 @@
 },
 "SoftLanding.png":
 {
-	"frame": {"x":349,"y":69,"w":32,"h":32},
+	"frame": {"x":336,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -165,8 +165,8 @@
 	"version": "1.0",
 	"image": "Medic.png",
 	"format": "RGBA8888",
-	"size": {"w":389,"h":126},
+	"size": {"w":369,"h":122},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:f96e4f92da74b8f587dda7c55bbb8a48:f778e7e946a707357f98e4eae16c5d79:8d3e890b84ab07faa58797fc50fc9b0a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:784a9d413e72cfc94e7ed0536f2aae6b:899a226129872cb37f04886967935767:8d3e890b84ab07faa58797fc50fc9b0a$"
 }
 }

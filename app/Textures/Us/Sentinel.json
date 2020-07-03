@@ -2,7 +2,7 @@
 
 "SentinelBullet.png":
 {
-	"frame": {"x":1,"y":93,"w":30,"h":30},
+	"frame": {"x":93,"y":1,"w":30,"h":30},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":30,"h":30},
@@ -10,10 +10,10 @@
 },
 "SentinelPortrait.png":
 {
-	"frame": {"x":1,"y":1,"w":90,"h":90},
+	"frame": {"x":1,"y":1,"w":90,"h":89},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":90,"h":89},
 	"sourceSize": {"w":90,"h":90}
 }},
 "meta": {
@@ -21,8 +21,8 @@
 	"version": "1.0",
 	"image": "Sentinel.png",
 	"format": "RGBA8888",
-	"size": {"w":92,"h":124},
+	"size": {"w":124,"h":91},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:cd21ad7c5f9745fc1294ebb219e54c92:8a65a3000521a97db609b047d246c09b:92c169464ae5d00d8d667d6b9ce1faa3$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b57b90bea896eaf440e438ee1a6a6cf8:e10aa5e9f53ad04f94985f0510c72864:92c169464ae5d00d8d667d6b9ce1faa3$"
 }
 }

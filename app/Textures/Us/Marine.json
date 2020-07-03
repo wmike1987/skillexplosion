@@ -10,7 +10,7 @@
 },
 "DeathWish.png":
 {
-	"frame": {"x":112,"y":187,"w":32,"h":32},
+	"frame": {"x":46,"y":357,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -18,7 +18,7 @@
 },
 "DefensivePosture.png":
 {
-	"frame": {"x":152,"y":103,"w":32,"h":32},
+	"frame": {"x":1,"y":391,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,7 +26,7 @@
 },
 "FirstAidPouchIcon.png":
 {
-	"frame": {"x":186,"y":103,"w":32,"h":32},
+	"frame": {"x":1,"y":425,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +34,7 @@
 },
 "FullyAuto.png":
 {
-	"frame": {"x":152,"y":137,"w":32,"h":32},
+	"frame": {"x":1,"y":459,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +42,7 @@
 },
 "HoodedPeepIcon.png":
 {
-	"frame": {"x":186,"y":137,"w":32,"h":32},
+	"frame": {"x":35,"y":391,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -50,7 +50,7 @@
 },
 "KnifeIcon.png":
 {
-	"frame": {"x":103,"y":1,"w":100,"h":100},
+	"frame": {"x":1,"y":103,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -58,7 +58,7 @@
 },
 "M14Icon.png":
 {
-	"frame": {"x":86,"y":103,"w":64,"h":64},
+	"frame": {"x":1,"y":291,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -66,15 +66,15 @@
 },
 "MarinePortrait.png":
 {
-	"frame": {"x":1,"y":103,"w":90,"h":83},
-	"rotated": true,
+	"frame": {"x":1,"y":205,"w":90,"h":84},
+	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":0,"y":7,"w":90,"h":83},
+	"spriteSourceSize": {"x":0,"y":6,"w":90,"h":84},
 	"sourceSize": {"w":90,"h":90}
 },
 "MultiShot.png":
 {
-	"frame": {"x":146,"y":171,"w":32,"h":32},
+	"frame": {"x":69,"y":391,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -82,7 +82,7 @@
 },
 "PiercingKnife.png":
 {
-	"frame": {"x":146,"y":205,"w":32,"h":32},
+	"frame": {"x":35,"y":425,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -90,7 +90,7 @@
 },
 "PoisonTip.png":
 {
-	"frame": {"x":180,"y":171,"w":32,"h":32},
+	"frame": {"x":35,"y":459,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -98,23 +98,23 @@
 },
 "ThrowingDagger.png":
 {
-	"frame": {"x":1,"y":195,"w":32,"h":64},
-	"rotated": true,
+	"frame": {"x":67,"y":291,"w":32,"h":64},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":64},
 	"sourceSize": {"w":64,"h":64}
 },
 "ThrowingDaggerBase.png":
 {
-	"frame": {"x":86,"y":169,"w":16,"h":28},
-	"rotated": true,
+	"frame": {"x":80,"y":357,"w":16,"h":28},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":24,"y":36,"w":16,"h":28},
 	"sourceSize": {"w":64,"h":64}
 },
 "ThrowingDaggerBlade.png":
 {
-	"frame": {"x":67,"y":195,"w":32,"h":43},
+	"frame": {"x":1,"y":357,"w":32,"h":43},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":43},
@@ -122,7 +122,7 @@
 },
 "VitalReserves.png":
 {
-	"frame": {"x":180,"y":205,"w":32,"h":32},
+	"frame": {"x":69,"y":425,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -133,8 +133,8 @@
 	"version": "1.0",
 	"image": "Marine.png",
 	"format": "RGBA8888",
-	"size": {"w":219,"h":238},
+	"size": {"w":102,"h":492},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ccb2bbee24a19000fc4e98cd173a0201:580be58ddd482862ca0f2773037d53b3:1b146a7d1a1c5cd95f0c69a03767d9cf$"
+	"smartupdate": "$TexturePacker:SmartUpdate:3b8a87865cef1e7227418330063b3e9c:a2ac2bd0d305fe5a939c06c2a9ca1f1a:1b146a7d1a1c5cd95f0c69a03767d9cf$"
 }
 }
