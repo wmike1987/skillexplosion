@@ -91,11 +91,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     nextLevelOptions.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
                 }
 
-                nextLevelOptions.enemySet.push({
-                    constructor: Critter,
-                    spawn: {total: 10 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 1350, maxOnField: 1},
-                    item: {type: 'basic', total: 2}
-                })
+                // nextLevelOptions.enemySet.push({
+                //     constructor: Critter,
+                //     spawn: {total: 10 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 1350, maxOnField: 1},
+                //     item: {type: 'basic', total: 2}
+                // })
                 nextLevelOptions.enemySet.push({
                     constructor: Sentinel,
                     spawn: {total: 1 + utils.getRandomIntInclusive(1, 3), n: 1, hz: 9000, maxOnField: 1},

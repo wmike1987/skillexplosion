@@ -79,17 +79,6 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             this.eventClickMappings[this.commands.attack.key] = this.attackMove;
             this.eventClickMappings[this.commands.move.key] = this.move;
 
-            //Force canAttack'ing units to be in the playable bounds
-            Object.defineProperty(this, 'canAttack', {
-                get: function() {
-                    return this._canAttack && utils.isPositionWithinPlayableBounds(this.position, 10);
-                },
-
-                set: function(value) {
-                    this._canAttack = value;
-                },
-                configurable: true
-            });
             this.canAttack = true;
             this.isAttackable = true;
 
@@ -97,8 +86,16 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
         },
 
         _attack: function(target) {
-            if(!this.canAttack)
+            if(!this.canAttack) {
                 return;
+            }
+
+            //If we have a target but are outside the playing area, issue an attack move command which
+            //will move us in the playing area
+            if(!this.isMoving && !utils.isPositionWithinPlayableBounds(this.position, 10)) {
+                this.attackMove(target.position);
+                return;
+            }
 
             if (this.attackReady && this.attack) {
                 this.rawStop();
@@ -300,11 +297,10 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                     this.isAttacking = false;
                 }
 
-                //This clause is important:
                 //If we're here, we're on alert...
                 //Either we were given an attack move command, "still" and on-alert, or were given a specific target
                 //If we were given an "attack move" command and no longer have a target or a hone, let's issue an identical attackMove command
-                //If we were "still" and no longer have a target or a hone, let's stop.
+                //If we are "still" and no longer have a target or a hone, let's stop.
                 //If we were given a "specific target" to attack, we we only want to naturally stop if we can no longer attack it
                 if (!this.currentHone && !this.currentTarget) {
                     //given attack move, reissue the attack move
