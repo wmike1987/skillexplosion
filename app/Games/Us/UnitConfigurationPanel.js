@@ -38,21 +38,26 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
             base.sortYOffset = 1000;
         }
 
-        this.buttonSize = 204;
-        this.showButton = utils.createDisplayObject('AugmentNotificationPanel', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.buttonSize/3}});
-        // this.showButtonText = utils.createDisplayObject('TEXT:Augment', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.buttonSize/3}});
+        this.configButtonHeight = 218;
+        this.configButtonGlassHeight = 200;
+        this.showButton = utils.createDisplayObject('AugmentNotificationPanelBorder', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonHeight/3}});
+        this.showButtonGlass = utils.createDisplayObject('AugmentNotificationPanelGlass', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonGlassHeight/3}});
+        // this.showButtonText = utils.createDisplayObject('TEXT:Augment', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonHeight/3}});
         this.showButton.interactive = true;
-        utils.graduallyTint(this.showButton, 0x62f6db, 0xd1b877, 15000, null, 5000);
+        utils.graduallyTint(this.showButtonGlass, 0x62f6db, 0xd1b877, 15000, null, 5000);
         this.showButton.on('mouseup', function(event) {
             if(this.showButton.state == 'lowered')
                 this.showForUnit(this.unitPanelRef.prevailingUnit);
         }.bind(this))
         this.showButton.on('mouseover', function(event) {
-            if(this.showButton.state == 'lowered')
+            if(this.showButton.state == 'lowered') {
                 this.showButton.scale = {x: 1.05, y: 1.05};
+                this.showButtonGlass.scale = {x: 1.05, y: 1.05};
+            }
         }.bind(this))
         this.showButton.on('mouseout', function(event) {
             this.showButton.scale = {x: 1.00, y: 1.00};
+            this.showButtonGlass.scale = {x: 1.00, y: 1.00};
         }.bind(this))
     }
 
@@ -201,28 +206,39 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
     ConfigPanel.prototype.lowerOpenButton = function() {
         if(this.unitPanelRef.prevailingUnit && currentGame.campActive) {
             utils.changeDisplayObjectStage(this.showButton, 'hudNOne');
+                utils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
             utils.addOrShowDisplayObject(this.showButton);
-            this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.buttonSize/2.75}
+            utils.addOrShowDisplayObject(this.showButtonGlass);
+            this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.configButtonHeight/2.75}
             this.showButton.state = "lowered";
+            this.showButtonGlass.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.configButtonGlassHeight/2.75}
         }
     };
 
     ConfigPanel.prototype.hideOpenButton = function() {
         this.showButton.visible = false;
         this.showButton.state = "hidden";
+        this.showButtonGlass.visible = false;
+        this.showButtonGlass.state = "hidden";
     };
 
     ConfigPanel.prototype.liftOpenButton = function() {
         utils.changeDisplayObjectStage(this.showButton, 'hud');
         utils.addOrShowDisplayObject(this.showButton);
-        this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()-this.buttonSize/2}
+        this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()-this.configButtonHeight/2}
         this.showButton.scale = {x: 1.00, y: 1.00};
         this.showButton.state = "lifted";
+
+        utils.changeDisplayObjectStage(this.showButtonGlass, 'hud');
+        utils.addOrShowDisplayObject(this.showButtonGlass);
+        this.showButtonGlass.position = {x: this.showButtonGlass.position.x, y: utils.getPlayableHeight()-this.configButtonGlassHeight/2}
+        this.showButtonGlass.scale = {x: 1.00, y: 1.00};
     };
 
     ConfigPanel.prototype.cleanUp = function() {
         $('body').off('keydown.unitConfigurationPanel');
         utils.removeSomethingFromRenderer(this.showButton);
+        utils.removeSomethingFromRenderer(this.showButtonGlass);
     };
 
 
