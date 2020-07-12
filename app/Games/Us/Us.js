@@ -175,6 +175,17 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.currentScene.transitionToScene({newScene: campScene});
             this.currentScene = campScene;
 
+            // var vikingAnim = utils.getAnimationB({
+            //     spritesheetName: 'RodAnimations1',
+            //     animationName: 'vikings_1024',
+            //     speed: .2,
+            //     transform: [580, 400, .15, .15],
+            //     loop: true,
+            // });
+            // utils.addSomethingToRenderer(vikingAnim, {where: 'stageOne'});
+            // utils.addSomethingToRenderer('IsoShadowBlurred', {position: {x: 588, y: 429}})
+            // vikingAnim.play();
+
             //move shane and urs into place when we're ready
             Matter.Events.on(campScene, 'initialize', function() {
                 //play sound
@@ -459,6 +470,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
              // this.shane2 = Marine({team: currentGame.playerTeam, name: 'Shane'});
              // this.addUnit(this.shane2);
              // this.shane2.position = utils.getCanvasCenter();
+             ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
              return this.shane;
         },
 

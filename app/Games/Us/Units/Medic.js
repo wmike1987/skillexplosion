@@ -795,8 +795,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             var healAnimation = utils.getAnimationB({
                                 spritesheetName: 'MedicAnimations1',
                                 animationName: 'heal',
-                                speed: 1.5,
-                                transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 10), 1, 1]
+                                speed: 1.2,
+                                transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 20), 1, 1]
                             });
 
                             healAnimation.alpha = Math.max(.7, Math.random());

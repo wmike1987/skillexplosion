@@ -191,6 +191,9 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('Critter', 'app/Textures/Us/Critter.json');
             loader.add('Sentinel', 'app/Textures/Us/Sentinel.json');
 
+            //Rod
+            loader.add('RodAnimations1', 'app/Textures/Us/RodAnimations1.json');
+
             //items
             loader.add('Items', 'app/Textures/Us/Items.json');
             loader.add('ItemAnimations1', 'app/Textures/Us/ItemAnimations1.json');

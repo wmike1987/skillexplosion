@@ -90,10 +90,13 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 return;
             }
 
-            //If we have a target but are outside the playing area, issue an attack move command which
-            //will move us in the playing area
-            if(!this.isMoving && !utils.isPositionWithinPlayableBounds(this.position, 10)) {
-                this.attackMove(target.position);
+            //Another aspect of "canAttack." If we're offscreen and have gotten here,
+            //don't allow the attack to continue, just keep moving until we're within bounds.
+            //And if we want to attack but are offscreen and aren't moving, issue an attackMove.
+            if(!utils.isPositionWithinPlayableBounds(this.position, 20)) {
+                if(!this.isMoving) {
+                    this.attackMove(target.position);
+                }
                 return;
             }
 

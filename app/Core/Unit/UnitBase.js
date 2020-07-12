@@ -130,7 +130,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 return unit.isTargetable && this.team != unit.team;
             },
 
-            pickupItem: function(item, explicitSlot) {
+            pickupItem: function(item, explicitSlot, systemGivenItem) {
                 var slot = explicitSlot || this.findItemSlot(item);
                 if(slot) {
                     //set ownership
@@ -141,8 +141,10 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                         this.equipItem(item);
 
                     //play Sound
-                    if(this.team == currentGame.playerTeam)
-                        itemPlaceSound.play();
+                    if(!systemGivenItem) {
+                        if(this.team == currentGame.playerTeam)
+                            itemPlaceSound.play();
+                    }
 
                     //add item to unit's item list
                     slot.location[slot.index] = item;

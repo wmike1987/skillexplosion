@@ -465,7 +465,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             }
             if(!buffer) buffer = {x: 0, y: 0};
             if(position.x > 0 + buffer.x && position.x < this.getPlayableWidth() - buffer.x) {
-                if(position.y > 0 + buffer.x && position.y < this.getPlayableHeight() - buffer.y) {
+                if(position.y > 0 + buffer.y && position.y < this.getPlayableHeight() - buffer.y) {
                     return true;
                 }
             }

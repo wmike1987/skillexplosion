@@ -60,7 +60,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 var item = item();
                 item.drop(options.unit.position);
             } else {
-                options.unit.pickupItem(item());
+                options.unit.pickupItem(item(), null, true);
             }
         })
     }
