@@ -1,9 +1,9 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
-'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic', 'shaders/SimpleLightFragmentShader',
-'shaders/CampfireShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
-'usunits/Sentinel', 'shaders/ObjectSingleLightShader', 'games/Us/UnitPanel'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, lightShader, campfireShader, TileMapper,
-    Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, ObjectSingleLightShader, unitpanel) {
+'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic',
+'shaders/CampfireAtNightShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
+'usunits/Sentinel', 'shaders/CampfireSingleObjectShader', 'games/Us/UnitPanel'],
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, campfireShader,
+    TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, objectSingleLightShader, unitpanel) {
 
     var targetScore = 1;
 
@@ -22,20 +22,21 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         initExtension: function() {
             this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
             this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
-            this.objectSingleLightShader = new PIXI.Filter(null, ObjectSingleLightShader, {
+            this.objectSingleLightShader = new PIXI.Filter(null, objectSingleLightShader, {
                 lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                 flameVariation: 0.0
             });
 
             this.lightPower = 0.0;
             this.lightDirection = 1;
-            this.lightRadius = 300;
+            this.lightRadius = 400;
             this.campfireShader = new PIXI.Filter(null, campfireShader, {
                 lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                 flameVariation: 0.0
             });
             this.campfireShader.myName = 'campfire';
-            if(false) {
+            this.campfireShader.uniforms.lightRadius = this.lightRadius;
+            if(true) {
                 this.renderer.layers.background.filters = [this.campfireShader];
                 this.renderer.layers.stage.filters = [this.objectSingleLightShader];
                 var flameTimer = currentGame.addTimer({
@@ -43,14 +44,16 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     gogogo: true,
                     timeLimit: 80,
                     callback: function() {
+                        //Reverse light direction over time
                         if(!this.lightPower)
-                        this.lightPower = .5;
-                        this.lightPower += (.01+Math.random()*.015)*this.lightDirection;
-                        if(this.lightPower < 0.5) {
+                            this.lightPower = 0.0;
+                        this.lightPower += (.02+Math.random()*.015)*this.lightDirection;
+                        if(this.lightPower < 0.0) {
                             this.lightDirection = 1;
                         } else if(this.lightPower > 1.0) {
                             this.lightDirection = -1;
                         }
+
                         this.campfireShader.uniforms.flameVariation = this.lightPower/1.0;
                         this.objectSingleLightShader.uniforms.flameVariation = this.lightPower/1.0;
                     }.bind(this)
