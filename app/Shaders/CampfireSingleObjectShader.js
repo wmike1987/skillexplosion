@@ -16,7 +16,7 @@ define([], function() {
         float yscale = 2.0;
         float alteredLightRadius = lightRadius+(flameVariation*80.0);
 
-        float lengthToLightOnePosition = sqrt(pow(abs(gl_FragCoord.x-lightOnePosition.x), 2.0) + pow(abs((gl_FragCoord.y-20.0-lightOnePosition.y)*yscale), 2.0));
+        float lengthToLightOnePosition = sqrt(pow(abs(gl_FragCoord.x-lightOnePosition.x), 2.0) + pow(abs((gl_FragCoord.y-30.0-lightOnePosition.y)*yscale), 2.0));
         float litScale = lengthToLightOnePosition/alteredLightRadius;
 
         //fire scale values

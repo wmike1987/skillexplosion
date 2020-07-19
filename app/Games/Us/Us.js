@@ -22,48 +22,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         initExtension: function() {
             this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
             this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
-            this.objectSingleLightShader = new PIXI.Filter(null, objectSingleLightShader, {
-                lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
-                flameVariation: 0.0
-            });
-
-            this.lightPower = 0.0;
-            this.lightDirection = 1;
-            this.lightRadius = 400;
-            this.campfireShader = new PIXI.Filter(null, campfireShader, {
-                lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
-                flameVariation: 0.0
-            });
-            this.campfireShader.myName = 'campfire';
-            this.campfireShader.uniforms.lightRadius = this.lightRadius;
-            if(true) {
-                this.renderer.layers.background.filters = [this.campfireShader];
-                this.renderer.layers.stage.filters = [this.objectSingleLightShader];
-                var flameTimer = currentGame.addTimer({
-                    name: 'flame',
-                    gogogo: true,
-                    timeLimit: 80,
-                    callback: function() {
-                        //Reverse light direction over time
-                        if(!this.lightPower)
-                            this.lightPower = 0.0;
-                        this.lightPower += (.02+Math.random()*.015)*this.lightDirection;
-                        if(this.lightPower < 0.0) {
-                            this.lightDirection = 1;
-                        } else if(this.lightPower > 1.0) {
-                            this.lightDirection = -1;
-                        }
-
-                        this.campfireShader.uniforms.flameVariation = this.lightPower/1.0;
-                        this.objectSingleLightShader.uniforms.flameVariation = this.lightPower/1.0;
-                    }.bind(this)
-                })
-
-                this.campfireShader.uniforms.lightRadius = this.lightRadius;
-                this.objectSingleLightShader.uniforms.lightRadius = this.lightRadius;
-            }
-
-            //nice grass tile width = 370
         },
 
         play: function(options) {
@@ -168,37 +126,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //create our units
             this.createShane();
             this.createUrsula();
-            // this.createBane(0);
-            // this.createCritter(1);
-            // this.createAlienGuard(1);
-            // this.createSentinel(1);
+            this.addUnit(this.shane);
+            this.addUnit(this.ursula);
 
             //create empty scene and transition to camp scene
-            var campScene = this.createCampScene();
-            this.currentScene.transitionToScene({newScene: campScene});
-            this.currentScene = campScene;
-
-            // var vikingAnim = utils.getAnimationB({
-            //     spritesheetName: 'RodAnimations1',
-            //     animationName: 'vikings_1024',
-            //     speed: .2,
-            //     transform: [580, 400, .15, .15],
-            //     loop: true,
-            // });
-            // utils.addSomethingToRenderer(vikingAnim, {where: 'stageOne'});
-            // utils.addSomethingToRenderer('IsoShadowBlurred', {position: {x: 588, y: 429}})
-            // vikingAnim.play();
-
-            //move shane and urs into place when we're ready
-            Matter.Events.on(campScene, 'initialize', function() {
-                //play sound
-                this.entercamp.play();
-                this.campActive = true;
-                this.shane.position = utils.getCanvasCenter();
-                this.ursula.position = utils.getCanvasCenter();
-                this.addUnit(this.shane);
-                this.addUnit(this.ursula);
-            }.bind(this))
+            var camp = this.gotoCamp();
         },
 
         gotoCamp: function() {
@@ -224,7 +156,51 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 //reset shane and urs
                 this.resetUnit(this.shane);
                 this.resetUnit(this.ursula);
+
+                //setup light
+                this.lightPower = 0.0;
+                this.lightDirection = 1;
+                this.lightRadius = 400;
+
+                this.objectSingleLightShader = new PIXI.Filter(null, objectSingleLightShader, {
+                    lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
+                    flameVariation: 0.0
+                });
+                this.campfireShader = new PIXI.Filter(null, campfireShader, {
+                    lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
+                    flameVariation: 0.0
+                });
+                this.campfireShader.myName = 'campfire';
+                this.campfireShader.uniforms.lightRadius = this.lightRadius;
+                if(true) {
+                    this.renderer.layers.background.filters = [this.campfireShader];
+                    this.renderer.layers.stage.filters = [this.objectSingleLightShader];
+                    var flameTimer = currentGame.addTimer({
+                        name: 'flame',
+                        gogogo: true,
+                        timeLimit: 80,
+                        callback: function() {
+                            //Reverse light direction over time
+                            if(!this.lightPower)
+                                this.lightPower = 0.0;
+                            this.lightPower += (.02+Math.random()*.015)*this.lightDirection;
+                            if(this.lightPower < 0.0) {
+                                this.lightDirection = 1;
+                            } else if(this.lightPower > 1.0) {
+                                this.lightDirection = -1;
+                            }
+
+                            this.campfireShader.uniforms.flameVariation = this.lightPower/1.0;
+                            this.objectSingleLightShader.uniforms.flameVariation = this.lightPower/1.0;
+                        }.bind(this)
+                    })
+
+                    this.campfireShader.uniforms.lightRadius = this.lightRadius;
+                    this.objectSingleLightShader.uniforms.lightRadius = this.lightRadius;
+                }
             }.bind(this))
+
+            return camp;
         },
 
         createCampScene: function() {
@@ -336,9 +312,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     this.deactivateMap();
                 }
             }.bind(this))
+
             campScene._clearExtension = function() {
                 this.removeTickCallback(mapHoverTick);
                 this.removePriorityMouseDownEvent(mapClickListener);
+                this.renderer.layers.background.filters = [];
+                this.renderer.layers.stage.filters = [];
                 $('body').off('mousedown.map');
                 $('body').off('keydown.map');
             }.bind(this);
