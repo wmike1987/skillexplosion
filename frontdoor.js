@@ -11,7 +11,7 @@ requirejs.config({
         units: '../app/Units',
         items: '../app/Items',
         shaders: '../app/Shaders',
-    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.4/pixi",
+    	pixi: "https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.0/pixi",
 	    jquery: "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
 	    howler: "https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min",
 	    //'matter-js': "matter/matter-timing",
@@ -238,7 +238,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('alienW', 'app/SpineAssets/Alien Export/W/W.json');
 
             loader.load();
-            loader.once('complete', function() {
+            loader.onComplete.add(() => {
                 loader.loaderDeferred.resolve();
             });
     })

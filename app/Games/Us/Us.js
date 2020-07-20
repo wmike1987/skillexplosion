@@ -1,9 +1,9 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic',
 'shaders/CampfireAtNightShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
-'usunits/Sentinel', 'shaders/CampfireSingleObjectShader', 'games/Us/UnitPanel'],
+'usunits/Sentinel', 'games/Us/UnitPanel'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, campfireShader,
-    TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, objectSingleLightShader, unitpanel) {
+    TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, unitpanel) {
 
     var targetScore = 1;
 
@@ -160,21 +160,31 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 //setup light
                 this.lightPower = 0.0;
                 this.lightDirection = 1;
-                this.lightRadius = 400;
+                this.lightRadius = 600;
 
-                this.objectSingleLightShader = new PIXI.Filter(null, objectSingleLightShader, {
+                this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
-                    flameVariation: 0.0
+                    flameVariation: 0.0,
+                    yOffset: 0.0,
+                    red: 3.0,
+                    green: 1.5,
+                    blue: 1.0,
+                    lightPower: 3.5,
                 });
-                this.campfireShader = new PIXI.Filter(null, campfireShader, {
+                this.stageLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
-                    flameVariation: 0.0
+                    flameVariation: 0.0,
+                    yOffset: 30.0,
+                    red: 3.0,
+                    green: 1.5,
+                    blue: 0.8,
+                    lightPower: 3.0,
                 });
-                this.campfireShader.myName = 'campfire';
-                this.campfireShader.uniforms.lightRadius = this.lightRadius;
+                this.backgroundLightShader.myName = 'campfire';
+                this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
                 if(true) {
-                    this.renderer.layers.background.filters = [this.campfireShader];
-                    this.renderer.layers.stage.filters = [this.objectSingleLightShader];
+                    this.renderer.layers.background.filters = [this.backgroundLightShader];
+                    this.renderer.layers.stage.filters = [this.stageLightShader];
                     var flameTimer = currentGame.addTimer({
                         name: 'flame',
                         gogogo: true,
@@ -190,13 +200,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                 this.lightDirection = -1;
                             }
 
-                            this.campfireShader.uniforms.flameVariation = this.lightPower/1.0;
-                            this.objectSingleLightShader.uniforms.flameVariation = this.lightPower/1.0;
+                            this.backgroundLightShader.uniforms.flameVariation = this.lightPower/1.0;
+                            this.stageLightShader.uniforms.flameVariation = this.lightPower/1.0;
                         }.bind(this)
                     })
 
-                    this.campfireShader.uniforms.lightRadius = this.lightRadius;
-                    this.objectSingleLightShader.uniforms.lightRadius = this.lightRadius;
+                    this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
+                    this.stageLightShader.uniforms.lightRadius = this.lightRadius;
                 }
             }.bind(this))
 

@@ -104,7 +104,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             this.addTickCallback(function() {
                 $.each(this.verticeHistories, function(index, body) {
                     body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
-
+                }
+            )}.bind(this), true, 'beforeStep');
+            this.addTickCallback(function() {
+                $.each(this.verticeHistories, function(index, body) {
                     //Veritices
                     body.verticeCopy = utils.cloneVertices(body.vertices);
                     if(!body.verticesCopy) {

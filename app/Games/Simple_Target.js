@@ -140,6 +140,7 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			background: {image: 'SteelBackground', scale: {x: 1.334, y: 1.334}},
 		        width: 1200,
 		        height: 600,
+
 		       };
 
 	return $.extend({}, CommonGameMixin, game);
