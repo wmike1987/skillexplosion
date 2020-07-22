@@ -160,19 +160,19 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 //setup light
                 this.lightPower = 2.0;
                 this.lightDirection = 1;
-                this.lightRadius = 700;
+                this.lightRadius = 650;
 
                 this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                     flameVariation: 0.0,
                     yOffset: 0.0,
-                    red: 3.5,
+                    red: 3.0,
                     green: 1.5,
                     blue: 1.5,
-                    lightPower: 2.5,
+                    lightPower: 1.6,
                 });
 
-                var stageRed = 3.5;
+                var stageRed = 3.2;
                 this.stageLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                     flameVariation: 0.0,
