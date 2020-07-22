@@ -1,8 +1,8 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic',
-'shaders/CampfireAtNightShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
+'shaders/CampfireAtNightShader', 'shaders/ValueShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
 'usunits/Sentinel', 'games/Us/UnitPanel'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, campfireShader,
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, campfireShader, valueShader,
     TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, unitpanel) {
 
     var targetScore = 1;
@@ -158,9 +158,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.resetUnit(this.ursula);
 
                 //setup light
-                this.lightPower = 0.0;
+                this.lightPower = 2.0;
                 this.lightDirection = 1;
-                this.lightRadius = 600;
+                this.lightRadius = 500;
 
                 this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
@@ -169,31 +169,39 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     red: 3.0,
                     green: 1.5,
                     blue: 1.0,
-                    lightPower: 3.5,
+                    lightPower: 2.5,
                 });
+
+                var stageRed = 3.5;
                 this.stageLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                     flameVariation: 0.0,
                     yOffset: 30.0,
-                    red: 3.0,
+                    red: stageRed,
                     green: 1.5,
                     blue: 0.8,
-                    lightPower: 3.0,
+                    lightPower: 2.0,
+                });
+                this.treeShader = new PIXI.Filter(null, valueShader, {
+                    red: 0.3,
+                    green: 0.3,
+                    blue: 1.6,
                 });
                 this.backgroundLightShader.myName = 'campfire';
                 this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
                 if(true) {
                     this.renderer.layers.background.filters = [this.backgroundLightShader];
                     this.renderer.layers.stage.filters = [this.stageLightShader];
+                    this.renderer.layers.stageTwo.filters = [this.treeShader];
                     var flameTimer = currentGame.addTimer({
                         name: 'flame',
                         gogogo: true,
-                        timeLimit: 80,
+                        timeLimit: 100,
                         callback: function() {
                             //Reverse light direction over time
                             if(!this.lightPower)
                                 this.lightPower = 0.0;
-                            this.lightPower += (.02+Math.random()*.015)*this.lightDirection;
+                            this.lightPower += (.02+Math.random()*.045)*this.lightDirection;
                             if(this.lightPower < 0.0) {
                                 this.lightDirection = 1;
                             } else if(this.lightPower > 1.0) {
@@ -202,6 +210,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
                             this.backgroundLightShader.uniforms.flameVariation = this.lightPower/1.0;
                             this.stageLightShader.uniforms.flameVariation = this.lightPower/1.0;
+                            this.stageLightShader.uniforms.red = stageRed + this.lightPower;
                         }.bind(this)
                     })
 
@@ -328,6 +337,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.removePriorityMouseDownEvent(mapClickListener);
                 this.renderer.layers.background.filters = [];
                 this.renderer.layers.stage.filters = [];
+                this.renderer.layers.stageTwo.filters = [];
                 $('body').off('mousedown.map');
                 $('body').off('keydown.map');
             }.bind(this);
@@ -558,7 +568,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var trees = [];
             for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
                 for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-                    var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+utils.getRandomElementOfArray(options.possibleTrees), stage: 'stageOne', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
+                    var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+utils.getRandomElementOfArray(options.possibleTrees), stage: 'stageTwo', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
                     shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 4, y: 4}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
                     trees.push(tree);
                 }

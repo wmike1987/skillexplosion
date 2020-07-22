@@ -18,6 +18,7 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			stageNOne: new PIXI.Container(),
 			stage: new PIXI.Container(),
 			stageOne: new PIXI.Container(),
+			stageTwo: new PIXI.Container(),
 			foreground: new PIXI.Container(),
 			hudNTwo: new PIXI.Container(),
 			hudNOne: new PIXI.Container(),
