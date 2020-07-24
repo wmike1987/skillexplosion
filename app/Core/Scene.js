@@ -14,7 +14,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
     };
 
     Scene.prototype.initializeScene = function(objOrArray) {
-        Matter.Events.trigger(this, 'initialize');
         $.each(this.objects, function(i, obj) {
             if(obj.initialize && !obj.initialized) {
                 obj.initialize();
@@ -22,6 +21,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 utils.addSomethingToRenderer(obj);
             }
         })
+        Matter.Events.trigger(this, 'initialize');
     };
 
     Scene.prototype.add = function(objOrArray) {

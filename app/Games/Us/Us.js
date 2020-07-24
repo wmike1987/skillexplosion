@@ -26,80 +26,100 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         play: function(options) {
             this.initialCutScene();
-            // this.initialLevel();
         },
 
         generateEnemyCampLayout: function() {
+            var levelSpecification = {
+                singles: 6,
+                triplets: 1,
+                boss: 1,
+                norevives: 1,
+                mobs: 1
+            }
+
             var typeTokenMappings = {
-                normal: 'MapGoldBattleToken',
+                singles: 'MapGoldBattleToken',
                 boss: 'MapRedBattleToken'
             }
 
-            var nextLevelInitiated = false;
+            //Define node object
             var us = this;
-
-            var mapNode = function(position) {
-                //create next level options
-                var nextLevelOptions = {
-                    possibleTiles: [],
-                    realTileWidth: 370,
-                    enemySet: []
-                }
-
-                var grassTypes = ["Red", "Orange", "Yellow"]
-                for(var i = 1; i < 7; i++) {
-                    var gType = utils.getRandomElementOfArray(grassTypes);
-                    nextLevelOptions.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
-                }
-
-                // nextLevelOptions.enemySet.push({
-                //     constructor: Critter,
-                //     spawn: {total: 10 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 1350, maxOnField: 1},
-                //     item: {type: 'basic', total: 2}
-                // })
-                nextLevelOptions.enemySet.push({
-                    constructor: Sentinel,
-                    spawn: {total: 1 + utils.getRandomIntInclusive(1, 3), n: 1, hz: 9000, maxOnField: 1},
-                })
-
+            var mapNode = function(position, levelDetails) {
+                this.levelDetails = levelDetails;
                 this.mapPosition = position;
-                this.levelType = 'normal';
-                this.levelOptions = nextLevelOptions;
-                this.neighbors = [];
-                this.displayObject = utils.createDisplayObject(typeTokenMappings[this.levelType], {position: this.mapPosition, scale: {x: .75, y: .75}});
+                this.displayObject = utils.createDisplayObject(typeTokenMappings[levelDetails.type], {position: this.mapPosition, scale: {x: .75, y: .75}});
                 this.displayObject.interactive = true;
+                var self = this;
 
                 this.displayObject.on('mouseover', function(event) {
-                    this.displayObject.tint = 0x20cd2c;
+                    if(!this.isCompleted)
+                        this.displayObject.tint = 0x20cd2c;
                 }.bind(this))
                 this.displayObject.on('mouseout', function(event) {
-                    this.displayObject.tint = 0xFFFFFF;
+                    if(!this.isCompleted)
+                        this.displayObject.tint = 0xFFFFFF;
                 }.bind(this))
                 this.displayObject.on('mousedown', function(event) {
-                    this.nextLevel(nextLevelOptions);
+                    if(!self.isCompleted) {
+                        this.nextLevel(self);
+                    }
                 }.bind(us))
             }
 
             var graph = [];
-
-            var nodeBuffer = 100;
-            for(var x = 0; x < 10; x++) {
-                var position;
-                var collision;
-                do {
-                    collision = false;
-                    position = utils.getRandomPlacementWithinPlayableBounds(50);
-                    for(let node of graph) {
-                        if(utils.distanceBetweenPoints(node.mapPosition, position) < nodeBuffer) {
-                            collision = true;
-                            break;
+            for(const key in levelSpecification) {
+                for(var x = 0; x < levelSpecification[key]; x++) {
+                    var levelDetails = {
+                        enemySet: [],
+                        possibleTiles: [],
+                        realTileWidth: 370,
+                        resetLevel: function() {
+                            this.enemySet.forEach(set => {
+                                set.fulfilled = false;
+                            })
                         }
-                    }
-                } while(collision)
-                var node = new mapNode(position);
-                graph.push(node);
-            }
+                    };
 
+                    //Terrain specification
+                    var gType = utils.getRandomElementOfArray(["Red", "Orange", "Yellow"]);
+                    for(var i = 1; i < 7; i++) {
+                        levelDetails.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
+                    }
+
+                    //Enemy specification
+                    if(key == 'singles') {
+                        levelDetails.type = key;
+                        levelDetails.enemySet.push({
+                            constructor: Critter,
+                            spawn: {total: 1 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 2500, maxOnField: 1},
+                            item: {type: 'basic', total: 2}
+                        })
+                        // levelDetails.enemySet.push({
+                        //     constructor: Sentinel,
+                        //     spawn: {total: 1 + utils.getRandomIntInclusive(1, 3), n: 1, hz: Math.random()*9000, maxOnField: 1},
+                        // })
+                    }
+
+                    if(!levelDetails.type) continue;
+
+                    //Determine position
+                    var position;
+                    var collision;
+                    var nodeBuffer = 100;
+                    do {
+                        collision = false;
+                        position = utils.getRandomPlacementWithinPlayableBounds(50);
+                        for(let node of graph) {
+                            if(utils.distanceBetweenPoints(node.mapPosition, position) < nodeBuffer) {
+                                collision = true;
+                                break;
+                            }
+                        }
+                    } while(collision)
+                    var node = new mapNode(position, levelDetails);
+                    graph.push(node);
+                }
+            }
             return graph;
         },
 
@@ -131,6 +151,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
             //create empty scene and transition to camp scene
             var camp = this.gotoCamp();
+
+            //generate map graph
+            this.graph = this.generateEnemyCampLayout();
         },
 
         gotoCamp: function() {
@@ -301,25 +324,21 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             this.mapSprite.visible = false;
             campScene.add(this.mapSprite);
 
-            //generate map graph
-            this.graph = this.generateEnemyCampLayout();
-
             //establish map click listeners
             var mapClickListener = this.addPriorityMouseDownEvent(function(event) {
                 var canvasPoint = {x: 0, y: 0};
                 this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
 
-				if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive) {
+				if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campActive) {
                     this.openmap.play();
                     this.mapSprite.visible = true;
                     this.unitSystem.pause();
                     this.graph.forEach(node => {
-                        if(!node.displayObject.parent) {
-                            utils.addSomethingToRenderer(node.displayObject, {where: 'hudNTwo'});
-                            campScene.add(node.displayObject);
-                        } else {
-                            node.displayObject.visible = this.mapSprite.visible;
+                        node.displayObject.where = 'hudNTwo'
+                        if(node.isCompleted) {
+                            node.displayObject.tint = 0x002404;
                         }
+                        utils.addOrShowDisplayObject(node.displayObject)
                     })
                     this.mapActive = true;
                 }
@@ -395,41 +414,44 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
          * possible tiles
          * enemy set
          */
-        nextLevel: function(options) {
-
-            this.levelState = options;
-
-            this.deactivateMap();
+        nextLevel: function(node) {
+            this.currentLevelDetails = node.levelDetails;
 
             if(this.currentSpawner) {
                 this.currentSpawner.cleanUp();
             }
-            if(options.enemySet) {
-                this.currentSpawner = this.createUnitSpawner(options.enemySet);
+            if(this.currentLevelDetails) {
+                this.currentSpawner = this.createUnitSpawner(this.currentLevelDetails.enemySet);
             }
 
-            var nextLevelScene = this.createNextLevelScene(options);
+            //reset any unfulfilled enemy states
+            this.currentLevelDetails.resetLevel();
+
+            //create new scene
+            var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
             this.currentScene.transitionToScene(nextLevelScene);
             Matter.Events.on(nextLevelScene, 'initialize', function() {
                 Matter.Events.trigger(this, 'enteringLevel');
+                this.deactivateMap();
                 this.campActive = false;
                 this.currentSpawner.initialize();
-                //reset shane and urs
                 this.resetUnit(this.shane);
                 this.resetUnit(this.ursula);
             }.bind(this))
             this.currentScene = nextLevelScene;
             this.level += 1;
 
+            //win/loss conditions
             var lossCondition = null;
             var winCondition = null;
             var winCondition = this.addTickCallback(function() {
-                var enemySet = this.levelState.enemySet;
+                var enemySet = this.currentLevelDetails.enemySet;
                 enemySetsFulfilled = false;
                 $.each(enemySet, function(i, enemy) {
                     enemySetsFulfilled = enemy.fulfilled;
                     return enemySetsFulfilled;
                 })
+                if(!enemySetsFulfilled) return;
 
                 var unitsOfOpposingTeamExist = false;
                 if(this.unitsByTeam[4] && this.unitsByTeam[4].length > 0) {
@@ -439,6 +461,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 if(!unitsOfOpposingTeamExist && enemySetsFulfilled && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
                     this.removeTickCallback(winCondition);
                     this.removeTickCallback(lossCondition);
+                    node.isCompleted = true;
                     this.gotoCamp();
                 }
             }.bind(this))
@@ -469,9 +492,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         createShane: function() {
              this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-             // this.shane2 = Marine({team: currentGame.playerTeam, name: 'Shane'});
-             // this.addUnit(this.shane2);
-             // this.shane2.position = utils.getCanvasCenter();
              ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
              return this.shane;
         },
@@ -587,6 +607,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             spawner.initialize = function() {
                 $.each(enemySet, function(i, enemy) {
                     var total = 0;
+                    var itemsToGive = enemy.item ? enemy.item.total : 0;
                     var spawnTimer = currentGame.addTimer({
                         name: 'spawner' + i + spawner.id + enemy.type,
                         gogogo: true,
@@ -605,7 +626,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                 utils.placeBodyJustOffscreen(newUnit);
 
                                 //Give item to unit if chosen
-                                if(enemy.item && enemy.item.total > 0) {
+                                if(itemsToGive > 0) {
                                     var giveItem = true;
                                     if(lastUnit) {
                                         giveItem = true;
@@ -614,7 +635,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                     }
                                     if(giveItem) {
                                         ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(self.basicItems), unit: newUnit});
-                                        enemy.item.total--;
+                                        itemsToGive.total--;
                                     }
                                 }
 
