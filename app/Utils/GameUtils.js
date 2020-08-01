@@ -849,8 +849,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 timeLimit: 200,
                 gogogo: true,
                 tickCallback: function() {
-                    if(frameCount > 0) {
-                        frameCount--;
+                    if(limit > 0) {
+                        limit--;
                     } else {
                         callback();
                         currentGame.invalidateTimer(this);
