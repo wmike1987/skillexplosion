@@ -188,6 +188,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 var addingEnemies = false;
                 if(Object.keys(myUnits).length > 0) {
                     this.box.pendingSelections = myUnits;
+                    pendingBodyCount = Object.keys(this.box.pendingSelections).length; //reset pending body count
                     if(this.hasEnemySelected()) {
                         this.deselectUnit(this.selectedUnit);
                     }
@@ -326,7 +327,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             }
                             lastChosenUnit = unit;
                             this.changeSelectionState(unit, 'selectionPending', true);
-                            this.box.pendingSelections[unit.unitId] = unit; //needed for a special case when the game starts - no longer need this (i think)
+                            this.box.pendingSelections[unit.unitId] = unit;
                             this.box.permaPendingUnit = unit;
                         } else if(this.attackMove && unit.isTargetable) {
                             singleAttackTarget = unit;
@@ -481,6 +482,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 if(!this.active) return;
                 if(this.box.mouseDown && this.box.renderlings && !this.box.invalidateNextBox) {
                     this.box.selectionBoxActive = true;
+
+                    //clear pastHoveredUnitsHover. This is needed since we don't do hover logic while the selction box is active and for
+                    //simplicity's sake (and a bug), let's just reset all pending selections and let the selection box start from scratch.
+                    if(this.pastHoveredUnitsHover) {
+                        $.each(this.pastHoveredUnitsHover, function(index, unit) {
+                            if(unit != this.box.permaPendingUnit) {
+                                this.changeSelectionState(unit, 'selectionPending', false);
+                                delete this.box.pendingSelections[unit.unitId];
+                            }
+                        }.bind(this))
+                    }
                     var newPoint = {x: 0, y: 0};
                     this.renderer.interaction.mapPositionToPoint(newPoint, event.clientX, event.clientY);
                     this.sizeBox(newPoint);
@@ -605,14 +617,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             }.bind(this));
 
             //Mouse hover
-            var pastHoveredUnitsHover = [];
+            this.pastHoveredUnitsHover = [];
             currentGame.addTickCallback(function(event) {
                 if(!this.active) return;
                 if(!this.box.selectionBoxActive) {
-
                     //if we have a perma, we won't act on hovering pending selections, so break here
                     if(this.box.permaPendingUnit) return;
 
+                    //start from scratch
                     this.box.pendingSelections = {};
 
                     //find bodies under mouse which are selectable, use the vertice history method if possible
@@ -632,13 +644,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     var units = this.convertBodiesToSelectionEnabledUnits(bodies);
 
                     //reset past, non-perma bodies we were hovering over previously
-                    $.each(pastHoveredUnitsHover, function(index, unit) {
+                    $.each(this.pastHoveredUnitsHover, function(index, unit) {
                         this.changeSelectionState(unit, 'selectionPending', false);
                     }.bind(this))
 
-                    //set state of bodies under our mouse and identify them as pastHoveredUnitsHover for the next tick
+                    //set state of bodies under our mouse and identify them as this.pastHoveredUnitsHover for the next tick
                     //Note: this should only allow the front-most unit to be selected
-                    pastHoveredUnitsHover = [];
+                    this.pastHoveredUnitsHover = [];
                     var yOfUnit = 0;
                     var lastChosenUnit = null;
                     $.each(units, function(index, unit) {
@@ -655,7 +667,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         yOfUnit = unit.position.y;
                         this.box.pendingSelections[unit.unitId] = unit;
                         this.changeSelectionState(unit, 'selectionPending', true);
-                        pastHoveredUnitsHover = [unit];
+                        this.pastHoveredUnitsHover = [unit];
                     }.bind(this))
 
                     if(!this.attackMove && !this.abilityDispatch) {

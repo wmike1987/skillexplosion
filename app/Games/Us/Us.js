@@ -17,7 +17,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         noClickIndicator: true,
         tileSize: 225,
         currentScene: null,
-        basicItems: ['JewelOfLife', 'RingOfThought', 'RingOfRenewal', 'SturdyCanteen', 'BootsOfHaste'],
+        itemClasses: {
+            basic: ['JewelOfLife', 'RingOfThought', 'RingOfRenewal', 'SturdyCanteen', 'BootsOfHaste']
+        },
 
         initExtension: function() {
             this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
@@ -92,12 +94,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                         levelDetails.enemySet.push({
                             constructor: Critter,
                             spawn: {total: 1 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 2500, maxOnField: 1},
-                            item: {type: 'basic', total: 2}
+                            item: {type: 'basic', total: 1}
                         })
-                        // levelDetails.enemySet.push({
-                        //     constructor: Sentinel,
-                        //     spawn: {total: 1 + utils.getRandomIntInclusive(1, 3), n: 1, hz: Math.random()*9000, maxOnField: 1},
-                        // })
                     }
 
                     if(!levelDetails.type) continue;
@@ -390,12 +388,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
             }
 
-            nextLevelOptions.enemySet.push({
-                constructor: Critter,
-                spawn: {total: 18, n: 1, hz: 1200, maxOnField: 1},
-                item: {type: 'basic', total: 3}
-            })
-
             var nextLevelInitiated = false;
             return campScene;
         },
@@ -634,8 +626,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                         giveItem = utils.flipCoin() && utils.flipCoin();
                                     }
                                     if(giveItem) {
-                                        ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(self.basicItems), unit: newUnit});
-                                        itemsToGive.total--;
+                                        ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(self.itemClasses[enemy.item.type]), unit: newUnit});
+                                        console.info(itemsToGive);
+                                        itemsToGive--;
                                     }
                                 }
 
