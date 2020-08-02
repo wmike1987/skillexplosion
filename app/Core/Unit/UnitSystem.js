@@ -591,6 +591,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             //     }.bind(this))
             // }
 
+            var smallBoxThreshold = 3;
             Matter.Events.on(this.box, 'onCollideActive onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
                 if(!otherBody.isSelectionBody) return;
