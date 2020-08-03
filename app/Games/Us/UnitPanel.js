@@ -163,10 +163,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.commandOneCenterY = this.centerY - 25;
 
         //selected-group variables
-        this.wireframeSize = 32;
+        this.wireframeSize = 55;
         this.groupCenterY = this.centerY;
-        this.groupCenterX = 0 + 8 + this.wireframeSize/2;
-        this.groupSpacing = 8 + this.wireframeSize;
+        this.groupCenterX = 1 + this.wireframeSize/2;
+        this.groupSpacing = 0 + this.wireframeSize;
 
         //item variables
         this.itemCenterX = this.centerX + 85.5;
@@ -298,9 +298,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         $.each(this.selectedUnits, function(i, unit) {
             if(unit.wireframe) {
                 if(unit == prevailingUnit) {
-                    utils.makeSpriteSize(unit.wireframe, this.wireframeSize*1.6);
-                } else {
                     utils.makeSpriteSize(unit.wireframe, this.wireframeSize);
+                    unit.wireframe.tint = 0xFFFFFF;
+                } else {
+                    utils.makeSpriteSize(unit.wireframe, this.wireframeSize*.7);
+                    unit.wireframe.tint = 0xb3b3b3;
                 }
             }
         }.bind(this))

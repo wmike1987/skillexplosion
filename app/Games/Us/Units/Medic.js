@@ -724,7 +724,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             damageMember: "healAmount",
             energyRegenerationRate: 2,
             portrait: utils.createDisplayObject('MedicPortrait'),
-            wireframe: utils.createDisplayObject('MedicPortrait'),
+            wireframe: utils.createDisplayObject('MedicGroupPortrait'),
             team: options.team || 4,
             priority: 40,
             name: options.name,

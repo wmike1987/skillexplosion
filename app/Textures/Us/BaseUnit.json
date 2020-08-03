@@ -58,11 +58,11 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":65,"y":201,"w":32,"h":32},
+	"frame": {"x":65,"y":203,"w":23,"h":23},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
-	"sourceSize": {"w":32,"h":32}
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":23},
+	"sourceSize": {"w":33,"h":30}
 },
 "IsometricSelected.png":
 {
@@ -130,10 +130,10 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":99,"y":203,"w":27,"h":27},
+	"frame": {"x":90,"y":203,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":27},
+	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
 	"sourceSize": {"w":32,"h":32}
 }},
 "animations": {
@@ -145,6 +145,6 @@
 	"format": "RGBA8888",
 	"size": {"w":128,"h":236},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:42e3291961debc9e782eb1812b873a62:c91b4d94efb7a7ca93430f21dab2de9c:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:0eeaa60a86f176c6433e39e6b556eb09:4397cc12e15e7aa6c440afa129bd5e5d:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

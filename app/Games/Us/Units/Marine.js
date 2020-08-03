@@ -657,7 +657,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energy: 20,
             energyRegenerationRate: 1,
             portrait: utils.createDisplayObject('MarinePortrait'),
-            wireframe: utils.createDisplayObject('MarinePortrait'),
+            wireframe: utils.createDisplayObject('MarineGroupPortrait'),
             team: options.team || 4,
             priority: 10,
             name: options.name,
