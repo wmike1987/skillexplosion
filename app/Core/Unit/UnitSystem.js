@@ -164,7 +164,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 //for convenience
                 var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
                 var loneSoldier = null;
-                if(pendingBodyCount == 1) {
+                if(pendingBodyCount == 1) {``
                     loneSoldier = this.box.pendingSelections[(Object.keys(this.box.pendingSelections)[0])];
                 }
 
@@ -205,10 +205,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     //If one, already-selected body is requested here, remove from selection
                     if(loneSoldier && ($.inArray(loneSoldier.unitId.toString(), Object.keys(this.selectedUnits)) > -1)) {
                         this.deselectUnit(loneSoldier);
+                        if(this.box.permaPendingUnit == loneSoldier) //if our perma pending unit was our lone soldier, let's reset it's pending status
+                            this.changeSelectionState(loneSoldier, 'selectionPending', false);
                     }
                     else {
                         //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
-                        //in which case we'll exclude it from the pending selections
                         if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
                             this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                             delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
