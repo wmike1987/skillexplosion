@@ -1,9 +1,9 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
 'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic',
 'shaders/CampfireAtNightShader', 'shaders/ValueShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
-'usunits/Sentinel', 'games/Us/UnitPanel'],
+'usunits/Sentinel', 'games/Us/UnitPanel', 'games/Us/UnitSpawner', 'games/Us/UnitMenu', 'games/Us/Map'],
 function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, campfireShader, valueShader,
-    TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, unitpanel) {
+    TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, unitpanel, UnitSpawner, unitMenu, Map) {
 
     var targetScore = 1;
 
@@ -28,97 +28,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         play: function(options) {
             this.initialCutScene();
-        },
-
-        generateEnemyCampLayout: function() {
-            var levelSpecification = {
-                singles: 6,
-                triplets: 1,
-                boss: 1,
-                norevives: 1,
-                mobs: 1
-            }
-
-            var typeTokenMappings = {
-                singles: 'MapGoldBattleToken',
-                boss: 'MapRedBattleToken'
-            }
-
-            //Define node object
-            var us = this;
-            var mapNode = function(position, levelDetails) {
-                this.levelDetails = levelDetails;
-                this.mapPosition = position;
-                this.displayObject = utils.createDisplayObject(typeTokenMappings[levelDetails.type], {position: this.mapPosition, scale: {x: .75, y: .75}});
-                this.displayObject.interactive = true;
-                var self = this;
-
-                this.displayObject.on('mouseover', function(event) {
-                    if(!this.isCompleted)
-                        this.displayObject.tint = 0x20cd2c;
-                }.bind(this))
-                this.displayObject.on('mouseout', function(event) {
-                    if(!this.isCompleted)
-                        this.displayObject.tint = 0xFFFFFF;
-                }.bind(this))
-                this.displayObject.on('mousedown', function(event) {
-                    if(!self.isCompleted) {
-                        this.nextLevel(self);
-                    }
-                }.bind(us))
-            }
-
-            var graph = [];
-            for(const key in levelSpecification) {
-                for(var x = 0; x < levelSpecification[key]; x++) {
-                    var levelDetails = {
-                        enemySet: [],
-                        possibleTiles: [],
-                        realTileWidth: 370,
-                        resetLevel: function() {
-                            this.enemySet.forEach(set => {
-                                set.fulfilled = false;
-                            })
-                        }
-                    };
-
-                    //Terrain specification
-                    var gType = utils.getRandomElementOfArray(["Red", "Orange", "Yellow"]);
-                    for(var i = 1; i < 7; i++) {
-                        levelDetails.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
-                    }
-
-                    //Enemy specification
-                    if(key == 'singles') {
-                        levelDetails.type = key;
-                        levelDetails.enemySet.push({
-                            constructor: Critter,
-                            spawn: {total: 1 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 2500, maxOnField: 1},
-                            item: {type: 'basic', total: 1}
-                        })
-                    }
-
-                    if(!levelDetails.type) continue;
-
-                    //Determine position
-                    var position;
-                    var collision;
-                    var nodeBuffer = 100;
-                    do {
-                        collision = false;
-                        position = utils.getRandomPlacementWithinPlayableBounds(50);
-                        for(let node of graph) {
-                            if(utils.distanceBetweenPoints(node.mapPosition, position) < nodeBuffer) {
-                                collision = true;
-                                break;
-                            }
-                        }
-                    } while(collision)
-                    var node = new mapNode(position, levelDetails);
-                    graph.push(node);
-                }
-            }
-            return graph;
         },
 
         initialCutScene: function() {
@@ -150,8 +59,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //create empty scene and transition to camp scene
             var camp = this.gotoCamp();
 
-            //generate map graph
-            this.graph = this.generateEnemyCampLayout();
+            //generate map
+            this.map = new Map({});
         },
 
         gotoCamp: function() {
@@ -318,10 +227,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 }
             }.bind(this));
 
-            this.mapSprite = utils.createDisplayObject('MapBase', {where: 'foreground', position: utils.getPlayableCenter()});
-            this.mapSprite.visible = false;
-            campScene.add(this.mapSprite);
-
             //establish map click listeners
             var mapClickListener = this.addPriorityMouseDownEvent(function(event) {
                 var canvasPoint = {x: 0, y: 0};
@@ -329,22 +234,15 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
 				if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campActive) {
                     this.openmap.play();
-                    this.mapSprite.visible = true;
                     this.unitSystem.pause();
-                    this.graph.forEach(node => {
-                        node.displayObject.where = 'hudNTwo'
-                        if(node.isCompleted) {
-                            node.displayObject.tint = 0x002404;
-                        }
-                        utils.addOrShowDisplayObject(node.displayObject)
-                    })
+                    this.map.show();
                     this.mapActive = true;
                 }
             }.bind(this));
 
             $('body').on('keydown.map', function( event ) {
                 var key = event.key.toLowerCase();
-                if(key == 'escape' && this.mapSprite.visible) {
+                if(key == 'escape' && this.mapActive) {
                     this.deactivateMap();
                 }
             }.bind(this))
@@ -355,6 +253,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.renderer.layers.background.filters = [];
                 this.renderer.layers.stage.filters = [];
                 this.renderer.layers.stageTwo.filters = [];
+                this.map.hide();
                 $('body').off('mousedown.map');
                 $('body').off('keydown.map');
             }.bind(this);
@@ -394,11 +293,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         deactivateMap: function() {
             this.unitSystem.unpause();
-            this.mapSprite.visible = false;
             this.mapActive = false;
-            this.graph.forEach(node => {
-                node.displayObject.visible = this.mapSprite.visible;
-            })
+            this.map.hide();
         },
 
         /*
@@ -413,7 +309,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.currentSpawner.cleanUp();
             }
             if(this.currentLevelDetails) {
-                this.currentSpawner = this.createUnitSpawner(this.currentLevelDetails.enemySet);
+                this.currentSpawner = new UnitSpawner(this.currentLevelDetails.enemySet);
             }
 
             //reset any unfulfilled enemy states
@@ -586,69 +482,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 }
             }
             return trees;
-        },
-
-        createUnitSpawner: function(enemySet) {
-            var spawner = {};
-            spawner.id = utils.uuidv4();
-
-            spawner.timers = [];
-
-            var self = this;
-
-            spawner.initialize = function() {
-                $.each(enemySet, function(i, enemy) {
-                    var total = 0;
-                    var itemsToGive = enemy.item ? enemy.item.total : 0;
-                    var spawnTimer = currentGame.addTimer({
-                        name: 'spawner' + i + spawner.id + enemy.type,
-                        gogogo: true,
-                        timeLimit: enemy.spawn.hz,
-                        callback: function() {
-                            if(enemy.fulfilled) return;
-                            for(var x = 0; x < enemy.spawn.n; x++) {
-                                var lastUnit = false;
-                                if(total == (enemy.spawn.total-1)) lastUnit = true;
-                                total++;
-
-                                //Create unit
-                                var newUnit = enemy.constructor({team: 4});
-                                newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
-                                newUnit.honeRange = 5000;
-                                utils.placeBodyJustOffscreen(newUnit);
-
-                                //Give item to unit if chosen
-                                if(itemsToGive > 0) {
-                                    var giveItem = true;
-                                    if(lastUnit) {
-                                        giveItem = true;
-                                    } else {
-                                        giveItem = utils.flipCoin() && utils.flipCoin();
-                                    }
-                                    if(giveItem) {
-                                        ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(self.itemClasses[enemy.item.type]), unit: newUnit});
-                                        console.info(itemsToGive);
-                                        itemsToGive--;
-                                    }
-                                }
-
-                                if(lastUnit) {
-                                    this.invalidated = true;
-                                    enemy.fulfilled = true;
-                                }
-                                currentGame.addUnit(newUnit);
-                            }
-                        }
-                    })
-                    spawner.timers.push(spawnTimer);
-                })
-            }
-
-            spawner.cleanUp = function() {
-                currentGame.invalidateTimer(this.timers);
-            }
-
-            return spawner;
         },
 
         resetGameExtension: function() {

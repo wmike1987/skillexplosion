@@ -1,7 +1,7 @@
 define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'utils/styles', 'unitcore/_Augmentable'],
     function($, PIXI, UC, Matter, utils, Ability, styles, aug) {
 
-    return function Critter(options) {
+    return function AlienGuard(options) {
         var critter = {};
 
         var options = options || {};
