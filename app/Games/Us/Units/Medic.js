@@ -773,7 +773,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 moveable: {
                     moveSpeed: 2.15,
                     walkAnimations: walkAnimations,
-                    smallerBodyHeightChange: true,
                 }, attacker: {
                     attackAnimations: healAnimations,
                     cooldown: 360,

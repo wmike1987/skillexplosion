@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils', 'unitcore/ItemUtils'],
 function($, Matter, PIXI, utils, ItemUtils) {
 
-    var unitSpawner = function(enemySet) {
+    var unitSpawner = function(enemySets) {
         this.id = utils.uuidv4();
 
         this.timers = [];
@@ -9,7 +9,7 @@ function($, Matter, PIXI, utils, ItemUtils) {
         var self = this;
 
         this.initialize = function() {
-            $.each(enemySet, function(i, enemy) {
+            $.each(enemySets, function(i, enemy) {
                 var total = 0;
                 var itemsToGive = enemy.item ? enemy.item.total : 0;
                 var spawnTimer = currentGame.addTimer({

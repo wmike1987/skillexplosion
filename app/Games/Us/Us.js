@@ -276,17 +276,6 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
             campScene.add(this.fillAreaWithTrees(treeOptions));
 
-            //create next level options
-            var nextLevelOptions = {
-                possibleTiles: [],
-                realTileWidth: 370,
-                enemySet: []
-            }
-
-            for(var i = 1; i < 7; i++) {
-                nextLevelOptions.possibleTiles.push('LushGrass1/YellowGrass'+i);
-            }
-
             var nextLevelInitiated = false;
             return campScene;
         },
@@ -309,7 +298,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.currentSpawner.cleanUp();
             }
             if(this.currentLevelDetails) {
-                this.currentSpawner = new UnitSpawner(this.currentLevelDetails.enemySet);
+                this.currentSpawner = new UnitSpawner(this.currentLevelDetails.enemySets);
             }
 
             //reset any unfulfilled enemy states
@@ -333,9 +322,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var lossCondition = null;
             var winCondition = null;
             var winCondition = this.addTickCallback(function() {
-                var enemySet = this.currentLevelDetails.enemySet;
                 enemySetsFulfilled = false;
-                $.each(enemySet, function(i, enemy) {
+                $.each(this.currentLevelDetails.enemySets, function(i, enemy) {
                     enemySetsFulfilled = enemy.fulfilled;
                     return enemySetsFulfilled;
                 })

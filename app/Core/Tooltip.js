@@ -24,6 +24,29 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         }
         this.mainDescription = this.description[0];
 
+        //create the icon map - these icons will be placed to the left of each description, in order
+        this.descriptionIcons = [];
+        this.iconSize = 32;
+        if($.isArray(options.descriptionIcons)) {
+            $.each(options.descriptionIcons, function(i, icon) {
+                var sizedIcon = utils.createDisplayObject(icon, {where: 'hudText', anchor: {x: 0, y: .5}});
+                this.description[i].anchor = {x: 0, y: .5}
+                utils.makeSpriteSize(sizedIcon, this.iconSize);
+                this.descriptionIcons.push(sizedIcon);
+            }.bind(this))
+        } else if(options.descriptionIcons){
+            var sizedIcon = utils.createDisplayObject(options.descriptionIcons, {where: 'hudText', anchor: {x: 0, y: .5}});
+            this.description[0].anchor = {x: 0, y: .5}
+            utils.makeSpriteSize(sizedIcon, this.iconSize);
+            this.descriptionIcons.push(sizedIcon);
+        }
+
+        //set a description height which will either be the text height, or icon height
+        this.descrHeight = (this.mainDescription && this.mainDescription.height) || 0;
+        if(this.descriptionIcons.length > 0) {
+            this.descrHeight = this.iconSize;
+        }
+
         //build system messages
         if($.isArray(options.systemMessage)) {
             $.each(options.systemMessage, function(i, sysMessage) {
@@ -64,15 +87,25 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         var systemMessageHeight = 0;
         this.systemMessageBuffer = 5;
         this.buffer = 5;
+        this.iconBuffer = 0;
         $.each(this.systemMessages, function(i, sysMessage) {
             systemMessageWidth = Math.max(systemMessageWidth, sysMessage.width);
             systemMessageHeight += sysMessage.height;
         })
         $.each(this.description, function(i, descr) {
             descriptionWidth = Math.max(descriptionWidth, descr.width);
-            descriptionHeight += descr.height;
-        })
-        utils.makeSpriteSize(this.base, {w: Math.max(descriptionWidth, systemMessageWidth) + 15, h: this.title.height + this.buffer/2 + descriptionHeight + this.buffer + systemMessageHeight + (this.systemMessages.length ? this.buffer : 0) + this.buffer});
+            descriptionHeight += this.descrHeight;
+        }.bind(this))
+
+        //Finally, size the base
+        var iconWidthAdjustment = 0;
+        if(this.descriptionIcons.length > 0) {
+            iconWidthAdjustment = this.iconSize;
+            this.iconBuffer = this.iconSize/2 + this.buffer;
+        }
+        var width = Math.max(descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
+        var height = this.title.height + this.buffer/2 + descriptionHeight + this.buffer + systemMessageHeight + (this.systemMessages.length ? this.buffer : 0) + this.buffer;
+        utils.makeSpriteSize(this.base, {w: width, h: height});
     };
 
     //set title, text, backgroundColor, etc
@@ -85,6 +118,10 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         utils.removeSomethingFromRenderer(this.title);
         $.each(this.description, function(i, descr) {
             utils.removeSomethingFromRenderer(descr);
+        })
+
+        $.each(this.descriptionIcons, function(i, icon) {
+            utils.removeSomethingFromRenderer(icon);
         })
 
         $.each(this.systemMessages, function(i, sysMessage) {
@@ -119,26 +156,33 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
             $.each(this.description, function(i, descr) {
                 utils.addDisplayObjectToRenderer(descr, 'hudText');
             })
+            $.each(this.descriptionIcons, function(i, icon) {
+                utils.addDisplayObjectToRenderer(icon, 'hudText');
+            })
             $.each(this.systemMessages, function(i, sysMessage) {
                 utils.addDisplayObjectToRenderer(sysMessage, 'hudText');
             })
-            // if(this.systemMessage)
-            //     utils.addDisplayObjectToRenderer(this.systemMessage, 'hudText');
             utils.addDisplayObjectToRenderer(this.base, 'hudThree');
         }
 
-        //place descriptions
+        //place title
         this.title.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.buffer/2};
+
+        //place descriptions and description icons
         $.each(this.description, function(i, descr) {
-            descr.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.title.height + this.buffer/2 + this.buffer + (i * descr.height)};
+            descr.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.title.height + this.buffer/2 + (this.iconBuffer || this.buffer) + (i * this.descrHeight)};
+
+            //if we're using description icons, need to make some alterations
+            if(this.descriptionIcons.length > 0) {
+                this.descriptionIcons[i].position = descr.position;
+                descr.position.x += this.iconSize;
+            }
         }.bind(this))
 
         //place system messages
         $.each(this.systemMessages, function(i, sysMessage) {
-            sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.description.length)*this.description[0].height + this.systemMessageBuffer + (i * sysMessage.height)};
+            sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.description.length)*this.descrHeight + this.systemMessageBuffer + (i * sysMessage.height)};
         }.bind(this))
-        // if(this.systemMessage)
-        //     this.systemMessage.position = {x: position.x - xOffset + buffer, y: position.y - this.base.height + (this.description.length-1)*25 + 48};
 
         this.base.position = position;
 
@@ -146,11 +190,14 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         $.each(this.description, function(i, descr) {
             descr.visible = true;
         })
+
+        $.each(this.descriptionIcons, function(i, icon) {
+            icon.visible = true;
+        })
+
         $.each(this.systemMessages, function(i, sysMessage) {
             sysMessage.visible = true;
         })
-        // if(this.systemMessage)
-        //     this.systemMessage.visible = true;
         this.base.visible = true;
     };
 
@@ -160,11 +207,12 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         $.each(this.description, function(i, descr) {
             descr.visible = false;
         })
+        $.each(this.descriptionIcons, function(i, icon) {
+            icon.visible = false;
+        })
         $.each(this.systemMessages, function(i, sysMessage) {
             sysMessage.visible = false;
         })
-        // if(this.systemMessage)
-        //     this.systemMessage.visible = false;
         this.base.visible = false;
     };
 

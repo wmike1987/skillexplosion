@@ -59,7 +59,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         newItem.icon = utils.createDisplayObject(newItem.icon); //note that this icon will not die upon removing the item
         var ctrlClickToDropMessage = '(Click to grab item)';
         newItem.icon.interactive = true;
-        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
+
+        if(newItem.name != 'EMPTY')
+            Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
 
         //mouse hover event
         newItem.hoverListener = currentGame.addTickCallback(function() {
@@ -203,7 +205,9 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
         },
 
         newItem.destroy = function() {
-            this.icon.tooltipObj.destroy();
+            if(this.icon.tooltipObj) {
+                this.icon.tooltipObj.destroy();
+            }
             utils.removeSomethingFromRenderer(this.nameDisplayBase);
             utils.removeSomethingFromRenderer(this.nameDisplay);
             utils.removeSomethingFromRenderer(this.icon);

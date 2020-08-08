@@ -1,5 +1,5 @@
-define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils', 'games/Us/UnitMenu', 'games/Us/EnemySetSpecifier'],
-function($, Matter, PIXI, utils, unitMenu, EnemySetSpecifier) {
+define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils', 'games/Us/UnitMenu', 'games/Us/EnemySetSpecifier', 'core/Tooltip',],
+function($, Matter, PIXI, utils, unitMenu, EnemySetSpecifier, Tooltip) {
 
     //Token Mappings
     var typeTokenMappings = {
@@ -15,6 +15,19 @@ function($, Matter, PIXI, utils, unitMenu, EnemySetSpecifier) {
         this.levelDetails = levelDetails;
         this.displayObject = utils.createDisplayObject(typeTokenMappings[levelDetails.type], {scale: {x: .75, y: .75}});
         this.displayObject.interactive = true;
+
+        var enemyDescriptions = [];
+        var enemyIcons = [];
+        levelDetails.enemySets.forEach(set => {
+            enemyDescriptions.push(' x ' + set.spawn.total);
+            enemyIcons.push(set.icon);
+        })
+        Tooltip.makeTooltippable(this.displayObject, {
+            title: levelDetails.type,
+            description: enemyDescriptions,
+            descriptionIcons: enemyIcons,
+            noDelay: true});
+
         var self = this;
 
         this.displayObject.on('mouseover', function(event) {
@@ -41,18 +54,18 @@ function($, Matter, PIXI, utils, unitMenu, EnemySetSpecifier) {
         create: function(type, seed) {
             var levelDetails = {
                 type: type,
-                enemySet: [],
+                enemySets: [],
                 possibleTiles: [],
                 realTileWidth: 370,
                 resetLevel: function() {
-                    this.enemySet.forEach(set => {
+                    this.enemySets.forEach(set => {
                         set.fulfilled = false;
                     })
                 }
             }
 
             //enemy set
-            levelDetails.enemySet.push(EnemySetSpecifier.create(type));
+            levelDetails.enemySets = (EnemySetSpecifier.create(type));
 
             //Terrain specification
             var gType = utils.getRandomElementOfArray(["Red", "Orange", "Yellow"]);

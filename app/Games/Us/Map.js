@@ -54,6 +54,7 @@ function($, Matter, PIXI, utils, LevelSpecifier) {
             this.mapSprite.visible = false;
             this.graph.forEach(node => {
                 node.displayObject.visible = this.mapSprite.visible;
+                node.displayObject.tooltipObj.hide();
             })
         }
     }

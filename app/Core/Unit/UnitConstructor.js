@@ -218,7 +218,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             newUnit.emptyRegularSlots = [];
             for(var i = 0; i < newUnit.currentItems.length; i++) {
                 var item = EmptySlot();
-                item.icon.tooltipObj.disabled = true;
                 item.currentSlot = {location: newUnit.currentItems, index: i, active: true, slotDef: item, type: 'common'}
                 newUnit.emptyRegularSlots.push(item);
                 newUnit.currentItems[i] = item;
@@ -228,7 +227,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             newUnit.emptySpecialtySlots = [];
             for(var i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
                 var item = EmptySlot();
-                item.icon.tooltipObj.disabled = true;
                 item.currentSlot = {location: newUnit.currentSpecialtyItems, index: i, active: true, slotDef: item, type: newUnit.unitType}
                 newUnit.emptySpecialtySlots.push(item);
                 newUnit.currentSpecialtyItems[i] = item;
@@ -238,7 +236,6 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             newUnit.emptyBackpackSlots = [];
             for(var i = 0; i < newUnit.currentBackpack.length; i++) {
                 var item = EmptySlot();
-                item.icon.tooltipObj.disabled = true;
                 item.currentSlot = {location: newUnit.currentBackpack, index: i, active: false, slotDef: item, type: 'universal'}
                 newUnit.emptyBackpackSlots.push(item);
                 newUnit.currentBackpack[i] = item;
