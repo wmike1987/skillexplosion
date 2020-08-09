@@ -25,8 +25,7 @@ function($, Matter, PIXI, utils, unitMenu, EnemySetSpecifier, Tooltip) {
         Tooltip.makeTooltippable(this.displayObject, {
             title: levelDetails.type,
             description: enemyDescriptions,
-            descriptionIcons: enemyIcons,
-            noDelay: true});
+            descriptionIcons: enemyIcons});
 
         var self = this;
 

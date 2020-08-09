@@ -284,9 +284,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         var footstepSound = utils.getSound('footstep2.wav', {volume: .02, rate: 1.1});
         var shroudSound = utils.getSound('cloakshroud.wav', {volume: .1, rate: 1.5});
-        var silentStep = function(destination, commandObj) {
+        var secretStep = function(destination, commandObj) {
             //get current augment
-            var thisAbility = this.getAbilityByName('Silent Step');
+            var thisAbility = this.getAbilityByName('Secret Step');
             var currentAugment = thisAbility.currentAugment || {name: 'null'};
 
             var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
@@ -312,8 +312,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             currentGame.addBody(shadow);
             shadow.oneFrameOverrideInterpolation = true;
 
-            var silentStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
-            utils.sendBodyToDestinationAtSpeed(shadow, destination, silentStepSpeed, true, true);
+            var secretStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
+            utils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
 
             //create footprints
             var footprintFrequency = currentAugment.name == 'fleet feet' ? 30 : 60;
@@ -358,11 +358,11 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             utils.moveUnitOffScreen(this);
             this.stop();
 
-            this.getAbilityByName("Silent Step").disable(1);
+            this.getAbilityByName("Secret Step").disable(1);
 
             var removeSelf = currentGame.addTickCallback(function() {
               if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
-                  this.getAbilityByName("Silent Step").enable(1);
+                  this.getAbilityByName("Secret Step").enable(1);
                   var x = shadow.position.x;
                   var y = shadow.position.y;
                   if(x < 0) x = 5;
@@ -399,14 +399,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             utils.deathPact(shadow, removeSelf);
         }
 
-        var silentStepAbility = new Ability({
-            name: 'Silent Step',
+        var secretStepAbility = new Ability({
+            name: 'Secret Step',
             key: 'd',
             type: 'click',
-            icon: utils.createDisplayObject('SilentStepIcon'),
-            method: silentStep,
+            icon: utils.createDisplayObject('SecretStepIcon'),
+            method: secretStep,
             handlesOwnBlink: true,
-            title: 'Silent Step',
+            title: 'Secret Step',
             description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
             energyCost: 8,
@@ -418,13 +418,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 name: 'fleet feet',
                 icon: utils.createDisplayObject('FleetFeet'),
                 title: 'Fleet Feet',
-                description: 'Silent step very quickly.'
+                description: 'Secret step very quickly.'
             },{
                 name: 'petrify',
                 duration: 3000,
                 icon: utils.createDisplayObject('Petrify'),
                 title: 'Petrify',
-                description: ['Render unit hidden and incapable of movement for 3 seconds', 'by silent stepping through them.']
+                description: ['Render unit hidden and incapable of movement for 3 seconds', 'by secret stepping through them.']
             },
             {
                 name: 'soft landing',
@@ -472,16 +472,16 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var mineExplosionAnimation = utils.getAnimationB({
 				spritesheetName: 'MedicAnimations1',
 				animationName: 'mineexplosion',
-				speed: 3,
-				transform: [mineState.position.x, mineState.position.y, 1.5, 1.5]
+				speed: .8,
+				transform: [mineState.position.x, mineState.position.y, 5.5, 5.5]
 			});
 
             //smoke animation
             var smokeExplosionAnimation = utils.getAnimationB({
                 spritesheetName: 'MedicAnimations1',
                 animationName: 'explosion-c',
-                speed: .35,
-                transform: [mineState.position.x, mineState.position.y, 4, 4]
+                speed: .55,
+                transform: [mineState.position.x, mineState.position.y-20, 2, 2]
             });
             smokeExplosionAnimation.alpha = .3;
             if(currentAugment.name == 'shrapnel') {
@@ -490,9 +490,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 mineExplosionAnimation.tint = 0x94FFF2;
             }
             utils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
-            utils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
-			mineExplosionAnimation.rotation = Math.random() * Math.PI*2;
-            mineExplosionAnimation.alpha = 1;
+            utils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*3.0, y: blastRadius*3.0})
+			// mineExplosionAnimation.rotation = Math.random() * Math.PI*2;
             // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
             //     isSensor: true,
             // });
@@ -730,7 +729,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             name: options.name,
             heightAnimation: 'up',
             throwAnimations: throwAnimations,
-            abilities: [healAbility, silentStepAbility, mineAbility],
+            abilities: [healAbility, secretStepAbility, mineAbility],
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
@@ -779,6 +778,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     honeRange: 300,
                     range: rad*2 + 10,
                     healAmount: 2,
+                    canAttackAndMove: false,
                     healCost: 1,
                     attack: function(target) {
                         //get current augment

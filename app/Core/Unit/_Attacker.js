@@ -101,10 +101,12 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             }
 
             if (this.attackReady && this.attack) {
-                this.rawStop();
+                if(!this.canAttackAndMove) {
+                    this.rawStop();
+                    //set state
+                    Matter.Sleeping.set(this.body, true);
+                }
 
-                //set state
-                Matter.Sleeping.set(this.body, true);
                 this.isAttacking = true;
                 this.attackMoving = false;
                 this.attackReady = false;

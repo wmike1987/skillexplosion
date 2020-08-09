@@ -1,7 +1,8 @@
 define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, utils, Tooltip, Matter) {
 
-    var equipShow = utils.getSound('openEquipStation.wav', {volume: .15, rate: .8});
-    var equip = utils.getSound('augmentEquip.wav', {volume: .1, rate: 1.2});
+    var equipShow = utils.getSound('augmentPanelOpen.wav', {volume: .07, rate: 1.0});
+    var equipHide = utils.getSound('augmentPanelOpen.wav', {volume: .05, rate: 1.25});
+    var equip = utils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
     var hoverAugmentSound = utils.getSound('augmenthover.wav', {volume: .03, rate: 1});
 
     var ConfigPanel = function(unitPanel) {
@@ -41,23 +42,34 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
         this.configButtonHeight = 218;
         this.configButtonGlassHeight = 200;
         this.showButton = utils.createDisplayObject('AugmentNotificationPanelBorder', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonHeight/3}});
-        this.showButtonGlass = utils.createDisplayObject('AugmentNotificationPanelGlass', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonGlassHeight/3}});
-        // this.showButtonText = utils.createDisplayObject('TEXT:Augment', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonHeight/3}});
         this.showButton.interactive = true;
+        this.showButtonGlass = utils.createDisplayObject('AugmentNotificationPanelGlass', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonGlassHeight/3}});
         utils.graduallyTint(this.showButtonGlass, 0x62f6db, 0xd1b877, 15000, null, 5000);
-        this.showButton.on('mouseup', function(event) {
-            if(this.showButton.state == 'lowered')
-                this.showForUnit(this.unitPanelRef.prevailingUnit);
-        }.bind(this))
-        this.showButton.on('mouseover', function(event) {
-            if(this.showButton.state == 'lowered') {
-                this.showButton.scale = {x: 1.05, y: 1.05};
-                this.showButtonGlass.scale = {x: 1.05, y: 1.05};
+
+        var abilityMin = {x: this.unitPanelRef.abilityCenterX - 122, y: utils.getPlayableHeight() - 40};
+        var abilityMax = {x: this.unitPanelRef.abilityCenterX + 122, y: utils.getCanvasHeight()};
+        $('body').on('mousemove.unitConfigurationPanel', function(event) {
+            var mousePoint = {x: 0, y: 0};
+            currentGame.renderer.interaction.mapPositionToPoint(mousePoint, event.clientX, event.clientY);
+            if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
+                if(this.showButton.state == 'lowered') {
+                    this.showButton.scale = {x: 1.05, y: 1.05};
+                    this.showButtonGlass.scale = {x: 1.05, y: 1.05};
+                }
+            } else {
+                this.showButton.scale = {x: 1.00, y: 1.00};
+                this.showButtonGlass.scale = {x: 1.00, y: 1.00};
             }
         }.bind(this))
-        this.showButton.on('mouseout', function(event) {
-            this.showButton.scale = {x: 1.00, y: 1.00};
-            this.showButtonGlass.scale = {x: 1.00, y: 1.00};
+
+        $('body').on('mouseup.unitConfigurationPanel', function(event) {
+            var mousePoint = {x: 0, y: 0};
+            currentGame.renderer.interaction.mapPositionToPoint(mousePoint, event.clientX, event.clientY);
+            if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
+                if(this.showButton.state == 'lowered') {
+                    this.showForUnit(this.unitPanelRef.prevailingUnit);
+                }
+            }
         }.bind(this))
     }
 
@@ -197,6 +209,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
             }
         }.bind(this))
 
+        equipHide.play();
+
         //show button again if we're still selecting something
         if(this.unitPanelRef.prevailingUnit) {
             this.lowerOpenButton();
@@ -239,6 +253,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
         $('body').off('keydown.unitConfigurationPanel');
         utils.removeSomethingFromRenderer(this.showButton);
         utils.removeSomethingFromRenderer(this.showButtonGlass);
+        $('body').off('mousemove.unitConfigurationPanel');
     };
 
 

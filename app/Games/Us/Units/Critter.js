@@ -281,6 +281,14 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     range: options.radius*2+10,
                     damage: 6,
                     attackExtension: function(target) {
+                        var bloodAnimation = utils.getAnimationB({
+                            spritesheetName: 'UtilityAnimations1',
+                            animationName: 'GenericHit',
+                            speed: 1.0,
+                            transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
+                        });
+                        utils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                        bloodAnimation.play();
                         attackSound.play();
                     },
                 },

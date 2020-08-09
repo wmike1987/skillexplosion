@@ -231,6 +231,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 offset: {x: 0, y: 22}}];
 
             var fireSound = utils.getSound('sentinelfire.wav', {volume: .015, rate: 1});
+            var hitSound = utils.getSound('sentinelhit.wav', {volume: .05, rate: 2});
 
             var unitProperties = $.extend({
                 unitType: 'Sentinel',
@@ -291,6 +292,17 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                                 owningUnit: this,
                                 originOffset: 30,
                                 autoSend: true,
+                                impactExtension: function(target) {
+                                    var bloodAnimation = utils.getAnimationB({
+                                        spritesheetName: 'UtilityAnimations1',
+                                        animationName: 'GenericHit',
+                                        speed: 0.8,
+                                        transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .35, .35]
+                                    });
+                                    utils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                                    bloodAnimation.play();
+                                    hitSound.play();
+                                }
                             }
                             var projectile = new Projectile(projectileOptions);
                         },
