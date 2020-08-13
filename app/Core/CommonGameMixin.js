@@ -847,6 +847,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
             else
                 this.tickCallbacks.push(tickDeltaWrapper);
             Matter.Events.on(this.engine.runner, eventName || 'tick'/*'afterUpdate'*/, tickDeltaWrapper);
+            callback.tickDeltaWrapper = tickDeltaWrapper; //so we can turn this off with the original function
             return tickDeltaWrapper; //return so you can turn this off if needed
         },
 
@@ -859,6 +860,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
          */
         removeTickCallback: function(callback) {
             if(!callback) return;
+
+            if(callback.tickDeltaWrapper) {
+                callback = callback.tickDeltaWrapper;
+            }
 
             //remove from matter system
             Matter.Events.off(this.engine, callback);

@@ -859,6 +859,14 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             })
         },
 
+        oneTimeCallbackAtTick: function(callback, event) {
+            var fun = function() {
+                callback();
+                currentGame.removeTickCallback(fun);
+            }
+            currentGame.addTickCallback(fun, false, event);
+        },
+
         signalNewWave: function(wave, deferred) {
             this.floatText("Wave: " + wave, this.getCanvasCenter(), {runs: 100, stationary: true, style: styles.newWaveStyle, deferred: deferred});
         },

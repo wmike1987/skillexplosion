@@ -13,14 +13,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             //create selection box rectangle
             this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false});
             this.box.collisionFilter.category = 0x0002;
-            // this.box.toggleCollideAndHideNextFrame = function() {
-            //     this.collisionFilter.category = 0x0000;
-            //     utils.executeSomethingNextFrame(function() {
-            //         this.oneFrameOverrideInterpolation = true;
-            //         Matter.Body.setPosition(this, {x: -500, y: -1000});
-            //         this.collisionFilter.category = 0x0002;
-            //     }.bind(this), 1)
-            // }
             this.box.permaPendingUnit = null;
             this.box.pendingSelections = {};
             this.box.renderChildren = [{id: 'box', data: 'TintableSquare', stage: 'foreground', alpha: .4}];
@@ -160,11 +152,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
             //transfer bodies from pending to selected
             var executeSelection = function() {
-
                 //for convenience
                 var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
                 var loneSoldier = null;
-                if(pendingBodyCount == 1) {``
+                if(pendingBodyCount == 1) {
                     loneSoldier = this.box.pendingSelections[(Object.keys(this.box.pendingSelections)[0])];
                 }
 
@@ -260,7 +251,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 }
 
                 //Update visuals
-                this.changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
+                utils.oneTimeCallbackAtTick(function() {
+                    this.changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
+                }.bind(this), 'beforeTick');
                 this.changeSelectionState(this.selectedUnits, 'selected', true);
 
                 //Refresh state
@@ -514,7 +507,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             if(!this.mouseUpDelay.active) return;
                             this.box.mouseDown = false;
                             if(!this.box.invalidateNextMouseUp) {
-                                // this.checkFinalBoxCollision();
                                 executeSelection();
                             } else {
                                 this.box.invalidateNextMouseUp = false;
@@ -523,6 +515,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             this.box.oneFrameOverrideInterpolation = true;
                             Matter.Body.setPosition(this.box, {x: -500, y: -1000});
                             this.box.selectionBoxActive = false;
+                            this.box.boxContainsPermaPending = false;
                             this.mouseUpDelay.active = false;
                             this.forcedBoxFinalPoint = null;
                         }.bind(this), false, 'afterRenderWorld');
@@ -546,52 +539,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 lastScaleY = newScaleY;
             };
 
-            /*
-             * On a mouseup event we need to do a final box/unit collision check before we execute the selection since
-             * this collision check won't happen in a subsequent physics step (since our mouseup intention is to execute a selection).
-             * In essence, without this, our box's final size (the size at mouseup time) will not have had a chance to collide with units.
-             */
-            // var smallBoxThreshold = 3;
-            // this.checkFinalBoxCollision = function() {
-            //     if(!this.box.selectionBoxActive) return;
-            //     utils.applyToUnitsByTeam(null, function(unit) {
-            //         return unit.isSelectable;
-            //     }, function(unit) {
-            //         var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
-            //         if(unit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold
-            //             || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) && pendingBodyCount > 0)
-            //                 return;
-            //
-            //         var collisionBody = null;
-            //         if(unit.isMoving) {
-            //             collisionBody = unit.smallerBody || this.selectionBody;
-            //         } else {
-            //             collisionBody = unit.selectionBody;
-            //         }
-            //         var collision = Matter.SAT.collides(this.box, collisionBody);
-            //
-            //         if(collision.collided) {
-            //             //This was originally commented out to prevent a bug deselecting a unit with the final box, the
-            //             //pending selection animation was hanging around
-            //             this.changeSelectionState(unit, 'selectionPending', true);
-            //             var unitAlreadyContainedInBox = false;
-            //             // Leaving here for now for debugging purposes in the future
-            //             $.each(this.box.pendingSelections, function(key, obj) {
-            //                 if(unit == obj) {
-            //                     unitAlreadyContainedInBox = true;
-            //                     // console.info("unit already contained")
-            //                 }
-            //             })
-            //             if(!unitAlreadyContainedInBox) {
-            //                 // console.info("this is doing something!")
-            //             }
-            //             this.box.pendingSelections[unit.unitId] = unit;
-            //             if(unit == this.box.permaPendingUnit)
-            //                 this.box.boxContainsPermaPending = true;
-            //         }
-            //     }.bind(this))
-            // }
-
             var smallBoxThreshold = 3;
             Matter.Events.on(this.box, 'onCollideActive onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
@@ -600,20 +547,24 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
 
                 if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
-                    pendingBodyCount > 0) return;
+                    pendingBodyCount > 0)  {
+                        return;
+                    }
 
                 if(!otherUnit.isMoving && !otherBody.isSmallerBody && otherUnit.isSelectable) {
                     this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
-                    if(otherUnit == this.box.permaPendingUnit)
+                    if(otherUnit == this.box.permaPendingUnit) {
                         this.box.boxContainsPermaPending = true;
+                    }
                 }
 
                 if(otherBody.isSmallerBody && otherUnit.isMoving && otherUnit.isSelectable) {
                     this.changeSelectionState(otherUnit, 'selectionPending', true);
                     this.box.pendingSelections[otherUnit.unitId] = otherUnit;
-                    if(otherUnit == this.box.permaPendingUnit)
+                    if(otherUnit == this.box.permaPendingUnit) {
                         this.box.boxContainsPermaPending = true;
+                    }
                 }
             }.bind(this));
 

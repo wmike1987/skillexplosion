@@ -725,7 +725,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             portrait: utils.createDisplayObject('MedicPortrait'),
             wireframe: utils.createDisplayObject('MedicGroupPortrait'),
             team: options.team || 4,
-            priority: 40,
+            priority: 5,
             name: options.name,
             heightAnimation: 'up',
             throwAnimations: throwAnimations,
