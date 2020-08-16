@@ -1,5 +1,5 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'unitcore/_Augmentable'],
-    function($, PIXI, UC, Matter, utils, Ability, rv, aug) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'unitcore/_Revivable', 'unitcore/_Augmentable', 'unitcore/UnitProjectile'],
+    function($, PIXI, UC, Matter, utils, Ability, rv, aug, Projectile) {
 
     return function Medic(options) {
         var medic = {};
@@ -282,6 +282,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 
+        var combospiritinit = utils.getSound('combospiritinit.wav', {volume: .03, rate: 1.0});
+        var fullheal = utils.getSound('fullheal.wav', {volume: .05, rate: 1.0});
         var footstepSound = utils.getSound('footstep2.wav', {volume: .02, rate: 1.1});
         var shroudSound = utils.getSound('cloakshroud.wav', {volume: .1, rate: 1.5});
         var secretStep = function(destination, commandObj) {
@@ -698,10 +700,35 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 equip: function(unit) {
                     unit.sacrificeFunction = function(event) {
                         utils.applyToUnitsByTeam(function(team) {
-                            return unit.team == team
-                        }, null, function(unit) {
-                            unit.currentHealth = unit.maxHealth;
-                            unit.currentEnergy = unit.maxEnergy;
+                            return unit.team == team;
+                        }, function(teamUnit) {
+                            return !teamUnit.isDead;
+                        }, function(livingAlliedUnit) {
+                            combospiritinit.play();
+                            var combospiritAnimation = utils.getAnimationB({
+                                spritesheetName: 'MedicAnimations2',
+                                animationName: 'combospirit',
+                                speed: 1.5,
+                                loop: true,
+                                transform: [livingAlliedUnit.position.x, livingAlliedUnit.position.y, 2.0, 2.0]
+                            });
+                            combospiritAnimation.play();
+                            var projectileOptions = {
+                                damage: 0,
+                                speed: 12,
+                                displayObject: combospiritAnimation,
+                                target: livingAlliedUnit,
+                                impactType: 'always',
+                                owningUnit: unit,
+                                originOffset: 0,
+                                autoSend: true,
+                                impactExtension: function(target) {
+                                    fullheal.play();
+                                    livingAlliedUnit.currentHealth = livingAlliedUnit.maxHealth;
+                                    livingAlliedUnit.currentEnergy = livingAlliedUnit.maxEnergy;
+                                }
+                            }
+                            var projectile = new Projectile(projectileOptions);
                         })
                     }
                     Matter.Events.on(unit, 'death', unit.sacrificeFunction);

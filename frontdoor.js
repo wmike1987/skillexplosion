@@ -185,6 +185,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('MarineAnimations1', 'app/Textures/Us/MarineAnimations1.json');
             loader.add('Medic', 'app/Textures/Us/Medic.json');
             loader.add('MedicAnimations1', 'app/Textures/Us/MedicAnimations1.json');
+            loader.add('MedicAnimations2', 'app/Textures/Us/MedicAnimations2.json');
             loader.add('Baneling', 'app/Textures/Us/Baneling.json');
             loader.add('BanelingAnimations1', 'app/Textures/Us/BanelingAnimations1.json');
             loader.add('Marble', 'app/Textures/Us/Marble.json');

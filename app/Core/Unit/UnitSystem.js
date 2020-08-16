@@ -194,7 +194,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 //handle shift functionality
                 if(keyStates['Shift']) {
                     //If one, already-selected body is requested here, remove from selection
-                    if(loneSoldier && ($.inArray(loneSoldier.unitId.toString(), Object.keys(this.selectedUnits)) > -1)) {
+                    if(loneSoldier && this.isUnitSelected(loneSoldier)) {
                         this.deselectUnit(loneSoldier);
                         if(this.box.permaPendingUnit == loneSoldier) //if our perma pending unit was our lone soldier, let's reset it's pending status
                             this.changeSelectionState(loneSoldier, 'selectionPending', false);
@@ -204,15 +204,23 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
                             this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                             delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
+
+                            //If one of our units was the perma pending unit, was it out of the box? If so, is there now only one pending unit? If so
+                            //deselect this unit if it's selected
+                            if(Object.keys(this.box.pendingSelections).length == 1) {
+                                var newLoneSoldier = this.box.pendingSelections[(Object.keys(this.box.pendingSelections)[0])];
+                                if(this.isUnitSelected(newLoneSoldier)) {
+                                    this.deselectUnit(newLoneSoldier);
+                                }
+                            }
                         }
 
-                        //Add pending bodies to current selection, unless we have an enemy selected, in which case we'll deselect it
-                        if(this.hasEnemySelected()) {
-                            this.deselectUnit(this.selectedUnit);
-                        } else if(this.hasMyUnitSelected() && addingEnemies) {
+                        if(this.hasMyUnitSelected() && addingEnemies) {
                             //else if we have one of our own units and we're adding enemy units, disregard this command
                             return;
                         }
+
+                        //Add pending bodies
                         $.extend(this.selectedUnits, this.box.pendingSelections)
                         this.updateOrderedUnits(this.selectedUnits);
                     }
@@ -223,6 +231,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                         delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
                     }
+
                     this.changeSelectionState(this.selectedUnits, 'selected', false);
                     this.selectedUnits = $.extend({}, this.box.pendingSelections);
                     this.updateOrderedUnits(this.selectedUnits);
@@ -251,8 +260,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 }
 
                 //Update visuals
+                var tempPendingSelections = this.box.pendingSelections;
                 utils.oneTimeCallbackAtTick(function() {
-                    this.changeSelectionState(this.box.pendingSelections, 'selectionPending', false);
+                    this.changeSelectionState(tempPendingSelections, 'selectionPending', false);
                 }.bind(this), 'beforeTick');
                 this.changeSelectionState(this.selectedUnits, 'selected', true);
 
@@ -546,7 +556,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 var otherUnit = otherBody.unit || {};
                 var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
 
-                if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold || this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
+                if(otherUnit.isMoving && (this.box.bounds.max.x-this.box.bounds.min.x < smallBoxThreshold && this.box.bounds.max.y-this.box.bounds.min.y < smallBoxThreshold) &&
                     pendingBodyCount > 0)  {
                         return;
                     }
@@ -866,9 +876,21 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             delete this.selectedUnits[unit.unitId];
             this.updateOrderedUnits(this.selectedUnits);
             delete this.box.pendingSelections[unit.unitId];
+            if(this.box.permaPendingUnit == unit) {
+                this.box.permaPendingUnit = null;
+            }
             this.changeSelectionState(unit, 'selected', false);
+            this.changeSelectionState(unit, 'selectionPending', false);
             Matter.Events.trigger(this, 'selectedUnitsChange', {selectedUnits: this.selectedUnits, orderedSelection: this.orderedUnits});
         };
+
+        this.isUnitSelected = function(unit) {
+            if($.inArray(unit.unitId.toString(), Object.keys(this.selectedUnits)) > -1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         this.hasEnemySelected = function() {
             if(this.selectedUnit)
