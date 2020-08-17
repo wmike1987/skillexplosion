@@ -411,7 +411,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Secret Step',
             description: 'Safely relocate to anywhere on the map.',
             hotkey: 'D',
-            energyCost: 8,
+            energyCost: 10,
             predicates: [function(commandObj) {
                 return utils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
             }],
@@ -659,7 +659,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Heal',
             description: ['Heal a friendly unit.'],
             hotkey: 'A',
-            energyCost: 1,
+            energyCost: 2,
+            healAmount: 2,
             manualDispatch: true,
             autoCastEnabled: true,
             getAutoCastVariable: function() {
@@ -670,10 +671,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }.bind(medic),
             augments: [{
                 name: 'pure priorities',
-                hpThreshold: .5,
+                hpThreshold: .75,
                 icon: utils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: 'Reduce healing cost to 0 when target\'s life is below 50%.',
+                description: 'Reduce healing cost to 0 when target\'s life is below 75%.',
             },
             {
                 name: 'lightest touch',
@@ -696,7 +697,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 icon: utils.createDisplayObject('Sacrifice'),
                 title: 'Sacrifice',
                 reviveMultiplier: .5,
-                description: ['Heal all hp and energy of friendly units upon death.', 'Halve time to revive.'],
+                description: ['Fire replenishment missile upon death.', 'Halve time to revive.'],
                 equip: function(unit) {
                     unit.sacrificeFunction = function(event) {
                         utils.applyToUnitsByTeam(function(team) {
@@ -715,15 +716,29 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             combospiritAnimation.play();
                             var projectileOptions = {
                                 damage: 0,
-                                speed: 12,
+                                speed: 2.0,
                                 displayObject: combospiritAnimation,
                                 target: livingAlliedUnit,
-                                impactType: 'always',
                                 owningUnit: unit,
+                                impactType: 'collision',
+                                collisionFunction: function(otherUnit) {
+                                    return otherUnit.team == this.owningUnit.team && otherUnit != this.owningUnit;
+                                },
                                 originOffset: 0,
+
                                 autoSend: true,
                                 impactExtension: function(target) {
                                     fullheal.play();
+                                    var replenAnimation = utils.getAnimationB({
+                                        spritesheetName: 'UtilityAnimations1',
+                                        animationName: 'manasteal',
+                                        speed: .8,
+                                        transform: [target.position.x, target.position.y+10, 1.2, 1.2]
+                                    });
+                                    replenAnimation.play();
+                                    replenAnimation.tint = 0xfb32b1;
+                                    utils.addSomethingToRenderer(replenAnimation, 'stageOne');
+
                                     livingAlliedUnit.currentHealth = livingAlliedUnit.maxHealth;
                                     livingAlliedUnit.currentEnergy = livingAlliedUnit.maxEnergy;
                                 }
@@ -748,7 +763,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energy: 60,
             damageLabel: "Heal: ",
             damageMember: "healAmount",
-            energyRegenerationRate: 2,
+            healAmount: healAbility.healAmount,
+            energyRegenerationRate: 1.5,
             portrait: utils.createDisplayObject('MedicPortrait'),
             wireframe: utils.createDisplayObject('MedicGroupPortrait'),
             team: options.team || 4,
@@ -794,7 +810,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [healsound, mineSound, mineBeep, mineExplosion, footstepSound, shroudSound, unitProperties.portrait, unitProperties.wireframe],
+                slaves: [healsound, mineSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.15,
@@ -804,9 +820,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     cooldown: 360,
                     honeRange: 300,
                     range: rad*2 + 10,
-                    healAmount: 2,
                     canAttackAndMove: false,
-                    healCost: 1,
                     attack: function(target) {
                         //get current augment
                         var thisAbility = this.getAbilityByName('Heal');
@@ -830,9 +844,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             utils.addSomethingToRenderer(healAnimation, 'stageOne');
 
                             if(!ppBypass)
-                                this.currentEnergy -= this.healCost;
+                                this.currentEnergy -= thisAbility.energyCost;
 
-                            target.currentHealth += this.healAmount;
+                            target.currentHealth += thisAbility.healAmount;
                             if(target.currentHealth >= target.maxHealth)
                                 target.currentHealth = target.maxHealth;
                         }

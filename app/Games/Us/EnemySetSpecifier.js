@@ -8,15 +8,16 @@ function($, Matter, PIXI, utils, unitMenu) {
                 enemySets.push({
                     constructor: unitMenu.Critter,
                     icon: 'CritterPortrait',
-                    spawn: {total: 1 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 2500, maxOnField: 1},
-                    item: {type: 'basic', total: 1}
+                    spawn: {total: 2 + utils.getRandomIntInclusive(1, 5), n: 1, hz: 2500, maxOnField: 1},
+                    item: {type: 'worn', total: 10}
                 })
 
                 //Sentinels
                 enemySets.push({
                     constructor: unitMenu.Sentinel,
                     icon: 'SentinelPortrait',
-                    spawn: {total: 1 + utils.getRandomIntInclusive(1, 8), n: 1, hz: 2500, maxOnField: 1},
+                    spawn: {total: 1 + utils.getRandomIntInclusive(1, 2), n: 1, hz: 2500, maxOnField: 1},
+                    item: {type: 'rugged', total: 10}
                 })
 
                 //Banelings

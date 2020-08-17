@@ -18,6 +18,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js',], function($, utils, Matter) {
         $.extend(this, {
             autoSend: false,
             impactType: 'always',
+            collisionFunction: function(otherUnit) {
+                return otherUnit != this.owningUnit && otherUnit && otherUnit.isTargetable && otherUnit.team != this.owningUnit.team
+            },
             impactRemoveFunction: function() {
                 currentGame.removeBody(this.body)
             },
@@ -62,9 +65,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js',], function($, utils, Matter) {
                 Matter.Events.on(this.body, 'onCollide', function(pair) {
                     var otherBody = pair.pair.bodyB == this.body ? pair.pair.bodyA : pair.pair.bodyB;
                     var otherUnit = otherBody.unit;
-                    if(otherUnit != this.owningUnit && otherUnit && otherUnit.isTargetable && otherUnit.team != this.owningUnit.team) {
-                        this.impactRemoveFunction();
-                        this.impactFunction(otherUnit);
+                    if(otherUnit != null) {
+                        if(this.collisionFunction(otherUnit)) {
+                            this.impactRemoveFunction();
+                            this.impactFunction(otherUnit);
+                        }
                     }
                 }.bind(this))
             }

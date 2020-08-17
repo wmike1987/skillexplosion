@@ -145,10 +145,21 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         if(position.x + this.base.width >= utils.getPlayableWidth() - 15) {
             this.base.anchor = {x: 1, y: 1};
             xOffset = this.base.width
-            this.leftLeaning = true;
+            //lean left
         } else {
             this.base.anchor = {x: 0, y: 1};
-            this.leftLeaning = false;
+            //lean right
+        }
+
+        //favor up or down so that the tooltip doesn't go off the screen
+        var yOffset = 0;
+        if(position.y - this.base.height <= 0 + 15) {
+            this.base.anchor.y = 0;
+            yOffset = this.base.height;
+            //favor down
+        } else {
+            this.base.anchor.y = 1;
+            //favor up (basically do nothing)
         }
 
         if(!this.base.parent) {
@@ -166,11 +177,11 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
         }
 
         //place title
-        this.title.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.buffer/2};
+        this.title.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height + this.buffer/2};
 
         //place descriptions and description icons
         $.each(this.description, function(i, descr) {
-            descr.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height + this.title.height + this.buffer/2 + (this.iconBuffer || this.buffer) + (i * this.descrHeight)};
+            descr.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height + this.title.height + this.buffer/2 + (this.iconBuffer || this.buffer) + (i * this.descrHeight)};
 
             //if we're using description icons, need to make some alterations
             if(this.descriptionIcons.length > 0) {
@@ -181,7 +192,7 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
 
         //place system messages
         $.each(this.systemMessages, function(i, sysMessage) {
-            sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.description.length)*this.descrHeight + this.systemMessageBuffer + (i * sysMessage.height)};
+            sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.description.length)*this.descrHeight + this.systemMessageBuffer + (i * sysMessage.height)};
         }.bind(this))
 
         this.base.position = position;

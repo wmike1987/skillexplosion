@@ -570,7 +570,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             title: 'Throwing Knife',
             description: 'Throw a knife, dealing ' + knifeDamage + ' damage.',
             hotkey: 'F',
-            energyCost: 0, //6
+            energyCost: 6,
             activeAugment: null,
             enablers: [function(commandObj) {
                 return marine.canAttack;

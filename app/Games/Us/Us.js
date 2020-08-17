@@ -18,7 +18,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         tileSize: 225,
         currentScene: null,
         itemClasses: {
-            basic: ['JewelOfLife', 'RingOfThought', 'RingOfRenewal', 'SturdyCanteen', 'BootsOfHaste']
+            worn: ['RingOfThought', 'RingOfRenewal', 'SturdyCanteen', 'BootsOfHaste', 'PepPill'],
+            rugged: ['SteadySyringe', 'MaskOfRage', 'RuggedCanteen', 'RichPepPill', 'MedalOfGrit', 'MedalOfMerit'],
+            burnished: ['SereneStar'],
+            gleaming: ['GleamingCanteen'],
         },
 
         initExtension: function() {
@@ -304,12 +307,13 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             //reset any unfulfilled enemy states
             this.currentLevelDetails.resetLevel();
 
+            this.deactivateMap();
+
             //create new scene
             var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
             this.currentScene.transitionToScene(nextLevelScene);
             Matter.Events.on(nextLevelScene, 'initialize', function() {
                 Matter.Events.trigger(this, 'enteringLevel');
-                this.deactivateMap();
                 this.campActive = false;
                 this.currentSpawner.initialize();
                 this.resetUnit(this.shane);
@@ -368,7 +372,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
         createShane: function() {
              this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-             ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
+             //ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
              return this.shane;
         },
 

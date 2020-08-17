@@ -18,7 +18,7 @@
 },
 "Dogtags1.png":
 {
-	"frame": {"x":35,"y":1,"w":32,"h":32},
+	"frame": {"x":1,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,7 +26,15 @@
 },
 "FieldVisor.png":
 {
-	"frame": {"x":1,"y":69,"w":32,"h":32},
+	"frame": {"x":35,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"GleamingCanteen.png":
+{
+	"frame": {"x":35,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +42,7 @@
 },
 "GoldenDogTags.png":
 {
-	"frame": {"x":35,"y":35,"w":32,"h":32},
+	"frame": {"x":35,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -50,7 +58,7 @@
 },
 "JewelOfLife.png":
 {
-	"frame": {"x":35,"y":69,"w":32,"h":32},
+	"frame": {"x":69,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -58,7 +66,7 @@
 },
 "MaskOfRage.png":
 {
-	"frame": {"x":69,"y":35,"w":32,"h":32},
+	"frame": {"x":69,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -74,29 +82,13 @@
 },
 "MedalOfMerit.png":
 {
-	"frame": {"x":69,"y":69,"w":32,"h":32},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
-	"sourceSize": {"w":32,"h":32}
-},
-"PillBottle.png":
-{
 	"frame": {"x":103,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"RingOfReason.png":
-{
-	"frame": {"x":137,"y":1,"w":32,"h":32},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
-	"sourceSize": {"w":32,"h":32}
-},
-"RingOfWellBeing.png":
+"PepPillOne.png":
 {
 	"frame": {"x":103,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -104,15 +96,15 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SereneStar.png":
+"PillBottle.png":
 {
-	"frame": {"x":137,"y":35,"w":32,"h":32},
+	"frame": {"x":137,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SteadySyringe.png":
+"RichPepPill.png":
 {
 	"frame": {"x":171,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -120,7 +112,23 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SturdyCanteen.png":
+"RingOfReason.png":
+{
+	"frame": {"x":205,"y":1,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"RingOfWellBeing.png":
+{
+	"frame": {"x":137,"y":35,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"RuggedCanteen.png":
 {
 	"frame": {"x":137,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -128,9 +136,33 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"WalkieTalkie1.png":
+"SereneStar.png":
 {
 	"frame": {"x":171,"y":35,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"SteadySyringe.png":
+{
+	"frame": {"x":205,"y":35,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"SturdyCanteen.png":
+{
+	"frame": {"x":171,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"WalkieTalkie1.png":
+{
+	"frame": {"x":205,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -143,8 +175,8 @@
 	"version": "1.0",
 	"image": "Items.png",
 	"format": "RGBA8888",
-	"size": {"w":204,"h":102},
+	"size": {"w":238,"h":102},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:31fd236b98953f9e38e6c9c46139d0aa:ceacd83d0977515707fc5dd5d9ab2af7:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:70cb3b64924c35dfc935dd062f0fc4c4:9cb194552775a569e52a315d48af5f64:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

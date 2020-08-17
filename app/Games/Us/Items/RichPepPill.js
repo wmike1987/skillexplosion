@@ -1,15 +1,15 @@
 define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
 
     var manipulations = {
-        maxHealth: 8,
+        maxEnergy: 10,
     }
 
     return function() {
         return ic({
             manipulations: manipulations,
-            name: "Sturdy Canteen",
-            description: "Add +" + manipulations.maxHealth + " to maximum health.",
-            icon: 'SturdyCanteen'
+            name: "Rich Pep Pill",
+            description: "Add +" + manipulations.maxEnergy + " to maximum energy.",
+            icon: 'RichPepPill'
         })
     };
 })

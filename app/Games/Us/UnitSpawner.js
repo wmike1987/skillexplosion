@@ -39,7 +39,6 @@ function($, Matter, PIXI, utils, ItemUtils) {
                                 }
                                 if(giveItem) {
                                     ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(currentGame.itemClasses[enemy.item.type]), unit: newUnit});
-                                    console.info(itemsToGive);
                                     itemsToGive--;
                                 }
                             }
