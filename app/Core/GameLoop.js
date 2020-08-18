@@ -99,19 +99,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             Matter.Events.trigger(this, 'tick', event);
 
             event.percentOfNextFrame = this.deltaAccumulator/this.desiredFrameTime;
-            // if(stepCount > 1.0) {
-            //     console.info("frame: " + frame);
-            //     console.info("delta accumulator: " + this.deltaAccumulator);
-            //     console.info("delta time: " + this.deltaTime);
-            //     console.info("step count: " + stepCount);
-            //     console.info("*********************************");
-            // } else if(stepCount == 0) {
-            //     console.info("frame: " + frame);
-            //     console.info("wompwomp");
-            //     console.info("percent of next frame: " + event.percentOfNextFrame);
-            //     console.info("*********************************");
-            // }
-
             event.interpolate = this.interpolate;
             Matter.Events.trigger(this, 'renderWorld', event);
 

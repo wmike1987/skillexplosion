@@ -6,7 +6,7 @@ function($, Matter, PIXI, utils, LevelSpecifier) {
         this.mapSprite = utils.createDisplayObject('MapBase', {where: 'foreground', position: utils.getPlayableCenter()});
 
         this.levelSpecification = {
-            singles: 16,
+            singles: 6,
             triplets: 1,
             boss: 1,
             norevives: 1,

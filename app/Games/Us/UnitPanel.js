@@ -313,7 +313,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
         //flush
         if(this.prevailingUnit) {
-            this.clearPrevailingUnit();
+            this.clearPrevailingUnit({transitioningUnits: unit});
             this.unitConfigurationPanel.hideForCurrentUnit();
         }
 
@@ -333,7 +333,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
 
     };
 
-    unitPanel.prototype.clearPrevailingUnit = function() {
+    unitPanel.prototype.clearPrevailingUnit = function(options) {
         //clear items
         this.clearUnitItems();
 
@@ -345,14 +345,21 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
         this.unitConfigurationPanel.hideOpenButton();
 
         //blank out unit stat panel
-        this.unitNameText.text = '--';
-        this.unitLevelText.text = '--';
-        this.unitDamageText.text = '--';
-        this.unitDefenseText.text = '--';
-        this.unitHealthText.text = '--';
-        this.unitSPText.text = '--';
-        this.unitSPAmount.text = '--';
-        this.unitEnergyText.text = '--';
+        if(!options.transitioningUnits) {
+            this.unitNameText.text = '--';
+            this.unitLevelText.text = '--';
+            this.unitDamageText.text = '--';
+            this.unitDefenseText.text = '--';
+            this.unitHealthText.text = '--';
+            this.unitSPText.text = '--';
+            this.unitSPAmount.text = '--';
+            this.unitEnergyText.text = '--';
+        }
+
+        //clear exp bar
+        if(!options.transitioningUnits) {
+            this.experienceMeter.visible = false;
+        }
 
         //clear unit ability icons
         if(this.currentAbilities) {
