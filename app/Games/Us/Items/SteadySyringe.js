@@ -1,7 +1,13 @@
 define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
 
     var manipulations = {
-        healAmount: .5,
+        healAmount: function(isEquipping) {
+            if(isEquipping) {
+                this.getAbilityByName('Heal').healAmount += .5;
+            } else {
+                this.getAbilityByName('Heal').healAmount -= .5;
+            }
+        }
     }
 
     return function() {

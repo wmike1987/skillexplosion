@@ -516,8 +516,12 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     //level
                     this.unitLevelText.text = "Level " + this.prevailingUnit.level;
 
-                    //damage
-                    this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage);
+                    //damage (or heal)
+                    var functionText = "";
+                    if(this.prevailingUnit.damageMember && this.prevailingUnit.damageMember instanceof Function) {
+                        functionText = this.prevailingUnit.damageMember();
+                    }
+                    this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
 
                     //armor
                     this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;

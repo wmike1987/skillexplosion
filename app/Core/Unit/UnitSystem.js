@@ -423,7 +423,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 }
 
                 //Right click - this should be modular in order to easily apply different right-click actions. On second thought, who the hell cares?
-                if(event.which == 3 && !this.box.selectionBoxActive) {
+                if(event.which == 3 && !this.box.selectionBoxActive && !this.hasEnemySelected()) {
                     //if we've pressed 'a' then right click, cancel the attack move and escape this flow
                     if(this.attackMove) {
                         this.attackMove = false;
@@ -469,7 +469,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                     if(this.attackMove || this.abilityDispatch) {
                         this.abilityDispatch = false;
                         this.attackMove = false;
-                    } else if(!this.hasEnemySelected()){
+                    } else {
                         $.each(this.selectedUnits, function(key, unit) {
                             if(unit.isMoveable) {
                                 var e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};

@@ -17,6 +17,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                         }
                         Matter.Events.on(unit, k, this.eventFunctions[k]);
                     }.bind(this))
+                } else if(value instanceof Function){
+                    value.call(unit, true);
                 } else {
                     unit[key] += value;
                 }
@@ -28,6 +30,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                     $.each(value, function(k, v) {
                         Matter.Events.off(unit, k, this.eventFunctions[k]);
                     }.bind(this))
+                }  else if(value instanceof Function){
+                    value.call(unit, false);
                 } else {
                     unit[key] -= value;
                 }

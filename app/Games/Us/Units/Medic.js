@@ -762,8 +762,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             health: 40,
             energy: 60,
             damageLabel: "Heal: ",
-            damageMember: "healAmount",
-            healAmount: healAbility.healAmount,
+            damageMember: function() {
+                return this.getAbilityByName('Heal').healAmount;
+            },
             energyRegenerationRate: 1.5,
             portrait: utils.createDisplayObject('MedicPortrait'),
             wireframe: utils.createDisplayObject('MedicGroupPortrait'),
