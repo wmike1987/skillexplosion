@@ -43,7 +43,7 @@ function($, Matter, PIXI, utils, Command) {
             this.smallerBody.isSmallerBody = true;
             this.smallerBody.unit = this;
 
-            utils.attachSomethingToBody(this.smallerBody, this.body, {x: 0, y: this.hitboxYOffset || -8});
+            utils.attachSomethingToBody({something: this.smallerBody, body: this.body, offset: {x: 0, y: this.hitboxYOffset === null || -8}});
             currentGame.addBody(this.smallerBody);
 
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);

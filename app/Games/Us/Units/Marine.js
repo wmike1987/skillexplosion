@@ -734,7 +734,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                                 lifeUpAnimation.tint = 0xF80202;
                                 lifeUpAnimation.play();
                                 lifeUpAnimation.alpha = 1;
-                                utils.attachSomethingToBody(lifeUpAnimation, unit.body, {x: Math.random()*40-20, y: 25-(Math.random()*5)});
+                                utils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'firstAidAttach'});
                                 utils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
                                 Matter.Events.on(lifeUpAnimation, "destroy", function() {
                                     utils.detachSomethingFromBody(lifeUpAnimation);

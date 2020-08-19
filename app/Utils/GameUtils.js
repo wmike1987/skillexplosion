@@ -364,7 +364,10 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
          *
          * If we're attaching a sprite, hitch onto interpolation
          */
-        attachSomethingToBody: function(something, body, offset) {
+        attachSomethingToBody: function(options) {
+            var something, body, offset, somethingId;
+            ({something, body, offset, somethingId} = options);
+
             offset = offset || {x: 0, y: 0};
             var callbackLocation = 'afterRenderWorld';
             if(something.type && something.type == 'body') {
@@ -378,7 +381,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 }
             }, false, callbackLocation);
             something.bodyAttachment = tick;
-            this.deathPact(body, tick);
+            this.deathPact(body, tick, somethingId);
         },
 
         detachSomethingFromBody: function(something) {

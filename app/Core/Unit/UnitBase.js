@@ -715,7 +715,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 });
                 levelUpAnimation.play();
                 utils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
-                utils.attachSomethingToBody(levelUpAnimation, this.body);
+                utils.attachSomethingToBody({something: levelUpAnimation, body: this.body});
                 Matter.Events.on(levelUpAnimation, "destroy", function() {
                     utils.detachSomethingFromBody(levelUpAnimation);
                 })

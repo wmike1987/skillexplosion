@@ -73,6 +73,13 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
                 }
             }
 
+            Matter.Events.on(this, 'death', function() {
+                if(this.specifiedAttackTarget) {
+                    Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                }
+                this.specifiedAttackTarget = null;
+            }.bind(this));
+
             this.eventKeyMappings[this.commands.stop.key] = this.stop;
             this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;
 
@@ -158,18 +165,17 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
             //set the specified target
             this.specifiedAttackTarget = target;
 
-            //If the specified dies (is removed), stop and reset state.
+            //If the specified unit dies (is removed), stop and reset state.
             this.specifiedCallback = function() {
                 this.stop();
                 this.specifiedAttackTarget = null;
             }.bind(this);
             var callback = Matter.Events.on(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
-            this.specifiedAttackTargetStop = callback;
 
-            //But if we die first, remove the onremove listener
+            //But if we are removed (from the game) first, remove the onremove listener
             utils.deathPact(this, function() {
-                Matter.Events.off(target, 'onremove', this.specifiedCallback);
-            }, 'removeSpecifiedAttackTarget');
+                Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+            }.bind(this), 'removeSpecifiedAttackTarget');
 
             //move unit
             this.rawMove(destination);

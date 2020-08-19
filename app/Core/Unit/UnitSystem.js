@@ -123,7 +123,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                     if(body) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
-                        utils.attachSomethingToBody(this.prevailingUnitCircle, body, body.renderlings.selected.offset);
+                        utils.attachSomethingToBody({something: this.prevailingUnitCircle, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
                     } else {
                         utils.detachSomethingFromBody(this.prevailingUnitCircle);
                         this.prevailingUnitCircle.position = utils.offScreenPosition();
@@ -217,6 +217,9 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                         if(this.hasMyUnitSelected() && addingEnemies) {
                             //else if we have one of our own units and we're adding enemy units, disregard this command
+                            //...but the enemy could have been a perma unit in which case let's change the pending state to false
+                            if(this.box.permaPendingUnit)
+                                this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                             return;
                         }
 

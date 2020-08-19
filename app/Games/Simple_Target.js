@@ -127,8 +127,8 @@ define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'howler', 'utils/
 			var ballCenter = Matter.Bodies.circle(ball.position.x, ball.position.y, ball.radius/3, {isSensor: true, isStatic: true});
 			ballCenter.noWire = true;
 			this.ballTargetSprite = utils.addSomethingToRenderer('bluetarget2Center', {where: 'stageOne', scale: {x: ball.radius*2/3/32, y: ball.radius*2/3/32}});
-			utils.attachSomethingToBody(this.ballTargetSprite, this.ball);
-			utils.attachSomethingToBody(ballCenter, this.ball);
+			utils.attachSomethingToBody({something: this.ballTargetSprite, body: this.ball});
+			utils.attachSomethingToBody({something: ballCenter, body: this.ball});
 			return ballCenter;
 		}
 	}

@@ -134,7 +134,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             selectionBody.unit = newUnit;
             selectionBody.wwidth = options.hitboxWidth || 20,
             selectionBody.hheight = options.hitboxHeight || 20,
-            utils.attachSomethingToBody(selectionBody, body, {x: 0, y: options.hitboxYOffset || -8});
+            utils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: options.hitboxYOffset === null || -8}});
             utils.deathPact(newUnit, selectionBody);
 
             //back references
