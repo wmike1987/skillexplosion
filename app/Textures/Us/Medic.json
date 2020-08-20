@@ -2,7 +2,7 @@
 
 "FleetFeet.png":
 {
-	"frame": {"x":1,"y":205,"w":32,"h":32},
+	"frame": {"x":298,"y":93,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -10,8 +10,8 @@
 },
 "Footprint.png":
 {
-	"frame": {"x":171,"y":181,"w":18,"h":32},
-	"rotated": false,
+	"frame": {"x":1,"y":103,"w":18,"h":32},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":0,"w":18,"h":32},
 	"sourceSize": {"w":32,"h":32}
@@ -26,7 +26,7 @@
 },
 "LightestTouch.png":
 {
-	"frame": {"x":35,"y":205,"w":32,"h":32},
+	"frame": {"x":332,"y":93,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +34,7 @@
 },
 "Maim.png":
 {
-	"frame": {"x":69,"y":205,"w":32,"h":32},
+	"frame": {"x":366,"y":93,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,15 +42,23 @@
 },
 "MaimTiny.png":
 {
-	"frame": {"x":167,"y":215,"w":18,"h":18},
+	"frame": {"x":35,"y":103,"w":18,"h":18},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":7,"w":18,"h":18},
 	"sourceSize": {"w":32,"h":32}
 },
+"MedicGrave.png":
+{
+	"frame": {"x":205,"y":1,"w":91,"h":98},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":52,"y":42,"w":91,"h":98},
+	"sourceSize": {"w":186,"h":197}
+},
 "MedicGroupPortrait.png":
 {
-	"frame": {"x":103,"y":1,"w":90,"h":90},
+	"frame": {"x":298,"y":1,"w":90,"h":90},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
@@ -58,15 +66,15 @@
 },
 "MedicPortrait.png":
 {
-	"frame": {"x":103,"y":93,"w":90,"h":86},
-	"rotated": false,
+	"frame": {"x":390,"y":1,"w":90,"h":86},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":4,"w":90,"h":86},
 	"sourceSize": {"w":90,"h":90}
 },
 "MineCracks.png":
 {
-	"frame": {"x":191,"y":201,"w":32,"h":27},
+	"frame": {"x":604,"y":67,"w":32,"h":27},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":27},
@@ -74,7 +82,7 @@
 },
 "MineIcon.png":
 {
-	"frame": {"x":195,"y":1,"w":64,"h":64},
+	"frame": {"x":478,"y":1,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -82,7 +90,7 @@
 },
 "MineOne.png":
 {
-	"frame": {"x":220,"y":201,"w":30,"h":16},
+	"frame": {"x":55,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -90,7 +98,7 @@
 },
 "MineThree.png":
 {
-	"frame": {"x":220,"y":219,"w":30,"h":16},
+	"frame": {"x":87,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -98,7 +106,7 @@
 },
 "MineTwo.png":
 {
-	"frame": {"x":103,"y":215,"w":30,"h":16},
+	"frame": {"x":119,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -106,7 +114,7 @@
 },
 "MineZero.png":
 {
-	"frame": {"x":135,"y":215,"w":30,"h":16},
+	"frame": {"x":151,"y":103,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -114,7 +122,7 @@
 },
 "Petrify.png":
 {
-	"frame": {"x":195,"y":133,"w":32,"h":32},
+	"frame": {"x":400,"y":93,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -122,7 +130,7 @@
 },
 "PressuredPlate.png":
 {
-	"frame": {"x":229,"y":133,"w":32,"h":32},
+	"frame": {"x":434,"y":93,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -130,7 +138,7 @@
 },
 "PurePriorities.png":
 {
-	"frame": {"x":195,"y":167,"w":32,"h":32},
+	"frame": {"x":468,"y":93,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -138,7 +146,7 @@
 },
 "Sacrifice.png":
 {
-	"frame": {"x":229,"y":167,"w":32,"h":32},
+	"frame": {"x":502,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -146,7 +154,7 @@
 },
 "SecretStepIcon.png":
 {
-	"frame": {"x":1,"y":103,"w":100,"h":100},
+	"frame": {"x":103,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -154,7 +162,7 @@
 },
 "Shrapnel.png":
 {
-	"frame": {"x":103,"y":181,"w":32,"h":32},
+	"frame": {"x":536,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -162,7 +170,7 @@
 },
 "SilentStepIconOld.png":
 {
-	"frame": {"x":195,"y":67,"w":64,"h":64},
+	"frame": {"x":544,"y":1,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -170,7 +178,7 @@
 },
 "SoftLanding.png":
 {
-	"frame": {"x":137,"y":181,"w":32,"h":32},
+	"frame": {"x":570,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -181,8 +189,8 @@
 	"version": "1.0",
 	"image": "Medic.png",
 	"format": "RGBA8888",
-	"size": {"w":262,"h":238},
+	"size": {"w":632,"h":126},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:431f25d99fab411458425a5cd06b3e8a:ad2fe4d9cdd7d83c77a01fd9d7b54900:8d3e890b84ab07faa58797fc50fc9b0a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b61b3a3a94e700111a8a0fa3c9c711f3:81fe7ecead4cd8fcdeb1cdb260546d2b:8d3e890b84ab07faa58797fc50fc9b0a$"
 }
 }

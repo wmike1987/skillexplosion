@@ -116,10 +116,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 anim = new PIXI.AnimatedSprite(PIXI.Loader.shared.resources[options.spritesheetName].spritesheet.animations[options.animationName]);
             }
 
-
-            anim.onComplete = function() { //default onComplete function
-                utils.removeSomethingFromRenderer(anim)
-            }.bind(this);
+            if(options.fadeAway) {
+                anim.onComplete = function() { //default onComplete function
+                    utils.fadeSpriteOverTime(anim, options.fadeTime || 2000);
+                }.bind(this);
+            } else {
+                anim.onComplete = function() { //default onComplete function
+                    utils.removeSomethingFromRenderer(anim)
+                }.bind(this);
+            }
             anim.persists = true;
             anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
             anim.animationSpeed = options.speed;
@@ -727,6 +732,24 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 sprite.alpha -= rate;
             }, totallyDoneCallback: function() {
                 utils.removeSomethingFromRenderer(sprite);
+            }.bind(this)})
+        },
+
+        fadeSpriteOverTime: function(sprite, time, fadeIn) {
+            var startingAlpha = sprite.alpha || 1.0;
+            var finalAlpha = 0;
+            if(fadeIn) {
+                finalAlpha = startingAlpha;
+                startingAlpha = 0;
+                sprite.alpha = 0;
+            }
+            var runs = time/16;
+            var rate = (finalAlpha-startingAlpha)/runs;
+            currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
+                sprite.alpha += rate;
+            }, totallyDoneCallback: function() {
+                if(!fadeIn)
+                    utils.removeSomethingFromRenderer(sprite);
             }.bind(this)})
         },
 

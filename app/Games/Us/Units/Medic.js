@@ -768,6 +768,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energyRegenerationRate: 1.5,
             portrait: utils.createDisplayObject('MedicPortrait'),
             wireframe: utils.createDisplayObject('MedicGroupPortrait'),
+            graveSpriteName: 'MedicGrave',
             team: options.team || 4,
             priority: 5,
             name: options.name,

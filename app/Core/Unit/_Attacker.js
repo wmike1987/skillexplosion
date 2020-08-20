@@ -174,7 +174,8 @@ define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils'], function($, Matter, P
 
             //But if we are removed (from the game) first, remove the onremove listener
             utils.deathPact(this, function() {
-                Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                if(this.specifiedAttackTarget)
+                    Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
             }.bind(this), 'removeSpecifiedAttackTarget');
 
             //move unit

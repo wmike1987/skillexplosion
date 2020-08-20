@@ -283,6 +283,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var criticalHitSound = utils.getSound('criticalhit.wav', {volume: .2, rate: .9});
         var criticalHitSound2 = utils.getSound('criticalhit2.wav', {volume: .1, rate: .7});
 
+        //death
+        var deathSound = utils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});
+
         //Dash
         var dashVelocity = .8;
         var dashSound = utils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
@@ -658,6 +661,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energyRegenerationRate: 1,
             portrait: utils.createDisplayObject('MarinePortrait'),
             wireframe: utils.createDisplayObject('MarineGroupPortrait'),
+            graveSpriteName: 'MarineGrave',
             team: options.team || 4,
             priority: 10,
             name: options.name,
@@ -667,13 +671,17 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
-                    spritesheetName: 'BaseUnitAnimations1',
-                    animationName: 'bloodsplat',
-                    speed: .3,
-                    transform: [self.position.x, self.position.y, .3, .3]
+                    spritesheetName: 'MarineAnimations1',
+                    animationName: 'MarineDeath',
+                    speed: .30,
+                    fadeAway: true,
+                    fadeTime: 3200,
+                    transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]
                 });
+                this.corpse = anim;
                 utils.addSomethingToRenderer(anim);
                 anim.play();
+                deathSound.play();
             },
             _init: function() {
                 if(!this.bypassRevival) {
@@ -693,7 +701,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [dashSound, fireSound, knifeThrowSound, knifeImpactSound, poisonSound, criticalHitSound, criticalHitSound2, unitProperties.wireframe, unitProperties.portrait],
+                slaves: [dashSound, deathSound, fireSound, knifeThrowSound, knifeImpactSound, poisonSound, criticalHitSound, criticalHitSound2, unitProperties.wireframe, unitProperties.portrait],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.35,
