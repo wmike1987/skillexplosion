@@ -285,6 +285,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         //death
         var deathSound = utils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});
+        var deathSoundBlood = utils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
 
         //Dash
         var dashVelocity = .8;
@@ -678,10 +679,15 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     fadeTime: 3200,
                     transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]
                 });
-                this.corpse = anim;
                 utils.addSomethingToRenderer(anim);
+                this.corpse = anim;
+
+                var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(self.deathPosition, {y: 22})})
+                utils.fadeSpriteOverTime(shadow, 1500);
+
                 anim.play();
                 deathSound.play();
+                deathSoundBlood.play();
             },
             _init: function() {
                 if(!this.bypassRevival) {

@@ -311,10 +311,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
 
             //create new scene
             var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
+            this.campActive = false;
             this.currentScene.transitionToScene(nextLevelScene);
             Matter.Events.on(nextLevelScene, 'initialize', function() {
                 Matter.Events.trigger(this, 'enteringLevel');
-                this.campActive = false;
                 this.currentSpawner.initialize();
                 this.resetUnit(this.shane);
                 this.resetUnit(this.ursula);
