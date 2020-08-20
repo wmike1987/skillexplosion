@@ -36,7 +36,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             }
         `;
 
-        var levelUpSound = utils.getSound('levelup.wav', {volume: .7, rate: .8});
+        var levelUpSound = utils.getSound('levelup.wav', {volume: .45, rate: .8});
         var itemPlaceSound = utils.getSound('itemplace.wav', {volume: .06, rate: 1});
         var petrifySound = utils.getSound('petrify.wav', {volume: .07, rate: 1});
 

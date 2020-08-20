@@ -685,11 +685,11 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 description: 'Increase healing range and healing amount.',
                 equip: function(unit) {
                     unit.range += this.rangeDelta;
-                    unit.healAmount += this.healDelta;
+                    unit.getAbilityByName('Heal').healAmount += this.healDelta;
                 },
                 unequip: function(unit) {
                     unit.range -= this.rangeDelta;
-                    unit.healAmount -= this.healDelta;
+                    unit.getAbilityByName('Heal').healAmount -= this.healDelta;
                 }
             },
             {

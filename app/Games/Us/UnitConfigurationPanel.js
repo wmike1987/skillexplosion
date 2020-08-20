@@ -1,7 +1,7 @@
 define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, utils, Tooltip, Matter) {
 
-    var equipShow = utils.getSound('augmentPanelOpen.wav', {volume: .07, rate: 1.0});
-    var equipHide = utils.getSound('augmentPanelOpen.wav', {volume: .05, rate: 1.25});
+    var equipShow = utils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
+    var equipHide = utils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
     var equip = utils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
     var hoverAugmentSound = utils.getSound('augmenthover.wav', {volume: .03, rate: 1});
 

@@ -9,7 +9,7 @@ function($, Matter, PIXI, utils, unitMenu) {
                     constructor: unitMenu.Critter,
                     icon: 'CritterPortrait',
                     spawn: {total: 2 + utils.getRandomIntInclusive(1, 5), n: 1, hz: 2500, maxOnField: 1},
-                    item: {type: 'worn', total: 10}
+                    item: {type: 'worn', total: 1}
                 })
 
                 //Sentinels
@@ -17,7 +17,7 @@ function($, Matter, PIXI, utils, unitMenu) {
                     constructor: unitMenu.Sentinel,
                     icon: 'SentinelPortrait',
                     spawn: {total: 1 + utils.getRandomIntInclusive(1, 2), n: 1, hz: 2500, maxOnField: 1},
-                    item: {type: 'rugged', total: 10}
+                    item: {type: 'rugged', total: utils.getRandomIntInclusive(0, 1)}
                 })
 
                 //Banelings

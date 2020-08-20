@@ -496,8 +496,8 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
      */
     game.worldOptions = {
             //background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
-                width: 1200, //1600
-                height: 600, //800 playing area, 100 unit panel
+                width: 1400, //1600
+                height: 700, //800 playing area, 100 unit panel
                 unitPanelHeight: 100,
                 gravity: 0,
                 unitPanelConstructor: unitpanel
