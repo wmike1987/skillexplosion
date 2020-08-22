@@ -4,10 +4,10 @@ function($, Matter, PIXI, utils, unitMenu, EnemySetSpecifier, Tooltip) {
     //Token Mappings
     var typeTokenMappings = {
         singles: 'MapGoldBattleToken',
-        triplets: 'MapRedBattleToken',
+        doubles: 'MapRedBattleToken',
         boss: 'MapRedBattleToken',
         norevives: 'MapRedBattleToken',
-        mobs: 'MapRedBattleToken',
+        mobs: 'MobBattleToken',
     }
 
     //Define node object

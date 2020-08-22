@@ -406,7 +406,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                 Matter.Events.on(this, "onremove", function() {
                     Matter.Events.off(currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
-                    $.each(this.getAllItems(true), function(i, item) {
+                    $.each(this.getCompleteSetOfItemObjects(), function(i, item) {
                         if(item) {
                             currentGame.removeItem(item);
                         }
@@ -734,11 +734,19 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 }
             },
 
-            getAllItems: function(includeBlank) {
+            //This returns a representation of the unit's current visible item-set, including visible empty slots
+            getAllItems: function() {
                 var items = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems);
-                if(includeBlank)
-                    items.concat(this.emptySlots);
                 return items;
+            },
+
+            //This returns all item objects a unit possesses, including hidden empty slots
+            getCompleteSetOfItemObjects: function() {
+                var completeSet = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems).filter(item => {
+                    return !item.isEmpty;
+                })
+
+                return completeSet.concat(this.emptySlots);
             },
 
             petrify: function(duration) {

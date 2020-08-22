@@ -34,7 +34,7 @@
 },
 "AugmentBorder.png":
 {
-	"frame": {"x":707,"y":1717,"w":36,"h":36},
+	"frame": {"x":772,"y":1717,"w":36,"h":36},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":36,"h":36},
@@ -42,7 +42,7 @@
 },
 "AugmentBorderGold.png":
 {
-	"frame": {"x":567,"y":1717,"w":50,"h":50},
+	"frame": {"x":632,"y":1717,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -82,7 +82,7 @@
 },
 "LockIcon.png":
 {
-	"frame": {"x":745,"y":1717,"w":32,"h":32},
+	"frame": {"x":810,"y":1717,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -90,7 +90,7 @@
 },
 "Logs.png":
 {
-	"frame": {"x":530,"y":1717,"w":52,"h":35},
+	"frame": {"x":595,"y":1717,"w":52,"h":35},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":37,"y":61,"w":52,"h":35},
@@ -114,7 +114,7 @@
 },
 "MapRedBattleToken.png":
 {
-	"frame": {"x":329,"y":1717,"w":62,"h":62},
+	"frame": {"x":394,"y":1717,"w":62,"h":62},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":62,"h":62},
@@ -130,15 +130,23 @@
 },
 "MapTable.png":
 {
-	"frame": {"x":393,"y":1717,"w":57,"h":54},
+	"frame": {"x":458,"y":1717,"w":57,"h":54},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":57,"h":54},
 	"sourceSize": {"w":57,"h":55}
 },
+"MobBattleToken.png":
+{
+	"frame": {"x":329,"y":1717,"w":63,"h":63},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":63,"h":63},
+	"sourceSize": {"w":64,"h":64}
+},
 "MouseX.png":
 {
-	"frame": {"x":619,"y":1717,"w":42,"h":42},
+	"frame": {"x":684,"y":1717,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
@@ -146,7 +154,7 @@
 },
 "MouseXGreen.png":
 {
-	"frame": {"x":663,"y":1717,"w":42,"h":42},
+	"frame": {"x":728,"y":1717,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":43,"y":43,"w":42,"h":42},
@@ -154,7 +162,7 @@
 },
 "SleepingBags.png":
 {
-	"frame": {"x":449,"y":1717,"w":53,"h":79},
+	"frame": {"x":514,"y":1717,"w":53,"h":79},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":0,"w":53,"h":79},
@@ -210,7 +218,7 @@
 },
 "Vial.png":
 {
-	"frame": {"x":707,"y":1755,"w":28,"h":84},
+	"frame": {"x":772,"y":1755,"w":28,"h":84},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
@@ -218,7 +226,7 @@
 },
 "Vial2.png":
 {
-	"frame": {"x":779,"y":1717,"w":28,"h":84},
+	"frame": {"x":844,"y":1717,"w":28,"h":84},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
@@ -234,6 +242,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1664,"h":1784},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:4123429e256f8558659b42002c7564ff:f0185439799e52369e3d73405d55a346:5fc1c354e515b85ac7861bddc1d6600b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:e16ecf49dd8896d10b7d7878c111ed60:9d7e8b2b474dbd196dde6312cb00d2fb:5fc1c354e515b85ac7861bddc1d6600b$"
 }
 }

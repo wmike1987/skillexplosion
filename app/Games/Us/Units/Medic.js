@@ -281,6 +281,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             offset: {x: 0, y: 22}}];
 
         var healsound = utils.getSound('healsound.wav', {volume: .006, rate: 1.3});
+        var deathSoundBlood = utils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
+        var deathSound = utils.getSound('medicdeathsound.wav', {volume: .2, rate: 1.05});
 
         var combospiritinit = utils.getSound('combospiritinit.wav', {volume: .03, rate: 1.0});
         var fullheal = utils.getSound('fullheal.wav', {volume: .05, rate: 1.0});
@@ -778,13 +780,22 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             death: function() {
                 var self = this;
                 var anim = utils.getAnimationB({
-                    spritesheetName: 'BaseUnitAnimations1',
-                    animationName: 'bloodsplat',
-                    speed: .3,
-                    transform: [self.position.x, self.position.y, .3, .3]
+                    spritesheetName: 'MedicAnimations2',
+                    animationName: 'MedicDeath',
+                    speed: .25,
+                    fadeAway: true,
+                    fadeTime: 3200,
+                    transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]
                 });
                 utils.addSomethingToRenderer(anim);
+                this.corpse = anim;
+
+                var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(self.deathPosition, {y: 22})})
+                utils.fadeSpriteOverTime(shadow, 1500);
+
                 anim.play();
+                deathSoundBlood.play();
+                deathSound.play();
             },
             _init: function() {
                 Object.defineProperty(this, 'position', {
@@ -812,7 +823,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [healsound, mineSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
+                slaves: [healsound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
                 unit: unitProperties,
                 moveable: {
                     moveSpeed: 2.15,

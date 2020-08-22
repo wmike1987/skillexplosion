@@ -24,30 +24,32 @@ function($, Matter, PIXI, utils, ItemUtils) {
                             total++;
 
                             //Create unit
-                            var newUnit = enemy.constructor({team: 4});
-                            newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
-                            newUnit.honeRange = 5000;
-                            utils.placeBodyJustOffscreen(newUnit);
+                            for(var i = 0; i < (enemy.spawn.atATime || 1); i++) {
+                                var newUnit = enemy.constructor({team: 4});
+                                newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
+                                newUnit.honeRange = 5000;
+                                utils.placeBodyJustOffscreen(newUnit);
 
-                            //Give item to unit if chosen
-                            if(itemsToGive > 0) {
-                                var giveItem = true;
+                                //Give item to unit if chosen
+                                if(itemsToGive > 0) {
+                                    var giveItem = true;
+                                    if(lastUnit) {
+                                        giveItem = true;
+                                    } else {
+                                        giveItem = utils.flipCoin() && utils.flipCoin();
+                                    }
+                                    if(giveItem) {
+                                        ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(currentGame.itemClasses[enemy.item.type]), unit: newUnit});
+                                        itemsToGive--;
+                                    }
+                                }
+
                                 if(lastUnit) {
-                                    giveItem = true;
-                                } else {
-                                    giveItem = utils.flipCoin() && utils.flipCoin();
+                                    this.invalidated = true;
+                                    enemy.fulfilled = true;
                                 }
-                                if(giveItem) {
-                                    ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(currentGame.itemClasses[enemy.item.type]), unit: newUnit});
-                                    itemsToGive--;
-                                }
+                                currentGame.addUnit(newUnit);
                             }
-
-                            if(lastUnit) {
-                                this.invalidated = true;
-                                enemy.fulfilled = true;
-                            }
-                            currentGame.addUnit(newUnit);
                         }
                     }
                 })

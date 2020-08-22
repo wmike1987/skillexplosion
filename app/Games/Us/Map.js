@@ -8,7 +8,7 @@ function($, Matter, PIXI, utils, LevelSpecifier) {
         //this will be given in the specs parameter, for now we'll just include it here
         this.levelSpecification = {
             singles: 26,
-            triplets: 1,
+            doubles: 1,
             boss: 1,
             norevives: 1,
             mobs: 1

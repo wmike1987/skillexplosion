@@ -8,7 +8,7 @@ function($, Matter, PIXI, utils, unitMenu) {
                 enemySets.push({
                     constructor: unitMenu.Critter,
                     icon: 'CritterPortrait',
-                    spawn: {total: 2 + utils.getRandomIntInclusive(1, 5), n: 1, hz: 2500, maxOnField: 1},
+                    spawn: {total: 2 + utils.getRandomIntInclusive(1, 5), n: 1, hz: 2200, maxOnField: 1},
                     item: {type: 'worn', total: 1}
                 })
 
@@ -21,6 +21,24 @@ function($, Matter, PIXI, utils, unitMenu) {
                 })
 
                 //Banelings
+            } else if(type == 'mobs') {
+                //Critters
+                enemySets.push({
+                    constructor: unitMenu.Critter,
+                    wave: 1,
+                    icon: 'CritterPortrait',
+                    spawn: {total: 2 + utils.getRandomIntInclusive(9, 16), n: 1, hz: 1800, atATime: 2},
+                    item: {type: 'worn', total: 1}
+                })
+
+                //Sentinels
+                enemySets.push({
+                    constructor: unitMenu.Sentinel,
+                    wave: 1,
+                    icon: 'SentinelPortrait',
+                    spawn: {total: 1 + utils.getRandomIntInclusive(3, 4), n: 1, hz: 4500, maxOnField: 1},
+                    item: {type: 'rugged', total: utils.getRandomIntInclusive(0, 1)}
+                })
             }
 
             return enemySets;
