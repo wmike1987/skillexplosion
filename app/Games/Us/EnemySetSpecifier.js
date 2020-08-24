@@ -22,12 +22,12 @@ function($, Matter, PIXI, utils, unitMenu) {
 
                 //Banelings
             } else if(type == 'mobs') {
-                //Critters
+                //Eruptlets
                 enemySets.push({
-                    constructor: unitMenu.Critter,
+                    constructor: unitMenu.Eruptlet,
                     wave: 1,
                     icon: 'CritterPortrait',
-                    spawn: {total: 2 + utils.getRandomIntInclusive(9, 16), n: 1, hz: 1800, atATime: 2},
+                    spawn: {total: 2 + utils.getRandomIntInclusive(12, 15), n: 1, hz: 1800, atATime: 5},
                     item: {type: 'worn', total: 1}
                 })
 

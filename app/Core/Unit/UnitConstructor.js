@@ -121,6 +121,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             // body.drawWire = true;
             body.collisionFilter.mask -= 0x0002;
             body.unit = newUnit; //reference to parent
+            body.pluginName = 'colorBatch';
 
             //**********************
             // create selection body
@@ -129,12 +130,12 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 isSensor: true,
             });
             selectionBody.isSelectionBody = true;
-            selectionBody.noWire = true;
+            selectionBody.noWire = !newUnit.adjustHitbox;
             selectionBody.collisionFilter.mask = 0x0002;
             selectionBody.unit = newUnit;
             selectionBody.wwidth = options.hitboxWidth || 20,
             selectionBody.hheight = options.hitboxHeight || 20,
-            utils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: options.hitboxYOffset === null || -8}});
+            utils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: options.hitboxYOffset != null ? options.hitboxYOffset : -8}});
             utils.deathPact(newUnit, selectionBody);
 
             //back references

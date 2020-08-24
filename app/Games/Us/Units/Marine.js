@@ -667,6 +667,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             priority: 10,
             name: options.name,
             heightAnimation: 'up',
+            // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
             throwAnimations: throwAnimations,
             abilities: [gunAbility, dashAbility, knifeAbility],
             death: function() {
@@ -674,7 +675,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 var anim = utils.getAnimationB({
                     spritesheetName: 'MarineAnimations1',
                     animationName: 'MarineDeath',
-                    speed: .30,
+                    speed: .25,
                     fadeAway: true,
                     fadeTime: 3200,
                     transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]

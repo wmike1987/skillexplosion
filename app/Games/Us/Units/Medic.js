@@ -782,7 +782,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 var anim = utils.getAnimationB({
                     spritesheetName: 'MedicAnimations2',
                     animationName: 'MedicDeath',
-                    speed: .25,
+                    speed: .2,
                     fadeAway: true,
                     fadeTime: 3200,
                     transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]

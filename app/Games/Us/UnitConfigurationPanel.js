@@ -254,6 +254,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js'], function($, u
         utils.removeSomethingFromRenderer(this.showButton);
         utils.removeSomethingFromRenderer(this.showButtonGlass);
         $('body').off('mousemove.unitConfigurationPanel');
+        $('body').off('mouseup.unitConfigurationPanel');
     };
 
 

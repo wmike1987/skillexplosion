@@ -1,8 +1,9 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'utils/styles', 'unitcore/_Augmentable'],
-    function($, PIXI, UC, Matter, utils, Ability, styles, aug) {
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility',
+ 'utils/styles', 'unitcore/_Augmentable', 'shaders/ValueShader'],
+    function($, PIXI, UC, Matter, utils, Ability, styles, aug, valueShader) {
 
-    return function Critter(options) {
-        var critter = {};
+    return function Eruptlet(options) {
+        var eruptlet = {};
 
         var options = options || {};
         $.extend(options, {radius: 25}, options)
@@ -80,56 +81,56 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }),
         };
 
-        var attackAnimations = {
-            up: utils.getSpineAnimation({
-                spine: spineNorth,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            upRight: utils.getSpineAnimation({
-                spine: spineNorthEast,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            right: utils.getSpineAnimation({
-                spine: spineEast,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            downRight: utils.getSpineAnimation({
-                spine: spineSouthEast,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            down: utils.getSpineAnimation({
-                spine: spineSouth,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            downLeft: utils.getSpineAnimation({
-                spine: spineSouthWest,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            left: utils.getSpineAnimation({
-                spine: spineWest,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-            upLeft: utils.getSpineAnimation({
-                spine: spineNorthWest,
-                animationName: 'attack',
-                speed: 2,
-                times: 3,
-            }),
-        }
+                var attackAnimations = {
+                    up: utils.getSpineAnimation({
+                        spine: spineNorth,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    upRight: utils.getSpineAnimation({
+                        spine: spineNorthEast,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    right: utils.getSpineAnimation({
+                        spine: spineEast,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    downRight: utils.getSpineAnimation({
+                        spine: spineSouthEast,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    down: utils.getSpineAnimation({
+                        spine: spineSouth,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    downLeft: utils.getSpineAnimation({
+                        spine: spineSouthWest,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    left: utils.getSpineAnimation({
+                        spine: spineWest,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                    upLeft: utils.getSpineAnimation({
+                        spine: spineNorthWest,
+                        animationName: 'attack',
+                        speed: 2,
+                        times: 3,
+                    }),
+                }
 
         var otherAnimations = {
 
@@ -139,6 +140,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var adjustedUpDownsc = {x: .1, y: .1};
         var flipsc = {x: -1 * sc.x, y: sc.y};
         var yOffset = 22;
+        var vShader = new PIXI.Filter(null, valueShader, {
+            colors: [0.4, 0.4, 2.0]
+        });
         var rc = [
         {
             id: 'selected',
@@ -233,7 +237,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         var attackSound = utils.getSound('critterhit.wav', {volume: .15, rate: 1});
 
         var unitProperties = $.extend({
-            unitType: 'Critter',
+            unitType: 'Eruptlet',
             health: 20,
             defense: 1,
             energy: 0,
@@ -258,10 +262,33 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 utils.addSomethingToRenderer(anim);
                 anim.play();
                 currentGame.removeUnit(this);
-            }}, options);
+            },
+            _afterAddInit: function() {
+                $.each(this.body.renderlings, function(key, renderling) {
+                    if(renderling.skeleton) {
+                        $.each(renderling.skeleton.slots, function(i, slot) {
+                            if(slot.currentSprite) {
+                                if(slot.currentSpriteName.includes('1---4') ||
+                                  (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length-1) == '1') ||
+                                  (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
+                                  slot.currentSpriteName.includes('1---3') ||
+                                  slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
+                                  slot.currentSpriteName.includes('North_0003_Layer-1---5'))
+                                {
+                                    slot.color.r = .2;
+                                    slot.color.g = 1.0;
+                                    slot.color.b = 0.2;
+                                    slot.color.a = 1.0;
+                                }
+                            }
+                        })
+                    }
+                });
+            },
+        }, options)
 
         return UC({
-                givenUnitObj: critter,
+                givenUnitObj: eruptlet,
                 renderChildren: rc,
                 radius: options.radius,
                 hitboxWidth: 40,

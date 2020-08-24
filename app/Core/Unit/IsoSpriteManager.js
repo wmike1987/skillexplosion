@@ -93,10 +93,12 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 
 			//ensure the current animation has the current iso properties
 			animation.alpha = this.unit.isoManagedAlpha || 1;
-			// animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
+			animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
 		}
 
 		this.idle = function() {
+			if(this.unit.noIdle) return;
+
 			var self = this;
 			var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 			var randomAnimation = self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]];

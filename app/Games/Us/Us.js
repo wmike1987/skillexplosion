@@ -1,8 +1,8 @@
 define(['jquery', 'matter-js', 'pixi', 'core/CommonGameMixin', 'unitcore/_Moveable', 'unitcore/_Attacker',
-'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Baneling', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic',
+'usunits/Marine', 'usunits/EnemyMarine', 'usunits/Eruptlet', 'pixi-filters', 'utils/GameUtils', 'usunits/Medic',
 'shaders/CampfireAtNightShader', 'shaders/ValueShader', 'core/TileMapper', 'utils/Doodad', 'unitcore/ItemUtils', 'core/Scene', 'usunits/Critter', 'usunits/AlienGuard',
 'usunits/Sentinel', 'games/Us/UnitPanel', 'games/Us/UnitSpawner', 'games/Us/UnitMenu', 'games/Us/Map'],
-function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Baneling, filters, utils, Medic, campfireShader, valueShader,
+function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMarine, Eruptlet, filters, utils, Medic, campfireShader, ValueShader,
     TileMapper, Doodad, ItemUtils, Scene, Critter, AlienGuard, Sentinel, unitpanel, UnitSpawner, unitMenu, Map) {
 
     var targetScore = 1;
@@ -27,6 +27,30 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         initExtension: function() {
             this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
             this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
+
+            var colorGeometry = class ColorGeometry extends PIXI.Geometry
+        	{
+        		_buffer = PIXI.Buffer;
+        		_indexBuffer = PIXI.Buffer;
+
+        		constructor(_static = false)
+        		{
+        			super();
+
+        			this._buffer = new PIXI.Buffer(null, _static, false);
+
+        			this._indexBuffer = new PIXI.Buffer(null, _static, true);
+
+                    var TYPES = PIXI.TYPES;
+        			this.addAttribute('aVertexPosition', this._buffer, 2, false, TYPES.FLOAT)
+        				.addAttribute('aTextureCoord', this._buffer, 2, false, TYPES.FLOAT)
+        				.addAttribute('color', this._buffer, 2, true, TYPES.FLOAT)
+        				.addAttribute('aTextureId', this._buffer, 1, true, TYPES.FLOAT)
+        				.addIndex(this._indexBuffer);
+        		}
+        	}
+
+            var colorGeo = new colorGeometry();
         },
 
         play: function(options) {
@@ -115,11 +139,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     blue: 0.8,
                     lightPower: 2.0,
                 });
-                this.treeShader = new PIXI.Filter(null, valueShader, {
-                    red: 0.4,
-                    green: 0.4,
-                    blue: 2.0,
+                this.treeShader = new PIXI.Filter(null, ValueShader, {
+                    colors: [0.4, 0.4, 2.0]
                 });
+                this.treeShader.myName = 'treeShader';
                 this.backgroundLightShader.myName = 'campfire';
                 this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
                 if(true) {
@@ -371,7 +394,9 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         },
 
         createShane: function() {
-             this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
+             this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
+             //this.shane.noIdle = true;
+             // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
              //ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
              return this.shane;
         },
@@ -389,11 +414,12 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             }
             unit.isTargetable = true;
             unit.position = utils.getCanvasCenter();
-            unit.currentHealth = 1000;
-            unit.currentEnergy = 1000;
+            unit.currentHealth = unit.maxHealth;
+            unit.currentEnergy = unit.maxEnergy;
             unit.canMove = true;
             unit.canAttack = true;
-            unit.hideGrave();
+            if(unit.hideGrave)
+                unit.hideGrave();
             unit.stop();
         },
 

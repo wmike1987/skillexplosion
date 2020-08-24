@@ -242,6 +242,21 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.onComplete.add(() => {
                 loader.loaderDeferred.resolve();
             });
+
+            //override spine slot def
+            PIXI.spine.core.Slot.prototype.setToSetupPose = function () {
+                if(this.color.a == 0) {
+                    this.color.setFromColor(this.data.color);
+                }
+                if (this.darkColor != null)
+                    this.darkColor.setFromColor(this.data.darkColor);
+                if (this.data.attachmentName == null)
+                    this.attachment = null;
+                else {
+                    this.attachment = null;
+                    this.setAttachment(this.bone.skeleton.getAttachment(this.data.index, this.data.attachmentName));
+                }
+            };
     })
 });
 

@@ -78,15 +78,6 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			// this.stages.background.filters = [];
 
 			bodies.forEach(function(body) {
-    			//add filters - Can't remember why or how this works. Looks like a hack at the moment to me. This is needed for displacement sprites.
-    			// if(body.render.filters) {
-    			// 	if(!this.stages.background.filters) {
-    			// 		this.stages.background.filters = body.render.filters;
-    			// 	} else {
-    			// 		this.stages.background.filters.push(body.render.filters[0]);
-    			// 	}
-    			// }
-
 				var drawPosition = null;
 				if(tickEvent.interpolate && !body.oneFrameOverrideInterpolation) {
 					drawPosition = interpolatePosition(body, tickEvent.percentOfNextFrame);
@@ -274,6 +265,10 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 				else
 					newSprite.filters = [child.filter];
 		    }
+			if(child.color && child.pluginName) {
+				newSprite.pluginName = child.pluginName;
+				newSprite.color = child.color;
+			}
 			if(child.alpha) {
 				newSprite.alpha = child.alpha;
 			}

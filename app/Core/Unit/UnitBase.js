@@ -1,7 +1,7 @@
 define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker', 'unitcore/IsoSpriteManager',
-'utils/GameUtils', 'unitcore/CommandQueue', 'unitcore/Command', 'unitcore/ItemUtils'],
+'utils/GameUtils', 'unitcore/CommandQueue', 'unitcore/Command', 'unitcore/ItemUtils', 'shaders/ValueShader'],
 
-    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, CommandQueue, Command, ItemUtils) {
+    function($, Matter, PIXI, Moveable, Attacker, Iso, utils, CommandQueue, Command, ItemUtils, ValueShader) {
 
         var hoverShader = `
             precision mediump float;
@@ -415,40 +415,39 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
 
                 //add filter on the main render sprite
                 var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});
+                var filters = [hoverFilter];
+
+                //force to be array
+                if(!$.isArray(this.mainRenderSprite)) {
+                    this.mainRenderSprite = [this.mainRenderSprite];
+                }
                 if(this.mainRenderSprite) {
-                    if($.isArray(this.mainRenderSprite)) {
-                        $.each(this.mainRenderSprite, function(i, spriteId) {
-                            $.each(this.renderChildren, function(index, child) {
-                                if(child.id == spriteId) {
-                                    child.filter = hoverFilter;
-                                }
-                            }.bind(this))
-                        }.bind(this))
-                    } else {
+                    $.each(this.mainRenderSprite, function(i, spriteId) {
                         $.each(this.renderChildren, function(index, child) {
-                            if(child.id == this.mainRenderSprite) {
-                                child.filter = hoverFilter;
+                            if(child.id == spriteId) {
+                                //child.filter = filters;
+                                // if(this.skinTweak) {
+                                //     child.pluginName = 'colorBatch';
+                                //     child.color = this.skinTweak;
+                                // }
                             }
                         }.bind(this))
-                    }
+                    }.bind(this))
                 };
 
                 //hover Method
                 this.hover = function(event) {
-                    hoverFilter.uniforms.active = true;
+                    // hoverFilter.uniforms.active = true;
                     if(this.team != event.team) {
-                        hoverFilter.uniforms.r = 1;
-                        hoverFilter.uniforms.g = .3;
-                        hoverFilter.uniforms.b = .1;
+                        this.isoManagedTint = 0xc31111;
                     } else {
-                        hoverFilter.uniforms.r = 0.0;
-                        hoverFilter.uniforms.g = .4;
-                        hoverFilter.uniforms.b = 0.0;
+                        this.isoManagedTint = 0x3afc53;
                     }
                 };
 
                 this.unhover = function(event) {
-                    hoverFilter.uniforms.active = false;
+                    // hoverFilter.uniforms.active = false;
+                    this.isoManagedTint = 0xFFFFFF;
                 };
 
                 this.showLifeBar = function(value) {
@@ -494,6 +493,9 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 this.isAttackable = true;
 
                 Matter.Events.on(this, 'addUnit', function() {
+                    if(this._afterAddInit) {
+                        this._afterAddInit();
+                    }
 
                     //start unit as idling upon add
                     if (this.isoManaged)

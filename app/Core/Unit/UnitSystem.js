@@ -223,9 +223,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             return;
                         }
 
-                        //Add pending bodies
-                        $.extend(this.selectedUnits, this.box.pendingSelections)
-                        this.updateOrderedUnits(this.selectedUnits);
+                        //Add pending bodies, unless we're adding enemies
+                        if(!addingEnemies) {
+                            $.extend(this.selectedUnits, this.box.pendingSelections)
+                            this.updateOrderedUnits(this.selectedUnits);
+                        }
                     }
                 } else {
                     //Else create a brand new selection (don't add to current selection)
