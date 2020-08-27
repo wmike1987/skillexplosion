@@ -43,7 +43,7 @@ function($, Matter, PIXI, utils, Command) {
             this.smallerBody.isSmallerBody = true;
             this.smallerBody.unit = this;
 
-            utils.attachSomethingToBody({something: this.smallerBody, body: this.body, offset: {x: 0, y: this.hitboxYOffset === null || -8}});
+            utils.attachSomethingToBody({something: this.smallerBody, body: this.body, offset: {x: 0, y: this.hitboxYOffset != null ? this.hitboxYOffset : -8}});
             currentGame.addBody(this.smallerBody);
 
             Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
@@ -138,6 +138,9 @@ function($, Matter, PIXI, utils, Command) {
                 }
             }.bind(this);
             Matter.Events.on(this.body, 'onCollideActive', this.collideCallback);
+
+            if(this.moveExtension)
+                this.moveExtension();
         },
         stop: function() {
 

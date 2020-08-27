@@ -89,8 +89,11 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 currentGame.removeTickCallback(item.grabCallback);
                 if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)) {
                     var variationX = Math.random()*60;
-                    var variationY = Math.random()*60;
-                    item.drop(Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35-variationY}), {fleeting: false});
+                    var dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35});
+                    if(!utils.isPositionWithinPlayableBounds(dropPosition)) {
+                        dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 0});
+                    }
+                    item.drop(dropPosition, {fleeting: false});
                     item.icon.visible = false;
                     item.icon.alpha = 1;
                     item.icon.tooltipObj.disabled = false;

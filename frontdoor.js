@@ -207,11 +207,11 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             //terrain and doodads
             loader.add('Terrain0', 'app/Textures/Us/Terrain-0.json');
             loader.add('Terrain1', 'app/Textures/Us/Terrain-1.json');
-            loader.add('Terrain2', 'app/Textures/Us/Terrain-2.json');
-            loader.add('Terrain3', 'app/Textures/Us/Terrain-3.json');
-            loader.add('Terrain4', 'app/Textures/Us/Terrain-4.json');
-            loader.add('Terrain5', 'app/Textures/Us/Terrain-5.json');
-            loader.add('Terrain6', 'app/Textures/Us/Terrain-6.json');
+            // loader.add('Terrain2', 'app/Textures/Us/Terrain-2.json');
+            // loader.add('Terrain3', 'app/Textures/Us/Terrain-3.json');
+            // loader.add('Terrain4', 'app/Textures/Us/Terrain-4.json');
+            // loader.add('Terrain5', 'app/Textures/Us/Terrain-5.json');
+            // loader.add('Terrain6', 'app/Textures/Us/Terrain-6.json');
 
             //spine assets
             loader.add('marineN', 'app/SpineAssets/Marine Exports/N/N.json');

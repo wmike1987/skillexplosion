@@ -144,8 +144,8 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
             //play animation
             this.itemDrop = utils.getAnimationB({
                 spritesheetName: 'ItemAnimations1',
-                animationName: 'ItemDrop',
-                speed: 1.2,
+                animationName: 'ItemDropFroll',
+                speed: .6,
                 playThisManyTimes: 1,
                 transform: [position.x, position.y],
                 onComplete: function() {
@@ -163,8 +163,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
             item.isDropping = true;
             itemSwoosh.play();
 
-            utils.makeSpriteSize(this.itemDrop, {w: 110, h: 110});
-            this.itemDrop.alpha = .65;
+            // utils.makeSpriteSize(this.itemDrop, {w: 48, h: 80});
             this.itemDrop.play();
             this.itemDrop.anchor.set(.5, .75);
             utils.addSomethingToRenderer(this.itemDrop, 'stage');
@@ -184,14 +183,20 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                 }
             });
 
+            //play animation
+            var itemAnim = utils.getAnimationB({
+                spritesheetName: 'ItemAnimations1',
+                animationName: 'ItemGleamFroll',
+                speed: .05,
+                loop: true,
+                transform: [position.x, position.y],
+            });
+            itemAnim.play();
+            itemAnim.tint = 0xbbecfb;
+
             newItem.renderChildren = [{
                 id: 'itemFootprint',
-                data: 'GlassMarble',
-                scale: {
-                    x: .4,
-                    y: .4
-                },
-                rotate: 'none',
+                data: itemAnim,
                 sortYOffset: 8,
                 visible: true,
             },
@@ -202,7 +207,7 @@ define(['jquery', 'utils/GameUtils', 'core/Tooltip', 'matter-js', 'utils/Styles'
                 visible: true,
                 rotate: 'none',
                 stage: "stageNTwo",
-                offset: {x: 0, y: 10}
+                offset: {x: 0, y: 5}
             }];
 
             newItem.body.item = newItem;

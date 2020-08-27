@@ -186,13 +186,17 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var campScene = new Scene();
             var tileWidth = this.tileSize;
 
-            backgroundTiles = ['GrassAndRock1/Dirt/dirt_base'];
-            var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth});
+            var backgroundTiles = [];
+            var gType = utils.getRandomElementOfArray(["Red", "Orange", "Yellow", "Teal"]);
+            for(var i = 1; i < 7; i++) {
+                backgroundTiles.push('LushGrass1/'+gType+'Grass'+i);
+            }
+            var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, realTileWidth: 370});
             campScene.add(tileMap);
 
-            backgroundTiles = ['GrassAndRock1/Dirt/grass_top_level_1', 'GrassAndRock1/Dirt/grass_top_level_2', 'GrassAndRock1/Dirt/grass_top_level_3'];
-            var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
-            campScene.add(tileMap2);
+            // backgroundTiles = ['GrassAndRock1/Dirt/grass_top_level_1', 'GrassAndRock1/Dirt/grass_top_level_2', 'GrassAndRock1/Dirt/grass_top_level_3'];
+            // var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
+            // campScene.add(tileMap2);
 
             var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'backgroundOne', .5);
             campScene.add(l1);
@@ -397,7 +401,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
              this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
              //this.shane.noIdle = true;
              // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-             //ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
+             ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
              return this.shane;
         },
 
