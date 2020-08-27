@@ -527,7 +527,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
 
                     //health
-                    this.unitHealthText.text = "♥ " + Math.floor(this.prevailingUnit.currentHealth);
+                    this.unitHealthText.text = "💗 " + Math.floor(this.prevailingUnit.currentHealth);
 
                     //SP text and points
                     if(this.prevailingUnit.team == currentGame.playerTeam) {
@@ -539,7 +539,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     }
 
                     //energy
-                    this.unitEnergyText.text = "⯌ " + Math.floor(this.prevailingUnit.currentEnergy);
+                    this.unitEnergyText.text = "🔹 " + Math.floor(this.prevailingUnit.currentEnergy);
 
 
                 }
@@ -572,9 +572,6 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
             ability.icon.visible = true;
             if(!ability.icon.parent) {
                 utils.addSomethingToRenderer(ability.icon, 'hudOne');
-                if(ability.energyCost) {
-                  ability.systemMessage = [ability.energyCost + ' energy'];
-                }
 
                 //autocast init
                 if(ability.autoCastEnabled) {

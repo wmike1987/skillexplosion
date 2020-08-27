@@ -389,11 +389,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                         this.ability.hpCost = this.ability.costs.push(function() {
                             return unit.currentHealth -= 2;
                         })
+                        this.ability.customCostText = "💗2 🔹1";
                     },
                     unequip: function(unit) {
                         this.ability.energyCost = this.oldEnergyCost;
                         this.ability.enablers.splice(this.ability.enablers.indexOf(this.ability.hpEnable), 1);
                         this.ability.costs.splice(this.ability.costs.indexOf(this.ability.hpCost), 1);
+                        this.ability.customCostText = null;
                     }
                 },
                 {

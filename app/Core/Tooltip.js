@@ -69,9 +69,9 @@ define(['jquery', 'utils/GameUtils', 'utils/Styles', 'matter-js'], function($, u
                     if(result === null || result === undefined) {
                         return;
                     }
-                    if(result.index) {
+                    if(result.index != null) {
                         tt[key][result.index].text = result.value;
-                    } else {
+                    } else if(tt[key].text != result) {
                         tt[key].text = result;
                     }
                 })

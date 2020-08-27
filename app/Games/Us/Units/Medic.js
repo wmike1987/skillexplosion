@@ -422,7 +422,13 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 name: 'fleet feet',
                 icon: utils.createDisplayObject('FleetFeet'),
                 title: 'Fleet Feet',
-                description: 'Secret step very quickly.'
+                description: 'Secret step very quickly and reduce energy cost by 2.',
+                equip: function(unit) {
+                    unit.getAbilityByName('Secret Step').energyCost -= 2;
+                },
+                unequip: function(unit) {
+                    unit.getAbilityByName('Secret Step').energyCost += 2;
+                }
             },{
                 name: 'petrify',
                 duration: 3000,

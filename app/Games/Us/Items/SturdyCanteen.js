@@ -1,7 +1,7 @@
 define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
 
     var manipulations = {
-        maxHealth: 8,
+        maxHealth: 6,
     }
 
     return function() {

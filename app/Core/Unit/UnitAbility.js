@@ -10,6 +10,17 @@ define(['jquery', 'utils/GameUtils'], function($, utils) {
         this.costs = [];
         this.disables = {};
 
+        //Manage tooltip options
+        if(this.energyCost) {
+          this.systemMessage = ["🔹" + this.energyCost];
+          this.updaters = {systemMessages: function() {
+              if(this.customCostText) {
+                  return {index: 0, value: this.customCostText};
+              }
+              return {index: 0, value: "🔹" + this.energyCost};
+          }.bind(this)}
+        }
+
         //convenience method for enabling and disabling an ability
         this.disable = function(id) {
             var disable = function() {
