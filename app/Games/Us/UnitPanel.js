@@ -420,7 +420,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     icon.visible = true;
                 }
 
-                if(item.isEmpty) {
+                if(item.isEmptySlot) {
                     icon.alpha = 0;
                 }
             }.bind(this))
@@ -441,7 +441,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     icon.visible = true;
                 }
 
-                if(item.isEmpty) {
+                if(item.isEmptySlot) {
                     icon.alpha = 0;
                 }
             }.bind(this))
@@ -462,7 +462,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'utils/Styles', 'core/Tooltip'
                     icon.visible = true;
                 }
 
-                if(item.isEmpty) {
+                if(item.isEmptySlot) {
                     icon.alpha = 0;
                 }
             }.bind(this))

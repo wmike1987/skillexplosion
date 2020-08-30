@@ -156,7 +156,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             },
 
             dropItem: function(item) {
-                if(item.isEmpty) return; //do nothing with a blank item
+                if(item.isEmptySlot) return; //do nothing with a blank item
 
                 //spawn new item of same type
                 var spawnPosition = {};
@@ -192,7 +192,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
                 var finalSlot = null;
                 var workableSlots = []
                 $.each(this.getAllItems(), function(i, item) {
-                    if(item.isEmpty && itemToPlace.worksWithSlot(item.currentSlot)) {
+                    if(item.isEmptySlot && itemToPlace.worksWithSlot(item.currentSlot)) {
                         workableSlots.push(item.currentSlot);
                     }
                 })
@@ -745,7 +745,7 @@ define(['jquery', 'matter-js', 'pixi', 'unitcore/_Moveable', 'unitcore/_Attacker
             //This returns all item objects a unit possesses, including hidden empty slots
             getCompleteSetOfItemObjects: function() {
                 var completeSet = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems).filter(item => {
-                    return !item.isEmpty;
+                    return !item.isEmptySlot;
                 })
 
                 return completeSet.concat(this.emptySlots);

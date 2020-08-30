@@ -518,7 +518,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 body = body.body;
             }
 
-            if(body.vertices)
+            if(body.vertices && false)
                 this.verticeHistories.push(body);
 
             //add to matter world
@@ -586,8 +586,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                     //console.info("removing " + slave)
                     slave();
                 } else if(slave.unload) {
-                    // console.info("unload sounds: " + slave._src)
-                    slave.unload();
+                    // let's unload the sound, but it might be playing upon death, so let's wait then unload it
+                    utils.doSomethingAfterDuration(() => {slave.unload}, 1500);
                 } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
                     utils.removeSomethingFromRenderer(slave);
                     // if(slave.myLayer) {

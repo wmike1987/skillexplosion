@@ -109,7 +109,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
 
                     //loop existing items and see if we need to swap the grab
                     $.each(allItems, function(i, loopItem) {
-                        if(loopItem && loopItem != item && !loopItem.isEmpty) {
+                        if(loopItem && loopItem != item && !loopItem.isEmptySlot) {
                             if(loopItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
                                 if(item.worksWithSlot(loopItem.currentSlot)) {
                                     prevailingUnit.unequipItem(loopItem);

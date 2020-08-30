@@ -451,8 +451,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
 
         getRandomPlacementWithinCanvasBounds: function() {
             var placement = {};
-            placement.x = Math.random() * currentGame.canvasEl.getBoundingClientRect().width;
-            placement.y = Math.random() * currentGame.canvasEl.getBoundingClientRect().height;
+            placement.x = Math.random() * this.getCanvasWidth();
+            placement.y = Math.random() * this.getCanvasHeight();
             return placement;
         },
 
@@ -552,8 +552,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             var placement = {};
             var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
             var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
-            placement.x = Math.random() * (currentGame.canvasEl.getBoundingClientRect().width - bodyHalfWidth*2) + bodyHalfWidth;
-            placement.y = Math.random() * (currentGame.canvasEl.getBoundingClientRect().height - bodyHalfHeight*2) + bodyHTalfHeight;
+            placement.x = Math.random() * (this.getCanvasWidth() - bodyHalfWidth*2) + bodyHalfWidth;
+            placement.y = Math.random() * (this.getCanvasHeight() - bodyHalfHeight*2) + bodyHTalfHeight;
             Matter.Body.setPosition(body, placement);
             return placement;
         },
@@ -643,15 +643,15 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         getCanvasCenter: function() {
-          return {x: currentGame.canvasEl.getBoundingClientRect().width/2, y: currentGame.canvasEl.getBoundingClientRect().height/2};
+          return {x: this.getCanvasWidth()/2, y: this.getCanvasHeight()/2};
         },
 
         getCanvasHeight: function() {
-          return currentGame.canvasEl.getBoundingClientRect().height;
+          return currentGame.worldOptions.height + (currentGame.worldOptions.unitPanelHeight || 0);
         },
 
         getCanvasWidth: function() {
-          return currentGame.canvasEl.getBoundingClientRect().width;
+          return currentGame.worldOptions.width;
         },
 
         getCanvasWH: function() {
@@ -667,7 +667,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
         },
 
         getPlayableWidth: function() {
-          return currentGame.canvasEl.getBoundingClientRect().width;
+          return currentGame.worldOptions.width;
         },
 
         getPlayableHeight: function() {
@@ -806,7 +806,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 style = style.replace('server:', window.location.origin + '/app/Textures/');
                 style = 'url(' + style + ')' + (hotspot ? ' ' + hotspot : '') + ', auto';
             }
-            $('*').css('cursor', style);
+            // $('*').css('cursor', style);
         },
 
         /*
@@ -856,13 +856,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             return emitter;
         },
 
-        //method to normalize setting a matter js body
-        // setVelocity: function(body, velocity) {
-        //     //normalize to 16.6666 ms per frame
-        //     var normalizedVelocity = (currentGame.engine.delta / (1000/60)) * velocity;
-        //     Matter.Body.setVelocity(body, normalizedVelocity);
-        // },
-
         /*
          * Keep in mind where this is being called from. Calling this after the tick
          * event will prevent the current frame from decrementing frameCount.
@@ -891,6 +884,19 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                 currentGame.removeTickCallback(fun);
             }
             currentGame.addTickCallback(fun, false, event);
+        },
+
+        doSomethingAfterDuration: function(callback, duration) {
+            currentGame.addTimer(
+                {
+                    name: 'task:' + this.uuidv4(),
+                    timeLimit: duration,
+                    killsSelf: true,
+                    totallyDoneCallback: function() {
+                        callback();
+                    }
+                }
+            )
         },
 
         signalNewWave: function(wave, deferred) {

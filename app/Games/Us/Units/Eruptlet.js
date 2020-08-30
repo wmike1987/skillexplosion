@@ -136,8 +136,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
 
         }
 
-        var sc = {x: .1, y: .1};
-        var adjustedUpDownsc = {x: .1, y: .1};
+        var scale = .06;
+        var sc = {x: scale, y: scale};
+        var adjustedUpDownsc = {x: scale, y: scale};
         var flipsc = {x: -1 * sc.x, y: sc.y};
         var yOffset = 22;
         var vShader = new PIXI.Filter(null, valueShader, {
@@ -147,7 +148,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'selected',
             data: 'IsometricSelected',
-            scale: {x: .8, y: .8},
+            scale: {x: .6, y: .6},
             stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
@@ -157,7 +158,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         {
             id: 'selectionPending',
             data: 'IsometricSelectedPending',
-            scale: {x: 1, y: 1},
+            scale: {x: .72, y: .72},
             stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
@@ -234,7 +235,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             stage: "stageNTwo",
             offset: {x: 0, y: 22}}];
 
-        var attackSound = utils.getSound('critterhit.wav', {volume: .15, rate: 1});
+        var burstSound = utils.getSound('eruptletburst.wav', {volume: .08, rate: 1});
 
         var unitProperties = $.extend({
             unitType: 'Eruptlet',
@@ -243,8 +244,9 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energy: 0,
             energyRegenerationRate: 0,
             experienceWorth: 20,
-            portrait: utils.createDisplayObject('CritterPortrait'),
-            wireframe: utils.createDisplayObject('CritterPortrait'),
+            // adjustHitbox: true,
+            portrait: utils.createDisplayObject('EruptletPortrait'),
+            wireframe: utils.createDisplayObject('EruptletPortrait'),
             team: options.team || 4,
             priority: 50,
             name: options.name,
@@ -288,37 +290,51 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         }, options)
 
         return UC({
-                givenUnitObj: eruptlet,
-                renderChildren: rc,
-                radius: options.radius,
-                hitboxWidth: 40,
-                hitboxHeight: 40,
-                hitboxYOffset: 5,
-                mass: options.mass || 8,
-                mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-                slaves: [attackSound, unitProperties.portrait, unitProperties.wireframe],
-                unit: unitProperties,
-                moveable: {
-                    moveSpeed: 3.00,
-                    walkAnimations: runAnimations,
-                }, attacker: {
-                    attackAnimations: attackAnimations,
-                    cooldown: 650,
-                    honeRange: 300,
-                    range: options.radius*2+10,
-                    damage: 6,
-                    attackExtension: function(target) {
-                        var bloodAnimation = utils.getAnimationB({
-                            spritesheetName: 'UtilityAnimations1',
-                            animationName: 'GenericHit',
-                            speed: 1.0,
-                            transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
-                        });
-                        utils.addSomethingToRenderer(bloodAnimation, 'foreground');
-                        bloodAnimation.play();
-                        attackSound.play();
-                    },
-                },
+            givenUnitObj: eruptlet,
+            renderChildren: rc,
+            radius: options.radius,
+            hitboxWidth: 25,
+            hitboxHeight: 25,
+            hitboxYOffset: 10,
+            mass: options.mass || 8,
+            mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+            slaves: [burstSound, unitProperties.portrait, unitProperties.wireframe],
+            unit: unitProperties,
+            moveable: {
+                moveSpeed: 1.00,
+                walkAnimations: runAnimations,
+            },
+            attacker: {
+                attackAnimations: attackAnimations,
+                cooldown: 650,
+                honeRange: 300,
+                range: options.radius*2,
+                damage: 4,
+                attack: function(target) {
+                    var deathAnimation = utils.getAnimationB({
+                        spritesheetName: 'BanelingAnimations1',
+                        animationName: 'banedeath',
+                        speed: 2,
+                        transform: [this.position.x, this.position.y, 1.5, 1.5]
+                    });
+
+                    deathAnimation.rotation = Math.random() * Math.PI;
+                    deathAnimation.play();
+                    burstSound.play();
+                    utils.addSomethingToRenderer(deathAnimation, 'stageOne');
+
+                    var blastRadius = 70;
+                    var bodiesToDamage = [];
+                    utils.applyToUnitsByTeam(function(team) {return this.team != team}, function(unit) {
+                        return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
+                    }.bind(this), function(unit) {
+                        unit.sufferAttack(this.damage, this);
+                    }.bind(this));
+                    this.alreadyAttacked = true;
+                    if(!this.alreadyDied)
+                        this.sufferAttack(10000);
+                }
+            },
         });
     }
 })

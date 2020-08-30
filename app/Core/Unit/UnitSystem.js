@@ -15,7 +15,13 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
             this.box.collisionFilter.category = 0x0002;
             this.box.permaPendingUnit = null;
             this.box.pendingSelections = {};
-            this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: 0x2e99fb, stage: 'foreground', alpha: .3}];
+            this.box.tint = 0x00cbb8;
+            this.box.borderAlpha = .5;
+            this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: this.box.tint, stage: 'foreground', alpha: .3}];
+            this.box.topBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
+            this.box.bottomBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 1}});
+            this.box.leftBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
+            this.box.rightBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 1, y: 0}});
 
             //other unit system variables
             this.selectedUnits = {};
@@ -533,6 +539,10 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             this.box.boxContainsPermaPending = false;
                             this.mouseUpDelay.active = false;
                             this.forcedBoxFinalPoint = null;
+                            this.box.topBorder.visible = false;
+                            this.box.bottomBorder.visible = false;
+                            this.box.leftBorder.visible = false;
+                            this.box.rightBorder.visible = false;
                         }.bind(this), false, 'afterRenderWorld');
                         this.mouseUpDelay.active = true;
                     }
@@ -552,6 +562,23 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                 Matter.Body.setPosition(this.box, {x: newPoint.x - (newPoint.x - this.box.originalPoint.x)/2, y: newPoint.y - (newPoint.y - this.box.originalPoint.y)/2});
                 lastScaleX = newScaleX;
                 lastScaleY = newScaleY;
+
+                //establish border sprites
+                utils.addOrShowDisplayObject(this.box.topBorder);
+                utils.addOrShowDisplayObject(this.box.bottomBorder);
+                utils.addOrShowDisplayObject(this.box.leftBorder);
+                utils.addOrShowDisplayObject(this.box.rightBorder);
+                this.box.topBorder.position = {x: this.box.originalPoint.x, y: this.box.originalPoint.y};
+                this.box.topBorder.scale = {x: newPoint.x - this.box.originalPoint.x, y: 1};
+
+                this.box.bottomBorder.position = {x: this.box.originalPoint.x, y: newPoint.y};
+                this.box.bottomBorder.scale = {x: newPoint.x - this.box.originalPoint.x, y: 1};
+
+                this.box.leftBorder.position = {x: this.box.originalPoint.x, y: this.box.originalPoint.y};
+                this.box.leftBorder.scale = {x: 1, y: newPoint.y - this.box.originalPoint.y};
+
+                this.box.rightBorder.position = {x: newPoint.x, y: this.box.originalPoint.y};
+                this.box.rightBorder.scale = {x: 1, y: newPoint.y - this.box.originalPoint.y};
             };
 
             var smallBoxThreshold = 3;

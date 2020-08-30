@@ -26,7 +26,11 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			hudOne: new PIXI.Container(),
 			hudTwo: new PIXI.Container(),
 			hudThree: new PIXI.Container(),
-			hudText: new PIXI.Container()};
+			hudText: new PIXI.Container()
+		};
+
+		//texture name to atlas cache
+		this.texAtlCache = {};
 
 		//create the layering groups
 		var i = 0;
@@ -346,6 +350,10 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			    else { //Check for textures inside a texture atlas
 			        var foundAtlasTexture;
 			        $.each(PIXI.Loader.shared.resources, function(key, value) {
+						if(this.texAtlCache[something]) {
+							foundAtlasTexture = new PIXI.Sprite(this.texAtlCache[something]);
+							return false;
+						}
 			            if(value.extension == 'json') {
 			                if(something.indexOf('.png') < 0)
             					var pngSomething = something + '.png';
@@ -359,8 +367,16 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 			                else if(value.textures && value.textures[jpgSomething]) {
 			                    foundAtlasTexture = new PIXI.Sprite(value.textures[jpgSomething]);
 			                }
-			            }
-			        })
+			            } else {
+							return false;
+						}
+						if(foundAtlasTexture) {
+							if(!this.texAtlCache[something]) {
+								this.texAtlCache[something] = value.textures[something];
+							}
+							return false;
+						}
+			        }.bind(this))
 			        if(foundAtlasTexture) return foundAtlasTexture;
 			    }
 

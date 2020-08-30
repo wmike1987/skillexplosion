@@ -1,0 +1,20 @@
+{"frames": {
+
+"EruptletPortrait.png":
+{
+	"frame": {"x":1,"y":1,"w":82,"h":90},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":82,"h":90},
+	"sourceSize": {"w":90,"h":90}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Eruptlet.png",
+	"format": "RGBA8888",
+	"size": {"w":84,"h":92},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:27aa9e44638bfe514a30cdd57def96c4:a655a5f684e98d766e1a2b8e2c008b83:d08f8a02963f8f3e8e039bc72fb397a0$"
+}
+}

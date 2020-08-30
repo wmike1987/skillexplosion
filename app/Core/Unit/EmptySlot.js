@@ -9,7 +9,7 @@ define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, ut
             manipulations: manipulations,
             name: "EMPTY",
             description: [],
-            isEmpty: true,
+            isEmptySlot: true,
         })
     };
 })

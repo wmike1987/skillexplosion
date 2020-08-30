@@ -406,6 +406,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
         },
 
         createUrsula: function() {
+            // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
             this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
             this.ursula.idleCancel = true;
             return this.ursula;

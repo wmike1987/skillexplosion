@@ -26,7 +26,7 @@ function($, Matter, PIXI, utils, unitMenu) {
                 enemySets.push({
                     constructor: unitMenu.Eruptlet,
                     wave: 1,
-                    icon: 'CritterPortrait',
+                    icon: 'EruptletPortrait',
                     spawn: {total: 2 + utils.getRandomIntInclusive(12, 15), n: 1, hz: 1800, atATime: 5},
                     item: {type: 'worn', total: 1}
                 })
