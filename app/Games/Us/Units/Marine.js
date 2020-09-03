@@ -648,10 +648,10 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 },
                 {
                     name: 'first aid pouch',
-                    healAmount: 1,
+                    healAmount: 3,
                     icon: utils.createDisplayObject('FirstAidPouchIcon'),
                     title: 'First Aid Pouch',
-                    description: 'Heal self and nearby allies for 1 hp after firing rifle.'
+                    description: 'Heal self and nearby allies for 3 hp after firing rifle.'
                 },
             ],
         })
@@ -757,7 +757,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                                     utils.detachSomethingFromBody(lifeUpAnimation);
                                 })
 
-                                unit.currentHealth+=1;
+                                unit.currentHealth += currentAugment.healAmount;
                             })
                         }
 

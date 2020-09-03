@@ -240,7 +240,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 energy: 0,
                 energyRegenerationRate: 1,
                 portrait: utils.createDisplayObject('SentinelPortrait'),
-                wireframe: utils.createDisplayObject('SentinelPortrait'),
+                wireframe: utils.createDisplayObject('SentinelGroupPortrait'),
                 team: options.team || 4,
                 priority: 50,
                 experienceWorth: 20,

@@ -861,7 +861,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
          * event will prevent the current frame from decrementing frameCount.
          */
         executeSomethingNextFrame: function(callback, frameCount) {
-            var limit = frameCount || 1;
+            var limit = frameCount == null ? 1 : frameCount;
             currentGame.addTimer({
                 name: this.uuidv4(),
                 killsSelf: true,

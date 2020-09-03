@@ -686,8 +686,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             },
             {
                 name: 'lightest touch',
-                rangeDelta: 30,
-                healDelta: .5,
+                rangeDelta: 40,
+                healDelta: 1.0,
                 icon: utils.createDisplayObject('LightestTouch'),
                 title: 'Lightest Touch',
                 description: 'Increase healing range and healing amount.',
@@ -836,7 +836,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                     walkAnimations: walkAnimations,
                 }, attacker: {
                     attackAnimations: healAnimations,
-                    cooldown: 360,
+                    cooldown: 333,
                     honeRange: 300,
                     range: rad*2 + 10,
                     canAttackAndMove: false,

@@ -240,7 +240,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             energyRegenerationRate: 0,
             experienceWorth: 20,
             portrait: utils.createDisplayObject('CritterPortrait'),
-            wireframe: utils.createDisplayObject('CritterPortrait'),
+            wireframe: utils.createDisplayObject('CritterGroupPortrait'),
             team: options.team || 4,
             priority: 50,
             name: options.name,

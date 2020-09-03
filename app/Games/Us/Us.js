@@ -401,14 +401,16 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
              this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
              //this.shane.noIdle = true;
              // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-             ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
+             // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
+             utils.moveUnitOffScreen(this.shane);
              return this.shane;
         },
 
         createUrsula: function() {
             // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
             this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
-            this.ursula.idleCancel = true;
+            // this.ursula.idleCancel = true;
+            utils.moveUnitOffScreen(this.ursula);
             return this.ursula;
         },
 
@@ -418,7 +420,11 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 unit.revive();
             }
             unit.isTargetable = true;
-            unit.position = utils.getCanvasCenter();
+            if(unit.name == 'Shane') {
+                unit.position = utils.clonePosition(utils.getCanvasCenter(), {x: -20, y: 0});;
+            } else {
+                unit.position = utils.clonePosition(utils.getCanvasCenter(), {x: 20, y: 0});
+            }
             unit.currentHealth = unit.maxHealth;
             unit.currentEnergy = unit.maxEnergy;
             unit.canMove = true;

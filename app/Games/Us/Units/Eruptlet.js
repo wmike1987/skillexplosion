@@ -9,7 +9,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         $.extend(options, {radius: 25}, options)
 
         //animation settings
-        var runSpeed = .9;
+        var runSpeed = .6;
         var runSpeedBonus = .25;
         var shootSpeed = 1;
 
@@ -228,7 +228,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
         },{
             id: 'shadow',
             data: 'IsoShadowBlurred',
-            scale: {x: .75, y: .75},
+            scale: {x: .6, y: .6},
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -246,7 +246,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             experienceWorth: 20,
             // adjustHitbox: true,
             portrait: utils.createDisplayObject('EruptletPortrait'),
-            wireframe: utils.createDisplayObject('EruptletPortrait'),
+            wireframe: utils.createDisplayObject('EruptletGroupPortrait'),
             team: options.team || 4,
             priority: 50,
             name: options.name,
@@ -301,7 +301,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             slaves: [burstSound, unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
             moveable: {
-                moveSpeed: 1.00,
+                moveSpeed: 1.5,
                 walkAnimations: runAnimations,
             },
             attacker: {
@@ -309,7 +309,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 cooldown: 650,
                 honeRange: 300,
                 range: options.radius*2,
-                damage: 4,
+                damage: 6,
                 attack: function(target) {
                     var deathAnimation = utils.getAnimationB({
                         spritesheetName: 'BanelingAnimations1',

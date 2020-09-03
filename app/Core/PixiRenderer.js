@@ -354,25 +354,30 @@ define(['matter-js', 'pixi', 'jquery'], function(Matter, PIXI, $) {
 							foundAtlasTexture = new PIXI.Sprite(this.texAtlCache[something]);
 							return false;
 						}
+
+						var foundTextureKey = null;
 			            if(value.extension == 'json') {
 			                if(something.indexOf('.png') < 0)
             					var pngSomething = something + '.png';
             					var jpgSomething = something + '.jpg';
 							if(value.textures && value.textures[something]) {
 								foundAtlasTexture = new PIXI.Sprite(value.textures[something]);
+								foundTextureKey = something;
 							}
 			                else if(value.textures && value.textures[pngSomething]) {
 			                    foundAtlasTexture = new PIXI.Sprite(value.textures[pngSomething]);
+								foundTextureKey = pngSomething;
 			                }
 			                else if(value.textures && value.textures[jpgSomething]) {
 			                    foundAtlasTexture = new PIXI.Sprite(value.textures[jpgSomething]);
+								foundTextureKey = jpgSomething;
 			                }
 			            } else {
 							return false;
 						}
 						if(foundAtlasTexture) {
 							if(!this.texAtlCache[something]) {
-								this.texAtlCache[something] = value.textures[something];
+								this.texAtlCache[something] = value.textures[foundTextureKey];
 							}
 							return false;
 						}

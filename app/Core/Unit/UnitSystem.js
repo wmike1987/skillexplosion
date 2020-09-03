@@ -539,10 +539,14 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                             this.box.boxContainsPermaPending = false;
                             this.mouseUpDelay.active = false;
                             this.forcedBoxFinalPoint = null;
-                            this.box.topBorder.visible = false;
-                            this.box.bottomBorder.visible = false;
-                            this.box.leftBorder.visible = false;
-                            this.box.rightBorder.visible = false;
+                            utils.executeSomethingNextFrame(function() {
+                                if(!this.box.selectionBoxActive) {
+                                    this.box.topBorder.visible = false;
+                                    this.box.bottomBorder.visible = false;
+                                    this.box.leftBorder.visible = false;
+                                    this.box.rightBorder.visible = false;
+                                }
+                            }.bind(this), 0)
                         }.bind(this), false, 'afterRenderWorld');
                         this.mouseUpDelay.active = true;
                     }

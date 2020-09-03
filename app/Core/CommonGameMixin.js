@@ -156,12 +156,6 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 }
             });
 
-            //mouse position
-            // this.addEventListener('mousemove', function(event) {
-            //     this.mousePosition.x = event.data.global.x;
-            //     this.mousePosition.y = event.data.global.y;
-            // }.bind(this), true, true);
-
             this.addEventListener('mousemove', function(event) {
                 var rect = this.canvasEl.getBoundingClientRect();
 				this.mousePosition.x = event.clientX - rect.left;
