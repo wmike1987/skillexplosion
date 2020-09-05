@@ -168,7 +168,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                             this.backgroundLightShader.uniforms.flameVariation = this.lightPower;
                             this.stageLightShader.uniforms.flameVariation = this.lightPower;
                             this.backgroundLightShader.uniforms.red = backgroundRed + this.lightPower/2;
-                            this.stageLightShader.uniforms.red = stageRed + this.lightPower*2;
+                            this.stageLightShader.uniforms.red = stageRed + this.lightPower*1.0;
                         }.bind(this)
                     })
 
