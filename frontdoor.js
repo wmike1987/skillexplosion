@@ -202,7 +202,8 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('ItemAnimations1', 'app/Textures/Us/ItemAnimations1.json');
 
             //generic textures and animations
-            loader.add('Utility', 'app/Textures/Us/Utility.json');
+            loader.add('Utility0', 'app/Textures/Us/Utility-0.json');
+            loader.add('Utility1', 'app/Textures/Us/Utility-1.json');
             loader.add('UtilityAnimations1', 'app/Textures/Us/UtilityAnimations1.json');
             loader.add('UtilityAnimations2', 'app/Textures/Us/UtilityAnimations2.json');
 

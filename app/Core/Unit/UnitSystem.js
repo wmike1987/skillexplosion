@@ -765,6 +765,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                      if(keyStates['Control']) {
                          if(this.selectedUnit) {
                              this.selectedUnit.sufferAttack(10);
+                             this.box.invalidateNextMouseUp = true;
                          }
                      }
                  }

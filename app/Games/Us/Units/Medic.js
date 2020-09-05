@@ -724,7 +724,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                             combospiritAnimation.play();
                             var projectileOptions = {
                                 damage: 0,
-                                speed: 2.0,
+                                speed: 1.0,
                                 displayObject: combospiritAnimation,
                                 target: livingAlliedUnit,
                                 owningUnit: unit,

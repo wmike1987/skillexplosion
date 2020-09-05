@@ -119,17 +119,18 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 this.lightDirection = 1;
                 this.lightRadius = 650;
 
+                var backgroundRed = 5.0;
                 this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                     flameVariation: 0.0,
                     yOffset: 0.0,
-                    red: 3.0,
-                    green: 1.5,
+                    red: backgroundRed,
+                    green: 1.2,
                     blue: 1.5,
-                    lightPower: 1.6,
+                    lightPower: 2.0,
                 });
 
-                var stageRed = 3.2;
+                var stageRed = 5.2;
                 this.stageLightShader = new PIXI.Filter(null, campfireShader, {
                     lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                     flameVariation: 0.0,
@@ -137,7 +138,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                     red: stageRed,
                     green: 1.5,
                     blue: 0.8,
-                    lightPower: 2.0,
+                    lightPower: 1.6,
                 });
                 this.treeShader = new PIXI.Filter(null, ValueShader, {
                     colors: [0.4, 0.4, 2.0]
@@ -164,9 +165,10 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                                 this.lightDirection = -1;
                             }
 
-                            this.backgroundLightShader.uniforms.flameVariation = this.lightPower/1.0;
-                            this.stageLightShader.uniforms.flameVariation = this.lightPower/1.0;
-                            this.stageLightShader.uniforms.red = stageRed + this.lightPower;
+                            this.backgroundLightShader.uniforms.flameVariation = this.lightPower;
+                            this.stageLightShader.uniforms.flameVariation = this.lightPower;
+                            this.backgroundLightShader.uniforms.red = backgroundRed + this.lightPower/2;
+                            this.stageLightShader.uniforms.red = stageRed + this.lightPower*2;
                         }.bind(this)
                     })
 
@@ -187,7 +189,7 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
             var tileWidth = this.tileSize;
 
             var backgroundTiles = [];
-            var gType = utils.getRandomElementOfArray(["Red", "Orange", "Yellow", "Teal"]);
+            var gType = utils.getRandomElementOfArray(["Green"]);
             for(var i = 1; i < 7; i++) {
                 backgroundTiles.push('LushGrass1/'+gType+'Grass'+i);
             }
@@ -223,11 +225,17 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 position: {x: utils.getCanvasCenter().x+150, y: utils.getPlayableHeight()-350}})
             campScene.add(sleepingbags);
 
-            var boxes = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 50, texture: 'Boxes1',
-                stage: 'stage', scale: {x: 1.5, y: 1.5}, offset: {x: 0, y: 0}, sortYOffset: 0,
-                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 0, y: 0}, shadowOffset: {x: 0, y: 10},
-                position: {x: utils.getCanvasCenter().x-235, y: utils.getPlayableCenter().y}})
-            campScene.add(boxes);
+            // var dtable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: 'dinnertable',
+            //     stage: 'stage', scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
+            //     shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 0, y: 0}, shadowOffset: {x: 0, y: 10},
+            //     position: {x: utils.getCanvasCenter().x-235, y: utils.getPlayableCenter().y}})
+            // campScene.add(dtable);
+
+            var gunrack = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 10, texture: 'gunrack',
+                stage: 'stage', scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
+                shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -2, y: 15},
+                position: {x: utils.getCanvasCenter().x-180, y: utils.getPlayableCenter().y-30}})
+            campScene.add(gunrack);
 
             var flag = utils.getAnimationB({
                 spritesheetName: 'UtilityAnimations2',

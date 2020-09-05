@@ -24,9 +24,9 @@ define([], function() {
         float litScale = lengthToLightOnePosition/alteredLightRadius;
 
         //immediately dim the scene
-        fg.r *= 0.2;
-        fg.g *= 0.2;
-        fg.b *= 0.5; //favor blue
+        fg.r *= 0.15;
+        fg.g *= 0.15;
+        fg.b *= 0.6; //favor blue
 
         //light scale values
         float rScale = (1.0 + red * lightPower);
