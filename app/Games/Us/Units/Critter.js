@@ -1,4 +1,4 @@
-define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'utils/styles', 'unitcore/_Augmentable'],
+define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility', 'utils/Styles', 'unitcore/_Augmentable'],
     function($, PIXI, UC, Matter, utils, Ability, styles, aug) {
 
     return function Critter(options) {

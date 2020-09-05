@@ -1,5 +1,5 @@
 define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUtils', 'unitcore/UnitAbility',
- 'utils/styles', 'unitcore/_Augmentable', 'shaders/ValueShader'],
+ 'utils/Styles', 'unitcore/_Augmentable', 'shaders/ValueShader'],
     function($, PIXI, UC, Matter, utils, Ability, styles, aug, valueShader) {
 
     return function Eruptlet(options) {
