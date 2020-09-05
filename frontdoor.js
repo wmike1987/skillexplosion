@@ -232,7 +232,7 @@ requirejs(['jquery', 'pixi'], function($, PIXI) {
             loader.add('critterN', 'app/SpineAssets/Critter Exports/N/North.json');
             loader.add('critterNW', 'app/SpineAssets/Critter Exports/NW/Northwest.json');
             loader.add('critterS', 'app/SpineAssets/Critter Exports/S/South.json');
-            loader.add('critterSW', 'app/SpineAssets/Critter Exports/SW/Southwest.json');
+            loader.add('critterSW', 'app/SpineAssets/Critter Exports/SW/SouthWest.json');
             loader.add('critterW', 'app/SpineAssets/Critter Exports/W/West.json');
 
             loader.add('alienN', 'app/SpineAssets/Alien Export/N/N.json');
