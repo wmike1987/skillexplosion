@@ -136,6 +136,8 @@ requirejs(['jquery'], function($) {
     	if(window.location.hash) {
     	    loadGameIntoTheater(gameDict[window.location.hash.substring(1)]);
     	}
+
+        console.info("Your screen resolution is: " + screen.width + "x" + screen.height);
     });
 });
 

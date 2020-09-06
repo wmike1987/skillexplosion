@@ -135,43 +135,51 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 spine: spineNorth,
                 animationName: 'throw',
                 speed: 0.5,
+                mixedAnimation: true
             }),
             upRight: utils.getSpineAnimation({
                 spine: spineNorthEast,
                 animationName: 'throw',
                 times: 1,
                 speed: 0.5,
+                mixedAnimation: true
             }),
             right: utils.getSpineAnimation({
                 spine: spineEast,
                 animationName: 'throw',
                 times: 1,
                 speed: 0.5,
+                mixedAnimation: true
             }),
             downRight: utils.getSpineAnimation({
                 spine: spineSouthEast,
                 animationName: 'throw',
                 speed: .5,
+                mixedAnimation: true
             }),
             down: utils.getSpineAnimation({
                 spine: spineSouth,
                 animationName: 'throw',
                 speed: .5,
+                mixedAnimation: true
             }),
             downLeft: utils.getSpineAnimation({
                 spine: spineSouthWest,
                 animationName: 'throw',
                 speed: .5,
+                mixedAnimation: true
             }),
             left: utils.getSpineAnimation({
                 spine: spineWest,
                 animationName: 'throw',
                 speed: .5,
+                mixedAnimation: true
             }),
             upLeft: utils.getSpineAnimation({
                 spine: spineNorthWest,
                 animationName: 'throw',
                 speed: .5,
+                mixedAnimation: true
             }),
         }
 
@@ -492,7 +500,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             utils.deathPact(knife, removeSelf);
 
             //play spine animation
-            this.isoManager.playSpecifiedAnimation('throw', utils.isoDirectionBetweenPositions(this.position, destination));
+            this.isoManager.playSpecifiedAnimation('throw', utils.isoDirectionBetweenPositions(this.position, destination), {movePrecedence: true});
 
             var self = this;
             Matter.Events.on(knife, 'onCollide', function(pair) {

@@ -38,12 +38,20 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 		//attach listeners (using the matter event system)
 		if(this.unit.isMoveable) {
 			Matter.Events.on(this.unit, 'move', function(event) {
-				this.switchAnimation(this.unit.walkAnimations[event.direction]);
-				this.currentDirection = event.direction;
+				if(this.currentMoveAnimation != this.unit.walkAnimations[event.direction]) {
+					if(this.currentMoveAnimation)
+						this.currentMoveAnimation.stop();
+					this.switchAnimation(this.unit.walkAnimations[event.direction]);
+					this.currentDirection = event.direction;
+					this.currentMoveAnimation = this.unit.walkAnimations[event.direction];
+				}
 			}.bind(this))
 
 			//turn on idle
 			Matter.Events.on(this.unit, 'stop', function(event) {
+				if(this.currentMoveAnimation)
+					this.currentMoveAnimation.stop();
+				this.currentMoveAnimation = null;
 				if(!this.idleTimer)
 					this.idle();
 			}.bind(this))
@@ -57,9 +65,9 @@ function($, Matter, PIXI, Moveable, Attacker, utils) {
 			}.bind(this))
 		}
 
-		this.playSpecifiedAnimation = function(animationName, direction) {
-			if(this.unit[animationName+'Animations']) {
-				this.switchAnimation(this.unit.throwAnimations[direction])
+		this.playSpecifiedAnimation = function(animationName, direction, options) {
+			if(this.unit[animationName+'Animations'] && ((options.movePrecedence && this.currentDirection == direction && this.unit.isMoving) || !this.unit.isMoving)) {
+				this.switchAnimation(this.unit[animationName+'Animations'][direction])
 				this.currentDirection = direction;
 			} else {
 				return;

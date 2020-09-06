@@ -482,18 +482,18 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             var mineExplosionAnimation = utils.getAnimationB({
 				spritesheetName: 'MedicAnimations1',
 				animationName: 'mineexplosion',
-				speed: .8,
-				transform: [mineState.position.x, mineState.position.y, 5.5, 5.5]
+				speed: 2.8,
+				transform: [mineState.position.x, mineState.position.y, 5.0, 5.0]
 			});
 
             //smoke animation
             var smokeExplosionAnimation = utils.getAnimationB({
                 spritesheetName: 'MedicAnimations1',
                 animationName: 'explosion-c',
-                speed: .55,
-                transform: [mineState.position.x, mineState.position.y-20, 2, 2]
+                speed: .4,
+                transform: [mineState.position.x, mineState.position.y-30, 3, 3]
             });
-            smokeExplosionAnimation.alpha = .3;
+            smokeExplosionAnimation.alpha = .6;
             if(currentAugment.name == 'shrapnel') {
                 mineExplosionAnimation.tint = 0xD7FFFA;
             } else if(currentAugment.name == 'maim') {

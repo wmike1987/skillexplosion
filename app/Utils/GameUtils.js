@@ -181,6 +181,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
             Object.defineProperty(anim, 'visible', {
                 set: function(v) {
                     options.spine.visible = v;
+                    // reset lastTime to be null since pixi freezes the delta timing of the pixi-spine object when 'visible' becomes false.
+                    options.spine.lastTime = null;
                 }
             });
 
@@ -201,22 +203,31 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'particles', 'utils
                     return;
                 }
 
+                //This is hard coded to play something on track 1, if multiple
+                if(options.mixedAnimation) {
+                    options.spine.state.clearTrack(1);
+                    var track = options.spine.state.addAnimation(1, options.animationName, false, 0);
+                    track.mixDuration = 2.0;
+                    return;
+                }
+
                 //Set the animation name for use in the above test
                 options.spine.currentAnimation = options.animationName;
 
-                //Clear track and reset lastTime to be null since pixi freezes the delta timing of the pixi-spine
-                //object when 'visible' becomes false.
+                //Clear track
                 options.spine.state.clearTrack(0);
-                options.spine.lastTime = null;
-                options.spine.skeleton.setToSetupPose()
+                options.spine.skeleton.setToSetupPose();
 
                 //Set animation speed
                 options.spine.state.timeScale = options.speed || 1;
 
+                if(!options.times) {
+                    options.times = 1;
+                }
                 //Loop if desired
                 if(options.loop) {
                     options.spine.state.setAnimation(0, options.animationName, options.loop);
-                } else if(options.times || 1) {
+                } else if(options.times) {
                     //Otherwise queue the animation so many times
                     $.each(new Array(options.times), function() {
                         var entry = options.spine.state.addAnimation(0, options.animationName, false, 0);
