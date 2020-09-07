@@ -31,22 +31,6 @@ requirejs.config({
   },
 });
 
-//configure navbar
-requirejs(["jquery"], function ($) {
-//   $(document).ready(function () {
-//     $.map($(".navbar-item"), (navBar) => {
-//       $(navBar).mouseover(() => {
-//         var target = $(navBar).data("target");
-//         $(`#${target}`).show("fast");
-//       });
-//       $(navBar).mouseleave(() => {
-//         var target = $(navBar).data("target");
-//         $(`#${target}`).hide("fast");
-//       });
-//     });
-//   });
-});
-
 //load the collision plugin
 require(["matter-js", "matterCollisionPlugin"], function (
   Matter,
