@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="40px" viewBox="0 0 27 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>SelectionBoxIcon</title>
+    <defs>
+        <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#9BE4FD" offset="0%"></stop>
+            <stop stop-color="#62C5FA" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="1440" height="125"></rect>
+        <filter x="-1.6%" y="-15.2%" width="103.2%" height="136.8%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-828.000000, -45.000000)">
+            <g id="Navbar" transform="translate(0.090909, 0.000000)">
+                <g id="Background">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                    <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                </g>
+                <g id="NavItems" transform="translate(631.909091, 43.000000)" fill="#FFFFFF">
+                    <g id="SelectionBoxIcon" transform="translate(197.000000, 2.000000)">
+                        <polygon id="Fill-1" points="23.1588 37.2901 23.1588 37.8321 22.7188 37.8321 22.7188 40.0001 24.9198 40.0001 24.9198 37.2901"></polygon>
+                        <path d="M16.857,40 L19.788,40 L19.788,37.832 L16.857,37.832 L16.857,40 Z M10.994,40 L13.925,40 L13.925,37.832 L10.994,37.832 L10.994,40 Z M5.132,40 L8.063,40 L8.063,37.832 L5.132,37.832 L5.132,40 Z" id="Fill-2"></path>
+                        <polygon id="Fill-3" points="0 37.2901 0 40.0001 2.201 40.0001 2.201 37.8321 1.761 37.8321 1.761 37.2901"></polygon>
+                        <path d="M0,8.998 L1.761,8.998 L1.761,5.853 L0,5.853 L0,8.998 Z M0,15.284 L1.761,15.284 L1.761,12.14 L0,12.14 L0,15.284 Z M0,21.572 L1.761,21.572 L1.761,18.428 L0,18.428 L0,21.572 Z M0,27.859 L1.761,27.859 L1.761,24.715 L0,24.715 L0,27.859 Z M0,34.146 L1.761,34.146 L1.761,31.002 L0,31.002 L0,34.146 Z" id="Fill-4"></path>
+                        <polygon id="Fill-5" points="0 0.0004 0 2.7094 1.761 2.7094 1.761 2.1674 2.201 2.1674 2.201 0.0004"></polygon>
+                        <path d="M16.857,2.168 L19.788,2.168 L19.788,0.001 L16.857,0.001 L16.857,2.168 Z M10.994,2.168 L13.925,2.168 L13.925,0.001 L10.994,0.001 L10.994,2.168 Z M5.132,2.168 L8.063,2.168 L8.063,0.001 L5.132,0.001 L5.132,2.168 Z" id="Fill-6"></path>
+                        <polygon id="Fill-7" points="22.7187 0.0004 22.7187 2.1674 23.1587 2.1674 23.1587 2.7094 24.9197 2.7094 24.9197 0.0004"></polygon>
+                        <path d="M23.159,8.998 L24.92,8.998 L24.92,5.853 L23.159,5.853 L23.159,8.998 Z M23.159,15.284 L24.92,15.284 L24.92,12.14 L23.159,12.14 L23.159,15.284 Z M23.159,21.572 L24.92,21.572 L24.92,18.428 L23.159,18.428 L23.159,21.572 Z M23.159,27.859 L24.92,27.859 L24.92,24.715 L23.159,24.715 L23.159,27.859 Z M23.159,34.146 L24.92,34.146 L24.92,31.002 L23.159,31.002 L23.159,34.146 Z" id="Fill-8"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
