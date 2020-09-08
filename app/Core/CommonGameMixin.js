@@ -114,7 +114,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         body.verticesCopy = [];
                     }
                     body.verticesCopy.push(utils.cloneVertices(body.vertices));
-                    if(body.verticesCopy.length > 5) {
+                    if(body.verticesCopy.length > 3) {
                         body.verticesCopy.shift();
                     }
 
@@ -124,7 +124,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         body.positionsCopy = [];
                     }
                     body.positionsCopy.push(utils.clonePosition(body.position));
-                    if(body.positionsCopy.length > 5) {
+                    if(body.positionsCopy.length > 3) {
                         body.positionsCopy.shift();
                     }
 
@@ -133,7 +133,7 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                         body.partsCopy = [];
                     }
                     body.partsCopy.push(utils.cloneParts(body.parts));
-                    if(body.partsCopy.length > 5) {
+                    if(body.partsCopy.length > 3) {
                         body.partsCopy.shift();
                     }
                 }.bind(this))
@@ -512,7 +512,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 body = body.body;
             }
 
-            if(body.vertices && false)
+            //This might have some performance impact... possibly will investigate
+            if(body.vertices)
                 this.verticeHistories.push(body);
 
             //add to matter world

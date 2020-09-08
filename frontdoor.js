@@ -79,7 +79,7 @@ requirejs(["jquery"], function ($) {
     //callback when game name is clicked
     var previousGame;
     var loadGameIntoTheater = function (gameName) {
-      //immedately display at least something since we may still be loading things if user clicked a game really quickly
+      //immediately display at least something since we may still be loading things if user clicked a game really quickly
       $("#gameTheater").text("Loading...");
 
       //load game
@@ -103,7 +103,7 @@ requirejs(["jquery"], function ($) {
 
         //specify game theater as the place to situate the canvas and load the GUI
         $(".theater-gui").css("width", game.worldOptions.width);
-        $(".theater-gui").css("height", game.worldOptions.height + 50);
+        $(".theater-gui").css("height", game.worldOptions.height + (game.worldOptions.unitPanelHeight || 0) + 50);
         $(".theater-toolbar").css("display", "flex");
         game.worldOptions.appendToElement = "gameTheater";
         console.log("[game.worldOptions]", game.worldOptions);
