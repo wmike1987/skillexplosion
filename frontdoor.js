@@ -101,8 +101,12 @@ requirejs(["jquery"], function ($) {
         }
         $("#gameTheater").empty();
 
-        //specify game theater as the place to situate the canvas
+        //specify game theater as the place to situate the canvas and load the GUI
+        $(".theater-gui").css("width", game.worldOptions.width);
+        $(".theater-gui").css("height", game.worldOptions.height + 50);
+        $(".theater-toolbar").css("display", "flex");
         game.worldOptions.appendToElement = "gameTheater";
+        console.log("[game.worldOptions]", game.worldOptions);
 
         //instantiate brand new game
         var newGameInstance = (previousGame = Object.create(game));

@@ -60,7 +60,7 @@
             src="app/Textures/MouseIcon.svg"
             class="navbar-icon"
           />Point-Click
-          <div class="dropdown" id="point-click">
+          <div class="nav-dropdown" id="point-click">
             <ul class="gameList">
               <li>
                 <a gameName="Simple_Target" class="game" href="#"
@@ -98,7 +98,7 @@
             src="app/Textures/SelectionBoxIcon.svg"
             class="navbar-icon"
           />Selection Box
-          <div class="dropdown" id="selection-box">
+          <div class="nav-dropdown" id="selection-box">
             <ul class="gameList">
               <li><a gameName="Marbles" class="game" href="#">Marbles</a></li>
               <li><a gameName="Split" class="game" href="#">Split</a></li>
@@ -114,7 +114,7 @@
             src="app/Textures/KeyboardIcon.svg"
             class="navbar-icon"
           />Keyboard
-          <div class="dropdown" id="keyboard">
+          <div class="nav-dropdown" id="keyboard">
             <ul class="gameList">
               <li><a gameName="Recall" class="game" href="#">Key Recall</a></li>
             </ul>
@@ -122,7 +122,7 @@
         </div>
         <div class="navbar-item" data-target="math-puzzle">
           <img src="app/Textures/MathIcon.svg" class="navbar-icon" />Math/Puzzle
-          <div class="dropdown" id="math-puzzle">
+          <div class="nav-dropdown" id="math-puzzle">
             <ul class="gameList">
               <li>
                 <a gameName="SequenceMatch" class="game" href="#"
@@ -138,13 +138,16 @@
       </div>
     </div>
     <div class="container">
-      <div class="column-right sideColumn">
-        <div class="noSelect" id="highScoreTable"></div>
-      </div>
-
-      <div class="column-center">
+      <div class="theater-gui">
+        <div class="theater-toolbar">
+          <div class="toolbar-item">Scores<div class="toolbar-dropdown" id="highScoreTable"></div>
+          </div>
+          <div class="toolbar-item">
+            Instructions
+            <div class="toolbar-dropdown" id="gameInstructions"></div>
+          </div>
+        </div>
         <div id="gameTheater"></div>
-        <div class="noSelect" id="gameInstructions"></div>
       </div>
     </div>
   </div>
