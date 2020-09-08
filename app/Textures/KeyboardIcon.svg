@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="40px" viewBox="0 0 27 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>KeyboardIcon</title>
+    <defs>
+        <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#9BE4FD" offset="0%"></stop>
+            <stop stop-color="#62C5FA" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="1440" height="125"></rect>
+        <filter x="-1.6%" y="-15.2%" width="103.2%" height="136.8%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <polygon id="path-4" points="0 0.0005 24.9198 0.0005 24.9198 40 0 40"></polygon>
+    </defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-1057.000000, -44.000000)">
+            <g id="Navbar" transform="translate(0.090909, 0.000000)">
+                <g id="Background">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                    <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                </g>
+                <g id="NavItems" transform="translate(631.909091, 43.000000)">
+                    <g id="KeyboardIcon" transform="translate(426.000000, 1.000000)">
+                        <mask id="mask-5" fill="white">
+                            <use xlink:href="#path-4"></use>
+                        </mask>
+                        <g id="Clip-2"></g>
+                        <path d="M17.8938,30.7605 L9.9408,30.7605 L9.9408,33.1055 L5.0188,29.7945 L9.9408,26.6215 L9.9408,29.3805 L16.6318,29.3805 L16.6318,22.4835 L17.8938,22.4835 L17.8938,30.7605 Z M22.2318,0.0005 L10.2368,0.0005 C8.7518,0.0005 7.5488,2.4125 7.5488,5.3885 L7.5488,18.6535 L2.5338,18.6535 C1.1338,18.6535 -0.0002,20.9265 -0.0002,23.7305 L-0.0002,34.9225 C-0.0002,37.7265 1.1338,40.0005 2.5338,40.0005 L22.3868,40.0005 C23.7858,40.0005 24.9198,37.7265 24.9198,34.9225 L24.9198,31.9175 L24.9198,23.7305 L24.9198,5.3885 C24.9198,2.4125 23.7168,0.0005 22.2318,0.0005 L22.2318,0.0005 Z" id="Fill-1" fill="#FFFFFF" mask="url(#mask-5)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

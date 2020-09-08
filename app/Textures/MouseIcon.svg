@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="40px" viewBox="0 0 27 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>MouseIcon</title>
+    <defs>
+        <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#9BE4FD" offset="0%"></stop>
+            <stop stop-color="#62C5FA" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="1440" height="125"></rect>
+        <filter x="-1.6%" y="-15.2%" width="103.2%" height="136.8%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <polygon id="path-4" points="0.0004 0 11.7984 0 11.7984 15.9637 0.0004 15.9637"></polygon>
+        <polygon id="path-6" points="0.1212 0.0001 11.92 0.0001 11.92 15.9631 0.1212 15.9631"></polygon>
+        <polygon id="path-8" points="0 0.2851 24.92 0.2851 24.92 23 0 23"></polygon>
+    </defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-631.000000, -46.000000)">
+            <g id="Navbar" transform="translate(0.090909, 0.000000)">
+                <g id="Background">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                    <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                </g>
+                <g id="NavItems" transform="translate(631.909091, 43.000000)">
+                    <g id="MouseIcon" transform="translate(0.000000, 3.000000)">
+                        <g id="Group-3">
+                            <mask id="mask-5" fill="white">
+                                <use xlink:href="#path-4"></use>
+                            </mask>
+                            <g id="Clip-2"></g>
+                            <path d="M9.1944,11.3697 C9.1944,9.7997 10.3054,8.4807 11.7984,8.1727 L11.7984,-0.0003 C5.2244,0.3437 0.0004,5.7797 0.0004,12.4357 L0.0004,15.9637 L9.1944,15.9637 L9.1944,11.3697 Z" id="Fill-1" fill="#FFFFFF" mask="url(#mask-5)"></path>
+                        </g>
+                        <g id="Group-6" transform="translate(13.000000, 0.000000)">
+                            <mask id="mask-7" fill="white">
+                                <use xlink:href="#path-6"></use>
+                            </mask>
+                            <g id="Clip-5"></g>
+                            <path d="M0.1212,0.0001 L0.1212,8.1731 C1.6152,8.4801 2.7252,9.8001 2.7252,11.3701 L2.7252,15.9631 L11.9202,15.9631 L11.9202,12.4361 C11.9202,5.7801 6.6952,0.3431 0.1212,0.0001" id="Fill-4" fill="#FFFFFF" mask="url(#mask-7)"></path>
+                        </g>
+                        <g id="Group-9" transform="translate(0.000000, 17.000000)">
+                            <mask id="mask-9" fill="white">
+                                <use xlink:href="#path-8"></use>
+                            </mask>
+                            <g id="Clip-8"></g>
+                            <path d="M12.46,3.5001 C10.68,3.5001 9.221,2.0721 9.195,0.2851 L0,0.2851 L0,10.5461 C0,17.4131 5.567,23.0001 12.46,23.0001 C19.341,23.0001 24.92,17.4241 24.92,10.5461 L24.92,0.2851 L15.725,0.2851 C15.699,2.0631 14.249,3.5001 12.46,3.5001" id="Fill-7" fill="#FFFFFF" mask="url(#mask-9)"></path>
+                        </g>
+                        <path d="M10.5167,11.3697 C10.5167,11.5437 10.5167,17.2437 10.5177,17.2847 C10.5427,18.3347 11.4037,19.1787 12.4597,19.1787 C13.5337,19.1787 14.4037,18.3087 14.4037,17.2367 L14.4037,11.3697 C14.4037,10.2997 13.5357,9.4277 12.4597,9.4277 C11.3867,9.4277 10.5167,10.2977 10.5167,11.3697" id="Fill-10" fill="#FFFFFF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

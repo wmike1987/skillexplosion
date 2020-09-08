@@ -1,117 +1,154 @@
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113832510-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=UA-113832510-1"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-  gtag('config', 'UA-113832510-1');
-</script>
-<link rel="stylesheet" type="text/css" href="css/mainStyle.css">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<script src="lib/stats/gstats.js"></script>
-<script src="lib/stats/stats.js"></script>
-<script src="lib/poly-decomp/poly-decomp.js"></script>
-<script src="app/Utils/KeyStates.js"></script>
-<script data-main="frontdoor" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.js"></script>
+    gtag("config", "UA-113832510-1");
+  </script>
+  <link rel="stylesheet" type="text/css" href="css/mainStyle.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@600&display=swap"
+    rel="stylesheet"
+  />
+  <script src="lib/stats/gstats.js"></script>
+  <script src="lib/stats/stats.js"></script>
+  <script src="lib/poly-decomp/poly-decomp.js"></script>
+  <script src="app/Utils/KeyStates.js"></script>
+  <script
+    data-main="frontdoor"
+    src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.js"
+  ></script>
 
-<script>
-//     var lastTime = 0;
-// var deltas = 0;
-// var frameCount = 0;
+  <script>
+    //     var lastTime = 0;
+    // var deltas = 0;
+    // var frameCount = 0;
 
-// (function render(time){
-// 	requestAnimationFrame(render);
-// 	if(lastTime > 0) {
-// 		frameCount++;
-// 		deltas += time - lastTime;
-// 		console.debug(time-lastTime);
-// 		if(deltas >= 1000) {
-// 			deltas -= 1000;
-// 			console.info("fps:" + frameCount);
-// 			frameCount = 0;
-// 		}
-// 	}
-// 	lastTime = time;
-// })()
-</script>
-
+    // (function render(time){
+    // 	requestAnimationFrame(render);
+    // 	if(lastTime > 0) {
+    // 		frameCount++;
+    // 		deltas += time - lastTime;
+    // 		console.debug(time-lastTime);
+    // 		if(deltas >= 1000) {
+    // 			deltas -= 1000;
+    // 			console.info("fps:" + frameCount);
+    // 			frameCount = 0;
+    // 		}
+    // 	}
+    // 	lastTime = time;
+    // })()
+  </script>
 </head>
 <body>
-	<div class="backgroundtexture">
-		<div class="container">
-			<div id='title'>
-				    <svg height="100%" width="100%">
-			            <defs>
-                            <filter id="shadow" x="0" y="0" width="200%" height="200%">
-                                <feOffset result="offOut" in="SourceGraphic" dx="6" dy="6" />
-                            </filter>
-                        </defs>
-                        <text id="filler" x="50%" y="50%" text-anchor="middle" dy="40px" letter-spacing="5px" stroke-width="0" stroke-opacity="0" fill-opacity="1">Skill Explosion</text>
-                        <text id="fillerShadow" x="50%" y="50%" text-anchor="middle" dy="40px" letter-spacing="5px" stroke-width="0" stroke-opacity="0" fill-opacity=".5" filter='url(#shadow)'>Skill Explosion</text>
-                        <text id="textone" x="50%" y="50%" text-anchor="middle" stroke="#00ffff" dy="40px" letter-spacing="5px" stroke-width="3" stroke-dasharray="10 0" stroke-opacity=".75" fill-opacity="0.0">Skill Explosion</text>
-                        <text id="texttwo" x="50%" y="50%" text-anchor="middle" stroke="blue" dy="40px" letter-spacing="5px" stroke-width="3" stroke-opacity="0" fill-opacity="0">Skill Explosion</text>
-                    </svg>
-					<!--div id="banner"></div>-->
-			</div>
-
-			<div class="sideColumn">
-			    <button id="muteButton" class="column-right"></button>
-			</div>
-
-			<div class="column-right sideColumn">
-				<div class='noSelect' id="highScoreTable">
-
-				</div>
-			</div>
-
-			<div class="column-left sideColumn">
-				<div class="shadow gameMenu hidden noSelect">
-			   	    <div class='gameCategoryTitle'>Point-Click</div>
-				   	<ul class='gameList'>
-					    <li><a gameName='Simple_Target' class='game' href="#">Bouncing Targets</a></li>
-					    <li><a gameName='Simple_Zarya' class='game' href="#">Tracking</a></li>
-					    <li><a gameName='SideToSide_Practice' class='game' href="#">Left-Right</a></li>
-					    <li><a gameName='UpDown_Practice' class='game' href="#">Top-Bottom</a></li>
-					    <!--<li><a gameName='Phara' class='game' href="#">Bubbles (beta)</a></li>-->
-					    <li><a gameName='Raindrops' class='game' href="#">Raindrops</a></li>
-					    <li><a gameName='Pelicans' class='game' href="#">Pelicans</a></li>
-					    <li><a gameName='Gauntlet' class='game' href="#">Gauntlet</a></li>
-					    <li><a gameName='HeadMan' class='game' href="#">Head Man</a></li>
-					    <li><a gameName='PixiTest' class='game' href="#">Pixi Test</a></li>
-					</ul>
-
-				    <div class='gameCategoryTitle'>Selection Box</div>
-					<ul class='gameList'>
-					    <li><a gameName='Marbles' class='game' href="#">Marbles</a></li>
-					    <li><a gameName='Split' class='game' href="#">Split</a></li>
-					    <li><a gameName='MultiDodge' class='game' href="#">Multi Dodge</a></li>
-					    <li><a gameName='Us/Us' class='game' href="#">Us</a> (new)</li>
-					</ul>
-
-				    <div class='gameCategoryTitle'>Keyboard</div>
-					<ul class='gameList'>
-					    <li><a gameName='Recall' class='game' href="#">Key Recall</a></li>
-
-					</ul>
-
-				    <div class='gameCategoryTitle'>Math/Puzzle</div>
-					<ul class='gameList'>
-					    <li><a gameName='SequenceMatch' class='game' href="#">Sequence Match</a></li>
-					    <li><a gameName='SequenceMatch' class='game' href="#">Umbrellas</a></li>
-
-					</ul>
-				</div>
-				<!--a id='magicButton' href=#>magicButton</a>-->
-			</div>
-
-			<div class="column-center">
-				<div id="gameTheater"></div>
-				<div class='noSelect' id="gameInstructions"></div>
-			</div>
-		</div>
-	</div>
-
+  <div class="main">
+    <div class="navbar">
+      <img src="app/Textures/SkillExplosionLogo.svg" />
+      <div class="navbar-items">
+        <div class="navbar-item" data-target="point-click">
+          <img
+            src="app/Textures/MouseIcon.svg"
+            class="navbar-icon"
+          />Point-Click
+          <div class="nav-dropdown" id="point-click">
+            <ul class="gameList">
+              <li>
+                <a gameName="Simple_Target" class="game" href="#"
+                  >Bouncing Targets</a
+                >
+              </li>
+              <li>
+                <a gameName="Simple_Zarya" class="game" href="#">Tracking</a>
+              </li>
+              <li>
+                <a gameName="SideToSide_Practice" class="game" href="#"
+                  >Left-Right</a
+                >
+              </li>
+              <li>
+                <a gameName="UpDown_Practice" class="game" href="#"
+                  >Top-Bottom</a
+                >
+              </li>
+              <!--<li><a gameName='Phara' class='game' href="#">Bubbles (beta)</a></li>-->
+              <li>
+                <a gameName="Raindrops" class="game" href="#">Raindrops</a>
+              </li>
+              <li><a gameName="Pelicans" class="game" href="#">Pelicans</a></li>
+              <li><a gameName="Gauntlet" class="game" href="#">Gauntlet</a></li>
+              <li><a gameName="HeadMan" class="game" href="#">Head Man</a></li>
+              <li>
+                <a gameName="PixiTest" class="game" href="#">Pixi Test</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="navbar-item" data-target="selection-box">
+          <img
+            src="app/Textures/SelectionBoxIcon.svg"
+            class="navbar-icon"
+          />Selection Box
+          <div class="nav-dropdown" id="selection-box">
+            <ul class="gameList">
+              <li><a gameName="Marbles" class="game" href="#">Marbles</a></li>
+              <li><a gameName="Split" class="game" href="#">Split</a></li>
+              <li>
+                <a gameName="MultiDodge" class="game" href="#">Multi Dodge</a>
+              </li>
+              <li><a gameName="Us/Us" class="game" href="#">Us</a> (new)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="navbar-item" data-target="keyboard">
+          <img
+            src="app/Textures/KeyboardIcon.svg"
+            class="navbar-icon"
+          />Keyboard
+          <div class="nav-dropdown" id="keyboard">
+            <ul class="gameList">
+              <li><a gameName="Recall" class="game" href="#">Key Recall</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="navbar-item" data-target="math-puzzle">
+          <img src="app/Textures/MathIcon.svg" class="navbar-icon" />Math/Puzzle
+          <div class="nav-dropdown" id="math-puzzle">
+            <ul class="gameList">
+              <li>
+                <a gameName="SequenceMatch" class="game" href="#"
+                  >Sequence Match</a
+                >
+              </li>
+              <li>
+                <a gameName="SequenceMatch" class="game" href="#">Umbrellas</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="theater-gui">
+        <div class="theater-toolbar">
+          <div class="toolbar-item">Scores<div class="toolbar-dropdown" id="highScoreTable"></div>
+          </div>
+          <div class="toolbar-item">
+            Instructions
+            <div class="toolbar-dropdown" id="gameInstructions"></div>
+          </div>
+        </div>
+        <div id="gameTheater"></div>
+      </div>
+    </div>
+  </div>
 </body>
