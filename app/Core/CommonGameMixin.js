@@ -431,8 +431,8 @@ define(['matter-js', 'pixi', 'jquery', 'utils/HS', 'howler', 'utils/Styles', 'ut
                 }.bind(this));
 
                 $(this.scoreContainer).css('position', 'absolute')
-                $(this.scoreContainer).css('left', this.canvasRect.left + this.canvasRect.width/2-$(this.scoreContainer).width()/2);
-                $(this.scoreContainer).css('top', this.canvasRect.top + this.canvasRect.height/2 - $(this.scoreContainer).height()/2);
+                $(this.scoreContainer).css('left', this.canvasRect.width/2-$(this.scoreContainer).width()/2);
+                $(this.scoreContainer).css('top', this.canvasRect.height/2 - $(this.scoreContainer).height()/2);
             }.bind(this), 500);
 
             if(this.endGameExtension)

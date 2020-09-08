@@ -178,8 +178,8 @@ requirejs(["jquery", "pixi"], function ($, PIXI) {
     //backgrounds
     loader.add("pelicanSheet", "app/Textures/PelicanSheetLess.json");
     loader.add("backgroundSheet", "app/Textures/BackgroundSheet.json");
-    // loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
-    // loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
+    loader.add('backgroundSheet2', 'app/Textures/BackgroundSheet2.json');
+    loader.add('ChalkboardSheet', 'app/Textures/ChalkboardSheet.json');
 
     loader.add(
       "rainyBackgroundAndMarbles",
@@ -196,7 +196,7 @@ requirejs(["jquery", "pixi"], function ($, PIXI) {
     // loader.add('raindropflash', 'app/Textures/DropletFlash.json');
     loader.raindropflashFrameCount = 3;
 
-    // loader.add('gauntlet', 'app/Textures/Gauntlet.json');
+    loader.add('gauntlet', 'app/Textures/Gauntlet.json');
     loader.DiamondFlashFrameCount = 4;
     loader.SquareWithBorderDeathFrameCount = 5;
 
@@ -263,15 +263,9 @@ requirejs(["jquery", "pixi"], function ($, PIXI) {
     loader.add("medicW", "app/SpineAssets/Medic Exports/W/W.json");
 
     loader.add("critterN", "app/SpineAssets/Critter Exports/N/North.json");
-    loader.add(
-      "critterNW",
-      "app/SpineAssets/Critter Exports/NW/Northwest.json"
-    );
+    loader.add("critterNW","app/SpineAssets/Critter Exports/NW/Northwest.json");
     loader.add("critterS", "app/SpineAssets/Critter Exports/S/South.json");
-    loader.add(
-      "critterSW",
-      "app/SpineAssets/Critter Exports/SW/SouthWest.json"
-    );
+    loader.add("critterSW","app/SpineAssets/Critter Exports/SW/SouthWest.json");
     loader.add("critterW", "app/SpineAssets/Critter Exports/W/West.json");
 
     loader.add("alienN", "app/SpineAssets/Alien Export/N/N.json");
