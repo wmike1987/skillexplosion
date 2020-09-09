@@ -150,7 +150,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js', 'unitcore/ItemUtils'], functio
                 }
             }.bind(this))
 
-            //Annoint units with functionality to detect and pickup an item
+            //anoint units with functionality to detect and pickup an item
             Matter.Events.on(currentGame, 'addUnit', function(event) {
                 if(!event.unit.isMoveable) return;
 

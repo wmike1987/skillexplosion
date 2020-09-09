@@ -846,16 +846,16 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
 
                 if(event.key == 'Tab') {
                  this.abilityDispatch = null;
-                 this.annointNextPrevailingUnit();
+                 this.anointNextPrevailingUnit();
                 }
             }.bind(this));
 
             //This is used when tabbing through the list, but also when a unit is removed. In the case of a remove,
             //this is run before the unit is removed so that we can identify where in line the body was.
-            this.annointNextPrevailingUnit = function(options) {
+            this.anointNextPrevailingUnit = function(options) {
                 var options = options || {};
                 var selectedUnitCount = Object.keys(this.selectedUnits).length;
-                var annointNextUnit = false;
+                var anointNextUnit = false;
                 var firstUnit = null;
                 this.abilityDispatch = null;
 
@@ -875,17 +875,17 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
                         }
                         //we found the currently selected body!
                         if(this.selectedUnit.unitId == unit.unitId) {
-                            annointNextUnit = true;
-                        } else if(annointNextUnit) {
+                            anointNextUnit = true;
+                        } else if(anointNextUnit) {
                             //we are the next body!
-                            annointNextUnit = false;
+                            anointNextUnit = false;
                             this.selectedUnit = unit;
                             return;
                         }
                     }.bind(this))
 
-                    //if we get here and annointNextUnit is true, it means we were at the end and we can assume we should cycle
-                    if(annointNextUnit)
+                    //if we get here and anointNextUnit is true, it means we were at the end and we can assume we should cycle
+                    if(anointNextUnit)
                         this.selectedUnit = firstUnit;
                 }
             }.bind(this),
@@ -906,7 +906,7 @@ define(['jquery', 'utils/GameUtils', 'matter-js'], function($, utils, Matter) {
         this.deselectUnit = function(unit) {
             //Re-assign the selected unit if needed
             if(this.selectedUnit == unit) {
-                this.annointNextPrevailingUnit({onRemove: true});
+                this.anointNextPrevailingUnit({onRemove: true});
             }
 
             //remove body from these data structures
