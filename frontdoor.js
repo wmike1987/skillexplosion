@@ -227,9 +227,6 @@ requirejs(["jquery", "pixi"], function ($, PIXI) {
     loader.add("Sentinel", "app/Textures/Us/Sentinel.json");
     loader.add("Eruptlet", "app/Textures/Us/Eruptlet.json");
 
-    //Rod
-    loader.add("RodAnimations1", "app/Textures/Us/RodAnimations1.json");
-
     //items
     loader.add("Items", "app/Textures/Us/Items.json");
     loader.add("ItemAnimations1", "app/Textures/Us/ItemAnimations1.json");
