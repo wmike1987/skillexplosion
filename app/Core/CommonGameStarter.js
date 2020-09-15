@@ -6,7 +6,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import PixiRenderer from '@core/PixiRenderer.js'
-import {globals} from '@core/Globals.js'
+import {globals} from '@core/GlobalState.js'
 import GameLoop from '@core/GameLoop.js'
 import AssetLoader from '@core/AssetLoader.js'
 

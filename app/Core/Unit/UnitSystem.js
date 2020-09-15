@@ -312,8 +312,8 @@ var unitSystem = function(properties) {
 
                 //find bodies under mouse, use the vertice history method if possible
                 var bodies = [];
-                if(currentGame.verticeHistories.length > 0) {
-                    $.each(currentGame.verticeHistories, function(index, body) {
+                if(currentGame.vertexHistories.length > 0) {
+                    $.each(currentGame.vertexHistories, function(index, body) {
                         var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, canvasPoint)) {
@@ -444,8 +444,8 @@ var unitSystem = function(properties) {
                 //Find bodies under mouse position, use vertice history if possible, and if there's a target
                 //underneath, dispatch an attack event.
                 var bodies = [];
-                if(currentGame.verticeHistories.length > 0) {
-                    $.each(currentGame.verticeHistories, function(index, body) {
+                if(currentGame.vertexHistories.length > 0) {
+                    $.each(currentGame.vertexHistories, function(index, body) {
                         var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
@@ -647,8 +647,8 @@ var unitSystem = function(properties) {
 
                 //find bodies under mouse which are selectable, use the vertice history method if possible
                 var bodies = [];
-                if(currentGame.verticeHistories.length > 0) {
-                    $.each(currentGame.verticeHistories, function(index, body) {
+                if(currentGame.vertexHistories.length > 0) {
+                    $.each(currentGame.vertexHistories, function(index, body) {
                         var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
@@ -704,8 +704,8 @@ var unitSystem = function(properties) {
 
             //Find bodies under mouse position, use vertice history if possible
             var bodies = [];
-            if(currentGame.verticeHistories.length > 0) {
-                $.each(currentGame.verticeHistories, function(index, body) {
+            if(currentGame.vertexHistories.length > 0) {
+                $.each(currentGame.vertexHistories, function(index, body) {
                     var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                     if(!vertCopy) return;// || !body.isSelectable) return;
                     if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {

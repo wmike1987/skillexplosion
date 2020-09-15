@@ -8,6 +8,10 @@ import utils from '@utils/GameUtils.js'
 import UnitSystem from '@core/Unit/UnitSystem.js'
 import ItemSystem from '@core/Unit/ItemSystem.js'
 import CommonGameStarter from '@core/CommonGameStarter.js'
+import {globals, keyStates} from '@core/GlobalState.js'
+
+import loselife from '@sounds/loselife1.mp3'
+import bells from '@sounds/bells.wav'
 
 /*
 * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -59,7 +63,7 @@ var common = {
          * Create some other variables
          */
         this.tickCallbacks = [],
-        this.verticeHistories = [],
+        this.vertexHistories = [],
         this.invincibleTickCallbacks = [],
         this.eventListeners = [],
         this.invincibleListeners = [],
@@ -68,8 +72,8 @@ var common = {
         this.canvas = {width: utils.getPlayableWidth(), height: utils.getPlayableHeight()};
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
-        this.endGameSound = utils.getSound('bells.wav', {volume: .05});
-        this.loseLifeSound = utils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
+        this.endGameSound = utils.getSound(bells, {volume: .05});
+        this.loseLifeSound = utils.getSound(loselife, {rate: 1.4, volume: 5.0});
         this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
         this.unitsByTeam = {};
         var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
@@ -109,19 +113,21 @@ var common = {
 
         //begin tracking previous frame positions and attributes
         this.addTickCallback(function() {
-            $.each(this.verticeHistories, function(index, body) {
+            $.each(this.vertexHistories, function(index, body) {
                 body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
             }
         )}.bind(this), true, 'beforeStep');
+
+        var maxLagToAccountFor = 3;
         this.addTickCallback(function() {
-            $.each(this.verticeHistories, function(index, body) {
+            $.each(this.vertexHistories, function(index, body) {
                 //Veritices
                 body.verticeCopy = utils.cloneVertices(body.vertices);
                 if(!body.verticesCopy) {
                     body.verticesCopy = [];
                 }
                 body.verticesCopy.push(utils.cloneVertices(body.vertices));
-                if(body.verticesCopy.length > 3) {
+                if(body.verticesCopy.length > maxLagToAccountFor) {
                     body.verticesCopy.shift();
                 }
 
@@ -131,7 +137,7 @@ var common = {
                     body.positionsCopy = [];
                 }
                 body.positionsCopy.push(utils.clonePosition(body.position));
-                if(body.positionsCopy.length > 3) {
+                if(body.positionsCopy.length > maxLagToAccountFor) {
                     body.positionsCopy.shift();
                 }
 
@@ -140,7 +146,7 @@ var common = {
                     body.partsCopy = [];
                 }
                 body.partsCopy.push(utils.cloneParts(body.parts));
-                if(body.partsCopy.length > 3) {
+                if(body.partsCopy.length > maxLagToAccountFor) {
                     body.partsCopy.shift();
                 }
             }.bind(this))
@@ -158,16 +164,11 @@ var common = {
             is(value);
         }.bind(this);
 
-        Object.defineProperty(this, 'leftDown', { get: function() {
-                return window.mouseStates.leftDown;
-            }
-        });
-
         this.addEventListener('mousemove', function(event) {
             var rect = this.canvasEl.getBoundingClientRect();
 			this.mousePosition.x = event.clientX - rect.left;
 			this.mousePosition.y = event.clientY - rect.top;
-        }.bind(this), false, false);
+        }.bind(this), true, false);
 
         //fps (ctrl + shift + f to toggle)
         this.lastDeltaText = utils.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
@@ -521,7 +522,7 @@ var common = {
 
         //This might have some performance impact... possibly will investigate
         if(body.vertices)
-            this.verticeHistories.push(body);
+            this.vertexHistories.push(body);
 
         //add to matter world
         Matter.World.add(this.world, body);
@@ -549,9 +550,9 @@ var common = {
         Matter.World.remove(this.world, [body]);
 
         //clean up vertice history
-        var index = this.verticeHistories.indexOf(body);
+        var index = this.vertexHistories.indexOf(body);
         if(index > -1)
-            this.verticeHistories.splice(index, 1);
+            this.vertexHistories.splice(index, 1);
 
         //for internal use
         body.hasBeenRemoved = true;
@@ -672,7 +673,7 @@ var common = {
         this.invalidateTimers(options.noMercy);
 
         //Clear vertice histories
-        this.verticeHistories = [];
+        this.vertexHistories = [];
 
         //Clear body listeners if no mercy
         if(options.noMercy) {

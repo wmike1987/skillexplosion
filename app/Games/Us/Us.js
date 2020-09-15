@@ -548,7 +548,5 @@ function($, Matter, PIXI, CommonGameMixin, Moveable, Attacker, Marine, EnemyMari
                 unitPanelConstructor: unitpanel
                };
 
-    //game.instructions = ['Split the purple marbles to avoid area of effect damage', 'If all purple marbles die, you lose a life'];
-
     return $.extend({}, CommonGameMixin, game);
 })
