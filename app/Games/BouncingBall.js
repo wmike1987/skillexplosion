@@ -11,7 +11,7 @@ import powerup2 from '@sounds/powerup2.wav'
 var targetScore = 1;
 
 var game = {
-	gameName: 'SimpleTargets',
+	gameName: 'BouncingBall',
 	ball: null,
 	victoryCondition: {type: 'timed', limit: 35},
 	hideScore: false,

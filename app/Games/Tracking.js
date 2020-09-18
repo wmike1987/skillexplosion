@@ -29,12 +29,12 @@ var game = {
 	],
 
 	victoryCondition: {type: 'timed', limit: 5},
-	gameName: 'SimpleZarya',
+	gameName: 'Tracking',
 	ball: null,
 	outputLag: 3,
 
 	initExtension: function() {
-	    this.hit = utils.getSound(nicehit, {volume: .2, rate: 2});
+	    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});
 	},
 
 	play: function(options) {
@@ -60,7 +60,6 @@ var game = {
 			var plen = this.ball.positionsCopy.length;
 			var vlen = this.ball.verticesCopy.length;
 
-			console.info(this.mousePosition);
 		    if(mouseStates.leftDown && Matter.Vertices.contains(this.ball.verticesCopy[vlen-this.outputLag], this.mousePosition)) {
 				if(!this.ball.timer) {
 					this.ball.timer = {name: 'zarya', timeLimit: 950, callback: function() {

@@ -10,9 +10,6 @@ import ItemSystem from '@core/Unit/ItemSystem.js'
 import CommonGameStarter from '@core/CommonGameStarter.js'
 import {globals, keyStates} from '@core/GlobalState.js'
 
-import loselife from '@sounds/loselife1.mp3'
-import bells from '@sounds/bells.wav'
-
 /*
 * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
 */
@@ -40,6 +37,8 @@ var common = {
     frameSecondCounter: 0,
     playerTeam: 100,
     lagCompensation: 2,
+    commonAssets: [{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"},
+                    {name: "isoSheet2", target: "Textures/legacy/IsoSheet2.json"}],
 
     /*
      * Game lifecycle
@@ -72,8 +71,8 @@ var common = {
         this.canvas = {width: utils.getPlayableWidth(), height: utils.getPlayableHeight()};
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
-        this.endGameSound = utils.getSound(bells, {volume: .05});
-        this.loseLifeSound = utils.getSound(loselife, {rate: 1.4, volume: 5.0});
+        this.endGameSound = utils.getSound('bells.wav', {volume: .05});
+        this.loseLifeSound = utils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
         this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
         this.unitsByTeam = {};
         var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
@@ -922,7 +921,8 @@ var common = {
         return this.score.scoreValue;
     },
 
-    initializeGame: function() {
+    loadGame: function() {
+        this.assets = this.assets.concat(this.commonAssets);
         CommonGameStarter(this);
     }
 };

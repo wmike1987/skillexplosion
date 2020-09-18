@@ -584,7 +584,7 @@ var utils = {
         var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
         var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
         do {
-            canvasCenter = this.getCanvasCenter();
+            let canvasCenter = this.getCanvasCenter();
             placement.x = canvasCenter.x-radius + (Math.random() * (radius*2 - bodyHalfWidth*2) + bodyHalfWidth);
             placement.y = canvasCenter.y-radius + (Math.random() * (radius*2 - bodyHalfHeight*2) + bodyHalfHeight);
 
@@ -701,7 +701,8 @@ var utils = {
 
     getSound: function(name, options) {
         options = options || {};
-        options.src = name;
+        options.src = 'Sounds/' + name;
+        // options.src = name;
         return new h.Howl(options);
     },
 

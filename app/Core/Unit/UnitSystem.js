@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
+import utils from '@utils/GameUtils.js'
+import {globals, keyStates} from '@core/GlobalState.js'
 
 var unitSystem = function(properties) {
 
@@ -18,7 +20,9 @@ var unitSystem = function(properties) {
         this.box.permaPendingUnit = null;
         this.box.pendingSelections = {};
         this.box.tint = 0x00cbb8;
+        this.box.isBox = true;
         this.box.borderAlpha = .5;
+        this.box.drawWire = true;
         this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: this.box.tint, stage: 'foreground', alpha: .3}];
         this.box.topBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
         this.box.bottomBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 1}});
@@ -28,12 +32,15 @@ var unitSystem = function(properties) {
         //other unit system variables
         this.selectedUnits = {};
         this.orderedUnits = [];
+        this.mouseUpDelay = null;
 
         //create UnitPanel
-        this.unitPanel = new this.unitPanelConstructor({
-            systemRef: this,
-            position: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight() - currentGame.worldOptions.unitPanelHeight/2}});
-        this.unitPanel.initialize();
+        if(this.unitPanelConstructor) {
+            this.unitPanel = new this.unitPanelConstructor({
+                systemRef: this,
+                position: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight() - globals.currentGame.worldOptions.unitPanelHeight/2}});
+                this.unitPanel.initialize();
+        }
 
         //destination marker
         this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
@@ -46,12 +53,12 @@ var unitSystem = function(properties) {
 
         //move marker
         this.box.moveTargetSprite = utils.addSomethingToRenderer('MoveTarget', 'foreground', {x: -50, y: -50});
-        this.box.moveTargetSprite.timer = currentGame.addTimer({name: 'moveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
+        this.box.moveTargetSprite.timer = globals.currentGame.addTimer({name: 'moveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
             tickCallback: function() {
                 this.box.moveTargetSprite.scale = {x: moveMarkerScale-this.box.moveTargetSprite.timer.percentDone*moveMarkerScale, y: moveMarkerScale-this.box.moveTargetSprite.timer.percentDone*moveMarkerScale};
         }.bind(this),
             resetExtension: function() {
-                this.box.moveTargetSprite.position = currentGame.mousePosition;
+                this.box.moveTargetSprite.position = globals.currentGame.mousePosition;
                 this.box.moveTargetSprite.scale = {x: moveMarkerScale, y: moveMarkerScale};
         }.bind(this)});
         utils.deathPact(this.box, this.box.moveTargetSprite.timer);
@@ -59,12 +66,12 @@ var unitSystem = function(properties) {
 
         //attack-move marker
         this.box.attackMoveTargetSprite = utils.addSomethingToRenderer('AttackTarget', 'foreground', {x: -50, y: -50});
-        this.box.attackMoveTargetSprite.timer = currentGame.addTimer({name: 'attackMoveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
+        this.box.attackMoveTargetSprite.timer = globals.currentGame.addTimer({name: 'attackMoveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
             tickCallback: function() {
                 this.box.attackMoveTargetSprite.scale = {x: moveMarkerScale-this.box.attackMoveTargetSprite.timer.percentDone*moveMarkerScale, y: moveMarkerScale-this.box.attackMoveTargetSprite.timer.percentDone*moveMarkerScale};
         }.bind(this),
             resetExtension: function() {
-                this.box.attackMoveTargetSprite.position = currentGame.mousePosition;
+                this.box.attackMoveTargetSprite.position = globals.currentGame.mousePosition;
                 this.box.attackMoveTargetSprite.scale = {x: moveMarkerScale, y: moveMarkerScale};
         }.bind(this)});
         utils.deathPact(this.box, this.box.attackMoveTargetSprite.timer);
@@ -74,70 +81,72 @@ var unitSystem = function(properties) {
         var abilityMarkerScale = .7;
         var abilityMarkerTimeLimit = 200;
         this.box.abilityTargetSprite = utils.addSomethingToRenderer('AbilityTarget', 'foreground', {x: -50, y: -50});
-        this.box.abilityTargetSprite.timer = currentGame.addTimer({name: 'abilityTargetShrink', runs: 1, timeLimit: abilityMarkerTimeLimit,
+        this.box.abilityTargetSprite.timer = globals.currentGame.addTimer({name: 'abilityTargetShrink', runs: 1, timeLimit: abilityMarkerTimeLimit,
             tickCallback: function() {
                 this.box.abilityTargetSprite.scale = {x: abilityMarkerScale-this.box.abilityTargetSprite.timer.percentDone*abilityMarkerScale, y: abilityMarkerScale-this.box.abilityTargetSprite.timer.percentDone*abilityMarkerScale};
         }.bind(this),
             resetExtension: function() {
-                this.box.abilityTargetSprite.position = currentGame.mousePosition;
+                this.box.abilityTargetSprite.position = globals.currentGame.mousePosition;
                 this.box.abilityTargetSprite.scale = {x: abilityMarkerScale, y: abilityMarkerScale};
         }.bind(this)});
         utils.deathPact(this.box, this.box.abilityTargetSprite.timer);
 
         //prevailing-unit visual indicator
-        var prevailingTint = 0x86FF1B;
-        this.prevailingUnitCircle = utils.addSomethingToRenderer('PrevailingUnitIndicator', 'stageNOne', {x: -50, y: -50, tint: prevailingTint});
-        this.prevailingUnitCircle.timer = currentGame.addTimer({
-            name: 'prevailingUnitFadeInOut',
-            gogogo: true,
-            timeLimit: 100,
-            callback: function() {
-                if(this.prevailingUnitCircle.alpha <= .5) {
-                    this.prevailingUnitCircle.alphaChange = .1;
+        if(!globals.currentGame.hidePrevailingIndicator) {
+            var prevailingTint = 0x86FF1B;
+            this.prevailingUnitCircle = utils.addSomethingToRenderer('PrevailingUnitIndicator', 'stageNOne', {x: -50, y: -50, tint: prevailingTint});
+            this.prevailingUnitCircle.timer = globals.currentGame.addTimer({
+                name: 'prevailingUnitFadeInOut',
+                gogogo: true,
+                timeLimit: 100,
+                callback: function() {
+                    if(this.prevailingUnitCircle.alpha <= .5) {
+                        this.prevailingUnitCircle.alphaChange = .1;
+                    }
+                    if(this.prevailingUnitCircle.alpha >= 1) {
+                        this.prevailingUnitCircle.alphaChange = -.015;
+                    }
+
+                    this.prevailingUnitCircle.alpha += this.prevailingUnitCircle.alphaChange;
+                }.bind(this)
+            });
+
+            var unitSystem = this;
+
+            Object.defineProperty(this, 'selectedUnit', {
+                configurable: true,
+
+                get: function(){
+                    return this._selectedUnit;
+                },
+
+                set: function(value) {
+                    if(!value) {
+                        unitSystem.abilityDispatch = null;
+                    }
+
+                    if(this._selectedUnit) {
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
+                    }
+
+                    this.prevailingUnitCircle.alpha = 1;
+
+                    var fromUnit = this._selectedUnit || null;
+                    this._selectedUnit = value;
+                    var body = value ? value.body : null;
+
+                    Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value, fromUnit: fromUnit});
+
+                    if(body) {
+                        this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
+                        utils.attachSomethingToBody({something: this.prevailingUnitCircle, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
+                    } else {
+                        utils.detachSomethingFromBody(this.prevailingUnitCircle);
+                        this.prevailingUnitCircle.position = utils.offScreenPosition();
+                    }
                 }
-                if(this.prevailingUnitCircle.alpha >= 1) {
-                    this.prevailingUnitCircle.alphaChange = -.015;
-                }
-
-                this.prevailingUnitCircle.alpha += this.prevailingUnitCircle.alphaChange;
-            }.bind(this)
-        });
-
-        var unitSystem = this;
-
-        Object.defineProperty(this, 'selectedUnit', {
-            configurable: true,
-
-            get: function(){
-                return this._selectedUnit;
-            },
-
-            set: function(value) {
-                if(!value) {
-                    unitSystem.abilityDispatch = null;
-                }
-
-                if(this._selectedUnit) {
-                    utils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
-                }
-
-                this.prevailingUnitCircle.alpha = 1;
-
-                var fromUnit = this._selectedUnit || null;
-                this._selectedUnit = value;
-                var body = value ? value.body : null;
-
-                Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value, fromUnit: fromUnit});
-
-                if(body) {
-                    this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
-                    utils.attachSomethingToBody({something: this.prevailingUnitCircle, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
-                } else {
-                    utils.detachSomethingFromBody(this.prevailingUnitCircle);
-                    this.prevailingUnitCircle.position = utils.offScreenPosition();
-                }
-            }
-        });
+            });
+        }
 
         //update selected bodies upon body removal
         this.bodyRemoveCallback = Matter.Events.on(this.engine.world, 'afterRemove', function(event) {
@@ -176,7 +185,7 @@ var unitSystem = function(properties) {
             var myUnits = {};
             var myEnemies = {};
             $.each(this.box.pendingSelections, function(key, obj) {
-                if(obj.team == currentGame.playerTeam) {
+                if(obj.team == globals.currentGame.playerTeam) {
                     myUnits[key] = obj;
                 } else {
                     myEnemies[key] = obj;
@@ -312,8 +321,8 @@ var unitSystem = function(properties) {
 
                 //find bodies under mouse, use the vertice history method if possible
                 var bodies = [];
-                if(currentGame.vertexHistories.length > 0) {
-                    $.each(currentGame.vertexHistories, function(index, body) {
+                if(globals.currentGame.vertexHistories.length > 0) {
+                    $.each(globals.currentGame.vertexHistories, function(index, body) {
                         var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, canvasPoint)) {
@@ -444,16 +453,16 @@ var unitSystem = function(properties) {
                 //Find bodies under mouse position, use vertice history if possible, and if there's a target
                 //underneath, dispatch an attack event.
                 var bodies = [];
-                if(currentGame.vertexHistories.length > 0) {
-                    $.each(currentGame.vertexHistories, function(index, body) {
+                if(globals.currentGame.vertexHistories.length > 0) {
+                    $.each(globals.currentGame.vertexHistories, function(index, body) {
                         var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
-                        if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
+                        if(Matter.Vertices.contains(vertCopy, globals.currentGame.mousePosition)) {
                             bodies.push(body);
                         }
                     }.bind(this));
                 } else {
-                    bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), currentGame.mousePosition);
+                    bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), globals.currentGame.mousePosition);
                 }
 
                 var units = this.convertBodiesToSelectionEnabledUnits(bodies);
@@ -526,7 +535,7 @@ var unitSystem = function(properties) {
                 if(this.mouseUpDelay) {
                     this.mouseUpDelay.active = true;
                 } else {
-                    this.mouseUpDelay = currentGame.addTickCallback(function() {
+                    this.mouseUpDelay = globals.currentGame.addTickCallback(function() {
                         if(!this.mouseUpDelay.active) return;
                         this.box.mouseDown = false;
                         if(!this.box.invalidateNextMouseUp) {
@@ -636,7 +645,7 @@ var unitSystem = function(properties) {
 
         //Mouse hover
         this.pastHoveredUnitsHover = [];
-        currentGame.addTickCallback(function(event) {
+        globals.currentGame.addTickCallback(function(event) {
             if(!this.active) return;
             if(!this.box.selectionBoxActive) {
                 //if we have a perma, we won't act on hovering pending selections, so break here
@@ -647,16 +656,16 @@ var unitSystem = function(properties) {
 
                 //find bodies under mouse which are selectable, use the vertice history method if possible
                 var bodies = [];
-                if(currentGame.vertexHistories.length > 0) {
-                    $.each(currentGame.vertexHistories, function(index, body) {
+                if(globals.currentGame.vertexHistories.length > 0) {
+                    $.each(globals.currentGame.vertexHistories, function(index, body) {
                         var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
-                        if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
+                        if(Matter.Vertices.contains(vertCopy, globals.currentGame.mousePosition)) {
                             bodies.push(body);
                         }
                     }.bind(this));
                 } else {
-                    bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), currentGame.mousePosition);
+                    bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), globals.currentGame.mousePosition);
                 }
 
                 var units = this.convertBodiesToSelectionEnabledUnits(bodies);
@@ -691,7 +700,7 @@ var unitSystem = function(properties) {
                 if(!this.attackMove && !this.abilityDispatch) {
                     if(units.length > 0) {
                         utils.setCursorStyle('server:OverUnitCursor.png', '16 16');
-                    } else if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)){
+                    } else if(utils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)){
                         utils.setCursorStyle('server:MainCursor.png');
                     }
                 }
@@ -700,20 +709,20 @@ var unitSystem = function(properties) {
 
         //Dispatch hovering event to units
         var pastHoveredUnits = [];
-        currentGame.addTickCallback(function(event) {
+        globals.currentGame.addTickCallback(function(event) {
 
             //Find bodies under mouse position, use vertice history if possible
             var bodies = [];
-            if(currentGame.vertexHistories.length > 0) {
-                $.each(currentGame.vertexHistories, function(index, body) {
+            if(globals.currentGame.vertexHistories.length > 0) {
+                $.each(globals.currentGame.vertexHistories, function(index, body) {
                     var vertCopy = utils.getLagCompensatedVerticesForBody(body);
                     if(!vertCopy) return;// || !body.isSelectable) return;
-                    if(Matter.Vertices.contains(vertCopy, currentGame.mousePosition)) {
+                    if(Matter.Vertices.contains(vertCopy, globals.currentGame.mousePosition)) {
                         bodies.push(body);
                     }
                 }.bind(this));
             } else {
-                bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), currentGame.mousePosition);
+                bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), globals.currentGame.mousePosition);
             }
 
             var units = this.convertBodiesToSelectionEnabledUnits(bodies);
@@ -738,7 +747,7 @@ var unitSystem = function(properties) {
             }
             if(frontMostUnit) {
                 pastHoveredUnits = [frontMostUnit];
-                frontMostUnit.hover({team: currentGame.playerTeam});
+                frontMostUnit.hover({team: globals.currentGame.playerTeam});
             }
         }.bind(this))
 
@@ -811,14 +820,14 @@ var unitSystem = function(properties) {
              //if we're s or h, dispatch to all selected units, this is a special case
              if(this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
                  $.each(this.selectedUnits, function(key, unit) {
-                     var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: unit};
+                     var e = {type: 'key', id: this.abilityDispatch, target: globals.currentGame.mousePosition, unit: unit};
                      Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                  }.bind(this))
                  this.abilityDispatch = null;
              } else if(this.selectedUnit) {
                  //else if we have a selected unit, see if we can dispatch this immediately (key event) or prep for the click dispatch
                  if(this.selectedUnit.eventKeyMappings[this.abilityDispatch]) {
-                     var e = {type: 'key', id: this.abilityDispatch, target: currentGame.mousePosition, unit: this.selectedUnit};
+                     var e = {type: 'key', id: this.abilityDispatch, target: globals.currentGame.mousePosition, unit: this.selectedUnit};
                      Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                      this.abilityDispatch = null;
                  } else if(this.selectedUnit.eventClickMappings[this.abilityDispatch]){
@@ -902,7 +911,7 @@ var unitSystem = function(properties) {
          }
         }.bind(this));
 
-        currentGame.addBody(this.box);
+        globals.currentGame.addBody(this.box);
     };
 
     this.deselectUnit = function(unit) {
@@ -933,12 +942,12 @@ var unitSystem = function(properties) {
 
     this.hasEnemySelected = function() {
         if(this.selectedUnit)
-            return this.selectedUnit.team != currentGame.playerTeam;
+            return this.selectedUnit.team != globals.currentGame.playerTeam;
     };
 
     this.hasMyUnitSelected = function() {
         if(this.selectedUnit)
-            return this.selectedUnit.team == currentGame.playerTeam;
+            return this.selectedUnit.team == globals.currentGame.playerTeam;
     }
 
     this.updateOrderedUnits = function(selectedUnits) {
@@ -1013,13 +1022,13 @@ var unitSystem = function(properties) {
             Matter.Events.off(this.box);
             Matter.Events.off(this.engine.world, this.bodyRemoveCallback)
             Matter.Events.off(this, this.manualRemoveCallback)
-            currentGame.removeBody(this.box);
+            globals.currentGame.removeBody(this.box);
             this.box = null;
         }
 
         //cleanup tick callback
         if(this.movePrevailingUnitCircleTick) {
-            currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
+            globals.currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
         }
 
         //cleanup unit panel
@@ -1032,7 +1041,7 @@ var unitSystem = function(properties) {
 
         //kill this timer
         if(this.prevailingUnitCircle && this.prevailingUnitCircle.timer) {
-            currentGame.invalidateTimer(this.prevailingUnitCircle.timer);
+            globals.currentGame.invalidateTimer(this.prevailingUnitCircle.timer);
         }
 
         //clear jquery events

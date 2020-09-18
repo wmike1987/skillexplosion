@@ -21,10 +21,11 @@ var CommonGameStarter = function(game) {
 	var defaults = {interpolate: true, width: 1200, height: 600, unitPanelHeight: 0, gravity: 1, appendToElement: "gameTheater"};
 	window.latestGameOptions = $.extend({}, defaults, game.worldOptions);
 
-	//kill engine and renderer
+	//kill previous engine
 	if(engine)
 	    Matter.Runner.stop(engine.runner);
 
+	//kill previous renderer
 	if(pixiRenderer)
 		pixiRenderer.destroy();
 
@@ -35,7 +36,7 @@ var CommonGameStarter = function(game) {
 	 * were requested
 	 */
 
-	// set a globally accessible reference to the game object
+	// set the global current game
 	globals.currentGame = game;
 
 	//update the "loading..." text as assets are loaded
