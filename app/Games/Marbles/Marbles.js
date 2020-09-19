@@ -168,7 +168,7 @@ var game = {
 		    (function(newZone) {
 			    Matter.Events.on(newZone, 'onCollide', function(pair) {
     		        var otherBody = pair.pair.bodyA == newZone ? pair.pair.bodyB : pair.pair.bodyA;
-    		        if(otherBody.unit.tint == newZone.tint) {
+    		        if(otherBody.unit && otherBody.unit.tint == newZone.tint) {
     		            newZone.isFlashing += 8;
     		            this.marbleHit.play();
     	                this.removeUnit(otherBody.unit);
@@ -240,7 +240,7 @@ var game = {
 			var tint = this.acceptableTints[tintIndex];
 			var highlightTint = this.highlightTints[tintIndex];
 
-			var marble = Marble({adjustHitbox: true, team: this.playerTeam, tint: tint, highlightTint: highlightTint, selectionTint: this.selectionTint, pendingSelectionTint: this.pendingSelectionTint});
+			var marble = Marble({adjustHitbox: false, team: this.playerTeam, tint: tint, highlightTint: highlightTint, selectionTint: this.selectionTint, pendingSelectionTint: this.pendingSelectionTint});
 			marble.tint = tint;
 
 			utils.placeBodyWithinRadiusAroundCanvasCenter(marble, 10);

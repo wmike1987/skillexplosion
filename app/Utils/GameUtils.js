@@ -91,7 +91,7 @@ var utils = {
      *  spritesheetName)
      *  transform
      *  speed
-     *  playThisManyTimes
+     *  playThisManyTimes (or times)
      *  rotation
      *  body
      *  where
@@ -135,8 +135,8 @@ var utils = {
         anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
         anim.animationSpeed = options.speed;
         anim.loop = (options.playThisManyTimes == 'loop') || options.loop;
-        anim.playThisManyTimes = options.playThisManyTimes;
-        anim.currentPlayCount = options.playThisManyTimes;
+        anim.playThisManyTimes = options.playThisManyTimes || options.times;
+        anim.currentPlayCount = anim.playThisManyTimes;
         anim.anchor = options.anchor || {x: .5, y: .5};
 
         if(options.rotation)
@@ -1048,6 +1048,13 @@ var utils = {
                 }
             }
         )
+    },
+
+    removeObjectFromArray: function(array, objToRemove) {
+        var index = array.indexOf(objToRemove);
+        if(index > -1) {
+            array.splice(index, 1);
+        }
     },
 
     flattenObjectToArray: function(object) {

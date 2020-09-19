@@ -4,6 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+    stats: {
+        warnings: false
+    },
     entry: {
         frontdoor: './frontdoor.js',
     },
@@ -43,7 +46,8 @@ module.exports = {
         	  inject: true,
         	  filename: 'index.html',
               template: 'devGameFrame.html',
-        	  chunks: ['frontdoor']
+        	  chunks: ['frontdoor'],
+              favicon: './favicon-16x16dev.png',
         }),
         new CopyPlugin({
             patterns: [

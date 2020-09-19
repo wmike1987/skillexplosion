@@ -8,6 +8,16 @@ import {CommonGameMixin} from '@core/CommonGameMixin.js'
 var targetScore = 1;
 
 var game = {
+
+	worldOptions: {
+		background: {image: 'PalmBackground', scale: {x: 1.334, y: 1.334}},
+		gravity: 0,
+		width: 1200,
+		height: 600,
+	},
+
+	assets: [{name: "pelicanSheet", target: "Textures/PelicanSheetLess.json"}],
+
 	gameName: 'Gulls',
 	ball: null,
 	victoryCondition: {type: 'timed', limit: 40},
@@ -19,8 +29,8 @@ var game = {
 	wave: 0,
 
 	resetGameExtension: function() {
-	    wave = 0;
-	    birds = [];
+	    this.wave = 0;
+	    this.birds = [];
 	    this.palm.currentColor = -1;
 	},
 
@@ -87,7 +97,7 @@ var game = {
 			var x = event.clientX - rect.left;
 			var y = event.clientY - rect.top;
 			$.each(this.birds, function(i, bird) {
-			    if(!bird.correctBird && !bird.timerBird && bird.partsCopy.length >= 5) return;
+			    if(!bird.correctBird && !bird.timerBird && bird.partsCopy.length >= this.lagCompensation) return;
 			    $.each(bird.partsCopy[bird.partsCopy.length-2], function(i, part) {
 				// $.each(bird.parts, function(i, part) {
 				    if(i == 0) return;
@@ -146,7 +156,7 @@ var game = {
 	},
 
 	createBirds: function() {
-	    for(i = 0; i < 2; i++) {
+	    for(var i = 0; i < 2; i++) {
 	        this.birds.push(this.createBird(null));
 	    }
 
@@ -189,7 +199,7 @@ var game = {
 		    var xLoc = (this.canvasEl.getBoundingClientRect().width) + Math.random() * 20 + 20;
 		else
 		    var xLoc = Math.random() * -20 - 20;
-        yLoc = utils.calculateRandomPlacementForBodyWithinCanvasBounds(bird).y;
+        var yLoc = utils.calculateRandomPlacementForBodyWithinCanvasBounds(bird).y;
         if(!createBirdOffScreenRight)
             utils.scaleBody(bird, -1, 1);
 
@@ -223,16 +233,6 @@ var game = {
 	},
 
 }
-
-/*
- * Options to for the game starter
- */
-game.worldOptions = {
-		background: {image: 'PalmBackground', scale: {x: 1.334, y: 1.334}},
-		    gravity: 0,
-	        width: 1200,
-	        height: 600,
-	       };
 
 game.instructions = ['Click the pelican whose color matches the tree', 'Receive a time bonus by clicking one or both red pelicans before the main pelican'];
 

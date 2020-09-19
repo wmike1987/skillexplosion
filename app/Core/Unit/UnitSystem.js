@@ -22,7 +22,6 @@ var unitSystem = function(properties) {
         this.box.tint = 0x00cbb8;
         this.box.isBox = true;
         this.box.borderAlpha = .5;
-        this.box.drawWire = true;
         this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: this.box.tint, stage: 'foreground', alpha: .3}];
         this.box.topBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
         this.box.bottomBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 1}});

@@ -4,6 +4,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
+import utils from '@utils/GameUtils'
 
 //module
 var renderer = function(engine, options) {
@@ -59,6 +60,7 @@ var renderer = function(engine, options) {
 	this.setBackground = function(imagePath, options) {
 		var background = this.itsMorphinTime(imagePath);
 
+		background.filters = [];
 		if(options.backgroundFilter) {
 			background.filters = [options.backgroundFilter];
         	options.backgroundFilter.uniforms.mouse = {x: -50.0, y: -50.0};
@@ -145,14 +147,6 @@ var renderer = function(engine, options) {
 				this.drawWireFrame(body);
 				return;
 			};
-
-			//align any displacement sprites. The displacement sprite's anchor needs extra care unfortunately.
-			if(body.displacementSprite) {
-			    if(!body.displacementSprite.customAnchor) body.displacementSprite.customAnchor = {x: body.render.sprite.xOffset, y: body.render.sprite.yOffset};
-				body.displacementSprite.anchor.x = body.displacementSprite.customAnchor.x;
-    			body.displacementSprite.anchor.y = body.displacementSprite.customAnchor.y;
-			    body.displacementSprite.position = body.position;
-			}
 
 		}.bind(this));
 	};
@@ -266,10 +260,17 @@ var renderer = function(engine, options) {
 			newSprite.scale.y  = child.scale.y;
 	    }
 	    if(child.filter) {
-			if($.isArray(child.filter))
+			if($.isArray(child.filter)) {
 				newSprite.filters = child.filter;
-			else
-				newSprite.filters = [child.filter];
+			}
+			else {
+				if(child.filter.backgroundFilter) {
+					this.background.filters.push(child.filter);
+					newSprite.backgroundFilter = child.filter;
+				} else {
+					newSprite.filters = [child.filter];
+				}
+			}
 	    }
 		if(child.color && child.pluginName) {
 			newSprite.pluginName = child.pluginName;
@@ -313,6 +314,9 @@ var renderer = function(engine, options) {
 	this.removeFromPixiStage = function(something, where) {
 		something = something.renderlings ? Object.keys(something.renderlings).map(function (key) { return something.renderlings[key]; }) : [something];
 		$.each(something, function(i, obj) {
+			if(obj.backgroundFilter) {
+				utils.removeObjectFromArray(this.background.filters, obj.backgroundFilter);
+			}
 		    this.removeAndDestroyChild(this.stages[where || obj.myLayer || 'stage'], obj)
 		}.bind(this));
 	};
@@ -375,7 +379,7 @@ var renderer = function(engine, options) {
 							foundTextureKey = jpgSomething;
 		                }
 		            } else {
-						return false;
+						return;
 					}
 					if(foundAtlasTexture) {
 						if(!this.texAtlCache[something]) {
@@ -394,9 +398,9 @@ var renderer = function(engine, options) {
 
 			if(something.indexOf('/') < 0) {
 				var texture = './Textures/' + something;
-				return new PIXI.Sprite.fromImage(texture);
+				return new PIXI.Sprite.from(texture);
 			} else {
-				return new PIXI.Sprite.fromImage(something);
+				return new PIXI.Sprite.from(something);
 			}
 		}
 

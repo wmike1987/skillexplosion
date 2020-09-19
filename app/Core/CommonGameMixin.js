@@ -36,7 +36,7 @@ var common = {
     frames: 0,
     frameSecondCounter: 0,
     playerTeam: 100,
-    lagCompensation: 2,
+    lagCompensation: 3,
     commonAssets: [{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"},
                     {name: "isoSheet2", target: "Textures/legacy/IsoSheet2.json"}],
 
@@ -117,7 +117,7 @@ var common = {
             }
         )}.bind(this), true, 'beforeStep');
 
-        var maxLagToAccountFor = 3;
+        var maxLagToAccountFor = this.lagCompensation;
         this.addTickCallback(function() {
             $.each(this.vertexHistories, function(index, body) {
                 //Veritices
