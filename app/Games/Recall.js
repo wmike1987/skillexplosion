@@ -37,6 +37,16 @@ var redScoreStyle = new PIXI.TextStyle({
 		});
 
 var game = {
+
+	worldOptions: {
+		background: {image: 'Ice', scale: {x: 1, y: 1}},
+	    width: 1200,
+	    height: 600,
+	    gravity: 0,
+	},
+
+	assets: [{name: 'backgroundSheet2', target: 'Textures/BackgroundSheet2.json'}],
+
     noBorder: true,
 	gameName: 'Recall',
 	victoryCondition: {type: 'lives', limit: 5},
@@ -148,7 +158,7 @@ var game = {
 
                         this.hits[this.chain-1].play();
                         if(this.chain == 5) {
-                            this.floatText("+1", seq.position);
+                            utils.floatText("+1", seq.position);
                             this.incrementScore(1);
                         }
                     } else {
@@ -178,7 +188,7 @@ var game = {
 
 	    this.addTickCallback(function() {
 	        this.sequences = $.grep(this.sequences, function(seq, index) {
-	            if(this.bodyRanOffStage(seq)) {
+	            if(utils.bodyRanOffStage(seq)) {
 	                if(!seq.dead) {
 	                    this.addLives(-1);
 	                }
@@ -193,14 +203,14 @@ var game = {
 
 	newWave: function(wave) {
 	    if(!this.wavesElapsed.includes(wave)) {
-	        this.signalNewWave((this.wavesElapsed.length+1));
+	        utils.signalNewWave((this.wavesElapsed.length+1));
 	        this.wavesElapsed.push(wave);
 	    }
 	},
 
 	createSequence: function() {
-	    var first = this.acceptableNumbers[this.getRandomIntInclusive(0, this.acceptableNumbers.length-1)];
-	    var second = this.acceptableCharacters.concat([first, first, first, first, first, first, first])[this.getRandomIntInclusive(0, this.acceptableCharacters.length + 7 - 1)];
+	    var first = this.acceptableNumbers[utils.getRandomIntInclusive(0, this.acceptableNumbers.length-1)];
+	    var second = this.acceptableCharacters.concat([first, first, first, first, first, first, first])[utils.getRandomIntInclusive(0, this.acceptableCharacters.length + 7 - 1)];
 
 	    var seq = Matter.Bodies.circle(0, 0, 20, { restitution: .95, frictionAir: 0});
 	    seq.first = first;
@@ -223,14 +233,14 @@ var game = {
         var buffer = 40;
         var posY = 0;
         do {
-            posY = 40 + (Math.random() * (this.getCanvasHeight() - 80))
+            posY = 40 + (Math.random() * (utils.getCanvasHeight() - 80))
         }
         while(Math.abs(posY - this.lastPosY) < buffer || Math.abs(posY - this.lastPosY2) < buffer || Math.abs(posY - this.lastPosY3) < buffer);
         this.lastPosY3 = this.lastPosY2;
         this.lastPosY2 = this.lastPosY;
         this.lastPosY = posY;
 
-        Matter.Body.setPosition(seq, {x: this.getCanvasWidth() + 10, y: posY});
+        Matter.Body.setPosition(seq, {x: utils.getCanvasWidth() + 10, y: posY});
         Matter.Body.setVelocity(seq, {x: this.sequenceXVelocity, y: 0});
         this.sequences.push(seq);
         this.addBody(seq);
@@ -244,16 +254,6 @@ var game = {
 	    $('body').off('keydown.recall');
 	}
 }
-
-/*
- * Options to for the game starter
- */
-game.worldOptions = {
-		background: {image: 'Ice', scale: {x: 1, y: 1}},
-	        width: 1200,
-	        height: 600,
-	        gravity: 0,
-	       };
 
 game.instructions = ['Type the key-sequences before they leave the screen', 'Five correct in a row gives one bonus point'];
 

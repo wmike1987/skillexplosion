@@ -3,14 +3,15 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import {globals} from '@core/GlobalState.js'
 import collisionPlugin from '@lib/matter-collision-events/plugin.js'
+import * as particles from 'pixi-particles'
 import polydecomp from 'poly-decomp'
 
 $(document).ready(async function() {
     window.PIXI = PIXI;
+    PIXI.particles = particles;
     window.decomp = polydecomp;
     await import(/* webpackChunkName: "pixi-layers" */'pixi-layers');
     await import(/* webpackChunkName: "pixi-spine" */'pixi-spine');
-    await import(/* webpackChunkName: "pixi-particles" */'pixi-particles');
 
     Matter.use('matter-collision-events');
 
@@ -22,7 +23,7 @@ $(document).ready(async function() {
             if(globals.currentGame) {
                 globals.currentGame.nuke({noMercy: true})
             }
-            import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(Raindrops)+.js$/ */'@games/' + gameName + '.js').then((module) => {
+            import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(MultiDodge)+.js$/ */'@games/' + gameName + '.js').then((module) => {
 
                 module.default.loadGame();
             })

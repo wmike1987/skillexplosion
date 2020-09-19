@@ -128,7 +128,7 @@ var renderer = function(engine, options) {
 
 				//handle rotation
 				if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'continuous') {
-				    sprite.rotation += .00075 * tickEvent.source.delta;
+				    sprite.rotation += .00075 * tickEvent.delta;
 				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'none') {
 				    //do nothing
 				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'random') {
@@ -233,10 +233,6 @@ var renderer = function(engine, options) {
 	    body.renderlings[child.id] = newSprite;
 
 	    //apply child options to sprite
-	    if(child.pivot) {
-	        //newSprite.pivot.x = 256;
-	        //newSprite.pivot.y = 0256;
-	    }
 	    if(child.initialRotate == 'random') {
 	        newSprite.rotation = Math.random() * 5;
 	        newSprite.initialRotate = newSprite.rotation;

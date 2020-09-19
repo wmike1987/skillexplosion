@@ -6,7 +6,7 @@ export default function Marble(options) {
 
 	var options = options || {};
 
-	var radius = 20;
+	var radius = options.radius || 20;
 	var rc = [{
 		id: 'marble',
 		data: 'GlassMarble',

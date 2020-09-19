@@ -843,7 +843,7 @@ var utils = {
             options.where,
 
             // The collection of particle images to use
-            [options.texture || PIXI.Texture.fromImage('../app/Textures/particle.png')],
+            [options.texture || PIXI.Texture.from('Textures/particle.png')],
 
             // Emitter configuration, edit this to change the look
             // of the emitter
@@ -917,7 +917,7 @@ var utils = {
     },
 
     signalNewWave: function(wave, deferred) {
-        this.floatText("Wave: " + wave, this.getCanvasCenter(), {runs: 100, stationary: true, style: styles.newWaveStyle, deferred: deferred});
+        this.floatText("Wave: " + wave, this.getCanvasCenter(), {runs: 50, stationary: true, style: styles.newWaveStyle, deferred: deferred});
     },
 
     flipCoin: function() {

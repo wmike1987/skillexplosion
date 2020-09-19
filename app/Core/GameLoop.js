@@ -76,10 +76,12 @@ var Loop = function(options) {
         var hasUpdated = false;
 
         var stepCount = 0;
+        var thisFrameDelta = 0;
         if(this.isFixed) {
             this.deltaAccumulator += this.deltaTime;
             while(this.deltaAccumulator >= this.desiredFrameTime) {
                 this.deltaAccumulator -= this.desiredFrameTime;
+                thisFrameDelta =+ this.desiredFrameTime;
                 Matter.Events.trigger(this, 'beforeStep', event);
                 Matter.Engine.update(options.engine, this.desiredFrameTime);
                 stepCount++;
@@ -102,6 +104,7 @@ var Loop = function(options) {
 
         event.percentOfNextFrame = this.deltaAccumulator/this.desiredFrameTime;
         event.interpolate = this.interpolate;
+        event.delta = thisFrameDelta;
         Matter.Events.trigger(this, 'renderWorld', event);
 
         //trigger event now that everything is in place
