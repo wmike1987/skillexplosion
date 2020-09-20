@@ -849,6 +849,8 @@ var utils = {
             options.config
         );
 
+        emitter.spawnPos = {x: 0, y: 0};
+
         // Calculate the current time
         var elapsed = Date.now();
 

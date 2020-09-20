@@ -7,7 +7,7 @@ import {CommonGameMixin} from '@core/CommonGameMixin.js'
 
 var targetScore = 1;
 
-sequenceStyle = new PIXI.TextStyle({
+var sequenceStyle = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 70,
     fill: ['#119EFF'],
@@ -17,7 +17,7 @@ sequenceStyle = new PIXI.TextStyle({
     wordWrapWidth: 440
 });
 
-matchStyle = new PIXI.TextStyle({
+var matchStyle = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 70,
     fill: ['#FAFAFA'],
@@ -27,7 +27,7 @@ matchStyle = new PIXI.TextStyle({
     wordWrapWidth: 440
 });
 
-style = new PIXI.TextStyle({
+var style = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 140,
     fill: ['#FAFAFA'],
@@ -42,7 +42,7 @@ style = new PIXI.TextStyle({
     wordWrapWidth: 440
 });
 
-redScoreStyle = new PIXI.TextStyle({
+var redScoreStyle = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 140,
     fill: ['#ff542d'],
@@ -58,6 +58,16 @@ redScoreStyle = new PIXI.TextStyle({
 });
 
 var game = {
+
+    worldOptions: {
+        background: {image: 'Chalkboard', scale: {x: 1.0, y: 1.0}},
+        width: 1200,
+        height: 600,
+        gravity: 0,
+    },
+
+    assets: [{name: 'chalkboardSheet', target: 'Textures/ChalkboardSheet.json'}],
+
 	gameName: 'SequenceMatch',
 	victoryCondition: {type: 'timed', limit: 180},
 	hideScore: false,
@@ -112,7 +122,7 @@ var game = {
 	    //create MATCH text
 	    utils.addSomethingToRenderer('MatchChalk', null, {style: $.extend({}, style), x: this.canvas.width/2-(1.5*buttonSpacing), y: this.canvas.height*1/4});
 
-	    buttons = [add, subtract, multiply, divide];
+	    var buttons = [add, subtract, multiply, divide];
 
 	    $.each(buttons, function(index, button) {
 	        button.interactive = true;
@@ -164,7 +174,7 @@ var game = {
 	        }
 
 	        this.sequence = $.grep(this.sequence, function(seq, index) {
-	            if(this.bodyRanOffStage(seq)) {
+	            if(utils.bodyRanOffStage(seq)) {
 	                this.removeBody(seq);
 	                return false;
                 } else {
@@ -197,14 +207,14 @@ var game = {
             default:
         }
         if(newValue < limit) {
-            this.tap[this.getRandomIntInclusive(0, this.tap.length-1)].play();
+            this.tap[utils.getRandomIntInclusive(0, this.tap.length-1)].play();
             this.updateSequenceBodies(newValue);
         }
 	},
 
 	foundMatch: function() {
 
-	    var emitter = this.createParticleEmitter(this.renderer.stages.stage, this.levelEmitterConfig);
+	    var emitter = utils.createParticleEmitter({where: this.renderer.stages.stage, config: this.levelEmitterConfig});
 
         // Start emitting
         emitter.updateSpawnPos(this.currentMatch.position.x, this.currentMatch.position.y);
@@ -224,12 +234,12 @@ var game = {
 	    }
 
 	    var fontSize = 70;
-	    var first = this.getRandomIntInclusive(1, 40);
+	    var first = utils.getRandomIntInclusive(1, 40);
 
 	    //if this is the first number we ever generate... let's not have it be 2
 	    if(!this.currentMatch) {
 	        while(first == 2) {
-	            first = this.getRandomIntInclusive(1, 40);
+	            first = utils.getRandomIntInclusive(1, 40);
 	        }
 	    }
 
@@ -262,7 +272,7 @@ var game = {
         //generate new body for the value and set its render props
         var newNumber = Matter.Bodies.circle(0, 0, 20, { restitution: .95, frictionAir: 0});
         newNumber.renderChildren = [{
-	        id: this.uuidv4(),
+	        id: utils.uuidv4(),
 	        data: 'TEXT:' + value.toString(),
 	        options: {style: $.extend({}, sequenceStyle)},
 	        offset: {x: 0, y: 0}
@@ -293,16 +303,6 @@ var game = {
     }
 
 }
-
-/*
- * Options to for the game starter
- */
-game.worldOptions = {
-		background: {image: 'Chalkboard', scale: {x: 1.0, y: 1.0}},
-	        width: 1200,
-	        height: 600,
-	        gravity: 0,
-	       };
 
 game.instructions = ['Use + - x ÷ to manipulate the number sequence and match the given number', 'Negatives become positive (ex: 3 - 5 = 2)', 'Can only divide evenly'];
 
