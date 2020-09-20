@@ -7,6 +7,16 @@ export default function Marble(options) {
 
 	var options = options || {};
 
+	var marble = {};
+	var originalTint = options.tint;
+	marble.tintMe = function(tint) {
+		this.renderlings.marble.tint = tint;
+	}
+
+	marble.untintMe = function() {
+		this.renderlings.marble.tint = originalTint;
+	}
+
 	var radius = options.radius || 20;
 	var rc = [
 	{
@@ -75,6 +85,10 @@ export default function Marble(options) {
 		unitType: 'Marble',
 		team: options.team || 4,
 		priority: 10,
+		hitboxWidth: 30,
+		hitboxHeight: 30,
+		hitboxYOffset: 0,
+		useCollisionBodyAsSelectionBody: true,
 		hideLifeBar: true,
 		isoManaged: false,
 		name: options.name,
@@ -84,11 +98,9 @@ export default function Marble(options) {
 	}, options);
 
 	return UC({
+			givenUnitObj: marble,
 			renderChildren: rc,
 			radius: radius,
-			hitboxWidth: 30,
-			hitboxHeight: 30,
-			hitboxYOffset: 0,
 			unit: unitProperties,
 			moveable: {
 				moveSpeed: 4.5

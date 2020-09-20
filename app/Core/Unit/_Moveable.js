@@ -36,12 +36,21 @@ var moveable = {
         //**********************
         //Create body sensor - the selection box collides with a slightly smaller body size
         //**********************
-        var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight/10*8 : this.selectionBody.hheight;
-        var swidth = this.smallerBodyWidthChange ? this.selectionBody.wwidth/7*4 : this.selectionBody.wwidth;
-        this.smallerBody = Matter.Bodies.rectangle(0, 0, swidth, sheight, {
-            isSensor: true,
-            noWire: true
-        });
+        this.smallerBody = null;
+        if(this.useCollisionBodyAsSelectionBody) {
+            var sradius = this.smallerBodyRadiusChange ? this.selectionBody.rradius/10*8 : this.selectionBody.rradius;
+            this.smallerBody = Matter.Bodies.circle(0, 0, sradius, {
+                isSensor: true,
+                noWire: true,
+            });
+        } else {
+            var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight/10*8 : this.selectionBody.hheight;
+            var swidth = this.smallerBodyWidthChange ? this.selectionBody.wwidth/7*4 : this.selectionBody.wwidth;
+            this.smallerBody = Matter.Bodies.rectangle(0, 0, swidth, sheight, {
+                isSensor: true,
+                noWire: true
+            });
+        }
         this.smallerBody.isSelectionBody = true;
         this.smallerBody.collisionFilter.category = this.smallerBodyCollisionCategory;
         this.smallerBody.collisionFilter.mask = 0x0002; //this.smallerBody.collisionFilter.mask - (this.team || 4);

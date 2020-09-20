@@ -20,19 +20,12 @@ import EmptySlot from '@core/Unit/EmptySlot.js'
  */
 function UnitConstructor(options) {
 
-    //establish a base object
-    var originalUnit = {unitId: utils.uuidv4()};
+    //use the given object as our base -- "unitObj"
+    var unitObj = options.givenUnitObj || {};
+    Object.assign(unitObj, {unitId: utils.uuidv4()}) //add in a unit id
 
-    //use the given object as our base -- "originalUnit"
-    if(options.givenUnitObj) {
-        originalUnit = Object.assign(options.givenUnitObj, originalUnit);
-    }
-
-    //mixin the unit options into the unit base
-    var newUnit = $.extend(originalUnit, UnitBase(), options.unit);
-
-    //mixin hitbox attributes
-    $.extend(newUnit, {hitboxWidth: options.hitboxWidth, hitboxHeight: options.hitboxHeight, hitboxYOffset: options.hitboxYOffset});
+    //mixin the unit options into the unit base then into the unit object
+    var newUnit = Object.assign(unitObj, UnitBase, options.unit);
 
     //death pact slaves
     if(options.slaves) {
@@ -128,22 +121,31 @@ function UnitConstructor(options) {
     // body.drawWire = true;
     body.collisionFilter.mask -= 0x0002;
     body.unit = newUnit; //reference to parent
-    // body.pluginName = 'colorBatch';
 
     //**************************************************************
     // create selection body, or use the collision body if specified
     //**************************************************************
-    if()
-    var selectionBody = Matter.Bodies.rectangle(5, 5, options.hitboxWidth || 20, options.hitboxHeight || 20, {
-        isSensor: true,
-    });
-    selectionBody.isSelectionBody = true;
-    selectionBody.noWire = !newUnit.adjustHitbox;
+    var selectionBody = null;
+    if(newUnit.useCollisionBodyAsSelectionBody) {
+        selectionBody = Matter.Bodies.circle(0, 0, options.radius, {
+            isSensor: true
+        });
+
+        selectionBody.rradius = options.radius;
+        selectionBody.unit = newUnit; //reference to parent
+    } else {
+        selectionBody = Matter.Bodies.rectangle(5, 5, newUnit.hitboxWidth || 20, newUnit.hitboxHeight || 20, {
+            isSensor: true,
+        });
+        selectionBody.wwidth = newUnit.hitboxWidth || 20;
+        selectionBody.hheight = newUnit.hitboxHeight || 20;
+    }
+
     selectionBody.collisionFilter.mask = 0x0002;
+    selectionBody.isSelectionBody = true;
     selectionBody.unit = newUnit;
-    selectionBody.wwidth = options.hitboxWidth || 20,
-    selectionBody.hheight = options.hitboxHeight || 20,
-    utils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: options.hitboxYOffset != null ? options.hitboxYOffset : -8}});
+    selectionBody.noWire = !newUnit.adjustHitbox;
+    utils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
     utils.deathPact(newUnit, selectionBody);
 
     //back references

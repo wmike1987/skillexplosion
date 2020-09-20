@@ -11,39 +11,6 @@ import Command from '@core/Unit/Command.js'
 import CommandQueue from '@core/Unit/CommandQueue.js'
 import {globals, keyStates} from '@core/GlobalState.js'
 
-var hoverShader = `
-    precision mediump float;
-    varying vec2 vTextureCoord;
-    uniform sampler2D uSampler;
-    uniform float r;
-    uniform float g;
-    uniform float b;
-    uniform float a;
-    uniform bool active;
-
-    void main(){
-        if(active) {
-            gl_FragColor = texture2D(uSampler, vTextureCoord);
-            if(gl_FragColor.a > 0.3) {
-                if(r > 0.0) {
-                    gl_FragColor.r = r;
-                }
-                if(g > 0.0) {
-                    gl_FragColor.g = g;
-                }
-                if(b > 0.0) {
-                    gl_FragColor.b = b;
-                }
-                if(a > 0.0) {
-                    gl_FragColor.a = a;
-                }
-            }
-        } else {
-            gl_FragColor = texture2D(uSampler, vTextureCoord);
-        }
-    }
-`;
-
 var levelUpSound = utils.getSound('levelup.wav', {volume: .45, rate: .8});
 var itemPlaceSound = utils.getSound('itemplace.wav', {volume: .06, rate: 1});
 var petrifySound = utils.getSound('petrify.wav', {volume: .07, rate: 1});
@@ -426,41 +393,27 @@ var UnitBase = {
             })
         }.bind(this));
 
-        //add filter on the main render sprite
-        var hoverFilter = new PIXI.Filter(undefined, hoverShader, {active: false, r: 0.0, g: 0.0, b: 0.0});
-        var filters = [hoverFilter];
-
-        //force to be array
-        if(!$.isArray(this.mainRenderSprite)) {
-            this.mainRenderSprite = [this.mainRenderSprite];
-        }
-        if(this.mainRenderSprite) {
-            $.each(this.mainRenderSprite, function(i, spriteId) {
-                $.each(this.renderChildren, function(index, child) {
-                    if(child.id == spriteId) {
-                        //child.filter = filters;
-                        // if(this.skinTweak) {
-                        //     child.pluginName = 'colorBatch';
-                        //     child.color = this.skinTweak;
-                        // }
-                    }
-                }.bind(this))
-            }.bind(this))
-        };
-
         //hover Method
         this.hover = function(event) {
-            // hoverFilter.uniforms.active = true;
             if(this.team != event.team) {
+                if(this.tintMe) {
+                    this.tintMe(0xc63e04);
+                }
                 this.isoManagedTint = 0xc31111;
             } else {
+                if(this.tintMe) {
+                    this.tintMe(0x018526);
+                }
                 this.isoManagedTint = 0x3afc53;
             }
+
         };
 
         this.unhover = function(event) {
-            // hoverFilter.uniforms.active = false;
             this.isoManagedTint = 0xFFFFFF;
+            if(this.untintMe) {
+                this.untintMe();
+            }
         };
 
         this.showLifeBar = function(value) {
@@ -801,6 +754,4 @@ var UnitBase = {
     },
 }
 
-export default function() {
-    return $.extend(true, {}, UnitBase);
-};
+export default UnitBase;

@@ -513,10 +513,10 @@ var common = {
     },
 
     addBody: function(body) {
-        //if we've added a unit, call down to its body
-        if(body.isUnit) {
-            body = body.body;
-        }
+        // //if we've added a unit, call down to its body
+        // if(body.isUnit) {
+        //     body = body.body;
+        // }
 
         //This might have some performance impact... possibly will investigate
         if(body.vertices)

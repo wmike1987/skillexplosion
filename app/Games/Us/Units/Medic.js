@@ -769,6 +769,8 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             unitType: 'Medic',
             health: 40,
             energy: 60,
+            hitboxWidth: 35,
+            hitboxHeight: 60,
             damageLabel: "Heal: ",
             damageMember: function() {
                 return this.getAbilityByName('Heal').healAmount;
@@ -825,8 +827,6 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
                 givenUnitObj: medic,
                 renderChildren: rc,
                 radius: rad,
-                hitboxWidth: 35,
-                hitboxHeight: 60,
                 mass: options.mass || 8,
                 mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
                 slaves: [healsound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
