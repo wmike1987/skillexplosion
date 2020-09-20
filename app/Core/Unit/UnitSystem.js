@@ -4,7 +4,9 @@ import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import {globals, keyStates} from '@core/GlobalState.js'
 
-var unitSystem = function(properties) {
+var UnitSystemAssets = [{name: 'UnitMisc', target: 'Textures/Legacy/UnitMisc.json'}];
+
+var UnitSystem = function(properties) {
 
     //Share given properties
     $.extend(this, {active: true}, properties);
@@ -1066,4 +1068,4 @@ var unitSystem = function(properties) {
     }
 }
 
-export default unitSystem;
+export {UnitSystem, UnitSystemAssets};

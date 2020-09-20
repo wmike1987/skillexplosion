@@ -18,27 +18,23 @@ var game = {
 	},
 
 	assets: [
-				{name: "backgroundSheet", target: "Textures/BackgroundSheet.json"},
-				{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"},
-				{name: "DeathAnimations", target: "Textures/legacy/DeathAnimations.json"}
-			],
+		{name: "backgroundSheet", target: "Textures/BackgroundSheet.json"},
+		{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"},
+		{name: "DeathAnimations", target: "Textures/legacy/DeathAnimations.json"}
+	],
 
 	gameName: 'Split',
 	extraLarge: 20,
 	large: 18,
 	medium: 16,
 	small: 8,
-	zoneSize: 128,
 	level: 1,
-	victoryCondition: {type: 'lives', limit: 305},
-	currentZones: [],
-	selectionBox: true,
+	victoryCondition: {type: 'lives', limit: 5},
 	enableUnitSystem: true,
 	hidePrevailingIndicator: true,
 	noClickIndicator: true,
 	selectionTint: 0x33FF45,
 	pendingSelectionTint: 0x70ff32,
-	previousListener: null,
 	baneSpeed: 2.0,
 
 	initExtension: function() {
@@ -87,25 +83,17 @@ var game = {
 	    }
 
 	    //create drones
-	    this.createDrones(1);
+	    this.createDrones(numberOfDrones);
 
 	    //create banelings
-	    this.createBanelings(1);
-
-	    //send banelings to attack
-
-	    //add tick callback to detect if no banelings exist
-	        //if so, tally score and play next level
+	    this.createBanelings(numberOfBanes);
 	},
 
 	createDrones: function(number) {
 	    for(var x = 0; x < number; x++) {
 			var radius = this.large;
-			var marble = Marble({adjustHitbox: false, tint: 0xc106d1, radius: this.smallish, team: this.playerTeam});
-			marble.isSelectable = true;
-			marble.isMoveable = true;
+			let marble = Marble({adjustHitbox: false, tint: 0xc106d1, radius: this.smallish, team: this.playerTeam, health: 10});
 			marble.attackerDisabled = true;
-			marble.isTargetable = true;
 			this.marbles.push(marble);
 			marble.moveSpeed = 2.5;
 
@@ -118,48 +106,11 @@ var game = {
 	    var side = Math.random();
 	    for(var x = 0; x < number; x++) {
 			var radius = this.medium;
-			var marble = Marble({adjustHitbox: false, tint: 0x00FF00, radius: this.smallish, team: 5});
-			marble.isSelectable = true;
-			marble.isTargetable = true;
-			this.marbles.push(marble);
+			let marble = Marble({adjustHitbox: false, tint: 0x00FF00, radius: this.smallish, team: 5, health: 10});
+			this.banes.push(marble);
 			marble.moveSpeed = 2.5;
-
-			this.addUnit(marble);
-		    marble.honableTargets = new Set();
-			$.each(this.marbles, function(index, drone) {
-			    marble.honableTargets.add(drone);
-			})
 			marble.honeRange = 1000;
-			marble.range = 50;
-            var blastRadius = radius*2.5;
-            const blastSensor = Matter.Bodies.circle(0, 0, blastRadius, { isStatic: true, isSensor: true, noWire: true });
-            blastSensor.collisionFilter.category = marble.sensorCollisionCategory;
-            blastSensor.collisionFilter.mask = blastSensor.collisionFilter.mask - marble.sensorCollisionCategory - marble.team;
-			utils.deathPact(marble, blastSensor);
-            const blastSensorTick = this.addTickCallback(function() {
-                Matter.Body.setPosition(blastSensor, {x: marble.position.x, y: marble.position.y});
-            }.bind(this));
-            this.addBody(blastSensor);
-
-            Matter.Events.on(marble, "onremove", function() {
-                this.removeTickCallback(blastSensorTick);
-            }.bind(this));
-
-            //blast targets
-			marble.blastTargets = new Set();
-            Matter.Events.on(blastSensor, 'onCollide', function(pair) {
-		        var otherBody = pair.pair.bodyA == blastSensor ? pair.pair.bodyB : pair.pair.bodyA;
-		        if(otherBody.isTargetable && marble.team != otherBody.unit.team) {
-	                marble.blastTargets.add(otherBody);
-		        }
-		    });
-
-            Matter.Events.on(blastSensor, 'onCollideEnd', function(pair) {
-		        var otherBody = pair.pair.bodyA == blastSensor ? pair.pair.bodyB : pair.pair.bodyA;
-		        if(otherBody.isTargetable && marble.team != otherBody.unit.team) {
-	                marble.blastTargets.delete(otherBody);
-		        }
-		    });
+			marble.range = 40;
 
 			marble.attack = function(unitTarget) {
 				var position = utils.clonePosition(marble.position);
@@ -169,7 +120,7 @@ var game = {
 					speed: .6,
 					times: 1,
 					scale: .5,
-					transform: [position.x,position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40]
+					transform: [position.x, position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40]
 				});
 				baneexplode.play();
 				utils.addSomethingToRenderer(baneexplode, 'stageOne');
@@ -179,26 +130,24 @@ var game = {
 			        nextLevelGo = true;
 			    }
 			    this.pop.play();
-				marble._death();
-			    this.removeUnit(marble);
-			    marble.blastTargets.forEach(function(index, target) {
-			        if(this.marbles.indexOf(target) >= 0) {
-			            var shard = utils.addSomethingToRenderer('glassShards', 'background', {position: target.position, scale: {x: .65, y: .65}, tint: target.tint, rotation: Math.random()*6});
-            		    this.addTimer({name: 'shardDisappear' + target.id, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
-                            shard.alpha -= .05;
-        					    }, totallyDoneCallback: function() {
-        					        utils.removeSomethingFromRenderer(shard);
-        			    }.bind(this)})
-			            this.marbles.splice(this.marbles.indexOf(target), 1);
-						this.removeUnit(unitTarget);
-			        }
 
-			        if(this.marbles.length == 0) {
-			            this.addLives(-1);
-			            nextLevelGo = true;
-			        }
-
-			    }.bind(this));
+				var blastRadius = 70;
+				var bodiesToDamage = [];
+				utils.applyToUnitsByTeam(function(team) {return marble.team != team}, function(unit) {
+					return (utils.distanceBetweenBodies(marble.body, unit.body) <= blastRadius && unit.isTargetable);
+				}.bind(this), function(unit) {
+					var shard = utils.addSomethingToRenderer('glassShards', 'background', {position: unit.position, scale: {x: .65, y: .65}, tint: unit.tint, rotation: Math.random()*6});
+					this.addTimer({name: 'shardDisappear' + unit.unitId, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
+						shard.alpha -= .05;
+					}, totallyDoneCallback: function() {
+						utils.removeSomethingFromRenderer(shard);
+					}.bind(this)})
+					this.marbles.splice(this.marbles.indexOf(unit), 1);
+					unit.sufferAttack(1000, this);
+				}.bind(this));
+				marble.alreadyAttacked = true;
+				if(!marble.alreadyDied)
+					marble.sufferAttack(1000);
 
 			    if(nextLevelGo) {
 			        setTimeout(this.nextLevel.bind(this), 250);
@@ -210,6 +159,8 @@ var game = {
             } else {
                 marble.position = {x: utils.getCanvasWidth() - Math.random() * 100, y: utils.getCanvasCenter().y + Math.random() * 600 - 300};
             }
+
+			this.addUnit(marble);
 	    }
 	},
 

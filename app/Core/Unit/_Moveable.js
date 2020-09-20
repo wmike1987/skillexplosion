@@ -14,7 +14,8 @@ var moveable = {
     hasMoved: false,
     isSoloMover: false,
     stopOnCollisionBuffer: 5, //pixels
-    overshootBuffer: 10, //pixels
+    overshootBuffer: 5, //pixels
+    groupOvershootBuffer: 20, //pixels
     smallerBodyCollisionCategory: 0x4000,
     noProgressBuffer: 15, //pixels
     canMove: true,
@@ -182,7 +183,7 @@ var moveable = {
     },
 
     generalStopCondition: function(commandObj) {
-        var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.overshootBuffer * 20;
+        var alteredOvershootBuffer = this.isSoloMover ? this.overshootBuffer : this.groupOvershootBuffer;
 
         //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
         //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger

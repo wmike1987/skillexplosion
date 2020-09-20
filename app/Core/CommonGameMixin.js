@@ -5,7 +5,7 @@ import hs from  '@utils/HS.js'
 import * as h from  'howler'
 import styles from '@utils/Styles.js'
 import utils from '@utils/GameUtils.js'
-import UnitSystem from '@core/Unit/UnitSystem.js'
+import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js'
 import ItemSystem from '@core/Unit/ItemSystem.js'
 import CommonGameStarter from '@core/CommonGameStarter.js'
 import {globals, keyStates} from '@core/GlobalState.js'
@@ -30,8 +30,7 @@ var common = {
     baseScoreText: "Score: ",
     baseWaveText: "Wave: ",
     score: 0,
-    selectionBox: false,
-    unitSelectionSystem: false,
+    enableUnitSystem: false,
     clickAnywhereToStart: "Click anywhere to start",
     frames: 0,
     frameSecondCounter: 0,
@@ -923,6 +922,9 @@ var common = {
 
     loadGame: function() {
         this.assets = this.assets.concat(this.commonAssets);
+        if(this.enableUnitSystem) {
+            this.assets = this.assets.concat(UnitSystemAssets);
+        }
         CommonGameStarter(this);
     }
 };

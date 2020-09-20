@@ -464,6 +464,7 @@ var UnitBase = {
         };
 
         this.showLifeBar = function(value) {
+            if(this.hideLifeBar) return;
             if(value !== false)
                 value = true;
             if(this.renderlings['healthbarbackground']) {
@@ -473,6 +474,7 @@ var UnitBase = {
         };
 
         this.showEnergyBar = function(value) {
+            if(this.hideEnergyBar) return;
             if(value !== false)
                 value = true;
             if(this.renderlings['energybarbackground']) {

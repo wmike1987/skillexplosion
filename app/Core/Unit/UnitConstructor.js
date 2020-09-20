@@ -9,7 +9,7 @@ import UnitBase from '@core/Unit/UnitBase.js'
 import EmptySlot from '@core/Unit/EmptySlot.js'
 
 /*
- *  This module aims to assemble all the pieces of a unit. It creates a new object, mixes the specific unit-options with the UnitBase, then:
+ *  This module aims to assemble all the fundamental pieces of a unit. It creates a new object, mixes the specific unit-options with the UnitBase, then:
  *	Creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior.
  *  Builds the event click and event key mapping objects from more user-friendly ability and command specs.
  *  Finally, it returns the unit.
@@ -20,10 +20,12 @@ import EmptySlot from '@core/Unit/EmptySlot.js'
  */
 function UnitConstructor(options) {
 
+    //establish a base object
     var originalUnit = {unitId: utils.uuidv4()};
+
+    //use the given object as our base -- "originalUnit"
     if(options.givenUnitObj) {
-        options.givenUnitObj.unitId = originalUnit.unitId;
-        originalUnit = options.givenUnitObj;
+        originalUnit = Object.assign(options.givenUnitObj, originalUnit);
     }
 
     //mixin the unit options into the unit base
@@ -128,9 +130,10 @@ function UnitConstructor(options) {
     body.unit = newUnit; //reference to parent
     // body.pluginName = 'colorBatch';
 
-    //**********************
-    // create selection body
-    //**********************
+    //**************************************************************
+    // create selection body, or use the collision body if specified
+    //**************************************************************
+    if()
     var selectionBody = Matter.Bodies.rectangle(5, 5, options.hitboxWidth || 20, options.hitboxHeight || 20, {
         isSensor: true,
     });

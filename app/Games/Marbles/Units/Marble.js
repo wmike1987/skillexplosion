@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as $ from 'jquery'
 import UC from '@core/Unit/UnitConstructor.js'
+import {globals} from '@core/GlobalState'
 
 export default function Marble(options) {
 
@@ -74,8 +75,12 @@ export default function Marble(options) {
 		unitType: 'Marble',
 		team: options.team || 4,
 		priority: 10,
+		hideLifeBar: true,
 		isoManaged: false,
 		name: options.name,
+		death: function() {
+			globals.currentGame.removeUnit(this);
+		}
 	}, options);
 
 	return UC({
