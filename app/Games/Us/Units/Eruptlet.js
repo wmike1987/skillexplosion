@@ -81,7 +81,7 @@ define(['jquery', 'pixi', 'unitcore/UnitConstructor', 'matter-js', 'utils/GameUt
             }),
         };
 
-                var attackAnimations = {
+        var attackAnimations = {
                     up: utils.getSpineAnimation({
                         spine: spineNorth,
                         animationName: 'attack',

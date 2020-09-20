@@ -146,10 +146,9 @@ var utils = {
         if(!anim.loop && anim.currentPlayCount && anim.currentPlayCount > 0) {
             anim.onManyComplete = anim.onComplete; //default to remove the animation
             anim.onComplete = function() { //override onComplete to countdown the specified number of times
-                if(anim.currentPlayCount) {
+                if(--anim.currentPlayCount) {
                     //console.info(anim.currentPlayCount);
                     anim.gotoAndPlay(0);
-                    anim.currentPlayCount--;
                 } else {
                     anim.onManyComplete.call(anim);
                     this.currentPlayCount = this.playThisManyTimes;

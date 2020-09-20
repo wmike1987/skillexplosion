@@ -5,11 +5,11 @@ import utils from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Attacker from '@core/Unit/_Attacker.js'
 import Iso from '@core/Unit/IsoSpriteManager.js'
-import unitBase from '@core/Unit/UnitBase.js'
+import UnitBase from '@core/Unit/UnitBase.js'
 import EmptySlot from '@core/Unit/EmptySlot.js'
 
 /*
- *  This module aims to assemble all the pieces of a unit. It creates a new object, mixes the specific unit-options with the unitBase, then:
+ *  This module aims to assemble all the pieces of a unit. It creates a new object, mixes the specific unit-options with the UnitBase, then:
  *	Creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior.
  *  Builds the event click and event key mapping objects from more user-friendly ability and command specs.
  *  Finally, it returns the unit.
@@ -27,7 +27,7 @@ function UnitConstructor(options) {
     }
 
     //mixin the unit options into the unit base
-    var newUnit = $.extend(originalUnit, unitBase(), options.unit);
+    var newUnit = $.extend(originalUnit, UnitBase(), options.unit);
 
     //mixin hitbox attributes
     $.extend(newUnit, {hitboxWidth: options.hitboxWidth, hitboxHeight: options.hitboxHeight, hitboxYOffset: options.hitboxYOffset});
@@ -126,7 +126,7 @@ function UnitConstructor(options) {
     // body.drawWire = true;
     body.collisionFilter.mask -= 0x0002;
     body.unit = newUnit; //reference to parent
-    body.pluginName = 'colorBatch';
+    // body.pluginName = 'colorBatch';
 
     //**********************
     // create selection body
@@ -160,6 +160,9 @@ function UnitConstructor(options) {
     Object.defineProperty(newUnit, 'isSleeping', {
         get: function() {
             return this.body.isSleeping;
+        },
+        set: function(v) {
+            this.body.isSleeping = v;
         }
     });
     Object.defineProperty(body, 'renderlings', {

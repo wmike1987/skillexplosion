@@ -23,7 +23,7 @@ $(document).ready(async function() {
             if(globals.currentGame) {
                 globals.currentGame.nuke({noMercy: true})
             }
-            import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(MultiDodge)+.js$/ */'@games/' + gameName + '.js').then((module) => {
+            import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(Split)+.js$/ */'@games/' + gameName + '.js').then((module) => {
 
                 module.default.loadGame();
             })

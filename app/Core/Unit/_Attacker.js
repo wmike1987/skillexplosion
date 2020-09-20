@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
+import {globals} from '@core/GlobalState.js'
 
 export default {
     //private
@@ -32,7 +33,7 @@ export default {
 
     initAttacker: function() {
         this.availableTargets = new Set();
-        this.cooldownTimer = currentGame.addTimer({
+        this.cooldownTimer = globals.currentGame.addTimer({
             name: 'cooldown' + this.body.id,
             runs: 0,
             timeLimit: this.cooldown,
@@ -194,7 +195,7 @@ export default {
 
         //remove the attack hone functionality since we don't want to move
         if (this.attackHoneTick) {
-            currentGame.removeTickCallback(this.attackHoneTick);
+            globals.currentGame.removeTickCallback(this.attackHoneTick);
         }
         Matter.Sleeping.set(this.body, true);
     },
@@ -211,10 +212,12 @@ export default {
          * Move/Honing callback
          */
         if (this.attackHoneTick) {
-            currentGame.removeTickCallback(this.attackHoneTick);
+            globals.currentGame.removeTickCallback(this.attackHoneTick);
         }
         //unless we have a target, move towards currentHone
-        this.attackHoneTick = currentGame.addTickCallback(function() {
+        this.attackHoneTick = globals.currentGame.addTickCallback(function() {
+            if(this.attackerDisabled) return;
+
             //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move (note the commented out part, not sure why i had that here, but we should want to hone a specified target)
             if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
                 this.lastHone = this.currentHone;
@@ -228,10 +231,12 @@ export default {
          * Attacking callbacks
          */
         if (this.attackTick) {
-            currentGame.removeTickCallback(this.attackTick);
+            globals.currentGame.removeTickCallback(this.attackTick);
         }
         //if we have a target, attack it
-        this.attackTick = currentGame.addTickCallback(function() {
+        this.attackTick = globals.currentGame.addTickCallback(function() {
+            if(this.attackerDisabled) return;
+
             if (this.currentTarget) {
                 this.lastHone = null; //if we're attacking something, reset the lastHoned unit
                 this._attack(this.currentTarget);
@@ -242,7 +247,7 @@ export default {
 
     setupHoneAndTargetSensing: function(commandObj) {
         if(this.honeAndTargetSensorCallback)
-            currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
+            globals.currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
 
         var sensingFunction = function() {
             this.currentHone = null; //blitz current hone?
@@ -332,7 +337,7 @@ export default {
                 }
             }
         }.bind(this)
-        this.honeAndTargetSensorCallback = currentGame.addTickCallback(sensingFunction);
+        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction);
         utils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
     },
 
@@ -348,13 +353,13 @@ export default {
         this.attackMoving = false;
 
         if(this.honeAndTargetSensorCallback)
-            currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
+            globals.currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
 
         if (this.attackTick) {
-            currentGame.removeTickCallback(this.attackTick);
+            globals.currentGame.removeTickCallback(this.attackTick);
         }
         if (this.attackHoneTick) {
-            currentGame.removeTickCallback(this.attackHoneTick);
+            globals.currentGame.removeTickCallback(this.attackHoneTick);
         }
     },
 }

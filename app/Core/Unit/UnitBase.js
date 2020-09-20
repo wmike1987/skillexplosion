@@ -134,6 +134,10 @@ var UnitBase = {
         this.death();
     },
 
+    death: function() {
+
+    },
+
     canTargetUnit: function(unit) {
         return unit.isTargetable && this.team != unit.team;
     },

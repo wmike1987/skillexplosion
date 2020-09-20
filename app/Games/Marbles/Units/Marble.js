@@ -7,7 +7,8 @@ export default function Marble(options) {
 	var options = options || {};
 
 	var radius = options.radius || 20;
-	var rc = [{
+	var rc = [
+	{
 		id: 'marble',
 		data: 'GlassMarble',
 		tint: options.tint,
@@ -86,5 +87,7 @@ export default function Marble(options) {
 			unit: unitProperties,
 			moveable: {
 				moveSpeed: 4.5
-			}});
+			},
+			attacker: {},
+		});
 }

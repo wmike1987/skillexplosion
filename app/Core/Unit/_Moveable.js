@@ -13,8 +13,8 @@ var moveable = {
     moveTick: null,
     hasMoved: false,
     isSoloMover: false,
-    stopOnCollisionBuffer: 30, //pixels
-    overshootBuffer: 2, //pixels
+    stopOnCollisionBuffer: 5, //pixels
+    overshootBuffer: 10, //pixels
     smallerBodyCollisionCategory: 0x4000,
     noProgressBuffer: 15, //pixels
     canMove: true,

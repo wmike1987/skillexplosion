@@ -20,7 +20,7 @@ var game = {
 
 	assets: [
 		{name: 'snowflakeSheet', target: 'Textures/SnowflakeSheet.json'},
-		{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"}
+		{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"},
 	],
 
 	gameName: 'MultiDodge',
