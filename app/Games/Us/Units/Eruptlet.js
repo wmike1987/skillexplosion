@@ -250,6 +250,7 @@ export default function Eruptlet(options) {
         hitboxWidth: 25,
         hitboxHeight: 25,
         hitboxYOffset: 10,
+        itemsEnabled: true,
         // adjustHitbox: true,
         portrait: utils.createDisplayObject('EruptletPortrait'),
         wireframe: utils.createDisplayObject('EruptletGroupPortrait'),
@@ -269,7 +270,7 @@ export default function Eruptlet(options) {
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
-            currentGame.removeUnit(this);
+            globals.currentGame.removeUnit(this);
         },
         _afterAddInit: function() {
             $.each(this.body.renderlings, function(key, renderling) {

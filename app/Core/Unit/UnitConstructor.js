@@ -25,7 +25,8 @@ function UnitConstructor(options) {
     Object.assign(unitObj, {unitId: utils.uuidv4()}) //add in a unit id
 
     //mixin the unit options into the unit base then into the unit object
-    var newUnit = Object.assign(unitObj, UnitBase, options.unit);
+    var unitBase = $.extend(true, {}, UnitBase);
+    var newUnit = Object.assign(unitObj, unitBase, options.unit);
 
     //death pact slaves
     if(options.slaves) {

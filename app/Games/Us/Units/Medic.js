@@ -321,7 +321,7 @@ export default function Medic(options) {
         //medic reference to shadow
         this.shadow = shadow;
 
-        currentGame.addBody(shadow);
+        globals.currentGame.addBody(shadow);
         shadow.oneFrameOverrideInterpolation = true;
 
         var secretStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
@@ -334,7 +334,7 @@ export default function Medic(options) {
         footstepSound.play();
         var everyOther = true;
         shroudSound.play();
-        var footprintTimer = currentGame.addTimer({
+        var footprintTimer = globals.currentGame.addTimer({
             name: 'footprints' + this.unitId,
             gogogo: true,
             timeLimit: footprintFrequency,
@@ -372,7 +372,7 @@ export default function Medic(options) {
 
         this.getAbilityByName("Secret Step").disable(1);
 
-        var removeSelf = currentGame.addTickCallback(function() {
+        var removeSelf = globals.currentGame.addTickCallback(function() {
           if(utils.bodyRanOffStage(shadow) || utils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
               this.getAbilityByName("Secret Step").enable(1);
               var x = shadow.position.x;
@@ -386,8 +386,8 @@ export default function Medic(options) {
               Matter.Body.setPosition(this.body, {x: x, y: y});
               this.isTargetable = true;
               this.shadow = null;
-              currentGame.removeBody(shadow);
-              currentGame.invalidateTimer(footprintTimer);
+              globals.currentGame.removeBody(shadow);
+              globals.currentGame.invalidateTimer(footprintTimer);
               commandObj.command.done();
 
               var self = this;
@@ -395,7 +395,7 @@ export default function Medic(options) {
                   this.isTargetable = false;
                   this.isoManager.currentAnimation.alpha = .4;
                   this.isoManagedAlpha = .4;
-                  currentGame.addTimer({
+                  globals.currentGame.addTimer({
                       name: 'softLanding' + self.unitId,
                       runs: 1,
                       timeLimit: currentAugment.duration,
@@ -467,7 +467,7 @@ export default function Medic(options) {
         });
         mine.isMine = true;
 
-        currentGame.addBody(mine);
+        globals.currentGame.addBody(mine);
         mineSound.play();
 
         //play spine animation
@@ -513,7 +513,7 @@ export default function Medic(options) {
         // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
         //     isSensor: true,
         // });
-        // currentGame.addBody(mine2);
+        // globals.currentGame.addBody(mine2);
 
         if(currentAugment.name == 'pressure plate') {
             Matter.Events.on(mine, 'onCollide', function(pair) {
@@ -525,7 +525,7 @@ export default function Medic(options) {
             }.bind(this))
             utils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
             utils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
-            var mineTimer = currentGame.addTimer({
+            var mineTimer = globals.currentGame.addTimer({
                 name: mineState.id,
                 gogogo: true,
                 timeLimit: 1000,
@@ -544,7 +544,7 @@ export default function Medic(options) {
             })
             utils.deathPact(mine, mineTimer);
         } else {
-            var mineTimer = currentGame.addTimer({
+            var mineTimer = globals.currentGame.addTimer({
                 name: mineState.id,
                 runs: 4,
                 timeLimit: 650,
@@ -587,7 +587,7 @@ export default function Medic(options) {
                     var moveDelta = Math.min(unit.moveSpeed, currentAugment.slowAmount);
                     if(moveDelta == unit.moveSpeed) moveDelta = moveDelta/2;
                     unit.moveSpeed -= moveDelta;
-                    currentGame.addTimer({
+                    globals.currentGame.addTimer({
                         name: 'mineSlow' + unit.unitId + mineState.id,
                         runs: 1,
                         timeLimit: currentAugment.duration,
@@ -632,7 +632,7 @@ export default function Medic(options) {
             utils.removeSomethingFromRenderer(stateTwo);
             utils.removeSomethingFromRenderer(stateThree);
             utils.removeSomethingFromRenderer(mineCracks);
-            currentGame.removeBody(mine);
+            globals.currentGame.removeBody(mine);
         }
         commandObj.command.done();
     }
@@ -779,6 +779,7 @@ export default function Medic(options) {
         energy: 60,
         hitboxWidth: 35,
         hitboxHeight: 60,
+        itemsEnabled: true,
         damageLabel: "Heal: ",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;

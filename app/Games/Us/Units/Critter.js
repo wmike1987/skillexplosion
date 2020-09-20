@@ -249,6 +249,7 @@ export default function Critter(options) {
         hitboxWidth: 40,
         hitboxHeight: 40,
         hitboxYOffset: 5,
+        itemsEnabled: true,
         portrait: utils.createDisplayObject('CritterPortrait'),
         wireframe: utils.createDisplayObject('CritterGroupPortrait'),
         team: options.team || 4,
@@ -267,7 +268,7 @@ export default function Critter(options) {
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
-            currentGame.removeUnit(this);
+            globals.currentGame.removeUnit(this);
         }}, options);
 
     return UC({

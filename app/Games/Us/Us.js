@@ -2,6 +2,7 @@ import * as $ from 'jquery'
 import * as Matter from 'matter-js'
 import * as PIXI from 'pixi.js'
 import {CommonGameMixin} from '@core/CommonGameMixin.js'
+import {globals} from '@core/GlobalState.js'
 import utils from '@utils/GameUtils.js'
 import Marine from '@games/Us/Units/Marine.js'
 import Medic from '@games/Us/Units/Medic.js'
@@ -102,9 +103,9 @@ var game = {
 
             //clear enemies
             utils.applyToUnitsByTeam(function(team) {
-                return (team != currentGame.playerTeam);
+                return (team != globals.currentGame.playerTeam);
             }, null, function(unit) {
-                currentGame.removeUnit(unit);
+                globals.currentGame.removeUnit(unit);
             })
 
             //reset shane and urs
@@ -147,7 +148,7 @@ var game = {
                 this.renderer.layers.background.filters = [this.backgroundLightShader];
                 this.renderer.layers.stage.filters = [this.stageLightShader];
                 this.renderer.layers.stageTwo.filters = [this.treeShader];
-                var flameTimer = currentGame.addTimer({
+                var flameTimer = globals.currentGame.addTimer({
                     name: 'flame',
                     gogogo: true,
                     timeLimit: 100,
@@ -254,7 +255,7 @@ var game = {
             position: {x: utils.getCanvasCenter().x-130, y: utils.getPlayableHeight()-190}})
         campScene.add(mapTable);
 
-        var mapHoverTick = currentGame.addTickCallback(function(event) {
+        var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
             if(Matter.Vertices.contains(mapTable.body.vertices, this.mousePosition)) {
                 mapTableSprite.tint = 0xff33cc;
             } else {
@@ -358,7 +359,7 @@ var game = {
         var lossCondition = null;
         var winCondition = null;
         var winCondition = this.addTickCallback(function() {
-            enemySetsFulfilled = false;
+            var enemySetsFulfilled = false;
             $.each(this.currentLevelDetails.enemySets, function(i, enemy) {
                 enemySetsFulfilled = enemy.fulfilled;
                 return enemySetsFulfilled;
@@ -406,7 +407,7 @@ var game = {
          this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
          //this.shane.noIdle = true;
          // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
          utils.moveUnitOffScreen(this.shane);
          return this.shane;
     },

@@ -3,6 +3,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
+import {globals} from '@core/GlobalState'
 
 var unitSpawner = function(enemySets) {
     this.id = utils.uuidv4();
@@ -15,7 +16,7 @@ var unitSpawner = function(enemySets) {
         $.each(enemySets, function(i, enemy) {
             var total = 0;
             var itemsToGive = enemy.item ? enemy.item.total : 0;
-            var spawnTimer = currentGame.addTimer({
+            var spawnTimer = globals.currentGame.addTimer({
                 name: 'spawner' + i + this.id + enemy.type,
                 gogogo: true,
                 timeLimit: enemy.spawn.hz,
@@ -42,7 +43,7 @@ var unitSpawner = function(enemySets) {
                                     giveItem = utils.flipCoin() && utils.flipCoin();
                                 }
                                 if(giveItem) {
-                                    ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(currentGame.itemClasses[enemy.item.type]), unit: newUnit});
+                                    ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
                                     itemsToGive--;
                                 }
                             }
@@ -51,7 +52,7 @@ var unitSpawner = function(enemySets) {
                                 this.invalidated = true;
                                 enemy.fulfilled = true;
                             }
-                            currentGame.addUnit(newUnit);
+                            globals.currentGame.addUnit(newUnit);
                         }
                     }
                 }
@@ -61,7 +62,7 @@ var unitSpawner = function(enemySets) {
     }
 
     this.cleanUp = function() {
-        currentGame.invalidateTimer(this.timers);
+        globals.currentGame.invalidateTimer(this.timers);
     }
 }
 export default unitSpawner;

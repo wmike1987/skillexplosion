@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
+import {globals} from '@core/GlobalState'
+import utils from '@utils/GameUtils.js'
 
 // options {
 //     item: item
@@ -11,7 +13,7 @@ var initiateBlinkDeath = function(options) {
     var timerTime = time/50;
     var item = options.item;
     //create item removal and blink
-    var t = currentGame.addTimer({name: 'itemRemove' + item.body.id, runs: timerTime, timeLimit: 50,
+    var t = globals.currentGame.addTimer({name: 'itemRemove' + item.body.id, runs: timerTime, timeLimit: 50,
     callback: function() {
         $.each(item.renderlings, function(i, rl) {
             if(this.totalPercentDone > .5) {
@@ -34,14 +36,14 @@ var initiateBlinkDeath = function(options) {
         }.bind(this))
     },
     totallyDoneCallback: function() {
-        currentGame.removeItem(item);
+        globals.currentGame.removeItem(item);
     }.bind(this)})
 
     item.deathTimer = t;
     var originalCollect = item.removePhysicalForm;
     item.removePhysicalForm = function() {
         if(this.deathTimer) {
-            currentGame.invalidateTimer(this.deathTimer);
+            globals.currentGame.invalidateTimer(this.deathTimer);
         }
         originalCollect.call(item);
     }
@@ -56,8 +58,9 @@ var giveUnitItem = function(options) {
     }
 
     //This is assuming a particular structure of the Item files within the project and game
-    var packagePrefix = options.gamePrefix ? 'app/Games/'+options.gamePrefix+'/' : "";
-    require([packagePrefix + 'Items/'+options.name], function(item) {
+    const target = options.gamePrefix+'/Items/'+options.name+'.js';
+    import(`@games/${target}`).then((item) => {
+        item = item.default;
         if(options.unit.isDead) {
             var item = item();
             item.drop(options.unit.position);

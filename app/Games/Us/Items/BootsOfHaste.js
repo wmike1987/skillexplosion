@@ -1,4 +1,4 @@
-import ic from '@core/Unit/ItemConstructor'
+import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
     moveSpeed: .2,

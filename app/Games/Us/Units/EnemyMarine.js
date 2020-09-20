@@ -246,6 +246,7 @@ export default function EnemyMarine(options) {
         energyRegenerationRate: 1,
         hitboxWidth: 35,
         hitboxHeight: 60,
+        itemsEnabled: true,
         portrait: utils.createDisplayObject('MarineRedHat'),
         wireframe: utils.createDisplayObject('MarineRedHat'),
         team: options.team || 4,
@@ -263,7 +264,7 @@ export default function EnemyMarine(options) {
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
-            currentGame.removeUnit(this);
+            globals.currentGame.removeUnit(this);
         }}, options);
 
     return UC({
@@ -288,7 +289,7 @@ export default function EnemyMarine(options) {
                     fireSound.play();
 
                     //bullet emitter
-                    var emitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                    var emitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                         	"alpha": {
                         		"start": 1,
@@ -341,12 +342,12 @@ export default function EnemyMarine(options) {
                         		"y": 0,
                         		"r": 8
                         	}
-                    }, texture: PIXI.Texture.fromImage('../app/Textures/bulletParticle.png')})
+                    }, texture: PIXI.Texture.fromImage('Textures/bulletParticle.png')})
                     emitter.updateSpawnPos(target.position.x, target.position.y);
                     emitter.playOnceAndDestroy();
 
                     //blood emitter
-                    var bloodEmitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                    var bloodEmitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                     	"alpha": {
                     		"start": 1,
@@ -399,7 +400,7 @@ export default function EnemyMarine(options) {
                     		"y": 0,
                     		"r": 20
                     	}
-                    }, texture: PIXI.Texture.fromImage('../app/Textures/particle.png')});
+                    }, texture: PIXI.Texture.fromImage('Textures/particle.png')});
                     bloodEmitter.updateSpawnPos(target.position.x, target.position.y);
                     bloodEmitter.playOnceAndDestroy();
                 },

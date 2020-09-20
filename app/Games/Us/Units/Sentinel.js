@@ -268,7 +268,7 @@ export default function Sentinel(options) {
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
-            currentGame.removeUnit(this);
+            globals.currentGame.removeUnit(this);
         }}, options);
 
     return UC({
@@ -288,6 +288,7 @@ export default function Sentinel(options) {
                 honeRange: 500,
                 range: 440,
                 damage: 15,
+                itemsEnabled: true,
                 attack: function(target) {
                     fireSound.play();
                     var projectileOptions = {

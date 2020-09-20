@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import utils from '@utils/GameUtils.js'
+import {globals} from '@core/GlobalState.js'
 
 //This module represents a doodad (a physical, non-unit body, which can have properties)
 /*
@@ -18,7 +19,7 @@ import utils from '@utils/GameUtils.js'
 *   }
 */
 var doodad = function(options) {
-    var options = $.extend({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: false}, options);
+    var options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: false}, options);
 
     // create body
     this.body = Matter.Bodies.circle(-5000, -5000, options.radius, {
@@ -82,7 +83,7 @@ var doodad = function(options) {
         this.body.collisionFilter.category = 0;
 
     this.initialize = function() {
-        currentGame.addBody(this.body);
+        globals.currentGame.addBody(this.body);
         this.initialized = true;
     }
 
@@ -92,7 +93,7 @@ var doodad = function(options) {
     }
 
     this.cleanUp = function() {
-        currentGame.removeBody(this.body);
+        globals.currentGame.removeBody(this.body);
     }
 }
 

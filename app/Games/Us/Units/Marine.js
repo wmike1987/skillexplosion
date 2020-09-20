@@ -334,7 +334,7 @@ export default function Marine(options) {
         utils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
         var self = this;
-        self.dashTimer = currentGame.addTimer({
+        self.dashTimer = globals.currentGame.addTimer({
             name: 'dashDoneTimer' + self.unitId,
             runs: 1,
             timeLimit: 280,
@@ -351,7 +351,7 @@ export default function Marine(options) {
             if(!self.defensivePostureActive)
                 self.defense += 2;
             self.defensivePostureActive = true;
-            self.dashTimer = currentGame.addTimer({
+            self.dashTimer = globals.currentGame.addTimer({
                 name: 'defensePostureTimerEnd' + self.unitId,
                 runs: 1,
                 timeLimit: 2000,
@@ -364,7 +364,7 @@ export default function Marine(options) {
             if(!self.deathWishActive)
                 self.damage += 10;
             self.deathWishActive = true;
-            self.dashTimer = currentGame.addTimer({
+            self.dashTimer = globals.currentGame.addTimer({
                 name: 'deathWishTimerEnd' + self.unitId,
                 runs: 1,
                 timeLimit: 2000,
@@ -493,16 +493,16 @@ export default function Marine(options) {
             rotate: utils.pointInDirection(knife.position, destination),
             stage: "stageNTwo",
         }]
-        currentGame.addBody(knife);
+        globals.currentGame.addBody(knife);
 
         //send knife
         knifeThrowSound.play();
         knife.deltaTime = this.body.deltaTime;
         knife.destination = destination;
         utils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
-        var removeSelf = currentGame.addTickCallback(function() {
+        var removeSelf = globals.currentGame.addTickCallback(function() {
             if(utils.bodyRanOffStage(knife)) {
-                currentGame.removeBody(knife);
+                globals.currentGame.removeBody(knife);
             }
         })
         utils.deathPact(knife, removeSelf);
@@ -516,14 +516,14 @@ export default function Marine(options) {
             var otherUnit = otherBody.unit;
             if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
                 if(currentAugment.name == 'poison tip') {
-                    knife.poisonTimer = currentGame.addTimer({
+                    knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
                         runs: currentAugment.seconds*2,
                         killsSelf: true,
                         timeLimit: 500,
                         callback: function() {
                             if(otherUnit.isDead) {
-                                currentGame.invalidateTimer(this);
+                                globals.currentGame.invalidateTimer(this);
                                 return;
                             }
                             poisonSound.play();
@@ -558,10 +558,10 @@ export default function Marine(options) {
                 if(currentAugment && currentAugment.name == 'pierce') {
                     knife.lives -= 1;
                     if(knife.lives == 0) {
-                        currentGame.removeBody(knife);
+                        globals.currentGame.removeBody(knife);
                     }
                 } else {
-                    currentGame.removeBody(knife);
+                    globals.currentGame.removeBody(knife);
                 }
             }
 
@@ -571,7 +571,7 @@ export default function Marine(options) {
         }.bind(this))
 
         if(commandObj) {
-            currentGame.addTimer({
+            globals.currentGame.addTimer({
                 name: 'knifeDoneTimer' + knife.id,
                 runs: 1,
                 killsSelf: true,
@@ -685,6 +685,7 @@ export default function Marine(options) {
         priority: 10,
         hitboxWidth: 35,
         hitboxHeight: 60,
+        itemsEnabled: true,
         name: options.name,
         heightAnimation: 'up',
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
@@ -788,7 +789,7 @@ export default function Marine(options) {
                     utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
 
                     //bullet emitter
-                    var emitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                    var emitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                         	"alpha": {
                         		"start": 1,
@@ -841,12 +842,12 @@ export default function Marine(options) {
                         		"y": 0,
                         		"r": 8
                         	}
-                    }, texture: PIXI.Texture.fromImage('../app/Textures/bulletParticle.png')})
+                    }, texture: PIXI.Texture.from('Textures/bulletParticle.png')})
                     emitter.updateSpawnPos(target.position.x, target.position.y);
                     emitter.playOnceAndDestroy();
 
                     //blood emitter
-                    var bloodEmitter = utils.createParticleEmitter({where: currentGame.renderer.stages.stage,
+                    var bloodEmitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                     	"alpha": {
                     		"start": 1,
@@ -899,7 +900,7 @@ export default function Marine(options) {
                     		"y": 0,
                     		"r": 20
                     	}
-                    }, texture: PIXI.Texture.fromImage('../app/Textures/particle.png')});
+                    }, texture: PIXI.Texture.from('Textures/particle.png')});
                     bloodEmitter.updateSpawnPos(target.position.x, target.position.y);
                     bloodEmitter.playOnceAndDestroy();
                 },

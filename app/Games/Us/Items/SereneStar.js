@@ -1,4 +1,4 @@
-import ic from '@core/Unit/ItemConstructor'
+import ic from '@core/Unit/ItemConstructor.js'
 import * as Matter from 'matter-js'
 import utils as '@utils/GameUtils'
 
