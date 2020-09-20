@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        damage: 5,
-    }
+var manipulations = {
+    damage: 5,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Mask Of Rage",
-            description: "Add +5 to base damage.",
-            icon: 'MaskOfRage'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Mask Of Rage",
+        description: "Add +5 to base damage.",
+        icon: 'MaskOfRage'
+    })
+};

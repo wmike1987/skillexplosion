@@ -23,7 +23,7 @@ $(document).ready(async function() {
             if(globals.currentGame) {
                 globals.currentGame.nuke({noMercy: true})
             }
-            import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(SequenceMatch)+.js$/ */'@games/' + gameName + '.js').then((module) => {
+            import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(Us)+.js$/ */'@games/' + gameName + '.js').then((module) => {
 
                 module.default.loadGame();
             })

@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        maxEnergy: 5,
-    }
+var manipulations = {
+    maxEnergy: 5,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Pep Pill",
-            description: "Add +" + manipulations.maxEnergy + " to maximum energy.",
-            icon: 'PepPillOne'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Pep Pill",
+        description: "Add +" + manipulations.maxEnergy + " to maximum energy.",
+        icon: 'PepPillOne'
+    })
+};

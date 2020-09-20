@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        energyRegenerationRate: .5,
-    }
+var manipulations = {
+    energyRegenerationRate: .5,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Ring Of Thought",
-            description: "Regenerate +0.5 energy per second.",
-            icon: 'RingOfReason'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Ring Of Thought",
+        description: "Regenerate +0.5 energy per second.",
+        icon: 'RingOfReason'
+    })
+};

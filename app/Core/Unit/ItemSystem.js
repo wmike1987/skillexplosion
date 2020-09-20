@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
+import {globals} from '@core/GlobalState.js'
 
 var highlightTint = 0xa6ff29;
 var cantpickup = utils.getSound('cantpickup.wav', {volume: .03, rate: 1.3});
@@ -13,7 +14,7 @@ var itemSystem = function(properties) {
     //Share given properties
     $.extend(this, properties);
 
-    this.unitSystem = currentGame.unitSystem;
+    this.unitSystem = globals.currentGame.unitSystem;
     this.itemsOnGround = []; //represents items on the ground
     this.items = new Set();
     this.targetedItem = null;
@@ -22,7 +23,7 @@ var itemSystem = function(properties) {
 
         //Mouse hover tint
         var pastHoveredBodies = [];
-        this.hoverCallback = currentGame.addTickCallback(function(event) {
+        this.hoverCallback = globals.currentGame.addTickCallback(function(event) {
 
             //collect all item bodies and reset their tints
             var itemBodies = $.map(this.itemsOnGround, function(item) {
@@ -35,7 +36,7 @@ var itemSystem = function(properties) {
             })
 
             if(itemBodies && itemBodies.length > 0) {
-                var itemBodiesUnderMouse = Matter.Query.point(itemBodies, currentGame.mousePosition);
+                var itemBodiesUnderMouse = Matter.Query.point(itemBodies, globals.currentGame.mousePosition);
                 $.each(itemBodiesUnderMouse, function(i, body) {
                     body.renderlings['itemFootprint'].originalTint = body.renderlings['itemFootprint'].tint;
                     body.renderlings['itemFootprint'].tint = highlightTint;
@@ -72,8 +73,8 @@ var itemSystem = function(properties) {
             item.icon.alpha = .6;
             item.icon.tooltipObj.disabled = true;
             item.icon.sortYOffset = 1000;
-            item.grabCallback = currentGame.addTickCallback(function() {
-                item.icon.position = {x: currentGame.mousePosition.x - 0, y: currentGame.mousePosition.y - 0};
+            item.grabCallback = globals.currentGame.addTickCallback(function() {
+                item.icon.position = {x: globals.currentGame.mousePosition.x - 0, y: globals.currentGame.mousePosition.y - 0};
             })
             this.grabbedItem = item;
             this.canDropGrabbedItem = false;
@@ -81,7 +82,7 @@ var itemSystem = function(properties) {
 
         }.bind(this))
 
-        this.grabDropListener = currentGame.addListener('mousedown', function(event) {
+        this.grabDropListener = globals.currentGame.addListener('mousedown', function(event) {
             if(!this.canDropGrabbedItem) { //this is so confusingly dumb
                 this.canDropGrabbedItem = true;
                 return;
@@ -89,8 +90,8 @@ var itemSystem = function(properties) {
 
             if(!this.grabbedItem || event.which != 1) return;
             var item = this.grabbedItem;
-            currentGame.removeTickCallback(item.grabCallback);
-            if(utils.isPositionWithinPlayableBounds(currentGame.mousePosition)) {
+            globals.currentGame.removeTickCallback(item.grabCallback);
+            if(utils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
                 var variationX = Math.random()*60;
                 var dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35});
                 if(!utils.isPositionWithinPlayableBounds(dropPosition)) {
@@ -103,7 +104,7 @@ var itemSystem = function(properties) {
                 this.grabbedItem = null;
             } else {
                 var mouseOverSlottedItem = false;
-                var prevailingUnit = currentGame.unitSystem.selectedUnit;
+                var prevailingUnit = globals.currentGame.unitSystem.selectedUnit;
                 var allItems = prevailingUnit.getAllItems();
                 item.icon.alpha = 1;
                 item.icon.tooltipObj.disabled = false;
@@ -113,7 +114,7 @@ var itemSystem = function(properties) {
                 //loop existing items and see if we need to swap the grab
                 $.each(allItems, function(i, loopItem) {
                     if(loopItem && loopItem != item && !loopItem.isEmptySlot) {
-                        if(loopItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
+                        if(loopItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
                             if(item.worksWithSlot(loopItem.currentSlot)) {
                                 prevailingUnit.unequipItem(loopItem);
                                 Matter.Events.trigger(this, 'usergrab', {item: loopItem})
@@ -129,7 +130,7 @@ var itemSystem = function(properties) {
                 //loop blank items and see if we're explicity placing something
                 if(!found) {
                     $.each(prevailingUnit.emptySlots, function(i, blankItem) {
-                        if(blankItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
+                        if(blankItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
                             if(item.worksWithSlot(blankItem.currentSlot)) {
                                 prevailingUnit.pickupItem(item, blankItem.currentSlot);
                                 found = true;
@@ -154,7 +155,7 @@ var itemSystem = function(properties) {
         }.bind(this))
 
         //Annoint units with functionality to detect and pickup an item
-        Matter.Events.on(currentGame, 'addUnit', function(event) {
+        Matter.Events.on(globals.currentGame, 'addUnit', function(event) {
             if(!event.unit.isMoveable) return;
 
             Matter.Events.on(event.unit, 'unitMove', function(moveEvent) {
@@ -251,13 +252,13 @@ var itemSystem = function(properties) {
         }
 
         if(this.hoverCallback)
-            currentGame.removeTickCallback(this.hoverCallback);
+            globals.currentGame.removeTickCallback(this.hoverCallback);
 
         if(this.pickupTick)
-            currentGame.removeTickCallback(this.pickupTick);
+            globals.currentGame.removeTickCallback(this.pickupTick);
 
         if(this.grabDropListener) {
-            currentGame.removeListener(this.grabDropListener);
+            globals.currentGame.removeListener(this.grabDropListener);
         }
 
         //clear jquery events

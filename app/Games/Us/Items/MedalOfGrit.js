@@ -1,16 +1,15 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        defense: 1,
-        maxHealth: 5
-    }
+var manipulations = {
+    defense: 1,
+    maxHealth: 5
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Medal Of Grit",
-            description: ["Add +1 to defense.", "Add +5 to maximum health."],
-            icon: 'MedalOfGrit'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Medal Of Grit",
+        description: ["Add +1 to defense.", "Add +5 to maximum health."],
+        icon: 'MedalOfGrit'
+    })
+};

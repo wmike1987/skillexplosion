@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        moveSpeed: .2,
-    }
+var manipulations = {
+    moveSpeed: .2,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Boots Of Haste",
-            description: "Increase movement speed.",
-            icon: 'BootsOfHaste'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Boots Of Haste",
+        description: "Increase movement speed.",
+        icon: 'BootsOfHaste'
+    })
+};

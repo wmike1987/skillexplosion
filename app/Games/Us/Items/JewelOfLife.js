@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        maxHealth: 10,
-    }
+var manipulations = {
+    maxHealth: 10,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Jewel Of Life",
-            description: "Add +10 to maximum health.",
-            icon: 'JewelOfLife'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Jewel Of Life",
+        description: "Add +10 to maximum health.",
+        icon: 'JewelOfLife'
+    })
+};

@@ -2,6 +2,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
+import {globals} from '@core/GlobalState.js'
 
 // options {
 //     title
@@ -67,7 +68,7 @@ var Tooltip = function(options) {
     if(options.updaters) {
         var tt = this;
         $.each(options.updaters, function(key, updater) {
-            this.updaters[key] = currentGame.addTickCallback(function() {
+            this.updaters[key] = globals.currentGame.addTickCallback(function() {
                 var result = updater(self);
                 if(result === null || result === undefined) {
                     return;
@@ -134,7 +135,7 @@ Tooltip.prototype.destroy = function(options) {
     utils.removeSomethingFromRenderer(this.base);
 
     $.each(this.updaters, function(key, updater) {
-        currentGame.removeTickCallback(updater);
+        globals.currentGame.removeTickCallback(updater);
     }.bind(this))
 
     this.isDestroyed = true;

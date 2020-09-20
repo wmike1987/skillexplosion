@@ -4,6 +4,7 @@ import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Attacker from '@core/Unit/_Attacker.js'
+import {globals} from '@core/GlobalState.js'
 
 /*
  * Manager which will handle playing animations at the right time.
@@ -83,7 +84,7 @@ function IsoSpriteManager(options) {
 
 		//if we're no longer idling, kill idler
 		if(!options.idle) {
-			currentGame.invalidateTimer(this.idleTimer);
+			globals.currentGame.invalidateTimer(this.idleTimer);
 			this.idleTimer = null;
 		}
 
@@ -120,7 +121,7 @@ function IsoSpriteManager(options) {
         randomAnimation.spine.lastTime = null;
         randomAnimation.spine.skeleton.setToSetupPose()
 
-		this.idleTimer = currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
+		this.idleTimer = globals.currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
 			this.timeLimit = 2000 + Math.random() * 2000;
 			if(self.unit.idleCancel) {
 				return;

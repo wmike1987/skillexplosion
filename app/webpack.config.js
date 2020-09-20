@@ -36,7 +36,8 @@ module.exports = {
           '@games': path.resolve(__dirname, 'Games/'),
           '@sounds': path.resolve(__dirname, 'Sounds/'),
           '@textures': path.resolve(__dirname, 'Textures/'),
-          '@units': path.resolve(__dirname, '@games/Us/Units'),
+          '@usunits': path.resolve(__dirname, 'Games/Us/Units/'),
+          '@shaders': path.resolve(__dirname, 'Shaders/'),
           '@lib': path.resolve(__dirname, 'lib')
         }
     },

@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor'
 
-    var manipulations = {
-        maxHealth: 25,
-    }
+var manipulations = {
+    maxHealth: 25,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Gleaming Canteen",
-            description: "Add +" + manipulations.maxHealth + " to maximum health.",
-            icon: 'GleamingCanteen'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Gleaming Canteen",
+        description: "Add +" + manipulations.maxHealth + " to maximum health.",
+        icon: 'GleamingCanteen'
+    })
+};

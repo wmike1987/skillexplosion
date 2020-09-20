@@ -5,6 +5,7 @@ import utils from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import Tooltip from '@core/Tooltip.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
+import {globals} from '@core/GlobalState.js'
 
 var baseItem = {
     equip: function(unit) {
@@ -70,17 +71,17 @@ var ic = function(options) {
     newItem.icon.interactive = true;
 
     //mouse hover event
-    newItem.hoverListener = currentGame.addTickCallback(function() {
+    newItem.hoverListener = globals.currentGame.addTickCallback(function() {
 
         //reset everything assuming we're not hovering anymore, or if we're the grabbed item
         newItem.icon.tint = 0xFFFFFF;
-        if(!newItem.icon.visible || currentGame.itemSystem.grabbedItem == newItem) return;
+        if(!newItem.icon.visible || globals.currentGame.itemSystem.grabbedItem == newItem) return;
         if(newItem.isEmptySlot) {
             newItem.icon.alpha = 0;
         }
 
         //if we are hovering, do something
-        if(newItem.icon.containsPoint(currentGame.renderer.interaction.mouse.global)) {
+        if(newItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
             newItem.icon.tint = 0x669900;
             if(newItem.isEmptySlot) {
                 newItem.icon.alpha = .2;
@@ -94,9 +95,9 @@ var ic = function(options) {
     if(!newItem.isEmptySlot) {
         //drop item
         newItem.icon.on('mousedown', function(event) {
-            if(currentGame.itemSystem.isGrabbing()) return;
+            if(globals.currentGame.itemSystem.isGrabbing()) return;
             newItem.owningUnit.unequipItem(newItem);
-            Matter.Events.trigger(currentGame.itemSystem, "usergrab", {item: newItem})
+            Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem})
             newItem.mouseInside = false;
             utils.setCursorStyle('server:MainCursor.png');
         }.bind(this))
@@ -126,7 +127,7 @@ var ic = function(options) {
 
         newItem.removePhysicalForm = function() {
             this.showName(false);
-            currentGame.removeBody(this.body);
+            globals.currentGame.removeBody(this.body);
             this.body = null;
         },
 
@@ -154,8 +155,8 @@ var ic = function(options) {
                 transform: [position.x, position.y],
                 onComplete: function() {
                     utils.removeSomethingFromRenderer(this);
-                    currentGame.addBody(item.body);
-                    Matter.Events.trigger(currentGame.itemSystem, 'dropItem', {item: item});
+                    globals.currentGame.addBody(item.body);
+                    Matter.Events.trigger(globals.currentGame.itemSystem, 'dropItem', {item: item});
                     item.isDropping = false;
                     item.currentSlot = null;
                     if(options.fleeting)
@@ -228,14 +229,14 @@ var ic = function(options) {
         }
         utils.removeSomethingFromRenderer(this.icon);
         if(newItem.body) {
-            currentGame.removeBody(newItem.body);
+            globals.currentGame.removeBody(newItem.body);
         }
-        currentGame.removeTickCallback(newItem.hoverListener);
+        globals.currentGame.removeTickCallback(newItem.hoverListener);
         if(this.itemDrop)
             utils.removeSomethingFromRenderer(this.itemDrop);
     },
 
-    currentGame.addItem(newItem);
+    globals.currentGame.addItem(newItem);
     return newItem;
 }
 
