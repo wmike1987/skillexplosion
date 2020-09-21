@@ -5,9 +5,6 @@ import * as h from  'howler'
 import utils from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/CommonGameMixin.js'
 
-import bellhit3 from '@sounds/bellhit3.wav'
-import powerup2 from '@sounds/powerup2.wav'
-
 var targetScore = 1;
 
 var game = {
@@ -19,8 +16,8 @@ var game = {
 	outputLag: 3,
 
 	initExtension: function() {
-	    this.hit = utils.getSound(bellhit3, {volume: .2, rate: 2});
-	    this.bullseye = utils.getSound(powerup2, {volume: .75, rate: 1.1});
+	    this.hit = utils.getSound('bellhit3.wav', {volume: .2, rate: 2});
+	    this.bullseye = utils.getSound('powerup2.wav', {volume: .75, rate: 1.1});
 	},
 
 	play: function(options) {

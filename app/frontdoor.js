@@ -13,6 +13,25 @@ $(document).ready(async function() {
     await import(/* webpackChunkName: "pixi-layers" */'pixi-layers');
     await import(/* webpackChunkName: "pixi-spine" */'pixi-spine');
 
+    //override spine slot def
+    PIXI.spine.core.Slot.prototype.setToSetupPose = function () {
+      if (this.color.a == 0) {
+        this.color.setFromColor(this.data.color);
+      }
+      if (this.darkColor != null)
+        this.darkColor.setFromColor(this.data.darkColor);
+      if (this.data.attachmentName == null) this.attachment = null;
+      else {
+        this.attachment = null;
+        this.setAttachment(
+          this.bone.skeleton.getAttachment(
+            this.data.index,
+            this.data.attachmentName
+          )
+        );
+      }
+    };
+
     Matter.use('matter-collision-events');
 
     //anoint button

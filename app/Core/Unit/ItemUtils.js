@@ -59,7 +59,7 @@ var giveUnitItem = function(options) {
 
     //This is assuming a particular structure of the Item files within the project and game
     const target = options.gamePrefix+'/Items/'+options.name+'.js';
-    import(`@games/${target}`).then((item) => {
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
         item = item.default;
         if(options.unit.isDead) {
             var item = item();

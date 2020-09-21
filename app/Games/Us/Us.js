@@ -14,7 +14,6 @@ import ItemUtils from '@core/Unit/ItemUtils.js'
 import Scene from '@core/Scene.js'
 import UnitPanel from '@games/Us/UnitPanel.js'
 import UnitSpawner from '@games/Us/UnitSpawner.js'
-import unitMenu from '@games/Us/UnitMenu.js'
 import Map from '@games/Us/Map.js'
 
 var targetScore = 1;
@@ -493,7 +492,6 @@ var game = {
 }
 
 game.assets = [
-    {name: "BaseUnit", target: "Textures/Us/BaseUnit.json"},
     {name: "BaseUnitAnimations1", target: "Textures/Us/BaseUnitAnimations1.json"},
     {name: "Marine", target: "Textures/Us/Marine.json"},
     {name: "MarineAnimations1", target: "Textures/Us/MarineAnimations1.json"},

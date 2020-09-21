@@ -329,7 +329,7 @@ export default function Eruptlet(options) {
 
                 var blastRadius = 70;
                 var bodiesToDamage = [];
-                utils.applyToUnitsByTeam(function(team) {return this.team != team}, function(unit) {
+                utils.applyToUnitsByTeam(function(team) {return this.team != team}.bind(this), function(unit) {
                     return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
                 }.bind(this), function(unit) {
                     unit.sufferAttack(this.damage, this);

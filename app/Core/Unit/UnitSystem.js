@@ -4,7 +4,7 @@ import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import {globals, keyStates} from '@core/GlobalState.js'
 
-var UnitSystemAssets = [{name: 'UnitMisc', target: 'Textures/Legacy/UnitMisc.json'}];
+var UnitSystemAssets = [    {name: "BaseUnit", target: "Textures/Us/BaseUnit.json"}];
 
 var UnitSystem = function(properties) {
 

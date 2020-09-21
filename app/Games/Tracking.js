@@ -6,8 +6,6 @@ import utils from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/CommonGameMixin.js'
 import {globals, mouseStates} from '@core/GlobalState.js'
 
-import nicehit from '@sounds/nicehit1.wav'
-
 var targetScore = 1;
 var winGame = 20;
 var tintToColor = '#070054';
