@@ -487,8 +487,8 @@ export default function Marine(options) {
         },
         {
             id: 'shadow',
-            data: 'MarbleShadow',
-            scale: {x: 10/256, y: 50/256},
+            data: 'IsoShadowBlurred',
+            scale: {x: 1/8, y: 2},
             offset: {x: 15, y: 20},
             rotate: utils.pointInDirection(knife.position, destination),
             stage: "stageNTwo",

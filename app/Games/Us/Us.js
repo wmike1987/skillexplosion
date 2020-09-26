@@ -508,8 +508,6 @@ game.assets = [
     {name: "Medic", target: "Textures/Us/Medic.json"},
     {name: "MedicAnimations1", target: "Textures/Us/MedicAnimations1.json"},
     {name: "MedicAnimations2", target: "Textures/Us/MedicAnimations2.json"},
-    // {name: "Baneling", target: "Textures/Us/Baneling.json"},
-    // {name: "BanelingAnimations1", target: "Textures/Us/BanelingAnimations1.json"},
     {name: "Critter", target: "Textures/Us/Critter.json"},
     {name: "CritterAnimations1", target: "Textures/Us/CritterAnimations1.json"},
     {name: "Sentinel", target: "Textures/Us/Sentinel.json"},
@@ -522,7 +520,7 @@ game.assets = [
 
     //generic textures and animations
     {name: "Utility0", target: "Textures/Us/Utility-0.json"},
-    {name: "Utility1", target: "Textures/Us/Utility-1.json"},
+    // {name: "Utility1", target: "Textures/Us/Utility-1.json"},
     {name: "UtilityAnimations1", target: "Textures/Us/UtilityAnimations1.json"},
     {name: "UtilityAnimations2", target: "Textures/Us/UtilityAnimations2.json"},
 
