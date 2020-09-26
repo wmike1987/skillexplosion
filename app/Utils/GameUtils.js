@@ -23,63 +23,6 @@ var utils = {
       return (Matter.Vector.magnitude(Matter.Vector.sub(A, B)));
     },
 
-    //Deprecated: replace remaining calls with getAnimationB, then rename that method to getAnimation
-    getAnimation: function(baseName, transform, speed, where, playThisManyTimes, rotation, body, numberOfFrames, startFrameNumber, bufferUnderTen) {
-        var frames = [];
-        var numberOfFrames = numberOfFrames || PIXI.Loader.shared[baseName+'FrameCount'] || 10;
-        var startFrame = (startFrameNumber == 0 ? 0 : startFrameNumber || 1);
-        for(var i = startFrame; i < startFrame + numberOfFrames; i++) {
-            try {
-                var j = i;
-                if(bufferUnderTen && j < 10)
-                    j = "0" + j;
-                frames.push(PIXI.Texture.from(baseName+j+'.png'));
-            } catch(err) {
-                try {
-                        frames.push(PIXI.Texture.from(baseName+i+'.jpg'));
-                    } catch(err) {
-                        break;
-                }
-            }
-        }
-
-        var anim = new PIXI.AnimatedSprite(frames);
-        anim.onComplete = function() {
-            utils.removeSomethingFromRenderer(anim)
-        }.bind(this);
-        anim.persists = true;
-        anim.setTransform.apply(anim, transform);
-        anim.animationSpeed = speed;
-        anim.loop = playThisManyTimes < 0;
-
-        if(rotation)
-            anim.rotation = rotation;
-
-        if(playThisManyTimes && playThisManyTimes > 0) {
-            var origOnComplete = anim.onComplete;
-            playThisManyTimes -= 1;
-            anim.onComplete = function() {
-                if(playThisManyTimes) {
-                    anim.gotoAndPlay(0);
-                    playThisManyTimes--;
-                } else {
-                    origOnComplete.call(anim);
-                }
-            }
-        }
-
-        //if body is given, let's apply the same anchor to this animation
-        var options = {};
-        if(body) {
-            options.anchor = {};
-            options.anchor.x = body.render.sprite.xOffset;
-            options.anchor.y = body.render.sprite.yOffset;
-        }
-
-        utils.addSomethingToRenderer(anim, where, options);
-        return anim;
-    },
-
     /*
      * options {
      *  (numberOfFrames

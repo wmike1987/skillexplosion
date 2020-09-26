@@ -92,6 +92,7 @@ var UnitBase = {
     },
 
     _death: function() {
+        this.deathPosition = utils.clonePosition(this.position);
 
         if(this.dropItemsOnDeath) {
             this.dropAllItems();

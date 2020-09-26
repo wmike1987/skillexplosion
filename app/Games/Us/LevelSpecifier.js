@@ -61,7 +61,6 @@ var levelSpecifier = {
             type: type,
             enemySets: [],
             possibleTiles: [],
-            realTileWidth: 370,
             resetLevel: function() {
                 this.enemySets.forEach(set => {
                     set.fulfilled = false;
@@ -74,8 +73,11 @@ var levelSpecifier = {
 
         //Terrain specification
         var gType = utils.getRandomElementOfArray(["Red", "Orange", "Yellow"]);
-        for(var i = 1; i < 7; i++) {
-            levelDetails.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
+        // for(var i = 1; i < 7; i++) {
+        //     levelDetails.possibleTiles.push('LushGrass1/'+gType+'Grass'+i);
+        // }
+        for(var i = 1; i <= 6; i++) {
+            levelDetails.possibleTiles.push('FrollGround/Twilight'+i);
         }
 
         return new mapLevelNode(levelDetails);

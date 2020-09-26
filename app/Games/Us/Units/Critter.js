@@ -261,13 +261,19 @@ export default function Critter(options) {
         death: function() {
             var self = this;
             var anim = utils.getAnimationB({
-                spritesheetName: 'BaseUnitAnimations1',
-                animationName: 'bloodsplat',
-                speed: .3,
-                transform: [self.position.x, self.position.y, .3, .3]
+                spritesheetName: 'CritterAnimations1',
+                animationName: 'critterdeath',
+                speed: .25,
+                fadeAway: true,
+                fadeTime: 8000,
+                transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
+
+            var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(self.deathPosition, {y: 22})})
+            utils.fadeSpriteOverTime(shadow, 1500);
+            utils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
         }}, options);
 

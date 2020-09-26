@@ -259,15 +259,20 @@ export default function Sentinel(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            var self = this;
             var anim = utils.getAnimationB({
-                spritesheetName: 'BaseUnitAnimations1',
-                animationName: 'bloodsplat',
-                speed: .3,
-                transform: [self.position.x, self.position.y, .3, .3]
+                spritesheetName: 'SentinelAnimations1',
+                animationName: 'sentineldeath',
+                speed: .22,
+                fadeAway: true,
+                fadeTime: 8000,
+                transform: [this.deathPosition.x + 25, this.deathPosition.y, 1.3, 1.3]
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
+
+            var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(this.deathPosition, {y: 22})})
+            utils.fadeSpriteOverTime(shadow, 1500);
+            utils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
         }}, options);
 

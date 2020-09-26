@@ -112,30 +112,30 @@ var game = {
             this.resetUnit(this.ursula);
 
             //setup light
-            this.lightPower = 2.0;
+            this.lightPower = 0.0;
             this.lightDirection = 1;
-            this.lightRadius = 650;
+            this.lightRadius = 700;
 
-            var backgroundRed = 5.0;
+            var backgroundRed = 4.0;
             this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
                 lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                 flameVariation: 0.0,
                 yOffset: 0.0,
                 red: backgroundRed,
-                green: 1.2,
-                blue: 1.5,
+                green: 1.0,
+                blue: 1.0,
                 lightPower: 2.0,
             });
 
-            var stageRed = 5.2;
+            var stageRed = 3.4;
             this.stageLightShader = new PIXI.Filter(null, campfireShader, {
                 lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
                 flameVariation: 0.0,
                 yOffset: 30.0,
                 red: stageRed,
                 green: 1.5,
-                blue: 0.8,
-                lightPower: 1.6,
+                blue: 1.0,
+                lightPower: 2.0,
             });
             this.treeShader = new PIXI.Filter(null, valueShader, {
                 colors: [0.4, 0.4, 2.0]
@@ -150,7 +150,7 @@ var game = {
                 var flameTimer = globals.currentGame.addTimer({
                     name: 'flame',
                     gogogo: true,
-                    timeLimit: 100,
+                    timeLimit: 90,
                     callback: function() {
                         //Reverse light direction over time
                         if(!this.lightPower)
@@ -158,14 +158,14 @@ var game = {
                         this.lightPower += (.02+Math.random()*.045)*this.lightDirection;
                         if(this.lightPower < 0.0) {
                             this.lightDirection = 1;
-                        } else if(this.lightPower > 1.0) {
+                        } else if(this.lightPower > 2.5) {
                             this.lightDirection = -1;
                         }
 
                         this.backgroundLightShader.uniforms.flameVariation = this.lightPower;
                         this.stageLightShader.uniforms.flameVariation = this.lightPower;
                         this.backgroundLightShader.uniforms.red = backgroundRed + this.lightPower/2;
-                        this.stageLightShader.uniforms.red = stageRed + this.lightPower*1.0;
+                        this.stageLightShader.uniforms.red = stageRed + this.lightPower*1.05;
                     }.bind(this)
                 })
 
@@ -187,11 +187,21 @@ var game = {
 
         var backgroundTiles = [];
         var gType = utils.getRandomElementOfArray(["Green"]);
-        for(var i = 1; i < 7; i++) {
-            backgroundTiles.push('LushGrass1/'+gType+'Grass'+i);
+        // for(var i = 1; i < 7; i++) {
+        //     backgroundTiles.push('LushGrass1/'+gType+'Grass'+i); (370 real tile width)
+        // }
+        for(var i = 1; i <= 6; i++) {
+            backgroundTiles.push('FrollGround/Dirt'+i);
         }
-        var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, realTileWidth: 370});
+        var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth});
         campScene.add(tileMap);
+
+        backgroundTiles = [];
+        for(var i = 1; i <= 4; i++) {
+            backgroundTiles.push('FrollGround/Ornament'+i);
+        }
+        var ornamentMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, hz: .5});
+        campScene.add(ornamentMap);
 
         // backgroundTiles = ['GrassAndRock1/Dirt/grass_top_level_1', 'GrassAndRock1/Dirt/grass_top_level_2', 'GrassAndRock1/Dirt/grass_top_level_3'];
         // var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
@@ -498,10 +508,12 @@ game.assets = [
     {name: "Medic", target: "Textures/Us/Medic.json"},
     {name: "MedicAnimations1", target: "Textures/Us/MedicAnimations1.json"},
     {name: "MedicAnimations2", target: "Textures/Us/MedicAnimations2.json"},
-    {name: "Baneling", target: "Textures/Us/Baneling.json"},
-    {name: "BanelingAnimations1", target: "Textures/Us/BanelingAnimations1.json"},
+    // {name: "Baneling", target: "Textures/Us/Baneling.json"},
+    // {name: "BanelingAnimations1", target: "Textures/Us/BanelingAnimations1.json"},
     {name: "Critter", target: "Textures/Us/Critter.json"},
+    {name: "CritterAnimations1", target: "Textures/Us/CritterAnimations1.json"},
     {name: "Sentinel", target: "Textures/Us/Sentinel.json"},
+    {name: "SentinelAnimations1", target: "Textures/Us/SentinelAnimations1.json"},
     {name: "Eruptlet", target: "Textures/Us/Eruptlet.json"},
 
     //items

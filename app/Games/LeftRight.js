@@ -69,7 +69,6 @@ var game = {
 					this.incrementScore(targetScore);
 
 					//play death animation
-					// utils.getAnimation('blueCollapse', [this.ball.position.x, this.ball.position.y, (this.ball.circleRadius*2/512), (this.ball.circleRadius*2/512)], .03).play();
 					var collapseAnimation = utils.getAnimationB({
 						numberOfFrames: 8,
 						baseName: 'blueCollapse',

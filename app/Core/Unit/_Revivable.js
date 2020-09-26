@@ -11,7 +11,6 @@ export default {
         var originalDeath = this.death;
         var revivableDeath = function() {
             this.reviveAmount = 0;
-            this.deathPosition = utils.clonePosition(this.position);
             this.grave = utils.addSomethingToRenderer(this.graveSpriteName, {where: 'stage', position: utils.clonePosition(this.position, {y: 20}), anchor: {x: .5, y: .5}, scale: {x: .85, y: .85}});
             //fade in
             utils.fadeSpriteOverTime(this.grave, 2000, true);
