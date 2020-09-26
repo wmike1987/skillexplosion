@@ -101,6 +101,10 @@ export default {
             return;
         }
 
+        if(this.canAttackPredicate && !this.canAttackPredicate()) {
+            return;
+        }
+
         //Another aspect of "canAttack." If we're offscreen and have gotten here,
         //don't allow the attack to continue, just keep moving until we're within bounds.
         //And if we want to attack but are offscreen and aren't moving, issue an attackMove.

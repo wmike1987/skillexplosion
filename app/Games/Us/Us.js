@@ -528,7 +528,6 @@ game.assets = [
 
     //terrain and doodads
     {name: "Terrain0", target: "Textures/Us/Terrain-0.json"},
-    {name: "Terrain1", target: "Textures/Us/Terrain-1.json"},
 
     //spine assets
     {name: "marineN", target: "SpineAssets/Marine Exports/N/N.json"},

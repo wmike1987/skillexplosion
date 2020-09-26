@@ -36,8 +36,7 @@ var common = {
     frameSecondCounter: 0,
     playerTeam: 100,
     lagCompensation: 3,
-    commonAssets: [{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"},
-                    {name: "isoSheet2", target: "Textures/legacy/IsoSheet2.json"}],
+    commonAssets: [{name: "rainyBackgroundAndMarbles", target: "Textures/legacy/RainyBackgroundAndMarbles.json"}],
 
     /*
      * Game lifecycle

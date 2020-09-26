@@ -53,7 +53,7 @@ function IsoSpriteManager(options) {
 		}.bind(this))
 
 		//turn on idle
-		Matter.Events.on(this.unit, 'stop', function(event) {
+		Matter.Events.on(this.unit, 'stop', function() {
 			if(this.currentMoveAnimation)
 				this.currentMoveAnimation.stop();
 			this.currentMoveAnimation = null;
@@ -77,6 +77,14 @@ function IsoSpriteManager(options) {
 		} else {
 			return;
 		}
+	}
+
+	this.stopCurrentAnimation = function() {
+		if(this.currentAnimation)
+			this.currentAnimation.stop();
+		this.currentAnimation = null;
+		if(!this.idleTimer)
+			this.idle();
 	}
 
 	this.switchAnimation = function(animation, options) {

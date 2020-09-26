@@ -93,94 +93,49 @@ export default function Medic(options) {
             spine: spineNorth,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         upRight: utils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         right: utils.getSpineAnimation({
             spine: spineEast,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         downRight: utils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         down: utils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         downLeft: utils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         left: utils.getSpineAnimation({
             spine: spineWest,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
+            times: 1,
         }),
         upLeft: utils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'shoot',
             speed: attackAnimSpeed,
-            times: 3,
-        }),
-    }
-
-    var throwAnimations = {
-        up: utils.getSpineAnimation({
-            spine: spineNorth,
-            animationName: 'throw',
-            speed: 0.5,
-        }),
-        upRight: utils.getSpineAnimation({
-            spine: spineNorthEast,
-            animationName: 'throw',
             times: 1,
-            speed: 0.5,
-        }),
-        right: utils.getSpineAnimation({
-            spine: spineEast,
-            animationName: 'throw',
-            times: 1,
-            speed: 0.5,
-        }),
-        downRight: utils.getSpineAnimation({
-            spine: spineSouthEast,
-            animationName: 'heal',
-            speed: .5,
-        }),
-        down: utils.getSpineAnimation({
-            spine: spineSouth,
-            animationName: 'throw',
-            speed: .5,
-        }),
-        downLeft: utils.getSpineAnimation({
-            spine: spineSouthWest,
-            animationName: 'throw',
-            speed: .5,
-        }),
-        left: utils.getSpineAnimation({
-            spine: spineWest,
-            animationName: 'throw',
-            speed: .5,
-        }),
-        upLeft: utils.getSpineAnimation({
-            spine: spineNorthWest,
-            animationName: 'throw',
-            speed: .5,
         }),
     }
 
@@ -294,7 +249,7 @@ export default function Medic(options) {
 
     var combospiritinit = utils.getSound('combospiritinit.wav', {volume: .03, rate: 1.0});
     var fullheal = utils.getSound('fullheal.wav', {volume: .05, rate: 1.0});
-    var footstepSound = utils.getSound('footstep2.wav', {volume: .02, rate: 1.1});
+    var footstepSound = utils.getSound('secretstep.wav', {volume: .02, rate: 1.1});
     var shroudSound = utils.getSound('cloakshroud.wav', {volume: .1, rate: 1.5});
     var secretStep = function(destination, commandObj) {
         //get current augment
@@ -331,7 +286,6 @@ export default function Medic(options) {
         var footprintFrequency = currentAugment.name == 'fleet feet' ? 30 : 60;
         var footprintDirection = utils.pointInDirection(this.position, destination);
         var lastFootprint = null;
-        footstepSound.play();
         var everyOther = true;
         shroudSound.play();
         var footprintTimer = globals.currentGame.addTimer({
@@ -792,7 +746,6 @@ export default function Medic(options) {
         priority: 5,
         name: options.name,
         heightAnimation: 'up',
-        throwAnimations: throwAnimations,
         abilities: [healAbility, secretStepAbility, mineAbility],
         death: function() {
             var self = this;
@@ -849,35 +802,39 @@ export default function Medic(options) {
                 honeRange: 300,
                 range: rad*2 + 10,
                 canAttackAndMove: false,
+                canAttackPredicate: function() {
+                    var thisAbility = this.getAbilityByName('Heal');
+                    var currentAugment = thisAbility.currentAugment || {name: 'null'};
+                    var ppBypass = (currentAugment.name == 'pure priorities' && (target.currentHealth < (target.maxHealth * currentAugment.hpThreshold)));
+                    return (this.currentEnergy >= thisAbility.energyCost || ppBypass);
+                }.bind(medic),
                 attack: function(target) {
                     //get current augment
                     var thisAbility = this.getAbilityByName('Heal');
                     var currentAugment = thisAbility.currentAugment || {name: 'null'};
                     var ppBypass = (currentAugment.name == 'pure priorities' && (target.currentHealth < (target.maxHealth * currentAugment.hpThreshold)));
 
-                    if(this.currentEnergy >= 1 || ppBypass) {
-                        var abilityTint = 0x80ba80;
-                        utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Heal').icon, tint: abilityTint, speed: 100});
-                        healsound.play();
+                    var abilityTint = 0x80ba80;
+                    utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Heal').icon, tint: abilityTint, speed: 100});
+                    healsound.play();
 
-                        var healAnimation = utils.getAnimationB({
-                            spritesheetName: 'MedicAnimations1',
-                            animationName: 'heal',
-                            speed: 1.2,
-                            transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 20), 1, 1]
-                        });
+                    var healAnimation = utils.getAnimationB({
+                        spritesheetName: 'MedicAnimations1',
+                        animationName: 'heal',
+                        speed: 1.2,
+                        transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 20), 1, 1]
+                    });
 
-                        healAnimation.alpha = Math.max(.7, Math.random());
-                        healAnimation.play();
-                        utils.addSomethingToRenderer(healAnimation, 'stageOne');
+                    healAnimation.alpha = Math.max(.7, Math.random());
+                    healAnimation.play();
+                    utils.addSomethingToRenderer(healAnimation, 'stageOne');
 
-                        if(!ppBypass)
-                            this.currentEnergy -= thisAbility.energyCost;
+                    if(!ppBypass)
+                        this.currentEnergy -= thisAbility.energyCost;
 
-                        target.currentHealth += thisAbility.healAmount;
-                        if(target.currentHealth >= target.maxHealth)
-                            target.currentHealth = target.maxHealth;
-                    }
+                    target.currentHealth += thisAbility.healAmount;
+                    if(target.currentHealth >= target.maxHealth)
+                        target.currentHealth = target.maxHealth;
                 },
                 attackHoneTeamPredicate: function(team) {
                     return this.team == team;
