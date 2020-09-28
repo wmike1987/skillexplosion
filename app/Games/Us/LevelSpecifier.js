@@ -19,7 +19,7 @@ var typeTokenMappings = {
 //Define node object
 var mapLevelNode = function(levelDetails) {
     this.levelDetails = levelDetails;
-    this.displayObject = utils.createDisplayObject(typeTokenMappings[levelDetails.type], {scale: {x: .75, y: .75}});
+    this.displayObject = utils.createDisplayObject(typeTokenMappings[levelDetails.type], {scale: {x: 1, y: 1}});
     this.displayObject.interactive = true;
 
     var enemyDescriptions = [];

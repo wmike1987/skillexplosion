@@ -362,23 +362,23 @@
 },
 "FrollGround/Twilight1.png":
 {
-	"frame": {"x":412,"y":2462,"w":222,"h":190},
+	"frame": {"x":412,"y":2462,"w":222,"h":189},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":222,"h":190},
-	"sourceSize": {"w":222,"h":190}
+	"spriteSourceSize": {"x":0,"y":0,"w":222,"h":189},
+	"sourceSize": {"w":222,"h":189}
 },
 "FrollGround/Twilight2.png":
 {
-	"frame": {"x":412,"y":2654,"w":222,"h":190},
+	"frame": {"x":412,"y":2653,"w":222,"h":189},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":222,"h":190},
-	"sourceSize": {"w":222,"h":190}
+	"spriteSourceSize": {"x":0,"y":0,"w":222,"h":189},
+	"sourceSize": {"w":222,"h":189}
 },
 "FrollGround/Twilight3.png":
 {
-	"frame": {"x":412,"y":2846,"w":222,"h":189},
+	"frame": {"x":412,"y":2844,"w":222,"h":189},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":222,"h":189},
@@ -670,6 +670,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2047,"h":3456},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:6dd0cb5a518e4e8196a61b055e941a09:6a3bdedb1e54eb4f4072ce8b97f2dfea:53fe6e4b7af75f0dc83cc65bc0af16d4$"
+	"smartupdate": "$TexturePacker:SmartUpdate:f661507b1412fa79db22b42df2d6da6e:b761bd34387338674b6c2013de7d4ba1:53fe6e4b7af75f0dc83cc65bc0af16d4$"
 }
 }

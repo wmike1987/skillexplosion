@@ -802,7 +802,7 @@ export default function Medic(options) {
                 honeRange: 300,
                 range: rad*2 + 10,
                 canAttackAndMove: false,
-                canAttackPredicate: function() {
+                canAttackPredicate: function(target) {
                     var thisAbility = this.getAbilityByName('Heal');
                     var currentAugment = thisAbility.currentAugment || {name: 'null'};
                     var ppBypass = (currentAugment.name == 'pure priorities' && (target.currentHealth < (target.maxHealth * currentAugment.hpThreshold)));

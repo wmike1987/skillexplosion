@@ -101,7 +101,7 @@ export default {
             return;
         }
 
-        if(this.canAttackPredicate && !this.canAttackPredicate()) {
+        if(this.canAttackPredicate && !this.canAttackPredicate(target)) {
             return;
         }
 

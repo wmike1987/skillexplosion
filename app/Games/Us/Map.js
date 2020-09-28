@@ -7,7 +7,7 @@ import LevelSpecifier from '@games/Us/LevelSpecifier.js'
 var map = function(specs) {
 
     this.mapSprite = utils.createDisplayObject('MapBackground', {where: 'foreground', position: utils.getPlayableCenter()});
-    utils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 3000);
+    utils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
     //this will be given in the specs parameter, for now we'll just include it here
     this.levelSpecification = {

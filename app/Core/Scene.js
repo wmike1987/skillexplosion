@@ -1,5 +1,6 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
+import * as PIXI from 'pixi.js'
 import utils from '@utils/GameUtils.js'
 import {globals} from '@core/GlobalState.js'
 
@@ -72,6 +73,16 @@ Scene.prototype.transitionToScene = function(options) {
     utils.makeSpriteSize(this.tint, utils.getCanvasWH());
     var tintDuration = 50;
     var tintRuns = transitionLength/tintDuration;
+
+    //experiment with filter transitions
+    //this.renderer.stage
+    // var renderer = PIXI.autoDetectRenderer();
+    // var transitionImage = PIXI.RenderTexture.create(utils.getCanvasWidth(), utils.getCanvasHeight());
+    // renderer.render(globals.currentGame.renderer.stage, transitionImage);
+    //
+    // utils.addSomethingToRenderer(transitionImage, {where: 'hud', scale: {x: 1, y: 1}});
+
+
 
     globals.currentGame.addTimer({name: 'tint' + this.id, runs: tintRuns, timeLimit: tintDuration, killsSelf: true, callback: function() {
         this.tint.alpha += 1/tintRuns;

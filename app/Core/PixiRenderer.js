@@ -167,7 +167,7 @@ var renderer = function(engine, options) {
 	this.start = function() {
 
 		//init pixi and it's game loop, important to note that this loop happens after ours (ensuring renderWorld is called prior to this frame's rendering).
-		this.pixiApp = new PIXI.Application({width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0x1099bb});
+		this.pixiApp = new PIXI.Application({width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
 		this.canvasEl = this.pixiApp.renderer.view;
 
 		//add-on gstats (ctrl + shift + f to show)

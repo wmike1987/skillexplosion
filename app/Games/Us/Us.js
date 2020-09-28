@@ -57,19 +57,16 @@ var game = {
     initialCutScene: function() {
         this.currentScene = new Scene(); //empty scene to transition from
         var cutScene = new Scene();
-        var background = utils.createDisplayObject('SplashRed', {where: 'hudTwo', anchor: {x: 0, y: 0}});
+        var background = utils.createDisplayObject('SplashColored', {where: 'hudTwo', anchor: {x: 0, y: 0}});
         utils.makeSpriteSize(background, utils.getCanvasWH());
         cutScene.add(background);
 
         this.currentScene.transitionToScene({newScene: cutScene});
         this.currentScene = cutScene;
 
-        $('body').on('keydown.us', function( event ) {
-            var key = event.key.toLowerCase();
-            if(key == 'escape') {
+        $('body').on('mousedown.us', function( event ) {
                 this.initialLevel();
-                $('body').off('keydown.us');
-            }
+                $('body').off('mousedown.us');
         }.bind(this))
     },
 
@@ -207,9 +204,9 @@ var game = {
         // var tileMap2 = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth, alpha: .7});
         // campScene.add(tileMap2);
 
-        var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'backgroundOne', .5);
-        campScene.add(l1);
-        var l2 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
+        // var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'backgroundOne', .5);
+        // campScene.add(l1);
+        // var l2 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
         // campScene.add(l2);
 
         var treeOptions = {};
@@ -402,7 +399,7 @@ var game = {
         var nextLevel = new Scene();
 
         //new tile map
-        var tileMap = TileMapper.produceTileMap({possibleTextures: options.possibleTiles, tileWidth: this.tileSize, realTileWidth: options.realTileWidth});
+        var tileMap = TileMapper.produceTileMap({possibleTextures: options.possibleTiles, tileWidth: this.tileSize});
         nextLevel.add(tileMap.tiles)
 
         //new lights
