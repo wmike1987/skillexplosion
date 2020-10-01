@@ -447,7 +447,7 @@ export default function Marine(options) {
             var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(destination, this.position)));
             var start = (currentAugment.knives-1)/-2;
             var spacing = 25;
-            for(n = start; n < start+currentAugment.knives; n++) {
+            for(var n = start; n < start+currentAugment.knives; n++) {
                 if(n == 0) continue;
                 thisAbility.method.call(this, Matter.Vector.add(destination, Matter.Vector.mult(perpVector, n*spacing)), null, true);
             }

@@ -490,8 +490,10 @@ var game = {
     nukeExtension: function() {
         $('body').off('keydown.us');
         $('body').off('keydown.map');
-        this.openmap.unload();
-        this.entercamp.unload();
+        if(this.openmap) {
+            this.openmap.unload();
+            this.entercamp.unload();
+        }
         if(this.currentScene) {
             this.currentScene.clear();
         }

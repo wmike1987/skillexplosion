@@ -239,6 +239,7 @@ export default function Sentinel(options) {
 
     var fireSound = utils.getSound('sentinelfire.wav', {volume: .015, rate: 1});
     var hitSound = utils.getSound('sentinelhit.wav', {volume: .05, rate: 2});
+    var deathSound = utils.getSound('sentineldeath.wav', {volume: .55, rate: 1});
 
     var unitProperties = $.extend({
         unitType: 'Sentinel',
@@ -269,6 +270,7 @@ export default function Sentinel(options) {
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
+            deathSound.play();
 
             var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(this.deathPosition, {y: 22})})
             utils.fadeSpriteOverTime(shadow, 1500);

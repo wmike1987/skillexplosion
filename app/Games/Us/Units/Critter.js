@@ -238,6 +238,7 @@ export default function Critter(options) {
         offset: {x: 0, y: 22}}];
 
     var attackSound = utils.getSound('critterhit.wav', {volume: .15, rate: 1});
+    var deathSound = utils.getSound('critterdeath.wav', {volume: .45, rate: 1.4});
 
     var unitProperties = $.extend({
         unitType: 'Critter',
@@ -270,6 +271,7 @@ export default function Critter(options) {
             });
             utils.addSomethingToRenderer(anim);
             anim.play();
+            deathSound.play();
 
             var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(self.deathPosition, {y: 22})})
             utils.fadeSpriteOverTime(shadow, 1500);
@@ -283,7 +285,7 @@ export default function Critter(options) {
             radius: options.radius,
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [attackSound, unitProperties.portrait, unitProperties.wireframe],
+            slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 3.00,

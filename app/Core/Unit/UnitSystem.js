@@ -782,6 +782,14 @@ var UnitSystem = function(properties) {
                  }
              }
 
+             if(event.key == 'Y' || event.key == 'y') {
+                 if(keyStates['Control']) {
+                     //experiment with filter transitions
+                     //this.renderer.stage
+
+                 }
+             }
+
              if(this.hasEnemySelected()) return;
              if(event.key == 'a' || event.key == 'A') {
                  $.each(this.selectedUnits, function(prop, unit) {

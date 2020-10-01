@@ -74,15 +74,17 @@ Scene.prototype.transitionToScene = function(options) {
     var tintDuration = 50;
     var tintRuns = transitionLength/tintDuration;
 
-    //experiment with filter transitions
-    //this.renderer.stage
-    // var renderer = PIXI.autoDetectRenderer();
-    // var transitionImage = PIXI.RenderTexture.create(utils.getCanvasWidth(), utils.getCanvasHeight());
-    // renderer.render(globals.currentGame.renderer.stage, transitionImage);
-    //
-    // utils.addSomethingToRenderer(transitionImage, {where: 'hud', scale: {x: 1, y: 1}});
-
-
+    //test
+    // var currentGame = globals.currentGame;
+    // const rt = new PIXI.RenderTexture.create(utils.getCanvasWidth(), utils.getCanvasHeight());
+    // const sprite = new PIXI.Sprite(rt);
+    // sprite.x = 0;
+    // sprite.y = 0;
+    // var stage = globals.currentGame.renderer.layers.hudTwo;
+    // var renderer = globals.currentGame.renderer.pixiApp.renderer;
+    // renderer.render(stage, rt)
+    // utils.addSomethingToRenderer(sprite, "hudText");
+    //end test
 
     globals.currentGame.addTimer({name: 'tint' + this.id, runs: tintRuns, timeLimit: tintDuration, killsSelf: true, callback: function() {
         this.tint.alpha += 1/tintRuns;

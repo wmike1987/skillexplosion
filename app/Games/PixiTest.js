@@ -8,6 +8,9 @@ import {CommonGameMixin} from '@core/CommonGameMixin.js'
 var targetScore = 1;
 
 var game = {
+
+	assets: [{name: "Terrain0", target: "Textures/Us/Terrain-0.json"}],
+
 	gameName: 'SimpleTargets',
 	ball: null,
 	victoryCondition: {type: 'lives', limit: 3},
@@ -22,15 +25,22 @@ var game = {
 	play: function(options) {
 
 		// utils.addSomethingToRenderer("Logs", {position: {x: 100, y: 100}});
-		utils.addSomethingToRenderer("GrassAndRock1/Dirt/dirt_base", {position: {x: 200, y: 100}, scale: {x: .1, y: .1}});
-		var icon = utils.addSomethingToRenderer("DeathWish", {position: {x: 200, y: 101}, scale: {x: 1, y: 1}});
-		var sh = new PIXI.Filter(null, colorshader, null);
-		var ash = new PIXI.Filter(null, alphaShader, null);
-		this.renderer.stages.stage.filters = [ash];
+		const container = new PIXI.Container();
 
-		currentGame.addTickCallback(function() {
-			icon.position = utils.getRandomPlacementWithinCanvasBounds();
-		})
+		var dirt1 = utils.createDisplayObject("FrollGround/Dirt1", {position: {x: 50, y: 50}});
+		container.addChild(dirt1);
+		container.x = 100;
+		container.y = 100;
+
+		const rt = new PIXI.RenderTexture.create(600, 600);
+		const sprite = new PIXI.Sprite(rt);
+		sprite.x = 500;
+		sprite.y = 250;
+		this.renderer.pixiApp.stage.addChild(sprite);
+		this.renderer.pixiApp.stage.addChild(container);
+
+		this.renderer.pixiApp.renderer.render(container, rt);
+
 	},
 }
 
