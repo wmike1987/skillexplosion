@@ -220,7 +220,6 @@ var UnitSystem = function(properties) {
                 else {
                     //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
                     if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
-                        this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                         delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
 
                         //If one of our units was the perma pending unit, was it out of the box? If so, is there now only one pending unit? If so
@@ -251,7 +250,6 @@ var UnitSystem = function(properties) {
                 //Else create a brand new selection (don't add to current selection)
                 //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
                 if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
-                    this.changeSelectionState(this.box.permaPendingUnit, 'selectionPending', false);
                     delete this.box.pendingSelections[this.box.permaPendingUnit.unitId]
                 }
 
@@ -284,8 +282,10 @@ var UnitSystem = function(properties) {
 
             //Update visuals
             var tempPendingSelections = this.box.pendingSelections;
+            var tempPermaPendingUnit = this.box.permaPendingUnit;
             utils.oneTimeCallbackAtTick(function() {
                 this.changeSelectionState(tempPendingSelections, 'selectionPending', false);
+                this.changeSelectionState(tempPermaPendingUnit, 'selectionPending', false);
             }.bind(this), 'beforeTick');
             this.changeSelectionState(this.selectedUnits, 'selected', true);
 
@@ -996,6 +996,7 @@ var UnitSystem = function(properties) {
 
     //common method for changing the selection state (and visuals) of a group of bodies
     this.changeSelectionState = function(units, state, newValue) {
+        if(!units) return;
         if(units.renderlings && units.renderlings[state]) { //if we were supplied just one unit
             if(units.isSelectable)
                 units.renderlings[state].visible = newValue;
