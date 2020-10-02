@@ -37,7 +37,7 @@ var game = {
 		sprite.x = 500;
 		sprite.y = 250;
 		this.renderer.pixiApp.stage.addChild(sprite);
-		this.renderer.pixiApp.stage.addChild(container);
+		this.renderer.pixiApp.stage.addChild(container);0
 
 		this.renderer.pixiApp.renderer.render(container, rt);
 

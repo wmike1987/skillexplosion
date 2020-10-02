@@ -238,7 +238,7 @@ export default function Critter(options) {
         offset: {x: 0, y: 22}}];
 
     var attackSound = utils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = utils.getSound('critterdeath.wav', {volume: .45, rate: 1.4});
+    var deathSound = utils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
 
     var unitProperties = $.extend({
         unitType: 'Critter',

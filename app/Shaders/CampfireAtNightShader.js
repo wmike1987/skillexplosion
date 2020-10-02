@@ -1,6 +1,4 @@
-define([], function() {
-
-    return `
+export default `
     precision mediump float;
     varying vec2 vTextureCoord;
     uniform sampler2D uSampler;
@@ -49,5 +47,3 @@ define([], function() {
 
         gl_FragColor = fg;
     }`
-
-})
