@@ -288,24 +288,26 @@ var common = {
      * Setup click-to-begin screen
      */
     preGame: function() {
-
         this.gameState = "pregame";
 
-        //animate the skill explosion website title
-        // animateTitle();
-
-        //create 'click to begin' text
-        var startGameText = utils.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
-
-        if(this.preGameExtension)
-            this.preGameExtension();
+        var onClick = null;
+        if(this.preGameExtension) {
+            onClick = this.preGameExtension() || function() {};
+        } else {
+            var startGameText = utils.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+            onClick = function() {
+                utils.removeSomethingFromRenderer(startGameText);
+            }
+        }
 
         //pregame deferred (proceed to startGame when clicked)
         var proceedPastPregame = $.Deferred();
         if(!this.bypassPregame) {
             $(this.canvasEl).one("mouseup", $.proxy(function(event) {
-                utils.removeSomethingFromRenderer(startGameText);
-                setTimeout(() => proceedPastPregame.resolve(), 10); //dissociate this mouseup event from any listeners setup during startgame, it appears that listeners setup during an event get called during that event.
+                setTimeout(function() {
+                    proceedPastPregame.resolve();
+                    onClick();
+                }, 10); //dissociate this mouseup event from any listeners setup during startgame, it appears that listeners setup during an event get called during that event.
             }, this));
         }
 
@@ -924,7 +926,7 @@ var common = {
         if(this.enableUnitSystem) {
             this.assets = this.assets.concat(UnitSystemAssets);
         }
-        CommonGameStarter(this);
+        CommonGameStarter(Object.assign({}, this));
     }
 };
 

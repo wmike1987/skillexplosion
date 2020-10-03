@@ -29,7 +29,8 @@ var renderer = function(engine, options) {
 		hudOne: new PIXI.Container(),
 		hudTwo: new PIXI.Container(),
 		hudThree: new PIXI.Container(),
-		hudText: new PIXI.Container()
+		hudText: new PIXI.Container(),
+		transitionLayer: new PIXI.Container()
 	};
 
 	//texture name to atlas cache

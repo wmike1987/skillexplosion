@@ -15,6 +15,7 @@ import Scene from '@core/Scene.js'
 import UnitPanel from '@games/Us/UnitPanel.js'
 import UnitSpawner from '@games/Us/UnitSpawner.js'
 import Map from '@games/Us/Map.js'
+import styles from '@utils/Styles.js'
 
 var targetScore = 1;
 
@@ -51,23 +52,18 @@ var game = {
     },
 
     play: function(options) {
-        this.initialCutScene();
+        this.initialLevel();
     },
 
-    initialCutScene: function() {
-        this.currentScene = new Scene(); //empty scene to transition from
-        var cutScene = new Scene();
-        var background = utils.createDisplayObject('SplashColored', {where: 'hudTwo', anchor: {x: 0, y: 0}});
+    preGameExtension: function() {
+        var titleScene = new Scene();
+        var background = utils.createDisplayObject('SplashColored', {where: 'hudText', anchor: {x: 0, y: 0}});
+        var startGameText = utils.addSomethingToRenderer("TEXT:Click To Begin", {where: 'hudText', style: styles.titleOneStyle, x: this.canvas.width/2, y: this.canvas.height*3/4});
         utils.makeSpriteSize(background, utils.getCanvasWH());
-        cutScene.add(background);
-
-        this.currentScene.transitionToScene({newScene: cutScene});
-        this.currentScene = cutScene;
-
-        $('body').on('mousedown.us', function( event ) {
-                this.initialLevel();
-                $('body').off('mousedown.us');
-        }.bind(this))
+        titleScene.add(background);
+        titleScene.add(startGameText);
+        titleScene.initializeScene();
+        this.currentScene = titleScene;
     },
 
     initialLevel: function() {

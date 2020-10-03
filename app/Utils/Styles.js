@@ -257,4 +257,14 @@ export default {
 	    wordWrap: true,
 	    wordWrapWidth: 110
 	}),
+
+	titleOneStyle: new PIXI.TextStyle({
+	    fill: "white",
+	    fontSize: 43,
+	    fontStyle: "italic",
+	    fontWeight: "bold",
+	    lineJoin: "round",
+	    miterLimit: 0,
+	    strokeThickness: 4
+	}),
 }

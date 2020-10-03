@@ -74,10 +74,6 @@ var game = {
 		});
 	},
 
-	preGameExtension: function() {
-
-	},
-
 	play: function(options) {
 
 		//create wave 1
