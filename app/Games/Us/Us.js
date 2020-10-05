@@ -1,8 +1,8 @@
 import * as $ from 'jquery'
 import * as Matter from 'matter-js'
 import * as PIXI from 'pixi.js'
-import {CommonGameMixin} from '@core/CommonGameMixin.js'
-import {globals} from '@core/GlobalState.js'
+import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 import utils from '@utils/GameUtils.js'
 import Marine from '@games/Us/Units/Marine.js'
 import Medic from '@games/Us/Units/Medic.js'
@@ -16,6 +16,7 @@ import UnitPanel from '@games/Us/UnitPanel.js'
 import UnitSpawner from '@games/Us/UnitSpawner.js'
 import Map from '@games/Us/Map.js'
 import styles from '@utils/Styles.js'
+import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 
 var targetScore = 1;
 
@@ -52,18 +53,42 @@ var game = {
     },
 
     play: function(options) {
-        this.initialLevel();
+        var dialogueScene = new Scene();
+        var background = utils.createDisplayObject('TintableSquare', {where: 'hudTwo', anchor: {x: 0, y: 0}});
+        background.tint = 0x000000;
+        utils.makeSpriteSize(background, utils.getCanvasWH());
+        dialogueScene.add(background);
+        this.currentScene.transitionToScene(dialogueScene);
+        //begin dialogue
+        var u1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command..."})
+        var s1 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor..."})
+        var u2 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from McGuire. "})
+
+        var chain = new DialogueChain([u1, s1, u2], {done: function() {
+            dialogueScene.add(utils.addSomethingToRenderer("TEXT:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: utils.getPlayableWidth() - 20, y: utils.getCanvasHeight() - 20}}));
+        }});
+        dialogueScene.add(chain);
+        chain.play();
+
+        $('body').on('keydown.uskeydown', function( event ) {
+            var key = event.key.toLowerCase();
+            if(key == 'escape') {
+                //clear dialogue and start initial level
+                this.initialLevel();
+                $('body').off('keydown.uskeydown');
+            }
+        }.bind(this))
     },
 
     preGameExtension: function() {
         var titleScene = new Scene();
+        this.currentScene = titleScene;
         var background = utils.createDisplayObject('SplashColored', {where: 'hudText', anchor: {x: 0, y: 0}});
         var startGameText = utils.addSomethingToRenderer("TEXT:Click To Begin", {where: 'hudText', style: styles.titleOneStyle, x: this.canvas.width/2, y: this.canvas.height*3/4});
         utils.makeSpriteSize(background, utils.getCanvasWH());
         titleScene.add(background);
         titleScene.add(startGameText);
         titleScene.initializeScene();
-        this.currentScene = titleScene;
     },
 
     initialLevel: function() {
@@ -83,7 +108,6 @@ var game = {
     gotoCamp: function() {
         var camp = this.createCampScene();
         this.currentScene.transitionToScene(camp);
-        this.currentScene = camp;
 
         Matter.Events.on(camp, 'initialize', function() {
             //set camp active and trigger event
@@ -354,7 +378,6 @@ var game = {
             this.resetUnit(this.shane);
             this.resetUnit(this.ursula);
         }.bind(this))
-        this.currentScene = nextLevelScene;
         this.level += 1;
 
         //win/loss conditions

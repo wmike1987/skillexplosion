@@ -4,7 +4,7 @@ import utils from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import Tooltip from '@core/Tooltip.js'
 import ucp from '@games/Us/UnitConfigurationPanel.js'
-import {globals, keyStates} from '@core/GlobalState.js'
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
 //This module represents a tile map. This is produced by the tile mapper
 var unitPanel = function(options) {

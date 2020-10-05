@@ -267,4 +267,11 @@ export default {
 	    miterLimit: 0,
 	    strokeThickness: 4
 	}),
+
+	dialogueStyle: new PIXI.TextStyle({
+	    fill: "#00b3ff",
+	    fontFamily: "\"Lucida Console\", Monaco, monospace",
+	    fontSize: 18,
+	    miterLimit: 0
+	}),
 }

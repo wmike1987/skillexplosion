@@ -3,8 +3,8 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
 import utils from '@utils/GameUtils.js'
-import {CommonGameMixin} from '@core/CommonGameMixin.js'
-import {globals, mouseStates} from '@core/GlobalState.js'
+import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
+import {globals, mouseStates} from '@core/Fundamental/GlobalState.js'
 
 var targetScore = 1;
 var winGame = 20;

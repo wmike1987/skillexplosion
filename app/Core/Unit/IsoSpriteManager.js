@@ -4,7 +4,7 @@ import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Attacker from '@core/Unit/_Attacker.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 /*
  * Manager which will handle playing animations at the right time.

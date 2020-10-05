@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as $ from 'jquery'
 import UC from '@core/Unit/UnitConstructor.js'
-import {globals} from '@core/GlobalState'
+import {globals} from '@core/Fundamental/GlobalState'
 
 export default function Marble(options) {
 

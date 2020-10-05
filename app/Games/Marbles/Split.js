@@ -3,7 +3,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
 import utils from '@utils/GameUtils.js'
-import {CommonGameMixin} from '@core/CommonGameMixin.js'
+import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import Marble from '@games/Marbles/Units/Marble.js'
 
 var targetScore = 1;

@@ -2,7 +2,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 // options {
 //     title

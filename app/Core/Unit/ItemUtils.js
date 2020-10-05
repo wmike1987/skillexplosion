@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import {globals} from '@core/GlobalState'
+import {globals} from '@core/Fundamental/GlobalState'
 import utils from '@utils/GameUtils.js'
 
 // options {

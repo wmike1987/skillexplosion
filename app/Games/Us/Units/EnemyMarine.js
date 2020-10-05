@@ -5,7 +5,7 @@ import UC from '@core/Unit/UnitConstructor.js'
 import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import style from '@utils/Styles.js'
-import {globals} from '@core/GlobalState'
+import {globals} from '@core/Fundamental/GlobalState'
 import utils from '@utils/GameUtils.js'
 
 export default function EnemyMarine(options) {

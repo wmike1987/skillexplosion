@@ -5,7 +5,7 @@ import utils from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import Tooltip from '@core/Tooltip.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 var baseItem = {
     equip: function(unit) {

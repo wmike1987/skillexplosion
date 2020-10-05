@@ -2,7 +2,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import utils from '@utils/GameUtils.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 import dissolveShader from '@shaders/DissolveShader.js'
 
 /*
@@ -71,6 +71,8 @@ Scene.prototype.transitionToScene = function(options) {
         transitionLength = options.transitionLength || transitionLength;
         mode = options.mode || mode;
     }
+
+    globals.currentGame.currentScene = newScene;
 
     //define transition vars
     var iterTime;

@@ -7,7 +7,7 @@ import hs from  '@utils/HS.js'
 import * as $ from 'jquery'
 import * as h from  'howler'
 import styles from '@utils/Styles.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 

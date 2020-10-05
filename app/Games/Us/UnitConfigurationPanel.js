@@ -2,7 +2,7 @@ import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
 import * as Matter from 'matter-js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 var equipShow = utils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
 var equipHide = utils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});

@@ -5,7 +5,7 @@ import utils from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 import EnemySetSpecifier from '@games/Us/EnemySetSpecifier.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 //Token Mappings
 var typeTokenMappings = {

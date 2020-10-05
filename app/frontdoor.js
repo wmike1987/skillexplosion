@@ -1,7 +1,7 @@
 import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 import collisionPlugin from '@lib/matter-collision-events/plugin.js'
 import * as particles from 'pixi-particles'
 import polydecomp from 'poly-decomp'

@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
-import {CommonGameMixin} from '@core/CommonGameMixin.js'
+import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import zone from '@utils/TargetSpawnZone'
 
 var targetScore = 1;

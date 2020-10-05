@@ -3,7 +3,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
-import {globals} from '@core/GlobalState'
+import {globals} from '@core/Fundamental/GlobalState'
 
 var unitSpawner = function(enemySets) {
     this.id = utils.uuidv4();

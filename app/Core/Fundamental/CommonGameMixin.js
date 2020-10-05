@@ -7,8 +7,8 @@ import styles from '@utils/Styles.js'
 import utils from '@utils/GameUtils.js'
 import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js'
 import ItemSystem from '@core/Unit/ItemSystem.js'
-import CommonGameStarter from '@core/CommonGameStarter.js'
-import {globals, keyStates} from '@core/GlobalState.js'
+import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js'
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
 /*
 * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module

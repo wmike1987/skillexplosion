@@ -9,7 +9,7 @@ import EmptySlot from '@core/Unit/EmptySlot.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
 import Command from '@core/Unit/Command.js'
 import CommandQueue from '@core/Unit/CommandQueue.js'
-import {globals, keyStates} from '@core/GlobalState.js'
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
 var levelUpSound = utils.getSound('levelup.wav', {volume: .45, rate: .8});
 var itemPlaceSound = utils.getSound('itemplace.wav', {volume: .06, rate: 1});

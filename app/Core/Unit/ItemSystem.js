@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import utils from '@utils/GameUtils.js'
-import {globals} from '@core/GlobalState.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
 var highlightTint = 0xa6ff29;
 var cantpickup = utils.getSound('cantpickup.wav', {volume: .03, rate: 1.3});
