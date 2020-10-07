@@ -3,6 +3,4 @@
 es6*
 *.DS_Store
 app/node_modules
-app/package.json
-app/package-lock.json
 app/dist
