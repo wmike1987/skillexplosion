@@ -27,14 +27,14 @@ var pictureStyles = {
 var Dialogue = function Dialogue(options) {
     var defaults = {
         textBeginPosition: {x: 50, y: 50},
-        letterSpeed: 10,
+        letterSpeed: 100,
         pauseAtPeriod: true,
         blinkLastLetter: true,
         blinksThenDone: 3,
         style: styles.dialogueStyle,
         pictureDelay: 0,
         pictureStyle: pictureStyles.FADE_IN,
-        picturePosition: utils.getPlayableWidth()*3/4
+        picturePosition: {x: utils.getPlayableWidth()*3/4, y: utils.getCanvasHeight()/2}
     }
     $.extend(this, options, defaults);
     this.text = (this.actor ? this.actor + ": " : "") + this.text;
@@ -43,16 +43,29 @@ var Dialogue = function Dialogue(options) {
 
     this.play = function(options) {
         options = options || {};
-        var currentLetter = 0;
         this.realizedText = utils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
         this.realizedText.position.y += (options.yOffset || 0);
         this.realizedText.resolution = 2;
-        //this.realizedPicture = utils.createDisplayObject("TEXT:", {position: position, where: "hudText", anchor: {x: 0, y: 0}});
+
+        if(this.picture) {
+          this.realizedPicture = utils.createDisplayObject(this.picture, {alpha: 0, position: this.picturePosition, where: "hudText"});
+        }
+
+        var currentLetter = 0;
         var picRealized = false;
         var d = this;
         var currentBlink = 0;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.letterSpeed,
         callback: function() {
+            var fadeOverLetters = d.text.length*3/4;
+            if(d.pictureDelay <= this.timeElapsed && d.realizedPicture) {
+                //fade in picture - let's fade in over the first 5 letters
+                utils.addOrShowDisplayObject(d.realizedPicture);
+                if(d.realizedPicture.alpha < 1.0) {
+                  d.realizedPicture.alpha += 1/fadeOverLetters;
+                }
+            }
+
             utils.addOrShowDisplayObject(d.realizedText);
             if(currentLetter < d.text.length) {
                 d.realizedText.text = d.text.substring(0, ++currentLetter);
@@ -79,21 +92,23 @@ var Dialogue = function Dialogue(options) {
             } else if(!d.stallInfinite){
                 d.deferred.resolve();
             }
-
-            if(d.pictureDelay >= this.timeElapsed && !picRealized) {
-                //fade in picture
-            }
         }})
     };
 
     this.cleanUp = function() {
         globals.currentGame.invalidateTimer(this.textTimer);
         utils.removeSomethingFromRenderer(this.realizedText);
+        utils.removeSomethingFromRenderer(this.realizedPicture);
     };
 
     this.initialize = function() {
 
     };
+
+    this.leaveText = function() {
+      globals.currentGame.invalidateTimer(this.textTimer);
+      utils.removeSomethingFromRenderer(this.realizedPicture);
+    }
 }
 
 var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
@@ -113,9 +128,12 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
 
         //setup chain
         for(var j = 0; j < len; j++) {
-            var currentDia = arrayOfDialogues[j]
-            var nextDia = arrayOfDialogues[j+1]
+            let currentDia = arrayOfDialogues[j]
+            let nextDia = arrayOfDialogues[j+1]
             if(j + 1 < len) {
+                currentDia.deferred.done(() => {
+                  currentDia.leaveText();
+                })
                 currentDia.deferred.done(arrayOfDialogues[j+1].play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}))
             } else {
                 if(options.done) {

@@ -60,9 +60,12 @@ var game = {
         dialogueScene.add(background);
         this.currentScene.transitionToScene(dialogueScene);
         //begin dialogue
-        var u1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command..."})
-        var s1 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor..."})
-        var u2 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from McGuire. "})
+        var u1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command...",
+          picture: 'Doodads/avdeadtree2.png'});
+        var s1 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor...",
+          picture: 'Doodads/avgoldtree1.png'});
+        var u2 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from McGuire. ",
+          picture: 'Doodads/avgreentree5.png'});
 
         var chain = new DialogueChain([u1, s1, u2], {done: function() {
             dialogueScene.add(utils.addSomethingToRenderer("TEXT:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: utils.getPlayableWidth() - 20, y: utils.getCanvasHeight() - 20}}));

@@ -361,8 +361,10 @@ var utils = {
     },
 
     removeSomethingFromRenderer: function(something, where) {
+        if(!something) return;
+        
         //if we just have a display object that has not been added to the renderer, destroy this mf'er
-        if(!something.where && !where && !something.myLayer) {
+        if(!something.parent) {
             if(something.destroy && !something._destroyed) {
                 something.destroy();
             }
