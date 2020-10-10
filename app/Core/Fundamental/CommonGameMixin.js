@@ -227,10 +227,12 @@ var common = {
                 if(value.done || value.paused || value.invalidated || value.runs === 0) return;
 
                 if(!value.timeElapsed) value.timeElapsed = 0;
+                if(!value.totalElapsedTime) value.totalElapsedTime = 0;
                 if(!value.runs) value.runs = value.gogogo ? 9999999 : 1;
 
                 value.started = true;
                 value.timeElapsed += event.deltaTime;
+                value.totalElapsedTime += event.deltaTime;
                 value.percentDone = Math.min(value.timeElapsed/value.timeLimit, 1);
                 value.totalPercentDone = Math.min(value.currentRun/value.originalRuns, 1);
 

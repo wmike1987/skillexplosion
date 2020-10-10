@@ -274,4 +274,18 @@ export default {
 	    fontSize: 18,
 	    miterLimit: 0
 	}),
+
+	dialogueActorStyle: new PIXI.TextStyle({
+		fill: "#ffffff",
+		fontFamily: "\"Lucida Console\", Monaco, monospace",
+		fontSize: 18,
+		miterLimit: 0
+	}),
+
+	dialogueTitleStyle: new PIXI.TextStyle({
+		fill: "#b40000",
+		fontFamily: "\"Lucida Console\", Monaco, monospace",
+		fontSize: 40,
+		miterLimit: 0
+	}),
 }
