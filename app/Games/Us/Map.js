@@ -1,63 +1,111 @@
-define(['jquery', 'matter-js', 'pixi', 'utils/GameUtils', 'games/Us/LevelSpecifier'],
-function($, Matter, PIXI, utils, LevelSpecifier) {
+import * as Matter from 'matter-js'
+import * as $ from 'jquery'
+import * as PIXI from 'pixi.js'
+import utils from '@utils/GameUtils.js'
+import Tooltip from '@core/Tooltip.js'
+import LevelSpecifier from '@games/Us/LevelSpecifier.js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 
-    var map = function(specs) {
+//Token Mappings
+var typeTokenMappings = {
+    singles: 'MapGoldBattleToken',
+    doubles: 'MapRedBattleToken',
+    boss: 'MapRedBattleToken',
+    norevives: 'MapRedBattleToken',
+    mobs: 'MobBattleToken',
+}
 
-        this.mapSprite = utils.createDisplayObject('MapBase', {where: 'foreground', position: utils.getPlayableCenter()});
+//Define node object
+var mapLevelNode = function(levelDetails) {
+    this.levelDetails = levelDetails;
+    this.displayObject = utils.createDisplayObject(typeTokenMappings[levelDetails.type], {scale: {x: 1, y: 1}});
+    this.displayObject.interactive = true;
 
-        //this will be given in the specs parameter, for now we'll just include it here
-        this.levelSpecification = {
-            singles: 26,
-            doubles: 1,
-            boss: 1,
-            norevives: 1,
-            mobs: 1
+    var enemyDescriptions = [];
+    var enemyIcons = [];
+    levelDetails.enemySets.forEach(set => {
+        enemyDescriptions.push(' x ' + set.spawn.total);
+        enemyIcons.push(set.icon);
+    })
+    Tooltip.makeTooltippable(this.displayObject, {
+        title: levelDetails.type,
+        description: enemyDescriptions,
+        descriptionIcons: enemyIcons});
+
+    var self = this;
+
+    this.displayObject.on('mouseover', function(event) {
+        if(!this.isCompleted)
+            this.displayObject.tint = 0x20cd2c;
+    }.bind(this))
+    this.displayObject.on('mouseout', function(event) {
+        if(!this.isCompleted)
+            this.displayObject.tint = 0xFFFFFF;
+    }.bind(this))
+    this.displayObject.on('mousedown', function(event) {
+        if(!self.isCompleted) {
+            globals.currentGame.initLevel(self);
         }
+    })
 
-        this.graph = [];
-        for(const key in this.levelSpecification) {
+    this.setPosition = function(position) {
+        this.displayObject.position = position;
+        this.position = position;
+    }
+}
 
-            for(var x = 0; x < this.levelSpecification[key]; x++) {
+//Map object
+var map = function(specs) {
 
-                var levelNode = LevelSpecifier.create(key);
+    this.mapSprite = utils.createDisplayObject('MapBackground', {where: 'foreground', position: utils.getPlayableCenter()});
+    utils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
-                //Determine position
-                var position;
-                var collision;
-                var nodeBuffer = 100;
-                do {
-                    collision = false;
-                    position = utils.getRandomPlacementWithinPlayableBounds(50);
-                    for(let node of this.graph) {
-                        if(utils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
-                            collision = true;
-                            break;
-                        }
+    this.levelSpecification = specs.levelSpecification;
+
+    this.graph = [];
+    for(const key in this.levelSpecification) {
+
+        for(var x = 0; x < this.levelSpecification[key]; x++) {
+
+            var level = LevelSpecifier.create(key);
+            var mapNode = new mapLevelNode(level);
+
+            //Determine position
+            var position;
+            var collision;
+            var nodeBuffer = 100;
+            do {
+                collision = false;
+                position = utils.getRandomPlacementWithinPlayableBounds(50);
+                for(let node of this.graph) {
+                    if(utils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
+                        collision = true;
+                        break;
                     }
-                } while(collision)
-                levelNode.setPosition(position);
-                this.graph.push(levelNode);
-            }
-        }
-
-        this.show = function() {
-            utils.addOrShowDisplayObject(this.mapSprite);
-            this.graph.forEach(node => {
-                node.displayObject.where = 'hudNTwo'
-                if(node.isCompleted) {
-                    node.displayObject.tint = 0x002404;
                 }
-                utils.addOrShowDisplayObject(node.displayObject)
-            })
-        }
-
-        this.hide = function() {
-            this.mapSprite.visible = false;
-            this.graph.forEach(node => {
-                node.displayObject.visible = this.mapSprite.visible;
-                node.displayObject.tooltipObj.hide();
-            })
+            } while(collision)
+            mapNode.setPosition(position);
+            this.graph.push(mapNode);
         }
     }
-    return map;
-})
+
+    this.show = function() {
+        utils.addOrShowDisplayObject(this.mapSprite);
+        this.graph.forEach(node => {
+            node.displayObject.where = 'hudNTwo'
+            if(node.isCompleted) {
+                node.displayObject.tint = 0x002404;
+            }
+            utils.addOrShowDisplayObject(node.displayObject)
+        })
+    }
+
+    this.hide = function() {
+        this.mapSprite.visible = false;
+        this.graph.forEach(node => {
+            node.displayObject.visible = this.mapSprite.visible;
+            node.displayObject.tooltipObj.hide();
+        })
+    }
+}
+export default map;

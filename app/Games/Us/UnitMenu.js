@@ -1,11 +1,18 @@
-define(['usunits/EnemyMarine', 'usunits/Baneling', 'usunits/Critter', 'usunits/AlienGuard', 'usunits/Marine', 'usunits/Medic',
-'usunits/Sentinel', 'usunits/Eruptlet'],
-function(EnemyMarine, Baneling, Critter, AlienGuard, Marine, Medic, Sentinel, Eruptlet) {
+import EnemyMarine from '@games/Us/Units/EnemyMarine.js'
+import Critter from '@games/Us/Units/Critter.js'
+import AlienGuard from '@games/Us/Units/AlienGuard.js'
+import Marine from '@games/Us/Units/Marine.js'
+import Medic from '@games/Us/Units/Medic.js'
+import Sentinel from '@games/Us/Units/Sentinel.js'
+import Eruptlet from '@games/Us/Units/Eruptlet.js'
 
-    var unitMenu = {};
-    for(let unit of arguments) {
-        unitMenu[unit.name] = unit;
-    }
+var unitMenu = {};
+unitMenu['EnemyMarine'] = EnemyMarine;
+unitMenu['Critter'] = Critter;
+unitMenu['AlienGuard'] = AlienGuard;
+unitMenu['Marine'] = Marine;
+unitMenu['Medic'] = Medic;
+unitMenu['Sentinel'] = Sentinel;
+unitMenu['Eruptlet'] = Eruptlet;
 
-    return unitMenu;
-})
+export default unitMenu;

@@ -1,15 +1,16 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import * as $ from 'jquery'
+import utils from '@utils/GameUtils.js'
+import ic from '@core/Unit/ItemConstructor.js'
 
-    var manipulations = {
+var manipulations = {
 
-    }
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "EMPTY",
-            description: [],
-            isEmptySlot: true,
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "EMPTY",
+        description: [],
+        isEmptySlot: true,
+    })
+};

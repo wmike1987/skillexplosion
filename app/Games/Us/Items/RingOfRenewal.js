@@ -1,15 +1,14 @@
-define(['jquery', 'utils/GameUtils', 'unitcore/ItemConstructor'], function($, utils, ic) {
+import ic from '@core/Unit/ItemConstructor.js'
 
-    var manipulations = {
-        healthRegenerationRate: 1,
-    }
+var manipulations = {
+    healthRegenerationRate: 1,
+}
 
-    return function() {
-        return ic({
-            manipulations: manipulations,
-            name: "Ring Of Renewal",
-            description: "Regenerate +1 hp per second.",
-            icon: 'RingOfWellBeing'
-        })
-    };
-})
+export default function() {
+    return ic({
+        manipulations: manipulations,
+        name: "Ring Of Renewal",
+        description: "Regenerate +1 hp per second.",
+        icon: 'RingOfWellBeing'
+    })
+};

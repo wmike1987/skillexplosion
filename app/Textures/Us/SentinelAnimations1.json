@@ -1,0 +1,151 @@
+{"frames": {
+
+"sentineldeath-0.png":
+{
+	"frame": {"x":186,"y":139,"w":25,"h":38},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":22,"w":25,"h":38},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-1.png":
+{
+	"frame": {"x":195,"y":197,"w":25,"h":35},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":25,"w":25,"h":35},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-2.png":
+{
+	"frame": {"x":195,"y":166,"w":29,"h":43},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":17,"w":29,"h":43},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-3.png":
+{
+	"frame": {"x":88,"y":173,"w":44,"h":47},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":13,"w":44,"h":47},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-4.png":
+{
+	"frame": {"x":134,"y":167,"w":58,"h":59},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":1,"w":58,"h":59},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-5.png":
+{
+	"frame": {"x":164,"y":1,"w":78,"h":55},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":5,"w":78,"h":55},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-6.png":
+{
+	"frame": {"x":186,"y":58,"w":79,"h":55},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":5,"w":79,"h":55},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-7.png":
+{
+	"frame": {"x":1,"y":1,"w":85,"h":67},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":85,"h":67},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-8.png":
+{
+	"frame": {"x":1,"y":88,"w":85,"h":52},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":16,"w":85,"h":52},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-9.png":
+{
+	"frame": {"x":1,"y":175,"w":85,"h":49},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":19,"w":85,"h":49},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-10.png":
+{
+	"frame": {"x":55,"y":88,"w":83,"h":42},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":26,"w":83,"h":42},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-11.png":
+{
+	"frame": {"x":70,"y":1,"w":81,"h":32},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":36,"w":81,"h":32},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-12.png":
+{
+	"frame": {"x":99,"y":84,"w":81,"h":32},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":36,"w":81,"h":32},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-13.png":
+{
+	"frame": {"x":104,"y":1,"w":81,"h":31},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":37,"w":81,"h":31},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-14.png":
+{
+	"frame": {"x":160,"y":84,"w":81,"h":24},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":47,"w":81,"h":24},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-15.png":
+{
+	"frame": {"x":133,"y":84,"w":81,"h":25},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":47,"w":81,"h":25},
+	"sourceSize": {"w":85,"h":85}
+},
+"sentineldeath-16.png":
+{
+	"frame": {"x":137,"y":1,"w":81,"h":25},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":47,"w":81,"h":25},
+	"sourceSize": {"w":85,"h":85}
+}},
+"animations": {
+	"sentineldeath": ["sentineldeath-0.png","sentineldeath-1.png","sentineldeath-2.png","sentineldeath-3.png","sentineldeath-4.png","sentineldeath-5.png","sentineldeath-6.png","sentineldeath-7.png","sentineldeath-8.png","sentineldeath-9.png","sentineldeath-10.png","sentineldeath-11.png","sentineldeath-12.png","sentineldeath-13.png","sentineldeath-14.png","sentineldeath-15.png","sentineldeath-16.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "SentinelAnimations1.png",
+	"format": "RGBA8888",
+	"size": {"w":243,"h":226},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:0035011079420910d419f7d230a709b1:ccb5a3081c11ed0ba397382bd8b099e3:705bee9c28f5409900111ffcce0ee914$"
+}
+}
