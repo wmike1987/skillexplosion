@@ -28,6 +28,7 @@ var Dialogue = function Dialogue(options) {
     var defaults = {
         textBeginPosition: {x: 50, y: 50},
         titleBeginPosition: {x: null, y: 40},
+        actorLetterSpeed: 40,
         letterSpeed: 80,
         delayAfterEnd: 1000,
         pauseAtPeriod: true,
@@ -41,6 +42,10 @@ var Dialogue = function Dialogue(options) {
         picturePosition: {x: utils.getPlayableWidth()*3/4, y: utils.getCanvasHeight()/2}
     }
     $.extend(this, defaults, options);
+
+    if(this.interrupt) {
+        this.letterSpeed = 30;
+    }
 
     //setup text vars
     this.actorText = this.actor ? this.actor + ": " : "";
@@ -75,7 +80,7 @@ var Dialogue = function Dialogue(options) {
         var picRealized = false;
         var d = this;
         var currentBlink = 0;
-        this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.letterSpeed,
+        this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
             var fadeOverLetters = d.text.length*3/4;
 
@@ -90,7 +95,6 @@ var Dialogue = function Dialogue(options) {
             utils.addOrShowDisplayObject(d.realizedText);
             if(currentLetter < d.text.length) {
                 d.realizedText.text = d.text.substring(0, ++currentLetter);
-                d.keypressSound.play();
                 for(var i = currentLetter; i < d.text.length; i++) {
                     d.realizedText.text += " ";
                 }
@@ -98,13 +102,18 @@ var Dialogue = function Dialogue(options) {
                 if(d.realizedActorText && currentLetter < d.actorText.length) {
                     utils.addOrShowDisplayObject(d.realizedActorText);
                     d.realizedActorText.text = d.actorText.substring(0, currentLetter);
+                    d.currentLetterSpeed = d.actorLetterSpeed;
+                } else {
+                    d.keypressSound.play();
+                    this.timeLimit = d.letterSpeed;
+                    d.currentLetterSpeed = d.letterSpeed;
                 }
 
                 //pause at periods
                 if(d.pauseAtPeriod && d.text.substring(currentLetter-1, currentLetter) == '.' && d.text.substring(currentLetter, currentLetter+1) == ' ') {
                     this.timeLimit = d.letterSpeed * 5;
                 } else {
-                    this.timeLimit = d.letterSpeed;
+                    this.timeLimit = d.currentLetterSpeed;
                 }
 
                 if(currentLetter == d.text.length) {
