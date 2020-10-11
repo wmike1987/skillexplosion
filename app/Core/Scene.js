@@ -116,6 +116,8 @@ Scene.prototype.transitionToScene = function(options) {
             b: 10,
             c: 555555,
             progress: 1.0,
+            screenSize: utils.getPlayableWH(),
+            gridSize: 8,
         });
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 

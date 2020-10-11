@@ -3,6 +3,8 @@ export default `
     varying vec2 vTextureCoord;
     uniform sampler2D uSampler;
     uniform float progress;
+    uniform vec2 screenSize;
+    uniform float gridSize;
     uniform float a;
     uniform float b;
     uniform float c;
@@ -13,11 +15,14 @@ export default `
 
     void main()
     {
-        float r = rand(gl_FragCoord.xy);
+        float gridLocX = floor(gl_FragCoord.x/(gridSize));
+        float gridLocY = floor(gl_FragCoord.y/(gridSize));
+        vec2 loc = vec2(gridLocX, gridLocY);
+        float r = rand(loc);
         vec4 fg = texture2D(uSampler, vTextureCoord);
 
         if(r >= progress) {
-            fg = vec4(0.0, 0.0, 0.0, 0.0);
+            fg = vec4(0.0, 0.0, 0.0, progress);
         }
 
         gl_FragColor = fg;
