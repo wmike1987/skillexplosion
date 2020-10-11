@@ -8,7 +8,7 @@ import utils from '@utils/GameUtils.js'
 import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js'
 import ItemSystem from '@core/Unit/ItemSystem.js'
 import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js'
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
+import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js'
 
 /*
 * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -65,7 +65,7 @@ var common = {
         this.eventListeners = [],
         this.invincibleListeners = [],
         this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
-        this.mousePosition = {x: 0, y: 0},
+        this.mousePosition = mousePosition,
         this.canvas = {width: utils.getPlayableWidth(), height: utils.getPlayableHeight()};
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;

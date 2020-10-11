@@ -362,7 +362,7 @@ var utils = {
 
     removeSomethingFromRenderer: function(something, where) {
         if(!something) return;
-        
+
         //if we just have a display object that has not been added to the renderer, destroy this mf'er
         if(!something.parent) {
             if(something.destroy && !something._destroyed) {
@@ -768,6 +768,10 @@ var utils = {
             style = 'url(' + style + ')' + (hotspot ? ' ' + hotspot : '') + ', auto';
         }
         // $('*').css('cursor', style);
+    },
+
+    pixiPositionToPoint: function(pointObj, event) {
+        globals.currentGame.renderer.interaction.mapPositionToPoint(pointObj, event.clientX, event.clientY);
     },
 
     /*

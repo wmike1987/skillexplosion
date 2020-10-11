@@ -164,6 +164,9 @@ var moveable = {
             y: 0.0
         });
 
+        //body has stopped, therefore
+        this.body.oneFrameOverrideInterpolation = true;
+
         //return body to non Sleeping
         Matter.Sleeping.set(this.body, false);
 

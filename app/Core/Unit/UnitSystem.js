@@ -313,7 +313,7 @@ var UnitSystem = function(properties) {
             if(!this.active) return;
 
             var canvasPoint = {x: 0, y: 0};
-            this.renderer.interaction.mapPositionToPoint(canvasPoint, event.clientX, event.clientY);
+            utils.pixiPositionToPoint(canvasPoint, event);
 
             //Left click, used for both establishing a pending body and for attack-moving and dispatching events
             if(event.which == 1) {
@@ -525,7 +525,7 @@ var UnitSystem = function(properties) {
 
                 this.box.selectionBoxActive = true;
                 var newPoint = {x: 0, y: 0};
-                this.renderer.interaction.mapPositionToPoint(newPoint, event.clientX, event.clientY);
+                utils.pixiPositionToPoint(newPoint, event);
                 this.sizeBox(this.forcedBoxFinalPoint || newPoint);
             }
         }.bind(this));
@@ -563,7 +563,7 @@ var UnitSystem = function(properties) {
                     this.mouseUpDelay.active = true;
                 }
                 this.forcedBoxFinalPoint = {x: 0, y: 0};
-                this.renderer.interaction.mapPositionToPoint(this.forcedBoxFinalPoint, event.clientX, event.clientY);
+                utils.pixiPositionToPoint(this.forcedBoxFinalPoint, event);
             }
         }.bind(this));
 

@@ -54,7 +54,7 @@ ConfigPanel.prototype.initialize = function() {
     var abilityMax = {x: this.unitPanelRef.abilityCenterX + 122, y: utils.getCanvasHeight()};
     $('body').on('mousemove.unitConfigurationPanel', function(event) {
         var mousePoint = {x: 0, y: 0};
-        globals.currentGame.renderer.interaction.mapPositionToPoint(mousePoint, event.clientX, event.clientY);
+        utils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
             if(this.showButton.state == 'lowered') {
                 this.showButton.scale = {x: 1.05, y: 1.05};
@@ -68,7 +68,7 @@ ConfigPanel.prototype.initialize = function() {
 
     $('body').on('mouseup.unitConfigurationPanel', function(event) {
         var mousePoint = {x: 0, y: 0};
-        globals.currentGame.renderer.interaction.mapPositionToPoint(mousePoint, event.clientX, event.clientY);
+        utils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
             if(this.showButton.state == 'lowered') {
                 this.showForUnit(this.unitPanelRef.prevailingUnit);
