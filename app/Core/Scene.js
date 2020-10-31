@@ -62,7 +62,7 @@ var SceneModes = {
  */
 Scene.prototype.transitionToScene = function(options) {
     var newScene = null;
-    var transitionLength = 1000;
+    var transitionLength = 1500;
     var mode = SceneModes.FADE_AWAY;
     if(options.isScene) {
         newScene = options;

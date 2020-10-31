@@ -10,11 +10,12 @@ export default `
     uniform float c;
 
     float rand(vec2 co) {
-      return fract(sin(dot(co.xy, vec2(a, b))) * c);
+      return fract(sin(dot(co.xy, vec2(a, b))) * c)*.8 + .2;
     }
 
     void main()
     {
+        float rate = .2;
         float gridLocX = floor(gl_FragCoord.x/(gridSize));
         float gridLocY = floor(gl_FragCoord.y/(gridSize));
         vec2 loc = vec2(gridLocX, gridLocY);
@@ -22,7 +23,8 @@ export default `
         vec4 fg = texture2D(uSampler, vTextureCoord);
 
         if(r >= progress) {
-            fg = vec4(0.0, 0.0, 0.0, progress);
+            float ratio = 1.0 - min(1.0, ((r-progress)/rate));
+            fg = vec4(fg.r*ratio, fg.g*ratio, fg.b*ratio, ratio);
         }
 
         gl_FragColor = fg;
