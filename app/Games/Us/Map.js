@@ -60,14 +60,14 @@ var map = function(specs) {
     this.mapSprite = utils.createDisplayObject('MapBackground', {where: 'foreground', position: utils.getPlayableCenter()});
     utils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
-    this.levelSpecification = specs.levelSpecification;
+    this.levels = specs.levels;
 
     this.graph = [];
-    for(const key in this.levelSpecification) {
+    for(const key in this.levels) {
 
-        for(var x = 0; x < this.levelSpecification[key]; x++) {
+        for(var x = 0; x < this.levels[key]; x++) {
 
-            var level = LevelSpecifier.create(key);
+            var level = LevelSpecifier.create(key, specs.levelOptions);
             var mapNode = new mapLevelNode(level);
 
             //Determine position
@@ -89,6 +89,8 @@ var map = function(specs) {
         }
     }
 
+    this.currentLocationToken = utils.createDisplayObject("HeadToken", {where: 'hudNOne', position: utils.getPlayableCenter()})
+
     this.show = function() {
         utils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
@@ -98,6 +100,8 @@ var map = function(specs) {
             }
             utils.addOrShowDisplayObject(node.displayObject)
         })
+
+        utils.addOrShowDisplayObject(this.currentLocationToken);
     }
 
     this.hide = function() {
@@ -106,6 +110,8 @@ var map = function(specs) {
             node.displayObject.visible = this.mapSprite.visible;
             node.displayObject.tooltipObj.hide();
         })
+
+        this.currentLocationToken.visible = false;
     }
 }
 export default map;

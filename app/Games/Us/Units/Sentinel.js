@@ -284,7 +284,7 @@ export default function Sentinel(options) {
             radius: options.radius,
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [fireSound, hitSound, unitProperties.wireframe, unitProperties.portrait],
+            slaves: [fireSound, hitSound, deathSound, unitProperties.wireframe, unitProperties.portrait],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 3.00,

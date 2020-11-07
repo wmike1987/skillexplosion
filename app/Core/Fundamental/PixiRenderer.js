@@ -420,6 +420,7 @@ var renderer = function(engine, options) {
 					}
 				}
 			}.bind(this));
+			$(this.canvasEl).off('contextmenu');
 		} else { //have mercy on background and on persistables if wanted
 			$.each(this.stages, function(key, value) {
 			    if(key == "background") return;

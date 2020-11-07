@@ -16,7 +16,7 @@ var pendingGame;
 var CommonGameStarter = function(game) {
 
 	//kick off asset loading...
-	AssetLoader(game.assets);
+	AssetLoader(game.totalAssets);
 
 	var defaults = {interpolate: true, width: 1200, height: 600, unitPanelHeight: 0, gravity: 1, appendToElement: "gameTheater"};
 	window.latestGameOptions = $.extend({}, defaults, game.worldOptions);
@@ -38,6 +38,7 @@ var CommonGameStarter = function(game) {
 
 	// set the global current game
 	globals.currentGame = game;
+	window.currentGame = globals.currentGame;
 
 	//update the "loading..." text as assets are loaded
 	if(PIXI.Loader.shared.loaderDeferred.state() == 'pending') {
@@ -53,9 +54,9 @@ var CommonGameStarter = function(game) {
 		PIXI.Loader.shared.loaderDeferred.done(() => {
 		    pendingGame = false;
 		    if(loadingCallback) {
-		        $('#gameTheater').empty();
 		        loadingCallback.detach();
 		    }
+			$('#gameTheater').empty();
 
 			//create our Matter engine
 		    engine = Matter.Engine.create({enableSleeping: false});

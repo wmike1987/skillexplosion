@@ -290,7 +290,7 @@ var common = {
      * Setup click-to-begin screen
      */
     preGame: function() {
-        this.gameState = "pregame";
+        this.gameState = 'pregame';
 
         var onClick = null;
         if(this.preGameExtension) {
@@ -392,7 +392,7 @@ var common = {
 
         //call the game's play method
         this.play(options);
-        this.gameState = "playing";
+        this.gameState = 'playing';
 
         //create click indication listener
         if(!this.noClickIndicator) {
@@ -415,7 +415,7 @@ var common = {
     },
 
     endGame: function(options) {
-        this.gameState = "ending";
+        this.gameState = 'ending';
         this.endGameSound.play();
         this.nuke({savePersistables: true});
 
@@ -591,7 +591,7 @@ var common = {
                 slave();
             } else if(slave.unload) {
                 // let's unload the sound, but it might be playing upon death, so let's wait then unload it
-                utils.doSomethingAfterDuration(() => {slave.unload}, 1500);
+                utils.doSomethingAfterDuration(() => {slave.unload()}, 1500, {executeOnNuke: true});
             } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
                 utils.removeSomethingFromRenderer(slave);
                 // if(slave.myLayer) {
@@ -616,6 +616,8 @@ var common = {
      */
     nuke: function(options) {
 
+        this.gameState = 'nuked';
+
         options = options || {};
 
         //re-enable right click
@@ -629,6 +631,9 @@ var common = {
 
         //re-enable default click
         $('#gameTheater').off('mousedown.prevent');
+
+        //Sometimes this could persist
+        $(this.canvasEl).off("mouseup");
 
         if(this.nukeExtension) {
             this.nukeExtension(options);
@@ -647,8 +652,12 @@ var common = {
         }.bind(this));
 
         $.each(unitsToRemove, function(i, unit) {
-            this.removeUnit(unit);
+            this.removeUnit(unit, true);
         }.bind(this))
+
+        // h.Howler._howls.forEach((howl) => {
+        //     howl.unload();
+        // })
 
         //Remove bodies safely (removeBodies())
         this.removeBodies(this.world.bodies);
@@ -671,6 +680,12 @@ var common = {
         //Clear listeners, save invincible listeners
         this.clearListeners(options.noMercy);
         this.clearTickCallbacks(options.noMercy);
+
+        $.each(this.timers, function(i, timer) {
+            if(timer && (!timer.persists || options.noMercy) && timer.executeOnNuke) {
+                timer.totallyDoneCallback();
+            }
+        }.bind(this));
         this.invalidateTimers(options.noMercy);
 
         //Clear vertice histories
@@ -924,9 +939,9 @@ var common = {
     },
 
     loadGame: function() {
-        this.assets = this.assets.concat(this.commonAssets);
+        this.totalAssets = this.assets.concat(this.commonAssets);
         if(this.enableUnitSystem) {
-            this.assets = this.assets.concat(UnitSystemAssets);
+            this.totalAssets = this.totalAssets.concat(UnitSystemAssets);
         }
         CommonGameStarter(Object.assign({}, this));
     }

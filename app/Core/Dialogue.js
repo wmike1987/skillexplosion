@@ -139,6 +139,7 @@ var Dialogue = function Dialogue(options) {
         utils.removeSomethingFromRenderer(this.realizedText);
         utils.removeSomethingFromRenderer(this.realizedActorText);
         utils.removeSomethingFromRenderer(this.realizedPicture);
+        this.keypressSound.unload();
     };
 
     this.initialize = function() {

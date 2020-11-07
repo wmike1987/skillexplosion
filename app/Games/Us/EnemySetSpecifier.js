@@ -5,41 +5,45 @@ import utils from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
 var enemySetSpecifier = {
-    create: function(type, seed) {
+    create: function(options) {
+        var type = options.type;
+        var possibleEnemies = options.possibleEnemies;
         var enemySets = [];
         if(type == 'singles') {
-            //Critters
+            //Basic normal
+            var basicNormal = unitMenu[possibleEnemies.basic.normal];
             enemySets.push({
-                constructor: unitMenu.Critter,
-                icon: 'CritterPortrait',
+                constructor: basicNormal.c,
+                icon: basicNormal.p,
                 spawn: {total: 2 + utils.getRandomIntInclusive(1, 5), n: 1, hz: 2200, maxOnField: 1},
                 item: {type: 'worn', total: 1}
             })
 
-            //Sentinels
+            //Basic rare
+            var basicRare = unitMenu[possibleEnemies.basic.rare];
             enemySets.push({
-                constructor: unitMenu.Sentinel,
-                icon: 'SentinelPortrait',
+                constructor: basicRare.c,
+                icon: basicRare.p,
                 spawn: {total: 1 + utils.getRandomIntInclusive(1, 2), n: 1, hz: 2500, maxOnField: 1},
                 item: {type: 'rugged', total: utils.getRandomIntInclusive(0, 1)}
             })
-
-            //Banelings
         } else if(type == 'mobs') {
-            //Eruptlets
+            //Mob noraml
+            var mobNormal = unitMenu[possibleEnemies.mobs.normal];
             enemySets.push({
-                constructor: unitMenu.Eruptlet,
+                constructor: mobNormal.c,
                 wave: 1,
-                icon: 'EruptletPortrait',
+                icon: mobNormal.p,
                 spawn: {total: 2 + utils.getRandomIntInclusive(12, 15), n: 1, hz: 1800, atATime: 5},
                 item: {type: 'worn', total: 1}
             })
 
-            //Sentinels
+            //Mob rare
+            var mobRare = unitMenu[possibleEnemies.mobs.rare];
             enemySets.push({
-                constructor: unitMenu.Sentinel,
+                constructor: mobRare.c,
                 wave: 1,
-                icon: 'SentinelPortrait',
+                icon: mobRare.p,
                 spawn: {total: 1 + utils.getRandomIntInclusive(3, 4), n: 1, hz: 4500, maxOnField: 1},
                 item: {type: 'rugged', total: utils.getRandomIntInclusive(0, 1)}
             })

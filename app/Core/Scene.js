@@ -20,6 +20,8 @@ Scene.prototype.initializeScene = function(objOrArray) {
     $.each(this.objects, function(i, obj) {
         if(obj.initialize && !obj.initialized) {
             obj.initialize();
+        } else if(typeof obj == 'function'){
+            obj();
         } else {
             utils.addSomethingToRenderer(obj);
         }
@@ -62,7 +64,7 @@ var SceneModes = {
  */
 Scene.prototype.transitionToScene = function(options) {
     var newScene = null;
-    var transitionLength = 1500;
+    var transitionLength = 800;
     var mode = SceneModes.FADE_AWAY;
     if(options.isScene) {
         newScene = options;

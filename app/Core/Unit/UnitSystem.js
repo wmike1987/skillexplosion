@@ -1037,9 +1037,9 @@ var UnitSystem = function(properties) {
         }
 
         //cleanup tick callback
-        if(this.movePrevailingUnitCircleTick) {
-            globals.currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
-        }
+        // if(this.movePrevailingUnitCircleTick) {
+        //     globals.currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
+        // }
 
         //cleanup unit panel
         if(this.unitPanel)

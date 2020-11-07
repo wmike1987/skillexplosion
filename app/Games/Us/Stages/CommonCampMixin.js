@@ -40,14 +40,17 @@ export default {
         var tileMap = TileMapper.produceTileMap({possibleTextures: backgroundTiles, tileWidth: tileWidth});
         campScene.add(tileMap);
 
-        if(this._tileMapExtension) {
-            this._tileMapExtension(campScene);
+        if(this.tileMapExtension) {
+            this.tileMapExtension(campScene);
         }
 
         //Init camp objects
         this.getCampObjects().forEach((obj) => {
             campScene.add(obj);
         })
+
+        //Init camp sounds
+        this.initSounds();
 
         //Init trees/doodads
         var possibleTrees = this.getPossibleTrees();
@@ -107,13 +110,14 @@ export default {
             }
         }.bind(this));
 
+        var self = this;
         //Establish map click listeners
         var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
             var canvasPoint = {x: 0, y: 0};
             utils.pixiPositionToPoint(canvasPoint, event);
 
             if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campActive) {
-                this.openmap.play();
+                self.openmap.play();
                 this.unitSystem.pause();
                 this.map.show();
                 this.mapActive = true;
@@ -128,10 +132,8 @@ export default {
         }.bind(globals.currentGame))
 
         //Apply environment effects
-        var l1 = utils.createAmbientLights([0x080C09, 0x080C09, 0x080C09, 0x080C09, 0x080C09], 'backgroundOne', .5);
-        campScene.add(l1);
-        var l2 = utils.createAmbientLights([0x0E5B05, 0x03491B, 0x0E5B05, 0x03491B, 0x0E5B05], 'backgroundOne', .6);
-        campScene.add(l2);
+        // var l1 = utils.createAmbientLights([0x005846, 0x005846, 0x005846], 'background', 1.0, {sortYOffset: 5000});
+        // campScene.add(l1);
 
         //Setup light
         this.lightPower = 0.0;
@@ -166,34 +168,41 @@ export default {
         this.backgroundLightShader.myName = 'campfire';
         this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
         if(true) {
-            globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
-            globals.currentGame.renderer.layers.stage.filters = [this.stageLightShader];
-            globals.currentGame.renderer.layers.stageTwo.filters = [this.treeShader];
-            var flameTimer = globals.currentGame.addTimer({
-                name: 'flame',
-                gogogo: true,
-                timeLimit: 90,
-                callback: function() {
-                    //Reverse light direction over time
-                    if(!this.lightPower)
+            var initLight = function() {
+                globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
+                globals.currentGame.renderer.layers.stage.filters = [this.stageLightShader];
+                globals.currentGame.renderer.layers.stageTwo.filters = [this.treeShader];
+                var flameTimer = globals.currentGame.addTimer({
+                    name: 'flame',
+                    gogogo: true,
+                    timeLimit: 90,
+                    callback: function() {
+                        //Reverse light direction over time
+                        if(!this.lightPower)
                         this.lightPower = 0.0;
-                    this.lightPower += (.02+Math.random()*.045)*this.lightDirection;
-                    if(this.lightPower < 0.0) {
-                        this.lightDirection = 1;
-                    } else if(this.lightPower > 2.5) {
-                        this.lightDirection = -1;
-                    }
+                        this.lightPower += (.02+Math.random()*.045)*this.lightDirection;
+                        if(this.lightPower < 0.0) {
+                            this.lightDirection = 1;
+                        } else if(this.lightPower > 2.5) {
+                            this.lightDirection = -1;
+                        }
 
-                    this.backgroundLightShader.uniforms.flameVariation = this.lightPower;
-                    this.stageLightShader.uniforms.flameVariation = this.lightPower;
-                    this.backgroundLightShader.uniforms.red = backgroundRed + this.lightPower/2;
-                    this.stageLightShader.uniforms.red = stageRed + this.lightPower*1.05;
-                }.bind(this)
-            })
+                        this.backgroundLightShader.uniforms.flameVariation = this.lightPower;
+                        this.stageLightShader.uniforms.flameVariation = this.lightPower;
+                        this.backgroundLightShader.uniforms.red = backgroundRed + this.lightPower/2;
+                        this.stageLightShader.uniforms.red = stageRed + this.lightPower*1.05;
+                    }.bind(this)
+                })
 
-            this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
-            this.stageLightShader.uniforms.lightRadius = this.lightRadius;
+                this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
+                this.stageLightShader.uniforms.lightRadius = this.lightRadius;
+            }.bind(this)
         }
+        campScene.add(initLight);
+
+        Matter.Events.on(campScene, 'initialize', function() {
+            this.entercamp.play();
+        }.bind(this));
 
         campScene._clearExtension = function() {
             this.removeTickCallback(mapHoverTick);
@@ -202,6 +211,7 @@ export default {
             this.renderer.layers.stage.filters = [];
             this.renderer.layers.stageTwo.filters = [];
             this.map.hide();
+            self.cleanUpSounds();
             $('body').off('mousedown.map');
             $('body').off('keydown.map');
         }.bind(globals.currentGame);

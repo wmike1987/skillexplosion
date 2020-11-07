@@ -7,12 +7,12 @@ import Sentinel from '@games/Us/Units/Sentinel.js'
 import Eruptlet from '@games/Us/Units/Eruptlet.js'
 
 var unitMenu = {};
-unitMenu['EnemyMarine'] = EnemyMarine;
-unitMenu['Critter'] = Critter;
-unitMenu['AlienGuard'] = AlienGuard;
-unitMenu['Marine'] = Marine;
-unitMenu['Medic'] = Medic;
-unitMenu['Sentinel'] = Sentinel;
-unitMenu['Eruptlet'] = Eruptlet;
+unitMenu['EnemyMarine'] = {c: EnemyMarine, p: 'MarinePortrait'},
+unitMenu['Critter'] = {c: Critter, p: 'CritterPortrait'};
+unitMenu['AlienGuard'] = {c: AlienGuard, p: 'AlienGuardPortrait'};
+unitMenu['Marine'] = {c: Marine, p: 'MarinePortrait'};
+unitMenu['Medic'] = {c: Medic, p: 'MedicPortrait'};
+unitMenu['Sentinel'] = {c: Sentinel, p: 'SentinelPortrait'};
+unitMenu['Eruptlet'] = {c: Eruptlet, p: 'EruptletPortrait'};
 
 export default unitMenu;

@@ -8,5 +8,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = merge(common, {
     mode: 'development',
     devtool: 'inline-source-map',
-
+    devServer: {
+        headers: {
+            'Cache-Control': 'max-age=5',
+        },
+    }
 });

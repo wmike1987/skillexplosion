@@ -22,6 +22,7 @@ tileMapper.produceTileMap = function(options) {
     var tileHeight = tileWidth/2;
     var realTileWidth = options.realTileWidth;
     var tileStart = options.tileStart || {x: 0, y: 0};
+    var tileTint = options.tileTint;
     var where = options.where || 'background';
     var alpha = options.alpha || 1;
     var frequency = options.hz || 1;
@@ -42,7 +43,9 @@ tileMapper.produceTileMap = function(options) {
                 //scaling tiles, there are two "modes"
                 // 1) realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
                 var newDO = utils.createDisplayObject(utils.getRandomElementOfArray(textureArray), {position: {x: x, y: y+yOffset}, alpha: alpha, where: where, scale: {x: tileWidth/(realTileWidth || 1), y: tileWidth/(realTileWidth || 1)}});
-                newDO.tint = 0xe335a5;
+                if(tileTint) {
+                    newDO.tint = tileTint;
+                }
 
                 // 2) if realTileWidth is not provided, it's assumed that the textures spans the whole texture width which means we can simply rely on this method
                 if(!realTileWidth) {

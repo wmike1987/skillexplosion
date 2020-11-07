@@ -12,23 +12,38 @@ import Doodad from '@utils/Doodad.js'
 import Scene from '@core/Scene.js'
 import Map from '@games/Us/Map.js'
 
+var tileSize = 225;
+var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];
+var levelTiles = function() {
+    var backgroundTiles = [];
+    for(var i = 1; i <= 6; i++) {
+        backgroundTiles.push('FrollGround/Dirt'+i);
+    }
+    return backgroundTiles;
+};
+
+var tileExtension = function(scene, tint) {
+    var ornamentTiles = [];
+    for(var i = 1; i <= 4; i++) {
+        ornamentTiles.push('FrollGround/Ornament'+i);
+    }
+    var ornamentMap = TileMapper.produceTileMap({possibleTextures: ornamentTiles, tileWidth: tileSize, hz: .5, tileTint: tint});
+    scene.add(ornamentMap);
+};
+
 var camp = {
-    tileSize: 225,
-    getBackgroundTiles: function() {
-        var backgroundTiles = [];
-        for(var i = 1; i <= 6; i++) {
-            backgroundTiles.push('FrollGround/Dirt'+i);
-        }
-        return backgroundTiles;
+    tileSize: tileSize,
+    getBackgroundTiles: levelTiles,
+    tileMapExtension: tileExtension,
+
+    initSounds: function() {
+        this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
+        this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
     },
 
-    _tileMapExtension: function(scene) {
-        var ornamentTiles = [];
-        for(var i = 1; i <= 4; i++) {
-            ornamentTiles.push('FrollGround/Ornament'+i);
-        }
-        var ornamentMap = TileMapper.produceTileMap({possibleTextures: ornamentTiles, tileWidth: this.tileSize, hz: .5});
-        scene.add(ornamentMap);
+    cleanUpSounds: function() {
+        this.openmap.unload();
+        this.entercamp.unload();
     },
 
     getPossibleTrees: function() {
@@ -60,14 +75,31 @@ var camp = {
 }
 Object.assign(camp, CommonCamp);
 
+
+var noirEnemySets = {
+    basic: {normal: 'Critter', rare: 'Sentinel'},
+    mobs: {normal: 'Eruptlet', rare: 'Sentinel'},
+}
+
 var map = {
     options: {
-        levelSpecification: {
+        levels: {
             singles: 26,
             doubles: 1,
             boss: 1,
             norevives: 1,
             mobs: 1
+        },
+        levelOptions: {
+            enemySets: noirEnemySets,
+            tileSize: tileSize,
+            acceptableTileTints: acceptableTileTints,
+            getLevelTiles: levelTiles,
+            levelTileExtension: function(scene, tint) {
+                tileExtension(scene, tint);
+                var l1 = utils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
+                scene.add(l1);
+            }
         }
     },
 

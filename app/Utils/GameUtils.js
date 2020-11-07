@@ -447,7 +447,7 @@ var utils = {
         return position;
     },
 
-    createAmbientLights: function(hexColorArray, where, intensity) {
+    createAmbientLights: function(hexColorArray, where, intensity, doOptions) {
         var numberOfLights = hexColorArray.length;
         var spacing = this.getCanvasWidth()/(numberOfLights*2);
         var lights = [];
@@ -455,6 +455,7 @@ var utils = {
             var l = this.createDisplayObject("AmbientLight" + (i%3 + 1),
                 {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: this.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color,
                 where: where || 'backgroundOne', alpha: intensity || .25});
+            Object.assign(l, doOptions);
             lights.push(l);
         }.bind(this))
         return lights;
@@ -764,10 +765,17 @@ var utils = {
 
     setCursorStyle: function(style, hotspot) {
         if(style.indexOf('server:') > -1) {
-            style = style.replace('server:', window.location.origin + '/app/Textures/');
+            style = style.replace('server:', window.location.origin + '/Textures/');
             style = 'url(' + style + ')' + (hotspot ? ' ' + hotspot : '') + ', auto';
         }
-        // $('*').css('cursor', style);
+
+        if(style.indexOf('Main') > -1) {
+            $('*').css('cursor', 'auto');
+        } else if(style.indexOf('Over') > -1) {
+            $('*').css('cursor', 'pointer');
+        } else {
+            $('*').css('cursor', 'crosshair');
+        }
     },
 
     pixiPositionToPoint: function(pointObj, event) {
@@ -853,12 +861,14 @@ var utils = {
         globals.currentGame.addTickCallback(fun, false, event);
     },
 
-    doSomethingAfterDuration: function(callback, duration) {
+    doSomethingAfterDuration: function(callback, duration, options) {
+        options = options || {};
         globals.currentGame.addTimer(
             {
                 name: 'task:' + this.uuidv4(),
                 timeLimit: duration,
                 killsSelf: true,
+                executeOnNuke: options.executeOnNuke,
                 totallyDoneCallback: function() {
                     callback();
                 }

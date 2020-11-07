@@ -49,8 +49,6 @@ var game = {
     },
 
     initExtension: function() {
-        this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
-        this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
     },
 
     play: function(options) {
@@ -65,10 +63,10 @@ var game = {
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000})
         var a1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command...",
           picture: 'Doodads/avdeadtree2.png'});
-        var a2 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor...", delayAfterEnd: 0,
+        var a2 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor—", delayAfterEnd: 0,
           picture: 'Doodads/avgoldtree1.png'});
         var a3 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from MacMurray...", picture: 'Doodads/avgreentree5.png'});
-        var a4 = new Dialogue({actor: "Shane", text: "Christ... That can only mean...", delayAfterEnd: 0});
+        var a4 = new Dialogue({actor: "Shane", text: "Christ... That can only mean—", delayAfterEnd: 0});
         var a5 = new Dialogue({interrupt: true, actor: "Ursula", text: "Beasts.", picture: 'Doodads/avgreentree5.png'});
         var a6 = new Dialogue({actor: "Shane", text: "Location?", delayAfterEnd: 500});
         var a7 = new Dialogue({actor: "Ursula", text: "Intel is being relayed. Get up, get your pack.", picture: 'Doodads/avgreentree5.png', delayAfterEnd: 1200});
@@ -125,9 +123,6 @@ var game = {
             //set camp active and trigger event
             this.campActive = true;
             Matter.Events.trigger(this, 'enteringCamp');
-
-            //play sound
-            this.entercamp.play();
 
             //remove enemy units
             utils.applyToUnitsByTeam(function(team) {
@@ -222,11 +217,7 @@ var game = {
 
     createNextLevelScene: function(options) {
         var scene = new Scene();
-
-        //new tile map
-        var tileMap = TileMapper.produceTileMap({possibleTextures: options.possibleTiles, tileWidth: options.tileSize});
-        scene.add(tileMap.tiles);
-
+        options.createTerrain(scene);
         return scene;
     },
 
@@ -274,10 +265,6 @@ var game = {
     nukeExtension: function() {
         $('body').off('keydown.us');
         $('body').off('keydown.map');
-        if(this.openmap) {
-            this.openmap.unload();
-            this.entercamp.unload();
-        }
         if(this.currentScene) {
             this.currentScene.clear();
         }

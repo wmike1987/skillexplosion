@@ -53,10 +53,15 @@
   );
 }
 
+html {
+    height: 100%;
+}
+
 body {
   background: #b3e1ea;
   height: 100%;
-  margin: 0px;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -168,6 +173,7 @@ text {
   /*cursor:pointer;*/
   color: blue;
   text-decoration: underline;
+  display: inline-block;
 }
 
 .gameCategoryTitle {
