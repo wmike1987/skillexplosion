@@ -55,13 +55,22 @@ var gameUtils = {
             anim = new PIXI.AnimatedSprite(PIXI.Loader.shared.resources[options.spritesheetName].spritesheet.animations[options.animationName]);
         }
 
+        if(options.reverse) {
+            anim._textures = [...anim._textures];
+            anim._textures.reverse();
+        }
+
         if(options.fadeAway) {
             anim.onComplete = function() { //default onComplete function
-                graphicsUtils.fadeSpriteOverTime(anim, options.fadeTime || 2000);
+                var done = function() {
+                    gameUtils.detachSomethingFromBody(anim); //in case we're attached
+                }
+                graphicsUtils.fadeSpriteOverTime(anim, options.fadeTime || 2000, false, done);
             }.bind(this);
         } else {
             anim.onComplete = function() { //default onComplete function
-                graphicsUtils.removeSomethingFromRenderer(anim)
+                graphicsUtils.removeSomethingFromRenderer(anim);
+                gameUtils.detachSomethingFromBody(anim); //in case we're attached
             }.bind(this);
         }
         anim.persists = true;
@@ -212,7 +221,10 @@ var gameUtils = {
     },
 
     detachSomethingFromBody: function(something) {
-        globals.currentGame.removeTickCallback(something.bodyAttachment);
+        if(something.bodyAttachment) {
+            globals.currentGame.removeTickCallback(something.bodyAttachment);
+            something.bodyAttachment = null;
+        }
     },
 
     getLagCompensatedVerticesForBody: function(body) {
@@ -650,6 +662,66 @@ var gameUtils = {
         if(!added)
             master.slaves.push(slave);
     },
+
+    /*
+     * Applies a buff graphic to a unit. This sets a buff object on the unit which can be used to remove the buff image.
+     * options {
+     *  unit
+     *  name
+     *  textureName
+     *  scale
+     *  tint
+     * }
+     */
+    applyBuffImageToUnit: function(options) {
+        var name = options.name;
+        var unit = options.unit;
+        var textureName = options.textureName;
+        var scale = options.scale || {x: 1, y: 1};
+        var yoffset = options.yoffset || -60;
+        if(!unit.buffs) {
+            unit.buffs = {};
+        }
+
+        var buffObj = {
+            removeBuffImage: function() {
+                gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
+                graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
+                unit.buffs[name] = null;
+                var debuffAnim = gameUtils.getAnimation({
+                    spritesheetName: 'UtilityAnimations2',
+                    animationName: 'buffdestroy',
+                    speed: 4,
+                    transform: [unit.position.x, unit.position.y + yoffset, .8, .8]
+                });
+                // debuffAnim.tint = 0x5cff7e;
+                graphicsUtils.addSomethingToRenderer(debuffAnim, 'foreground');
+                gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: {x: 0, y: yoffset}})
+                debuffAnim.play();
+            }
+        }
+
+        if(!unit.buffs[name]) {
+            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageOne', scale: {x: scale.x, y: scale.y}});
+            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: yoffset}})
+            buffObj.dobj = dobj;
+            unit.buffs[name] = buffObj;
+        }
+
+        //always play the buff create animation
+        var buffAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations2',
+            animationName: 'buffcreate',
+            // reverse: true,
+            speed: 1.6,
+            transform: [unit.position.x, unit.position.y + yoffset, 1.1, 1.1]
+        });
+        // buffSound.play();
+        // buffAnim.tint = 0xe4f46a;
+        graphicsUtils.addSomethingToRenderer(buffAnim, 'foreground');
+        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: {x: 0, y: yoffset}})
+        buffAnim.play();
+    },
 };
 
 var graphicsUtils = {
@@ -807,7 +879,7 @@ var graphicsUtils = {
         }.bind(this)})
     },
 
-    fadeSpriteOverTime: function(sprite, time, fadeIn) {
+    fadeSpriteOverTime: function(sprite, time, fadeIn, callback) {
         var startingAlpha = sprite.alpha || 1.0;
         var finalAlpha = 0;
         if(fadeIn) {
@@ -820,8 +892,12 @@ var graphicsUtils = {
         globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
             sprite.alpha += rate;
         }, totallyDoneCallback: function() {
-            if(!fadeIn)
+            if(!fadeIn) {
                 graphicsUtils.removeSomethingFromRenderer(sprite);
+                if(callback) {
+                    callback();
+                }
+            }
         }.bind(this)})
     },
 
@@ -1090,5 +1166,8 @@ var mathArrayUtils = {
 mathArrayUtils.getIntBetween = mathArrayUtils.getRandomIntInclusive;
 mathArrayUtils.distanceBetweenUnits = mathArrayUtils.distanceBetweenBodies;
 mathArrayUtils.getId = mathArrayUtils.uuidv4;
+
+//sounds
+var buffSound = gameUtils.getSound('buffcreate.wav', {volume: .02, rate: 1.0});
 
 export {gameUtils, graphicsUtils, mathArrayUtils};

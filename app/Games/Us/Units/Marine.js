@@ -348,10 +348,7 @@ export default function Marine(options) {
         })
 
         if(currentAugment.name == 'defensive posture') {
-            if(!self.defenseBuff) {
-                self.defenseBuff = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {tint: 0xFFFFFF, where: 'foreground', scale: {x: .8, y: .8}});
-                gameUtils.attachSomethingToBody({something: self.defenseBuff, body: self.body, offset: {x: 0, y: -60}})
-            }
+            gameUtils.applyBuffImageToUnit({name: "defpostbuff", unit: this, textureName: 'DefensiveBuff'})
             if(!self.defensivePostureActive)
                 self.defense += 2;
             self.defensivePostureActive = true;
@@ -361,18 +358,13 @@ export default function Marine(options) {
                 executeOnNuke: true,
                 timeLimit: 2000,
                 totallyDoneCallback: function() {
-                    gameUtils.detachSomethingFromBody(self.defenseBuff);
-                    graphicsUtils.removeSomethingFromRenderer(self.defenseBuff);
-                    self.defenseBuff = null;
+                    self.buffs.defpostbuff.removeBuffImage();
                     self.defense -= 2;
                     self.defensivePostureActive = false;
                 }
             })
         } else if(currentAugment.name == 'death wish') {
-            if(!self.deathWishBuff) {
-                self.deathWishBuff = graphicsUtils.addSomethingToRenderer("DeathWishBuff", {where: 'foreground', scale: {x: 1, y: 1}});
-                gameUtils.attachSomethingToBody({something: self.deathWishBuff, body: self.body, offset: {x: 0, y: -60}})
-            }
+            gameUtils.applyBuffImageToUnit({name: "deathwishbuff", unit: this, textureName: 'DeathWishBuff'})
             if(!self.deathWishActive)
                 self.damage += 10;
             self.deathWishActive = true;
@@ -382,9 +374,7 @@ export default function Marine(options) {
                 executeOnNuke: true,
                 timeLimit: 2000,
                 totallyDoneCallback: function() {
-                    gameUtils.detachSomethingFromBody(self.deathWishBuff);
-                    graphicsUtils.removeSomethingFromRenderer(self.deathWishBuff);
-                    self.deathWishBuff = null;
+                    self.buffs.deathwishbuff.removeBuffImage();
                     self.damage -= 10;
                     self.deathWishActive = false;
                 }

@@ -1,6 +1,6 @@
 import ic from '@core/Unit/ItemConstructor.js'
 import * as Matter from 'matter-js'
-import utils as '@utils/GameUtils'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils'
 
 var manipulations = {
     maxEnergy: 8,
