@@ -1,7 +1,7 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import dissolveShader from '@shaders/DissolveShader.js'
 
@@ -11,7 +11,7 @@ import dissolveShader from '@shaders/DissolveShader.js'
  */
 
 var Scene = function() {
-    this.id = utils.uuidv4();
+    this.id = mathArrayUtils.uuidv4();
     this.objects = [];
     this.isScene = true;
 };
@@ -23,7 +23,7 @@ Scene.prototype.initializeScene = function(objOrArray) {
         } else if(typeof obj == 'function'){
             obj();
         } else {
-            utils.addSomethingToRenderer(obj);
+            graphicsUtils.addSomethingToRenderer(obj);
         }
     })
     Matter.Events.trigger(this, 'initialize');
@@ -41,7 +41,7 @@ Scene.prototype.clear = function() {
         if(obj.cleanUp) {
             obj.cleanUp();
         } else {
-            utils.removeSomethingFromRenderer(obj);
+            graphicsUtils.removeSomethingFromRenderer(obj);
         }
     })
     if(this._clearExtension) {
@@ -84,12 +84,12 @@ Scene.prototype.transitionToScene = function(options) {
     var inRuns = null;
     var runs = null;
     if(mode == SceneModes.BLACK) {
-        var tintDO = utils.createDisplayObject('TintableSquare', {where: 'transitionLayer'});
-        utils.addSomethingToRenderer(tintDO);
-        tintDO.position = utils.getCanvasCenter();
+        var tintDO = graphicsUtils.createDisplayObject('TintableSquare', {where: 'transitionLayer'});
+        graphicsUtils.addSomethingToRenderer(tintDO);
+        tintDO.position = gameUtils.getCanvasCenter();
         tintDO.tint = 0x000000;
         tintDO.alpha = 0;
-        utils.makeSpriteSize(tintDO, utils.getCanvasWH());
+        graphicsUtils.makeSpriteSize(tintDO, gameUtils.getCanvasWH());
         iterTime = 32;
         runs = transitionLength/iterTime;
         fadeIn = function() {
@@ -99,16 +99,16 @@ Scene.prototype.transitionToScene = function(options) {
             tintDO.alpha -= (1 / (transitionLength/iterTime));
         };
         cleanUp = function() {
-            utils.removeSomethingFromRenderer(tintDO);
+            graphicsUtils.removeSomethingFromRenderer(tintDO);
         };
     } else if(mode == SceneModes.FADE_AWAY) {
         var currentGame = globals.currentGame;
-        const renderTexture = new PIXI.RenderTexture.create(utils.getCanvasWidth(), utils.getCanvasHeight());
+        const renderTexture = new PIXI.RenderTexture.create(gameUtils.getCanvasWidth(), gameUtils.getCanvasHeight());
         const transitionSprite = new PIXI.Sprite(renderTexture);
         var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
         var renderer = globals.currentGame.renderer.pixiApp.renderer;
         renderer.render(rStage, renderTexture)
-        utils.addSomethingToRenderer(transitionSprite, "transitionLayer");
+        graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
 
         inRuns = 1;
         iterTime = 32
@@ -118,7 +118,7 @@ Scene.prototype.transitionToScene = function(options) {
             b: 10,
             c: 555555,
             progress: 1.0,
-            screenSize: utils.getPlayableWH(),
+            screenSize: gameUtils.getPlayableWH(),
             gridSize: 8,
         });
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
@@ -129,7 +129,7 @@ Scene.prototype.transitionToScene = function(options) {
         }
 
         cleanUp = function() {
-            utils.removeSomethingFromRenderer(transitionSprite);
+            graphicsUtils.removeSomethingFromRenderer(transitionSprite);
             globals.currentGame.renderer.layers.transitionLayer.filters = [];
         }
     }

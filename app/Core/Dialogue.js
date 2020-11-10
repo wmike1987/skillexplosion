@@ -1,6 +1,6 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
@@ -39,7 +39,7 @@ var Dialogue = function Dialogue(options) {
         titleStyle: styles.dialogueTitleStyle,
         pictureDelay: 0,
         pictureStyle: pictureStyles.FADE_IN,
-        picturePosition: {x: utils.getPlayableWidth()*3/4, y: utils.getCanvasHeight()/2}
+        picturePosition: {x: gameUtils.getPlayableWidth()*3/4, y: gameUtils.getCanvasHeight()/2}
     }
     $.extend(this, defaults, options);
 
@@ -55,25 +55,25 @@ var Dialogue = function Dialogue(options) {
     }
     this.text = spaceBuffer + this.text;
 
-    this.keypressSound = utils.getSound('keypress1.wav', {volume: .3, rate: 1});
+    this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: .3, rate: 1});
 
     this.play = function(options) {
         options = options || {};
         if(this.title) {
-            this.realizedText = utils.createDisplayObject("TEXT: ", {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
             this.realizedText.position.y += (options.yOffset || 0);
-            this.realizedText.position.x = (utils.getPlayableWidth()/2);
+            this.realizedText.position.x = (gameUtils.getPlayableWidth()/2);
         } else {
-            this.realizedText = utils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
 
-            this.realizedActorText = utils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedActorText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedActorText.position.y += (options.yOffset || 0);
         }
         this.realizedText.resolution = 2;
 
         if(this.picture) {
-          this.realizedPicture = utils.createDisplayObject(this.picture, {alpha: 0, position: this.picturePosition, where: "hudText"});
+          this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {alpha: 0, position: this.picturePosition, where: "hudText"});
         }
 
         var currentLetter = 0;
@@ -86,13 +86,13 @@ var Dialogue = function Dialogue(options) {
 
             //fade in picture - let's fade in over the first 5 letters
             if(d.pictureDelay <= this.totalElapsedTime && d.realizedPicture) {
-                utils.addOrShowDisplayObject(d.realizedPicture);
+                graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
                 if(d.realizedPicture.alpha < 1.0) {
                   d.realizedPicture.alpha += 1/fadeOverLetters;
                 }
             }
 
-            utils.addOrShowDisplayObject(d.realizedText);
+            graphicsUtils.addOrShowDisplayObject(d.realizedText);
             if(currentLetter < d.text.length) {
                 d.realizedText.text = d.text.substring(0, ++currentLetter);
                 for(var i = currentLetter; i < d.text.length; i++) {
@@ -100,7 +100,7 @@ var Dialogue = function Dialogue(options) {
                 }
 
                 if(d.realizedActorText && currentLetter < d.actorText.length) {
-                    utils.addOrShowDisplayObject(d.realizedActorText);
+                    graphicsUtils.addOrShowDisplayObject(d.realizedActorText);
                     d.realizedActorText.text = d.actorText.substring(0, currentLetter);
                     d.currentLetterSpeed = d.actorLetterSpeed;
                 } else {
@@ -136,9 +136,9 @@ var Dialogue = function Dialogue(options) {
 
     this.cleanUp = function() {
         globals.currentGame.invalidateTimer(this.textTimer);
-        utils.removeSomethingFromRenderer(this.realizedText);
-        utils.removeSomethingFromRenderer(this.realizedActorText);
-        utils.removeSomethingFromRenderer(this.realizedPicture);
+        graphicsUtils.removeSomethingFromRenderer(this.realizedText);
+        graphicsUtils.removeSomethingFromRenderer(this.realizedActorText);
+        graphicsUtils.removeSomethingFromRenderer(this.realizedPicture);
         this.keypressSound.unload();
     };
 
@@ -148,7 +148,7 @@ var Dialogue = function Dialogue(options) {
 
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
-      utils.removeSomethingFromRenderer(this.realizedPicture);
+      graphicsUtils.removeSomethingFromRenderer(this.realizedPicture);
     }
 }
 
@@ -185,7 +185,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         }
 
         //start the chain
-        utils.doSomethingAfterDuration(() => {
+        gameUtils.doSomethingAfterDuration(() => {
             arrayOfDialogues[0].play()
         }, this.startDelay);
     }

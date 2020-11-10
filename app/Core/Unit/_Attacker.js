@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 export default {
@@ -41,7 +41,7 @@ export default {
                 this.attackReady = true;
             }.bind(this)
         });
-        utils.deathPact(this, this.cooldownTimer);
+        gameUtils.deathPact(this, this.cooldownTimer);
 
         //extend move to cease attacking
         this.rawMove = this.move;
@@ -108,7 +108,7 @@ export default {
         //Another aspect of "canAttack." If we're offscreen and have gotten here,
         //don't allow the attack to continue, just keep moving until we're within bounds.
         //And if we want to attack but are offscreen and aren't moving, issue an attackMove.
-        if(!utils.isPositionWithinPlayableBounds(this.position, 20)) {
+        if(!gameUtils.isPositionWithinPlayableBounds(this.position, 20)) {
             if(!this.isMoving) {
                 this.attackMove(target.position);
             }
@@ -135,7 +135,7 @@ export default {
 
             //trigger the attack event
             Matter.Events.trigger(this, 'attack', {
-                direction: utils.isoDirectionBetweenPositions(this.position, target.position)
+                direction: gameUtils.isoDirectionBetweenPositions(this.position, target.position)
             });
         }
     },
@@ -181,7 +181,7 @@ export default {
         var callback = Matter.Events.on(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
 
         //But if we are removed (from the game) first, remove the onremove listener
-        utils.deathPact(this, function() {
+        gameUtils.deathPact(this, function() {
             if(this.specifiedAttackTarget)
                 Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
         }.bind(this), 'removeSpecifiedAttackTarget');
@@ -229,7 +229,7 @@ export default {
                 this.isHoning = true;
             }
         }.bind(this));
-        utils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
+        gameUtils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
 
         /*
          * Attacking callbacks
@@ -246,7 +246,7 @@ export default {
                 this._attack(this.currentTarget);
             }
         }.bind(this))
-        utils.deathPact(this, this.attackTick, 'attackTick')
+        gameUtils.deathPact(this, this.attackTick, 'attackTick')
     },
 
     setupHoneAndTargetSensing: function(commandObj) {
@@ -259,7 +259,7 @@ export default {
             var currentHoneDistance = null;
             var currentAttackDistance = null;
 
-            utils.applyToUnitsByTeam(function(team) {
+            gameUtils.applyToUnitsByTeam(function(team) {
                 if(this.attackHoneTeamPredicate)
                     return this.attackHoneTeamPredicate(team);
                 else
@@ -282,7 +282,7 @@ export default {
                 }
 
 
-                var dist = utils.distanceBetweenBodies(this.body, unit.body);
+                var dist = mathArrayUtils.distanceBetweenBodies(this.body, unit.body);
                 if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
 
                 //determine the closest honable target
@@ -342,7 +342,7 @@ export default {
             }
         }.bind(this)
         this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction);
-        utils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
+        gameUtils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
     },
 
     _becomePeaceful: function() {

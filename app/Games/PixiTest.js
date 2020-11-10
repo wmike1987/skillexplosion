@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 
 var targetScore = 1;
@@ -24,10 +24,10 @@ var game = {
 
 	play: function(options) {
 
-		// utils.addSomethingToRenderer("Logs", {position: {x: 100, y: 100}});
+		// graphicsUtils.addSomethingToRenderer("Logs", {position: {x: 100, y: 100}});
 		const container = new PIXI.Container();
 
-		var dirt1 = utils.createDisplayObject("FrollGround/Dirt1", {position: {x: 50, y: 50}});
+		var dirt1 = graphicsUtils.createDisplayObject("FrollGround/Dirt1", {position: {x: 50, y: 50}});
 		container.addChild(dirt1);
 		container.x = 100;
 		container.y = 100;

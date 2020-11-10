@@ -3,7 +3,7 @@ import * as Matter from 'matter-js'
 import * as PIXI from 'pixi.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Marine from '@games/Us/Units/Marine.js'
 import Medic from '@games/Us/Units/Medic.js'
 import campfireShader from '@shaders/CampfireAtNightShader.js'
@@ -53,9 +53,9 @@ var game = {
 
     play: function(options) {
         var dialogueScene = new Scene();
-        var background = utils.createDisplayObject('TintableSquare', {where: 'hudTwo', anchor: {x: 0, y: 0}});
+        var background = graphicsUtils.createDisplayObject('TintableSquare', {where: 'hudTwo', anchor: {x: 0, y: 0}});
         background.tint = 0x000000;
-        utils.makeSpriteSize(background, utils.getCanvasWH());
+        graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
         dialogueScene.add(background);
         this.currentScene.transitionToScene(dialogueScene);
 
@@ -73,7 +73,7 @@ var game = {
         var a8 = new Dialogue({actor: "Shane", text: "Is the coffee ready?", delayAfterEnd: 1500});
 
         var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 2000, done: function() {
-            dialogueScene.add(utils.addSomethingToRenderer("TEXT:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: utils.getPlayableWidth() - 20, y: utils.getCanvasHeight() - 20}}));
+            dialogueScene.add(graphicsUtils.addSomethingToRenderer("TEXT:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
         }});
         dialogueScene.add(chain);
         chain.play();
@@ -91,9 +91,9 @@ var game = {
     preGameExtension: function() {
         var titleScene = new Scene();
         this.currentScene = titleScene;
-        var background = utils.createDisplayObject('SplashColored', {where: 'hudText', anchor: {x: 0, y: 0}});
-        var startGameText = utils.addSomethingToRenderer("TEXT:Click To Begin", {where: 'hudText', style: styles.titleOneStyle, x: this.canvas.width/2, y: this.canvas.height*3/4});
-        utils.makeSpriteSize(background, utils.getCanvasWH());
+        var background = graphicsUtils.createDisplayObject('SplashColored', {where: 'hudText', anchor: {x: 0, y: 0}});
+        var startGameText = graphicsUtils.addSomethingToRenderer("TEXT:Click To Begin", {where: 'hudText', style: styles.titleOneStyle, x: this.canvas.width/2, y: this.canvas.height*3/4});
+        graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
         titleScene.add(background);
         titleScene.add(startGameText);
         titleScene.initializeScene();
@@ -125,7 +125,7 @@ var game = {
             Matter.Events.trigger(this, 'enteringCamp');
 
             //remove enemy units
-            utils.applyToUnitsByTeam(function(team) {
+            gameUtils.applyToUnitsByTeam(function(team) {
                 return (team != globals.currentGame.playerTeam);
             }, null, function(unit) {
                 globals.currentGame.removeUnit(unit);
@@ -226,7 +226,7 @@ var game = {
          //this.shane.noIdle = true;
          // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
          ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
-         utils.moveUnitOffScreen(this.shane);
+         gameUtils.moveUnitOffScreen(this.shane);
          return this.shane;
     },
 
@@ -234,7 +234,7 @@ var game = {
         // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         // this.ursula.idleCancel = true;
-        utils.moveUnitOffScreen(this.ursula);
+        gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;
     },
 
@@ -245,9 +245,9 @@ var game = {
         }
         unit.isTargetable = true;
         if(unit.name == 'Shane') {
-            unit.position = utils.clonePosition(utils.getCanvasCenter(), {x: -20, y: 0});;
+            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -20, y: 0});;
         } else {
-            unit.position = utils.clonePosition(utils.getCanvasCenter(), {x: 20, y: 0});
+            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 20, y: 0});
         }
         unit.currentHealth = unit.maxHealth;
         unit.currentEnergy = unit.maxEnergy;

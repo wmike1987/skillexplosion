@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function EnemyMarine(options) {
     var marine = {};
@@ -28,56 +28,56 @@ export default function EnemyMarine(options) {
     var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
 
     var walkAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'walk',
             speed: 1.5,
@@ -87,49 +87,49 @@ export default function EnemyMarine(options) {
     };
 
     var attackAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'shoot',
             speed: 2,
@@ -236,7 +236,7 @@ export default function EnemyMarine(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
+    var fireSound = gameUtils.getSound('machinegun.wav', {volume: .002, rate: 3});
 
     var unitProperties = $.extend({
         unitType: 'Marine',
@@ -247,8 +247,8 @@ export default function EnemyMarine(options) {
         hitboxWidth: 35,
         hitboxHeight: 60,
         itemsEnabled: true,
-        portrait: utils.createDisplayObject('MarineRedHat'),
-        wireframe: utils.createDisplayObject('MarineRedHat'),
+        portrait: graphicsUtils.createDisplayObject('MarineRedHat'),
+        wireframe: graphicsUtils.createDisplayObject('MarineRedHat'),
         team: options.team || 4,
         priority: 50,
         name: options.name,
@@ -256,13 +256,13 @@ export default function EnemyMarine(options) {
         abilities: [],
         death: function() {
             var self = this;
-            var anim = utils.getAnimationB({
+            var anim = gameUtils.getAnimation({
                 spritesheetName: 'BaseUnitAnimations1',
                 animationName: 'bloodsplat',
                 speed: .3,
                 transform: [self.position.x, self.position.y, .3, .3]
             });
-            utils.addSomethingToRenderer(anim);
+            graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             globals.currentGame.removeUnit(this);
         }}, options);
@@ -289,7 +289,7 @@ export default function EnemyMarine(options) {
                     fireSound.play();
 
                     //bullet emitter
-                    var emitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
+                    var emitter = gameUtils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                         	"alpha": {
                         		"start": 1,
@@ -347,7 +347,7 @@ export default function EnemyMarine(options) {
                     emitter.playOnceAndDestroy();
 
                     //blood emitter
-                    var bloodEmitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
+                    var bloodEmitter = gameUtils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                     	"alpha": {
                     		"start": 1,

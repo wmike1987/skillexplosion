@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import zone from '@utils/TargetSpawnZone'
 
@@ -38,35 +38,35 @@ var game = {
 	deadZones: [{x: 480, y: 330}, {x: 690, y: 280}], //don't create targets over the eyes
 
 	initExtension: function() {
-	    this.hit = utils.getSound('nicehit1.wav', {volume: .12, rate: 2});
-	    this.countDown = utils.getSound('softBeep.wav', {volume: .2, rate: 1});
-	    this.whistle = utils.getSound('whistle.wav', {volume: .2, rate: 1.2});
-	    this.gameFinished = utils.getSound('nextlevel.wav', {volume: .38, rate: .75});
+	    this.hit = gameUtils.getSound('nicehit1.wav', {volume: .12, rate: 2});
+	    this.countDown = gameUtils.getSound('softBeep.wav', {volume: .2, rate: 1});
+	    this.whistle = gameUtils.getSound('whistle.wav', {volume: .2, rate: 1.2});
+	    this.gameFinished = gameUtils.getSound('nextlevel.wav', {volume: .38, rate: .75});
 	    this.hits = [this.hit, this.hit2, this.hit3, this.hit4];
 
 		//create face
-		this.face = utils.addSomethingToRenderer('EyeFace', 'background');
+		this.face = graphicsUtils.addSomethingToRenderer('EyeFace', 'background');
 		this.face.scale.x = .75;
 		this.face.scale.y = .75;
-		this.face.position = utils.getCanvasCenter();
+		this.face.position = gameUtils.getCanvasCenter();
 		this.face.persists = true;
 
-		this.eyes = utils.addSomethingToRenderer('EyeEyes', 'background');
+		this.eyes = graphicsUtils.addSomethingToRenderer('EyeEyes', 'background');
 		this.eyes.scale.x = .75;
 		this.eyes.scale.y = .75;
-		this.eyes.position = utils.getCanvasCenter();
+		this.eyes.position = gameUtils.getCanvasCenter();
 		this.eyes.persists = true;
 
-		this.blink = utils.addSomethingToRenderer('EyeBlink', 'background');
+		this.blink = graphicsUtils.addSomethingToRenderer('EyeBlink', 'background');
 		this.blink.scale.x = .75;
 		this.blink.scale.y = .75;
-		this.blink.position = utils.getCanvasCenter();
+		this.blink.position = gameUtils.getCanvasCenter();
 		this.blink.persists = true;
 
-		this.wink = utils.addSomethingToRenderer('EyeWink', 'background');
+		this.wink = graphicsUtils.addSomethingToRenderer('EyeWink', 'background');
 		this.wink.scale.x = .75;
 		this.wink.scale.y = .75;
-		this.wink.position = utils.getCanvasCenter();
+		this.wink.position = gameUtils.getCanvasCenter();
 		this.wink.visible = false;
 		this.wink.persists = true;
 
@@ -178,8 +178,8 @@ var game = {
 							animationOptions.speed = .5;
 							animationOptions.playThisManyTimes = 2;
 							animationOptions.rotation = target.renderlings[0].initialRotate;
-	            var anim = utils.getAnimationB(animationOptions);
-							utils.addSomethingToRenderer(anim);
+	            var anim = gameUtils.getAnimation(animationOptions);
+							graphicsUtils.addSomethingToRenderer(anim);
 							anim.play();
 	        }.bind(this);
 		}
@@ -198,8 +198,8 @@ var game = {
 						animationOptions.speed = .75;
 						animationOptions.playThisManyTimes = 1;
 						animationOptions.rotation = target.renderlings[0].initialRotate;
-						var anim = utils.getAnimationB(animationOptions);
-						utils.addSomethingToRenderer(anim);
+						var anim = gameUtils.getAnimation(animationOptions);
+						graphicsUtils.addSomethingToRenderer(anim);
 						anim.play();
 	        }.bind(this);
 	    }
@@ -243,7 +243,7 @@ var game = {
 
 		//find position, makes sure the position isn't over a dead zone and that positions aren't repeated
 		do {
-		    var newPos = utils.calculateRandomPlacementForBodyWithinCanvasBounds(target, true);
+		    var newPos = gameUtils.calculateRandomPlacementForBodyWithinCanvasBounds(target, true);
 		    var goodPlacement = true;
 		    $.each(this.deadZones, function(i, zone) {
 		        if(Math.abs(newPos.x - zone.x) < bodyWidth && Math.abs(newPos.y - zone.y) < bodyWidth) {
@@ -276,14 +276,14 @@ var game = {
 	    this.setWave(this.currentWave);
 	    if(this.currentWave % 3 == 0 && this.lives < 3) {
 	        this.addLives(1);
-	        this.floatText("+1 life!", {x: utils.getCanvasCenter().x, y: utils.getCanvasCenter().y/2});
+	        this.floatText("+1 life!", {x: gameUtils.getCanvasCenter().x, y: gameUtils.getCanvasCenter().y/2});
 	    }
 	    var newWave = $.Deferred();
 	    var countDown = $.Deferred();
 	    this.clearAllDef = $.Deferred();
 	    this.leftRightDef = $.Deferred();
 	    this.numbersDef = $.Deferred();
-	    utils.signalNewWave(this.currentWave, newWave);
+	    gameUtils.signalNewWave(this.currentWave, newWave);
 
 	    //count down after wave
 	    newWave.done(this.endLevelAndPerformCountdown.bind(this, countDown));
@@ -444,7 +444,7 @@ var game = {
 	    //apply number text to target
 	    $.each(this.currentTargets, function(i, tintArray) {
 	        $.each(tintArray, function(i, target) {
-	            target.numberSprite = utils.addSomethingToRenderer("TEXT:"+target.numberValue, 'hud', {style: $.extend({}, numberStyle, {fill: target.tint}), x: target.position.x, y: target.position.y});
+	            target.numberSprite = graphicsUtils.addSomethingToRenderer("TEXT:"+target.numberValue, 'hud', {style: $.extend({}, numberStyle, {fill: target.tint}), x: target.position.x, y: target.position.y});
 	        }.bind(this))
 	    }.bind(this))
 
@@ -463,7 +463,7 @@ var game = {
 	        if(tintManager[target.tint] == target.numberValue) {
                 this.removeBody(target);
                 target.playDeathAnimation();
-                utils.removeSomethingFromRenderer(target.numberSprite);
+                graphicsUtils.removeSomethingFromRenderer(target.numberSprite);
                 tintManager[target.tint] += 1;
                 this.hit.play();
                 return false
@@ -485,7 +485,7 @@ var game = {
 	            this.invalidateTimer(newBlinkTimer);
 
 	            var startNextWave = $.Deferred();
-	            utils.praise({deferred: startNextWave});
+	            gameUtils.praise({deferred: startNextWave});
 	            this.gameFinished.play();
 	            startNextWave.done(function() {
 		            this.nextWave();
@@ -556,7 +556,7 @@ var game = {
 	    do {
 		    Object.keys(this.currentTargets).some(function(tint) {
 		        if(this.currentTargets[tint] && this.currentTargets[tint].length > 0) {
-		            if(utils.flipCoin()) {
+		            if(mathArrayUtils.flipCoin()) {
 		                if(this.oneColorExists() || forceChange && this.currentTint != tint) {
 		                    newTint = tint;
 		                } else if (!forceChange){
@@ -578,7 +578,7 @@ var game = {
 	    this.blink.visible = true;
 	    var startTimerDeferred = $.Deferred();
 	    if(praise) {
-	        utils.praise({deferred: startTimerDeferred})
+	        gameUtils.praise({deferred: startTimerDeferred})
 	        this.gameFinished.play();
 	    } else {
 	        startTimerDeferred.resolve();
@@ -588,7 +588,7 @@ var game = {
 		            if(thisTimer.runs > 1) {
 		                this.countDown.play();
 		            }
-    			    utils.floatText(thisTimer.runs > 1 ? thisTimer.runs-1 : "GO!", utils.getCanvasCenter(), {textSize: 90, stationary: false})
+    			    graphicsUtils.floatText(thisTimer.runs > 1 ? thisTimer.runs-1 : "GO!", gameUtils.getCanvasCenter(), {textSize: 90, stationary: false})
 			    }.bind(this), totallyDoneCallback: function() {
 			        deferredToResolve.resolve();
 	                this.whistle.play();

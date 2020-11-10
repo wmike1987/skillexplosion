@@ -1,7 +1,7 @@
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
-var failedPredicate = utils.getSound('cantpickup.wav', {volume: .02, rate: 1.3});
+var failedPredicate = gameUtils.getSound('cantpickup.wav', {volume: .02, rate: 1.3});
 
 //Defines a Command queue
 var CommandQueue = function() {

@@ -1,4 +1,4 @@
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function(options) {
     Object.assign(this, options);

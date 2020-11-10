@@ -1,12 +1,12 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
 import {globals} from '@core/Fundamental/GlobalState'
 
 var unitSpawner = function(enemySets) {
-    this.id = utils.uuidv4();
+    this.id = mathArrayUtils.uuidv4();
 
     this.timers = [];
 
@@ -32,7 +32,7 @@ var unitSpawner = function(enemySets) {
                             var newUnit = enemy.constructor({team: 4});
                             newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                             newUnit.honeRange = 5000;
-                            utils.placeBodyJustOffscreen(newUnit);
+                            gameUtils.placeBodyJustOffscreen(newUnit);
 
                             //Give item to unit if chosen
                             if(itemsToGive > 0) {
@@ -40,10 +40,10 @@ var unitSpawner = function(enemySets) {
                                 if(lastUnit) {
                                     giveItem = true;
                                 } else {
-                                    giveItem = utils.flipCoin() && utils.flipCoin();
+                                    giveItem = mathArrayUtils.flipCoin() && mathArrayUtils.flipCoin();
                                 }
                                 if(giveItem) {
-                                    ItemUtils.giveUnitItem({gamePrefix: 'Us', name: utils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
+                                    ItemUtils.giveUnitItem({gamePrefix: 'Us', name: mathArrayUtils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
                                     itemsToGive--;
                                 }
                             }

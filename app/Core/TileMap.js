@@ -1,4 +1,4 @@
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import * as $ from 'jquery'
 
 //This module represents a tile map. This is produced by the tile mapper
@@ -9,7 +9,7 @@ var tileMap = function() {
 tileMap.prototype.initialize = function(options) {
     //loop through tiles and add them at the specified location
     $.each(this.tiles, function(i, tile) {
-        utils.addSomethingToRenderer(tile, options);
+        graphicsUtils.addSomethingToRenderer(tile, options);
     })
 
     this.initialized = true;
@@ -22,7 +22,7 @@ tileMap.prototype.addTile = function(displayObject) {
 
 tileMap.prototype.cleanUp = function() {
     $.each(this.tiles, function(i, tile) {
-        utils.removeSomethingFromRenderer(tile);
+        graphicsUtils.removeSomethingFromRenderer(tile);
     })
 };
 

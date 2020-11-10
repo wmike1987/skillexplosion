@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import Marble from '@games/Marbles/Units/Marble.js'
@@ -84,7 +84,7 @@ var game = {
 			$.each(this.flakes, function(i, flake) {
 
 				if(flake == null) return;
-				if(utils.bodyRanOffStage(flake)) {
+				if(gameUtils.bodyRanOffStage(flake)) {
 					this.removeBody(flake);
 					this.snowflakeCount++;
 					this.flakes[i] = null;
@@ -104,10 +104,10 @@ var game = {
         this.nextLevel();
 
         //randomize marble colors
-        var tintIndexLeft = utils.getRandomElementOfArray(this.acceptableTints);
-        var tintIndexRight = utils.getRandomElementOfArray(this.acceptableTints);
+        var tintIndexLeft = mathArrayUtils.getRandomElementOfArray(this.acceptableTints);
+        var tintIndexRight = mathArrayUtils.getRandomElementOfArray(this.acceptableTints);
         while(tintIndexRight == tintIndexLeft) {
-            tintIndexRight = utils.getRandomElementOfArray(this.acceptableTints);
+            tintIndexRight = mathArrayUtils.getRandomElementOfArray(this.acceptableTints);
         }
 
 		//create marble on the left side
@@ -121,11 +121,11 @@ var game = {
 	},
 
 	createLeftMarble: function(tint) {
-	    this.createMarble({x: utils.getCanvasWidth()/4, y: utils.getCanvasHeight()/2}, tint);
+	    this.createMarble({x: gameUtils.getCanvasWidth()/4, y: gameUtils.getCanvasHeight()/2}, tint);
 	},
 
 	createRightMarble: function(tint) {
-	    this.createMarble({x: utils.getCanvasWidth()*3/4, y: utils.getCanvasHeight()/2}, tint);
+	    this.createMarble({x: gameUtils.getCanvasWidth()*3/4, y: gameUtils.getCanvasHeight()/2}, tint);
 	},
 
 	nextLevel: function() {
@@ -142,7 +142,7 @@ var game = {
 	    if(this.snowflakeCount > 30) {
 	        this.nextLevel();
 	    }
-	    var sfNumber = utils.getRandomIntInclusive(1, 4);
+	    var sfNumber = mathArrayUtils.getRandomIntInclusive(1, 4);
 
 	    var game = this;
 		var radius = this.large;
@@ -164,7 +164,7 @@ var game = {
     		        var otherBody = pair.pair.bodyA == snowflake ? pair.pair.bodyB : pair.pair.bodyA;
     		        if(otherBody.unit) {
 
-    		            var emitter = utils.createParticleEmitter({where: this.renderer.stages.stage,
+    		            var emitter = gameUtils.createParticleEmitter({where: this.renderer.stages.stage,
         		            config: {
                         	"alpha": {
                         		"start": 1,

@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 
 var targetScore = 1;
@@ -35,15 +35,15 @@ var game = {
 	},
 
 	initExtension: function() {
-        this.waveRustle = utils.getSound('Beach.wav');
+        this.waveRustle = gameUtils.getSound('Beach.wav');
 
-	    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});
-	    this.hit2 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.3});
-	    this.hit3 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});
+	    this.hit = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2});
+	    this.hit2 = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2.3});
+	    this.hit3 = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});
 	    this.hits = [this.hit, this.hit2, this.hit3];
 
         //setup palm tree
-		this.palm = utils.addSomethingToRenderer('BluePalm', 'foreground');
+		this.palm = graphicsUtils.addSomethingToRenderer('BluePalm', 'foreground');
 		this.palm.persists = true;
 		this.palm.tint = 0;
 		this.palm.scale.x = this.palm.scale.y = 1.3;
@@ -54,7 +54,7 @@ var game = {
 		this.palm.timer = this.addTimer({name: 'palmColorTimer', timeLimit: 150, done: true, persists: true,
 		    tickCallback: function() {
 		        var t = self.palm.tint;
-	        	self.palm.tint = utils.shadeBlendConvert(this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length] || '#000000', self.colorCycle[self.palm.nextColor%self.colorCycle.length]);
+	        	self.palm.tint = graphicsUtils.shadeBlendConvert(this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length] || '#000000', self.colorCycle[self.palm.nextColor%self.colorCycle.length]);
 		    },
 		    callback: function() {
 		        if(self.gameState != 'playing') return;
@@ -69,7 +69,7 @@ var game = {
 	    var self = this;
 	    this.addTimer({name: 'fadeToBlackTimer', timeLimit: 150,
 		    tickCallback: function() {
-	        	self.palm.tint = utils.shadeBlendConvert(this.percentDone > .98 ? .98 : this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length], '#000000');
+	        	self.palm.tint = graphicsUtils.shadeBlendConvert(this.percentDone > .98 ? .98 : this.percentDone, self.colorCycle[self.palm.currentColor%self.colorCycle.length], '#000000');
 		    },
 		});
 	},
@@ -82,7 +82,7 @@ var game = {
 		//ran off stage listener
 		this.addTickListener(function(event) {
 		    $.each(this.birds, function(i, bird) {
-                if(bird.correctBird && utils.bodyRanOffStage(bird))
+                if(bird.correctBird && gameUtils.bodyRanOffStage(bird))
                     this.nextWave();
 		    }.bind(this))
 		}.bind(this));
@@ -101,7 +101,7 @@ var game = {
 					    if(bird.timerBird) {
 					        if(!bird.alreadyHit) {
     					        bird.alreadyHit = true;
-								// utils.executeSomethingNextFrame(function() {
+								// gameUtils.executeSomethingNextFrame(function() {
 									this.removeBody(bird);
 								// }.bind(this), 2)
     					        this.hits[this.timerBirdsHit].play();
@@ -110,23 +110,23 @@ var game = {
 					    } else {
 					        if(this.timerBirdsHit == 2) { //add 2 seconds
     						    this.addToGameTimer(2000);
-        						var plusOne = utils.addSomethingToRenderer('PlusTwo', 'foreground');
+        						var plusOne = graphicsUtils.addSomethingToRenderer('PlusTwo', 'foreground');
         						plusOne.position = {x: x, y: y};
         						plusOne.position.y -= 50;
-        						utils.floatSprite(plusOne);
+        						graphicsUtils.floatSprite(plusOne);
 					            this.hits[2].play();
 					        } else if(this.timerBirdsHit == 1) { //add 1 second
     						    this.addToGameTimer(1000);
-        						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
+        						var plusOne = graphicsUtils.addSomethingToRenderer('PlusOne', 'foreground');
         						plusOne.position = {x: x, y: y};
         						plusOne.position.y -= 50;
-        						utils.floatSprite(plusOne);
+        						graphicsUtils.floatSprite(plusOne);
 					            this.hits[1].play();
 					        }
     						this.incrementScore(targetScore);
     						var s = this.waveRustle.play();
     						this.waveRustle.fade(Math.random() * .75 + .25, 0, 2000, s);
-							// utils.executeSomethingNextFrame(function() {
+							// gameUtils.executeSomethingNextFrame(function() {
 								this.nextWave();
 							// }.bind(this), 2)
 					    }
@@ -170,7 +170,7 @@ var game = {
 
 		//scale bird
 		var scale = Math.random() * .5 + .5;
-		utils.scaleBody(bird, scale, scale);
+		gameUtils.scaleBody(bird, scale, scale);
 
 		//offset the sprite to match the list of vertices... I think the "center" of the vertices is not the
 		//center of the sprite, but I haven't actually verified this.
@@ -195,9 +195,9 @@ var game = {
 		    var xLoc = (this.canvasEl.getBoundingClientRect().width) + Math.random() * 20 + 20;
 		else
 		    var xLoc = Math.random() * -20 - 20;
-        var yLoc = utils.calculateRandomPlacementForBodyWithinCanvasBounds(bird).y;
+        var yLoc = gameUtils.calculateRandomPlacementForBodyWithinCanvasBounds(bird).y;
         if(!createBirdOffScreenRight)
-            utils.scaleBody(bird, -1, 1);
+            gameUtils.scaleBody(bird, -1, 1);
 
         //console.debug(Matter.Vertices.area(bird.vertices));
         Matter.Body.setPosition(bird, {x: xLoc, y: yLoc});

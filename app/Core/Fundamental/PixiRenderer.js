@@ -4,7 +4,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils'
 
 //module
 var renderer = function(engine, options) {
@@ -312,7 +312,7 @@ var renderer = function(engine, options) {
 		something = something.renderlings ? Object.keys(something.renderlings).map(function (key) { return something.renderlings[key]; }) : [something];
 		$.each(something, function(i, obj) {
 			if(obj.backgroundFilter) {
-				utils.removeObjectFromArray(this.background.filters, obj.backgroundFilter);
+				mathArrayUtils.removeObjectFromArray(this.background.filters, obj.backgroundFilter);
 			}
 		    this.removeAndDestroyChild(this.stages[where || obj.myLayer || 'stage'], obj)
 		}.bind(this));

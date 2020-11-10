@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function Eruptlet(options) {
     var eruptlet = {};
@@ -29,56 +29,56 @@ export default function Eruptlet(options) {
     var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['critterNW'].spineData);
 
     var runAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'run',
             speed: 1.5,
@@ -88,49 +88,49 @@ export default function Eruptlet(options) {
     };
 
     var attackAnimations = {
-                up: utils.getSpineAnimation({
+                up: gameUtils.getSpineAnimation({
                     spine: spineNorth,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                upRight: utils.getSpineAnimation({
+                upRight: gameUtils.getSpineAnimation({
                     spine: spineNorthEast,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                right: utils.getSpineAnimation({
+                right: gameUtils.getSpineAnimation({
                     spine: spineEast,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                downRight: utils.getSpineAnimation({
+                downRight: gameUtils.getSpineAnimation({
                     spine: spineSouthEast,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                down: utils.getSpineAnimation({
+                down: gameUtils.getSpineAnimation({
                     spine: spineSouth,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                downLeft: utils.getSpineAnimation({
+                downLeft: gameUtils.getSpineAnimation({
                     spine: spineSouthWest,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                left: utils.getSpineAnimation({
+                left: gameUtils.getSpineAnimation({
                     spine: spineWest,
                     animationName: 'attack',
                     speed: 2,
                     times: 3,
                 }),
-                upLeft: utils.getSpineAnimation({
+                upLeft: gameUtils.getSpineAnimation({
                     spine: spineNorthWest,
                     animationName: 'attack',
                     speed: 2,
@@ -238,7 +238,7 @@ export default function Eruptlet(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var burstSound = utils.getSound('eruptletburst.wav', {volume: .08, rate: 1});
+    var burstSound = gameUtils.getSound('eruptletburst.wav', {volume: .08, rate: 1});
 
     var unitProperties = $.extend({
         unitType: 'Eruptlet',
@@ -252,8 +252,8 @@ export default function Eruptlet(options) {
         hitboxYOffset: 10,
         itemsEnabled: true,
         // adjustHitbox: true,
-        portrait: utils.createDisplayObject('EruptletPortrait'),
-        wireframe: utils.createDisplayObject('EruptletGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('EruptletPortrait'),
+        wireframe: graphicsUtils.createDisplayObject('EruptletGroupPortrait'),
         team: options.team || 4,
         priority: 50,
         name: options.name,
@@ -262,13 +262,13 @@ export default function Eruptlet(options) {
         abilities: [],
         death: function() {
             var self = this;
-            var anim = utils.getAnimationB({
+            var anim = gameUtils.getAnimation({
                 spritesheetName: 'BaseUnitAnimations1',
                 animationName: 'bloodsplat',
                 speed: .3,
                 transform: [self.position.x, self.position.y, .3, .3]
             });
-            utils.addSomethingToRenderer(anim);
+            graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             globals.currentGame.removeUnit(this);
         },
@@ -315,7 +315,7 @@ export default function Eruptlet(options) {
             range: options.radius*2,
             damage: 6,
             attack: function(target) {
-                var deathAnimation = utils.getAnimationB({
+                var deathAnimation = gameUtils.getAnimation({
                     spritesheetName: 'BanelingAnimations1',
                     animationName: 'banedeath',
                     speed: 2,
@@ -325,12 +325,12 @@ export default function Eruptlet(options) {
                 deathAnimation.rotation = Math.random() * Math.PI;
                 deathAnimation.play();
                 burstSound.play();
-                utils.addSomethingToRenderer(deathAnimation, 'stageOne');
+                graphicsUtils.addSomethingToRenderer(deathAnimation, 'stageOne');
 
                 var blastRadius = 70;
                 var bodiesToDamage = [];
-                utils.applyToUnitsByTeam(function(team) {return this.team != team}.bind(this), function(unit) {
-                    return (utils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
+                gameUtils.applyToUnitsByTeam(function(team) {return this.team != team}.bind(this), function(unit) {
+                    return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
                 }.bind(this), function(unit) {
                     unit.sufferAttack(this.damage, this);
                 }.bind(this));

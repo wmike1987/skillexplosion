@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import Marble from '@games/Marbles/Units/Marble.js'
 
@@ -39,10 +39,10 @@ var game = {
 
 	initExtension: function() {
 	    //wave begin sound
-	    this.nextWave = utils.getSound('rush1.wav');
+	    this.nextWave = gameUtils.getSound('rush1.wav');
 
 	    //blow up sound
-	    this.pop = utils.getSound('pop1.wav');
+	    this.pop = gameUtils.getSound('pop1.wav');
 	},
 
 	play: function(options) {
@@ -97,7 +97,7 @@ var game = {
 			this.marbles.push(marble);
 			marble.moveSpeed = 2.5;
 
-			utils.placeBodyWithinRadiusAroundCanvasCenter(marble, number*3);
+			gameUtils.placeBodyWithinRadiusAroundCanvasCenter(marble, number*3);
 			this.addUnit(marble, true);
 	    }
 	},
@@ -113,8 +113,8 @@ var game = {
 			marble.range = 40;
 
 			marble.attack = function(unitTarget) {
-				var position = utils.clonePosition(marble.position);
-				var baneexplode = utils.getAnimationB({
+				var position = mathArrayUtils.clonePosition(marble.position);
+				var baneexplode = gameUtils.getAnimation({
 					spritesheetName: 'DeathAnimations',
 					animationName: 'bane',
 					speed: .6,
@@ -123,7 +123,7 @@ var game = {
 					transform: [position.x, position.y, (blastRadius*2/64), (blastRadius*2/64), Math.random()*40]
 				});
 				baneexplode.play();
-				utils.addSomethingToRenderer(baneexplode, 'stageOne');
+				graphicsUtils.addSomethingToRenderer(baneexplode, 'stageOne');
 			    this.banes.splice(this.banes.indexOf(marble), 1);
 			    var nextLevelGo = false;
 			    if(this.banes.length == 0) {
@@ -133,14 +133,14 @@ var game = {
 
 				var blastRadius = 70;
 				var bodiesToDamage = [];
-				utils.applyToUnitsByTeam(function(team) {return marble.team != team}, function(unit) {
-					return (utils.distanceBetweenBodies(marble.body, unit.body) <= blastRadius && unit.isTargetable);
+				gameUtils.applyToUnitsByTeam(function(team) {return marble.team != team}, function(unit) {
+					return (mathArrayUtils.distanceBetweenBodies(marble.body, unit.body) <= blastRadius && unit.isTargetable);
 				}.bind(this), function(unit) {
-					var shard = utils.addSomethingToRenderer('glassShards', 'background', {position: unit.position, scale: {x: .65, y: .65}, tint: unit.tint, rotation: Math.random()*6});
+					var shard = graphicsUtils.addSomethingToRenderer('glassShards', 'background', {position: unit.position, scale: {x: .65, y: .65}, tint: unit.tint, rotation: Math.random()*6});
 					this.addTimer({name: 'shardDisappear' + unit.unitId, persists: true, timeLimit: 48, runs: 20, killsSelf: true, callback: function() {
 						shard.alpha -= .05;
 					}, totallyDoneCallback: function() {
-						utils.removeSomethingFromRenderer(shard);
+						graphicsUtils.removeSomethingFromRenderer(shard);
 					}.bind(this)})
 					this.marbles.splice(this.marbles.indexOf(unit), 1);
 					unit.sufferAttack(1000, this);
@@ -155,9 +155,9 @@ var game = {
 			}.bind(this);
 
             if(side > .5) {
-                marble.position = {x: Math.random() * 100, y: utils.getCanvasCenter().y + Math.random() * 600 - 300};
+                marble.position = {x: Math.random() * 100, y: gameUtils.getCanvasCenter().y + Math.random() * 600 - 300};
             } else {
-                marble.position = {x: utils.getCanvasWidth() - Math.random() * 100, y: utils.getCanvasCenter().y + Math.random() * 600 - 300};
+                marble.position = {x: gameUtils.getCanvasWidth() - Math.random() * 100, y: gameUtils.getCanvasCenter().y + Math.random() * 600 - 300};
             }
 
 			this.addUnit(marble);

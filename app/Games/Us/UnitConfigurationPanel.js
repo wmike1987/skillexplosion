@@ -1,20 +1,20 @@
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
 import * as Matter from 'matter-js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
-var equipShow = utils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
-var equipHide = utils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
-var equip = utils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
-var hoverAugmentSound = utils.getSound('augmenthover.wav', {volume: .03, rate: 1});
+var equipShow = gameUtils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
+var equipHide = gameUtils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
+var equip = gameUtils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
+var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
 }
 
 ConfigPanel.prototype.initialize = function() {
-    this.id = utils.uuidv4();
+    this.id = mathArrayUtils.uuidv4();
 
     this.initialYOffset = -37;
     this.spacing = -62;
@@ -36,25 +36,25 @@ ConfigPanel.prototype.initialize = function() {
 
     this.abilityBases = [];
     for(var x = 0; x < 3; x++) {
-        var base = utils.addSomethingToRenderer('AugmentArmPanel', {where: 'hud', anchor: {x: .5, y: 1}, scale: {x: 0, y: 0}});
+        var base = graphicsUtils.addSomethingToRenderer('AugmentArmPanel', {where: 'hud', anchor: {x: .5, y: 1}, scale: {x: 0, y: 0}});
         base.visible = false;
-        // utils.makeSpriteSize(base, {w: 30, h: 150});
+        // graphicsUtils.makeSpriteSize(base, {w: 30, h: 150});
         this.abilityBases.push(base)
         base.sortYOffset = 1000;
     }
 
     this.configButtonHeight = 218;
     this.configButtonGlassHeight = 200;
-    this.showButton = utils.createDisplayObject('AugmentNotificationPanelBorder', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonHeight/3}});
+    this.showButton = graphicsUtils.createDisplayObject('AugmentNotificationPanelBorder', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: gameUtils.getPlayableHeight()+this.configButtonHeight/3}});
     this.showButton.interactive = true;
-    this.showButtonGlass = utils.createDisplayObject('AugmentNotificationPanelGlass', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: utils.getPlayableHeight()+this.configButtonGlassHeight/3}});
-    utils.graduallyTint(this.showButtonGlass, 0x62f6db, 0xd1b877, 15000, null, 5000);
+    this.showButtonGlass = graphicsUtils.createDisplayObject('AugmentNotificationPanelGlass', {where: 'hudNOne', position: {x: this.unitPanelRef.abilityCenterX, y: gameUtils.getPlayableHeight()+this.configButtonGlassHeight/3}});
+    graphicsUtils.graduallyTint(this.showButtonGlass, 0x62f6db, 0xd1b877, 15000, null, 5000);
 
-    var abilityMin = {x: this.unitPanelRef.abilityCenterX - 122, y: utils.getPlayableHeight() - 40};
-    var abilityMax = {x: this.unitPanelRef.abilityCenterX + 122, y: utils.getCanvasHeight()};
+    var abilityMin = {x: this.unitPanelRef.abilityCenterX - 122, y: gameUtils.getPlayableHeight() - 40};
+    var abilityMax = {x: this.unitPanelRef.abilityCenterX + 122, y: gameUtils.getCanvasHeight()};
     $('body').on('mousemove.unitConfigurationPanel', function(event) {
         var mousePoint = {x: 0, y: 0};
-        utils.pixiPositionToPoint(mousePoint, event);
+        gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
             if(this.showButton.state == 'lowered') {
                 this.showButton.scale = {x: 1.05, y: 1.05};
@@ -68,7 +68,7 @@ ConfigPanel.prototype.initialize = function() {
 
     $('body').on('mouseup.unitConfigurationPanel', function(event) {
         var mousePoint = {x: 0, y: 0};
-        utils.pixiPositionToPoint(mousePoint, event);
+        gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
             if(this.showButton.state == 'lowered') {
                 this.showForUnit(this.unitPanelRef.prevailingUnit);
@@ -98,19 +98,19 @@ ConfigPanel.prototype.showAugments = function(unit) {
     $.each(unit.abilities, function(i, ability) {
         var currentAugment = ability.currentAugment;
         if(ability.augments) {
-            ability.currentAugmentBorder = utils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
+            ability.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
             ability.currentAugmentBorder.visible = false;
             ability.currentAugmentBorder.sortYOffset = 1000;
             var alphaAugment = .8;
             $.each(ability.augments, function(j, augment) {
                 if(!augment.icon.parent) {
-                    utils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
-                    augment.lock = utils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+                    graphicsUtils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+                    augment.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                     augment.lock.visible = false;
                     augment.unlocked = true; //for debugging
-                    augment.actionBox = utils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
-                    utils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
-                    augment.border = utils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:utils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+                    augment.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+                    graphicsUtils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
+                    augment.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
                     augment.border.sortYOffset = -10;
                     augment.actionBox.interactive = true;
                     augment.actionBox.on('mouseup', function(event) {
@@ -177,7 +177,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
             }.bind(this))
 
             //show ability bases
-            this.abilityBases[i].position = {x: ability.position.x, y: utils.getPlayableHeight()+1}
+            this.abilityBases[i].position = {x: ability.position.x, y: gameUtils.getPlayableHeight()+1}
             this.abilityBases[i].visible = true;
         }
     }.bind(this))
@@ -223,13 +223,13 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
 
 ConfigPanel.prototype.lowerOpenButton = function() {
     if(this.unitPanelRef.prevailingUnit && globals.currentGame.campActive) {
-        utils.changeDisplayObjectStage(this.showButton, 'hudNOne');
-            utils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
-        utils.addOrShowDisplayObject(this.showButton);
-        utils.addOrShowDisplayObject(this.showButtonGlass);
-        this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.configButtonHeight/2.75}
+        graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
+            graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
+        graphicsUtils.addOrShowDisplayObject(this.showButton);
+        graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
+        this.showButton.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonHeight/2.75}
         this.showButton.state = "lowered";
-        this.showButtonGlass.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()+this.configButtonGlassHeight/2.75}
+        this.showButtonGlass.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonGlassHeight/2.75}
     }
 };
 
@@ -241,22 +241,22 @@ ConfigPanel.prototype.hideOpenButton = function() {
 };
 
 ConfigPanel.prototype.liftOpenButton = function() {
-    utils.changeDisplayObjectStage(this.showButton, 'hud');
-    utils.addOrShowDisplayObject(this.showButton);
-    this.showButton.position = {x: this.showButton.position.x, y: utils.getPlayableHeight()-this.configButtonHeight/2}
+    graphicsUtils.changeDisplayObjectStage(this.showButton, 'hud');
+    graphicsUtils.addOrShowDisplayObject(this.showButton);
+    this.showButton.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()-this.configButtonHeight/2}
     this.showButton.scale = {x: 1.00, y: 1.00};
     this.showButton.state = "lifted";
 
-    utils.changeDisplayObjectStage(this.showButtonGlass, 'hud');
-    utils.addOrShowDisplayObject(this.showButtonGlass);
-    this.showButtonGlass.position = {x: this.showButtonGlass.position.x, y: utils.getPlayableHeight()-this.configButtonGlassHeight/2}
+    graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hud');
+    graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
+    this.showButtonGlass.position = {x: this.showButtonGlass.position.x, y: gameUtils.getPlayableHeight()-this.configButtonGlassHeight/2}
     this.showButtonGlass.scale = {x: 1.00, y: 1.00};
 };
 
 ConfigPanel.prototype.cleanUp = function() {
     $('body').off('keydown.unitConfigurationPanel');
-    utils.removeSomethingFromRenderer(this.showButton);
-    utils.removeSomethingFromRenderer(this.showButtonGlass);
+    graphicsUtils.removeSomethingFromRenderer(this.showButton);
+    graphicsUtils.removeSomethingFromRenderer(this.showButtonGlass);
     $('body').off('mousemove.unitConfigurationPanel');
     $('body').off('mouseup.unitConfigurationPanel');
 };

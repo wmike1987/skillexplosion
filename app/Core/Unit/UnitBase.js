@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Attacker from '@core/Unit/_Attacker.js'
 import Iso from '@core/Unit/IsoSpriteManager.js'
@@ -11,9 +11,9 @@ import Command from '@core/Unit/Command.js'
 import CommandQueue from '@core/Unit/CommandQueue.js'
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
-var levelUpSound = utils.getSound('levelup.wav', {volume: .45, rate: .8});
-var itemPlaceSound = utils.getSound('itemplace.wav', {volume: .06, rate: 1});
-var petrifySound = utils.getSound('petrify.wav', {volume: .07, rate: 1});
+var levelUpSound = gameUtils.getSound('levelup.wav', {volume: .45, rate: .8});
+var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: .06, rate: 1});
+var petrifySound = gameUtils.getSound('petrify.wav', {volume: .07, rate: 1});
 
 //default unit attributes
 var UnitBase = {
@@ -83,7 +83,7 @@ var UnitBase = {
                     if(!this.showingBarsWithAlt)
                     this.showLifeBar(false);
                 }.bind(this)})
-                utils.deathPact(this, this.barTimer);
+                gameUtils.deathPact(this, this.barTimer);
             } else {
                 this.barTimer.reset();
             }
@@ -92,7 +92,7 @@ var UnitBase = {
     },
 
     _death: function() {
-        this.deathPosition = utils.clonePosition(this.position);
+        this.deathPosition = mathArrayUtils.clonePosition(this.position);
 
         if(this.dropItemsOnDeath) {
             this.dropAllItems();
@@ -142,7 +142,7 @@ var UnitBase = {
         var spawnPosition = {};
         do {
             spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)}
-        } while (!utils.isPositionWithinPlayableBounds(spawnPosition))
+        } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition))
 
         item.drop(spawnPosition);
 
@@ -439,7 +439,7 @@ var UnitBase = {
 
         Object.defineProperty(this, 'isTargetable', {
             get: function() {
-                return this._isTargetable && utils.isPositionWithinPlayableBounds(this.position);
+                return this._isTargetable && gameUtils.isPositionWithinPlayableBounds(this.position);
             },
 
             set: function(value) {
@@ -451,7 +451,7 @@ var UnitBase = {
 
         Object.defineProperty(this, 'isAttackable', {
             get: function() {
-                return this._isAttackable && utils.isPositionWithinPlayableBounds(this.position);
+                return this._isAttackable && gameUtils.isPositionWithinPlayableBounds(this.position);
             },
 
             set: function(value) {
@@ -532,11 +532,11 @@ var UnitBase = {
                             x: backgroundScaleX * barScaleXMultiplier * percentage,
                             y: healthBarScale
                         };
-                        this.renderlings['healthbar'].tint = utils.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
+                        this.renderlings['healthbar'].tint = graphicsUtils.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
                     }
                 }.bind(this))
 
-                utils.deathPact(this, updateHealthTick);
+                gameUtils.deathPact(this, updateHealthTick);
             }
 
             //create energy bar
@@ -593,7 +593,7 @@ var UnitBase = {
                     }
                 }.bind(this))
 
-                utils.deathPact(this, updateEnergyTick);
+                gameUtils.deathPact(this, updateEnergyTick);
             }
         }.bind(this));
 
@@ -615,7 +615,7 @@ var UnitBase = {
                 }
             }.bind(this)
         });
-        utils.deathPact(this, this.energyRegen);
+        gameUtils.deathPact(this, this.energyRegen);
 
         //regen energy
         this.healthRegen = globals.currentGame.addTimer({
@@ -628,7 +628,7 @@ var UnitBase = {
                 }
             }.bind(this)
         });
-        utils.deathPact(this, this.healthRegen);
+        gameUtils.deathPact(this, this.healthRegen);
 
         if(this._init) {
             this._init(); //per-unit hook
@@ -678,17 +678,17 @@ var UnitBase = {
         this.lastLevelExp = this.nextLevelExp;
         this.nextLevelExp *= 2.25;
 
-        var levelUpAnimation = utils.getAnimationB({
+        var levelUpAnimation = gameUtils.getAnimation({
             spritesheetName: 'BaseUnitAnimations1',
             animationName: 'levelup',
             speed: 2.5,
             transform: [this.position.x, this.position.y, .8, 1]
         });
         levelUpAnimation.play();
-        utils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
-        utils.attachSomethingToBody({something: levelUpAnimation, body: this.body});
+        graphicsUtils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
+        gameUtils.attachSomethingToBody({something: levelUpAnimation, body: this.body});
         Matter.Events.on(levelUpAnimation, "destroy", function() {
-            utils.detachSomethingFromBody(levelUpAnimation);
+            gameUtils.detachSomethingFromBody(levelUpAnimation);
         })
         levelUpSound.play();
         this.currentHealth = this.maxHealth;
@@ -731,8 +731,8 @@ var UnitBase = {
         if(this.petrifyTintTimer) {
             globals.currentGame.invalidateTimer(this.petrifyTintTimer);
         }
-        this.petrifyTintTimer = utils.graduallyTint(this, 0x18bb96, 0xb0b0b0, 3000, 'isoManagedTint');
-        utils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
+        this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x18bb96, 0xb0b0b0, 3000, 'isoManagedTint');
+        graphicsUtils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
 
         var unit = this;
         petrifySound.play();

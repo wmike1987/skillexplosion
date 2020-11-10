@@ -1,6 +1,6 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 /*
@@ -35,9 +35,9 @@ export default function(options) {
         }.bind(this)
     }, options);
 
-    var startPosition = utils.clonePosition(this.owningUnit.position);
+    var startPosition = mathArrayUtils.clonePosition(this.owningUnit.position);
     if(this.originOffset) {
-        startPosition = utils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset)
+        startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset)
     }
     this.body = Matter.Bodies.circle(startPosition.x, startPosition.y, 4, {
                   frictionAir: 0,
@@ -45,16 +45,16 @@ export default function(options) {
                   isSensor: true
                 });
 
-    var targetPosition = this.destination || utils.clonePosition(this.target.position);
+    var targetPosition = this.destination || mathArrayUtils.clonePosition(this.target.position);
     var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(targetPosition, startPosition));
     this.send = function() {
-        utils.sendBodyToDestinationAtSpeed(this.body, targetPosition, this.speed);
+        gameUtils.sendBodyToDestinationAtSpeed(this.body, targetPosition, this.speed);
         var impactTick = globals.currentGame.addTickCallback(function() {
-          if(utils.bodyRanOffStage(this.body)) {
+          if(gameUtils.bodyRanOffStage(this.body)) {
               globals.currentGame.removeBody(this.body);
           }
 
-          if(this.impactType == 'always' && utils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
+          if(this.impactType == 'always' && mathArrayUtils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
               if(this.impactRemoveFunction) {
                   this.impactRemoveFunction();
               }
@@ -62,7 +62,7 @@ export default function(options) {
           }
 
         }.bind(this))
-        utils.deathPact(this.body, impactTick);
+        gameUtils.deathPact(this.body, impactTick);
 
         if(this.impactType == 'collision') {
             Matter.Events.on(this.body, 'onCollide', function(pair) {
@@ -81,7 +81,7 @@ export default function(options) {
     this.body.renderChildren = [{
         id: 'projectile',
         data: this.displayObject,
-        rotate: utils.pointInDirection(startPosition, targetPosition)
+        rotate: mathArrayUtils.pointInDirection(startPosition, targetPosition)
     }]
 
     globals.currentGame.addBody(this.body);

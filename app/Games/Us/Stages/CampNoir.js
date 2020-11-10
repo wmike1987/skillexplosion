@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import CommonCamp from './CommonCampMixin.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import campfireShader from '@shaders/CampfireAtNightShader.js'
 import valueShader from '@shaders/ValueShader.js'
 import TileMapper from '@core/TileMapper.js'
@@ -37,8 +37,8 @@ var camp = {
     tileMapExtension: tileExtension,
 
     initSounds: function() {
-        this.openmap = utils.getSound('openmap.wav', {volume: .15, rate: 1.0});
-        this.entercamp = utils.getSound('entercamp.wav', {volume: .05, rate: .75});
+        this.openmap = gameUtils.getSound('openmap.wav', {volume: .15, rate: 1.0});
+        this.entercamp = gameUtils.getSound('entercamp.wav', {volume: .05, rate: .75});
     },
 
     cleanUpSounds: function() {
@@ -55,19 +55,19 @@ var camp = {
         var tent = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 120, texture: ['Tent'], stage: 'stage',
             scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 30}, sortYOffset: 0,
             shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 0, y: 0}, shadowOffset: {x: 0, y: 10},
-            position: {x: utils.getCanvasCenter().x-150, y: utils.getPlayableHeight()-500}})
+            position: {x: gameUtils.getCanvasCenter().x-150, y: gameUtils.getPlayableHeight()-500}})
         objs.push(tent);
 
         var sleepingbags = new Doodad({drawWire: false, collides: false, autoAdd: false, radius: 15, texture: 'SleepingBags',
             stage: 'stage', scale: {x: 1.4, y: 1.4}, offset: {x: 0, y: 0}, sortYOffset: -99999,
             shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 0, y: 0}, shadowOffset: {x: 0, y: 10},
-            position: {x: utils.getCanvasCenter().x+150, y: utils.getPlayableHeight()-350}})
+            position: {x: gameUtils.getCanvasCenter().x+150, y: gameUtils.getPlayableHeight()-350}})
         objs.push(sleepingbags);
 
         var gunrack = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 10, texture: 'gunrack',
             stage: 'stage', scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
             shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1, y: 1}, shadowOffset: {x: -2, y: 15},
-            position: {x: utils.getCanvasCenter().x-180, y: utils.getPlayableCenter().y-30}})
+            position: {x: gameUtils.getCanvasCenter().x-180, y: gameUtils.getPlayableCenter().y-30}})
         objs.push(gunrack);
 
         return objs;
@@ -97,7 +97,7 @@ var map = {
             getLevelTiles: levelTiles,
             levelTileExtension: function(scene, tint) {
                 tileExtension(scene, tint);
-                var l1 = utils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
+                var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
                 scene.add(l1);
             }
         }

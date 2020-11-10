@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 export default {
@@ -11,17 +11,17 @@ export default {
         var originalDeath = this.death;
         var revivableDeath = function() {
             this.reviveAmount = 0;
-            this.grave = utils.addSomethingToRenderer(this.graveSpriteName, {where: 'stage', position: utils.clonePosition(this.position, {y: 20}), anchor: {x: .5, y: .5}, scale: {x: .85, y: .85}});
+            this.grave = graphicsUtils.addSomethingToRenderer(this.graveSpriteName, {where: 'stage', position: mathArrayUtils.clonePosition(this.position, {y: 20}), anchor: {x: .5, y: .5}, scale: {x: .85, y: .85}});
             //fade in
-            utils.fadeSpriteOverTime(this.grave, 2000, true);
+            graphicsUtils.fadeSpriteOverTime(this.grave, 2000, true);
 
-            this.reviveCenter = utils.clonePosition(this.position);
-            this.grave.tint = utils.percentAsHexColor(0, {start: {r: 255, g: 255, b: 255}, final: {r: 255, g: 0, b: 0}});
+            this.reviveCenter = mathArrayUtils.clonePosition(this.position);
+            this.grave.tint = graphicsUtils.percentAsHexColor(0, {start: {r: 255, g: 255, b: 255}, final: {r: 255, g: 0, b: 0}});
 
             this.canAttack = false;
             this.canMove = false;
             this.isTargetable = false;
-            utils.moveUnitOffScreen(this);
+            gameUtils.moveUnitOffScreen(this);
             Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this})
             this.stop();
 
@@ -33,12 +33,12 @@ export default {
                 timeLimit: reviveTickTime,
                 callback: function() {
                     var canRevive = false;
-                    utils.applyToUnitsByTeam(function(team) {
+                    gameUtils.applyToUnitsByTeam(function(team) {
                         return team == this.team;
                     }.bind(this), function(unit) {
                         return this != unit;
                     }.bind(this), function(unit) {
-                        if(utils.distanceBetweenPoints(this.reviveCenter, unit.position) <= 50) {
+                        if(mathArrayUtils.distanceBetweenPoints(this.reviveCenter, unit.position) <= 50) {
                             canRevive = true;
                         }
                     }.bind(this))
@@ -46,7 +46,7 @@ export default {
                     if(canRevive) {
                         this.reviveAmount += reviveTickTime;
                         this.revivePercent = this.reviveAmount/this.reviveTime;
-                        this.grave.tint = utils.percentAsHexColor(this.revivePercent, {start: {r: 255, g: 255, b: 255}, final: {r: 255, g: 0, b: 0}});
+                        this.grave.tint = graphicsUtils.percentAsHexColor(this.revivePercent, {start: {r: 255, g: 255, b: 255}, final: {r: 255, g: 0, b: 0}});
                         if(this.revivePercent >= 1) {
                             this.revive();
                         }
@@ -59,7 +59,7 @@ export default {
 
     revive: function() {
         globals.currentGame.invalidateTimer(this.reviveTimer);
-        utils.removeSomethingFromRenderer(this.grave);
+        graphicsUtils.removeSomethingFromRenderer(this.grave);
 
         this.isDead = false;
         this.currentEnergy = this.maxEnergy/2;
@@ -73,9 +73,9 @@ export default {
     hideGrave: function() {
         if(this.grave) {
             if(this.corpse) {
-                utils.removeSomethingFromRenderer(this.corpse);
+                graphicsUtils.removeSomethingFromRenderer(this.corpse);
             }
-            utils.removeSomethingFromRenderer(this.grave);
+            graphicsUtils.removeSomethingFromRenderer(this.grave);
             this.grave = null;
         }
     }

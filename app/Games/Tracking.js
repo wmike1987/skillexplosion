@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import {globals, mouseStates} from '@core/Fundamental/GlobalState.js'
 
@@ -32,7 +32,7 @@ var game = {
 	outputLag: 3,
 
 	initExtension: function() {
-	    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});
+	    this.hit = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2});
 	},
 
 	play: function(options) {
@@ -65,20 +65,20 @@ var game = {
 						this.incrementScore(targetScore);
 						var framePosition = this.ball.positionsCopy[plen-this.outputLag];
 
-						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
+						var plusOne = graphicsUtils.addSomethingToRenderer('PlusOne', 'foreground');
 						plusOne.position = framePosition;
 						plusOne.position.y -= 50;
 						this.addTime(1000);
-						utils.floatSprite(plusOne);
+						graphicsUtils.floatSprite(plusOne);
 
 						//play death animation
-						var deathanimation = utils.getAnimationB({
+						var deathanimation = gameUtils.getAnimation({
 							numberOfFrames: 8,
 							baseName: 'blueCollapse',
 							speed: 1,
 							transform: [framePosition.x, framePosition.y, this.ball.circleRadius*2/512, this.ball.circleRadius*2/512]
 						});
-						utils.addSomethingToRenderer(deathanimation, 'stageOne');
+						graphicsUtils.addSomethingToRenderer(deathanimation, 'stageOne');
 						deathanimation.play();
 
 						this.hit.play();
@@ -89,7 +89,7 @@ var game = {
 					this.addTimer(this.ball.timer);
 				} else {
 					this.ball.timer.paused = false;
-					this.ball.renderlings.mainData.tint = utils.shadeBlendConvert(Math.max(this.ball.timer.percentDone), '#ffffff', tintToColor);
+					this.ball.renderlings.mainData.tint = graphicsUtils.shadeBlendConvert(Math.max(this.ball.timer.percentDone), '#ffffff', tintToColor);
 				}
 		    }
 		}.bind(this));

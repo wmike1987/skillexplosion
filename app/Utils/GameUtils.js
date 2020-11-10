@@ -11,17 +11,7 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 
 var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 
-var utils = {
-
-    distanceBetweenBodies: function(bodyA, bodyB) {
-        var a = bodyA.position.x - bodyB.position.x;
-        var b = bodyA.position.y - bodyB.position.y;
-        return Math.sqrt(a*a + b*b);
-    },
-
-    distanceBetweenPoints: function(A, B) {
-      return (Matter.Vector.magnitude(Matter.Vector.sub(A, B)));
-    },
+var gameUtils = {
 
     /*
      * options {
@@ -40,7 +30,7 @@ var utils = {
      *  where
      *  onComplete
      */
-    getAnimationB: function(options) {
+    getAnimation: function(options) {
         var frames = [];
         var anim = null;
         if(options.numberOfFrames) {
@@ -67,11 +57,11 @@ var utils = {
 
         if(options.fadeAway) {
             anim.onComplete = function() { //default onComplete function
-                utils.fadeSpriteOverTime(anim, options.fadeTime || 2000);
+                graphicsUtils.fadeSpriteOverTime(anim, options.fadeTime || 2000);
             }.bind(this);
         } else {
             anim.onComplete = function() { //default onComplete function
-                utils.removeSomethingFromRenderer(anim)
+                graphicsUtils.removeSomethingFromRenderer(anim)
             }.bind(this);
         }
         anim.persists = true;
@@ -122,7 +112,7 @@ var utils = {
      * }
      */
 
-    getSpineAnimation(options) {
+    getSpineAnimation: function(options) {
         options = $.extend({canInterruptSelf: true}, options)
         var anim = {spine: options.spine};
 
@@ -195,133 +185,6 @@ var utils = {
         return anim;
     },
 
-    //https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors - with some modifications
-    shadeBlendConvert: function(p, from, to) {
-        if(typeof(p)!="number"||p<-1||p>1||typeof(from)!="string"||(from[0]!='r'&&from[0]!='#')||(typeof(to)!="string"&&typeof(to)!="undefined"))return null; //ErrorCheck
-        if(!this.sbcRip)this.sbcRip=function(d){
-            var l=d.length,RGB=new Object();
-            if(l>9){
-                d=d.split(",");
-                if(d.length<3||d.length>4)return null;//ErrorCheck
-                RGB[0]=i(d[0].slice(4)),RGB[1]=i(d[1]),RGB[2]=i(d[2]),RGB[3]=d[3]?parseFloat(d[3]):-1;
-            }else{
-                if(l==8||l==6||l<4)return null; //ErrorCheck
-                if(l<6)d="#"+d[1]+d[1]+d[2]+d[2]+d[3]+d[3]+(l>4?d[4]+""+d[4]:""); //3 digit
-                d=i(d.slice(1),16),RGB[0]=d>>16&255,RGB[1]=d>>8&255,RGB[2]=d&255,RGB[3]=l==9||l==5?r(((d>>24&255)/255)*10000)/10000:-1;
-            }
-            return RGB;}
-        var i=parseInt,r=Math.round,h=from.length>9,h=typeof(to)=="string"?to.length>9?true:to=="c"?!h:false:h,b=p<0,p=b?p*-1:p,to=to&&to!="c"?to:b?"#000000":"#FFFFFF",f=this.sbcRip(from),t=this.sbcRip(to);
-        if(!f||!t)return null; //ErrorCheck
-        if(h)return "rgb("+r((t[0]-f[0])*p+f[0])+","+r((t[1]-f[1])*p+f[1])+","+r((t[2]-f[2])*p+f[2])+(f[3]<0&&t[3]<0?")":","+(f[3]>-1&&t[3]>-1?r(((t[3]-f[3])*p+f[3])*10000)/10000:t[3]<0?f[3]:t[3])+")");
-        else return (0x100000000+(f[3]>-1&&t[3]>-1?r(((t[3]-f[3])*p+f[3])*255):t[3]>-1?r(t[3]*255):f[3]>-1?r(f[3]*255):255)*0x1000000+r((t[0]-f[0])*p+f[0])*0x10000+r((t[1]-f[1])*p+f[1])*0x100+r((t[2]-f[2])*p+f[2]));
-    },
-
-    /*
-     *  options {
-     *      sprite
-            tint
-            speed of tint color in millis
-     *   }
-     */
-    makeSpriteBlinkTint: function(options) {
-        var sprite = options.sprite;
-        var tint = options.tint;
-        var speed = options.speed;
-
-        if(sprite.blinkTimer) {
-            globals.currentGame.invalidateTimer(sprite.blinkTimer);
-            sprite.tint = sprite.originalTint;
-        }
-
-        sprite.originalTint = sprite.tint;
-        sprite.tint = tint;
-        sprite.blinkTimer = {
-            name: this.uuidv4(),
-            runs: 1,
-            timeLimit: speed,
-            callback: function() {
-                sprite.tint = sprite.originalTint;
-            }.bind(this)
-        };
-        globals.currentGame.addTimer(sprite.blinkTimer);
-    },
-
-    addSomethingToRenderer: function(something, where, options) {
-        if($.type(where) == 'object') {
-            options = where;
-            where = options.where;
-        }
-        options = options || {};
-
-        var displayObject = this.createDisplayObject(something, options);
-        globals.currentGame.renderer.addToPixiStage(displayObject, where || displayObject.where);
-        return displayObject;
-    },
-
-    /*
-     * This method is prone to creating memory leaks since we'll create a Sprite but not add
-     * it to a stage or a body (sometimes) meaning it won't get cleaned up naturally. Be sure
-     * to death pact this to something, attach it to a body, or manually destroy.
-     */
-    createDisplayObject: function(something, options) {
-        options = options || {};
-
-        var displayObject = globals.currentGame.renderer.itsMorphinTime(something, options);
-        var alreadyBorn = something == displayObject;
-
-        $.extend(displayObject, options);
-
-        //Default anchor to {.5, .5} if anchor wasn't specified in the options AND
-        //if we're not already a real display object. This is so that adding an already
-        //created object via addSomethingToRenderer doesn't override the previously set anchor.
-        //This means that it's assumed that an already-created object has a relevant anchor.
-        if(!options.anchor && !alreadyBorn) {
-            displayObject.anchor = {x: .5, y: .5};
-        }
-        if(options.filter) {
-            options.filter.uniforms.mouse = {x: 50, y: 50};
-            options.filter.uniforms.resolution = {x: globals.currentGame.canvas.width, y: globals.currentGame.canvas.height};
-            displayObject.filters = [options.filter];
-        }
-
-        return displayObject;
-    },
-
-    addDisplayObjectToRenderer: function(dobj, where) {
-        globals.currentGame.renderer.addToPixiStage(dobj, where || dobj.where);
-    },
-
-    changeDisplayObjectStage: function(dobj, where) {
-        globals.currentGame.renderer.addToPixiStage(dobj, where);
-    },
-
-    addOrShowDisplayObject: function(displayObject) {
-        if(!displayObject.parent) {
-            this.addDisplayObjectToRenderer(displayObject);
-        } else {
-            displayObject.visible = true;
-        }
-    },
-
-    makeSpriteSize: function(sprite, size) {
-        if(!sprite.texture) return;
-        var scaleX = null;
-        var scaleY = null;
-        if(!size.w && !size.h && size.x && size.y) {
-            size.w = size.x;
-            size.h = size.y;
-        }
-
-        if(size.w) {
-            scaleX = size.w/sprite.texture.width;
-            scaleY = size.h/sprite.texture.height;
-        } else {
-            scaleX = size/sprite.texture.width;
-        }
-        sprite.scale = {x: scaleX, y: scaleY || scaleX};
-        return sprite.scale;
-    },
-
     /* If we're attaching a body, don't worry about interpolation. Note: attaching
      * a body to another body only updates the attached body after an engine update, so any
      * manual moves of the master body won't take effect until an afterUpdate is triggered
@@ -360,24 +223,6 @@ var utils = {
         }
     },
 
-    removeSomethingFromRenderer: function(something, where) {
-        if(!something) return;
-
-        //if we just have a display object that has not been added to the renderer, destroy this mf'er
-        if(!something.parent) {
-            if(something.destroy && !something._destroyed) {
-                something.destroy();
-            }
-        } else {
-            //otherwise remove from stage and destroy
-            where = where || something.myLayer || 'stage';
-            globals.currentGame.renderer.removeFromPixiStage(something, where);
-        }
-
-        //always trigger a destroy
-        Matter.Events.trigger(something, "destroy");
-    },
-
     scaleBody: function(body, x, y) {
         Matter.Body.scale(body, x, y);
         body.render.sprite.xScale *= x;
@@ -391,6 +236,21 @@ var utils = {
         }
     },
 
+    sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {
+        //figure out the movement vector
+        var velocityVector = Matter.Vector.sub(destination, body.position);
+        var velocityScale = speed / Matter.Vector.magnitude(velocityVector);
+
+        if(surpassDestination) {
+            Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+        } else {
+            if (Matter.Vector.magnitude(velocityVector) < speed)
+            Matter.Body.setVelocity(body, velocityVector);
+            else
+            Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+        }
+    },
+
     bodyRanOffStage: function(body) {
         var buffer = 50;
         if(body.velocity.x < 0 && body.bounds.max.x < -buffer)
@@ -401,13 +261,6 @@ var utils = {
             return true;
         if(body.velocity.y < 0 && body.bounds.max.y < -buffer)
             return true;
-    },
-
-    isSpriteBelowStage: function(sprite) {
-        var deletePointAdjustment = sprite.anchor.x * sprite.height;
-        if(sprite.position.y - deletePointAdjustment > globals.currentGame.canvas.height)
-            return true;
-        return false;
     },
 
     getRandomPlacementWithinCanvasBounds: function() {
@@ -449,11 +302,11 @@ var utils = {
 
     createAmbientLights: function(hexColorArray, where, intensity, doOptions) {
         var numberOfLights = hexColorArray.length;
-        var spacing = this.getCanvasWidth()/(numberOfLights*2);
+        var spacing = gameUtils.getCanvasWidth()/(numberOfLights*2);
         var lights = [];
         $.each(hexColorArray, function(i, color) {
-            var l = this.createDisplayObject("AmbientLight" + (i%3 + 1),
-                {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: this.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color,
+            var l = graphicsUtils.createDisplayObject("AmbientLight" + (i%3 + 1),
+                {position: this.addRandomVariationToGivenPosition({x: ((i+1)*2-1) * spacing, y: gameUtils.getCanvasHeight()/2}, 300/numberOfLights, 300), tint: color,
                 where: where || 'backgroundOne', alpha: intensity || .25});
             Object.assign(l, doOptions);
             lights.push(l);
@@ -550,7 +403,7 @@ var utils = {
         var variation = Math.random() * (variation || offscreenAmount);
         offscreenAmount += variation;
         if(direction == 'random' || !direction) {
-            direction = utils.getRandomIntInclusive(1, 4);
+            direction = mathArrayUtils.getRandomIntInclusive(1, 4);
         }
         if(direction == 'top' || direction == 1) {
             placement.y = 0 - (offscreenAmount);
@@ -651,101 +504,6 @@ var utils = {
         return new h.Howl(options);
     },
 
-    //1, 4 return an int in (1, 2, 3, 4)
-    getRandomIntInclusive: function(low, high) {
-        return Math.floor(Math.random() * (high-low+1) + low);
-    },
-
-    getRandomElementOfArray: function(array) {
-        if(array && array.length > 0) {
-            return array[this.getRandomIntInclusive(0, array.length-1)];
-        }
-    },
-
-    cloneVertices: function(vertices) {
-        var newVertices = [];
-        $.each(vertices, function(index, vertice) {
-            newVertices.push({x: vertice.x, y: vertice.y})
-        })
-        return newVertices;
-    },
-
-    cloneParts: function(parts) {
-        var newParts = [];
-        $.each(parts, function(index, part) {
-            newParts.push({vertices: this.cloneVertices(part.vertices)});
-        }.bind(this))
-        return newParts;
-    },
-
-    clonePosition: function(vector, offset) {
-        offset = $.extend({x: 0, y: 0}, offset);
-        return {x: vector.x + offset.x, y: vector.y + offset.y};
-    },
-
-    addScalarToPosition: function(position, scalar, reverseY) {
-        reverseY = reverseY ? -1 : 1;
-        return {x: position.x + scalar, y: position.y + scalar*reverseY};
-    },
-
-    fadeSprite: function(sprite, rate) {
-        sprite.alpha = sprite.alpha || 1.0;
-        globals.currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 1.0/rate, killsSelf: true, callback: function() {
-            sprite.alpha -= rate;
-        }, totallyDoneCallback: function() {
-            utils.removeSomethingFromRenderer(sprite);
-        }.bind(this)})
-    },
-
-    fadeSpriteOverTime: function(sprite, time, fadeIn) {
-        var startingAlpha = sprite.alpha || 1.0;
-        var finalAlpha = 0;
-        if(fadeIn) {
-            finalAlpha = startingAlpha;
-            startingAlpha = 0;
-            sprite.alpha = 0;
-        }
-        var runs = time/16;
-        var rate = (finalAlpha-startingAlpha)/runs;
-        globals.currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
-            sprite.alpha += rate;
-        }, totallyDoneCallback: function() {
-            if(!fadeIn)
-                utils.removeSomethingFromRenderer(sprite);
-        }.bind(this)})
-    },
-
-    floatSprite: function(sprite) {
-        sprite.alpha = 1.4;
-        globals.currentGame.addTimer({name: this.uuidv4(), timeLimit: 16, runs: 34, killsSelf: true, callback: function() {
-            sprite.position.y -= 1;
-            sprite.alpha -= 1.4/34;
-        }, totallyDoneCallback: function() {
-            utils.removeSomethingFromRenderer(sprite, 'foreground');
-        }.bind(this)})
-    },
-
-    floatText: function(text, position, options) {
-        options = options || {};
-        if(options.textSize) {
-            var newStyle = $.extend({}, styles.style, {fontSize: options.textSize})
-        } else {
-            newStyle = styles.style;
-        }
-        var startGameText = utils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: this.getCanvasWidth()/2, y: this.getCanvasHeight()/2});
-        startGameText.position = position;
-        startGameText.alpha = 1.4;
-        globals.currentGame.addTimer({name: this.uuidv4(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
-            if(!options.stationary) {
-                startGameText.position.y -= 1;
-            }
-            startGameText.alpha -= 1.4/(options.runs || 34);
-        }, totallyDoneCallback: function() {
-            utils.removeSomethingFromRenderer(startGameText, 'hud');
-            if(options.deferred) options.deferred.resolve()
-        }.bind(this)})
-    },
-
     praise: function(options) {
         if(!options) {
             options = {style: styles.praiseStyle}
@@ -754,13 +512,6 @@ var utils = {
         }
         var praiseWord = praiseWords[this.getIntBetween(0, praiseWords.length-1)] + "!";
         this.floatText(praiseWord, options.position || this.getCanvasCenter(), options);
-    },
-
-    uuidv4: function() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
     },
 
     setCursorStyle: function(style, hotspot) {
@@ -838,7 +589,7 @@ var utils = {
     executeSomethingNextFrame: function(callback, frameCount) {
         var limit = frameCount == null ? 1 : frameCount;
         globals.currentGame.addTimer({
-            name: this.uuidv4(),
+            name: mathArrayUtils.uuidv4(),
             killsSelf: true,
             timeLimit: 200,
             gogogo: true,
@@ -865,7 +616,7 @@ var utils = {
         options = options || {};
         globals.currentGame.addTimer(
             {
-                name: 'task:' + this.uuidv4(),
+                name: 'task:' + mathArrayUtils.getId(),
                 timeLimit: duration,
                 killsSelf: true,
                 executeOnNuke: options.executeOnNuke,
@@ -880,8 +631,246 @@ var utils = {
         this.floatText("Wave: " + wave, this.getCanvasCenter(), {runs: 50, stationary: true, style: styles.newWaveStyle, deferred: deferred});
     },
 
-    flipCoin: function() {
-        return Math.random() > .5;
+    //Death pact currently supports other units, bodies, tick callbacks, timers, and finally functions-to-execute
+    //It will also search for an existing slave with the given id and replace it with the incoming slave
+    deathPact: function(master, slave, slaveId) {
+        if(!master.slaves)
+            master.slaves = [];
+
+        var added = false;
+        if(slaveId) {
+            slave.slaveId = slaveId;
+            $.each(master.slaves, function(i, existingSlave) {
+                if(existingSlave.slaveId == slaveId) {
+                    master.slaves[i] = slave;
+                    added = true;
+                }
+            })
+        }
+        if(!added)
+            master.slaves.push(slave);
+    },
+};
+
+var graphicsUtils = {
+    addSomethingToRenderer: function(something, where, options) {
+        if($.type(where) == 'object') {
+            options = where;
+            where = options.where;
+        }
+        options = options || {};
+
+        var displayObject = this.createDisplayObject(something, options);
+        globals.currentGame.renderer.addToPixiStage(displayObject, where || displayObject.where);
+        return displayObject;
+    },
+
+    /*
+     * This method is prone to creating memory leaks since we'll create a Sprite but not add
+     * it to a stage or a body (sometimes) meaning it won't get cleaned up naturally. Be sure
+     * to death pact this to something, attach it to a body, or manually destroy.
+     */
+    createDisplayObject: function(something, options) {
+        options = options || {};
+
+        var displayObject = globals.currentGame.renderer.itsMorphinTime(something, options);
+        var alreadyBorn = something == displayObject;
+
+        $.extend(displayObject, options);
+
+        //Default anchor to {.5, .5} if anchor wasn't specified in the options AND
+        //if we're not already a real display object. This is so that adding an already
+        //created object via addSomethingToRenderer doesn't override the previously set anchor.
+        //This means that it's assumed that an already-created object has a relevant anchor.
+        if(!options.anchor && !alreadyBorn) {
+            displayObject.anchor = {x: .5, y: .5};
+        }
+        if(options.filter) {
+            options.filter.uniforms.mouse = {x: 50, y: 50};
+            options.filter.uniforms.resolution = {x: globals.currentGame.canvas.width, y: globals.currentGame.canvas.height};
+            displayObject.filters = [options.filter];
+        }
+
+        return displayObject;
+    },
+
+    addDisplayObjectToRenderer: function(dobj, where) {
+        globals.currentGame.renderer.addToPixiStage(dobj, where || dobj.where);
+    },
+
+    changeDisplayObjectStage: function(dobj, where) {
+        globals.currentGame.renderer.addToPixiStage(dobj, where);
+    },
+
+    addOrShowDisplayObject: function(displayObject) {
+        if(!displayObject.parent) {
+            this.addDisplayObjectToRenderer(displayObject);
+        } else {
+            displayObject.visible = true;
+        }
+    },
+
+    makeSpriteSize: function(sprite, size) {
+        if(!sprite.texture) return;
+        var scaleX = null;
+        var scaleY = null;
+        if(!size.w && !size.h && size.x && size.y) {
+            size.w = size.x;
+            size.h = size.y;
+        }
+
+        if(size.w) {
+            scaleX = size.w/sprite.texture.width;
+            scaleY = size.h/sprite.texture.height;
+        } else {
+            scaleX = size/sprite.texture.width;
+        }
+        sprite.scale = {x: scaleX, y: scaleY || scaleX};
+        return sprite.scale;
+    },
+
+    removeSomethingFromRenderer: function(something, where) {
+        if(!something) return;
+
+        //if we just have a display object that has not been added to the renderer, destroy this mf'er
+        if(!something.parent) {
+            if(something.destroy && !something._destroyed) {
+                something.destroy();
+            }
+        } else {
+            //otherwise remove from stage and destroy
+            where = where || something.myLayer || 'stage';
+            globals.currentGame.renderer.removeFromPixiStage(something, where);
+        }
+
+        //always trigger a destroy
+        Matter.Events.trigger(something, "destroy");
+    },
+
+    //https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors - with some modifications
+    shadeBlendConvert: function(p, from, to) {
+        if(typeof(p)!="number"||p<-1||p>1||typeof(from)!="string"||(from[0]!='r'&&from[0]!='#')||(typeof(to)!="string"&&typeof(to)!="undefined"))return null; //ErrorCheck
+        if(!this.sbcRip)this.sbcRip=function(d){
+            var l=d.length,RGB=new Object();
+            if(l>9){
+                d=d.split(",");
+                if(d.length<3||d.length>4)return null;//ErrorCheck
+                RGB[0]=i(d[0].slice(4)),RGB[1]=i(d[1]),RGB[2]=i(d[2]),RGB[3]=d[3]?parseFloat(d[3]):-1;
+            }else{
+                if(l==8||l==6||l<4)return null; //ErrorCheck
+                if(l<6)d="#"+d[1]+d[1]+d[2]+d[2]+d[3]+d[3]+(l>4?d[4]+""+d[4]:""); //3 digit
+                d=i(d.slice(1),16),RGB[0]=d>>16&255,RGB[1]=d>>8&255,RGB[2]=d&255,RGB[3]=l==9||l==5?r(((d>>24&255)/255)*10000)/10000:-1;
+            }
+            return RGB;}
+        var i=parseInt,r=Math.round,h=from.length>9,h=typeof(to)=="string"?to.length>9?true:to=="c"?!h:false:h,b=p<0,p=b?p*-1:p,to=to&&to!="c"?to:b?"#000000":"#FFFFFF",f=this.sbcRip(from),t=this.sbcRip(to);
+        if(!f||!t)return null; //ErrorCheck
+        if(h)return "rgb("+r((t[0]-f[0])*p+f[0])+","+r((t[1]-f[1])*p+f[1])+","+r((t[2]-f[2])*p+f[2])+(f[3]<0&&t[3]<0?")":","+(f[3]>-1&&t[3]>-1?r(((t[3]-f[3])*p+f[3])*10000)/10000:t[3]<0?f[3]:t[3])+")");
+        else return (0x100000000+(f[3]>-1&&t[3]>-1?r(((t[3]-f[3])*p+f[3])*255):t[3]>-1?r(t[3]*255):f[3]>-1?r(f[3]*255):255)*0x1000000+r((t[0]-f[0])*p+f[0])*0x10000+r((t[1]-f[1])*p+f[1])*0x100+r((t[2]-f[2])*p+f[2]));
+    },
+
+    /*
+     *  options {
+     *      sprite
+            tint
+            speed of tint color in millis
+     *   }
+     */
+    makeSpriteBlinkTint: function(options) {
+        var sprite = options.sprite;
+        var tint = options.tint;
+        var speed = options.speed;
+
+        if(sprite.blinkTimer) {
+            globals.currentGame.invalidateTimer(sprite.blinkTimer);
+            sprite.tint = sprite.originalTint;
+        }
+
+        sprite.originalTint = sprite.tint;
+        sprite.tint = tint;
+        sprite.blinkTimer = {
+            name: mathArrayUtils.getId(),
+            runs: 1,
+            timeLimit: speed,
+            callback: function() {
+                sprite.tint = sprite.originalTint;
+            }.bind(this)
+        };
+        globals.currentGame.addTimer(sprite.blinkTimer);
+    },
+
+    fadeSprite: function(sprite, rate) {
+        sprite.alpha = sprite.alpha || 1.0;
+        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: 1.0/rate, killsSelf: true, callback: function() {
+            sprite.alpha -= rate;
+        }, totallyDoneCallback: function() {
+            graphicsUtils.removeSomethingFromRenderer(sprite);
+        }.bind(this)})
+    },
+
+    fadeSpriteOverTime: function(sprite, time, fadeIn) {
+        var startingAlpha = sprite.alpha || 1.0;
+        var finalAlpha = 0;
+        if(fadeIn) {
+            finalAlpha = startingAlpha;
+            startingAlpha = 0;
+            sprite.alpha = 0;
+        }
+        var runs = time/16;
+        var rate = (finalAlpha-startingAlpha)/runs;
+        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
+            sprite.alpha += rate;
+        }, totallyDoneCallback: function() {
+            if(!fadeIn)
+                graphicsUtils.removeSomethingFromRenderer(sprite);
+        }.bind(this)})
+    },
+
+    floatSprite: function(sprite) {
+        sprite.alpha = 1.4;
+        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: 34, killsSelf: true, callback: function() {
+            sprite.position.y -= 1;
+            sprite.alpha -= 1.4/34;
+        }, totallyDoneCallback: function() {
+            graphicsUtils.removeSomethingFromRenderer(sprite, 'foreground');
+        }.bind(this)})
+    },
+
+    floatText: function(text, position, options) {
+        options = options || {};
+        if(options.textSize) {
+            var newStyle = $.extend({}, styles.style, {fontSize: options.textSize})
+        } else {
+            newStyle = styles.style;
+        }
+        var startGameText = graphicsUtils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: gameUtils.getCanvasWidth()/2, y: gameUtils.getCanvasHeight()/2});
+        startGameText.position = position;
+        startGameText.alpha = 1.4;
+        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
+            if(!options.stationary) {
+                startGameText.position.y -= 1;
+            }
+            startGameText.alpha -= 1.4/(options.runs || 34);
+        }, totallyDoneCallback: function() {
+            graphicsUtils.removeSomethingFromRenderer(startGameText, 'hud');
+            if(options.deferred) options.deferred.resolve()
+        }.bind(this)})
+    },
+
+    //https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+    hexToRgb: function(hex) {
+        var r = (hex >> 16) & 255;
+        var g = (hex >> 8) & 255;
+        var b = hex & 255;
+
+        return {
+            r: r,
+            g: g,
+            b: b
+        }
+    },
+
+    getRandomHexColor: function() {
+        return this.rgbToHex(Math.random()*255, Math.random()*255, Math.random()*255);
     },
 
     rgbToHex: function (red, green, blue) {
@@ -901,23 +890,6 @@ var utils = {
         }
 
         return "0x" + r + g + b;
-    },
-
-    //https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    hexToRgb: function(hex) {
-        var r = (hex >> 16) & 255;
-        var g = (hex >> 8) & 255;
-        var b = hex & 255;
-
-        return {
-            r: r,
-            g: g,
-            b: b
-        }
-    },
-
-    getRandomHexColor: function() {
-        return this.rgbToHex(Math.random()*255, Math.random()*255, Math.random()*255);
     },
 
     //red to green is default
@@ -956,7 +928,7 @@ var utils = {
         var utils = this;
         var forward = true;
         return globals.currentGame.addTimer({
-            name: 'gradualTint' + this.uuidv4(),
+            name: 'gradualTint' + mathArrayUtils.getId(),
             runs: 1,
             timeLimit: transitionTime,
             resetExtension: function() {
@@ -965,14 +937,14 @@ var utils = {
             tickCallback: function() {
                 var s = forward ? startColor : finalColor;
                 var f = forward ? finalColor : startColor;
-                var color = utils.percentAsHexColor(this.percentDone, {start: s, final: f})
+                var color = graphicsUtils.percentAsHexColor(this.percentDone, {start: s, final: f})
                 tintable[tintableName || 'tint'] = color;
             },
             totallyDoneCallback: function() {
                 var tempForward = !forward;
                 if(pauseDurationAtEnds) {
                     globals.currentGame.addTimer({
-                        name: 'pause' + utils.getId(),
+                        name: 'pause' + mathArrayUtils.getId(),
                         runs: 1,
                         timeLimit: pauseDurationAtEnds,
                         killsSelf: true,
@@ -995,7 +967,7 @@ var utils = {
         sprite.independentRender = true; //in case we're on a body
         globals.currentGame.addTimer(
             {
-                name: 'shake' + this.uuidv4(),
+                name: 'shake' + mathArrayUtils.getId(),
                 timeLimit: shakeFrameLength,
                 runs: Math.ceil(duration/shakeFrameLength),
                 killsSelf: true,
@@ -1008,6 +980,35 @@ var utils = {
                 }
             }
         )
+    },
+}
+
+var mathArrayUtils = {
+    uuidv4: function() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    },
+
+    distanceBetweenBodies: function(bodyA, bodyB) {
+        var a = bodyA.position.x - bodyB.position.x;
+        var b = bodyA.position.y - bodyB.position.y;
+        return Math.sqrt(a*a + b*b);
+    },
+    distanceBetweenPoints: function(A, B) {
+      return (Matter.Vector.magnitude(Matter.Vector.sub(A, B)));
+    },
+
+    //1, 4 return an int in (1, 2, 3, 4)
+    getRandomIntInclusive: function(low, high) {
+        return Math.floor(Math.random() * (high-low+1) + low);
+    },
+
+    getRandomElementOfArray: function(array) {
+        if(array && array.length > 0) {
+            return array[this.getRandomIntInclusive(0, array.length-1)];
+        }
     },
 
     removeObjectFromArray: function(array, objToRemove) {
@@ -1025,6 +1026,36 @@ var utils = {
         return array;
     },
 
+    cloneVertices: function(vertices) {
+        var newVertices = [];
+        $.each(vertices, function(index, vertice) {
+            newVertices.push({x: vertice.x, y: vertice.y})
+        })
+        return newVertices;
+    },
+
+    cloneParts: function(parts) {
+        var newParts = [];
+        $.each(parts, function(index, part) {
+            newParts.push({vertices: this.cloneVertices(part.vertices)});
+        }.bind(this))
+        return newParts;
+    },
+
+    clonePosition: function(vector, offset) {
+        offset = $.extend({x: 0, y: 0}, offset);
+        return {x: vector.x + offset.x, y: vector.y + offset.y};
+    },
+
+    addScalarToPosition: function(position, scalar, reverseY) {
+        reverseY = reverseY ? -1 : 1;
+        return {x: position.x + scalar, y: position.y + scalar*reverseY};
+    },
+
+    flipCoin: function() {
+        return Math.random() > .5;
+    },
+
     //return new position
     addScalarToVectorTowardDestination: function(start, destination, scalar) {
         var subbed = Matter.Vector.sub(destination, start);
@@ -1033,31 +1064,16 @@ var utils = {
         return Matter.Vector.add(start, scaled);
     },
 
-    sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {
-        //figure out the movement vector
-        var velocityVector = Matter.Vector.sub(destination, body.position);
-        var velocityScale = speed / Matter.Vector.magnitude(velocityVector);
-
-        if(surpassDestination) {
-            Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
-        } else {
-            if (Matter.Vector.magnitude(velocityVector) < speed)
-                Matter.Body.setVelocity(body, velocityVector);
-            else
-                Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
-        }
-    },
-
     //return angle to rotate something facing an original direction, towards a point
     pointInDirection: function(origin, destination, orientation) {
         if(orientation == 'east')
-            orientation = {x: origin.x + 1, y: origin.y}
+        orientation = {x: origin.x + 1, y: origin.y}
         else if(orientation == 'north')
-            orientation = {x: origin.x, y: origin.y + 1}
+        orientation = {x: origin.x, y: origin.y + 1}
         else if(orientation == 'west')
-            orientation = {x: origin.x - 1, y: origin.y}
+        orientation = {x: origin.x - 1, y: origin.y}
         else if(orientation == 'south')
-            orientation = {x: origin.x, y: origin.y - 1}
+        orientation = {x: origin.x, y: origin.y - 1}
 
         var originAngle = Matter.Vector.angle(origin, orientation || {x: origin.x, y: origin.y + 1});
         var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
@@ -1068,32 +1084,11 @@ var utils = {
     angleBetweenTwoVectors: function(vecA, vecB) {
         return Math.acos((Matter.Vector.dot(vecA, vecB)) / (Matter.Vector.magnitude(vecA) * Matter.Vector.magnitude(vecB)))
     },
-
-    //Death pact currently supports other units, bodies, tick callbacks, timers, and finally functions-to-execute
-    //It will also search for an existing slave with the given id and replace it with the incoming slave
-    deathPact: function(master, slave, slaveId) {
-        if(!master.slaves)
-            master.slaves = [];
-
-        var added = false;
-        if(slaveId) {
-            slave.slaveId = slaveId;
-            $.each(master.slaves, function(i, existingSlave) {
-                if(existingSlave.slaveId == slaveId) {
-                    master.slaves[i] = slave;
-                    added = true;
-                }
-            })
-        }
-        if(!added)
-            master.slaves.push(slave);
-    },
 };
 
 //aliases
-utils.offStage = utils.bodyRanOffStage;
-utils.getIntBetween = utils.getRandomIntInclusive;
-utils.distanceBetweenUnits = utils.distanceBetweenBodies;
-utils.getId = utils.uuidv4;
+mathArrayUtils.getIntBetween = mathArrayUtils.getRandomIntInclusive;
+mathArrayUtils.distanceBetweenUnits = mathArrayUtils.distanceBetweenBodies;
+mathArrayUtils.getId = mathArrayUtils.uuidv4;
 
-export default utils;
+export {gameUtils, graphicsUtils, mathArrayUtils};

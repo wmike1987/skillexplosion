@@ -1,5 +1,5 @@
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 /*
  * options = {
@@ -11,7 +11,7 @@ import utils from '@utils/GameUtils.js'
  */
 var commandFactory = function(options) {
     var newCommand = {};
-    newCommand.id = utils.uuidv4();
+    newCommand.id = mathArrayUtils.uuidv4();
     $.extend(newCommand, options);
     newCommand.predicates = options.predicates || []; //needs to be an array
     newCommand.preExecuteInterceptors = options.preExecuteInterceptors || []; //needs to be an array

@@ -1,14 +1,14 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import EnemySetSpecifier from '@games/Us/EnemySetSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import TileMapper from '@core/TileMapper.js'
 
 var levelSpecifier = {
     create: function(type, options) {
-        var tileTint = utils.getRandomElementOfArray(options.acceptableTileTints);
+        var tileTint = mathArrayUtils.getRandomElementOfArray(options.acceptableTileTints);
         var levelDetails = {
             type: type,
             tileSize: 225,

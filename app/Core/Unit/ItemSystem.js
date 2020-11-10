@@ -1,12 +1,12 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 var highlightTint = 0xa6ff29;
-var cantpickup = utils.getSound('cantpickup.wav', {volume: .03, rate: 1.3});
-var itemGrab = utils.getSound('itemgrab.wav', {volume: .045, rate: 1});
+var cantpickup = gameUtils.getSound('cantpickup.wav', {volume: .03, rate: 1.3});
+var itemGrab = gameUtils.getSound('itemgrab.wav', {volume: .045, rate: 1});
 
 //This module manages all things item-related
 var itemSystem = function(properties) {
@@ -91,10 +91,10 @@ var itemSystem = function(properties) {
             if(!this.grabbedItem || event.which != 1) return;
             var item = this.grabbedItem;
             globals.currentGame.removeTickCallback(item.grabCallback);
-            if(utils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
+            if(gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
                 var variationX = Math.random()*60;
                 var dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35});
-                if(!utils.isPositionWithinPlayableBounds(dropPosition)) {
+                if(!gameUtils.isPositionWithinPlayableBounds(dropPosition)) {
                     dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 0});
                 }
                 item.drop(dropPosition, {fleeting: false});

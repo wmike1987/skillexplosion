@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 
 var targetScore = 1;
@@ -76,14 +76,14 @@ var game = {
 	lastTap: null,
 
 	initExtension: function() {
-	    this.begin = utils.getSound('chalkWriting1.wav', {volume: .5, rate: 1.4});
-	    this.match = utils.getSound('chalkEraser1.wav', {volume: 1, rate: 1});
-	    this.tap = [utils.getSound('chalkWriting2.wav', {volume: .03, rate: .9}),
-        		    utils.getSound('chalkWriting2.wav', {volume: .02, rate: 1.1}),
-        		    utils.getSound('chalkWriting3.wav', {volume: .03, rate: .9}),
-        		    utils.getSound('chalkWriting3.wav', {volume: .02, rate: 1.1}),
-        		    utils.getSound('chalkWriting4.wav', {volume: .03, rate: .9}),
-        		    utils.getSound('chalkWriting4.wav', {volume: .02, rate: 1.1})];
+	    this.begin = gameUtils.getSound('chalkWriting1.wav', {volume: .5, rate: 1.4});
+	    this.match = gameUtils.getSound('chalkEraser1.wav', {volume: 1, rate: 1});
+	    this.tap = [gameUtils.getSound('chalkWriting2.wav', {volume: .03, rate: .9}),
+        		    gameUtils.getSound('chalkWriting2.wav', {volume: .02, rate: 1.1}),
+        		    gameUtils.getSound('chalkWriting3.wav', {volume: .03, rate: .9}),
+        		    gameUtils.getSound('chalkWriting3.wav', {volume: .02, rate: 1.1}),
+        		    gameUtils.getSound('chalkWriting4.wav', {volume: .03, rate: .9}),
+        		    gameUtils.getSound('chalkWriting4.wav', {volume: .02, rate: 1.1})];
 
 		this.levelEmitterConfig = { "alpha": { "start": 1, "end": 0.11 }, "scale": { "start": 0.2, "end": 0.2, "minimumScaleMultiplier": 1 }, "color": { "start": "#ffffff", "end": "#ffffff" }, "speed": { "start": 200, "end": 0, "minimumSpeedMultiplier": 1.02 }, "acceleration": { "x": 0, "y": 0 }, "maxSpeed": 0, "startRotation": { "min": 0, "max": 360 }, "noRotation": false, "rotationSpeed": { "min": 2, "max": 0 }, "lifetime": { "min": 0.5, "max": 0.5 }, "blendMode": "add", "frequency": 0.2, "emitterLifetime": 0.5, "maxParticles": 500, "pos": { "x": 0, "y": 0 }, "addAtBack": false, "spawnType": "burst", "particlesPerWave": 14, "particleSpacing": 100, "angleStart": 16 }
 	},
@@ -108,19 +108,19 @@ var game = {
 
 	    /***create buttons***/
 	    //plus
-	    var add = utils.addSomethingToRenderer('TEXT:' + '+', null, {style: $.extend({}, style), x: this.canvas.width/2-(2*buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var add = graphicsUtils.addSomethingToRenderer('TEXT:' + '+', null, {style: $.extend({}, style), x: this.canvas.width/2-(2*buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //minus
-	    var subtract = utils.addSomethingToRenderer('TEXT:' + '–', null, {style: $.extend({}, style), x: this.canvas.width/2-(buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var subtract = graphicsUtils.addSomethingToRenderer('TEXT:' + '–', null, {style: $.extend({}, style), x: this.canvas.width/2-(buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //multiply
-	    var multiply = utils.addSomethingToRenderer('TEXT:' + 'x', null, {style: $.extend({}, style), x: this.canvas.width/2+0 + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var multiply = graphicsUtils.addSomethingToRenderer('TEXT:' + 'x', null, {style: $.extend({}, style), x: this.canvas.width/2+0 + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //divide
-	    var divide = utils.addSomethingToRenderer('TEXT:' + '÷', null, {style: $.extend({}, style), x: this.canvas.width/2+buttonSpacing + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var divide = graphicsUtils.addSomethingToRenderer('TEXT:' + '÷', null, {style: $.extend({}, style), x: this.canvas.width/2+buttonSpacing + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //create MATCH text
-	    utils.addSomethingToRenderer('MatchChalk', null, {style: $.extend({}, style), x: this.canvas.width/2-(1.5*buttonSpacing), y: this.canvas.height*1/4});
+	    graphicsUtils.addSomethingToRenderer('MatchChalk', null, {style: $.extend({}, style), x: this.canvas.width/2-(1.5*buttonSpacing), y: this.canvas.height*1/4});
 
 	    var buttons = [add, subtract, multiply, divide];
 
@@ -174,7 +174,7 @@ var game = {
 	        }
 
 	        this.sequence = $.grep(this.sequence, function(seq, index) {
-	            if(utils.bodyRanOffStage(seq)) {
+	            if(gameUtils.bodyRanOffStage(seq)) {
 	                this.removeBody(seq);
 	                return false;
                 } else {
@@ -207,14 +207,14 @@ var game = {
             default:
         }
         if(newValue < limit) {
-            this.tap[utils.getRandomIntInclusive(0, this.tap.length-1)].play();
+            this.tap[mathArrayUtils.getRandomIntInclusive(0, this.tap.length-1)].play();
             this.updateSequenceBodies(newValue);
         }
 	},
 
 	foundMatch: function() {
 
-	    var emitter = utils.createParticleEmitter({where: this.renderer.stages.stage, config: this.levelEmitterConfig});
+	    var emitter = gameUtils.createParticleEmitter({where: this.renderer.stages.stage, config: this.levelEmitterConfig});
 
         // Start emitting
         emitter.updateSpawnPos(this.currentMatch.position.x, this.currentMatch.position.y);
@@ -230,20 +230,20 @@ var game = {
 
 	generateNewMatch: function() {
 	    if(this.currentMatch) {
-		    utils.removeSomethingFromRenderer(this.currentMatch);
+		    graphicsUtils.removeSomethingFromRenderer(this.currentMatch);
 	    }
 
 	    var fontSize = 70;
-	    var first = utils.getRandomIntInclusive(1, 40);
+	    var first = mathArrayUtils.getRandomIntInclusive(1, 40);
 
 	    //if this is the first number we ever generate... let's not have it be 2
 	    if(!this.currentMatch) {
 	        while(first == 2) {
-	            first = utils.getRandomIntInclusive(1, 40);
+	            first = mathArrayUtils.getRandomIntInclusive(1, 40);
 	        }
 	    }
 
-	    var firstSprite = utils.addSomethingToRenderer('TEXT:' + first.toString(), null, {style: matchStyle, x: this.canvas.width/2, y: this.canvas.height/4});
+	    var firstSprite = graphicsUtils.addSomethingToRenderer('TEXT:' + first.toString(), null, {style: matchStyle, x: this.canvas.width/2, y: this.canvas.height/4});
 	    firstSprite.numericalValue = first;
 		this.currentMatch = firstSprite;
 
@@ -272,7 +272,7 @@ var game = {
         //generate new body for the value and set its render props
         var newNumber = Matter.Bodies.circle(0, 0, 20, { restitution: .95, frictionAir: 0});
         newNumber.renderChildren = [{
-	        id: utils.uuidv4(),
+	        id: mathArrayUtils.uuidv4(),
 	        data: 'TEXT:' + value.toString(),
 	        options: {style: $.extend({}, sequenceStyle)},
 	        offset: {x: 0, y: 0}

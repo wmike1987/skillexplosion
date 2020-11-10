@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 
 var game = {
@@ -26,7 +26,7 @@ var game = {
 	noBorder: true,
 
 	initExtension: function() {
-	    this.hits = [utils.getSound('nicehit1.wav', {volume: .2}), utils.getSound('nicehit2.wav', {volume: .2}), utils.getSound('nicehit3.wav', {volume: .2}), utils.getSound('nicehit4.wav', {volume: .2})]
+	    this.hits = [gameUtils.getSound('nicehit1.wav', {volume: .2}), gameUtils.getSound('nicehit2.wav', {volume: .2}), gameUtils.getSound('nicehit3.wav', {volume: .2}), gameUtils.getSound('nicehit4.wav', {volume: .2})]
 	},
 
 	play: function(options) {
@@ -61,7 +61,7 @@ var game = {
 				if(Matter.Bounds.contains(drop.bounds, {x: x, y: y})) {
 					if(Matter.Vertices.contains(drop.vertices, {x: x, y: y})) {
 						//play death animation
-						var dropflash = utils.getAnimationB({
+						var dropflash = gameUtils.getAnimation({
 							spritesheetName: 'DropletFlash',
 							animationName: 'DropletFlash',
 							speed: .6,
@@ -69,11 +69,11 @@ var game = {
 							transform: [drop.position.x, drop.position.y, 1, 1]
 						});
 						dropflash.play();
-						utils.addSomethingToRenderer(dropflash, 'stageOne');
+						graphicsUtils.addSomethingToRenderer(dropflash, 'stageOne');
 						this.removeBody(drop);
 						this.drops[i] = null;
 						this.incrementScore(1);
-						this.lastSoundPlayed = (this.lastSoundPlayed + utils.getRandomIntInclusive(1, this.hits.length-1)) % this.hits.length;
+						this.lastSoundPlayed = (this.lastSoundPlayed + mathArrayUtils.getRandomIntInclusive(1, this.hits.length-1)) % this.hits.length;
 						this.hits[this.lastSoundPlayed].play();
 					}
 				}
@@ -85,7 +85,7 @@ var game = {
 			$.each(this.drops, function(i, drop) {
 
 				if(drop == null) return;
-				if(utils.bodyRanOffStage(drop)) {
+				if(gameUtils.bodyRanOffStage(drop)) {
 					this.removeBody(drop);
 					this.drops[i] = null;
 					this.addLives(-1);
@@ -103,7 +103,7 @@ var game = {
 
 	createRaindrop: function() {
 		var radius = Math.random() * 10 + 30; //radius between 15-25
-		var xLoc = Math.random() * (utils.getCanvasWidth()-radius*2) + radius;
+		var xLoc = Math.random() * (gameUtils.getCanvasWidth()-radius*2) + radius;
 		var yLoc = -60;
 		var drop = Matter.Bodies.fromVertices(xLoc, yLoc, Matter.Vertices.fromPath('-6, 64   ,  -11, 63   ,  -20, 59   ,  -30, 49   ,  -35, 38   ,  -36, 22   ,  -34, 16   ,  -30, 5   ,  -27, -3   ,  -1, -64   ,  4, -53   ,  17, -26   ,  20, -19   ,  24, -9   ,  31, 7   ,  36, 23   ,  36, 35   ,  30, 49   ,  21, 58   , 8, 64') , { restitution: .95, friction: .3});
 

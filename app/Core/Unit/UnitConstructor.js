@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Attacker from '@core/Unit/_Attacker.js'
 import Iso from '@core/Unit/IsoSpriteManager.js'
@@ -22,7 +22,7 @@ function UnitConstructor(options) {
 
     //use the given object as our base -- "unitObj"
     var unitObj = options.givenUnitObj || {};
-    Object.assign(unitObj, {unitId: utils.uuidv4()}) //add in a unit id
+    Object.assign(unitObj, {unitId: mathArrayUtils.uuidv4()}) //add in a unit id
 
     //mixin the unit options into the unit base then into the unit object
     var unitBase = $.extend(true, {}, UnitBase);
@@ -31,7 +31,7 @@ function UnitConstructor(options) {
     //death pact slaves
     if(options.slaves) {
         $.each(options.slaves, function(i, sound) {
-            utils.deathPact(newUnit, sound);
+            gameUtils.deathPact(newUnit, sound);
         })
     }
 
@@ -146,8 +146,8 @@ function UnitConstructor(options) {
     selectionBody.isSelectionBody = true;
     selectionBody.unit = newUnit;
     selectionBody.noWire = !newUnit.adjustHitbox;
-    utils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
-    utils.deathPact(newUnit, selectionBody);
+    gameUtils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
+    gameUtils.deathPact(newUnit, selectionBody);
 
     //back references
     newUnit.body = body;

@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import {globals} from '@core/Fundamental/GlobalState'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 // options {
 //     item: item
@@ -47,7 +47,7 @@ var initiateBlinkDeath = function(options) {
         }
         originalCollect.call(item);
     }
-    utils.deathPact(item, t);
+    gameUtils.deathPact(item, t);
 }
 
 var giveUnitItem = function(options) {

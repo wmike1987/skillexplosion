@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 
 var targetScore = 1;
@@ -16,8 +16,8 @@ var game = {
 	outputLag: 3,
 
 	initExtension: function() {
-	    this.hit = utils.getSound('bellhit3.wav', {volume: .2, rate: 2});
-	    this.bullseye = utils.getSound('powerup2.wav', {volume: .75, rate: 1.1});
+	    this.hit = gameUtils.getSound('bellhit3.wav', {volume: .2, rate: 2});
+	    this.bullseye = gameUtils.getSound('powerup2.wav', {volume: .75, rate: 1.1});
 	},
 
 	play: function(options) {
@@ -36,8 +36,8 @@ var game = {
 
 		//create ghost target indicator
 		this.addEventListener('mousedown', function(event) {
-			this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
-			this.ghostTargetCenter = this.ghostTargetCenter || utils.addSomethingToRenderer('bluetarget2CenterGhost', 'stageNTwo');
+			this.ghostTarget = this.ghostTarget || graphicsUtils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
+			this.ghostTargetCenter = this.ghostTargetCenter || graphicsUtils.addSomethingToRenderer('bluetarget2CenterGhost', 'stageNTwo');
 			var vlen = this.ball.verticesCopy.length;
 			var plen = this.ball.positionsCopy.length;
 			var framePosition = this.ball.positionsCopy[plen-this.outputLag];
@@ -65,30 +65,30 @@ var game = {
 				hitSound = this.bullseye;
 
 				//play animation
-				var deathanimation = utils.getAnimationB({
+				var deathanimation = gameUtils.getAnimation({
 					numberOfFrames: 8,
 					baseName: 'ssBlueDeath',
 					speed: 1,
 					transform: [framePosition.x, framePosition.y, 2, 2]
 				});
-				utils.addSomethingToRenderer(deathanimation, 'stageOne');
+				graphicsUtils.addSomethingToRenderer(deathanimation, 'stageOne');
 				deathanimation.play();
-				var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
+				var plusOne = graphicsUtils.addSomethingToRenderer('PlusOne', 'foreground');
 				plusOne.position = framePosition;
 				plusOne.position.y -= 50;
-				utils.floatSprite(plusOne);
+				graphicsUtils.floatSprite(plusOne);
 			}
 			if(Matter.Vertices.contains(this.ball.verticesCopy[vlen-this.outputLag], {x: x, y: y})) {
 				this.incrementScore(targetScore);
 
 				//play animation
-				var deathanimation = utils.getAnimationB({
+				var deathanimation = gameUtils.getAnimation({
 					numberOfFrames: 8,
 					baseName: 'blueCollapse',
 					speed: 1,
 					transform: [framePosition.x, framePosition.y, this.ball.circleRadius*2/512, this.ball.circleRadius*2/512]
 				});
-				utils.addSomethingToRenderer(deathanimation, 'stageOne');
+				graphicsUtils.addSomethingToRenderer(deathanimation, 'stageOne');
 				deathanimation.play();
 
 				//play sound
@@ -97,7 +97,7 @@ var game = {
 
 				this.removeBody(this.ball);
 				this.removeBody(this.ballCenter);
-				utils.removeSomethingFromRenderer(this.ballTargetSprite)
+				graphicsUtils.removeSomethingFromRenderer(this.ballTargetSprite)
 				this.addBody(this.ball = this.createBodyAtRandomLocation(), true);
 				this.addBody(this.ballCenter = this.createBallCenter(this.ball), true);
 			}
@@ -131,9 +131,9 @@ var game = {
 	createBallCenter: function(ball) {
 		var ballCenter = Matter.Bodies.circle(ball.position.x, ball.position.y, ball.radius/3, {isSensor: true, isStatic: true});
 		ballCenter.noWire = true;
-		this.ballTargetSprite = utils.addSomethingToRenderer('bluetarget2Center', {where: 'stageOne', scale: {x: ball.radius*2/3/32, y: ball.radius*2/3/32}});
-		utils.attachSomethingToBody({something: this.ballTargetSprite, body: this.ball});
-		utils.attachSomethingToBody({something: ballCenter, body: this.ball});
+		this.ballTargetSprite = graphicsUtils.addSomethingToRenderer('bluetarget2Center', {where: 'stageOne', scale: {x: ball.radius*2/3/32, y: ball.radius*2/3/32}});
+		gameUtils.attachSomethingToBody({something: this.ballTargetSprite, body: this.ball});
+		gameUtils.attachSomethingToBody({something: ballCenter, body: this.ball});
 		return ballCenter;
 	}
 }

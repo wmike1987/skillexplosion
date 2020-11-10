@@ -51,6 +51,7 @@ module.exports = {
                 { from: 'SpineAssets', to: 'SpineAssets/'},
                 { from: 'Sounds', to: 'Sounds/'},
                 { from: './server.bat', to: ''},
+                { from: './css', to: 'css'},
             ]
         })
     ],

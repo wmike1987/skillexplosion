@@ -38,7 +38,7 @@ var CommonGameStarter = function(game) {
 
 	// set the global current game
 	globals.currentGame = game;
-	window.currentGame = globals.currentGame;
+	// window.currentGame = globals.currentGame;
 
 	//update the "loading..." text as assets are loaded
 	if(PIXI.Loader.shared.loaderDeferred.state() == 'pending') {

@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function Critter(options) {
     var critter = {};
@@ -29,56 +29,56 @@ export default function Critter(options) {
     var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['critterNW'].spineData);
 
     var runAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'run',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'run',
             speed: 1.5,
@@ -88,49 +88,49 @@ export default function Critter(options) {
     };
 
     var attackAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'attack',
             speed: 2,
             times: 3,
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'attack',
             speed: 2,
@@ -237,8 +237,8 @@ export default function Critter(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var attackSound = utils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = utils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
+    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
+    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
 
     var unitProperties = $.extend({
         unitType: 'Critter',
@@ -251,8 +251,8 @@ export default function Critter(options) {
         hitboxHeight: 40,
         hitboxYOffset: 5,
         itemsEnabled: true,
-        portrait: utils.createDisplayObject('CritterPortrait'),
-        wireframe: utils.createDisplayObject('CritterGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('CritterPortrait'),
+        wireframe: graphicsUtils.createDisplayObject('CritterGroupPortrait'),
         team: options.team || 4,
         priority: 50,
         name: options.name,
@@ -261,7 +261,7 @@ export default function Critter(options) {
         abilities: [],
         death: function() {
             var self = this;
-            var anim = utils.getAnimationB({
+            var anim = gameUtils.getAnimation({
                 spritesheetName: 'CritterAnimations1',
                 animationName: 'critterdeath',
                 speed: .25,
@@ -269,13 +269,13 @@ export default function Critter(options) {
                 fadeTime: 8000,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
-            utils.addSomethingToRenderer(anim);
+            graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             deathSound.play();
 
-            var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(self.deathPosition, {y: 22})})
-            utils.fadeSpriteOverTime(shadow, 1500);
-            utils.addSomethingToRenderer(shadow);
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
         }}, options);
 
@@ -297,13 +297,13 @@ export default function Critter(options) {
                 range: options.radius*2+10,
                 damage: 6,
                 attackExtension: function(target) {
-                    var bloodAnimation = utils.getAnimationB({
+                    var bloodAnimation = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'GenericHit',
                         speed: 1.0,
                         transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
                     });
-                    utils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                     bloodAnimation.play();
                     attackSound.play();
                 },

@@ -1,6 +1,6 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import Tooltip from '@core/Tooltip.js'
 import ucp from '@games/Us/UnitConfigurationPanel.js'
@@ -16,11 +16,11 @@ var unitPanel = function(options) {
     this.currentAbilities = [];
     this.currentCommands = [];
     this.itemSystem = null;
-    this.autoCastSound = utils.getSound('autocasttoggle.wav', {volume: .03, rate: 1.0});
+    this.autoCastSound = gameUtils.getSound('autocasttoggle.wav', {volume: .03, rate: 1.0});
 
     this.barOffset = 8; //top bar offset;
-    this.centerX = utils.getUnitPanelCenter().x;
-    this.centerY = utils.getUnitPanelCenter().y + this.barOffset/2;
+    this.centerX = gameUtils.getUnitPanelCenter().x;
+    this.centerY = gameUtils.getUnitPanelCenter().y + this.barOffset/2;
 
     //position variables
     this.unitPortraitPosition = {x: this.centerX, y: this.centerY};
@@ -39,17 +39,17 @@ var unitPanel = function(options) {
     this.unitSPPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
     this.unitEnergyPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
 
-    this.unitNameText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
-    this.unitLevelText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
-    this.unitDamageText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
-    this.unitDefenseText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
-    this.unitHealthText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle});
-    this.unitSPText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitSPTextPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
-    this.unitSPAmount = utils.addSomethingToRenderer('TEXT:--', {position: this.unitSPPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
-    this.unitEnergyText = utils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralStyle});
+    this.unitNameText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
+    this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
+    this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
+    this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
+    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle});
+    this.unitSPText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPTextPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
+    this.unitSPAmount = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
+    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralStyle});
 
     //experience meter
-    this.experienceMeter = utils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: utils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
+    this.experienceMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: gameUtils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
     this.experienceMeter.alpha = .5;
     this.experienceMeter.visible = false;
 
@@ -58,11 +58,11 @@ var unitPanel = function(options) {
     this.healthVialCenterY = this.centerY + 1;
     this.healthVialCenterX = this.centerX - 58;
     this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
-    this.healthVial = utils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
+    this.healthVial = graphicsUtils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
     var hvtt = Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
-            tooltip.mainDescription.style.fill = utils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
+            tooltip.mainDescription.style.fill = graphicsUtils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
         }
         return txt;
     }.bind(this), mainSystemMessage: function() {
@@ -70,32 +70,32 @@ var unitPanel = function(options) {
             var txt = "+" + this.prevailingUnit.healthRegenerationRate + " hp/sec";
         return txt;
     }.bind(this)}})
-    utils.makeSpriteSize(this.healthVial, this.vialDimensions);
+    graphicsUtils.makeSpriteSize(this.healthVial, this.vialDimensions);
 
-    this.healthBubbles = utils.getAnimationB({
+    this.healthBubbles = gameUtils.getAnimation({
         spritesheetName: 'UtilityAnimations1',
         animationName: 'bubbles',
         speed: .9,
         playThisManyTimes: 'loop',
         transform: [this.healthVialPosition.x, this.healthVialPosition.y + 10, 1.5, 1.5],
     });
-    utils.makeSpriteSize(this.healthBubbles, {w: 40, h: 80});
+    graphicsUtils.makeSpriteSize(this.healthBubbles, {w: 40, h: 80});
     this.healthBubbles.visible = false;
     this.healthBubbles.tint = 0xff8080;
     this.healthBubbles.alpha = 1;
     this.healthBubbles.play();
-    utils.addSomethingToRenderer(this.healthBubbles, 'hud');
+    graphicsUtils.addSomethingToRenderer(this.healthBubbles, 'hud');
 
-    this.healthVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x800000, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
-    this.healthVialSquare.position = {x: this.healthVialPosition.x, y: utils.getCanvasHeight()}
-    utils.makeSpriteSize(this.healthVialSquare,  {x: 0, y: 0});
-    utils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
+    this.healthVialSquare = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0x800000, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
+    this.healthVialSquare.position = {x: this.healthVialPosition.x, y: gameUtils.getCanvasHeight()}
+    graphicsUtils.makeSpriteSize(this.healthVialSquare,  {x: 0, y: 0});
+    graphicsUtils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
 
     //energy vial
     this.energyVialCenterY = this.centerY + 1;
     this.energyVialCenterX = this.centerX + 58;
     this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
-    this.energyVial = utils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
+    this.energyVial = graphicsUtils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
     Tooltip.makeTooltippable(this.energyVial, {title: "Energy", systemMessage: "+X energy/sec", descriptionStyle: styles.EnergyTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
@@ -106,26 +106,26 @@ var unitPanel = function(options) {
             var txt = "+" + this.prevailingUnit.energyRegenerationRate + " energy/sec";
         return txt;
     }.bind(this)}})
-    utils.makeSpriteSize(this.energyVial, this.vialDimensions);
+    graphicsUtils.makeSpriteSize(this.energyVial, this.vialDimensions);
 
-    this.energyBubbles = utils.getAnimationB({
+    this.energyBubbles = gameUtils.getAnimation({
         spritesheetName: 'UtilityAnimations1',
         animationName: 'bubbles',
         speed: .5,
         playThisManyTimes: 'loop',
         transform: [this.energyVialPosition.x, this.energyVialPosition.y + 10, 1.5, 1.5]
     });
-    utils.makeSpriteSize(this.energyBubbles, {w: 40, h: 80});
+    graphicsUtils.makeSpriteSize(this.energyBubbles, {w: 40, h: 80});
     this.energyBubbles.visible = false;
     this.energyBubbles.tint = 0xB6D7F9;
     this.energyBubbles.alpha = .5;
     this.energyBubbles.play();
-    utils.addSomethingToRenderer(this.energyBubbles, 'hud');
+    graphicsUtils.addSomethingToRenderer(this.energyBubbles, 'hud');
 
-    this.energyVialSquare = utils.createDisplayObject('TintableSquare', {tint: 0x155194, scale: {x: 1, y: 1}, alpha: .9, anchor: {x: .5, y: 1}});
-    this.energyVialSquare.position = {x: this.energyVialPosition.x, y: utils.getCanvasHeight()}
-    utils.makeSpriteSize(this.energyVialSquare, {x: 0, y: 0});
-    utils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
+    this.energyVialSquare = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0x155194, scale: {x: 1, y: 1}, alpha: .9, anchor: {x: .5, y: 1}});
+    this.energyVialSquare.position = {x: this.energyVialPosition.x, y: gameUtils.getCanvasHeight()}
+    graphicsUtils.makeSpriteSize(this.energyVialSquare, {x: 0, y: 0});
+    graphicsUtils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
 
     //health vial and engery vial
     this.updateHealthAndEnergyVialTick = globals.currentGame.addTickCallback(function() {
@@ -137,14 +137,14 @@ var unitPanel = function(options) {
             this.healthVial.tooltipObj.disabled = false;
             this.energyVial.tooltipObj.disabled = false;
             var healthPercent = this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth;
-            utils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
+            graphicsUtils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
 
             if(this.prevailingUnit.maxEnergy > 0) {
                 var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
             } else {
                 var energyPercent = 0;
             }
-            utils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
+            graphicsUtils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
         } else {
             this.healthVialSquare.visible = false;
             this.healthBubbles.visible = false;
@@ -176,13 +176,13 @@ var unitPanel = function(options) {
 
     //item variables
     this.itemCenterX = this.centerX + 85.5;
-    this.itemCenterY = utils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
+    this.itemCenterY = gameUtils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
     this.itemXSpacing = 30;
     this.itemYSpacing = 30;
 
     //specialty item variables
     this.spItemCenterX = this.centerX - 85.5;
-    this.spItemCenterY = utils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
+    this.spItemCenterY = gameUtils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
     this.spItemYSpacing = 30;
 
     //backpack item variables
@@ -191,10 +191,10 @@ var unitPanel = function(options) {
     this.bpItemXSpacing = 30;
 
     //create frame
-    this.frame = utils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
+    this.frame = graphicsUtils.createDisplayObject('UnitPanelFrame', {persists: true, position: this.position});
     this.frame.interactive = true;
-    this.frameBacking = utils.createDisplayObject('TintableSquare', {persists: true, position: this.position, tint: 0x5e5e5b});
-    utils.makeSpriteSize(this.frameBacking, {w: utils.getCanvasWidth(), h: utils.getUnitPanelHeight()});
+    this.frameBacking = graphicsUtils.createDisplayObject('TintableSquare', {persists: true, position: this.position, tint: 0x5e5e5b});
+    graphicsUtils.makeSpriteSize(this.frameBacking, {w: gameUtils.getCanvasWidth(), h: gameUtils.getUnitPanelHeight()});
 };
 
 unitPanel.prototype.initialize = function(options) {
@@ -204,10 +204,10 @@ unitPanel.prototype.initialize = function(options) {
     this.unitConfigurationPanel.initialize();
 
     //add frame-backing to world
-    utils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
+    graphicsUtils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
 
     //add frame to world
-    utils.addSomethingToRenderer(this.frame, 'hud');
+    graphicsUtils.addSomethingToRenderer(this.frame, 'hud');
 
     //listen for when the prevailing unit changes
     Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
@@ -241,7 +241,7 @@ unitPanel.prototype.initialize = function(options) {
         if(this.prevailingUnit.abilities) {
             $.each(this.prevailingUnit.abilities, function(i, ability) {
                 if(ability.key == event.id && ability.type == event.type && !ability.handlesOwnBlink) {
-                    utils.makeSpriteBlinkTint({sprite: ability.icon, tint: abilityTint, speed: 100})
+                    graphicsUtils.makeSpriteBlinkTint({sprite: ability.icon, tint: abilityTint, speed: 100})
                 }
             }.bind(this))
         }
@@ -251,13 +251,13 @@ unitPanel.prototype.initialize = function(options) {
             $.each(this.prevailingUnit.commands, function(name, command) {
                 if(command.key == event.id && command.type == event.type) {
                     if(name == 'attack') {
-                        utils.makeSpriteBlinkTint({sprite: this.attackMoveIcon, tint: commandTint, speed: 100});
+                        graphicsUtils.makeSpriteBlinkTint({sprite: this.attackMoveIcon, tint: commandTint, speed: 100});
                     } else if(name == 'move') {
-                        utils.makeSpriteBlinkTint({sprite: this.moveIcon, tint: commandTint, speed: 100})
+                        graphicsUtils.makeSpriteBlinkTint({sprite: this.moveIcon, tint: commandTint, speed: 100})
                     } else if(name == 'stop') {
-                        utils.makeSpriteBlinkTint({sprite: this.stopIcon, tint: commandTint, speed: 100})
+                        graphicsUtils.makeSpriteBlinkTint({sprite: this.stopIcon, tint: commandTint, speed: 100})
                     } else if(name == 'holdPosition') {
-                        utils.makeSpriteBlinkTint({sprite: this.holdPositionIcon, tint: commandTint, speed: 100})
+                        graphicsUtils.makeSpriteBlinkTint({sprite: this.holdPositionIcon, tint: commandTint, speed: 100})
                     }
                 }
             }.bind(this))
@@ -276,14 +276,14 @@ unitPanel.prototype.updateUnitGroup = function(units) {
         if(unit.wireframe) {
             var wireframe = unit.wireframe;
             if(!wireframe.parent) {
-                utils.addSomethingToRenderer(wireframe, 'hudOne');
+                graphicsUtils.addSomethingToRenderer(wireframe, 'hudOne');
                 wireframe.interactive = true;
                 wireframe.on('mouseup', function(event) {
                     this.unitSystem.selectedUnit = unit;
                 }.bind(this))
             }
             wireframe.position = {x: this.groupCenterX + i * this.groupSpacing, y: this.groupCenterY};
-            utils.makeSpriteSize(wireframe, this.wireframeSize);
+            graphicsUtils.makeSpriteSize(wireframe, this.wireframeSize);
             wireframe.visible = true;
         }
     }.bind(this))
@@ -304,10 +304,10 @@ unitPanel.prototype.highlightGroupUnit = function(prevailingUnit) {
     $.each(this.selectedUnits, function(i, unit) {
         if(unit.wireframe) {
             if(unit == prevailingUnit) {
-                utils.makeSpriteSize(unit.wireframe, this.wireframeSize);
+                graphicsUtils.makeSpriteSize(unit.wireframe, this.wireframeSize);
                 unit.wireframe.tint = 0xFFFFFF;
             } else {
-                utils.makeSpriteSize(unit.wireframe, this.wireframeSize*.7);
+                graphicsUtils.makeSpriteSize(unit.wireframe, this.wireframeSize*.7);
                 unit.wireframe.tint = 0xb3b3b3;
             }
         }
@@ -399,11 +399,11 @@ unitPanel.prototype.displayUnitPortrait = function() {
     if(!this.currentPortrait) return;
 
     if(!this.currentPortrait.parent) {
-        utils.addSomethingToRenderer(this.currentPortrait, 'hudOne');
+        graphicsUtils.addSomethingToRenderer(this.currentPortrait, 'hudOne');
     } else {
         this.currentPortrait.visible = true;
     }
-    utils.makeSpriteSize(this.currentPortrait, 90);
+    graphicsUtils.makeSpriteSize(this.currentPortrait, 90);
     this.currentPortrait.position = this.unitPortraitPosition;
 };
 
@@ -419,8 +419,8 @@ unitPanel.prototype.updateUnitItems = function() {
             var yLevel = Math.floor(i / 2);
             var y = this.itemCenterY + this.itemXSpacing * yLevel;
             if(!icon.parent) {
-                utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
-                utils.makeSpriteSize(icon, 27);
+                graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                graphicsUtils.makeSpriteSize(icon, 27);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -440,8 +440,8 @@ unitPanel.prototype.updateUnitItems = function() {
             var x = this.spItemCenterX;
             var y = this.itemCenterY + this.spItemYSpacing * i;
             if(!icon.parent) {
-                utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
-                utils.makeSpriteSize(icon, 27);
+                graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                graphicsUtils.makeSpriteSize(icon, 27);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -461,8 +461,8 @@ unitPanel.prototype.updateUnitItems = function() {
             var x = this.bpItemCenterX + this.bpItemXSpacing * i;
             var y = this.bpItemCenterY;
             if(!icon.parent) {
-                utils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
-                utils.makeSpriteSize(icon, 27);
+                graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                graphicsUtils.makeSpriteSize(icon, 27);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -558,7 +558,7 @@ unitPanel.prototype.displayUnitStats = function() {
             if(this.prevailingUnit) {
                 this.experienceMeter.visible = true;
                 var expPercent = (this.prevailingUnit.currentExperience-this.prevailingUnit.lastLevelExp) / (this.prevailingUnit.nextLevelExp-this.prevailingUnit.lastLevelExp);
-                utils.makeSpriteSize(this.experienceMeter, {x: utils.getPlayableWidth()*expPercent, y: this.barOffset-1});
+                graphicsUtils.makeSpriteSize(this.experienceMeter, {x: gameUtils.getPlayableWidth()*expPercent, y: this.barOffset-1});
             } else {
                 this.experienceMeter.visible = false;
             }
@@ -573,17 +573,17 @@ unitPanel.prototype.displayUnitAbilities = function() {
 
     //place, scale and enable abilility icons
     $.each(this.currentAbilities, function(i, ability) {
-        ability.icon.scale = utils.makeSpriteSize(ability.icon, this.abililtyWidth);
+        ability.icon.scale = graphicsUtils.makeSpriteSize(ability.icon, this.abililtyWidth);
         ability.icon.position = {x: this.abilityOneCenterX + (this.abilitySpacing * i), y: this.abilityOneCenterY};
         ability.icon.visible = true;
         if(!ability.icon.parent) {
-            utils.addSomethingToRenderer(ability.icon, 'hudOne');
+            graphicsUtils.addSomethingToRenderer(ability.icon, 'hudOne');
 
             //autocast init
             if(ability.autoCastEnabled) {
                 ability.systemMessage.push('Ctrl+Click to toggle autocast')
-                ability.abilityBorder = utils.addSomethingToRenderer('TintableAbilityBorder', 'hudOne', {position: ability.icon.position});
-                ability.autoCastTimer = utils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300, null, 500)
+                ability.abilityBorder = graphicsUtils.addSomethingToRenderer('TintableAbilityBorder', 'hudOne', {position: ability.icon.position});
+                ability.autoCastTimer = graphicsUtils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300, null, 500)
                 ability.abilityBorder.visible = ability.getAutoCastVariable;
                 ability.icon.interactive = true;
                 ability.icon.on('mouseup', function(event) {
@@ -609,13 +609,13 @@ unitPanel.prototype.displayUnitAbilities = function() {
         if(ability.augments) {
             $.each(ability.augments, function(i, augment) {
                 var bottomRightOfAbility = {x: ability.position.x + this.abililtyWithBorderWidth/2, y: ability.position.y + this.abililtyWithBorderWidth/2};
-                var agumentPosition = utils.addScalarToPosition(bottomRightOfAbility, -augmentBorderSize/2);
+                var agumentPosition = mathArrayUtils.addScalarToPosition(bottomRightOfAbility, -augmentBorderSize/2);
                 if(!augment.smallerIcon) {
-                    augment.smallerIcon = utils.addSomethingToRenderer(augment.icon.texture, {position: agumentPosition, where: 'hudTwo'});
+                    augment.smallerIcon = graphicsUtils.addSomethingToRenderer(augment.icon.texture, {position: agumentPosition, where: 'hudTwo'});
                     Tooltip.makeTooltippable(augment.smallerIcon, {title: augment.title, description: augment.description});
-                    augment.smallerBorder = utils.addSomethingToRenderer('AugmentBorder', {position: agumentPosition, where: 'hudTwo'});
-                    utils.makeSpriteSize(augment.smallerIcon, augmentSize);
-                    utils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);
+                    augment.smallerBorder = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: agumentPosition, where: 'hudTwo'});
+                    graphicsUtils.makeSpriteSize(augment.smallerIcon, augmentSize);
+                    graphicsUtils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);
                 }
                 if(ability.currentAugment == augment) {
                     augment.smallerIcon.visible = true;
@@ -667,23 +667,23 @@ unitPanel.prototype.displayUnitAbilities = function() {
 
 unitPanel.prototype.displayCommands = function() {
     if(!this.attackMoveIcon) {
-        this.moveIcon = utils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
-        utils.makeSpriteSize(this.moveIcon, 25);
+        this.moveIcon = graphicsUtils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
+        graphicsUtils.makeSpriteSize(this.moveIcon, 25);
         this.currentCommands.push({name: 'attack', icon: this.moveIcon});
         Tooltip.makeTooltippable(this.moveIcon, {title: 'Move', hotkey: 'M', description: "Move to a destination."})
 
-        this.attackMoveIcon = utils.addSomethingToRenderer('AttackIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing, y: this.commandOneCenterY}});
-        utils.makeSpriteSize(this.attackMoveIcon, 25);
+        this.attackMoveIcon = graphicsUtils.addSomethingToRenderer('AttackIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing, y: this.commandOneCenterY}});
+        graphicsUtils.makeSpriteSize(this.attackMoveIcon, 25);
         this.currentCommands.push({name: 'move', icon: this.attackMoveIcon});
         Tooltip.makeTooltippable(this.attackMoveIcon, {title: 'Attack-move', hotkey: 'A', description: "Attack-move to a destination."})
 
-        this.stopIcon = utils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
-        utils.makeSpriteSize(this.stopIcon, 25);
+        this.stopIcon = graphicsUtils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
+        graphicsUtils.makeSpriteSize(this.stopIcon, 25);
         this.currentCommands.push({name: 'stop', icon: this.stopIcon});
         Tooltip.makeTooltippable(this.stopIcon, {title: 'Stop', hotkey: 'S', description: "Halt current command."})
 
-        this.holdPositionIcon = utils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
-        utils.makeSpriteSize(this.holdPositionIcon, 25);
+        this.holdPositionIcon = graphicsUtils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
+        graphicsUtils.makeSpriteSize(this.holdPositionIcon, 25);
         this.currentCommands.push({name: 'holdPosition', icon: this.holdPositionIcon});
         Tooltip.makeTooltippable(this.holdPositionIcon, {title: 'Hold Position', hotkey: 'H', description: "Prevent any automatic movement."})
     } else {

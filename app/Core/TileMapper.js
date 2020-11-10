@@ -1,5 +1,5 @@
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import TileMap from '@core/TileMap'
 
 //This module takes in a collection of sprites + tile options and returns a TileMap
@@ -17,7 +17,7 @@ var tileMapper = {};
  */
 tileMapper.produceTileMap = function(options) {
     var textureArray = options.possibleTextures;
-    var bounds = options.bounds || utils.getCanvasWH();
+    var bounds = options.bounds || gameUtils.getCanvasWH();
     var tileWidth = options.tileWidth;
     var tileHeight = tileWidth/2;
     var realTileWidth = options.realTileWidth;
@@ -42,7 +42,7 @@ tileMapper.produceTileMap = function(options) {
             if(Math.random() < frequency) {
                 //scaling tiles, there are two "modes"
                 // 1) realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
-                var newDO = utils.createDisplayObject(utils.getRandomElementOfArray(textureArray), {position: {x: x, y: y+yOffset}, alpha: alpha, where: where, scale: {x: tileWidth/(realTileWidth || 1), y: tileWidth/(realTileWidth || 1)}});
+                var newDO = graphicsUtils.createDisplayObject(mathArrayUtils.getRandomElementOfArray(textureArray), {position: {x: x, y: y+yOffset}, alpha: alpha, where: where, scale: {x: tileWidth/(realTileWidth || 1), y: tileWidth/(realTileWidth || 1)}});
                 if(tileTint) {
                     newDO.tint = tileTint;
                 }
@@ -52,7 +52,7 @@ tileMapper.produceTileMap = function(options) {
                     var w = newDO.texture.width;
                     var h = newDO.texture.height;
                     var wScale = tileWidth/w;
-                    utils.makeSpriteSize(newDO, {w: tileWidth, h: wScale * h})
+                    graphicsUtils.makeSpriteSize(newDO, {w: tileWidth, h: wScale * h})
                 }
                 tm.addTile(newDO);
             }

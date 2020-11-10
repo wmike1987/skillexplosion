@@ -1,6 +1,6 @@
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
@@ -14,17 +14,17 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 var Tooltip = function(options) {
     var textAnchor = {x: 0, y: 0};
 
-    this.title = utils.createDisplayObject('TEXT:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
+    this.title = graphicsUtils.createDisplayObject('TEXT:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
 
     //build descriptions
     this.description = [];
     this.systemMessages = [];
     if($.isArray(options.description)) {
         $.each(options.description, function(i, descr) {
-            this.description.push(utils.createDisplayObject('TEXT:' + descr, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
+            this.description.push(graphicsUtils.createDisplayObject('TEXT:' + descr, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
         }.bind(this))
     } else {
-        this.description.push(utils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
+        this.description.push(graphicsUtils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
     }
     this.mainDescription = this.description[0];
 
@@ -33,15 +33,15 @@ var Tooltip = function(options) {
     this.iconSize = 32;
     if($.isArray(options.descriptionIcons)) {
         $.each(options.descriptionIcons, function(i, icon) {
-            var sizedIcon = utils.createDisplayObject(icon, {where: 'hudText', anchor: {x: 0, y: .5}});
+            var sizedIcon = graphicsUtils.createDisplayObject(icon, {where: 'hudText', anchor: {x: 0, y: .5}});
             this.description[i].anchor = {x: 0, y: .5}
-            utils.makeSpriteSize(sizedIcon, this.iconSize);
+            graphicsUtils.makeSpriteSize(sizedIcon, this.iconSize);
             this.descriptionIcons.push(sizedIcon);
         }.bind(this))
     } else if(options.descriptionIcons){
-        var sizedIcon = utils.createDisplayObject(options.descriptionIcons, {where: 'hudText', anchor: {x: 0, y: .5}});
+        var sizedIcon = graphicsUtils.createDisplayObject(options.descriptionIcons, {where: 'hudText', anchor: {x: 0, y: .5}});
         this.description[0].anchor = {x: 0, y: .5}
-        utils.makeSpriteSize(sizedIcon, this.iconSize);
+        graphicsUtils.makeSpriteSize(sizedIcon, this.iconSize);
         this.descriptionIcons.push(sizedIcon);
     }
 
@@ -54,10 +54,10 @@ var Tooltip = function(options) {
     //build system messages
     if($.isArray(options.systemMessage)) {
         $.each(options.systemMessage, function(i, sysMessage) {
-            this.systemMessages.push(utils.createDisplayObject('TEXT:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
+            this.systemMessages.push(graphicsUtils.createDisplayObject('TEXT:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
         }.bind(this))
     } else if(options.systemMessage){
-        this.systemMessages.push(utils.createDisplayObject('TEXT:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
+        this.systemMessages.push(graphicsUtils.createDisplayObject('TEXT:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
     }
     this.mainSystemMessage = this.systemMessages[0];
 
@@ -84,7 +84,7 @@ var Tooltip = function(options) {
 
     //create base and size it
     var baseTint = 0x00042D;
-    this.base = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
+    this.base = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
     var descriptionWidth = 0;
     var descriptionHeight = 0;
     var systemMessageWidth = 0;
@@ -109,7 +109,7 @@ var Tooltip = function(options) {
     }
     var width = Math.max(descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
     var height = this.title.height + this.buffer/2 + descriptionHeight + this.buffer + systemMessageHeight + (this.systemMessages.length ? this.buffer : 0) + this.buffer;
-    utils.makeSpriteSize(this.base, {w: width, h: height});
+    graphicsUtils.makeSpriteSize(this.base, {w: width, h: height});
 };
 
 //set title, text, backgroundColor, etc
@@ -119,20 +119,20 @@ Tooltip.prototype.update = function(options) {
 };
 
 Tooltip.prototype.destroy = function(options) {
-    utils.removeSomethingFromRenderer(this.title);
+    graphicsUtils.removeSomethingFromRenderer(this.title);
     $.each(this.description, function(i, descr) {
-        utils.removeSomethingFromRenderer(descr);
+        graphicsUtils.removeSomethingFromRenderer(descr);
     })
 
     $.each(this.descriptionIcons, function(i, icon) {
-        utils.removeSomethingFromRenderer(icon);
+        graphicsUtils.removeSomethingFromRenderer(icon);
     })
 
     $.each(this.systemMessages, function(i, sysMessage) {
-        utils.removeSomethingFromRenderer(sysMessage);
+        graphicsUtils.removeSomethingFromRenderer(sysMessage);
     })
 
-    utils.removeSomethingFromRenderer(this.base);
+    graphicsUtils.removeSomethingFromRenderer(this.base);
 
     $.each(this.updaters, function(key, updater) {
         globals.currentGame.removeTickCallback(updater);
@@ -146,7 +146,7 @@ Tooltip.prototype.display = function(position) {
 
     //lean our tooltip left or right so that it doesn't go off the screen
     var xOffset = 0;
-    if(position.x + this.base.width >= utils.getPlayableWidth() - 15) {
+    if(position.x + this.base.width >= gameUtils.getPlayableWidth() - 15) {
         this.base.anchor = {x: 1, y: 1};
         xOffset = this.base.width
         //lean left
@@ -167,17 +167,17 @@ Tooltip.prototype.display = function(position) {
     }
 
     if(!this.base.parent) {
-        utils.addDisplayObjectToRenderer(this.title, 'hudText');
+        graphicsUtils.addDisplayObjectToRenderer(this.title, 'hudText');
         $.each(this.description, function(i, descr) {
-            utils.addDisplayObjectToRenderer(descr, 'hudText');
+            graphicsUtils.addDisplayObjectToRenderer(descr, 'hudText');
         })
         $.each(this.descriptionIcons, function(i, icon) {
-            utils.addDisplayObjectToRenderer(icon, 'hudText');
+            graphicsUtils.addDisplayObjectToRenderer(icon, 'hudText');
         })
         $.each(this.systemMessages, function(i, sysMessage) {
-            utils.addDisplayObjectToRenderer(sysMessage, 'hudText');
+            graphicsUtils.addDisplayObjectToRenderer(sysMessage, 'hudText');
         })
-        utils.addDisplayObjectToRenderer(this.base, 'hudThree');
+        graphicsUtils.addDisplayObjectToRenderer(this.base, 'hudThree');
     }
 
     //place title

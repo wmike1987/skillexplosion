@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Attacker from '@core/Unit/_Attacker.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
@@ -121,7 +121,7 @@ function IsoSpriteManager(options) {
 		if(this.unit.noIdle) return;
 
 		var self = this;
-		var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
+		var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 		var randomAnimation = self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]];
 		self.switchAnimation(randomAnimation, {stop: true});
 
@@ -134,10 +134,10 @@ function IsoSpriteManager(options) {
 			if(self.unit.idleCancel) {
 				return;
 			}
-			var index = utils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
+			var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
 			self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true, idle: true});
 		}})
-		utils.deathPact(this.unit, this.idleTimer, this.idleTimer.name);
+		gameUtils.deathPact(this.unit, this.idleTimer, this.idleTimer.name);
 	}
 }
 

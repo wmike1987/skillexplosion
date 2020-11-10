@@ -4,7 +4,7 @@ import * as $ from 'jquery'
 import hs from  '@utils/HS.js'
 import * as h from  'howler'
 import styles from '@utils/Styles.js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js'
 import ItemSystem from '@core/Unit/ItemSystem.js'
 import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js'
@@ -66,11 +66,11 @@ var common = {
         this.invincibleListeners = [],
         this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
         this.mousePosition = mousePosition,
-        this.canvas = {width: utils.getPlayableWidth(), height: utils.getPlayableHeight()};
+        this.canvas = {width: gameUtils.getPlayableWidth(), height: gameUtils.getPlayableHeight()};
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
-        this.endGameSound = utils.getSound('bells.wav', {volume: .05});
-        this.loseLifeSound = utils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
+        this.endGameSound = gameUtils.getSound('bells.wav', {volume: .05});
+        this.loseLifeSound = gameUtils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
         this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
         this.unitsByTeam = {};
         var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
@@ -119,11 +119,11 @@ var common = {
         this.addTickCallback(function() {
             $.each(this.vertexHistories, function(index, body) {
                 //Veritices
-                body.verticeCopy = utils.cloneVertices(body.vertices);
+                body.verticeCopy = mathArrayUtils.cloneVertices(body.vertices);
                 if(!body.verticesCopy) {
                     body.verticesCopy = [];
                 }
-                body.verticesCopy.push(utils.cloneVertices(body.vertices));
+                body.verticesCopy.push(mathArrayUtils.cloneVertices(body.vertices));
                 if(body.verticesCopy.length > maxLagToAccountFor) {
                     body.verticesCopy.shift();
                 }
@@ -133,7 +133,7 @@ var common = {
                 if(!body.positionsCopy) {
                     body.positionsCopy = [];
                 }
-                body.positionsCopy.push(utils.clonePosition(body.position));
+                body.positionsCopy.push(mathArrayUtils.clonePosition(body.position));
                 if(body.positionsCopy.length > maxLagToAccountFor) {
                     body.positionsCopy.shift();
                 }
@@ -142,7 +142,7 @@ var common = {
                 if(!body.partsCopy) {
                     body.partsCopy = [];
                 }
-                body.partsCopy.push(utils.cloneParts(body.parts));
+                body.partsCopy.push(mathArrayUtils.cloneParts(body.parts));
                 if(body.partsCopy.length > maxLagToAccountFor) {
                     body.partsCopy.shift();
                 }
@@ -168,8 +168,8 @@ var common = {
         }.bind(this), true, false);
 
         //fps (ctrl + shift + f to toggle)
-        this.lastDeltaText = utils.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
-        this.fpsText = utils.addSomethingToRenderer("TEXT:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
+        this.lastDeltaText = graphicsUtils.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
+        this.fpsText = graphicsUtils.addSomethingToRenderer("TEXT:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
         this.fpsText.persists = true;
         this.lastDeltaText.persists = true;
         this.addTickCallback(function(event) {
@@ -188,7 +188,7 @@ var common = {
         this.fpsText.visible = false;
 
         //create paused game text and hide initially
-        var pausedGameText = utils.addSomethingToRenderer("TEXT:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+        var pausedGameText = graphicsUtils.addSomethingToRenderer("TEXT:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
         pausedGameText.visible = false;
 
         //keydown listener for ctrl shift f and ctrl shift x
@@ -296,9 +296,9 @@ var common = {
         if(this.preGameExtension) {
             onClick = this.preGameExtension() || function() {};
         } else {
-            var startGameText = utils.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+            var startGameText = graphicsUtils.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
             onClick = function() {
-                utils.removeSomethingFromRenderer(startGameText);
+                graphicsUtils.removeSomethingFromRenderer(startGameText);
             }
         }
 
@@ -369,14 +369,14 @@ var common = {
         //score overlay
         this.s = {s: 0, t: 0, f: 0};
         if(!this.hideScore) {
-            this.score = utils.addSomethingToRenderer("TEXT:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
+            this.score = graphicsUtils.addSomethingToRenderer("TEXT:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
             this.score.persists = true;
             this.setScore(0);
         }
 
         //wave overlay
         if(this.showWave) {
-            this.wave = utils.addSomethingToRenderer("TEXT:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
+            this.wave = graphicsUtils.addSomethingToRenderer("TEXT:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
             this.wave.persists = true;
             this.setWave(0);
         }
@@ -384,9 +384,9 @@ var common = {
         //timer overlay, if necessary
         if(!this.hideEndCondition) {
             if(this.victoryCondition.type == 'timed') {
-                this.gameTime = utils.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                this.gameTime = graphicsUtils.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
             } else if (this.victoryCondition.type == 'lives') {
-                this.hudLives = utils.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                this.hudLives = graphicsUtils.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
             }
         }
 
@@ -396,7 +396,7 @@ var common = {
 
         //create click indication listener
         if(!this.noClickIndicator) {
-            var clickPointSprite = utils.addSomethingToRenderer('MouseX', 'foreground', {x: -50, y: -50});
+            var clickPointSprite = graphicsUtils.addSomethingToRenderer('MouseX', 'foreground', {x: -50, y: -50});
             clickPointSprite.scale.x = .25;
             clickPointSprite.scale.y = .25;
             this.addEventListener('mousedown', function(event) {
@@ -591,11 +591,11 @@ var common = {
                 slave();
             } else if(slave.unload) {
                 // let's unload the sound, but it might be playing upon death, so let's wait then unload it
-                utils.doSomethingAfterDuration(() => {slave.unload()}, 1500, {executeOnNuke: true});
+                gameUtils.doSomethingAfterDuration(() => {slave.unload()}, 1500, {executeOnNuke: true});
             } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
-                utils.removeSomethingFromRenderer(slave);
+                graphicsUtils.removeSomethingFromRenderer(slave);
                 // if(slave.myLayer) {
-                //     utils.removeSomethingFromRenderer(slave);
+                //     graphicsUtils.removeSomethingFromRenderer(slave);
                 // }
                 // else if(slave.destroy) {
                 //     slave.destroy();
@@ -645,7 +645,7 @@ var common = {
 
         //Remove units safely (removeUnit())
         var unitsToRemove = [];
-        utils.applyToUnitsByTeam(null, function(unit) {
+        gameUtils.applyToUnitsByTeam(null, function(unit) {
             return unit;
         }, function(unit) {
             unitsToRemove.push(unit);
@@ -709,9 +709,9 @@ var common = {
 
     resetGame: function() {
         if(this.score)
-            utils.removeSomethingFromRenderer(this.score);
+            graphicsUtils.removeSomethingFromRenderer(this.score);
         if(this.wave)
-            utils.removeSomethingFromRenderer(this.wave);
+            graphicsUtils.removeSomethingFromRenderer(this.wave);
         if(this.resetGameExtension)
             this.resetGameExtension();
 

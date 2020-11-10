@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as h from  'howler'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import Moveable from '@core/Unit/_Moveable.js'
 import Marble from '@games/Marbles/Units/Marble.js'
@@ -43,11 +43,11 @@ var game = {
 	previousListener: null,
 
 	initExtension: function() {
-	    this.marblePour = utils.getSound('marbles.wav');
-	    this.marbleHit = utils.getSound('marblehit.wav', {volume: .15});
-	    this.timerBoostAppear = utils.getSound('powerup1.wav', {volume: .15});
-	    //this.timerBoostGrab = utils.getSound('bellhit3.wav', {volume: .25, rate: 1.85});
-	    this.timerBoostGrab = utils.getSound('mybell1.wav', {volume: 2.5, rate: 2});
+	    this.marblePour = gameUtils.getSound('marbles.wav');
+	    this.marbleHit = gameUtils.getSound('marblehit.wav', {volume: .15});
+	    this.timerBoostAppear = gameUtils.getSound('powerup1.wav', {volume: .15});
+	    //this.timerBoostGrab = gameUtils.getSound('bellhit3.wav', {volume: .25, rate: 1.85});
+	    this.timerBoostGrab = gameUtils.getSound('mybell1.wav', {volume: 2.5, rate: 2});
 	},
 
 	play: function(options) {
@@ -93,14 +93,14 @@ var game = {
     	                    timeBoost.activated = true;
     					    game.invalidateTimer(deathTimer);
     						game.addToGameTimer(5000);
-    						var plusFiveSprite = utils.addSomethingToRenderer('PlusFive', 'foreground');
+    						var plusFiveSprite = graphicsUtils.addSomethingToRenderer('PlusFive', 'foreground');
     						plusFiveSprite.position = {x: timeBoost.position.x, y: timeBoost.position.y-30};
     						plusFiveSprite.alpha = 1.4;
     						game.addTimer({name: 'plusFiveMoveAndFade' + timeBoost.id, timeLimit: 16, runs: 34, callback: function() {
     						    plusFiveSprite.position.y -= 1;
     						    plusFiveSprite.alpha -= 1.4/34;
     						}, totallyDoneCallback: function() {
-    						    utils.removeSomethingFromRenderer(plusFiveSprite, 'foreground');
+    						    graphicsUtils.removeSomethingFromRenderer(plusFiveSprite, 'foreground');
     						}})
     					}
     				}
@@ -117,14 +117,14 @@ var game = {
 	    //give time bonus for completion
 	    if(this.level > 1) {
 	        this.addToGameTimer(2000);
-	        var plusTwo = utils.addSomethingToRenderer('PlusTwo', 'foreground');
+	        var plusTwo = graphicsUtils.addSomethingToRenderer('PlusTwo', 'foreground');
 	            plusTwo.alpha = 1.4;
-				plusTwo.position = utils.getCanvasCenter();
+				plusTwo.position = gameUtils.getCanvasCenter();
 				this.addTimer({name: 'plusTwo', timeLimit: 16, runs: 34, callback: function() {
 				    plusTwo.position.y -= 1;
 				    plusTwo.alpha -= 1.4/34;
 				}, totallyDoneCallback: function() {
-				    utils.removeSomethingFromRenderer(plusTwo, 'foreground');
+				    graphicsUtils.removeSomethingFromRenderer(plusTwo, 'foreground');
 			}.bind(this)})
 	    }
 
@@ -160,7 +160,7 @@ var game = {
 		    this.currentZones.push(newZone);
 		    chosenCorner = null;
 		    while(!chosenCorner) {
-		        var cornerIndex = utils.getRandomIntInclusive(0, this.acceptableTints.length-1);
+		        var cornerIndex = mathArrayUtils.getRandomIntInclusive(0, this.acceptableTints.length-1);
 		        var chosenCorner = corners[cornerIndex];
 		        corners[cornerIndex] = null;
 		    }
@@ -210,7 +210,7 @@ var game = {
 		    stage: 'stageNTwo',
 		    filter: this.timeFilter
 	    }]
-	    var newPos = utils.calculateRandomPlacementForBodyWithinCanvasBounds(timeBoost);
+	    var newPos = gameUtils.calculateRandomPlacementForBodyWithinCanvasBounds(timeBoost);
 	    Matter.Body.setPosition(timeBoost, newPos);
 
 	    this.addTimer({name: 'shakeTimer' + timeBoost.id, timeLimit: 48, runs: 10, callback: function() {
@@ -236,14 +236,14 @@ var game = {
 
 	createMarbles: function(number) {
 	    for(var x = 0; x < number; x++) {
-			var tintIndex = utils.getRandomIntInclusive(0, this.acceptableTints.length-1);
+			var tintIndex = mathArrayUtils.getRandomIntInclusive(0, this.acceptableTints.length-1);
 			var tint = this.acceptableTints[tintIndex];
 			var highlightTint = this.highlightTints[tintIndex];
 
 			var marble = Marble({adjustHitbox: false, team: this.playerTeam, tint: tint, highlightTint: highlightTint, selectionTint: this.selectionTint, pendingSelectionTint: this.pendingSelectionTint});
 			marble.tint = tint;
 
-			utils.placeBodyWithinRadiusAroundCanvasCenter(marble, 10);
+			gameUtils.placeBodyWithinRadiusAroundCanvasCenter(marble, 10);
 			this.addUnit(marble, true);
 	    }
 

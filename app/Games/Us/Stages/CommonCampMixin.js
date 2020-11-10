@@ -3,7 +3,7 @@ import * as Matter from 'matter-js'
 import * as PIXI from 'pixi.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import {globals, mousePosition} from '@core/Fundamental/GlobalState.js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import campfireShader from '@shaders/CampfireAtNightShader.js'
 import valueShader from '@shaders/ValueShader.js'
 import TileMapper from '@core/TileMapper.js'
@@ -20,7 +20,7 @@ var fillAreaWithTrees = function(options) {
     var trees = [];
     for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
         for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-            var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+utils.getRandomElementOfArray(options.possibleTrees), stage: 'stageTwo', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
+            var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+mathArrayUtils.getRandomElementOfArray(options.possibleTrees), stage: 'stageTwo', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
             shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 4, y: 4}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
             trees.push(tree);
         }
@@ -57,16 +57,16 @@ export default {
         var treeOptions = {};
         treeOptions.start = {x: 0, y: 0};
         treeOptions.width = 300;
-        treeOptions.height = utils.getPlayableHeight()+50;
+        treeOptions.height = gameUtils.getPlayableHeight()+50;
         treeOptions.density = .3;
         treeOptions.possibleTrees = possibleTrees;
         campScene.add(fillAreaWithTrees(treeOptions));
 
-        treeOptions.start = {x: utils.getPlayableWidth()-200, y: 0};
+        treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
         campScene.add(fillAreaWithTrees(treeOptions));
 
         //Init common doodads
-        var flag = utils.getAnimationB({
+        var flag = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations2',
             animationName: 'wflag',
             speed: .2,
@@ -76,10 +76,10 @@ export default {
         flag.play();
         var flag = new Doodad({collides: true, autoAdd: false, radius: 20, texture: [flag], stage: 'stage',
         scale: {x: 1, y: 1}, shadowOffset: {x: 0, y: 30}, shadowScale: {x: .7, y: .7}, offset: {x: 0, y: 0}, sortYOffset: 35,
-        position: {x: utils.getCanvasCenter().x+50, y: utils.getCanvasCenter().y-175}})
+        position: {x: gameUtils.getCanvasCenter().x+50, y: gameUtils.getCanvasCenter().y-175}})
         campScene.add(flag);
 
-        var fireAnimation = utils.getAnimationB({
+        var fireAnimation = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations2',
             animationName: 'campfire',
             speed: .75,
@@ -90,16 +90,16 @@ export default {
         fireAnimation.play();
         var campfire = new Doodad({collides: true, autoAdd: false, radius: 40, texture: [fireAnimation, {doodadData: 'Logs', offset: {x: 2, y: 0}}], stage: 'stageNOne',
             scale: {x: 1.4, y: 1.4}, shadowOffset: {x: 0, y: 25}, shadowScale: {x: 1.3, y: 1.3}, offset: {x: 0, y: 0}, sortYOffset: 35,
-            position: {x: utils.getCanvasCenter().x, y: utils.getCanvasCenter().y-40}})
+            position: {x: gameUtils.getCanvasCenter().x, y: gameUtils.getCanvasCenter().y-40}})
         campScene.add(campfire);
         this.campfire = campfire;
 
         //Add map
-        var mapTableSprite = utils.createDisplayObject('MapTable');
+        var mapTableSprite = graphicsUtils.createDisplayObject('MapTable');
         var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [mapTableSprite], stage: 'stage',
         scale: {x: 1.2, y: 1.2}, offset: {x: 0, y: 0}, sortYOffset: 0,
         shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: 0, y: 15},
-        position: {x: utils.getCanvasCenter().x-130, y: utils.getPlayableHeight()-190}})
+        position: {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}})
         campScene.add(mapTable);
 
         var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
@@ -114,7 +114,7 @@ export default {
         //Establish map click listeners
         var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
             var canvasPoint = {x: 0, y: 0};
-            utils.pixiPositionToPoint(canvasPoint, event);
+            gameUtils.pixiPositionToPoint(canvasPoint, event);
 
             if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campActive) {
                 self.openmap.play();
@@ -132,7 +132,7 @@ export default {
         }.bind(globals.currentGame))
 
         //Apply environment effects
-        // var l1 = utils.createAmbientLights([0x005846, 0x005846, 0x005846], 'background', 1.0, {sortYOffset: 5000});
+        // var l1 = gameUtils.createAmbientLights([0x005846, 0x005846, 0x005846], 'background', 1.0, {sortYOffset: 5000});
         // campScene.add(l1);
 
         //Setup light
@@ -142,7 +142,7 @@ export default {
 
         var backgroundRed = 4.0;
         this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
-            lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
+            lightOnePosition: {x: gameUtils.getCanvasCenter().x, y: gameUtils.getCanvasHeight()-(gameUtils.getPlayableHeight()/2+30)},
             flameVariation: 0.0,
             yOffset: 0.0,
             red: backgroundRed,
@@ -153,7 +153,7 @@ export default {
 
         var stageRed = 3.4;
         this.stageLightShader = new PIXI.Filter(null, campfireShader, {
-            lightOnePosition: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight()-(utils.getPlayableHeight()/2+30)},
+            lightOnePosition: {x: gameUtils.getCanvasCenter().x, y: gameUtils.getCanvasHeight()-(gameUtils.getPlayableHeight()/2+30)},
             flameVariation: 0.0,
             yOffset: 30.0,
             red: stageRed,

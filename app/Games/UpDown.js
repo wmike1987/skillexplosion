@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
 import zone from '@utils/TargetSpawnZone'
 
@@ -28,10 +28,10 @@ var game = {
 	victoryCondition: {type: 'timed', limit: 35},
 
 	initExtension: function() {
-	    this.hit = utils.getSound('nicehit1.wav', {volume: .2, rate: 2});
-	    this.hit2 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.3});
-	    this.hit3 = utils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});
-	    this.hit4 = utils.getSound('nicehit1.wav', {volume: .2, rate: 3});
+	    this.hit = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2});
+	    this.hit2 = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2.3});
+	    this.hit3 = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 2.6});
+	    this.hit4 = gameUtils.getSound('nicehit1.wav', {volume: .2, rate: 3});
 	    this.hits = [this.hit, this.hit2, this.hit3, this.hit4];
 	},
 
@@ -54,7 +54,7 @@ var game = {
 
 		//create ghost target indicator
 		this.addEventListener('mousedown', function(event) {
-			this.ghostTarget = this.ghostTarget || utils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
+			this.ghostTarget = this.ghostTarget || graphicsUtils.addSomethingToRenderer('blueTarget2Ghost', 'stageNTwo');
 			this.ghostTarget.position.x = this.ball.position.x;
 			this.ghostTarget.position.y = this.ball.position.y;
 			this.ghostTarget.scale.x = this.ghostTarget.scale.y = this.ball.circleRadius*2/128;
@@ -69,13 +69,13 @@ var game = {
 					this.incrementScore(targetScore);
 
 					//play death animation
-					var collapseAnimation = utils.getAnimationB({
+					var collapseAnimation = gameUtils.getAnimation({
 						numberOfFrames: 8,
 						baseName: 'blueCollapse',
 						speed: 1,
 						transform: [this.ball.position.x, this.ball.position.y, this.ball.circleRadius*2/512, this.ball.circleRadius*2/512]
 					});
-					utils.addSomethingToRenderer(collapseAnimation);
+					graphicsUtils.addSomethingToRenderer(collapseAnimation);
 					collapseAnimation.play();
 					this.chain += 1;
 					this.hits[this.chain-1].play();
@@ -84,10 +84,10 @@ var game = {
 					if(this.chain == 4) {
 					    this.chain = 0;
 					    this.addToGameTimer(1000);
-						var plusOne = utils.addSomethingToRenderer('PlusOne', 'foreground');
+						var plusOne = graphicsUtils.addSomethingToRenderer('PlusOne', 'foreground');
 						plusOne.position = this.ball.position;
 						plusOne.position.y -= 50;
-						utils.floatSprite(plusOne);
+						graphicsUtils.floatSprite(plusOne);
 					}
 
 					this.removeBody(this.ball);

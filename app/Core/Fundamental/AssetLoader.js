@@ -3,6 +3,7 @@ import * as $ from 'jquery'
 
 var load = function(assets) {
     var loader = PIXI.Loader.shared;
+    loader.reset();
     loader.loaderDeferred = $.Deferred();
 
     var loadedSomething = false;
@@ -21,6 +22,8 @@ var load = function(assets) {
     } else {
         loader.loaderDeferred.resolve();
     }
+
+    return loader;
 }
 
 export default load;

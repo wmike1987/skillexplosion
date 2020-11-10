@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
 var UnitSystemAssets = [    {name: "BaseUnit", target: "Textures/Us/BaseUnit.json"}];
@@ -25,10 +25,10 @@ var UnitSystem = function(properties) {
         this.box.isBox = true;
         this.box.borderAlpha = .5;
         this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: this.box.tint, stage: 'foreground', alpha: .3}];
-        this.box.topBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
-        this.box.bottomBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 1}});
-        this.box.leftBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
-        this.box.rightBorder = utils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 1, y: 0}});
+        this.box.topBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
+        this.box.bottomBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 1}});
+        this.box.leftBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
+        this.box.rightBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 1, y: 0}});
 
         //other unit system variables
         this.selectedUnits = {};
@@ -39,12 +39,12 @@ var UnitSystem = function(properties) {
         if(this.unitPanelConstructor) {
             this.unitPanel = new this.unitPanelConstructor({
                 systemRef: this,
-                position: {x: utils.getCanvasCenter().x, y: utils.getCanvasHeight() - globals.currentGame.worldOptions.unitPanelHeight/2}});
+                position: {x: gameUtils.getCanvasCenter().x, y: gameUtils.getCanvasHeight() - globals.currentGame.worldOptions.unitPanelHeight/2}});
                 this.unitPanel.initialize();
         }
 
         //destination marker
-        this.box.clickPointSprite = utils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
+        this.box.clickPointSprite = graphicsUtils.addSomethingToRenderer('MouseXGreen', 'foreground', {x: -50, y: -50});
         this.box.clickPointSprite.scale.x = .25;
         this.box.clickPointSprite.scale.y = .25;
 
@@ -53,7 +53,7 @@ var UnitSystem = function(properties) {
         var moveMarkerTimeLimit = 275;
 
         //move marker
-        this.box.moveTargetSprite = utils.addSomethingToRenderer('MoveTarget', 'foreground', {x: -50, y: -50});
+        this.box.moveTargetSprite = graphicsUtils.addSomethingToRenderer('MoveTarget', 'foreground', {x: -50, y: -50});
         this.box.moveTargetSprite.timer = globals.currentGame.addTimer({name: 'moveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
             tickCallback: function() {
                 this.box.moveTargetSprite.scale = {x: moveMarkerScale-this.box.moveTargetSprite.timer.percentDone*moveMarkerScale, y: moveMarkerScale-this.box.moveTargetSprite.timer.percentDone*moveMarkerScale};
@@ -62,11 +62,11 @@ var UnitSystem = function(properties) {
                 this.box.moveTargetSprite.position = globals.currentGame.mousePosition;
                 this.box.moveTargetSprite.scale = {x: moveMarkerScale, y: moveMarkerScale};
         }.bind(this)});
-        utils.deathPact(this.box, this.box.moveTargetSprite.timer);
+        gameUtils.deathPact(this.box, this.box.moveTargetSprite.timer);
 
 
         //attack-move marker
-        this.box.attackMoveTargetSprite = utils.addSomethingToRenderer('AttackTarget', 'foreground', {x: -50, y: -50});
+        this.box.attackMoveTargetSprite = graphicsUtils.addSomethingToRenderer('AttackTarget', 'foreground', {x: -50, y: -50});
         this.box.attackMoveTargetSprite.timer = globals.currentGame.addTimer({name: 'attackMoveTargetShrink', runs: 1, timeLimit: moveMarkerTimeLimit,
             tickCallback: function() {
                 this.box.attackMoveTargetSprite.scale = {x: moveMarkerScale-this.box.attackMoveTargetSprite.timer.percentDone*moveMarkerScale, y: moveMarkerScale-this.box.attackMoveTargetSprite.timer.percentDone*moveMarkerScale};
@@ -75,13 +75,13 @@ var UnitSystem = function(properties) {
                 this.box.attackMoveTargetSprite.position = globals.currentGame.mousePosition;
                 this.box.attackMoveTargetSprite.scale = {x: moveMarkerScale, y: moveMarkerScale};
         }.bind(this)});
-        utils.deathPact(this.box, this.box.attackMoveTargetSprite.timer);
+        gameUtils.deathPact(this.box, this.box.attackMoveTargetSprite.timer);
 
 
         //ability marker
         var abilityMarkerScale = .7;
         var abilityMarkerTimeLimit = 200;
-        this.box.abilityTargetSprite = utils.addSomethingToRenderer('AbilityTarget', 'foreground', {x: -50, y: -50});
+        this.box.abilityTargetSprite = graphicsUtils.addSomethingToRenderer('AbilityTarget', 'foreground', {x: -50, y: -50});
         this.box.abilityTargetSprite.timer = globals.currentGame.addTimer({name: 'abilityTargetShrink', runs: 1, timeLimit: abilityMarkerTimeLimit,
             tickCallback: function() {
                 this.box.abilityTargetSprite.scale = {x: abilityMarkerScale-this.box.abilityTargetSprite.timer.percentDone*abilityMarkerScale, y: abilityMarkerScale-this.box.abilityTargetSprite.timer.percentDone*abilityMarkerScale};
@@ -90,12 +90,12 @@ var UnitSystem = function(properties) {
                 this.box.abilityTargetSprite.position = globals.currentGame.mousePosition;
                 this.box.abilityTargetSprite.scale = {x: abilityMarkerScale, y: abilityMarkerScale};
         }.bind(this)});
-        utils.deathPact(this.box, this.box.abilityTargetSprite.timer);
+        gameUtils.deathPact(this.box, this.box.abilityTargetSprite.timer);
 
         //prevailing-unit visual indicator
         if(!globals.currentGame.hidePrevailingIndicator) {
             var prevailingTint = 0x86FF1B;
-            this.prevailingUnitCircle = utils.addSomethingToRenderer('PrevailingUnitIndicator', 'stageNOne', {x: -50, y: -50, tint: prevailingTint});
+            this.prevailingUnitCircle = graphicsUtils.addSomethingToRenderer('PrevailingUnitIndicator', 'stageNOne', {x: -50, y: -50, tint: prevailingTint});
             this.prevailingUnitCircle.timer = globals.currentGame.addTimer({
                 name: 'prevailingUnitFadeInOut',
                 gogogo: true,
@@ -127,7 +127,7 @@ var UnitSystem = function(properties) {
                     }
 
                     if(this._selectedUnit) {
-                        utils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
+                        gameUtils.detachSomethingFromBody(this.prevailingUnitCircle, this._selectedUnit);
                     }
 
                     this.prevailingUnitCircle.alpha = 1;
@@ -140,10 +140,10 @@ var UnitSystem = function(properties) {
 
                     if(body) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
-                        utils.attachSomethingToBody({something: this.prevailingUnitCircle, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
+                        gameUtils.attachSomethingToBody({something: this.prevailingUnitCircle, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
                     } else {
-                        utils.detachSomethingFromBody(this.prevailingUnitCircle);
-                        this.prevailingUnitCircle.position = utils.offScreenPosition();
+                        gameUtils.detachSomethingFromBody(this.prevailingUnitCircle);
+                        this.prevailingUnitCircle.position = gameUtils.offScreenPosition();
                     }
                 }
             });
@@ -272,7 +272,11 @@ var UnitSystem = function(properties) {
                     groupDestination = null;
                 }
             });
-            if(groupDestination) {
+
+            /*
+             * Turning this off for now
+             */
+            if(/*groupDestination*/false) {
                 this.box.clickPointSprite.position = groupDestination;
                 if(this.rightClickIndicator)
                     this.rightClickIndicator.position = {x: -50, y: -50};
@@ -283,7 +287,7 @@ var UnitSystem = function(properties) {
             //Update visuals
             var tempPendingSelections = this.box.pendingSelections;
             var tempPermaPendingUnit = this.box.permaPendingUnit;
-            utils.oneTimeCallbackAtTick(function() {
+            gameUtils.oneTimeCallbackAtTick(function() {
                 this.changeSelectionState(tempPendingSelections, 'selectionPending', false);
                 this.changeSelectionState(tempPermaPendingUnit, 'selectionPending', false);
             }.bind(this), 'beforeTick');
@@ -313,7 +317,7 @@ var UnitSystem = function(properties) {
             if(!this.active) return;
 
             var canvasPoint = {x: 0, y: 0};
-            utils.pixiPositionToPoint(canvasPoint, event);
+            gameUtils.pixiPositionToPoint(canvasPoint, event);
 
             //Left click, used for both establishing a pending body and for attack-moving and dispatching events
             if(event.which == 1) {
@@ -324,7 +328,7 @@ var UnitSystem = function(properties) {
                 var bodies = [];
                 if(globals.currentGame.vertexHistories.length > 0) {
                     $.each(globals.currentGame.vertexHistories, function(index, body) {
-                        var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                        var vertCopy = gameUtils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, canvasPoint)) {
                             bodies.push(body);
@@ -456,7 +460,7 @@ var UnitSystem = function(properties) {
                 var bodies = [];
                 if(globals.currentGame.vertexHistories.length > 0) {
                     $.each(globals.currentGame.vertexHistories, function(index, body) {
-                        var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                        var vertCopy = gameUtils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, globals.currentGame.mousePosition)) {
                             bodies.push(body);
@@ -525,7 +529,7 @@ var UnitSystem = function(properties) {
 
                 this.box.selectionBoxActive = true;
                 var newPoint = {x: 0, y: 0};
-                utils.pixiPositionToPoint(newPoint, event);
+                gameUtils.pixiPositionToPoint(newPoint, event);
                 this.sizeBox(this.forcedBoxFinalPoint || newPoint);
             }
         }.bind(this));
@@ -551,7 +555,7 @@ var UnitSystem = function(properties) {
                         this.box.boxContainsPermaPending = false;
                         this.mouseUpDelay.active = false;
                         this.forcedBoxFinalPoint = null;
-                        utils.executeSomethingNextFrame(function() {
+                        gameUtils.executeSomethingNextFrame(function() {
                             if(!this.box.selectionBoxActive) {
                                 this.box.topBorder.visible = false;
                                 this.box.bottomBorder.visible = false;
@@ -563,7 +567,7 @@ var UnitSystem = function(properties) {
                     this.mouseUpDelay.active = true;
                 }
                 this.forcedBoxFinalPoint = {x: 0, y: 0};
-                utils.pixiPositionToPoint(this.forcedBoxFinalPoint, event);
+                gameUtils.pixiPositionToPoint(this.forcedBoxFinalPoint, event);
             }
         }.bind(this));
 
@@ -580,10 +584,10 @@ var UnitSystem = function(properties) {
             lastScaleY = newScaleY;
 
             //establish border sprites
-            utils.addOrShowDisplayObject(this.box.topBorder);
-            utils.addOrShowDisplayObject(this.box.bottomBorder);
-            utils.addOrShowDisplayObject(this.box.leftBorder);
-            utils.addOrShowDisplayObject(this.box.rightBorder);
+            graphicsUtils.addOrShowDisplayObject(this.box.topBorder);
+            graphicsUtils.addOrShowDisplayObject(this.box.bottomBorder);
+            graphicsUtils.addOrShowDisplayObject(this.box.leftBorder);
+            graphicsUtils.addOrShowDisplayObject(this.box.rightBorder);
             this.box.topBorder.position = {x: this.box.originalPoint.x, y: this.box.originalPoint.y};
             this.box.topBorder.scale = {x: newPoint.x - this.box.originalPoint.x, y: 1};
 
@@ -659,7 +663,7 @@ var UnitSystem = function(properties) {
                 var bodies = [];
                 if(globals.currentGame.vertexHistories.length > 0) {
                     $.each(globals.currentGame.vertexHistories, function(index, body) {
-                        var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                        var vertCopy = gameUtils.getLagCompensatedVerticesForBody(body);
                         if(!vertCopy) return;// || !body.isSelectable) return;
                         if(Matter.Vertices.contains(vertCopy, globals.currentGame.mousePosition)) {
                             bodies.push(body);
@@ -700,9 +704,9 @@ var UnitSystem = function(properties) {
 
                 if(!this.attackMove && !this.abilityDispatch) {
                     if(units.length > 0) {
-                        utils.setCursorStyle('server:OverUnitCursor.png', '16 16');
-                    } else if(utils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)){
-                        utils.setCursorStyle('server:MainCursor.png');
+                        gameUtils.setCursorStyle('server:OverUnitCursor.png', '16 16');
+                    } else if(gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)){
+                        gameUtils.setCursorStyle('server:MainCursor.png');
                     }
                 }
             }
@@ -716,7 +720,7 @@ var UnitSystem = function(properties) {
             var bodies = [];
             if(globals.currentGame.vertexHistories.length > 0) {
                 $.each(globals.currentGame.vertexHistories, function(index, body) {
-                    var vertCopy = utils.getLagCompensatedVerticesForBody(body);
+                    var vertCopy = gameUtils.getLagCompensatedVerticesForBody(body);
                     if(!vertCopy) return;// || !body.isSelectable) return;
                     if(Matter.Vertices.contains(vertCopy, globals.currentGame.mousePosition)) {
                         bodies.push(body);
@@ -760,10 +764,10 @@ var UnitSystem = function(properties) {
          Object.defineProperty(this, 'attackMove', {set: function(value) {
              this._attackMove = value;
              if(value) {
-                 utils.setCursorStyle('server:AttackCursor.png');
+                 gameUtils.setCursorStyle('server:AttackCursor.png');
              }
              else {
-                 utils.setCursorStyle('server:MainCursor.png');
+                 gameUtils.setCursorStyle('server:MainCursor.png');
              }
          }.bind(this), get: function() {
              return this._attackMove;
@@ -840,7 +844,7 @@ var UnitSystem = function(properties) {
                      Matter.Events.trigger(this, 'unitSystemEventDispatch', e)
                      this.abilityDispatch = null;
                  } else if(this.selectedUnit.eventClickMappings[this.abilityDispatch]){
-                     utils.setCursorStyle('server:TargetCursor.png');
+                     gameUtils.setCursorStyle('server:TargetCursor.png');
                  } else { //the selected unit cannot handle the event
                      this.abilityDispatch = null;
                  }
@@ -852,7 +856,7 @@ var UnitSystem = function(properties) {
             if(!this.active) return;
 
             if(event.key == 'Alt') {
-             utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
+             gameUtils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
                  unit.showingBarsWithAlt = true;
                  unit.showLifeBar(true);
                  unit.showEnergyBar(true);
@@ -912,7 +916,7 @@ var UnitSystem = function(properties) {
 
         $('body').on('keyup.unitSystem', function( event ) {
             if(event.key == 'Alt') {
-                utils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
+                gameUtils.applyToUnitsByTeam(function() {return true}, function(unit) {return unit}, function(unit) {
                      unit.showingBarsWithAlt = false;
                      unit.showLifeBar(false);
                      unit.showEnergyBar(false);

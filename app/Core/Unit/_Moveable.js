@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Command from '@core/Unit/Command.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
@@ -57,13 +57,13 @@ var moveable = {
         this.smallerBody.isSmallerBody = true;
         this.smallerBody.unit = this;
 
-        utils.attachSomethingToBody({something: this.smallerBody, body: this.body, offset: {x: 0, y: this.hitboxYOffset != null ? this.hitboxYOffset : -8}});
+        gameUtils.attachSomethingToBody({something: this.smallerBody, body: this.body, offset: {x: 0, y: this.hitboxYOffset != null ? this.hitboxYOffset : -8}});
         globals.currentGame.addBody(this.smallerBody);
 
         Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
 
         //Deathpact these entities
-        utils.deathPact(this, this.smallerBody);
+        gameUtils.deathPact(this, this.smallerBody);
     },
 
     move: function(destination, commandObj) {
@@ -104,14 +104,14 @@ var moveable = {
         if(this.moveTick)
             globals.currentGame.removeRunnerCallback(this.moveTick);
         this.moveTick = globals.currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
-        utils.deathPact(this, this.moveTick, 'moveTick');
+        gameUtils.deathPact(this, this.moveTick, 'moveTick');
 
         //Setup stop conditions
         //general condition
         if(this.stopConditionCheck)
             globals.currentGame.removeRunnerCallback(this.stopConditionCheck);
         this.stopConditionCheck = globals.currentGame.addRunnerCallback(this.generalStopCondition.bind(this, commandObj), false, 'afterStep');
-        utils.deathPact(this, this.stopConditionCheck, 'generalStopCondition');
+        gameUtils.deathPact(this, this.stopConditionCheck, 'generalStopCondition');
 
         //"no progress" stop condition
         this.tryForDestinationTimer = {
@@ -133,7 +133,7 @@ var moveable = {
             }.bind(this)
         };
         globals.currentGame.addTimer(this.tryForDestinationTimer);
-        utils.deathPact(this, this.tryForDestinationTimer, 'tryForDestination');
+        gameUtils.deathPact(this, this.tryForDestinationTimer, 'tryForDestination');
 
         //group movement stop condition
         if(this.collideCallback) {
@@ -219,11 +219,11 @@ var moveable = {
         Matter.Sleeping.set(this.body, false);
 
         //send body
-        utils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+        gameUtils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
 
         //trigger movement event (for direction)
         Matter.Events.trigger(this, 'move', {
-            direction: utils.isoDirectionBetweenPositions(this.position, this.destination)
+            direction: gameUtils.isoDirectionBetweenPositions(this.position, this.destination)
         });
     },
 
@@ -255,20 +255,18 @@ var moveable = {
                     swapY = -1;
             }
 
-            var maxScatterDistance = this.circleRadius * 2;
+            var minScatterDistance = this.circleRadius * 1.2;
+            var maxScatterDistance = this.circleRadius * 2.0;
 
             //if the moving-unit's destination doesn't go beyond the still-unit, we don't want to move the still-unit too much
-            var moverToDestination = utils.distanceBetweenPoints(otherUnit.position, otherUnit.destination);
-            var moverToMe = utils.distanceBetweenPoints(myUnit.position, otherUnit.position);
+            var moverToDestination = mathArrayUtils.distanceBetweenPoints(otherUnit.position, otherUnit.destination);
+            var moverToMe = mathArrayUtils.distanceBetweenPoints(myUnit.position, otherUnit.position);
             if(moverToDestination < moverToMe) {
                 maxScatterDistance = this.circleRadius;
             }
 
-            var minScatterDistance = this.circleRadius;
+            var movePercentage = Math.PI/2.0 - mathArrayUtils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position))
             var newVelocity = Matter.Vector.normalise({x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY});
-
-            var movePercentage = Math.PI/2.0 - utils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position))
-            //movePercentage = Math.max(.2, movePercentage);
             newVelocity = Matter.Vector.mult(newVelocity, Math.max(minScatterDistance, movePercentage*maxScatterDistance));
 
             if(!myUnit.isAttacker) {

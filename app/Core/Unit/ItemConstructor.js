@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import Tooltip from '@core/Tooltip.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
@@ -56,17 +56,17 @@ var baseItem = {
     }
 }
 
-var itemDropSound = utils.getSound('itemdrop.wav', {volume: .04, rate: 1});
-var itemSwoosh = utils.getSound('itemSwoosh.wav', {volume: .04, rate: 1.1});
+var itemDropSound = gameUtils.getSound('itemdrop.wav', {volume: .04, rate: 1});
+var itemSwoosh = gameUtils.getSound('itemSwoosh.wav', {volume: .04, rate: 1.1});
 
 var ic = function(options) {
     var newItem = $.extend({}, baseItem, options);
     newItem.isItem = true;
-    newItem.id = utils.uuidv4();
+    newItem.id = mathArrayUtils.uuidv4();
     newItem.eventFunctions = {};
 
     //create icon
-    newItem.icon = utils.createDisplayObject(newItem.icon); //note that this icon will not die upon removing the item
+    newItem.icon = graphicsUtils.createDisplayObject(newItem.icon); //note that this icon will not die upon removing the item
     var ctrlClickToDropMessage = '(Click to grab item)';
     newItem.icon.interactive = true;
 
@@ -99,21 +99,21 @@ var ic = function(options) {
             newItem.owningUnit.unequipItem(newItem);
             Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem})
             newItem.mouseInside = false;
-            utils.setCursorStyle('server:MainCursor.png');
+            gameUtils.setCursorStyle('server:MainCursor.png');
         }.bind(this))
 
         Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
 
         var baseTint = 0x00042D;
-        newItem.nameDisplayBase = utils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
-        newItem.nameDisplay = utils.createDisplayObject('TEXT:' + newItem.name, {style: styles.regularItemName})
-        utils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 25});
+        newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
+        newItem.nameDisplay = graphicsUtils.createDisplayObject('TEXT:' + newItem.name, {style: styles.regularItemName})
+        graphicsUtils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 25});
 
         newItem.showName = function(bool) {
             if(!this.body) return; //if we've been collected, don't display the name
             if(!newItem.nameDisplay.parent) {
-                utils.addDisplayObjectToRenderer(newItem.nameDisplay, 'hudText');
-                utils.addDisplayObjectToRenderer(newItem.nameDisplayBase, 'hud')
+                graphicsUtils.addDisplayObjectToRenderer(newItem.nameDisplay, 'hudText');
+                graphicsUtils.addDisplayObjectToRenderer(newItem.nameDisplayBase, 'hud')
             }
 
             newItem.nameDisplayBase.visible = bool;
@@ -147,14 +147,14 @@ var ic = function(options) {
             var item = this;
 
             //play animation
-            this.itemDrop = utils.getAnimationB({
+            this.itemDrop = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
                 animationName: 'ItemDropFroll',
                 speed: .6,
                 playThisManyTimes: 1,
                 transform: [position.x, position.y],
                 onComplete: function() {
-                    utils.removeSomethingFromRenderer(this);
+                    graphicsUtils.removeSomethingFromRenderer(this);
                     globals.currentGame.addBody(item.body);
                     Matter.Events.trigger(globals.currentGame.itemSystem, 'dropItem', {item: item});
                     item.isDropping = false;
@@ -168,10 +168,10 @@ var ic = function(options) {
             item.isDropping = true;
             itemSwoosh.play();
 
-            // utils.makeSpriteSize(this.itemDrop, {w: 48, h: 80});
+            // graphicsUtils.makeSpriteSize(this.itemDrop, {w: 48, h: 80});
             this.itemDrop.play();
             this.itemDrop.anchor.set(.5, .75);
-            utils.addSomethingToRenderer(this.itemDrop, 'stage');
+            graphicsUtils.addSomethingToRenderer(this.itemDrop, 'stage');
 
             //Make renderlings accessible from wherever
             Object.defineProperty(newItem.body, 'renderlings', {
@@ -189,7 +189,7 @@ var ic = function(options) {
             });
 
             //play animation
-            var itemAnim = utils.getAnimationB({
+            var itemAnim = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
                 animationName: 'ItemGleamFroll',
                 speed: .05,
@@ -224,16 +224,16 @@ var ic = function(options) {
             this.icon.tooltipObj.destroy();
         }
         if(this.nameDisplayBase) {
-            utils.removeSomethingFromRenderer(this.nameDisplayBase);
-            utils.removeSomethingFromRenderer(this.nameDisplay);
+            graphicsUtils.removeSomethingFromRenderer(this.nameDisplayBase);
+            graphicsUtils.removeSomethingFromRenderer(this.nameDisplay);
         }
-        utils.removeSomethingFromRenderer(this.icon);
+        graphicsUtils.removeSomethingFromRenderer(this.icon);
         if(newItem.body) {
             globals.currentGame.removeBody(newItem.body);
         }
         globals.currentGame.removeTickCallback(newItem.hoverListener);
         if(this.itemDrop)
-            utils.removeSomethingFromRenderer(this.itemDrop);
+            graphicsUtils.removeSomethingFromRenderer(this.itemDrop);
     },
 
     globals.currentGame.addItem(newItem);

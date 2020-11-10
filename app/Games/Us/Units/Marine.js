@@ -7,7 +7,7 @@ import Ability from '@core/Unit/UnitAbility.js'
 import rv from '@core/Unit/_Revivable.js'
 import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function Marine(options) {
     var marine = {};
@@ -29,56 +29,56 @@ export default function Marine(options) {
     var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
 
     var walkAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'walk',
             speed: 1.5,
@@ -88,49 +88,49 @@ export default function Marine(options) {
     };
 
     var attackAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'shoot',
             speed: 2,
@@ -139,51 +139,51 @@ export default function Marine(options) {
     }
 
     var throwAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'throw',
             speed: 0.5,
             mixedAnimation: true
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'throw',
             times: 1,
             speed: 0.5,
             mixedAnimation: true
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'throw',
             times: 1,
             speed: 0.5,
             mixedAnimation: true
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'throw',
             speed: .5,
             mixedAnimation: true
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'throw',
             speed: .5,
             mixedAnimation: true
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'throw',
             speed: .5,
             mixedAnimation: true
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'throw',
             speed: .5,
             mixedAnimation: true
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'throw',
             speed: .5,
@@ -290,22 +290,22 @@ export default function Marine(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var fireSound = utils.getSound('machinegun.wav', {volume: .002, rate: 3});
+    var fireSound = gameUtils.getSound('machinegun.wav', {volume: .002, rate: 3});
 
     //poison
-    var poisonSound = utils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
+    var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
 
     //crit
-    var criticalHitSound = utils.getSound('criticalhit.wav', {volume: .2, rate: .9});
-    var criticalHitSound2 = utils.getSound('criticalhit2.wav', {volume: .1, rate: .7});
+    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: .2, rate: .9});
+    var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: .1, rate: .7});
 
     //death
-    var deathSound = utils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});
-    var deathSoundBlood = utils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
+    var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});
+    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
 
     //Dash
     var dashVelocity = .8;
-    var dashSound = utils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
+    var dashSound = gameUtils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
     var dash = function(destination, commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Dash');
@@ -321,7 +321,7 @@ export default function Marine(options) {
         dashSound.play();
 
         //play animation
-        var dashAnimation = utils.getAnimationB({
+        var dashAnimation = gameUtils.getAnimation({
             spritesheetName: 'MarineAnimations1',
             animationName: 'dash',
             speed: .3,
@@ -330,8 +330,8 @@ export default function Marine(options) {
 
         dashAnimation.play();
         dashAnimation.alpha = .8;
-        dashAnimation.rotation = utils.pointInDirection(this.position, destination, 'north');
-        utils.addSomethingToRenderer(dashAnimation, 'stageNOne');
+        dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'north');
+        graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
         var self = this;
         self.dashTimer = globals.currentGame.addTimer({
@@ -348,40 +348,56 @@ export default function Marine(options) {
         })
 
         if(currentAugment.name == 'defensive posture') {
+            if(!self.defenseBuff) {
+                self.defenseBuff = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {tint: 0xFFFFFF, where: 'foreground', scale: {x: .8, y: .8}});
+                gameUtils.attachSomethingToBody({something: self.defenseBuff, body: self.body, offset: {x: 0, y: -60}})
+            }
             if(!self.defensivePostureActive)
                 self.defense += 2;
             self.defensivePostureActive = true;
             self.dashTimer = globals.currentGame.addTimer({
                 name: 'defensePostureTimerEnd' + self.unitId,
                 runs: 1,
+                executeOnNuke: true,
                 timeLimit: 2000,
-                callback: function() {
+                totallyDoneCallback: function() {
+                    gameUtils.detachSomethingFromBody(self.defenseBuff);
+                    graphicsUtils.removeSomethingFromRenderer(self.defenseBuff);
+                    self.defenseBuff = null;
                     self.defense -= 2;
                     self.defensivePostureActive = false;
                 }
             })
         } else if(currentAugment.name == 'death wish') {
+            if(!self.deathWishBuff) {
+                self.deathWishBuff = graphicsUtils.addSomethingToRenderer("DeathWishBuff", {where: 'foreground', scale: {x: 1, y: 1}});
+                gameUtils.attachSomethingToBody({something: self.deathWishBuff, body: self.body, offset: {x: 0, y: -60}})
+            }
             if(!self.deathWishActive)
                 self.damage += 10;
             self.deathWishActive = true;
             self.dashTimer = globals.currentGame.addTimer({
                 name: 'deathWishTimerEnd' + self.unitId,
                 runs: 1,
+                executeOnNuke: true,
                 timeLimit: 2000,
-                callback: function() {
+                totallyDoneCallback: function() {
+                    gameUtils.detachSomethingFromBody(self.deathWishBuff);
+                    graphicsUtils.removeSomethingFromRenderer(self.deathWishBuff);
+                    self.deathWishBuff = null;
                     self.damage -= 10;
                     self.deathWishActive = false;
                 }
             })
         }
 
-        utils.deathPact(this, self.dashTimer, 'dashDoneTimer');
+        gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
     }
     var dashAbility = new Ability({
         name: 'Dash',
         key: 'd',
         type: 'click',
-        icon: utils.createDisplayObject('DashIcon'),
+        icon: graphicsUtils.createDisplayObject('DashIcon'),
         method: dash,
         title: 'Dash',
         description: 'Quickly move throughout the battlefield.',
@@ -393,7 +409,7 @@ export default function Marine(options) {
         augments: [
             {
                 name: 'vital reserves',
-                icon: utils.createDisplayObject('VitalReserves'),
+                icon: graphicsUtils.createDisplayObject('VitalReserves'),
                 title: 'Vital Reserves',
                 description: 'Alter dash cost to 2 hp, 1 energy.',
                 equip: function(unit) {
@@ -418,7 +434,7 @@ export default function Marine(options) {
                 name: 'defensive posture',
                 chance: .2,
                 multiplier: 2,
-                icon: utils.createDisplayObject('DefensivePosture'),
+                icon: graphicsUtils.createDisplayObject('DefensivePosture'),
                 title: 'Defensive Posture',
                 description: 'Gain 2 defense upon dashing for 2 seconds.'
             },
@@ -426,7 +442,7 @@ export default function Marine(options) {
                 name: 'death wish',
                 healAmount: 15,
                 chance: .5,
-                icon: utils.createDisplayObject('DeathWish'),
+                icon: graphicsUtils.createDisplayObject('DeathWish'),
                 title: 'Death Wish',
                 description: 'Increase damage by 10 upon dashing for 2 seconds.'
             },
@@ -434,8 +450,8 @@ export default function Marine(options) {
     })
 
     //Knife
-    var knifeThrowSound = utils.getSound('knifethrow.wav', {volume: .03, rate: 1.5});
-    var knifeImpactSound = utils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
+    var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {volume: .03, rate: 1.5});
+    var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
     var knifeSpeed = 22;
     var knifeDamage = 20;
     var throwKnife = function(destination, commandObj, childKnife) {
@@ -476,13 +492,13 @@ export default function Marine(options) {
             id: 'knife',
             data: 'ThrowingDaggerBase',
             scale: {x: .7, y: .7},
-            rotate: utils.pointInDirection(knife.position, destination),
+            rotate: mathArrayUtils.pointInDirection(knife.position, destination),
         },
         {
             id: 'knifeblade',
             data: 'ThrowingDaggerBlade',
             scale: {x: .7, y: .7},
-            rotate: utils.pointInDirection(knife.position, destination),
+            rotate: mathArrayUtils.pointInDirection(knife.position, destination),
             tint: knifeTint,
         },
         {
@@ -490,7 +506,7 @@ export default function Marine(options) {
             data: 'IsoShadowBlurred',
             scale: {x: 1/8, y: 2},
             offset: {x: 15, y: 20},
-            rotate: utils.pointInDirection(knife.position, destination),
+            rotate: mathArrayUtils.pointInDirection(knife.position, destination),
             stage: "stageNTwo",
         }]
         globals.currentGame.addBody(knife);
@@ -499,16 +515,16 @@ export default function Marine(options) {
         knifeThrowSound.play();
         knife.deltaTime = this.body.deltaTime;
         knife.destination = destination;
-        utils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
+        gameUtils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
         var removeSelf = globals.currentGame.addTickCallback(function() {
-            if(utils.bodyRanOffStage(knife)) {
+            if(gameUtils.bodyRanOffStage(knife)) {
                 globals.currentGame.removeBody(knife);
             }
         })
-        utils.deathPact(knife, removeSelf);
+        gameUtils.deathPact(knife, removeSelf);
 
         //play spine animation
-        this.isoManager.playSpecifiedAnimation('throw', utils.isoDirectionBetweenPositions(this.position, destination), {movePrecedence: true});
+        this.isoManager.playSpecifiedAnimation('throw', gameUtils.isoDirectionBetweenPositions(this.position, destination), {movePrecedence: true});
 
         var self = this;
         Matter.Events.on(knife, 'onCollide', function(pair) {
@@ -527,14 +543,14 @@ export default function Marine(options) {
                                 return;
                             }
                             poisonSound.play();
-                            var poisonAnimation = utils.getAnimationB({
+                            var poisonAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations2',
                                 animationName: 'poisonhit1',
                                 speed: 2.1,
                                 transform: [otherUnit.position.x, otherUnit.position.y, .4, .4]
                             });
                             poisonAnimation.rotation = Math.random() * Math.PI*2;
-                            utils.addSomethingToRenderer(poisonAnimation, 'stageOne');
+                            graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
                             otherUnit.sufferAttack(currentAugment.damage/(currentAugment.seconds*2), self);
                         }
@@ -545,7 +561,7 @@ export default function Marine(options) {
                 if(otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
                 }
-                var bloodPierceAnimation = utils.getAnimationB({
+                var bloodPierceAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
                     animationName: 'pierce',
                     speed: .95,
@@ -553,8 +569,8 @@ export default function Marine(options) {
                 });
                 knifeImpactSound.play();
                 bloodPierceAnimation.play();
-                bloodPierceAnimation.rotation = utils.pointInDirection(knife.position, knife.destination, 'east');
-                utils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
+                bloodPierceAnimation.rotation = mathArrayUtils.pointInDirection(knife.position, knife.destination, 'east');
+                graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                 if(currentAugment && currentAugment.name == 'pierce') {
                     knife.lives -= 1;
                     if(knife.lives == 0) {
@@ -587,7 +603,7 @@ export default function Marine(options) {
         name: 'Throw Knife',
         key: 'f',
         type: 'click',
-        icon: utils.createDisplayObject('KnifeIcon'),
+        icon: graphicsUtils.createDisplayObject('KnifeIcon'),
         method: throwKnife,
         title: 'Throwing Knife',
         description: 'Throw a knife, dealing ' + knifeDamage + ' damage.',
@@ -601,7 +617,7 @@ export default function Marine(options) {
             {
                 name: 'pierce',
                 lives: 4,
-                icon: utils.createDisplayObject('PiercingKnife'),
+                icon: graphicsUtils.createDisplayObject('PiercingKnife'),
                 title: 'Piercing Blow',
                 description: 'Pierce 4 enemies with a single knife.'
             },
@@ -609,7 +625,7 @@ export default function Marine(options) {
                 name: 'poison tip',
                 seconds: 5,
                 damage: 30,
-                icon: utils.createDisplayObject('PoisonTip'),
+                icon: graphicsUtils.createDisplayObject('PoisonTip'),
                 title: 'Poison Tip',
                 description: 'Deal an additional 30 damage over 5 seconds.'
             },
@@ -617,7 +633,7 @@ export default function Marine(options) {
                 name: 'multi throw',
                 knives: 3,
                 damage: 20,
-                icon: utils.createDisplayObject('MultiShot'),
+                icon: graphicsUtils.createDisplayObject('MultiShot'),
                 title: 'Multi-throw',
                 description: 'Throw multiple knives in a fan.'
             },
@@ -632,7 +648,7 @@ export default function Marine(options) {
     var gunAbility = new Ability({
         name: 'Rifle',
         manualDispatch: true,
-        icon: utils.createDisplayObject('M14Icon'),
+        icon: graphicsUtils.createDisplayObject('M14Icon'),
         title: 'M14 Rifle',
         description: 'Deal damage to an enemy unit.',
         hotkey: 'A',
@@ -644,7 +660,7 @@ export default function Marine(options) {
             {
                 name: 'fully auto',
                 delta: -190,
-                icon: utils.createDisplayObject('FullyAuto'),
+                icon: graphicsUtils.createDisplayObject('FullyAuto'),
                 title: 'Full Auto',
                 description: 'Increase rate of fire.',
                 equip: function(unit) {
@@ -658,14 +674,14 @@ export default function Marine(options) {
                 name: 'hooded peep',
                 chance: .2,
                 multiplier: 2,
-                icon: utils.createDisplayObject('HoodedPeepIcon'),
+                icon: graphicsUtils.createDisplayObject('HoodedPeepIcon'),
                 title: 'Hooded Peep',
                 description: 'Gain a 20% chance to deal 2x damage.'
             },
             {
                 name: 'first aid pouch',
                 healAmount: 3,
-                icon: utils.createDisplayObject('FirstAidPouchIcon'),
+                icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
                 description: 'Heal self and nearby allies for 3 hp after firing rifle.'
             },
@@ -678,8 +694,8 @@ export default function Marine(options) {
         defense: 1,
         energy: 20,
         energyRegenerationRate: 1,
-        portrait: utils.createDisplayObject('MarinePortrait'),
-        wireframe: utils.createDisplayObject('MarineGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
+        wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
         graveSpriteName: 'MarineGrave',
         team: options.team || 4,
         priority: 10,
@@ -693,7 +709,7 @@ export default function Marine(options) {
         abilities: [gunAbility, dashAbility, knifeAbility],
         death: function() {
             var self = this;
-            var anim = utils.getAnimationB({
+            var anim = gameUtils.getAnimation({
                 spritesheetName: 'MarineAnimations1',
                 animationName: 'MarineDeath',
                 speed: .25,
@@ -701,11 +717,11 @@ export default function Marine(options) {
                 fadeTime: 3200,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]
             });
-            utils.addSomethingToRenderer(anim);
+            graphicsUtils.addSomethingToRenderer(anim);
             this.corpse = anim;
 
-            var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(self.deathPosition, {y: 22})})
-            utils.fadeSpriteOverTime(shadow, 1500);
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
 
             anim.play();
             deathSound.play();
@@ -753,12 +769,12 @@ export default function Marine(options) {
 
                     var self = this;
                     if(currentAugment.name == 'first aid pouch') {
-                        utils.applyToUnitsByTeam(function(team) {
+                        gameUtils.applyToUnitsByTeam(function(team) {
                             return self.team == team;
                         }, function(unit) {
                             return utils.distanceBetweenUnits(self, unit) <= 100;
                         }, function(unit) {
-                            var lifeUpAnimation = utils.getAnimationB({
+                            var lifeUpAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations1',
                                 animationName: 'manasteal',
                                 speed: .8,
@@ -768,10 +784,10 @@ export default function Marine(options) {
                             lifeUpAnimation.tint = 0xF80202;
                             lifeUpAnimation.play();
                             lifeUpAnimation.alpha = 1;
-                            utils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'firstAidAttach'});
-                            utils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
+                            gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'firstAidAttach'});
+                            graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
                             Matter.Events.on(lifeUpAnimation, "destroy", function() {
-                                utils.detachSomethingFromBody(lifeUpAnimation);
+                                gameUtils.detachSomethingFromBody(lifeUpAnimation);
                             })
 
                             unit.currentHealth += currentAugment.healAmount;
@@ -782,14 +798,14 @@ export default function Marine(options) {
                     if(critActive) {
                         criticalHitSound.play();
                         criticalHitSound2.play();
-                        utils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText});
+                        graphicsUtils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText});
                     }
                     fireSound.play();
                     var abilityTint = 0x80ba80;
-                    utils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
+                    graphicsUtils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
 
                     //bullet emitter
-                    var emitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
+                    var emitter = gameUtils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                         	"alpha": {
                         		"start": 1,
@@ -847,7 +863,7 @@ export default function Marine(options) {
                     emitter.playOnceAndDestroy();
 
                     //blood emitter
-                    var bloodEmitter = utils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
+                    var bloodEmitter = gameUtils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
                         config: {
                     	"alpha": {
                     		"start": 1,

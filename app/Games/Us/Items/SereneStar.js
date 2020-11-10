@@ -6,7 +6,7 @@ var manipulations = {
     maxEnergy: 8,
     energyRegenerationRate: 1,
     events: {knifeKill: {currentEnergy: 5, callback: function(unit) {
-        var manaStealAnimation = utils.getAnimationB({
+        var manaStealAnimation = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations1',
             animationName: 'manasteal',
             speed: Math.random() + .5,
@@ -16,10 +16,10 @@ var manipulations = {
         manaStealAnimation.tint = 0xA6E5D8;
         manaStealAnimation.play();
         manaStealAnimation.alpha = 1;
-        utils.attachSomethingToBody({something: manaStealAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'manaStealAttach'});
-        utils.addSomethingToRenderer(manaStealAnimation, 'foreground');
+        gameUtils.attachSomethingToBody({something: manaStealAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'manaStealAttach'});
+        graphicsUtils.addSomethingToRenderer(manaStealAnimation, 'foreground');
         Matter.Events.on(manaStealAnimation, "destroy", function() {
-            utils.detachSomethingFromBody(manaStealAnimation);
+            gameUtils.detachSomethingFromBody(manaStealAnimation);
         })
     }}}
 }

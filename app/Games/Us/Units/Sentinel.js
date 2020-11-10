@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import Projectile from '@core/Unit/UnitProjectile.js'
 import {globals} from '@core/Fundamental/GlobalState'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function Sentinel(options) {
     var sentinel = {};
@@ -29,56 +29,56 @@ export default function Sentinel(options) {
     var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienNW'].spineData);
 
     var runAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'walk',
             speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'walk',
             speed: 1.5,
@@ -88,49 +88,49 @@ export default function Sentinel(options) {
     };
 
     var attackAnimations = {
-        up: utils.getSpineAnimation({
+        up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        upRight: utils.getSpineAnimation({
+        upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        right: utils.getSpineAnimation({
+        right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        downRight: utils.getSpineAnimation({
+        downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        down: utils.getSpineAnimation({
+        down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        downLeft: utils.getSpineAnimation({
+        downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        left: utils.getSpineAnimation({
+        left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'shoot',
             speed: 2,
             times: 3,
         }),
-        upLeft: utils.getSpineAnimation({
+        upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'shoot',
             speed: 2,
@@ -237,9 +237,9 @@ export default function Sentinel(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var fireSound = utils.getSound('sentinelfire.wav', {volume: .015, rate: 1});
-    var hitSound = utils.getSound('sentinelhit.wav', {volume: .05, rate: 2});
-    var deathSound = utils.getSound('sentineldeath.wav', {volume: .55, rate: 1});
+    var fireSound = gameUtils.getSound('sentinelfire.wav', {volume: .015, rate: 1});
+    var hitSound = gameUtils.getSound('sentinelhit.wav', {volume: .05, rate: 2});
+    var deathSound = gameUtils.getSound('sentineldeath.wav', {volume: .55, rate: 1});
 
     var unitProperties = $.extend({
         unitType: 'Sentinel',
@@ -250,8 +250,8 @@ export default function Sentinel(options) {
         hitboxWidth: 40,
         hitboxHeight: 60,
         hitboxYOffset: -5,
-        portrait: utils.createDisplayObject('SentinelPortrait'),
-        wireframe: utils.createDisplayObject('SentinelGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('SentinelPortrait'),
+        wireframe: graphicsUtils.createDisplayObject('SentinelGroupPortrait'),
         team: options.team || 4,
         priority: 50,
         experienceWorth: 20,
@@ -260,7 +260,7 @@ export default function Sentinel(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            var anim = utils.getAnimationB({
+            var anim = gameUtils.getAnimation({
                 spritesheetName: 'SentinelAnimations1',
                 animationName: 'sentineldeath',
                 speed: .22,
@@ -268,13 +268,13 @@ export default function Sentinel(options) {
                 fadeTime: 8000,
                 transform: [this.deathPosition.x + 25, this.deathPosition.y, 1.3, 1.3]
             });
-            utils.addSomethingToRenderer(anim);
+            graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             deathSound.play();
 
-            var shadow = utils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: utils.clonePosition(this.deathPosition, {y: 22})})
-            utils.fadeSpriteOverTime(shadow, 1500);
-            utils.addSomethingToRenderer(shadow);
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(this.deathPosition, {y: 22})})
+            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
         }}, options);
 
@@ -301,20 +301,20 @@ export default function Sentinel(options) {
                     var projectileOptions = {
                         damage: this.damage,
                         speed: 5,
-                        displayObject: utils.createDisplayObject('SentinelBullet'),
+                        displayObject: graphicsUtils.createDisplayObject('SentinelBullet'),
                         target: target,
                         impactType: 'collision',
                         owningUnit: this,
                         originOffset: 30,
                         autoSend: true,
                         impactExtension: function(target) {
-                            var bloodAnimation = utils.getAnimationB({
+                            var bloodAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations1',
                                 animationName: 'GenericHit',
                                 speed: 0.8,
                                 transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .35, .35]
                             });
-                            utils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                            graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                             bloodAnimation.play();
                             hitSound.play();
                         }

@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
-import utils from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 //This module represents a doodad (a physical, non-unit body, which can have properties)
@@ -28,7 +28,7 @@ var doodad = function(options) {
 
     //default position
     if(!options.position) {
-        options.position = utils.calculateRandomPlacementForBodyWithinCanvasBounds(this.body, true);
+        options.position = gameUtils.calculateRandomPlacementForBodyWithinCanvasBounds(this.body, true);
     }
 
     Matter.Body.setPosition(this.body, options.position);
