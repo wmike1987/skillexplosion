@@ -715,6 +715,7 @@ var UnitSystem = function(properties) {
         //Dispatch hovering event to units
         var pastHoveredUnits = [];
         globals.currentGame.addTickCallback(function(event) {
+            if(!this.active) return;
 
             //Find bodies under mouse position, use vertice history if possible
             var bodies = [];
@@ -1015,6 +1016,13 @@ var UnitSystem = function(properties) {
 
     this.pause = function() {
         this.active = false;
+        this.selectionBoxActive = false;
+        Matter.Body.setPosition(this.box, {x: -500, y: -1000});
+        this.box.topBorder.visible = false;
+        this.box.bottomBorder.visible = false;
+        this.box.leftBorder.visible = false;
+        this.box.rightBorder.visible = false;
+        this.box.mouseDown = false;
         this.abilityDispatch = false;
         this.attackMove = false;
     };

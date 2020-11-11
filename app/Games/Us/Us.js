@@ -49,6 +49,7 @@ var game = {
     },
 
     initExtension: function() {
+        this.heartbeat = gameUtils.getSound('heartbeat.wav', {volume: .12, rate: .9});
     },
 
     play: function(options) {
@@ -175,9 +176,22 @@ var game = {
         this.currentScene.transitionToScene(nextLevelScene);
         Matter.Events.on(nextLevelScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.currentSpawner.initialize();
-            this.resetUnit(this.shane);
-            this.resetUnit(this.ursula);
+            this.resetUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            this.resetUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            var game = this;
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                game.heartbeat.play();
+            }, 800);
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                game.heartbeat.play();
+            }, 1600);
+            gameUtils.doSomethingAfterDuration(() => {
+                this.currentSpawner.initialize();
+                graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                game.heartbeat.play();
+            }, 2400);
         }.bind(this))
         this.level += 1;
 
@@ -239,23 +253,46 @@ var game = {
     },
 
     //used just for shane/urs
-    resetUnit: function(unit) {
+    resetUnit: function(unit, options) {
+        var options = options || {};
+        var yoffset = options.yoffset || 0;
+        var moveToCenter = options.moveToCenter;
+
         if(unit.isDead) {
             unit.revive();
         }
+        this.unitSystem.deselectUnit(unit);
+
         unit.isTargetable = true;
+        var centerX;
         if(unit.name == 'Shane') {
-            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -20, y: 0});;
+            centerX = -30;
+            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: centerX, y: yoffset});;
         } else {
-            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 20, y: 0});
+            centerX = 30;
+            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: centerX, y: yoffset});
         }
+
+        if(moveToCenter) {
+            this.unitSystem.pause();
+            unit.body.collisionFilter.mask -= 0x0004;
+            gameUtils.setCursorStyle('None');
+            gameUtils.doSomethingAfterDuration(() => {
+                unit.body.collisionFilter.mask += 0x0004;
+                this.unitSystem.unpause();
+                gameUtils.setCursorStyle('Main');
+            }, 2400);
+            unit.move(mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: centerX, y: 0}));
+        } else {
+            unit.stop();
+        }
+
         unit.currentHealth = unit.maxHealth;
         unit.currentEnergy = unit.maxEnergy;
         unit.canMove = true;
         unit.canAttack = true;
         if(unit.hideGrave)
             unit.hideGrave();
-        unit.stop();
     },
 
     resetGameExtension: function() {
@@ -268,6 +305,7 @@ var game = {
         if(this.currentScene) {
             this.currentScene.clear();
         }
+        this.heartbeat.unload();
     }
 }
 

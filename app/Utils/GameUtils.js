@@ -10,6 +10,7 @@ import styles from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
+var begin = ["BEGIN"];
 
 var gameUtils = {
 
@@ -536,6 +537,8 @@ var gameUtils = {
             $('*').css('cursor', 'auto');
         } else if(style.indexOf('Over') > -1) {
             $('*').css('cursor', 'pointer');
+        } else if(style.indexOf('None') > -1) {
+            $('*').css('cursor', 'none');
         } else {
             $('*').css('cursor', 'crosshair');
         }
@@ -713,8 +716,8 @@ var gameUtils = {
             spritesheetName: 'UtilityAnimations2',
             animationName: 'buffcreate',
             // reverse: true,
-            speed: 1.6,
-            transform: [unit.position.x, unit.position.y + yoffset, 1.1, 1.1]
+            speed: 1.5,
+            transform: [unit.position.x, unit.position.y + yoffset, 1.0, 1.0]
         });
         // buffSound.play();
         // buffAnim.tint = 0xe4f46a;
