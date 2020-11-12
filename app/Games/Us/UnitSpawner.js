@@ -22,38 +22,36 @@ var unitSpawner = function(enemySets) {
                 timeLimit: enemy.spawn.hz,
                 callback: function() {
                     if(enemy.fulfilled) return;
-                    for(var x = 0; x < enemy.spawn.n; x++) {
+                    for(var x = 0; x < (enemy.spawn.atATime || 1); x++) {
                         var lastUnit = false;
-                        if(total == (enemy.spawn.total-1)) lastUnit = true;
+                        if(total == Math.floor(enemy.spawn.total-1)) lastUnit = true;
                         total++;
 
                         //Create unit
-                        for(var i = 0; i < (enemy.spawn.atATime || 1); i++) {
-                            var newUnit = enemy.constructor({team: 4});
-                            newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
-                            newUnit.honeRange = 5000;
-                            gameUtils.placeBodyJustOffscreen(newUnit);
+                        var newUnit = enemy.constructor({team: 4});
+                        newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
+                        newUnit.honeRange = 5000;
+                        gameUtils.placeBodyJustOffscreen(newUnit);
 
-                            //Give item to unit if chosen
-                            if(itemsToGive > 0) {
-                                var giveItem = true;
-                                if(lastUnit) {
-                                    giveItem = true;
-                                } else {
-                                    giveItem = mathArrayUtils.flipCoin() && mathArrayUtils.flipCoin();
-                                }
-                                if(giveItem) {
-                                    ItemUtils.giveUnitItem({gamePrefix: 'Us', name: mathArrayUtils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
-                                    itemsToGive--;
-                                }
-                            }
-
+                        //Give item to unit if chosen
+                        if(itemsToGive > 0) {
+                            var giveItem = true;
                             if(lastUnit) {
-                                this.invalidated = true;
-                                enemy.fulfilled = true;
+                                giveItem = true;
+                            } else {
+                                giveItem = mathArrayUtils.flipCoin() && mathArrayUtils.flipCoin();
                             }
-                            globals.currentGame.addUnit(newUnit);
+                            if(giveItem) {
+                                ItemUtils.giveUnitItem({gamePrefix: 'Us', name: mathArrayUtils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
+                                itemsToGive--;
+                            }
                         }
+
+                        if(lastUnit) {
+                            this.invalidated = true;
+                            enemy.fulfilled = true;
+                        }
+                        globals.currentGame.addUnit(newUnit);
                     }
                 }
             })

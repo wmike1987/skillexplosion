@@ -6,6 +6,7 @@ import EnemySetSpecifier from '@games/Us/EnemySetSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import TileMapper from '@core/TileMapper.js'
 
+//This create a levelDetails obj which contains the necessary data/functions to produce a level
 var levelSpecifier = {
     create: function(type, options) {
         var tileTint = mathArrayUtils.getRandomElementOfArray(options.acceptableTileTints);

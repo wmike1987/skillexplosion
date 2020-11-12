@@ -17,6 +17,8 @@ import UnitSpawner from '@games/Us/UnitSpawner.js'
 import styles from '@utils/Styles.js'
 import * as CampNoir from '@games/Us/Stages/CampNoir.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
+import VictoryScreen from '@games/Us/Screens/VictoryScreen.js'
+// import DefeatScreen from '@games/Us/Screens/DefeatScreen.js'
 
 var targetScore = 1;
 
@@ -54,23 +56,20 @@ var game = {
 
     play: function(options) {
         var dialogueScene = new Scene();
-        var background = graphicsUtils.createDisplayObject('TintableSquare', {where: 'hudTwo', anchor: {x: 0, y: 0}});
-        background.tint = 0x000000;
-        graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
-        dialogueScene.add(background);
+        dialogueScene.addBlackBackground();
         this.currentScene.transitionToScene(dialogueScene);
 
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000})
         var a1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command...",
-          picture: 'Doodads/avdeadtree2.png'});
+          picture: 'NewMessage.png', pictureWordTrigger: 'Incoming'});
         var a2 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor—", delayAfterEnd: 0,
-          picture: 'Doodads/avgoldtree1.png'});
-        var a3 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from MacMurray...", picture: 'Doodads/avgreentree5.png'});
+          picture: '302.png', pictureWordTrigger: '3:00'});
+        var a3 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from MacMurray...", picture: 'MacMurray.png', pictureWordTrigger: 'from'});
         var a4 = new Dialogue({actor: "Shane", text: "Christ... That can only mean—", delayAfterEnd: 0});
-        var a5 = new Dialogue({interrupt: true, actor: "Ursula", text: "Beasts.", picture: 'Doodads/avgreentree5.png'});
+        var a5 = new Dialogue({interrupt: true, actor: "Ursula", text: "Beasts."});
         var a6 = new Dialogue({actor: "Shane", text: "Location?", delayAfterEnd: 500});
-        var a7 = new Dialogue({actor: "Ursula", text: "Intel is being relayed. Get up, get your pack.", picture: 'Doodads/avgreentree5.png', delayAfterEnd: 1200});
+        var a7 = new Dialogue({actor: "Ursula", text: "Intel is being relayed. Get up, get your rifle.", picture: 'GrabRifleLighter.png', pictureWordTrigger: 'Get up', delayAfterEnd: 1200});
         var a8 = new Dialogue({actor: "Shane", text: "Is the coffee ready?", delayAfterEnd: 1500});
 
         var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 2000, done: function() {
@@ -83,7 +82,8 @@ var game = {
             var key = event.key.toLowerCase();
             if(key == 'escape') {
                 //clear dialogue and start initial level
-                this.initialLevel();
+                // this.initialLevel();
+                this.gotoVictoryScreen();
                 $('body').off('keydown.uskeydown');
             }
         }.bind(this))
@@ -143,17 +143,23 @@ var game = {
         }.bind(this))
     },
 
+    gotoVictoryScreen: function() {
+        var vScreen = new VictoryScreen();
+        var vScene = vScreen.createScene({});
+        this.currentScene.transitionToScene(vScene);
+        // vScene.initializeScene();
+    },
+
+    gotoDefeatScreen: function() {
+
+    },
+
     deactivateMap: function() {
         this.unitSystem.unpause();
         this.mapActive = false;
         this.map.hide();
     },
 
-    /*
-     * options:
-     * possible tiles
-     * enemy set
-     */
     initLevel: function(node) {
         this.deactivateMap();
         this.currentLevelDetails = node.levelDetails;
@@ -215,23 +221,25 @@ var game = {
                 this.removeTickCallback(winCondition);
                 this.removeTickCallback(lossCondition);
                 node.isCompleted = true;
-                this.gotoCamp();
+                this.gotoVictoryScreen();
+                // this.gotoCamp();
             }
         }.bind(this))
 
         var lossCondition = this.addTickCallback(function() {
             if(this.shane.isDead && this.ursula.isDead) {
                 this.removeTickCallback(lossCondition);
-                this.itemSystem.removeAllItemsOnGround(true);
                 this.removeTickCallback(winCondition);
-                this.gotoCamp();
+                this.itemSystem.removeAllItemsOnGround(true);
+                this.gotoDefeatScreen();
+                // this.gotoCamp();
             }
         }.bind(this))
     },
 
-    createNextLevelScene: function(options) {
+    createNextLevelScene: function(levelObj) {
         var scene = new Scene();
-        options.createTerrain(scene);
+        levelObj.createTerrain(scene);
         return scene;
     },
 
@@ -331,6 +339,8 @@ game.assets = [
     // {name: "Utility1", target: "Textures/Us/Utility-1.json"},
     {name: "UtilityAnimations1", target: "Textures/Us/UtilityAnimations1.json"},
     {name: "UtilityAnimations2", target: "Textures/Us/UtilityAnimations2.json"},
+
+    {name: "Cinematic", target: "Textures/Us/Cinematic.json"},
 
     //terrain and doodads
     {name: "Terrain0", target: "Textures/Us/Terrain-0.json"},

@@ -1105,6 +1105,11 @@ var mathArrayUtils = {
         return array;
     },
 
+    //This counts zero "0" as a valid value
+    isFalseNotZero: function(value) {
+        return (!value && !value === 0);
+    },
+
     cloneVertices: function(vertices) {
         var newVertices = [];
         $.each(vertices, function(index, vertice) {

@@ -4,6 +4,15 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
+var easyMode = true;
+var basicBottom = 3;
+var basicTop = 8;
+
+var rareBottom = 2;
+var rareTop = 5;
+
+
+
 var enemySetSpecifier = {
     create: function(options) {
         var type = options.type;
@@ -15,7 +24,7 @@ var enemySetSpecifier = {
             enemySets.push({
                 constructor: basicNormal.c,
                 icon: basicNormal.p,
-                spawn: {total: 2 + mathArrayUtils.getRandomIntInclusive(1, 5), n: 1, hz: 2200, maxOnField: 1},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop)/(easyMode ? 2 : 1),  hz: 2200, maxOnField: 1},
                 item: {type: 'worn', total: 1}
             })
 
@@ -24,7 +33,7 @@ var enemySetSpecifier = {
             enemySets.push({
                 constructor: basicRare.c,
                 icon: basicRare.p,
-                spawn: {total: 1 + mathArrayUtils.getRandomIntInclusive(1, 2), n: 1, hz: 2500, maxOnField: 1},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop)/(easyMode ? 2 : 1), hz: 2500, maxOnField: 1},
                 item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
             })
         } else if(type == 'mobs') {
@@ -34,7 +43,7 @@ var enemySetSpecifier = {
                 constructor: mobNormal.c,
                 wave: 1,
                 icon: mobNormal.p,
-                spawn: {total: 2 + mathArrayUtils.getRandomIntInclusive(12, 15), n: 1, hz: 1800, atATime: 5},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(12, 15), hz: 1800, atATime: 5},
                 item: {type: 'worn', total: 1}
             })
 
@@ -44,7 +53,7 @@ var enemySetSpecifier = {
                 constructor: mobRare.c,
                 wave: 1,
                 icon: mobRare.p,
-                spawn: {total: 1 + mathArrayUtils.getRandomIntInclusive(3, 4), n: 1, hz: 4500, maxOnField: 1},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(3, 4), hz: 4500, maxOnField: 1},
                 item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
             })
         }

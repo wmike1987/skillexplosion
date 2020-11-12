@@ -30,7 +30,7 @@ var Dialogue = function Dialogue(options) {
         titleBeginPosition: {x: null, y: 40},
         actorLetterSpeed: 40,
         letterSpeed: 80,
-        delayAfterEnd: 1000,
+        delayAfterEnd: 1500,
         pauseAtPeriod: true,
         // blinkLastLetter: true,
         blinksThenDone: 3,
@@ -39,7 +39,7 @@ var Dialogue = function Dialogue(options) {
         titleStyle: styles.dialogueTitleStyle,
         pictureDelay: 0,
         pictureStyle: pictureStyles.FADE_IN,
-        picturePosition: {x: gameUtils.getPlayableWidth()*3/4, y: gameUtils.getCanvasHeight()/2}
+        picturePosition: {x: gameUtils.getPlayableWidth()*4/5, y: gameUtils.getCanvasHeight()/2}
     }
     $.extend(this, defaults, options);
 
@@ -74,6 +74,8 @@ var Dialogue = function Dialogue(options) {
 
         if(this.picture) {
           this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {alpha: 0, position: this.picturePosition, where: "hudText"});
+          this.realizedPictureBorder = graphicsUtils.createDisplayObject("CinemaBorder", {alpha: 0, position: this.picturePosition, where: "hudText"});
+          this.realizedPictureBorder.tint = 0x919191;
         }
 
         var currentLetter = 0;
@@ -82,13 +84,19 @@ var Dialogue = function Dialogue(options) {
         var currentBlink = 0;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
-            var fadeOverLetters = d.text.length*3/4;
+            var fadeOverLetters = 5;
 
-            //fade in picture - let's fade in over the first 5 letters
-            if(d.pictureDelay <= this.totalElapsedTime && d.realizedPicture) {
+            if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
+                d.pictureTriggeredFromWord = true;
+            }
+
+            //fade in picture
+            if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger) || d.pictureTriggeredFromWord) {
                 graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
+                graphicsUtils.addOrShowDisplayObject(d.realizedPictureBorder);
                 if(d.realizedPicture.alpha < 1.0) {
                   d.realizedPicture.alpha += 1/fadeOverLetters;
+                  d.realizedPictureBorder.alpha += 1/fadeOverLetters;
                 }
             }
 
@@ -119,16 +127,7 @@ var Dialogue = function Dialogue(options) {
                 if(currentLetter == d.text.length) {
                     d.resolveTime = this.totalElapsedTime + d.delayAfterEnd;
                 }
-            // } else if(d.blinkLastLetter && currentBlink < d.blinksThenDone){
-            //     this.timeLimit = d.letterSpeed * 5;
-            //     if(currentBlink % 2 == 0) {
-            //         d.realizedText.text = d.text.substring(0, currentLetter-1)
-            //         currentBlink++;
-            //     } else {
-            //         d.realizedText.text = d.text.substring(0, currentLetter)
-            //         currentBlink++;
-            //     }
-        } else if(!d.stallInfinite && this.totalElapsedTime >= d.resolveTime){
+            } else if(!d.stallInfinite && this.totalElapsedTime >= d.resolveTime){
                 d.deferred.resolve();
             }
         }})
@@ -139,6 +138,7 @@ var Dialogue = function Dialogue(options) {
         graphicsUtils.removeSomethingFromRenderer(this.realizedText);
         graphicsUtils.removeSomethingFromRenderer(this.realizedActorText);
         graphicsUtils.removeSomethingFromRenderer(this.realizedPicture);
+        graphicsUtils.removeSomethingFromRenderer(this.realizedPictureBorder);
         this.keypressSound.unload();
     };
 
@@ -148,7 +148,6 @@ var Dialogue = function Dialogue(options) {
 
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
-      graphicsUtils.removeSomethingFromRenderer(this.realizedPicture);
     }
 }
 

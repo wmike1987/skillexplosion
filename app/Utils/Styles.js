@@ -268,6 +268,31 @@ export default {
 	    strokeThickness: 4
 	}),
 
+	statTitleStyle: new PIXI.TextStyle({
+		fill: "red",
+		fontSize: 18,
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 2
+	}),
+
+	statTextStyle: new PIXI.TextStyle({
+		fill: "white",
+		fontSize: 15,
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 4
+	}),
+
+	statDividerStyle: new PIXI.TextStyle({
+		fill: 0x252525,
+		fontSize: 15,
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 4
+	}),
+
 	dialogueStyle: new PIXI.TextStyle({
 	    fill: "#00b3ff",
 	    fontFamily: "\"Lucida Console\", Monaco, monospace",

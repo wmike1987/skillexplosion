@@ -29,6 +29,22 @@ Scene.prototype.initializeScene = function(objOrArray) {
     Matter.Events.trigger(this, 'initialize');
 };
 
+Scene.prototype.hide = function() {
+    this.objects.forEach((obj) => {
+        if(!obj.hideImmune) {
+            obj.visible = false;
+        }
+    })
+}
+
+Scene.prototype.addBlackBackground = function(where) {
+    var background = graphicsUtils.createDisplayObject('TintableSquare', {where: where || 'hudTwo', anchor: {x: 0, y: 0}});
+    background.tint = 0x000000;
+    graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
+    background.hideImmune = true;
+    this.add(background);
+}
+
 Scene.prototype.add = function(objOrArray) {
     if(!$.isArray(objOrArray)) {
         objOrArray = [objOrArray];
