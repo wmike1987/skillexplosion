@@ -550,6 +550,7 @@ export default function Marine(options) {
                 otherUnit.sufferAttack(knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
                 if(otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
+                    Matter.Events.trigger(globals.currentGame, 'knifeKill', {performingUnit: this});
                 }
                 var bloodPierceAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
@@ -587,6 +588,8 @@ export default function Marine(options) {
                 }
             })
         }
+
+        Matter.Events.trigger(globals.currentGame, 'performKnifeThrow', {performingUnit: this});
     };
 
     var knifeAbility = new Ability({

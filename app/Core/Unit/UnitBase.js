@@ -70,6 +70,11 @@ var UnitBase = {
 
     sufferAttack: function(damage, attackingUnit) {
         var alteredDamage = Math.max(1, (damage - this.defense));
+        var damageReducedByArmor = this.defense;
+        if(damage - this.defense <= 0) {
+            damageReducedByArmor = damage - 1;
+        }
+        Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: damageReducedByArmor});
         this.currentHealth -= alteredDamage;
         if (this.currentHealth <= 0) {
             this._death();

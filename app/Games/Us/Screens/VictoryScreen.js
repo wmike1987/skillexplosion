@@ -113,10 +113,20 @@ var VictoryScreen = function(units, statsObj) {
         placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneDamageTakenTitle, shaneDamageTaken, placeholder]);
 
+        var shaneDamageReducedByAmorTitle = graphicsUtils.createDisplayObject("TEXT:" + preventedArmorDamage, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.damageReducedByArmor, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        this.shaneStats.push([shaneDamageReducedByAmorTitle, shaneDamageReducedByAmor, placeholder]);
+
         var shaneHealingDoneTitle = graphicsUtils.createDisplayObject("TEXT:" + healingDone, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var shaneHealingDone = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.healingDone, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
         placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneHealingDoneTitle, shaneHealingDone, placeholder]);
+
+        var shaneKnivesThrownTitle = graphicsUtils.createDisplayObject("TEXT:" + knivesThrown, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKnivesThrown = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.knivesThrown, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        this.shaneStats.push([shaneKnivesThrownTitle, shaneKnivesThrown, placeholder]);
 
         //Ursula
         var startPos = ursulaPosition(same);

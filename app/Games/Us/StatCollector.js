@@ -3,6 +3,9 @@ import * as Matter from 'matter-js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState'
 
+/*
+ * This object keeps a history of CollectorManagers and provides an api to start/stop/pause/unpause a "current collector."
+ */
 var StatMaster = function(options) {
     this.statHistory = {};
     this.startNewCollector = function(name) {
@@ -35,6 +38,9 @@ var CollectorManager = function(options) {
     var healingCollector = new HealCollector(options);
     var killCollector = new KillCollector(options);
     var damageTakenCollector = new DamageTakenCollector(options);
+    var damageReducedByArmorCollector = new DamageReducedByArmorCollector(options);
+    var knivesThrownCollector = new KnivesThrownCollector(options);
+    var knifeKillsCollector = new KnifeKillsCollector(options);
     this.collectors = [];
 
     if(options.collectors) {
@@ -44,6 +50,9 @@ var CollectorManager = function(options) {
         this.collectors.push(healingCollector);
         this.collectors.push(killCollector);
         this.collectors.push(damageTakenCollector);
+        this.collectors.push(damageReducedByArmorCollector);
+        this.collectors.push(knivesThrownCollector);
+        this.collectors.push(knifeKillsCollector);
     }
 
     this.startCollecting = function() {
@@ -151,5 +160,39 @@ var DamageTakenCollector = function(options) {
     }.bind(this)
 }
 DamageTakenCollector.prototype = Collector;
+
+var DamageReducedByArmorCollector = function(options) {
+    this.name = "damageReducedByArmor";
+    this.eventName = 'damageReducedByArmor';
+    this.collectorFunction = function(event) {
+        var damageReducedByArmor = event.amountDone;
+        if(options.sufferingPredicate(event)) {
+            this.value += damageReducedByArmor;
+        }
+    }.bind(this)
+}
+DamageReducedByArmorCollector.prototype = Collector;
+
+var KnivesThrownCollector = function(options) {
+    this.name = "knivesThrown";
+    this.eventName = 'performKnifeThrow';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this)
+}
+KnivesThrownCollector.prototype = Collector;
+
+var KnifeKillsCollector = function(options) {
+    this.name = "knifeKills";
+    this.eventName = 'knifeKill';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this)
+}
+KnifeKillsCollector.prototype = Collector;
 
 export default StatMaster;
