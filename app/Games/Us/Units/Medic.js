@@ -833,8 +833,13 @@ export default function Medic(options) {
                         this.currentEnergy -= thisAbility.energyCost;
 
                     target.currentHealth += thisAbility.healAmount;
-                    if(target.currentHealth >= target.maxHealth)
+                    var healingDone = thisAbility.healAmount;
+                    if(target.currentHealth >= target.maxHealth) {
+                        healingDone -= (target.currentHealth-target.maxHealth);
                         target.currentHealth = target.maxHealth;
+                    }
+                    Matter.Events.trigger(globals.currentGame, 'performedHeal', {performingUnit: this, amountDone: healingDone});
+
                 },
                 attackHoneTeamPredicate: function(team) {
                     return this.team == team;

@@ -74,7 +74,8 @@ var UnitBase = {
         if (this.currentHealth <= 0) {
             this._death();
             if(attackingUnit) {
-                Matter.Events.trigger(attackingUnit, 'kill', {killedUnit: this})
+                Matter.Events.trigger(attackingUnit, 'kill', {killedUnit: this});
+                Matter.Events.trigger(globals.currentGame, 'performKill', {performingUnit: attackingUnit});
             }
         } else {
             this.showLifeBar(true);
@@ -88,7 +89,7 @@ var UnitBase = {
                 this.barTimer.reset();
             }
         }
-        Matter.Events.trigger(this, 'sufferedAttack', alteredDamage);
+        Matter.Events.trigger(globals.currentGame, 'sufferedAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
     },
 
     _death: function() {

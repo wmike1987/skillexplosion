@@ -546,8 +546,6 @@ unitPanel.prototype.displayUnitStats = function() {
 
                 //energy
                 this.unitEnergyText.text = "🔹 " + Math.floor(this.prevailingUnit.currentEnergy);
-
-
             }
         }.bind(this));
     }

@@ -18,6 +18,7 @@ import styles from '@utils/Styles.js'
 import * as CampNoir from '@games/Us/Stages/CampNoir.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 import VictoryScreen from '@games/Us/Screens/VictoryScreen.js'
+import StatCollector from '@games/Us/StatCollector.js'
 // import DefeatScreen from '@games/Us/Screens/DefeatScreen.js'
 
 var targetScore = 1;
@@ -52,6 +53,23 @@ var game = {
 
     initExtension: function() {
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {volume: .12, rate: .9});
+        this.shaneCollector = new StatCollector({predicate: function(event) {
+            if(event.performingUnit.name == 'Shane')
+                return true;
+        }, sufferingPredicate: function(event) {
+            if(event.sufferingUnit.name == 'Shane')
+                return true;
+        }})
+
+        this.ursulaCollector = new StatCollector({predicate: function(event) {
+            if(event.performingUnit.name == 'Ursula') {
+                return true;
+            }
+        }, sufferingPredicate: function(event) {
+            if(event.sufferingUnit.name == 'Ursula') {
+                return true;
+            }
+        }})
     },
 
     play: function(options) {
@@ -82,8 +100,7 @@ var game = {
             var key = event.key.toLowerCase();
             if(key == 'escape') {
                 //clear dialogue and start initial level
-                // this.initialLevel();
-                this.gotoVictoryScreen();
+                this.initialLevel();
                 $('body').off('keydown.uskeydown');
             }
         }.bind(this))
@@ -143,11 +160,18 @@ var game = {
         }.bind(this))
     },
 
-    gotoVictoryScreen: function() {
-        var vScreen = new VictoryScreen();
+    gotoVictoryScreen: function(collectors) {
+        var vScreen = new VictoryScreen({shane: this.shane, ursula: this.ursula}, collectors);
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene(vScene);
-        // vScene.initializeScene();
+        $('body').on('keydown.uskeydown', function( event ) {
+            var key = event.key.toLowerCase();
+            if(key == 'escape') {
+                //clear dialogue and start initial level
+                $('body').off('keydown.uskeydown');
+                this.gotoCamp();
+            }
+        }.bind(this))
     },
 
     gotoDefeatScreen: function() {
@@ -197,6 +221,8 @@ var game = {
                 this.currentSpawner.initialize();
                 graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
                 game.heartbeat.play();
+                this.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
+                this.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
             }, 2400);
         }.bind(this))
         this.level += 1;
@@ -221,8 +247,11 @@ var game = {
                 this.removeTickCallback(winCondition);
                 this.removeTickCallback(lossCondition);
                 node.isCompleted = true;
-                this.gotoVictoryScreen();
-                // this.gotoCamp();
+                this.shaneCollector.stopCurrentCollector();
+                this.ursulaCollector.stopCurrentCollector();
+                this.gotoVictoryScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
+                this.resetUnit(this.shane);
+                this.resetUnit(this.ursula);
             }
         }.bind(this))
 
@@ -231,7 +260,11 @@ var game = {
                 this.removeTickCallback(lossCondition);
                 this.removeTickCallback(winCondition);
                 this.itemSystem.removeAllItemsOnGround(true);
+                this.shaneCollector.stopCurrentCollector();
+                this.ursulaCollector.stopCurrentCollector();
                 this.gotoDefeatScreen();
+                this.resetUnit(this.shane);
+                this.resetUnit(this.ursula);
                 // this.gotoCamp();
             }
         }.bind(this))

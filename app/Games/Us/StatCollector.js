@@ -1,7 +1,155 @@
 import * as $ from 'jquery'
 import * as Matter from 'matter-js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import {globals} from '@core/Fundamental/GlobalState'
 
-var StatCollector = function() {
+var StatMaster = function(options) {
+    this.statHistory = {};
+    this.startNewCollector = function(name) {
+        this.currentCollectorManager = new CollectorManager(Object.assign({}, options));
+        this.statHistory[options.name] = this.currentCollectorManager;
+        this.currentCollectorManager.startCollecting();
+    }
 
+    this.stopCurrentCollector = function() {
+        this.currentCollectorManager.stopCollecting();
+        this.lastCollector = this.currentCollectorManager;
+    }
+
+    this.pauseCurrentCollector = function() {
+        this.currentCollectorManager.pause();
+    }
+
+    this.unpauseCurrentCollector = function() {
+        this.currentCollectorManager.unpause();
+    }
+
+    this.getLastCollector = function() {
+        return this.lastCollector;
+    }
 }
+
+var CollectorManager = function(options) {
+    options = options || {};
+    var damageCollector = new DamageCollector(options);
+    var healingCollector = new HealCollector(options);
+    var killCollector = new KillCollector(options);
+    var damageTakenCollector = new DamageTakenCollector(options);
+    this.collectors = [];
+
+    if(options.collectors) {
+
+    } else /*Subscribe to everything*/{
+        this.collectors.push(damageCollector);
+        this.collectors.push(healingCollector);
+        this.collectors.push(killCollector);
+        this.collectors.push(damageTakenCollector);
+    }
+
+    this.startCollecting = function() {
+        this.collectors.forEach((collector) => {
+            collector.start();
+        })
+    }
+
+    this.stopCollecting = function() {
+        this.collectors.forEach((collector) => {
+            collector.stop();
+        })
+    }
+
+    this.pauseCollecting = function() {
+        this.collectors.forEach((collector) => {
+            collector.pause();
+        })
+    }
+
+    this.unpauseCollecting = function() {
+        this.collectors.forEach((collector) => {
+            collector.unpause();
+        })
+    }
+
+    this.getStatMap = function() {
+        var map = {};
+        this.collectors.forEach((collector) => {
+            map[collector.name] = collector.value;
+        })
+        return map;
+    }
+}
+
+var Collector = {
+    value: 0,
+    listener: null,
+    start: function() {
+        var decoratedCollector = function(event) {
+            if(this.paused) return;
+            this.collectorFunction(event);
+        }.bind(this);
+        this.listener = Matter.Events.on(globals.currentGame, this.eventName, decoratedCollector);
+    },
+
+    stop: function() {
+        Matter.Events.off(globals.currentGame, this.eventName, this.listener);
+    },
+
+    pause: function() {
+        this.paused = true;
+    },
+
+    unpause: function() {
+        this.paused = false;
+    }
+}
+
+var KillCollector = function(options) {
+    this.name = "kills";
+    this.eventName = 'performKill';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this);
+}
+KillCollector.prototype = Collector;
+
+var DamageCollector = function(options) {
+    this.name = "damageDone";
+    this.eventName = 'sufferedAttack';
+    this.collectorFunction = function(event) {
+        var attackingUnit = event.performingUnit;
+        var damageDone = event.amountDone;
+        if(options.predicate(event)) {
+            this.value += damageDone;
+        }
+    }.bind(this);
+}
+DamageCollector.prototype = Collector;
+
+var HealCollector = function(options) {
+    this.name = "healingDone";
+    this.eventName = 'performedHeal';
+    this.collectorFunction = function(event) {
+        var healingUnit = event.performingUnit;
+        var healingDone = event.amountDone;
+        if(options.predicate(event)) {
+            this.value += healingDone;
+        }
+    }.bind(this)
+}
+HealCollector.prototype = Collector;
+
+var DamageTakenCollector = function(options) {
+    this.name = "damageTaken";
+    this.eventName = 'sufferedAttack';
+    this.collectorFunction = function(event) {
+        var damageTaken = event.amountDone;
+        if(options.sufferingPredicate(event)) {
+            this.value += damageTaken;
+        }
+    }.bind(this)
+}
+DamageTakenCollector.prototype = Collector;
+
+export default StatMaster;
