@@ -411,7 +411,7 @@ export default function Marine(options) {
                     this.ability.hpCost = this.ability.costs.push(function() {
                         return unit.currentHealth -= 2;
                     })
-                    this.ability.customCostText = "💗2 🔹1";
+                    this.ability.customCostText = "HP: 2 and E: 1";
                 },
                 unequip: function(unit) {
                     this.ability.energyCost = this.oldEnergyCost;

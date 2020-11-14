@@ -46,7 +46,7 @@ var unitPanel = function(options) {
     this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle});
     this.unitSPText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPTextPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
     this.unitSPAmount = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
-    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralStyle});
+    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralEnergyStyle});
 
     //experience meter
     this.experienceMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: gameUtils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
@@ -77,7 +77,8 @@ var unitPanel = function(options) {
         animationName: 'bubbles',
         speed: .9,
         playThisManyTimes: 'loop',
-        transform: [this.healthVialPosition.x, this.healthVialPosition.y + 10, 1.5, 1.5],
+        anchor: {x: .5, y: 1},
+        transform: [this.healthVialPosition.x, gameUtils.getCanvasHeight() + 10, 1.5, 1.5],
     });
     graphicsUtils.makeSpriteSize(this.healthBubbles, {w: 40, h: 80});
     this.healthBubbles.visible = false;
@@ -86,7 +87,7 @@ var unitPanel = function(options) {
     this.healthBubbles.play();
     graphicsUtils.addSomethingToRenderer(this.healthBubbles, 'hud');
 
-    this.healthVialSquare = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0x800000, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
+    this.healthVialSquare = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0xa80000, scale: {x: 1, y: 1}, alpha: .8, anchor: {x: .5, y: 1}});
     this.healthVialSquare.position = {x: this.healthVialPosition.x, y: gameUtils.getCanvasHeight()}
     graphicsUtils.makeSpriteSize(this.healthVialSquare,  {x: 0, y: 0});
     graphicsUtils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
@@ -113,16 +114,18 @@ var unitPanel = function(options) {
         animationName: 'bubbles',
         speed: .5,
         playThisManyTimes: 'loop',
-        transform: [this.energyVialPosition.x, this.energyVialPosition.y + 10, 1.5, 1.5]
+        anchor: {x: .5, y: 1},
+        transform: [this.energyVialPosition.x, gameUtils.getCanvasHeight() + 10, 2.0, 1.5]
     });
     graphicsUtils.makeSpriteSize(this.energyBubbles, {w: 40, h: 80});
     this.energyBubbles.visible = false;
-    this.energyBubbles.tint = 0xB6D7F9;
+    this.energyBubbles.tint = 0xc2e808;
     this.energyBubbles.alpha = .5;
     this.energyBubbles.play();
     graphicsUtils.addSomethingToRenderer(this.energyBubbles, 'hud');
 
-    this.energyVialSquare = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0x155194, scale: {x: 1, y: 1}, alpha: .9, anchor: {x: .5, y: 1}});
+    this.energyVialSquare = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0x5d0b55, scale: {x: 1, y: 1}, alpha: .9, anchor: {x: .5, y: 1}});
+    graphicsUtils.graduallyTint(this.energyVialSquare, 0x5d0b55, 0x6b0090, 1500, null, 1000);
     this.energyVialSquare.position = {x: this.energyVialPosition.x, y: gameUtils.getCanvasHeight()}
     graphicsUtils.makeSpriteSize(this.energyVialSquare, {x: 0, y: 0});
     graphicsUtils.addSomethingToRenderer(this.energyVialSquare, 'hudNOne');
@@ -138,6 +141,7 @@ var unitPanel = function(options) {
             this.energyVial.tooltipObj.disabled = false;
             var healthPercent = this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth;
             graphicsUtils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
+            graphicsUtils.makeSpriteSize(this.healthBubbles, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
 
             if(this.prevailingUnit.maxEnergy > 0) {
                 var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
@@ -145,6 +149,7 @@ var unitPanel = function(options) {
                 var energyPercent = 0;
             }
             graphicsUtils.makeSpriteSize(this.energyVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
+            graphicsUtils.makeSpriteSize(this.energyBubbles, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
         } else {
             this.healthVialSquare.visible = false;
             this.healthBubbles.visible = false;
@@ -533,7 +538,7 @@ unitPanel.prototype.displayUnitStats = function() {
                 this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
 
                 //health
-                this.unitHealthText.text = "💗 " + Math.floor(this.prevailingUnit.currentHealth);
+                this.unitHealthText.text = "HP: " + Math.floor(this.prevailingUnit.currentHealth);
 
                 //SP text and points
                 if(this.prevailingUnit.team == globals.currentGame.playerTeam) {
@@ -545,7 +550,7 @@ unitPanel.prototype.displayUnitStats = function() {
                 }
 
                 //energy
-                this.unitEnergyText.text = "🔹 " + Math.floor(this.prevailingUnit.currentEnergy);
+                this.unitEnergyText.text = "E: " + Math.floor(this.prevailingUnit.currentEnergy);
             }
         }.bind(this));
     }
@@ -678,7 +683,7 @@ unitPanel.prototype.displayCommands = function() {
         this.stopIcon = graphicsUtils.addSomethingToRenderer('StopIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*2, y: this.commandOneCenterY}});
         graphicsUtils.makeSpriteSize(this.stopIcon, 25);
         this.currentCommands.push({name: 'stop', icon: this.stopIcon});
-        Tooltip.makeTooltippable(this.stopIcon, {title: 'Stop', hotkey: 'S', description: "Halt current command."})
+        Tooltip.makeTooltippable(this.stopIcon, {title: 'Stop', hotkey: 'S', description: "Stop current command."})
 
         this.holdPositionIcon = graphicsUtils.addSomethingToRenderer('HoldPositionIcon', 'hudOne', {position: {x: this.commandOneCenterX + this.commandSpacing*3, y: this.commandOneCenterY}});
         graphicsUtils.makeSpriteSize(this.holdPositionIcon, 25);

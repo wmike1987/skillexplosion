@@ -81,10 +81,10 @@ var game = {
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000})
         var a1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command...",
           picture: 'NewMessage.png', pictureWordTrigger: 'Incoming'});
-        var a2 = new Dialogue({actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor—", delayAfterEnd: 0,
+        var a2 = new Dialogue({pauseAtPeriod: false, actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor--", delayAfterEnd: 0,
           picture: '302.png', pictureWordTrigger: '3:00'});
         var a3 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from MacMurray...", picture: 'MacMurray.png', pictureWordTrigger: 'from'});
-        var a4 = new Dialogue({actor: "Shane", text: "Christ... That can only mean—", delayAfterEnd: 0});
+        var a4 = new Dialogue({actor: "Shane", text: "Christ... That can only mean--", delayAfterEnd: 0});
         var a5 = new Dialogue({interrupt: true, actor: "Ursula", text: "Beasts."});
         var a6 = new Dialogue({actor: "Shane", text: "Location?", delayAfterEnd: 500});
         var a7 = new Dialogue({actor: "Ursula", text: "Intel is being relayed. Get up, get your rifle.", picture: 'GrabRifleLighter.png', pictureWordTrigger: 'Get up', delayAfterEnd: 1200});
@@ -280,7 +280,7 @@ var game = {
          this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
          //this.shane.noIdle = true;
          // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["JewelOfLife", "MaskOfRage", "BootsOfHaste"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["RingOfThought"], unit: this.shane});
          gameUtils.moveUnitOffScreen(this.shane);
          return this.shane;
     },

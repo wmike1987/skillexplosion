@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 
 export default {
 	style: new PIXI.TextStyle({
+		name: 'style',
         dropShadow: true,
         dropShadowAngle: 7.1,
         dropShadowBlur: -12,
@@ -23,6 +24,7 @@ export default {
     }),
 
 	fpsStyle: new PIXI.TextStyle({
+		name: 'fpsStyle',
         dropShadowAngle: 7.1,
         dropShadowBlur: -12,
         dropShadowDistance: 4,
@@ -34,6 +36,7 @@ export default {
     }),
 
 	scoreStyle: new PIXI.TextStyle({
+		name: 'scoreStyle',
 	    fontFamily: 'Arial',
 	    fontSize: 20,
 	    fontStyle: 'italic',
@@ -50,6 +53,7 @@ export default {
 	}),
 
 	redScoreStyle: new PIXI.TextStyle({
+		name: 'redScoreStyle',
 	    fontFamily: 'Arial',
 	    fontSize: 20,
 	    fontStyle: 'italic',
@@ -66,6 +70,7 @@ export default {
 	}),
 
 	greenScoreStyle: new PIXI.TextStyle({
+		name: 'greenScoreStyle',
 	    fontFamily: 'Arial',
 	    fontSize: 20,
 	    fontStyle: 'italic',
@@ -82,6 +87,7 @@ export default {
 	}),
 
 	newWaveStyle: new PIXI.TextStyle({
+		name: 'newWaveStyle',
         dropShadow: true,
         dropShadowAlpha: 0.7,
         dropShadowAngle: 7.1,
@@ -102,6 +108,7 @@ export default {
     }),
 
     praiseStyle: new PIXI.TextStyle({
+		name: 'praiseStyle',
         dropShadow: true,
         dropShadowAlpha: 0.7,
         dropShadowAngle: 7.1,
@@ -121,6 +128,7 @@ export default {
     }),
 
 	unitHealthStyle: new PIXI.TextStyle({
+		name: 'unitHealthStyle',
 		fill: "#2EA003",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -129,6 +137,7 @@ export default {
 	}),
 
 	unitEnergyStyle: new PIXI.TextStyle({
+		name: 'unitEnergyStyle',
 		fill: "#9F33FF",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -138,6 +147,7 @@ export default {
 
 	//Unit stat panel styles
 	unitNameStyle: new PIXI.TextStyle({
+		name: 'unitNameStyle',
 		fill: "white",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -147,6 +157,7 @@ export default {
 	}),
 
 	unitLevelStyle: new PIXI.TextStyle({
+		name: 'unitLevelStyle',
 		fill: "#d7ab52",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -156,6 +167,7 @@ export default {
 	}),
 
 	unitGeneralStyle: new PIXI.TextStyle({
+		name: 'unitGeneralStyle',
 		fill: "#adadad",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -164,8 +176,19 @@ export default {
 		textBaseline: "bottom",
 	}),
 
+	unitGeneralEnergyStyle: new PIXI.TextStyle({
+		name: 'unitGeneralEnergyStyle',
+		fill: "#dc33ff",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 14,
+		strokeThickness: 2,
+		textBaseline: "bottom",
+	}),
+
 	unitSkillPointStyle: new PIXI.TextStyle({
-		fill: "#aa7307",
+		name: 'unitSkillPointStyle',
+		fill: "#bd8d30",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
 		fontSize: 14,
@@ -174,6 +197,7 @@ export default {
 	}),
 
 	unitDamageStyle: new PIXI.TextStyle({
+		name: 'unitDamageStyle',
 		fill: "#DB2323",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -183,6 +207,7 @@ export default {
 	}),
 
 	unitDefenseStyle: new PIXI.TextStyle({
+		name: 'unitDefenseStyle',
 		fill: "#0CA5D4",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
@@ -192,6 +217,7 @@ export default {
 	}),
 
 	abilityTitle: new PIXI.TextStyle({
+		name: 'abilityTitle',
 		fill: "#ffdd10",
 		fontFamily: "Tahoma, Geneva, sans-serif",
 		fontSize: 16,
@@ -199,13 +225,16 @@ export default {
 	}),
 
 	regularItemName: new PIXI.TextStyle({
+		name: 'regularItemName',
 		fill: "#D3D7E8",
 		fontFamily: "Tahoma, Geneva, sans-serif",
-		fontSize: 16,
+		fontSize: 14,
+		textBaseline: "bottom",
 		strokeThickness: 1
 	}),
 
 	abilityText: new PIXI.TextStyle({
+		name: 'abilityText',
 		fill: "#D3D7E8",
 		fillGradientType: 1,
 		fontFamily: "Tahoma, Geneva, sans-serif",
@@ -214,6 +243,7 @@ export default {
 	}),
 
 	HPTTStyle: new PIXI.TextStyle({
+		name: 'HPTTStyle',
 		fill: "#FFFFFF",
 		fillGradientType: 1,
 		fontFamily: "Tahoma, Geneva, sans-serif",
@@ -222,6 +252,7 @@ export default {
 	}),
 
 	EnergyTTStyle: new PIXI.TextStyle({
+		name: 'EnergyTTStyle',
 		fill: "#E948EF",
 		fillGradientType: 1,
 		fontFamily: "Tahoma, Geneva, sans-serif",
@@ -230,6 +261,7 @@ export default {
 	}),
 
 	systemMessageText: new PIXI.TextStyle({
+		name: 'systemMessageText',
 		fill: "#7DD4FF",
 		fillGradientType: 1,
 		fontFamily: "Tahoma, Geneva, sans-serif",
@@ -238,6 +270,7 @@ export default {
 	}),
 
 	critHitText: new PIXI.TextStyle({
+		name: 'critHitText',
 	    dropShadowAlpha: 0.6,
 	    dropShadowAngle: 0,
 	    dropShadowColor: "#e644ea",
@@ -259,6 +292,7 @@ export default {
 	}),
 
 	titleOneStyle: new PIXI.TextStyle({
+		name: 'titleOneStyle',
 	    fill: "white",
 	    fontSize: 43,
 	    fontStyle: "italic",
@@ -269,6 +303,7 @@ export default {
 	}),
 
 	statTitleStyle: new PIXI.TextStyle({
+		name: 'statTitleStyle',
 		fill: "red",
 		fontSize: 18,
 		fontFamily: "Tahoma, Geneva, sans-serif",
@@ -278,6 +313,7 @@ export default {
 	}),
 
 	statTextStyle: new PIXI.TextStyle({
+		name: 'statTextStyle',
 		fill: "white",
 		fontSize: 15,
 		lineJoin: "round",
@@ -286,6 +322,7 @@ export default {
 	}),
 
 	statDividerStyle: new PIXI.TextStyle({
+		name: 'statDividerStyle',
 		fill: 0x252525,
 		fontSize: 15,
 		lineJoin: "round",
@@ -294,6 +331,7 @@ export default {
 	}),
 
 	dialogueStyle: new PIXI.TextStyle({
+		name: 'dialogueStyle',
 	    fill: "#00b3ff",
 	    fontFamily: "\"Lucida Console\", Monaco, monospace",
 	    fontSize: 18,
@@ -301,6 +339,7 @@ export default {
 	}),
 
 	dialogueActorStyle: new PIXI.TextStyle({
+		name: 'dialogueActorStyle',
 		fill: "#ffffff",
 		fontFamily: "\"Lucida Console\", Monaco, monospace",
 		fontSize: 18,
@@ -308,6 +347,7 @@ export default {
 	}),
 
 	dialogueTitleStyle: new PIXI.TextStyle({
+		name: 'dialogueTitleStyle',
 		fill: "#b40000",
 		fontFamily: "\"Lucida Console\", Monaco, monospace",
 		fontSize: 40,

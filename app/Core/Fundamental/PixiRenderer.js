@@ -36,6 +36,9 @@ var renderer = function(engine, options) {
 	//texture name to atlas cache
 	this.texAtlCache = {};
 
+	//bitmap font cache
+	this.bitmapFontCache = {};
+
 	//create the layering groups
 	var i = 0;
 	this.layerGroups = {};
@@ -169,6 +172,7 @@ var renderer = function(engine, options) {
 
 		//init pixi and it's game loop, important to note that this loop happens after ours (ensuring renderWorld is called prior to this frame's rendering).
 		this.pixiApp = new PIXI.Application({width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
+		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;
 
 		//add-on gstats (ctrl + shift + f to show)
@@ -337,10 +341,22 @@ var renderer = function(engine, options) {
 		if(typeof something === 'string') {
 
 			//Text
-			if(something.indexOf('TEXT:') >= 0) {
-				var t = new PIXI.Text(something.substring(something.indexOf('TEXT:')+5), options.style);
-				t.resolution = 2;
+			if(something.indexOf('TEX+:') >= 0) {
+				var t = new PIXI.Text(something.substring(something.indexOf('TEX+:')+5), options.style);
+				t.resolution = 1;
 				return t;
+			}
+
+			//BitmapText
+			if(something.indexOf('TEXT:') >= 0) {
+				var name = options.style.name;
+				if(!this.bitmapFontCache[name]) {
+					this.bitmapFontCache[name] = PIXI.BitmapFont.from(name, options.style, {resolution: 2, chars: PIXI.BitmapFont.ASCII});
+				}
+
+				return new PIXI.BitmapText(something.substring(something.indexOf('TEXT:')+5), {
+			  		font: name,
+				});
 			}
 
 			//Attempt to load from preloaded texture or spine asset

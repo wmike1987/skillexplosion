@@ -77,6 +77,7 @@ var Tooltip = function(options) {
                     tt[key][result.index].text = result.value;
                 } else if(tt[key].text != result) {
                     tt[key].text = result;
+                    self.sizeBase();
                 }
             })
         }.bind(this))
@@ -85,6 +86,10 @@ var Tooltip = function(options) {
     //create base and size it
     var baseTint = 0x00042D;
     this.base = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
+    this.sizeBase();
+};
+
+Tooltip.prototype.sizeBase = function() {
     var descriptionWidth = 0;
     var descriptionHeight = 0;
     var systemMessageWidth = 0;
@@ -110,13 +115,7 @@ var Tooltip = function(options) {
     var width = Math.max(descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
     var height = this.title.height + this.buffer/2 + descriptionHeight + this.buffer + systemMessageHeight + (this.systemMessages.length ? this.buffer : 0) + this.buffer;
     graphicsUtils.makeSpriteSize(this.base, {w: width, h: height});
-};
-
-//set title, text, backgroundColor, etc
-Tooltip.prototype.update = function(options) {
-    this.title.text = options.text;
-    this.description[0].text = options.text;
-};
+}
 
 Tooltip.prototype.destroy = function(options) {
     graphicsUtils.removeSomethingFromRenderer(this.title);
@@ -213,6 +212,7 @@ Tooltip.prototype.display = function(position) {
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.visible = true;
     })
+    this.sizeBase();
     this.base.visible = true;
 };
 

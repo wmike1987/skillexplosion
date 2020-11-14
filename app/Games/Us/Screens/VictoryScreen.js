@@ -22,6 +22,7 @@ var statDividerStyle = styles.statDividerStyle;
 var unitGeneralStyle = styles.unitGeneralStyle;
 var unitDamageStyle = styles.unitDamageStyle;
 var unitDefenseStyle = styles.unitDefenseStyle;
+var unitGeneralEnergyStyle = styles.unitGeneralEnergyStyle;
 
 //Shane titles
 var shaneTitle = "Shane";
@@ -90,42 +91,42 @@ var VictoryScreen = function(units, statsObj) {
         startPos.x -= 43;
         var marinePortrait = graphicsUtils.createDisplayObject('MarinePortrait', {position: startPos, where: stage});
         var marinePortraitBorder = graphicsUtils.createDisplayObject('PortraitBorder', {position: shanePosition(portrait), where: stage});
-        var marineHealth = graphicsUtils.createDisplayObject("TEXT:" + "💗 " + shane.maxHealth, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY - unitStatYSpacing*1.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var marineEnergy = graphicsUtils.createDisplayObject("TEXT:" + "🔹 " + shane.maxEnergy, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY - unitStatYSpacing*.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var marineDamage = graphicsUtils.createDisplayObject("TEXT:" + "Dmg: " + shane.damage, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var marineDefense = graphicsUtils.createDisplayObject("TEXT:" + "Def: " + shane.defense, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY + unitStatYSpacing*1.5}, style: unitDefenseStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var placeholder = graphicsUtils.createDisplayObject("TEXT:" + skinnyDivider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var marineHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + shane.maxHealth, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY - unitStatYSpacing*1.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var marineEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + shane.maxEnergy, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY - unitStatYSpacing*.5}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "Def: " + shane.defense, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY + unitStatYSpacing*1.5}, style: unitDefenseStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         graphicsUtils.graduallyTint(marinePortraitBorder, 0x18bb96, 0xa80505, 6000);
         this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth, marineEnergy, marineDamage, marineDefense]);
 
-        var shaneKillsTitle = graphicsUtils.createDisplayObject("TEXT:" + kills, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneKills = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.kills, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKills = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.kills, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneKillsTitle, shaneKills, placeholder]);
 
-        var shaneDamageTitle = graphicsUtils.createDisplayObject("TEXT:" + damageDone, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneDamage = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.damageDone, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamageTitle = graphicsUtils.createDisplayObject("TEX+:" + damageDone, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamage = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageDone, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneDamageTitle, shaneDamage, placeholder]);
 
-        var shaneDamageTakenTitle = graphicsUtils.createDisplayObject("TEXT:" + damageTaken, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneDamageTaken = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.damageTaken, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamageTakenTitle = graphicsUtils.createDisplayObject("TEX+:" + damageTaken, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamageTaken = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageTaken, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneDamageTakenTitle, shaneDamageTaken, placeholder]);
 
-        var shaneDamageReducedByAmorTitle = graphicsUtils.createDisplayObject("TEXT:" + preventedArmorDamage, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.damageReducedByArmor, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamageReducedByAmorTitle = graphicsUtils.createDisplayObject("TEX+:" + preventedArmorDamage, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageReducedByArmor, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneDamageReducedByAmorTitle, shaneDamageReducedByAmor, placeholder]);
 
-        var shaneHealingDoneTitle = graphicsUtils.createDisplayObject("TEXT:" + healingDone, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneHealingDone = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.healingDone, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneHealingDoneTitle = graphicsUtils.createDisplayObject("TEX+:" + healingDone, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneHealingDone = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.healingDone, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneHealingDoneTitle, shaneHealingDone, placeholder]);
 
-        var shaneKnivesThrownTitle = graphicsUtils.createDisplayObject("TEXT:" + knivesThrown, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneKnivesThrown = graphicsUtils.createDisplayObject("TEXT:" + shaneStats.knivesThrown, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKnivesThrownTitle = graphicsUtils.createDisplayObject("TEX+:" + knivesThrown, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKnivesThrown = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.knivesThrown, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneKnivesThrownTitle, shaneKnivesThrown, placeholder]);
 
         //Ursula
@@ -133,32 +134,32 @@ var VictoryScreen = function(units, statsObj) {
         startPos.x -= 43;
         var medicPortrait = graphicsUtils.createDisplayObject('MedicPortrait', {position: startPos, where: stage});
         var medicPortraitBorder = graphicsUtils.createDisplayObject('PortraitBorder', {position: ursulaPosition(portrait), where: stage});
-        var medicHealth = graphicsUtils.createDisplayObject("TEXT:" + "💗 " + ursula.maxHealth, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*1.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var medicEnergy = graphicsUtils.createDisplayObject("TEXT:" + "🔹 " + ursula.maxEnergy, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var medicDamage = graphicsUtils.createDisplayObject("TEXT:" + "Heal: " + ursula.damageMember(), {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var medicDefense = graphicsUtils.createDisplayObject("TEXT:" + "Def: " + ursula.defense, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*1.5}, style: unitDefenseStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + skinnyDivider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + ursula.maxHealth, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*1.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var medicEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + ursula.maxEnergy, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*.5}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + "Heal: " + ursula.damageMember(), {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "Def: " + ursula.defense, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*1.5}, style: unitDefenseStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         graphicsUtils.graduallyTint(medicPortraitBorder, 0x18bb96, 0x20902f, 6000);
         this.ursulaStats.push([medicPortrait, medicPortraitBorder, placeholder, medicHealth, medicEnergy, medicDamage, medicDefense]);
 
-        var ursulaKillsTitle = graphicsUtils.createDisplayObject("TEXT:" + kills, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var ursulaKills = graphicsUtils.createDisplayObject("TEXT:" + ursulaStats.kills, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaKills = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.kills, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.ursulaStats.push([ursulaKillsTitle, ursulaKills, placeholder]);
 
-        var ursulaDamageTitle = graphicsUtils.createDisplayObject("TEXT:" + damageDone, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var ursulaDamage = graphicsUtils.createDisplayObject("TEXT:" + ursulaStats.damageDone, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaDamageTitle = graphicsUtils.createDisplayObject("TEX+:" + damageDone, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaDamage = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageDone, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.ursulaStats.push([ursulaDamageTitle, ursulaDamage, placeholder]);
 
-        var ursulaDamageTakenTitle = graphicsUtils.createDisplayObject("TEXT:" + damageTaken, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var ursulaDamageTaken = graphicsUtils.createDisplayObject("TEXT:" + ursulaStats.damageTaken, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaDamageTakenTitle = graphicsUtils.createDisplayObject("TEX+:" + damageTaken, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaDamageTaken = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageTaken, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.ursulaStats.push([ursulaDamageTakenTitle, ursulaDamageTaken, placeholder]);
 
-        var ursulaHealingDoneTitle = graphicsUtils.createDisplayObject("TEXT:" + healingDone, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var ursulaHealingDone = graphicsUtils.createDisplayObject("TEXT:" + ursulaStats.healingDone, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        placeholder = graphicsUtils.createDisplayObject("TEXT:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaHealingDoneTitle = graphicsUtils.createDisplayObject("TEX+:" + healingDone, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaHealingDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.healingDone, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.ursulaStats.push([ursulaHealingDoneTitle, ursulaHealingDone, placeholder]);
 
         //Add everything to the scene

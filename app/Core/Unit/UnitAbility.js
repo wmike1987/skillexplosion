@@ -12,12 +12,12 @@ export default function(options) {
 
     //Manage tooltip options
     if(this.energyCost) {
-      this.systemMessage = ["🔹" + this.energyCost];
+      this.systemMessage = ["E: " + this.energyCost];
       this.updaters = {systemMessages: function() {
           if(this.customCostText) {
               return {index: 0, value: this.customCostText};
           }
-          return {index: 0, value: "🔹" + this.energyCost};
+          return {index: 0, value: "E: " + this.energyCost};
       }.bind(this)}
     }
 

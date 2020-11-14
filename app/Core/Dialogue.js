@@ -26,7 +26,7 @@ var pictureStyles = {
  */
 var Dialogue = function Dialogue(options) {
     var defaults = {
-        textBeginPosition: {x: 50, y: 50},
+        textBeginPosition: {x: 50, y: 75},
         titleBeginPosition: {x: null, y: 40},
         actorLetterSpeed: 40,
         letterSpeed: 80,
@@ -60,9 +60,9 @@ var Dialogue = function Dialogue(options) {
     this.play = function(options) {
         options = options || {};
         if(this.title) {
-            this.realizedText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEXT:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
-            this.realizedText.position.x = (gameUtils.getPlayableWidth()/2);
+            this.realizedText.position.x = (gameUtils.getPlayableWidth()/2-this.realizedText.width/2);
         } else {
             this.realizedText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
