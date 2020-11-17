@@ -11,8 +11,6 @@ var basicTop = 8;
 var rareBottom = 2;
 var rareTop = 5;
 
-
-
 var enemySetSpecifier = {
     create: function(options) {
         var type = options.type;

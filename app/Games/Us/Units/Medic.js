@@ -281,6 +281,7 @@ export default function Medic(options) {
 
         var secretStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
         gameUtils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
+        Matter.Events.trigger(globals.currentGame, 'secretStep', {performingUnit: this});
 
         //create footprints
         var footprintFrequency = currentAugment.name == 'fleet feet' ? 30 : 60;
@@ -423,6 +424,7 @@ export default function Medic(options) {
 
         globals.currentGame.addBody(mine);
         mineSound.play();
+        Matter.Events.trigger(globals.currentGame, 'layMine', {performingUnit: this});
 
         //play spine animation
         // this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
@@ -463,11 +465,6 @@ export default function Medic(options) {
         }
         graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
         graphicsUtils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*3.0, y: blastRadius*3.0})
-		// mineExplosionAnimation.rotation = Math.random() * Math.PI*2;
-        // var mine2 = Matter.Bodies.circle(position.x, position.y+20, 100, {
-        //     isSensor: true,
-        // });
-        // globals.currentGame.addBody(mine2);
 
         if(currentAugment.name == 'pressure plate') {
             Matter.Events.on(mine, 'onCollide', function(pair) {

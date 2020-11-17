@@ -5,7 +5,7 @@ import UC from '@core/Unit/UnitConstructor.js'
 import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import rv from '@core/Unit/_Revivable.js'
-import style from '@utils/Styles.js'
+import styles from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
@@ -319,6 +319,7 @@ export default function Marine(options) {
         var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
         Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
         dashSound.play();
+        Matter.Events.trigger(globals.currentGame, 'dash', {performingUnit: this});
 
         //play animation
         var dashAnimation = gameUtils.getAnimation({

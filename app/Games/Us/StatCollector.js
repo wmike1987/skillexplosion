@@ -41,6 +41,9 @@ var CollectorManager = function(options) {
     var damageReducedByArmorCollector = new DamageReducedByArmorCollector(options);
     var knivesThrownCollector = new KnivesThrownCollector(options);
     var knifeKillsCollector = new KnifeKillsCollector(options);
+    var dashCollector = new DashCollector(options);
+    var mineCollector = new MineCollector(options);
+    var secretStepCollector = new SecretStepCollector(options);
     this.collectors = [];
 
     if(options.collectors) {
@@ -53,6 +56,9 @@ var CollectorManager = function(options) {
         this.collectors.push(damageReducedByArmorCollector);
         this.collectors.push(knivesThrownCollector);
         this.collectors.push(knifeKillsCollector);
+        this.collectors.push(dashCollector);
+        this.collectors.push(mineCollector);
+        this.collectors.push(secretStepCollector);
     }
 
     this.startCollecting = function() {
@@ -194,5 +200,38 @@ var KnifeKillsCollector = function(options) {
     }.bind(this)
 }
 KnifeKillsCollector.prototype = Collector;
+
+var DashCollector = function(options) {
+    this.name = "dashesPerformed";
+    this.eventName = 'dash';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this)
+}
+DashCollector.prototype = Collector;
+
+var MineCollector = function(options) {
+    this.name = "minesLaid";
+    this.eventName = 'layMine';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this)
+}
+MineCollector.prototype = Collector;
+
+var SecretStepCollector = function(options) {
+    this.name = "secretStepsPerformed";
+    this.eventName = 'secretStep';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this)
+}
+SecretStepCollector.prototype = Collector;
 
 export default StatMaster;

@@ -12,5 +12,10 @@ module.exports = merge(common, {
         headers: {
             'Cache-Control': 'max-age=5',
         },
+    },
+    stats: {
+        warningsFilter: [
+            /was not found in 'pixi.js'/
+        ]
     }
 });

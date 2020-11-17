@@ -249,6 +249,7 @@ var game = {
                 node.isCompleted = true;
                 this.shaneCollector.stopCurrentCollector();
                 this.ursulaCollector.stopCurrentCollector();
+                // this.gotoCamp();
                 this.gotoVictoryScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
                 this.resetUnit(this.shane);
                 this.resetUnit(this.ursula);

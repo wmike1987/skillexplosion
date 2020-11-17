@@ -197,11 +197,11 @@ var common = {
                 if(event.key == 'f' || event.key == 'F') {
                     this.lastDeltaText.visible = !this.lastDeltaText.visible;
                     this.fpsText.visible = !this.fpsText.visible;
-                    if(this.renderer.stats.stats.dom.style.visibility != 'hidden') {
-                        this.renderer.stats.stats.dom.style.visibility = 'hidden';
-                    } else {
-                        this.renderer.stats.stats.dom.style.visibility = 'visible';
-                    }
+                    // if(this.renderer.stats.stats.dom.style.visibility != 'hidden') {
+                    //     this.renderer.stats.stats.dom.style.visibility = 'hidden';
+                    // } else {
+                    //     this.renderer.stats.stats.dom.style.visibility = 'visible';
+                    // }
                 }
             }
 

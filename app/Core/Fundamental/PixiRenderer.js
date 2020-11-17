@@ -341,21 +341,23 @@ var renderer = function(engine, options) {
 		if(typeof something === 'string') {
 
 			//Text
-			if(something.indexOf('TEX+:') >= 0) {
-				var t = new PIXI.Text(something.substring(something.indexOf('TEX+:')+5), options.style);
+			var textPlusId = 'TEX+:';
+			if(something.indexOf(textPlusId) >= 0) {
+				var t = new PIXI.Text(something.substring(something.indexOf(textPlusId)+5), options.style);
 				t.resolution = 1;
 				return t;
 			}
 
 			//BitmapText
-			if(something.indexOf('TEXT:') >= 0) {
+			var bitmapTextId = 'TEXT:';
+			if(something.indexOf(bitmapTextId) >= 0) {
 				var name = options.style.name;
 				if(!this.bitmapFontCache[name]) {
 					this.bitmapFontCache[name] = PIXI.BitmapFont.from(name, options.style, {resolution: 2, chars: PIXI.BitmapFont.ASCII});
 				}
 
-				return new PIXI.BitmapText(something.substring(something.indexOf('TEXT:')+5), {
-			  		font: name,
+				return new PIXI.BitmapText(something.substring(something.indexOf(bitmapTextId)+5), {
+			  		fontName: name,
 				});
 			}
 

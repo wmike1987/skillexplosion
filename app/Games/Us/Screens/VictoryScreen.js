@@ -26,13 +26,13 @@ var unitGeneralEnergyStyle = styles.unitGeneralEnergyStyle;
 
 //Shane titles
 var shaneTitle = "Shane";
-var knivesThrown = "Knives Thrown";
+var knivesThrownKilled = "Knife Throws/Kills";
 var dashesPerformed = "Dashes Performed";
 
 //Ursula titles
 var ursulaTitle = "Ursula";
 var minesLaid = "Mines Laid";
-var secretStepsPerformed = "Secret Steps Performed";
+var secretStepsPerformed = "Secret Steps";
 
 var VictoryScreen = function(units, statsObj) {
     var shane = units.shane;
@@ -124,10 +124,15 @@ var VictoryScreen = function(units, statsObj) {
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneHealingDoneTitle, shaneHealingDone, placeholder]);
 
-        var shaneKnivesThrownTitle = graphicsUtils.createDisplayObject("TEX+:" + knivesThrown, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var shaneKnivesThrown = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.knivesThrown, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKnifeTitle = graphicsUtils.createDisplayObject("TEX+:" + knivesThrownKilled, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneKnifeStats = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.knivesThrown + "/" + shaneStats.knifeKills, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        this.shaneStats.push([shaneKnivesThrownTitle, shaneKnivesThrown, placeholder]);
+        this.shaneStats.push([shaneKnifeTitle, shaneKnifeStats, placeholder]);
+
+        var shaneDashTitle = graphicsUtils.createDisplayObject("TEX+:" + dashesPerformed, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var shaneDashesPerformed = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.dashesPerformed, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        this.shaneStats.push([shaneDashTitle, shaneDashesPerformed, placeholder]);
 
         //Ursula
         var startPos = ursulaPosition(same);
@@ -157,10 +162,25 @@ var VictoryScreen = function(units, statsObj) {
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.ursulaStats.push([ursulaDamageTakenTitle, ursulaDamageTaken, placeholder]);
 
+        var ursulaDamageReducedByAmorTitle = graphicsUtils.createDisplayObject("TEX+:" + preventedArmorDamage, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var ursulaDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageReducedByArmor, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        this.ursulaStats.push([ursulaDamageReducedByAmorTitle, ursulaDamageReducedByAmor, placeholder]);
+
         var ursulaHealingDoneTitle = graphicsUtils.createDisplayObject("TEX+:" + healingDone, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var ursulaHealingDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.healingDone, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.ursulaStats.push([ursulaHealingDoneTitle, ursulaHealingDone, placeholder]);
+
+        var minesLaidTitle = graphicsUtils.createDisplayObject("TEX+:" + minesLaid, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var minesLaidDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.minesLaid, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        this.ursulaStats.push([minesLaidTitle, minesLaidDone, placeholder]);
+
+        var secretStepsTitle = graphicsUtils.createDisplayObject("TEX+:" + secretStepsPerformed, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var secretStepsDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.secretStepsPerformed, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
 
         //Add everything to the scene
         this.shaneStats.forEach((objArr) => {
