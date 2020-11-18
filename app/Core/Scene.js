@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import dissolveShader from '@shaders/DissolveShader.js'
+import circleDissolveShader from '@shaders/CircleDissolveShader.js'
 
 /*
  * This module represents a scene.
@@ -80,7 +81,7 @@ var SceneModes = {
  */
 Scene.prototype.transitionToScene = function(options) {
     var newScene = null;
-    var transitionLength = 800;
+    var transitionLength = 1500;
     var mode = SceneModes.FADE_AWAY;
     if(options.isScene) {
         newScene = options;
@@ -129,13 +130,25 @@ Scene.prototype.transitionToScene = function(options) {
         inRuns = 1;
         iterTime = 32
         runs = transitionLength/iterTime;
-        var dShader = new PIXI.Filter(null, dissolveShader, {
+        // var dShader = new PIXI.Filter(null, dissolveShader, {
+        //     a: Math.random()*10 + 10,
+        //     b: 10,
+        //     c: 555555,
+        //     progress: 1.0,
+        //     screenSize: gameUtils.getPlayableWH(),
+        //     gridSize: 8,
+        // });
+        // globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
+
+        var dShader = new PIXI.Filter(null, circleDissolveShader, {
             a: Math.random()*10 + 10,
             b: 10,
             c: 555555,
             progress: 1.0,
             screenSize: gameUtils.getPlayableWH(),
-            gridSize: 8,
+            screenCenter: gameUtils.getCanvasCenter(),
+            gridSize: 2,
+            fadeOut: false,
         });
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
