@@ -9,7 +9,6 @@ export default function(options) {
 
     this.costs = [];
     this.disables = {};
-    this.slaves = [];
 
     //Manage tooltip options
     if(this.energyCost) {
@@ -37,7 +36,7 @@ export default function(options) {
 
     this.addSlave = function(...slaves) {
         slaves.forEach((sl) => {
-            this.slaves.push(sl);
+            gameUtils.deathPact(this, sl);
         })
     }
 }

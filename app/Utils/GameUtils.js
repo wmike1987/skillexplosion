@@ -629,6 +629,11 @@ var gameUtils = {
 
     doSomethingAfterDuration: function(callback, duration, options) {
         options = options || {};
+        if(!duration) {
+            callback();
+            return;
+        }
+
         globals.currentGame.addTimer(
             {
                 name: 'task:' + mathArrayUtils.getId(),

@@ -703,10 +703,12 @@ unitPanel.prototype.displayUnitPassives = function(options) {
     //clear last passive
     if(this.currentDefensePassive) {
         this.currentDefensePassive.activeIcon.visible = false;
+        this.defensePassiveMeter.visible = false;
     }
 
     if(this.currentActivePassive) {
         this.currentActivePassive.activeIcon.visible = false;
+        this.attackPassiveMeter.visible = false;
     }
 
     if((!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) || options.clear) return;
@@ -730,6 +732,63 @@ unitPanel.prototype.displayUnitPassives = function(options) {
         this.currentActivePassive = unit.attackPassive;
         unit.attackPassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveBottomCenterY};
     }
+
+    //create the timing meters
+    if(!this.attackPassiveMeter) {
+        this.defensePassiveMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {tint: 0x67c18b, position: {x: this.passiveCenterX-16, y: this.passiveTopCenterY + 18}, anchor: {x: 0, y: 0}, where: 'hudOne'});
+        this.attackPassiveMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {tint: 0x67c18b, position: {x: this.passiveCenterX-16, y: this.passiveBottomCenterY + 18}, anchor: {x: 0, y: 0}, where: 'hudOne'});
+        this.defensePassiveMeter.visible = false;
+        this.attackPassiveMeter.visible = false;
+        this.meterUpdater = globals.currentGame.addTickCallback(function() {
+            var unit = this.prevailingUnit;
+            if(!unit) return;
+            if(unit.attackPassive) {
+                var percentDone = unit.attackPassive.coolDownMeterPercent;
+                this.attackPassiveMeter.visible = true;
+                graphicsUtils.makeSpriteSize(this.attackPassiveMeter, {x: 32*percentDone, y: 8})
+                if(percentDone < 1.0) {
+                    this.attackPassiveMeter.tint = 0xbbaeae;
+                    unit.attackPassive.activeIcon.tint = 0x575757;
+                } else if(!this.attackPassiveIconFlashing && unit.attackPassive.newCharge) {
+                    this.attackPassiveMeter.tint = 0x09c216;
+                    unit.attackPassive.activeIcon.tint = 0xFFFFFF;
+                }
+            } else {
+                this.attackPassiveMeter.visible = false;
+            }
+            if(unit.defensePassive) {
+                var percentDone = unit.defensePassive.coolDownMeterPercent;
+                this.defensePassiveMeter.visible = true;
+                graphicsUtils.makeSpriteSize(this.defensePassiveMeter, {x: 32*percentDone, y: 8})
+                if(percentDone < 1.0) {
+                    this.defensePassiveMeter.tint = 0xbbaeae;
+                    unit.defensePassive.activeIcon.tint = 0x575757;
+                } else if(!this.defensePassiveIconFlashing && unit.defensePassive.newCharge) {
+                    this.defensePassiveMeter.tint = 0x09c216;
+                    unit.defensePassive.activeIcon.tint = 0xFFFFFF;
+                }
+            } else {
+                this.defensePassiveMeter.visible = false;
+            }
+        }.bind(this))
+    }
+    Matter.Events.on(this, "attackPassiveActivated", function(event) {
+        var timer = graphicsUtils.graduallyTint(this.currentActivePassive.activeIcon, 0xffffff, 0x575757, event.duration/5);
+        this.attackPassiveIconFlashing = true;
+        gameUtils.doSomethingAfterDuration(function() {
+            globals.currentGame.invalidateTimer(timer);
+            this.attackPassiveIconFlashing = false;
+        }.bind(this), event.duration);
+    }.bind(this))
+
+    Matter.Events.on(this, "defensePassiveActivated", function(event) {
+        var timer = graphicsUtils.graduallyTint(this.currentDefensePassive.activeIcon, 0xffffff, 0x575757, event.duration/5);
+        this.defensePassiveIconFlashing = true;
+        gameUtils.doSomethingAfterDuration(function() {
+            globals.currentGame.invalidateTimer(timer);
+            this.defensePassiveIconFlashing = false;
+        }.bind(this), event.duration);
+    }.bind(this))
 }
 
 unitPanel.prototype.displayCommands = function() {
@@ -782,6 +841,7 @@ unitPanel.prototype.cleanUp = function() {
     globals.currentGame.removeTickCallback(this.updateUnitStatTick);
     globals.currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
     globals.currentGame.removeTickCallback(this.abilityAvailableTick);
+    globals.currentGame.removeTickCallback(this.meterUpdater);
 
     //unit configuration panel
     if(this.unitAugmentPanel)
@@ -793,7 +853,8 @@ unitPanel.prototype.cleanUp = function() {
 
     this.autoCastSound.unload();
 
-    //the auto cast timer should die upon nuke... (what is this comment for...)
+    Matter.Events.off(this, "attackPassiveActivated");
+    Matter.Events.off(this, "defensePassiveActivated");
 };
 
 unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;

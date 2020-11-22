@@ -697,18 +697,29 @@ export default function Marine(options) {
         }
     })
 
+    var robDDuration = 2000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        description: ['Defensive Mode (When hit):', 'Absorb 5x healing for 2s. (10s cool down)', 'Click to activate.', ' ',
+        description: ['Defensive Mode (When hit):', 'Absorb 2x healing for 2s. (10s cool down)', 'Click to activate.', ' ',
                       'Agression Mode (Upon kill):', 'Dash is free for 2s. (10s cool down)', 'Ctrl+click to activate.'],
         textureName: 'RushOfBlood',
-        start: function() {
+        unit: marine,
+        cooldown: 5000,
+        defenseEventName: 'preSufferedAttack',
+        defenseDuration: robDDuration,
+        aggressionEventName: 'kill',
+        aggressionDuration: 1000,
+        defenseAction: function(event) {
+            var f = Matter.Events.on(marine, 'prePerformedHeal', function(event) {
+                event.healingObj.amount *= 2;
+            })
+            gameUtils.doSomethingAfterDuration(function() {
+                Matter.Events.off(marine, 'prePerformedHeal', f);
+            }, robDDuration)
+        },
+        aggressionAction: function(event) {
 
         },
-
-        stop: function() {
-
-        }
     })
 
     var unitProperties = $.extend({

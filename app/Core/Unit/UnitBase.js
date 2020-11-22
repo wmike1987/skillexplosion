@@ -69,6 +69,12 @@ var UnitBase = {
     dropItemsOnDeath: true,
 
     sufferAttack: function(damage, attackingUnit) {
+        var damageObj = {damage: damage};
+        Matter.Events.trigger(this, 'preSufferedAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
+
+        //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
+        damage = damageObj.damage;
+
         var alteredDamage = Math.max(1, (damage - this.defense));
         var damageReducedByArmor = this.defense;
         if(damage - this.defense <= 0) {
@@ -95,6 +101,21 @@ var UnitBase = {
             }
         }
         Matter.Events.trigger(globals.currentGame, 'sufferedAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
+    },
+
+    giveHealth: function(amount, performingUnit) {
+        var healingObj = {amount: amount}
+        Matter.Events.trigger(this, 'prePerformedHeal', {performingUnit: performingUnit, healingObj: healingObj});
+        amount = healingObj.amount;
+
+        this.currentHealth += amount;
+        var healingDone = amount;
+        if(this.currentHealth >= this.maxHealth) {
+            healingDone -= (this.currentHealth-this.maxHealth);
+            this.currentHealth = this.maxHealth;
+        }
+
+        Matter.Events.trigger(globals.currentGame, 'performedHeal', {performingUnit: performingUnit, amountDone: healingDone});
     },
 
     _death: function() {

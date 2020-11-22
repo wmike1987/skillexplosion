@@ -596,12 +596,6 @@ var common = {
                 gameUtils.doSomethingAfterDuration(() => {slave.unload()}, 1500, {executeOnNuke: true});
             } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
                 graphicsUtils.removeSomethingFromRenderer(slave);
-                // if(slave.myLayer) {
-                //     graphicsUtils.removeSomethingFromRenderer(slave);
-                // }
-                // else if(slave.destroy) {
-                //     slave.destroy();
-                // }
             }
         }.bind(this));
     },
