@@ -402,6 +402,9 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
     }
     this.currentAbilities = null;
 
+    //clear passives
+    this.updateUnitPassives({clear: true});
+
     //clear commands
     if(this.currentCommands) {
         $.each(this.currentCommands, function(i, command) {
@@ -685,17 +688,19 @@ unitPanel.prototype.displayUnitAbilities = function() {
     }
 };
 
-unitPanel.prototype.displayUnitPassives = function() {
+unitPanel.prototype.displayUnitPassives = function(options) {
+    options = options || {};
+
     //clear last passive
-    if(this.currentDefensePassive) {
+    if(this.currentDefensePassive || options.clear) {
         this.currentDefensePassive.activeIcon.visible = false;
     }
 
-    if(this.currentActivePassive) {
+    if(this.currentActivePassive || options.clear) {
         this.currentActivePassive.activeIcon.visible = false;
     }
 
-    if(!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) return;
+    if((!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) || options.clear) return;
 
     var unit = this.prevailingUnit;
 
