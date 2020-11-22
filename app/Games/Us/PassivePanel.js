@@ -94,14 +94,14 @@ ConfigPanel.prototype.showPassives = function(unit) {
     var passiveCenterX = this.unitPanelRef.passiveCenterX;
     var alphaPassive = .8;
 
-    if(!unit.currentAttackPassiveBorder) {
-        unit.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', {where: "hudOne", tint: 0xf90007});
-        unit.currentAttackPassiveBorder.visible = false;
-        unit.currentAttackPassiveBorder.sortYOffset = 1000;
+    if(!this.currentAttackPassiveBorder) {
+        this.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', {where: "hudOne", tint: 0xf90007});
+        this.currentAttackPassiveBorder.visible = false;
+        this.currentAttackPassiveBorder.sortYOffset = 1000;
 
-        unit.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', {where: "hudOne", tint: 0x1c5cff});
-        unit.currentDefensePassiveBorder.visible = false;
-        unit.currentDefensePassiveBorder.sortYOffset = 1000;
+        this.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', {where: "hudOne", tint: 0x1c5cff});
+        this.currentDefensePassiveBorder.visible = false;
+        this.currentDefensePassiveBorder.sortYOffset = 1000;
     }
     $.each(unit.passiveAbilities, function(j, passive) {
         var xpos;
@@ -121,12 +121,15 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
             passive.border.sortYOffset = -10;
             passive.actionBox.interactive = true;
+
+            passive.addSlave(passive.icon, passive.lock, passive.actionBox, passive.border);
+
             passive.actionBox.on('mousedown', function(event) {
                 if(keyStates['Control']) {
                     if(!passive.attackPassive) {
                         if(passive.defensePassive) {
                             unit.unequipPassive(passive);
-                            unit.currentDefensePassiveBorder.visible = false;
+                            this.currentDefensePassiveBorder.visible = false;
                         }
                         var lastPassive = unit.attackPassive;
                         if(lastPassive) {
@@ -135,15 +138,15 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         unit.equipPassive(passive, 'attackPassive');
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
-                        unit.currentAttackPassiveBorder.position = passive.icon.position;
-                        unit.currentAttackPassiveBorder.visible = true;
+                        this.currentAttackPassiveBorder.position = passive.icon.position;
+                        this.currentAttackPassiveBorder.visible = true;
 
                     }
                 } else {
                     if(!passive.defensePassive) {
                         if(passive.attackPassive) {
                             unit.unequipPassive(passive);
-                            unit.currentAttackPassiveBorder.visible = false;
+                            this.currentAttackPassiveBorder.visible = false;
                         }
                         var lastPassive = unit.defensePassive;
                         if(lastPassive) {
@@ -152,8 +155,8 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         unit.equipPassive(passive, 'defensePassive');
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
-                        unit.currentDefensePassiveBorder.position = passive.icon.position;
-                        unit.currentDefensePassiveBorder.visible = true;
+                        this.currentDefensePassiveBorder.position = passive.icon.position;
+                        this.currentDefensePassiveBorder.visible = true;
                     }
                 }
                 if(lastPassive) {
@@ -189,11 +192,11 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.border.alpha = 0;
             passive.border.visible = false;
             if(passive.attackPassive) {
-                unit.currentAttackPassiveBorder.visible = true;
-                unit.currentAttackPassiveBorder.position = passive.icon.position;
+                this.currentAttackPassiveBorder.visible = true;
+                this.currentAttackPassiveBorder.position = passive.icon.position;
             } else {
-                unit.currentDefensePassiveBorder.visible = true;
-                unit.currentDefensePassiveBorder.position = passive.icon.position;
+                this.currentDefensePassiveBorder.visible = true;
+                this.currentDefensePassiveBorder.position = passive.icon.position;
             }
         } else {
             passive.icon.alpha = 1;
@@ -224,8 +227,8 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
         passive.actionBox.tooltipObj.hide();
         passive.actionBox.visible = false;
         passive.lock.visible = false;
-        unit.currentDefensePassiveBorder.visible = false;
-        unit.currentAttackPassiveBorder.visible = false;
+        this.currentDefensePassiveBorder.visible = false;
+        this.currentAttackPassiveBorder.visible = false;
     }.bind(this))
 
     equipHide.play();
@@ -281,6 +284,8 @@ ConfigPanel.prototype.cleanUp = function() {
     graphicsUtils.removeSomethingFromRenderer(this.showButton);
     graphicsUtils.removeSomethingFromRenderer(this.showButtonGlass);
     graphicsUtils.removeSomethingFromRenderer(this.showButtonSkinny);
+    graphicsUtils.removeSomethingFromRenderer(this.currentDefensePassiveBorder);
+    graphicsUtils.removeSomethingFromRenderer(this.currentActivePassiveBorder);
     $('body').off('mousemove.unitPassivePanel');
     $('body').off('mousedown.unitPassivePanel');
 };

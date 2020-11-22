@@ -28,6 +28,15 @@ function UnitConstructor(options) {
     var unitBase = $.extend(true, {}, UnitBase);
     var newUnit = Object.assign(unitObj, unitBase, options.unit);
 
+    //add passives (and probably abilities in the future to slaves)
+    if(newUnit.passiveAbilities) {
+        options.slaves = options.slaves.concat(newUnit.passiveAbilities);
+    }
+
+    if(newUnit.abilities) {
+        options.slaves = options.slaves.concat(newUnit.abilities);
+    }
+
     //death pact slaves
     if(options.slaves) {
         $.each(options.slaves, function(i, sound) {

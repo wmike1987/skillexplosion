@@ -101,18 +101,25 @@ ConfigPanel.prototype.showAugments = function(unit) {
             ability.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
             ability.currentAugmentBorder.visible = false;
             ability.currentAugmentBorder.sortYOffset = 1000;
+            ability.addSlave(ability.currentAugmentBorder);
             var alphaAugment = .8;
             $.each(ability.augments, function(j, augment) {
                 if(!augment.icon.parent) {
-                    graphicsUtils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
-                    augment.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+                    var a = graphicsUtils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+                    var l = augment.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                     augment.lock.visible = false;
                     augment.unlocked = true; //for debugging
-                    augment.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+                    var ab = augment.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                     graphicsUtils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
-                    augment.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+                    var b = augment.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
                     augment.border.sortYOffset = -10;
                     augment.actionBox.interactive = true;
+
+                    ability.addSlave(a);
+                    ability.addSlave(l);
+                    ability.addSlave(ab);
+                    ability.addSlave(b);
+
                     augment.actionBox.on('mousedown', function(event) {
                         if(ability.currentAugment != augment && augment.unlocked) {
                             //unequip existing augment

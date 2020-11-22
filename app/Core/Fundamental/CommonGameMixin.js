@@ -585,6 +585,8 @@ var common = {
             else if(slave.isTimer) {
                 this.invalidateTimer(slave);
                 //console.info("removing " + slave)
+            } else if(slave.slaves) {
+                this.removeSlaves(slave.slaves);
             }
             else if(slave instanceof Function) {
                 //console.info("removing " + slave)

@@ -9,6 +9,7 @@ export default function(options) {
 
     this.costs = [];
     this.disables = {};
+    this.slaves = [];
 
     //Manage tooltip options
     if(this.energyCost) {
@@ -33,4 +34,10 @@ export default function(options) {
         this.enablers.splice(this.enablers.indexOf(this.disables[id]), 1);
         delete this.disables[id];
     };
+
+    this.addSlave = function(...slaves) {
+        slaves.forEach((sl) => {
+            this.slaves.push(sl);
+        })
+    }
 }

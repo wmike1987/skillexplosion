@@ -291,7 +291,8 @@ unitPanel.prototype.updateUnitGroup = function(units) {
         if(unit.wireframe) {
             var wireframe = unit.wireframe;
             if(!wireframe.parent) {
-                graphicsUtils.addSomethingToRenderer(wireframe, 'hudOne');
+                var wiref = graphicsUtils.addSomethingToRenderer(wireframe, 'hudOne');
+                gameUtils.deathPact(unit, wiref);
                 wireframe.interactive = true;
                 wireframe.on('mouseup', function(event) {
                     this.unitSystem.selectedUnit = unit;
@@ -420,7 +421,8 @@ unitPanel.prototype.displayUnitPortrait = function() {
     if(!this.currentPortrait) return;
 
     if(!this.currentPortrait.parent) {
-        graphicsUtils.addSomethingToRenderer(this.currentPortrait, 'hudOne');
+        var port = graphicsUtils.addSomethingToRenderer(this.currentPortrait, 'hudOne');
+        gameUtils.deathPact(this.prevailingUnit, port);
     } else {
         this.currentPortrait.visible = true;
     }
@@ -440,8 +442,9 @@ unitPanel.prototype.updateUnitItems = function() {
             var yLevel = Math.floor(i / 2);
             var y = this.itemCenterY + this.itemXSpacing * yLevel;
             if(!icon.parent) {
-                graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                 graphicsUtils.makeSpriteSize(icon, 27);
+                gameUtils.deathPact(this.prevailingUnit, it);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -452,7 +455,7 @@ unitPanel.prototype.updateUnitItems = function() {
             }
         }.bind(this))
 
-        //specialy items
+        //specialty items
         $.each(this.prevailingUnit.currentSpecialtyItems, function(i, item) {
             if(item == null)
                 return;
@@ -461,8 +464,9 @@ unitPanel.prototype.updateUnitItems = function() {
             var x = this.spItemCenterX;
             var y = this.itemCenterY + this.spItemYSpacing * i;
             if(!icon.parent) {
-                graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                 graphicsUtils.makeSpriteSize(icon, 27);
+                gameUtils.deathPact(this.prevailingUnit, it);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -482,8 +486,9 @@ unitPanel.prototype.updateUnitItems = function() {
             var x = this.bpItemCenterX + this.bpItemXSpacing * i;
             var y = this.bpItemCenterY;
             if(!icon.parent) {
-                graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
+                var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                 graphicsUtils.makeSpriteSize(icon, 27);
+                gameUtils.deathPact(this.prevailingUnit, it);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -600,13 +605,16 @@ unitPanel.prototype.displayUnitAbilities = function() {
         ability.icon.position = {x: this.abilityOneCenterX + (this.abilitySpacing * i), y: this.abilityOneCenterY};
         ability.icon.visible = true;
         if(!ability.icon.parent) {
-            graphicsUtils.addSomethingToRenderer(ability.icon, 'hudOne');
+            var a = graphicsUtils.addSomethingToRenderer(ability.icon, 'hudOne');
+            ability.addSlave(a);
 
             //autocast init
             if(ability.autoCastEnabled) {
                 ability.systemMessage.push('Ctrl+Click to toggle autocast')
-                ability.abilityBorder = graphicsUtils.addSomethingToRenderer('TintableAbilityBorder', 'hudOne', {position: ability.icon.position});
-                ability.autoCastTimer = graphicsUtils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300, null, 500)
+                var b = ability.abilityBorder = graphicsUtils.addSomethingToRenderer('TintableAbilityBorder', 'hudOne', {position: ability.icon.position});
+                ability.addSlave(b);
+                ability.autoCastTimer = graphicsUtils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300, null, 500);
+                ability.addSlave(ability.autoCastTimer);
                 ability.abilityBorder.visible = ability.getAutoCastVariable;
                 ability.icon.interactive = true;
                 ability.icon.on('mouseup', function(event) {
@@ -639,6 +647,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
                     augment.smallerBorder = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: agumentPosition, where: 'hudTwo'});
                     graphicsUtils.makeSpriteSize(augment.smallerIcon, augmentSize);
                     graphicsUtils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);
+                    ability.addSlave(augment.smallerIcon, augment.smallerBorder);
                 }
                 if(ability.currentAugment == augment) {
                     augment.smallerIcon.visible = true;
@@ -692,18 +701,17 @@ unitPanel.prototype.displayUnitPassives = function(options) {
     options = options || {};
 
     //clear last passive
-    if(this.currentDefensePassive || options.clear) {
+    if(this.currentDefensePassive) {
         this.currentDefensePassive.activeIcon.visible = false;
     }
 
-    if(this.currentActivePassive || options.clear) {
+    if(this.currentActivePassive) {
         this.currentActivePassive.activeIcon.visible = false;
     }
 
     if((!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) || options.clear) return;
 
     var unit = this.prevailingUnit;
-
 
     if(unit.defensePassive) {
         if(!unit.defensePassive.activeIcon) {
@@ -785,7 +793,7 @@ unitPanel.prototype.cleanUp = function() {
 
     this.autoCastSound.unload();
 
-    //the auto cast timer should die upon nuke...
+    //the auto cast timer should die upon nuke... (what is this comment for...)
 };
 
 unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;
