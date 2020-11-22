@@ -13,6 +13,10 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 // }
 var Tooltip = function(options) {
     var textAnchor = {x: 0, y: 0};
+    this.titleOnly = options.titleOnly;
+    this.systemMessageBuffer = 5;
+    this.buffer = 5;
+    this.iconBuffer = 0;
 
     this.title = graphicsUtils.createDisplayObject('TEXT:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
 
@@ -21,7 +25,11 @@ var Tooltip = function(options) {
     this.systemMessages = [];
     if($.isArray(options.description)) {
         $.each(options.description, function(i, descr) {
-            this.description.push(graphicsUtils.createDisplayObject('TEXT:' + descr, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
+            var style = options.descriptionStyle || styles.abilityText;
+            if($.isArray(options.descriptionStyle)) {
+                style = options.descriptionStyle[i];
+            }
+            this.description.push(graphicsUtils.createDisplayObject('TEXT:' + descr, {style: style, anchor: textAnchor}));
         }.bind(this))
     } else {
         this.description.push(graphicsUtils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
@@ -94,9 +102,16 @@ Tooltip.prototype.sizeBase = function() {
     var descriptionHeight = 0;
     var systemMessageWidth = 0;
     var systemMessageHeight = 0;
-    this.systemMessageBuffer = 5;
-    this.buffer = 5;
-    this.iconBuffer = 0;
+    var titleWidth = 0;
+    var titleHeight = 0;
+    var buffer = this.buffer;
+
+    titleWidth = Math.max(titleWidth, this.title.width);
+    titleHeight = this.title.height;
+    if(this.titleOnly) {
+        buffer = 2.5;
+    }
+
     $.each(this.systemMessages, function(i, sysMessage) {
         systemMessageWidth = Math.max(systemMessageWidth, sysMessage.width);
         systemMessageHeight += sysMessage.height;
@@ -110,10 +125,10 @@ Tooltip.prototype.sizeBase = function() {
     var iconWidthAdjustment = 0;
     if(this.descriptionIcons.length > 0) {
         iconWidthAdjustment = this.iconSize;
-        this.iconBuffer = this.iconSize/2 + this.buffer;
+        this.iconBuffer = this.iconSize/2 + buffer;
     }
-    var width = Math.max(descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
-    var height = this.title.height + this.buffer/2 + descriptionHeight + this.buffer + systemMessageHeight + (this.systemMessages.length ? this.buffer : 0) + this.buffer;
+    var width = Math.max(titleWidth, descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
+    var height = this.title.height + buffer/2 + descriptionHeight + buffer + systemMessageHeight + (this.systemMessages.length ? buffer : 0) + buffer;
     graphicsUtils.makeSpriteSize(this.base, {w: width, h: height});
 }
 

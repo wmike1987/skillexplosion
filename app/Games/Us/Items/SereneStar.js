@@ -18,9 +18,6 @@ var manipulations = {
         manaStealAnimation.alpha = 1;
         gameUtils.attachSomethingToBody({something: manaStealAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'manaStealAttach'});
         graphicsUtils.addSomethingToRenderer(manaStealAnimation, 'foreground');
-        Matter.Events.on(manaStealAnimation, "destroy", function() {
-            gameUtils.detachSomethingFromBody(manaStealAnimation);
-        })
     }}}
 }
 

@@ -224,6 +224,27 @@ var UnitBase = {
         return ret;
     },
 
+    equipPassive: function(passive, type) {
+
+        //equip the new passive
+        this[type] = passive;
+        passive[type] = true;
+        passive.isEquipped = true;
+        passive.start(type);
+    },
+
+    unequipPassive: function(passive) {
+        passive.isEquipped = false;
+        if(passive.attackPassive) {
+            passive.attackPassive = false;
+            this.attackPassive = null;
+        } else {
+            passive.defensePassive = false;
+            this.defensePassive = null;
+        }
+        passive.stop();
+    },
+
     initUnit: function() {
 
         Object.defineProperty(this, 'maxHealth', {
@@ -693,9 +714,6 @@ var UnitBase = {
         levelUpAnimation.play();
         graphicsUtils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
         gameUtils.attachSomethingToBody({something: levelUpAnimation, body: this.body});
-        Matter.Events.on(levelUpAnimation, "destroy", function() {
-            gameUtils.detachSomethingFromBody(levelUpAnimation);
-        })
         levelUpSound.play();
         this.currentHealth = this.maxHealth;
         this.currentEnergy = this.maxEnergy;

@@ -127,6 +127,7 @@ var game = {
         //create empty scene and transition to camp scene
         this.currentStage = this.camps[0];
         this.currentCamp = this.currentStage.camp;
+        // this.gotoVictoryScreen();
         this.gotoCamp();
 
         //generate map
@@ -150,8 +151,8 @@ var game = {
             })
 
             //reset shane and urs
-            this.resetUnit(this.shane);
-            this.resetUnit(this.ursula);
+            this.resetUnit(this.shane, {yoffset: 30});
+            this.resetUnit(this.ursula, {yoffset: 30});
 
             //clean up spawner if it exists
             if(this.currentSpawner) {
@@ -370,6 +371,7 @@ game.assets = [
 
     //generic textures and animations
     {name: "Utility0", target: "Textures/Us/Utility-0.json"},
+    // {name: "Utility1", target: "Textures/Us/Utility2-0.json"},
     // {name: "Utility1", target: "Textures/Us/Utility-1.json"},
     {name: "UtilityAnimations1", target: "Textures/Us/UtilityAnimations1.json"},
     {name: "UtilityAnimations2", target: "Textures/Us/UtilityAnimations2.json"},

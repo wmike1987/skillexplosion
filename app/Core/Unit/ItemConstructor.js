@@ -67,7 +67,7 @@ var ic = function(options) {
 
     //create icon
     newItem.icon = graphicsUtils.createDisplayObject(newItem.icon); //note that this icon will not die upon removing the item
-    var ctrlClickToDropMessage = '(Click to grab item)';
+    var clickToGrab = '(Click to grab item)';
     newItem.icon.interactive = true;
 
     //mouse hover event
@@ -102,7 +102,7 @@ var ic = function(options) {
             gameUtils.setCursorStyle('server:MainCursor.png');
         }.bind(this))
 
-        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: ctrlClickToDropMessage});
+        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: clickToGrab});
 
         var baseTint = 0x00042D;
         newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
@@ -217,6 +217,8 @@ var ic = function(options) {
 
             newItem.body.item = newItem;
         }
+    } else {
+        Tooltip.makeTooltippable(newItem.icon, {title: newItem.title, description: newItem.description});
     }
 
     newItem.destroy = function() {

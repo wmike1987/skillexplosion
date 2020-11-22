@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js'
 import UC from '@core/Unit/UnitConstructor.js'
 import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
+import Passive from '@core/Unit/UnitPassive.js'
 import rv from '@core/Unit/_Revivable.js'
 import styles from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
@@ -680,6 +681,34 @@ export default function Marine(options) {
                 description: 'Heal self and nearby allies for 3 hp after firing rifle.'
             },
         ],
+    });
+
+    var positiveMind = new Passive({
+        title: 'Positive Mind',
+        description: ['Defensive Mode (When hit):', 'Absorb 5x healing for 2s. (10s cool down)', 'Click to activate.', ' ',
+                      'Agression Mode (Upon kill):', 'Dash is free for 2s. (10s cool down)', 'Ctrl+click to activate.'],
+        textureName: 'PositiveMindset',
+        start: function() {
+
+        },
+
+        stop: function() {
+
+        }
+    })
+
+    var rushOfBlood = new Passive({
+        title: 'Rush Of Blood',
+        description: ['Defensive Mode (When hit):', 'Absorb 5x healing for 2s. (10s cool down)', 'Click to activate.', ' ',
+                      'Agression Mode (Upon kill):', 'Dash is free for 2s. (10s cool down)', 'Ctrl+click to activate.'],
+        textureName: 'RushOfBlood',
+        start: function() {
+
+        },
+
+        stop: function() {
+
+        }
     })
 
     var unitProperties = $.extend({
@@ -701,6 +730,7 @@ export default function Marine(options) {
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
+        passiveAbilities: [positiveMind, rushOfBlood],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({
@@ -780,10 +810,6 @@ export default function Marine(options) {
                             lifeUpAnimation.alpha = 1;
                             gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'firstAidAttach'});
                             graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
-                            Matter.Events.on(lifeUpAnimation, "destroy", function() {
-                                gameUtils.detachSomethingFromBody(lifeUpAnimation);
-                            })
-
                             unit.currentHealth += currentAugment.healAmount;
                         })
                     }

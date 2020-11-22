@@ -750,10 +750,12 @@ var UnitSystem = function(properties) {
                 $.each(pastHoveredUnits, function(i, unit) {
                     unit.unhover();
                 })
+                this.hoveredUnit = null;
             }
             if(frontMostUnit) {
                 pastHoveredUnits = [frontMostUnit];
                 frontMostUnit.hover({team: globals.currentGame.playerTeam});
+                this.hoveredUnit = frontMostUnit;
             }
         }.bind(this))
 
@@ -1025,6 +1027,9 @@ var UnitSystem = function(properties) {
         this.box.mouseDown = false;
         this.abilityDispatch = false;
         this.attackMove = false;
+        if(this.hoveredUnit) {
+            this.hoveredUnit.unhover();
+        }
     };
 
     this.unpause = function() {

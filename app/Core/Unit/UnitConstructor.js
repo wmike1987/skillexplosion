@@ -233,7 +233,7 @@ function UnitConstructor(options) {
     if(newUnit.itemsEnabled) {
         newUnit.emptyRegularSlots = [];
         for(var i = 0; i < newUnit.currentItems.length; i++) {
-            var item = EmptySlot();
+            var item = EmptySlot('Item Slot', 'Holds a regular item.');
             item.currentSlot = {location: newUnit.currentItems, index: i, active: true, slotDef: item, type: 'common'}
             newUnit.emptyRegularSlots.push(item);
             newUnit.currentItems[i] = item;
@@ -242,7 +242,7 @@ function UnitConstructor(options) {
         //start with blank items
         newUnit.emptySpecialtySlots = [];
         for(var i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
-            var item = EmptySlot();
+            var item = EmptySlot('Specialty Slot', 'Holds a specialty item.');
             item.currentSlot = {location: newUnit.currentSpecialtyItems, index: i, active: true, slotDef: item, type: newUnit.unitType}
             newUnit.emptySpecialtySlots.push(item);
             newUnit.currentSpecialtyItems[i] = item;
@@ -251,7 +251,7 @@ function UnitConstructor(options) {
         //start with blank items
         newUnit.emptyBackpackSlots = [];
         for(var i = 0; i < newUnit.currentBackpack.length; i++) {
-            var item = EmptySlot();
+            var item = EmptySlot('Backpack Slot', 'Holds any item. Item is not active.');
             item.currentSlot = {location: newUnit.currentBackpack, index: i, active: false, slotDef: item, type: 'universal'}
             newUnit.emptyBackpackSlots.push(item);
             newUnit.currentBackpack[i] = item;

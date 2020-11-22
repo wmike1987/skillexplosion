@@ -3,7 +3,8 @@ import * as $ from 'jquery'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
 import Tooltip from '@core/Tooltip.js'
-import ucp from '@games/Us/UnitConfigurationPanel.js'
+import ucp from '@games/Us/UnitAugmentPanel.js'
+import upp from '@games/Us/PassivePanel.js'
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
 //This module represents a tile map. This is produced by the tile mapper
@@ -28,7 +29,7 @@ var unitPanel = function(options) {
     //unit status variables
     this.unitStatSpacing = 20;
     this.unitStatYOffset = -6;
-    this.unitFrameCenterX = this.centerX - 192;
+    this.unitFrameCenterX = this.centerX - 226;
     this.unitFrameOffset = 41.5;
     this.unitNamePosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
     this.unitLevelPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
@@ -160,17 +161,22 @@ var unitPanel = function(options) {
         }
     }.bind(this));
 
+    //unit passive variables
+    this.passiveCenterX = this.centerX - 121;
+    this.passiveTopCenterY = this.centerY - 28;
+    this.passiveBottomCenterY = this.centerY + 17;
+
     //unit ability variables
     this.abilitySpacing = 77;
-    this.abilityOneCenterX = this.centerX + 184;
-    this.abilityCenterX = this.centerX + 184 + this.abilitySpacing;
+    this.abilityOneCenterX = this.centerX + 178;
+    this.abilityCenterX = this.centerX + 178 + this.abilitySpacing;
     this.abilityOneCenterY = this.centerY-1;
     this.abililtyWithBorderWidth = 64;
     this.abililtyWidth = 60;
 
     //basic command variables
     this.commandSpacing = 35;
-    this.commandOneCenterX = this.centerX + 413;
+    this.commandOneCenterX = this.centerX + 407;
     this.commandOneCenterY = this.centerY - 25;
 
     //selected-group variables
@@ -191,8 +197,8 @@ var unitPanel = function(options) {
     this.spItemYSpacing = 30;
 
     //backpack item variables
-    this.bpItemCenterX = this.centerX + 408;
-    this.bpItemCenterY = this.centerY + 21;
+    this.bpItemCenterX = this.centerX + 402;
+    this.bpItemCenterY = this.centerY + 20;
     this.bpItemXSpacing = 30;
 
     //create frame
@@ -204,9 +210,13 @@ var unitPanel = function(options) {
 
 unitPanel.prototype.initialize = function(options) {
 
-    //create UnitConfigurationPanel
-    this.unitConfigurationPanel = new ucp(this);
-    this.unitConfigurationPanel.initialize();
+    //create unitAugmentPanel
+    this.unitAugmentPanel = new ucp(this);
+    this.unitAugmentPanel.initialize();
+
+    //create passive panel
+    this.unitPassivePanel = new upp(this);
+    this.unitPassivePanel.initialize();
 
     //add frame-backing to world
     graphicsUtils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
@@ -325,7 +335,8 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
     //flush
     if(this.prevailingUnit) {
         this.clearPrevailingUnit({transitioningUnits: unit});
-        this.unitConfigurationPanel.hideForCurrentUnit();
+        this.unitAugmentPanel.hideForCurrentUnit();
+        this.unitPassivePanel.hideForCurrentUnit();
     }
 
     //fill
@@ -334,12 +345,14 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
         this.displayUnitPortrait();
         this.displayUnitStats();
         this.displayUnitAbilities();
+        this.displayUnitPassives();
         this.displayCommands();
         this.highlightGroupUnit(unit);
         this.updateUnitItems(unit);
 
         //show augment button
-        this.unitConfigurationPanel.lowerOpenButton();
+        this.unitAugmentPanel.lowerOpenButton();
+        this.unitPassivePanel.lowerOpenButton();
     }
 
 };
@@ -353,7 +366,7 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
         this.currentPortrait.visible = false;
 
     //hide augment button
-    this.unitConfigurationPanel.hideOpenButton();
+    this.unitAugmentPanel.hideOpenButton();
 
     //blank out unit stat panel
     if(!options.transitioningUnits) {
@@ -479,6 +492,10 @@ unitPanel.prototype.updateUnitItems = function() {
         }.bind(this))
     }
 };
+
+unitPanel.prototype.clear = function() {
+
+}
 
 unitPanel.prototype.clearUnitItems = function() {
     //clear regular items
@@ -668,6 +685,40 @@ unitPanel.prototype.displayUnitAbilities = function() {
     }
 };
 
+unitPanel.prototype.displayUnitPassives = function() {
+    //clear last passive
+    if(this.currentDefensePassive) {
+        this.currentDefensePassive.activeIcon.visible = false;
+    }
+
+    if(this.currentActivePassive) {
+        this.currentActivePassive.activeIcon.visible = false;
+    }
+
+    if(!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) return;
+
+    var unit = this.prevailingUnit;
+
+
+    if(unit.defensePassive) {
+        if(!unit.defensePassive.activeIcon) {
+            unit.defensePassive.activeIcon = graphicsUtils.createDisplayObject(unit.defensePassive.textureName, {where: 'hudOne'});
+        }
+        graphicsUtils.addOrShowDisplayObject(unit.defensePassive.activeIcon);
+        this.currentDefensePassive = unit.defensePassive;
+        unit.defensePassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveTopCenterY};
+    }
+
+    if(unit.attackPassive) {
+        if(!unit.attackPassive.activeIcon) {
+            unit.attackPassive.activeIcon = graphicsUtils.createDisplayObject(unit.attackPassive.textureName, {where: 'hudOne'});
+        }
+        graphicsUtils.addOrShowDisplayObject(unit.attackPassive.activeIcon);
+        this.currentActivePassive = unit.attackPassive;
+        unit.attackPassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveBottomCenterY};
+    }
+}
+
 unitPanel.prototype.displayCommands = function() {
     if(!this.attackMoveIcon) {
         this.moveIcon = graphicsUtils.addSomethingToRenderer('MoveIcon', 'hudOne', {position: {x: this.commandOneCenterX, y: this.commandOneCenterY}});
@@ -702,12 +753,16 @@ unitPanel.prototype.displayCommands = function() {
 };
 
 unitPanel.prototype.enterCamp = function() {
-    this.unitConfigurationPanel.lowerOpenButton();
+    this.unitAugmentPanel.lowerOpenButton();
+    this.unitPassivePanel.lowerOpenButton();
 },
 
 unitPanel.prototype.leaveCamp = function() {
-    this.unitConfigurationPanel.hideForCurrentUnit();
-    this.unitConfigurationPanel.hideOpenButton();
+    this.unitAugmentPanel.hideForCurrentUnit();
+    this.unitAugmentPanel.hideOpenButton();
+
+    this.unitPassivePanel.hideForCurrentUnit();
+    this.unitPassivePanel.hideOpenButton();
 },
 
 unitPanel.prototype.cleanUp = function() {
@@ -716,8 +771,12 @@ unitPanel.prototype.cleanUp = function() {
     globals.currentGame.removeTickCallback(this.abilityAvailableTick);
 
     //unit configuration panel
-    if(this.unitConfigurationPanel)
-        this.unitConfigurationPanel.cleanUp();
+    if(this.unitAugmentPanel)
+        this.unitAugmentPanel.cleanUp();
+
+    //unit passive panel
+    if(this.unitPassivePanel)
+        this.unitPassivePanel.cleanUp();
 
     this.autoCastSound.unload();
 
@@ -725,5 +784,6 @@ unitPanel.prototype.cleanUp = function() {
 };
 
 unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;
+unitPanel.prototype.updateUnitPassives = unitPanel.prototype.displayUnitPassives;
 
 export default unitPanel;

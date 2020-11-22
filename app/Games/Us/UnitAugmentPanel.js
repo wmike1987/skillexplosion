@@ -33,15 +33,15 @@ ConfigPanel.prototype.initialize = function() {
             this.hideForCurrentUnit();
         }
     }.bind(this), false, true);
-
-    this.abilityBases = [];
-    for(var x = 0; x < 3; x++) {
-        var base = graphicsUtils.addSomethingToRenderer('AugmentArmPanel', {where: 'hud', anchor: {x: .5, y: 1}, scale: {x: 0, y: 0}});
-        base.visible = false;
-        // graphicsUtils.makeSpriteSize(base, {w: 30, h: 150});
-        this.abilityBases.push(base)
-        base.sortYOffset = 1000;
-    }
+    //
+    // this.abilityBases = [];
+    // for(var x = 0; x < 3; x++) {
+    //     var base = graphicsUtils.addSomethingToRenderer('AugmentArmPanel', {where: 'hud', anchor: {x: .5, y: 1}, scale: {x: 0, y: 0}});
+    //     base.visible = false;
+    //     // graphicsUtils.makeSpriteSize(base, {w: 30, h: 150});
+    //     this.abilityBases.push(base)
+    //     base.sortYOffset = 1000;
+    // }
 
     this.configButtonHeight = 218;
     this.configButtonGlassHeight = 200;
@@ -66,7 +66,7 @@ ConfigPanel.prototype.initialize = function() {
         }
     }.bind(this))
 
-    $('body').on('mouseup.unitConfigurationPanel', function(event) {
+    $('body').on('mousedown.unitConfigurationPanel', function(event) {
         var mousePoint = {x: 0, y: 0};
         gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
@@ -113,7 +113,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                     augment.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
                     augment.border.sortYOffset = -10;
                     augment.actionBox.interactive = true;
-                    augment.actionBox.on('mouseup', function(event) {
+                    augment.actionBox.on('mousedown', function(event) {
                         if(ability.currentAugment != augment && augment.unlocked) {
                             //unequip existing augment
                             if(ability.currentAugment) {
@@ -177,8 +177,8 @@ ConfigPanel.prototype.showAugments = function(unit) {
             }.bind(this))
 
             //show ability bases
-            this.abilityBases[i].position = {x: ability.position.x, y: gameUtils.getPlayableHeight()+1}
-            this.abilityBases[i].visible = true;
+            // this.abilityBases[i].position = {x: ability.position.x, y: gameUtils.getPlayableHeight()+1}
+            // this.abilityBases[i].visible = true;
         }
     }.bind(this))
 }
@@ -193,9 +193,9 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
     this.currentUnit = null;
 
     //hide infrastructure
-    $.each(this.abilityBases, function(i, base) {
-        base.visible = false;
-    })
+    // $.each(this.abilityBases, function(i, base) {
+    //     base.visible = false;
+    // })
 
     //hide augments
     $.each(unit.abilities, function(i, ability) {
@@ -224,7 +224,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
 ConfigPanel.prototype.lowerOpenButton = function() {
     if(this.unitPanelRef.prevailingUnit && globals.currentGame.campActive) {
         graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
-            graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
+        graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
         graphicsUtils.addOrShowDisplayObject(this.showButton);
         graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
         this.showButton.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonHeight/2.75}
@@ -258,7 +258,7 @@ ConfigPanel.prototype.cleanUp = function() {
     graphicsUtils.removeSomethingFromRenderer(this.showButton);
     graphicsUtils.removeSomethingFromRenderer(this.showButtonGlass);
     $('body').off('mousemove.unitConfigurationPanel');
-    $('body').off('mouseup.unitConfigurationPanel');
+    $('body').off('mousedown.unitConfigurationPanel');
 };
 
 export default ConfigPanel;

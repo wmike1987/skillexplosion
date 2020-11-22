@@ -34,9 +34,34 @@ var ursulaTitle = "Ursula";
 var minesLaid = "Mines Laid";
 var secretStepsPerformed = "Secret Steps";
 
+var createContainer = function() {
+    var container = new PIXI.Container();
+    var left = graphicsUtils.createDisplayObject('Container1Left', {where: 'hudText', position: {x: -44, y: 0}});
+    var right = graphicsUtils.createDisplayObject('Container1Right', {where: 'hudText', position: {x: 44, y: 0}});
+    container.addChild(left);
+    container.addChild(right);
+    return container;
+}
+
 var VictoryScreen = function(units, statsObj) {
+    if(false) {
+        units = units || {
+            shane: {},
+            ursula: {}
+        },
+        statsObj = statsObj || {
+            shane: {getStatMap: function() {
+                return {};
+            }},
+            ursula: {getStatMap: function() {
+                return {};
+            }}
+        }
+    }
+
     var shane = units.shane;
     var ursula = units.ursula;
+
     var shaneStats = statsObj.shane.getStatMap();
     var ursulaStats = statsObj.ursula.getStatMap();
 
@@ -100,6 +125,7 @@ var VictoryScreen = function(units, statsObj) {
         this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth, marineEnergy, marineDamage, marineDefense]);
 
         var shaneKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        // graphicsUtils.addSomethingToRenderer(createContainer(), {where: 'hudText', position: shanePosition(same)});
         var shaneKills = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.kills, {position: shanePosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         this.shaneStats.push([shaneKillsTitle, shaneKills, placeholder]);

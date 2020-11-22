@@ -305,7 +305,7 @@ export default {
 	statTitleStyle: new PIXI.TextStyle({
 		name: 'statTitleStyle',
 		fill: "red",
-		fontSize: 18,
+		fontSize: 16,
 		fontFamily: "Tahoma, Geneva, sans-serif",
 		lineJoin: "round",
 		miterLimit: 0,
@@ -315,7 +315,7 @@ export default {
 	statTextStyle: new PIXI.TextStyle({
 		name: 'statTextStyle',
 		fill: "white",
-		fontSize: 15,
+		fontSize: 16,
 		lineJoin: "round",
 		miterLimit: 0,
 		strokeThickness: 4
@@ -351,6 +351,22 @@ export default {
 		fill: "#b40000",
 		fontFamily: "\"Lucida Console\", Monaco, monospace",
 		fontSize: 40,
+		miterLimit: 0
+	}),
+
+	passiveDStyle: new PIXI.TextStyle({
+		name: 'passiveDStyle',
+		fill: "#8c88f4",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 15,
+		miterLimit: 0
+	}),
+
+	passiveAStyle: new PIXI.TextStyle({
+		name: 'passiveAStyle',
+		fill: "#cd5c5c",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 15,
 		miterLimit: 0
 	}),
 }

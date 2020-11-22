@@ -13,7 +13,7 @@
 	"frame": {"x":226,"y":67,"w":28,"h":19},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":1,"y":6,"w":28,"h":19},
+	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":19},
 	"sourceSize": {"w":32,"h":32}
 },
 "AttackTarget.png":
@@ -109,7 +109,7 @@
 	"frame": {"x":262,"y":62,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":2,"w":28,"h":28},
+	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
 	"sourceSize": {"w":32,"h":32}
 },
 "MoveTarget.png":
@@ -153,6 +153,6 @@
 	"format": "RGBA8888",
 	"size": {"w":361,"h":126},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:7a3f1bc49a07d3d430c7310f50843bbf:41ac3256468f58c8e94d1c6ae8abc7d0:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:f1ae6fe7de9376e1ab0fc6ae9506a1e7:d10b632d009574e3292649c45082f37d:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

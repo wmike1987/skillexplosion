@@ -6,11 +6,12 @@ var manipulations = {
 
 }
 
-export default function() {
+export default function(title, description) {
     return ic({
         manipulations: manipulations,
+        title: title,
         name: "EMPTY",
-        description: [],
+        description: [description],
         isEmptySlot: true,
     })
 };

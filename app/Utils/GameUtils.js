@@ -807,6 +807,9 @@ var graphicsUtils = {
     removeSomethingFromRenderer: function(something, where) {
         if(!something) return;
 
+        //harmless detach, just in case
+        gameUtils.detachSomethingFromBody(something);
+
         //if we just have a display object that has not been added to the renderer, destroy this mf'er
         if(!something.parent) {
             if(something.destroy && !something._destroyed) {
@@ -819,7 +822,7 @@ var graphicsUtils = {
         }
 
         //always trigger a destroy
-        Matter.Events.trigger(something, "destroy");
+        Matter.Events.trigger(something, 'destroy');
     },
 
     //https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors - with some modifications
