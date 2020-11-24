@@ -444,7 +444,6 @@ unitPanel.prototype.updateUnitItems = function() {
             if(!icon.parent) {
                 var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                 graphicsUtils.makeSpriteSize(icon, 27);
-                gameUtils.deathPact(this.prevailingUnit, it);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
