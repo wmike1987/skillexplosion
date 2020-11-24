@@ -126,23 +126,6 @@ ConfigPanel.prototype.showPassives = function(unit) {
 
             passive.actionBox.on('mousedown', function(event) {
                 if(keyStates['Control']) {
-                    if(!passive.attackPassive) {
-                        if(passive.defensePassive) {
-                            unit.unequipPassive(passive);
-                            this.currentDefensePassiveBorder.visible = false;
-                        }
-                        var lastPassive = unit.attackPassive;
-                        if(lastPassive) {
-                            unit.unequipPassive(lastPassive);
-                        }
-                        unit.equipPassive(passive, 'attackPassive');
-                        this.unitPanelRef.updateUnitPassives();
-                        equip.play();
-                        this.currentAttackPassiveBorder.position = passive.icon.position;
-                        this.currentAttackPassiveBorder.visible = true;
-
-                    }
-                } else {
                     if(!passive.defensePassive) {
                         if(passive.attackPassive) {
                             unit.unequipPassive(passive);
@@ -157,6 +140,22 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         equip.play();
                         this.currentDefensePassiveBorder.position = passive.icon.position;
                         this.currentDefensePassiveBorder.visible = true;
+                    }
+                } else {
+                    if(!passive.attackPassive) {
+                        if(passive.defensePassive) {
+                            unit.unequipPassive(passive);
+                            this.currentDefensePassiveBorder.visible = false;
+                        }
+                        var lastPassive = unit.attackPassive;
+                        if(lastPassive) {
+                            unit.unequipPassive(lastPassive);
+                        }
+                        unit.equipPassive(passive, 'attackPassive');
+                        this.unitPanelRef.updateUnitPassives();
+                        equip.play();
+                        this.currentAttackPassiveBorder.position = passive.icon.position;
+                        this.currentAttackPassiveBorder.visible = true
                     }
                 }
                 if(lastPassive) {

@@ -152,6 +152,10 @@ Tooltip.prototype.destroy = function(options) {
         globals.currentGame.removeTickCallback(updater);
     }.bind(this))
 
+    if(this.cleanUpEvent) {
+        this.cleanUpEvent();
+    }
+
     this.isDestroyed = true;
 };
 
@@ -278,9 +282,13 @@ Tooltip.makeTooltippable = function(displayObject, options) {
         }
     }.bind(this))
 
-    Matter.Events.on(displayObject, 'destroy', function() {
+    var f = Matter.Events.on(displayObject, 'destroy', function() {
         displayObject.tooltipObj.destroy();
     })
+
+    this.cleanUpEvent = function() {
+        Matter.Events.off(displayObject, 'destroy', f);
+    }
 
     return displayObject.tooltipObj;
 }

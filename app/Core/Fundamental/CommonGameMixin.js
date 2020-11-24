@@ -651,10 +651,6 @@ var common = {
             this.removeUnit(unit, true);
         }.bind(this))
 
-        // h.Howler._howls.forEach((howl) => {
-        //     howl.unload();
-        // })
-
         //Remove bodies safely (removeBodies())
         this.removeBodies(this.world.bodies);
 

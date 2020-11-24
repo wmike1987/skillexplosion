@@ -719,26 +719,40 @@ unitPanel.prototype.displayUnitPassives = function(options) {
         if(!unit.defensePassive.activeIcon) {
             unit.defensePassive.activeIcon = graphicsUtils.createDisplayObject(unit.defensePassive.textureName, {where: 'hudOne'});
         }
+        //retooltip this
+        if(unit.defensePassive.activeIcon.tooltipObj) {
+            unit.defensePassive.activeIcon.tooltipObj.destroy();
+        }
+        Tooltip.makeTooltippable(unit.defensePassive.activeIcon, {title: unit.defensePassive.title, description: unit.defensePassive.defenseDescription,
+            descriptionStyle: unit.defensePassive.defensiveDescrStyle, systemMessage: unit.defensePassive.defenseCooldown/1000 + ' second cooldown'});
+
         graphicsUtils.addOrShowDisplayObject(unit.defensePassive.activeIcon);
         this.currentDefensePassive = unit.defensePassive;
-        unit.defensePassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveTopCenterY};
+        unit.defensePassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveBottomCenterY};
     }
 
     if(unit.attackPassive) {
         if(!unit.attackPassive.activeIcon) {
             unit.attackPassive.activeIcon = graphicsUtils.createDisplayObject(unit.attackPassive.textureName, {where: 'hudOne'});
         }
+        //retooltip this
+        if(unit.attackPassive.activeIcon.tooltipObj) {
+            unit.attackPassive.activeIcon.tooltipObj.destroy();
+        }
+        Tooltip.makeTooltippable(unit.attackPassive.activeIcon, {title: unit.attackPassive.title, description: unit.attackPassive.aggressionDescription,
+            descriptionStyle: unit.attackPassive.aggressionDescrStyle, systemMessage: unit.attackPassive.aggressionCooldown/1000 + ' second cooldown'});
+
         graphicsUtils.addOrShowDisplayObject(unit.attackPassive.activeIcon);
         this.currentActivePassive = unit.attackPassive;
-        unit.attackPassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveBottomCenterY};
+        unit.attackPassive.activeIcon.position = {x: this.passiveCenterX, y: this.passiveTopCenterY};
     }
 
     //create the timing meters
     if(!this.attackPassiveMeter) {
-        this.defensePassiveMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {tint: 0x67c18b, position: {x: this.passiveCenterX-16, y: this.passiveTopCenterY + 18}, anchor: {x: 0, y: 0}, where: 'hudOne'});
-        this.attackPassiveMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {tint: 0x67c18b, position: {x: this.passiveCenterX-16, y: this.passiveBottomCenterY + 18}, anchor: {x: 0, y: 0}, where: 'hudOne'});
-        this.defensePassiveMeter.visible = false;
+        this.attackPassiveMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {tint: 0x67c18b, position: {x: this.passiveCenterX-16, y: this.passiveTopCenterY + 18}, anchor: {x: 0, y: 0}, where: 'hudOne'});
+        this.defensePassiveMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {tint: 0x67c18b, position: {x: this.passiveCenterX-16, y: this.passiveBottomCenterY + 18}, anchor: {x: 0, y: 0}, where: 'hudOne'});
         this.attackPassiveMeter.visible = false;
+        this.defensePassiveMeter.visible = false;
         this.meterUpdater = globals.currentGame.addTickCallback(function() {
             var unit = this.prevailingUnit;
             if(!unit) return;
@@ -772,8 +786,12 @@ unitPanel.prototype.displayUnitPassives = function(options) {
             }
         }.bind(this))
     }
+
+    this.eventsSet = true;
     Matter.Events.on(this, "attackPassiveActivated", function(event) {
-        var timer = graphicsUtils.graduallyTint(this.currentActivePassive.activeIcon, 0xffffff, 0x575757, event.duration/5);
+        this.attackPassiveMeter.tint = 0x7d302b;
+        var times = event.duration < 1000 ? 3 : 5;
+        var timer = graphicsUtils.graduallyTint(this.currentActivePassive.activeIcon, 0xffffff, 0x575757, event.duration/times);
         this.attackPassiveIconFlashing = true;
         gameUtils.doSomethingAfterDuration(function() {
             globals.currentGame.invalidateTimer(timer);
@@ -782,7 +800,9 @@ unitPanel.prototype.displayUnitPassives = function(options) {
     }.bind(this))
 
     Matter.Events.on(this, "defensePassiveActivated", function(event) {
-        var timer = graphicsUtils.graduallyTint(this.currentDefensePassive.activeIcon, 0xffffff, 0x575757, event.duration/5);
+        this.defensePassiveMeter.tint = 0x1f3c62;
+        var times = event.duration < 1000 ? 3 : 5;
+        var timer = graphicsUtils.graduallyTint(this.currentDefensePassive.activeIcon, 0xffffff, 0x575757, event.duration/times);
         this.defensePassiveIconFlashing = true;
         gameUtils.doSomethingAfterDuration(function() {
             globals.currentGame.invalidateTimer(timer);
@@ -853,8 +873,10 @@ unitPanel.prototype.cleanUp = function() {
 
     this.autoCastSound.unload();
 
-    Matter.Events.off(this, "attackPassiveActivated");
-    Matter.Events.off(this, "defensePassiveActivated");
+    if(this.eventsSet) {
+        Matter.Events.off(this, "attackPassiveActivated");
+        Matter.Events.off(this, "defensePassiveActivated");
+    }
 };
 
 unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;

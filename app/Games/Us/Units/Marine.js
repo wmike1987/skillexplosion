@@ -354,7 +354,7 @@ export default function Marine(options) {
             if(!self.defensivePostureActive)
                 self.defense += 2;
             self.defensivePostureActive = true;
-            self.dashTimer = globals.currentGame.addTimer({
+            self.dashAugTimer = globals.currentGame.addTimer({
                 name: 'defensePostureTimerEnd' + self.unitId,
                 runs: 1,
                 executeOnNuke: true,
@@ -370,7 +370,7 @@ export default function Marine(options) {
             if(!self.deathWishActive)
                 self.damage += 10;
             self.deathWishActive = true;
-            self.dashTimer = globals.currentGame.addTimer({
+            self.dashAugTimer = globals.currentGame.addTimer({
                 name: 'deathWishTimerEnd' + self.unitId,
                 runs: 1,
                 executeOnNuke: true,
@@ -384,6 +384,9 @@ export default function Marine(options) {
         }
 
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
+        if(self.dashAugTimer) {
+            gameUtils.deathPact(this, self.dashAugTimer, 'dashAugTimer');
+        }
     }
     var dashAbility = new Ability({
         name: 'Dash',
@@ -683,32 +686,67 @@ export default function Marine(options) {
         ],
     });
 
-    var positiveMind = new Passive({
-        title: 'Positive Mind',
-        description: ['Defensive Mode (When hit):', 'Absorb 5x healing for 2s. (10s cool down)', 'Click to activate.', ' ',
-                      'Agression Mode (Upon kill):', 'Dash is free for 2s. (10s cool down)', 'Ctrl+click to activate.'],
+    var gsDDuration = 300;
+    var gsADuration = 300;
+    var allyArmorDuration = 10000;
+    var givingSpirit = new Passive({
+        title: 'Giving Spirit',
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 5 hp.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 1 def for 10s.'],
         textureName: 'PositiveMindset',
-        start: function() {
+        unit: marine,
+        defenseEventName: 'preSufferedAttack',
+        defenseDuration: gsDDuration,
+        defenseCooldown: 5000,
+        aggressionEventName: 'kill',
+        aggressionDuration: gsADuration,
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            var allies = gameUtils.getUnitAllies(marine);
+            allies.forEach((ally) => {
+                ally.giveHealth(5, marine);
+                var lifeUpAnimation = gameUtils.getAnimation({
+                    spritesheetName: 'UtilityAnimations1',
+                    animationName: 'manasteal',
+                    speed: .8,
+                    transform: [ally.position.x, ally.position.y, 1, 1]
+                });
 
+                lifeUpAnimation.tint = 0xF80202;
+                lifeUpAnimation.play();
+                lifeUpAnimation.alpha = 1;
+                gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: ally.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}});
+                graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
+            })
         },
-
-        stop: function() {
-
-        }
+        aggressionAction: function(event) {
+            var allies = gameUtils.getUnitAllies(marine);
+            allies.forEach((ally) => {
+                ally.defense += 1;
+                var id = mathArrayUtils.getId();
+                gameUtils.applyBuffImageToUnit({name: "givingSpiritDefBuff" + id, unit: ally, textureName: 'DefensiveBuff'})
+                gameUtils.doSomethingAfterDuration(function() {
+                    ally.defense -= 1;
+                    ally.buffs['givingSpiritDefBuff'+id].removeBuffImage();
+                }, allyArmorDuration, {executeOnNuke: true})
+            })
+        },
     })
 
     var robDDuration = 2000;
+    var robADuration = 2000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        description: ['Defensive Mode (When hit):', 'Absorb 2x healing for 2s. (10s cool down)', 'Click to activate.', ' ',
-                      'Agression Mode (Upon kill):', 'Dash is free for 2s. (10s cool down)', 'Ctrl+click to activate.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 2s.'],
+        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 2s.'],
         textureName: 'RushOfBlood',
         unit: marine,
-        cooldown: 5000,
         defenseEventName: 'preSufferedAttack',
         defenseDuration: robDDuration,
-        aggressionEventName: 'kill',
-        aggressionDuration: 1000,
+        defenseCooldown: 10000,
+        aggressionEventName: 'attack',
+        aggressionDuration: robADuration,
+        aggressionCooldown: 8000,
         defenseAction: function(event) {
             var f = Matter.Events.on(marine, 'prePerformedHeal', function(event) {
                 event.healingObj.amount *= 2;
@@ -718,7 +756,10 @@ export default function Marine(options) {
             }, robDDuration)
         },
         aggressionAction: function(event) {
-
+            marine.moveSpeed += .4;
+            gameUtils.doSomethingAfterDuration(function() {
+                marine.moveSpeed -= .4;
+            }, robADuration)
         },
     })
 
@@ -741,7 +782,7 @@ export default function Marine(options) {
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
-        passiveAbilities: [positiveMind, rushOfBlood],
+        passiveAbilities: [givingSpirit, rushOfBlood],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({
@@ -808,7 +849,7 @@ export default function Marine(options) {
                         gameUtils.applyToUnitsByTeam(function(team) {
                             return self.team == team;
                         }, function(unit) {
-                            return utils.distanceBetweenUnits(self, unit) <= 100;
+                            return mathArrayUtils.distanceBetweenUnits(self, unit) <= 100;
                         }, function(unit) {
                             var lifeUpAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations1',
@@ -820,9 +861,9 @@ export default function Marine(options) {
                             lifeUpAnimation.tint = 0xF80202;
                             lifeUpAnimation.play();
                             lifeUpAnimation.alpha = 1;
-                            gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}, somethingId: 'firstAidAttach'});
+                            gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}});
                             graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
-                            unit.currentHealth += currentAugment.healAmount;
+                            unit.giveHealth(currentAugment.healAmount, self);
                         })
                     }
 

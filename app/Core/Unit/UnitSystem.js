@@ -750,6 +750,7 @@ var UnitSystem = function(properties) {
                 $.each(pastHoveredUnits, function(i, unit) {
                     unit.unhover();
                 })
+                pastHoveredUnits = [];
                 this.hoveredUnit = null;
             }
             if(frontMostUnit) {

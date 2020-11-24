@@ -218,11 +218,13 @@ var gameUtils = {
             }
         }, false, callbackLocation);
         something.bodyAttachment = tick;
+        something.bodyAttachmentBody = body;
         this.deathPact(body, tick, somethingId);
     },
 
     detachSomethingFromBody: function(something) {
         if(something.bodyAttachment) {
+            this.undeathPact(something.bodyAttachmentBody, something.bodyAttachment);
             globals.currentGame.removeTickCallback(something.bodyAttachment);
             something.bodyAttachment = null;
         }
@@ -470,6 +472,19 @@ var gameUtils = {
         return dir;
     },
 
+    getUnitAllies: function(meUnit) {
+        var allies = [];
+        this.applyToUnitsByTeam(function(team) {
+            return meUnit.team == team;
+        }, function(unit) {
+            return meUnit != unit;
+        }, function(unit) {
+            allies.push(unit);
+        });
+
+        return allies;
+    },
+
     getCanvasCenter: function() {
       return {x: this.getCanvasWidth()/2, y: this.getCanvasHeight()/2};
     },
@@ -669,6 +684,10 @@ var gameUtils = {
         }
         if(!added)
             master.slaves.push(slave);
+    },
+
+    undeathPact: function(master, slave) {
+        mathArrayUtils.removeObjectFromArray(master.slaves, slave);
     },
 
     /*
@@ -1050,7 +1069,7 @@ var graphicsUtils = {
 
     shakeSprite: function(sprite, duration) {
         var shakeFrameLength = 32;
-        var position = this.clonePosition(sprite.position);
+        var position = mathArrayUtils.clonePosition(sprite.position);
         sprite.independentRender = true; //in case we're on a body
         globals.currentGame.addTimer(
             {

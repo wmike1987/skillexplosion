@@ -776,7 +776,7 @@ var UnitBase = {
         if(this.petrifyTintTimer) {
             globals.currentGame.invalidateTimer(this.petrifyTintTimer);
         }
-        this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x18bb96, 0xb0b0b0, 3000, 'isoManagedTint');
+        this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
         graphicsUtils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
 
         var unit = this;
