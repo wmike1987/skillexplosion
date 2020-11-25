@@ -17,7 +17,7 @@ var UnitSystem = function(properties) {
             this.cleanUp();
 
         //create selection box rectangle
-        this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false});
+        this.box = Matter.Bodies.rectangle(-50, -50, 1, 1, {isSensor: true, isStatic: false, dontInterpolate: true});
         this.box.collisionFilter.category = 0x0002;
         this.box.permaPendingUnit = null;
         this.box.pendingSelections = {};

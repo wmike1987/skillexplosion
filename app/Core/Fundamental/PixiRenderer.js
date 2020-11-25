@@ -91,7 +91,7 @@ var renderer = function(engine, options) {
 
 		bodies.forEach(function(body) {
 			var drawPosition = null;
-			if(tickEvent.interpolate && !body.oneFrameOverrideInterpolation) {
+			if(tickEvent.interpolate && !body.oneFrameOverrideInterpolation && !body.dontInterpolate) {
 				drawPosition = interpolatePosition(body, tickEvent.percentOfNextFrame);
 			}
 			else {
@@ -162,6 +162,7 @@ var renderer = function(engine, options) {
 
 		var intPos = Matter.Vector.add(previousPosition, Matter.Vector.mult(Matter.Vector.sub(currentPosition, previousPosition), percentage));
 		body.interpolatedPosition = intPos;
+		// if(body.dontInterpolate) return body.position;
 		return intPos;
 	};
 

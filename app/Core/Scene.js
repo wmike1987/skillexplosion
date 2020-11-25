@@ -163,7 +163,7 @@ Scene.prototype.transitionToScene = function(options) {
         }
     }
 
-    globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
+    newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
         fadeIn();
     }.bind(this), totallyDoneCallback: function() {
         Matter.Events.trigger(this, 'clear');
@@ -172,6 +172,7 @@ Scene.prototype.transitionToScene = function(options) {
         globals.currentGame.addTimer({name: 'sceneOut' + this.id, runs: runs, timeLimit: iterTime, killsSelf: true, callback: function() {
             fadeOut();
         }.bind(this), totallyDoneCallback: function() {
+            Matter.Events.trigger(newScene, 'sceneFadeDone');
             cleanUp();
         }.bind(this)})
     }.bind(this)});

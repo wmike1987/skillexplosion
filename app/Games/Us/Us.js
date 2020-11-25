@@ -75,7 +75,6 @@ var game = {
     play: function(options) {
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
-        this.currentScene.transitionToScene(dialogueScene);
 
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000})
@@ -95,15 +94,17 @@ var game = {
         }});
         dialogueScene.add(chain);
         chain.play();
-
-        $('body').on('keydown.uskeydown', function( event ) {
-            var key = event.key.toLowerCase();
-            if(key == 'escape') {
-                //clear dialogue and start initial level
-                this.initialLevel();
-                $('body').off('keydown.uskeydown');
-            }
-        }.bind(this))
+        this.currentScene.transitionToScene(dialogueScene);
+        Matter.Events.on(this.currentScene, 'sceneFadeDone', () => {
+            $('body').on('keydown.uskeydown', function( event ) {
+                var key = event.key.toLowerCase();
+                if(key == 'escape') {
+                    //clear dialogue and start initial level
+                    this.initialLevel();
+                    $('body').off('keydown.uskeydown');
+                }
+            }.bind(this))
+        })
     },
 
     preGameExtension: function() {
@@ -137,6 +138,7 @@ var game = {
     gotoCamp: function() {
         var camp = this.currentCamp.initializeCamp();
         this.currentScene.transitionToScene(camp);
+        this.unitSystem.unpause();
 
         Matter.Events.on(camp, 'initialize', function() {
             //set camp active and trigger event
@@ -162,17 +164,21 @@ var game = {
     },
 
     gotoVictoryScreen: function(collectors) {
+        this.unitSystem.pause();
         var vScreen = new VictoryScreen({shane: this.shane, ursula: this.ursula}, collectors);
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene(vScene);
-        $('body').on('keydown.uskeydown', function( event ) {
-            var key = event.key.toLowerCase();
-            if(key == 'escape') {
-                //clear dialogue and start initial level
-                $('body').off('keydown.uskeydown');
-                this.gotoCamp();
-            }
-        }.bind(this))
+        Matter.Events.on(this.currentScene, 'sceneFadeDone', () => {
+            $('body').on('keydown.uskeydown', function( event ) {
+                var key = event.key.toLowerCase();
+                if(key == 'escape') {
+
+                    //clear dialogue and start initial level
+                    $('body').off('keydown.uskeydown');
+                    this.gotoCamp();
+                }
+            }.bind(this))
+        })
     },
 
     gotoDefeatScreen: function() {

@@ -255,7 +255,7 @@ var common = {
                             if(callBackPaused)
                                 value.paused = true;
                         }
-                        else {
+                        if(value.runs <= 0 || value.manualEndLife) {
                             value.done = true;
                             if(value.totallyDoneCallback) value.totallyDoneCallback.call(value);
                             if(value.killsSelf) this.invalidateTimer(value);

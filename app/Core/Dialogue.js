@@ -58,6 +58,8 @@ var Dialogue = function Dialogue(options) {
     this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: .3, rate: 1});
 
     this.play = function(options) {
+        if(this.killed) return;
+        
         options = options || {};
         if(this.title) {
             this.realizedText = graphicsUtils.createDisplayObject("TEXT:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
@@ -146,6 +148,11 @@ var Dialogue = function Dialogue(options) {
 
     };
 
+    this.kill = function() {
+        this.killed = true;
+    },
+
+    //this stops the text increment timer
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
     }
@@ -187,9 +194,13 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         gameUtils.doSomethingAfterDuration(() => {
             arrayOfDialogues[0].play()
         }, this.startDelay);
-    }
+    },
 
     this.cleanUp = function() {
+        //kill all dialogue objects so they won't play
+        this.arrayOfDialogues.forEach((dialogue) => {
+            dialogue.kill();
+        });
         this.arrayOfDialogues.forEach((dialogue) => {
             dialogue.cleanUp();
         });
