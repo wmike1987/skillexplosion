@@ -674,7 +674,7 @@ var common = {
         this.clearTickCallbacks(options.noMercy);
 
         $.each(this.timers, function(i, timer) {
-            if(timer && (!timer.persists || options.noMercy) && timer.executeOnNuke) {
+            if(timer && (!timer.persists || options.noMercy) && timer.executeOnNuke && timer.runs > 0) {
                 timer.totallyDoneCallback();
             }
         }.bind(this));

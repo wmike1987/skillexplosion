@@ -65,6 +65,9 @@ var gameUtils = {
             anim.onComplete = function() { //default onComplete function
                 var done = function() {
                     gameUtils.detachSomethingFromBody(anim); //in case we're attached
+                    if(options.onCompleteExtension) {
+                        options.onCompleteExtension();
+                    }
                 }
                 graphicsUtils.fadeSpriteOverTime(anim, options.fadeTime || 2000, false, done);
             }.bind(this);
@@ -72,6 +75,9 @@ var gameUtils = {
             anim.onComplete = function() { //default onComplete function
                 graphicsUtils.removeSomethingFromRenderer(anim);
                 gameUtils.detachSomethingFromBody(anim); //in case we're attached
+                if(options.onCompleteExtension) {
+                    options.onCompleteExtension();
+                }
             }.bind(this);
         }
         anim.persists = true;
@@ -212,11 +218,12 @@ var gameUtils = {
         }
         var tick = globals.currentGame.addTickCallback(function() {
             if(something.type && something.type == 'body') {
-                Matter.Body.setPosition(something, Matter.Vector.add(body.position, offset));
+                Matter.Body.setPosition(something, Matter.Vector.add(body.position, tick.offset));
             } else {
-                something.position = Matter.Vector.add(body.lastDrawPosition || body.position, offset);
+                something.position = Matter.Vector.add(body.lastDrawPosition || body.position, tick.offset);
             }
         }, false, callbackLocation);
+        tick.offset = offset; //ability to change the offset via the tick
         something.bodyAttachment = tick;
         something.bodyAttachmentBody = body;
         this.deathPact(body, tick, somethingId);
@@ -687,7 +694,7 @@ var gameUtils = {
     },
 
     undeathPact: function(master, slave) {
-        mathArrayUtils.removeObjectFromArray(master.slaves, slave);
+        mathArrayUtils.removeObjectFromArray(slave, master.slaves);
     },
 
     /*
@@ -705,35 +712,74 @@ var gameUtils = {
         var unit = options.unit;
         var textureName = options.textureName;
         var scale = options.scale || {x: 1, y: 1};
-        var yoffset = options.yoffset || -60;
+        var originalyOffset = options.yoffset || -60;
         if(!unit.buffs) {
             unit.buffs = {};
-        }
-
-        var buffObj = {
-            removeBuffImage: function() {
-                gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
-                graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
-                unit.buffs[name] = null;
-                var debuffAnim = gameUtils.getAnimation({
-                    spritesheetName: 'UtilityAnimations2',
-                    animationName: 'buffdestroy',
-                    speed: 4,
-                    transform: [unit.position.x, unit.position.y + yoffset, .8, .8]
-                });
-                // debuffAnim.tint = 0x5cff7e;
-                graphicsUtils.addSomethingToRenderer(debuffAnim, 'foreground');
-                gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: {x: 0, y: yoffset}})
-                debuffAnim.play();
-            }
+            unit.orderedBuffs = [];
         }
 
         if(!unit.buffs[name]) {
+            var buffObj = {
+                removeBuffImage: function() {
+                    gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
+                    graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
+                    mathArrayUtils.removeObjectFromArray(unit.buffs[name], unit.orderedBuffs);
+                    var debuffAnim = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations2',
+                        animationName: 'buffdestroy',
+                        speed: 4,
+                        transform: [unit.position.x, unit.position.y, .8, .8],
+                        onCompleteExtension: function() {
+                            unit.reorderBuffs();
+                        }
+                    });
+                    // debuffAnim.tint = 0x5cff7e;
+                    graphicsUtils.addSomethingToRenderer(debuffAnim, 'foreground');
+                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset})
+                    debuffAnim.play();
+                    gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
+                    unit.buffs[name] = null;
+                }
+            }
             var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageOne', scale: {x: scale.x, y: scale.y}});
-            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: yoffset}})
+            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}})
             buffObj.dobj = dobj;
             unit.buffs[name] = buffObj;
+            unit.orderedBuffs.push(buffObj);
         }
+
+        //reorder buffs (could be multiple images to show, let's lay them out nicely, rows of three)
+        if(!unit.reorderBuffs) {
+            var b1 = null;
+            var b2 = null;
+            var xSpacing = 25;
+            var ySpacing = 25;
+            unit.reorderBuffs = function() {
+                unit.orderedBuffs.forEach((buff, i) => {
+                    var attachmentTick = buff.dobj.bodyAttachment;
+                    var row = Math.floor(i/3);
+                    var yOffset = row * -ySpacing
+                    var col = i%3;
+                    var xOffset = 0;
+                    if(col == 0) {
+                        //start of a new row
+                        b1 = buff;
+                        b2 = null;
+                    } else if(col == 1) {
+                        xOffset = xSpacing/2;
+                        b1.dobj.bodyAttachment.offset.x -= xSpacing/2;
+                        b2 = buff;
+                    } else if(col == 2) {
+                        xOffset = xSpacing;
+                        b1.dobj.bodyAttachment.offset.x -= xSpacing/2;
+                        b2.dobj.bodyAttachment.offset.x -= xSpacing/2;
+                    }
+                    buff.offset = {x: xOffset, y: originalyOffset + yOffset};
+                    attachmentTick.offset = buff.offset;
+                });
+            }
+        }
+        unit.reorderBuffs();
 
         //always play the buff create animation
         var buffAnim = gameUtils.getAnimation({
@@ -741,12 +787,12 @@ var gameUtils = {
             animationName: 'buffcreate',
             // reverse: true,
             speed: 1.5,
-            transform: [unit.position.x, unit.position.y + yoffset, 1.0, 1.0]
+            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
         });
         // buffSound.play();
         // buffAnim.tint = 0xe4f46a;
         graphicsUtils.addSomethingToRenderer(buffAnim, 'foreground');
-        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: {x: 0, y: yoffset}})
+        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset})
         buffAnim.play();
     },
 };
@@ -1117,7 +1163,7 @@ var mathArrayUtils = {
         }
     },
 
-    removeObjectFromArray: function(array, objToRemove) {
+    removeObjectFromArray: function(objToRemove, array) {
         var index = array.indexOf(objToRemove);
         if(index > -1) {
             array.splice(index, 1);

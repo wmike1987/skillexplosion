@@ -2,7 +2,7 @@
 
 "AbilityTarget.png":
 {
-	"frame": {"x":292,"y":62,"w":32,"h":26},
+	"frame": {"x":341,"y":35,"w":32,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -10,31 +10,31 @@
 },
 "AttackIcon.png":
 {
-	"frame": {"x":226,"y":67,"w":28,"h":19},
-	"rotated": false,
+	"frame": {"x":357,"y":91,"w":28,"h":19},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":19},
 	"sourceSize": {"w":32,"h":32}
 },
 "AttackTarget.png":
 {
-	"frame": {"x":333,"y":49,"w":32,"h":26},
-	"rotated": true,
+	"frame": {"x":327,"y":63,"w":32,"h":26},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
 "Grave.png":
 {
-	"frame": {"x":262,"y":1,"w":50,"h":59},
-	"rotated": false,
+	"frame": {"x":245,"y":1,"w":50,"h":59},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":5,"w":50,"h":59},
 	"sourceSize": {"w":64,"h":64}
 },
 "HealthEnergyBackground.png":
 {
-	"frame": {"x":265,"y":92,"w":32,"h":32},
+	"frame": {"x":199,"y":84,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +42,7 @@
 },
 "HealthEnergyBar.png":
 {
-	"frame": {"x":314,"y":1,"w":46,"h":46},
+	"frame": {"x":245,"y":53,"w":46,"h":46},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":9,"y":9,"w":46,"h":46},
@@ -50,7 +50,7 @@
 },
 "HealthEnergyObscure.png":
 {
-	"frame": {"x":299,"y":90,"w":32,"h":32},
+	"frame": {"x":293,"y":58,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -58,7 +58,7 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":179,"y":67,"w":23,"h":23},
+	"frame": {"x":233,"y":101,"w":23,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":23},
@@ -74,7 +74,7 @@
 },
 "IsometricSelectedPending.png":
 {
-	"frame": {"x":199,"y":92,"w":64,"h":32},
+	"frame": {"x":179,"y":50,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -99,14 +99,14 @@
 "IsoTreeShadow1.png":
 {
 	"frame": {"x":179,"y":1,"w":64,"h":47},
-	"rotated": true,
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":11,"w":64,"h":47},
 	"sourceSize": {"w":64,"h":64}
 },
 "MoveIcon.png":
 {
-	"frame": {"x":262,"y":62,"w":28,"h":28},
+	"frame": {"x":327,"y":91,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
@@ -114,8 +114,8 @@
 },
 "MoveTarget.png":
 {
-	"frame": {"x":333,"y":83,"w":32,"h":26},
-	"rotated": true,
+	"frame": {"x":293,"y":92,"w":32,"h":26},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -130,15 +130,23 @@
 },
 "PrevailingUnitIndicator.png":
 {
-	"frame": {"x":228,"y":1,"w":64,"h":32},
-	"rotated": true,
+	"frame": {"x":306,"y":1,"w":64,"h":32},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
 	"sourceSize": {"w":64,"h":32}
 },
+"SpeedBuff.png":
+{
+	"frame": {"x":306,"y":35,"w":33,"h":21},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":17,"w":33,"h":21},
+	"sourceSize": {"w":50,"h":50}
+},
 "StopIcon.png":
 {
-	"frame": {"x":204,"y":67,"w":20,"h":20},
+	"frame": {"x":258,"y":101,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
@@ -151,8 +159,8 @@
 	"version": "1.0",
 	"image": "BaseUnit.png",
 	"format": "RGBA8888",
-	"size": {"w":361,"h":126},
+	"size": {"w":377,"h":126},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:f1ae6fe7de9376e1ab0fc6ae9506a1e7:d10b632d009574e3292649c45082f37d:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:9bb6695aee432ff038a4004bed761a61:77dc30fea59aef364061d776701489d4:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

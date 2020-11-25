@@ -317,7 +317,7 @@ var renderer = function(engine, options) {
 		something = something.renderlings ? Object.keys(something.renderlings).map(function (key) { return something.renderlings[key]; }) : [something];
 		$.each(something, function(i, obj) {
 			if(obj.backgroundFilter) {
-				mathArrayUtils.removeObjectFromArray(this.background.filters, obj.backgroundFilter);
+				mathArrayUtils.removeObjectFromArray(obj.backgroundFilter, this.background.filters);
 			}
 		    this.removeAndDestroyChild(this.stages[where || obj.myLayer || 'stage'], obj)
 		}.bind(this));

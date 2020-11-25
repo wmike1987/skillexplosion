@@ -734,16 +734,16 @@ export default function Marine(options) {
     })
 
     var robDDuration = 2000;
-    var robADuration = 2000;
+    var robADuration = 3000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 2s.'],
-        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 2s.'],
+        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'preSufferedAttack',
         defenseDuration: robDDuration,
-        defenseCooldown: 10000,
+        defenseCooldown: 9000,
         aggressionEventName: 'attack',
         aggressionDuration: robADuration,
         aggressionCooldown: 8000,
@@ -757,9 +757,17 @@ export default function Marine(options) {
         },
         aggressionAction: function(event) {
             marine.moveSpeed += .4;
-            gameUtils.doSomethingAfterDuration(function() {
-                marine.moveSpeed -= .4;
-            }, robADuration)
+            gameUtils.applyBuffImageToUnit({name: "rushofblood", unit: marine, textureName: 'SpeedBuff'})
+            marine.rushofbloodTimer = globals.currentGame.addTimer({
+                name: 'rushofbloodTimerEnd' + marine.unitId,
+                runs: 1,
+                executeOnNuke: true,
+                timeLimit: robADuration,
+                totallyDoneCallback: function() {
+                    marine.buffs.rushofblood.removeBuffImage();
+                    marine.moveSpeed -= .4;
+                }
+            })
         },
     })
 
