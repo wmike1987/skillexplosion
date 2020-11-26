@@ -216,6 +216,16 @@ export default {
 		textBaseline: "bottom",
 	}),
 
+	unitDefenseAdditionsStyle: new PIXI.TextStyle({
+		name: 'unitDefenseAdditionsStyle',
+		fill: "#b4c629",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 12,
+		strokeThickness: 2,
+		textBaseline: "bottom",
+	}),
+
 	abilityTitle: new PIXI.TextStyle({
 		name: 'abilityTitle',
 		fill: "#ffdd10",

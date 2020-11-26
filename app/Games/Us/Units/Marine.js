@@ -292,8 +292,6 @@ export default function Marine(options) {
         offset: {x: 0, y: 22}}];
 
     var fireSound = gameUtils.getSound('machinegun.wav', {volume: .002, rate: 3});
-
-    //poison
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
 
     //crit
@@ -352,7 +350,7 @@ export default function Marine(options) {
         if(currentAugment.name == 'defensive posture') {
             gameUtils.applyBuffImageToUnit({name: "defpostbuff", unit: this, textureName: 'DefensiveBuff'})
             if(!self.defensivePostureActive)
-                self.defense += 2;
+                self.addDefenseAddition(2);
             self.defensivePostureActive = true;
             self.dashAugTimer = globals.currentGame.addTimer({
                 name: 'defensePostureTimerEnd' + self.unitId,
@@ -361,7 +359,7 @@ export default function Marine(options) {
                 timeLimit: 2000,
                 totallyDoneCallback: function() {
                     self.buffs.defpostbuff.removeBuffImage();
-                    self.defense -= 2;
+                    self.removeDefenseAddition(2);
                     self.defensivePostureActive = false;
                 }
             })
@@ -596,7 +594,6 @@ export default function Marine(options) {
 
         Matter.Events.trigger(globals.currentGame, 'performKnifeThrow', {performingUnit: this});
     };
-
     var knifeAbility = new Ability({
         name: 'Throw Knife',
         key: 'f',
@@ -637,10 +634,6 @@ export default function Marine(options) {
             },
         ],
     })
-
-    var setSleeping = function() {
-        Matter.Sleeping.set(this.body, !this.body.isSleeping);
-    }
 
     //Main Attack
     var gunAbility = new Ability({
@@ -722,11 +715,11 @@ export default function Marine(options) {
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                ally.defense += 1;
+                ally.addDefenseAddition(1);
                 var id = mathArrayUtils.getId();
                 gameUtils.applyBuffImageToUnit({name: "givingSpiritDefBuff" + id, unit: ally, textureName: 'DefensiveBuff'})
                 gameUtils.doSomethingAfterDuration(function() {
-                    ally.defense -= 1;
+                    ally.removeDefenseAddition(1);
                     ally.buffs['givingSpiritDefBuff'+id].removeBuffImage();
                 }, allyArmorDuration, {executeOnNuke: true})
             })
@@ -771,10 +764,36 @@ export default function Marine(options) {
         },
     })
 
+    var kiDDuration = 3000;
+    var killerInstinct = new Passive({
+        title: 'Killer Instinct',
+        aggressionDescription: ['Agression Mode (Upon firing)', 'Maim enemy for 3s.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Permanently reduce enemy base defense by 1.'],
+        textureName: 'KillerInstinct',
+        unit: marine,
+        defenseEventName: 'preSufferedAttack',
+        defenseDuration: kiDDuration,
+        defenseCooldown: 5000,
+        aggressionEventName: 'attack',
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            var attackingUnit = event.performingUnit;
+            attackingUnit.defense -= 1;
+            var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414})
+            graphicsUtils.floatSprite(defenseDown, {direction: -1});
+        },
+        aggressionAction: function(event) {
+            var targetUnit = event.targetUnit;
+            if(!targetUnit.isDead) {
+                targetUnit.maim();
+            }
+        },
+    })
+
     var unitProperties = $.extend({
         unitType: 'Marine',
         health: 75,
-        defense: 1,
+        defense: 10,
         energy: 20,
         energyRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
@@ -790,7 +809,7 @@ export default function Marine(options) {
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
-        passiveAbilities: [givingSpirit, rushOfBlood],
+        passiveAbilities: [givingSpirit, rushOfBlood, killerInstinct],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

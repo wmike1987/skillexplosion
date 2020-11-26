@@ -740,14 +740,14 @@ var gameUtils = {
                             unit.reorderBuffs();
                         }
                     });
-                    graphicsUtils.addSomethingToRenderer(debuffAnim, 'foreground');
+                    graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
                     gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
                     debuffAnim.play();
                     gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
                     unit.buffs[name] = null;
                 }
             }
-            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'foreground', scale: {x: scale.x, y: scale.y}});
+            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageTwo', scale: {x: scale.x, y: scale.y}});
             gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true})
             buffObj.dobj = dobj;
             unit.buffs[name] = buffObj;
@@ -802,7 +802,7 @@ var gameUtils = {
         });
         // buffSound.play();
         // buffAnim.tint = 0xe4f46a;
-        graphicsUtils.addSomethingToRenderer(buffAnim, 'foreground');
+        graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
         gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
         buffAnim.play();
     },
@@ -988,10 +988,11 @@ var graphicsUtils = {
         }.bind(this)})
     },
 
-    floatSprite: function(sprite) {
+    floatSprite: function(sprite, options) {
+        options = Object.assign({direction: 1}, options);
         sprite.alpha = 1.4;
         globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: 34, killsSelf: true, callback: function() {
-            sprite.position.y -= 1;
+            sprite.position.y -= 1 * options.direction;
             sprite.alpha -= 1.4/34;
         }, totallyDoneCallback: function() {
             graphicsUtils.removeSomethingFromRenderer(sprite, 'foreground');

@@ -1,7 +1,9 @@
 import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
-    defense: 1,
+    defenseAdditions: {addHandler: 'addDefenseAddition',
+                       removeHandler: 'removeDefenseAddition',
+                       value: 1},
     maxEnergy: 5,
 }
 

@@ -288,7 +288,7 @@ var game = {
          this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
          //this.shane.noIdle = true;
          // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["RingOfThought"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["MedalOfGrit"], unit: this.shane});
          gameUtils.moveUnitOffScreen(this.shane);
          return this.shane;
     },

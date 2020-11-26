@@ -44,6 +44,7 @@ var unitPanel = function(options) {
     this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
     this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
     this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
+    this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
     this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle});
     this.unitSPText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPTextPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
     this.unitSPAmount = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
@@ -375,6 +376,7 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
         this.unitLevelText.text = '--';
         this.unitDamageText.text = '--';
         this.unitDefenseText.text = '--';
+        this.unitDefenseAdditionsText.text = '';
         this.unitHealthText.text = '--';
         this.unitSPText.text = '--';
         this.unitSPAmount.text = '--';
@@ -558,8 +560,18 @@ unitPanel.prototype.displayUnitStats = function() {
                 }
                 this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
 
-                //armor
                 this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
+                //armor
+                if(this.prevailingUnit.defenseAdditions.length > 0) {
+                    var sign = '+';
+                    if(this.prevailingUnit.getDefenseAdditionSum() < 0) {
+                        sign = '';
+                    }
+                    this.unitDefenseAdditionsText.text = sign + this.prevailingUnit.getDefenseAdditionSum();
+                    this.unitDefenseAdditionsText.position = mathArrayUtils.clonePosition(this.unitDefenseText.position, {x: this.unitDefenseText.width/2});
+                } else {
+                    this.unitDefenseAdditionsText.text = '';
+                }
 
                 //health
                 this.unitHealthText.text = "HP: " + Math.floor(this.prevailingUnit.currentHealth);

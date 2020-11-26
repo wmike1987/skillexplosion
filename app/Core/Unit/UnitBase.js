@@ -22,6 +22,7 @@ var UnitBase = {
     maxHealth: 20,
     currentHealth: 20,
     defense: 0,
+    defenseAdditions: [],
     level: 1,
     currentExperience: 0,
     nextLevelExp: 100,
@@ -75,7 +76,8 @@ var UnitBase = {
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
 
-        var alteredDamage = Math.max(1, (damage - this.defense));
+        var defenseAdditionSums = this.getDefenseAdditionSum();
+        var alteredDamage = Math.max(1, (damage - (this.defense + defenseAdditionSums)));
         var damageReducedByArmor = this.defense;
         if(damage - this.defense <= 0) {
             damageReducedByArmor = damage - 1;
@@ -803,27 +805,45 @@ var UnitBase = {
     },
 
     maim: function(duration) {
-        var movePenalty = .5;
-        var defensePenalty = 1;
+        var movePenalty = -.5;
+        var defensePenalty = -1;
 
         var unit = this;
         var buffName = 'maim';
         gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'MaimBuff'})
 
-        unit.moveSpeed -= movePenalty;
-        unit.defense -= defensePenalty;
+        unit.moveSpeed += movePenalty;
+        unit.addDefenseAddition(defensePenalty);
         globals.currentGame.addTimer({
             name: 'maim' + this.unitId,
             runs: 1,
             timeLimit: duration || 2000,
             killsSelf: true,
             callback: function() {
-                unit.moveSpeed += movePenalty;
-                unit.defense += defensePenalty;
+                unit.moveSpeed -= movePenalty.toString();
+                unit.removeDefenseAddition(defensePenalty);
                 unit.buffs[buffName].removeBuffImage();
             }
         });
+    },
+
+    //utility methods for units
+    getDefenseAdditionSum: function() {
+        var sum = 0;
+        this.defenseAdditions.forEach((addition) => {
+            sum += addition;
+        })
+        return Math.max(-this.defense, sum);
+    },
+
+    addDefenseAddition: function(amount) {
+        this.defenseAdditions.push(amount);
+    },
+
+    removeDefenseAddition: function(value) {
+        mathArrayUtils.removeObjectFromArray(value, this.defenseAdditions);
     }
+
 }
 
 export default UnitBase;

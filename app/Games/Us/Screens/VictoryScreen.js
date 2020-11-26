@@ -22,6 +22,7 @@ var statDividerStyle = styles.statDividerStyle;
 var unitGeneralStyle = styles.unitGeneralStyle;
 var unitDamageStyle = styles.unitDamageStyle;
 var unitDefenseStyle = styles.unitDefenseStyle;
+var unitDefenseAdditionsStyle = styles.unitDefenseAdditionsStyle;
 var unitGeneralEnergyStyle = styles.unitGeneralEnergyStyle;
 
 //Shane titles
@@ -120,9 +121,23 @@ var VictoryScreen = function(units, statsObj) {
         var marineEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + shane.maxEnergy, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY - unitStatYSpacing*.5}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "Def: " + shane.defense, {position: {x: shaneColumnX + healthEnergyXOffset, y: shaneY + unitStatYSpacing*1.5}, style: unitDefenseStyle, where: "hudText", anchor: {x: .5, y: .5}});
+
+        var defenseAdditionText = '';
+        if(shane.defenseAdditions.length > 0) {
+            var sign = '+';
+            if(shane.getDefenseAdditionSum() < 0) {
+                sign = '';
+            }
+            defenseAdditionText = sign + shane.getDefenseAdditionSum();
+        }
+        var marineDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {position: {x: shaneColumnX + healthEnergyXOffset + marineDefense.width/2, y: shaneY + unitStatYSpacing*1.5}, style: unitDefenseAdditionsStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        if(defenseAdditionText != '') {
+            marineDefense.position.x -= marineDefenseAdditions.width/2;
+        }
+
         var placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         graphicsUtils.graduallyTint(marinePortraitBorder, 0x18bb96, 0xa80505, 6000);
-        this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth, marineEnergy, marineDamage, marineDefense]);
+        this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth, marineEnergy, marineDamage, marineDefense, marineDefenseAdditions]);
 
         var shaneKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {position: shanePosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
         // graphicsUtils.addSomethingToRenderer(createContainer(), {where: 'hudText', position: shanePosition(same)});
@@ -165,13 +180,26 @@ var VictoryScreen = function(units, statsObj) {
         startPos.x -= 43;
         var medicPortrait = graphicsUtils.createDisplayObject('MedicPortrait', {position: startPos, where: stage});
         var medicPortraitBorder = graphicsUtils.createDisplayObject('PortraitBorder', {position: ursulaPosition(portrait), where: stage});
-        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + ursula.maxHealth, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*1.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var medicEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + ursula.maxEnergy, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*.5}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + "Heal: " + ursula.damageMember(), {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + ursula.maxHealth, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY - unitStatYSpacing*1.5}, style: unitGeneralStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "Def: " + ursula.defense, {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*1.5}, style: unitDefenseStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + "Heal: " + ursula.damageMember(), {position: {x: ursColumnX + healthEnergyXOffset, y: ursulaY + unitStatYSpacing*.5}, style: unitDamageStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        var defenseAdditionText = '';
+        if(ursula.defenseAdditions.length > 0) {
+            var sign = '+';
+            if(ursula.getDefenseAdditionSum() < 0) {
+                sign = '';
+            }
+            defenseAdditionText = sign + ursula.getDefenseAdditionSum();
+        }
+        var ursulaDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {position: {x: ursColumnX + healthEnergyXOffset + medicDefense.width/2, y: ursulaY + unitStatYSpacing*1.5}, style: unitDefenseAdditionsStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        if(defenseAdditionText != '') {
+            medicDefense.position.x -= ursulaDefenseAdditions.width/2;
+        }
+
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
         graphicsUtils.graduallyTint(medicPortraitBorder, 0x18bb96, 0x20902f, 6000);
-        this.ursulaStats.push([medicPortrait, medicPortraitBorder, placeholder, medicHealth, medicEnergy, medicDamage, medicDefense]);
+        this.ursulaStats.push([medicPortrait, medicPortraitBorder, placeholder, medicHealth, medicEnergy, medicDamage, medicDefense, ursulaDefenseAdditions]);
 
         var ursulaKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {position: ursulaPosition(title), style: titleStyle, where: "hudText", anchor: {x: .5, y: .5}});
         var ursulaKills = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.kills, {position: ursulaPosition(reg), style: statStyle, where: "hudText", anchor: {x: .5, y: .5}});

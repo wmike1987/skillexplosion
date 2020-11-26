@@ -135,7 +135,8 @@ export default {
 
             //trigger the attack event
             Matter.Events.trigger(this, 'attack', {
-                direction: gameUtils.isoDirectionBetweenPositions(this.position, target.position)
+                direction: gameUtils.isoDirectionBetweenPositions(this.position, target.position),
+                targetUnit: target
             });
         }
     },

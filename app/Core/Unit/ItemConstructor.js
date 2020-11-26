@@ -26,7 +26,11 @@ var baseItem = {
             } else if(value instanceof Function){
                 value.call(unit, true);
             } else {
-                unit[key] += value;
+                if(value.addHandler) {
+                    unit[value.addHandler](value.value);
+                } else {
+                    unit[key] += value;
+                }
             }
         }.bind(this))
     },
@@ -39,7 +43,11 @@ var baseItem = {
             }  else if(value instanceof Function){
                 value.call(unit, false);
             } else {
-                unit[key] -= value;
+                if(value.removeHandler) {
+                    unit[value.removeHandler](value.value);
+                } else {
+                    unit[key] -= value
+                }
             }
         }.bind(this))
     },
