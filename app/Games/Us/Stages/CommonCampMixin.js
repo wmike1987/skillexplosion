@@ -20,7 +20,7 @@ var fillAreaWithTrees = function(options) {
     var trees = [];
     for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
         for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-            var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+mathArrayUtils.getRandomElementOfArray(options.possibleTrees), stage: 'stageTwo', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
+            var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+mathArrayUtils.getRandomElementOfArray(options.possibleTrees), stage: 'stageTrees', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
             shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 4, y: 4}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
             trees.push(tree);
         }
@@ -171,7 +171,7 @@ export default {
             var initLight = function() {
                 globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
                 globals.currentGame.renderer.layers.stage.filters = [this.stageLightShader];
-                globals.currentGame.renderer.layers.stageTwo.filters = [this.treeShader];
+                globals.currentGame.renderer.layers.stageTrees.filters = [this.treeShader];
                 var flameTimer = globals.currentGame.addTimer({
                     name: 'flame',
                     gogogo: true,
@@ -209,7 +209,7 @@ export default {
             this.removePriorityMouseDownEvent(mapClickListener);
             this.renderer.layers.background.filters = [];
             this.renderer.layers.stage.filters = [];
-            this.renderer.layers.stageTwo.filters = [];
+            this.renderer.layers.stageTrees.filters = [];
             this.map.hide();
             self.cleanUpSounds();
             $('body').off('mousedown.map');

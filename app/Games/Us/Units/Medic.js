@@ -436,8 +436,8 @@ export default function Medic(options) {
         var stateThree = graphicsUtils.createDisplayObject('MineThree', {scale: {x: .75, y: .75}, alpha: .8});
 
         var medic = this;
-        var blastRadius = currentAugment.name == 'shrapnel' ? 180 : 120;
-        var primaryExplosionRadius = currentAugment.name == 'shrapnel' ? 90 : 60;
+        var blastRadius = currentAugment.name == 'shrapnel' ? 160 : 120;
+        var primaryExplosionRadius = currentAugment.name == 'shrapnel' ? 85 : 60;
         var mineState = {state: 0, id: mathArrayUtils.uuidv4(), position: mine.position, blastRadius: blastRadius, damage: 25, primaryExplosionRadius: primaryExplosionRadius};
         graphicsUtils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
         graphicsUtils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position})
@@ -526,7 +526,7 @@ export default function Medic(options) {
 
         mine.explode = function() {
             mineExplosion.play();
-            gameUtils.applyToUnitsByTeam(function(team) {return medic.team != team}, function(unit) {
+            gameUtils.applyToUnitsByTeam(function(team) {return medic.team == team}, function(unit) {
                 return (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isAttackable);
             }.bind(this), function(unit) {
                 var dmg = mineState.damage;
@@ -535,7 +535,9 @@ export default function Medic(options) {
                 }
                 unit.sufferAttack(dmg, medic);
                 if(currentAugment.name == 'maim') {
-                    unit.maim();
+                    if(!unit.isDead) {
+                        unit.maim();
+                    }
                 }
 
                 if(currentAugment.name == 'maim') {
@@ -562,6 +564,21 @@ export default function Medic(options) {
                 }
 
             });
+
+            if(currentAugment.name == 'maim' || currentAugment.name == 'shrapnel') {
+                //extra mine explosion graphic
+                var scale = currentAugment.name == 'maim' ? 2.5 : 3.5;
+                var tint = currentAugment.name == 'maim' ? 0xf200ff : 0xffffff;
+                var mineMaimExplosionAnimation = gameUtils.getAnimation({
+                    spritesheetName: 'MedicAnimations2',
+                    animationName: 'additionalexplosion',
+                    speed: 2.2,
+                    transform: [mineState.position.x, mineState.position.y-30, scale, scale]
+                });
+                mineMaimExplosionAnimation.tint = tint;
+                graphicsUtils.addSomethingToRenderer(mineMaimExplosionAnimation, 'stageTwo');
+                mineMaimExplosionAnimation.play();
+            }
 
             mineExplosionAnimation.play();
             graphicsUtils.addSomethingToRenderer(mineExplosionAnimation, 'stageOne');

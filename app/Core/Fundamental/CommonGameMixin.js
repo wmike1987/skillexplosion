@@ -566,10 +566,13 @@ var common = {
         }.bind(this))
     },
 
-    //This method has the heart but is poorly designed I think
+    //This method has the heart but is poorly designed
     //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, functions to execute, howerl sounds, and sprites
     removeSlaves: function(slaves) {
-        $.each(slaves, function(index, slave) {
+        //Iterate over a copy since some of these cleanUp methods can remove slaves themselves. Namely the removeSomethingFrom
+        //renderer method.
+        var slaveCopy = [].concat(slaves);
+        $.each(slaveCopy, function(index, slave) {
             if(slave.isUnit) {
                 this.removeUnit(slave);
                 //console.info("removing " + slave)

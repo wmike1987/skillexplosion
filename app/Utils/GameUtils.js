@@ -239,7 +239,7 @@ var gameUtils = {
             this.undeathPact(something.bodyAttachmentBody, something.bodyAttachmentTick);
             this.undeathPact(something.bodyAttachmentBody, something);
             globals.currentGame.removeTickCallback(something.bodyAttachmentTick);
-            something.bodyAttachment = null;
+            something.bodyAttachmentTick = null;
         }
     },
 
@@ -727,6 +727,7 @@ var gameUtils = {
         if(!unit.buffs[name]) {
             var buffObj = {
                 removeBuffImage: function() {
+                    if(unit.isDead) return;
                     gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
                     graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
                     mathArrayUtils.removeObjectFromArray(unit.buffs[name], unit.orderedBuffs);
@@ -739,7 +740,6 @@ var gameUtils = {
                             unit.reorderBuffs();
                         }
                     });
-                    // debuffAnim.tint = 0x5cff7e;
                     graphicsUtils.addSomethingToRenderer(debuffAnim, 'foreground');
                     gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
                     debuffAnim.play();
