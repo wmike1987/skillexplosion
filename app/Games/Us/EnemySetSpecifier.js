@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
-var easyMode = false;
+var easyMode = true;
 var basicBottom = 3;
 var basicTop = 8;
 

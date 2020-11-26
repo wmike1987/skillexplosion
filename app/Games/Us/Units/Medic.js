@@ -461,7 +461,7 @@ export default function Medic(options) {
         if(currentAugment.name == 'shrapnel') {
             mineExplosionAnimation.tint = 0xD7FFFA;
         } else if(currentAugment.name == 'maim') {
-            mineExplosionAnimation.tint = 0x94FFF2;
+            mineExplosionAnimation.tint = 0x670d0d;
         }
         graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
         graphicsUtils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*3.0, y: blastRadius*3.0})
@@ -535,18 +535,7 @@ export default function Medic(options) {
                 }
                 unit.sufferAttack(dmg, medic);
                 if(currentAugment.name == 'maim') {
-                    var moveDelta = Math.min(unit.moveSpeed, currentAugment.slowAmount);
-                    if(moveDelta == unit.moveSpeed) moveDelta = moveDelta/2;
-                    unit.moveSpeed -= moveDelta;
-                    globals.currentGame.addTimer({
-                        name: 'mineSlow' + unit.unitId + mineState.id,
-                        runs: 1,
-                        timeLimit: currentAugment.duration,
-                        killsSelf: true,
-                        callback: function() {
-                            unit.moveSpeed += moveDelta;
-                        }
-                    })
+                    unit.maim();
                 }
 
                 if(currentAugment.name == 'maim') {
@@ -600,11 +589,11 @@ export default function Medic(options) {
         energyCost: 15,
         augments: [{
             name: 'maim',
-            slowAmount: .5,
-            duration: 3000,
+            duration: 5000,
             icon: graphicsUtils.createDisplayObject('Maim'),
             title: 'Maim',
-            description: 'Slow enemies hit by blast for 2 seconds.'
+            description: 'Maim enemies hit by blast for 5 seconds.',
+            systemMessage: 'Maimed enemies are slowed and suffer -1 defense.'
         },
         {
             name: 'pressure plate',

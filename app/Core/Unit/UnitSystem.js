@@ -1018,6 +1018,7 @@ var UnitSystem = function(properties) {
     };
 
     this.pause = function() {
+        //put us at a peaceful state, so to speak.
         this.active = false;
         this.selectionBoxActive = false;
         Matter.Body.setPosition(this.box, {x: -500, y: -1000});
@@ -1028,6 +1029,8 @@ var UnitSystem = function(properties) {
         this.box.mouseDown = false;
         this.abilityDispatch = false;
         this.attackMove = false;
+        this.box.invalidateNextMouseUp = false;
+        this.box.invalidateNextBox = false;
         if(this.hoveredUnit) {
             this.hoveredUnit.unhover();
         }

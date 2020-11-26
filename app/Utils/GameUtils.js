@@ -224,15 +224,21 @@ var gameUtils = {
             }
         }, false, callbackLocation);
         tick.offset = offset; //ability to change the offset via the tick
-        something.bodyAttachment = tick;
+        something.bodyAttachmentTick = tick;
         something.bodyAttachmentBody = body;
         this.deathPact(body, tick, somethingId);
+
+        //this option allows us to deathpact the attachment image (or body) with the master body
+        if(options.deathPactSomething) {
+            this.deathPact(body, something);
+        }
     },
 
     detachSomethingFromBody: function(something) {
-        if(something.bodyAttachment) {
-            this.undeathPact(something.bodyAttachmentBody, something.bodyAttachment);
-            globals.currentGame.removeTickCallback(something.bodyAttachment);
+        if(something.bodyAttachmentTick) {
+            this.undeathPact(something.bodyAttachmentBody, something.bodyAttachmentTick);
+            this.undeathPact(something.bodyAttachmentBody, something);
+            globals.currentGame.removeTickCallback(something.bodyAttachmentTick);
             something.bodyAttachment = null;
         }
     },
@@ -735,14 +741,14 @@ var gameUtils = {
                     });
                     // debuffAnim.tint = 0x5cff7e;
                     graphicsUtils.addSomethingToRenderer(debuffAnim, 'foreground');
-                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset})
+                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
                     debuffAnim.play();
                     gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
                     unit.buffs[name] = null;
                 }
             }
-            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageOne', scale: {x: scale.x, y: scale.y}});
-            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}})
+            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'foreground', scale: {x: scale.x, y: scale.y}});
+            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true})
             buffObj.dobj = dobj;
             unit.buffs[name] = buffObj;
             unit.orderedBuffs.push(buffObj);
@@ -752,11 +758,11 @@ var gameUtils = {
         if(!unit.reorderBuffs) {
             var b1 = null;
             var b2 = null;
-            var xSpacing = 25;
-            var ySpacing = 25;
+            var xSpacing = 32;
+            var ySpacing = 32;
             unit.reorderBuffs = function() {
                 unit.orderedBuffs.forEach((buff, i) => {
-                    var attachmentTick = buff.dobj.bodyAttachment;
+                    var attachmentTick = buff.dobj.bodyAttachmentTick;
                     var row = Math.floor(i/3);
                     var yOffset = row * -ySpacing
                     var col = i%3;
@@ -767,16 +773,21 @@ var gameUtils = {
                         b2 = null;
                     } else if(col == 1) {
                         xOffset = xSpacing/2;
-                        b1.dobj.bodyAttachment.offset.x -= xSpacing/2;
+                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
                         b2 = buff;
                     } else if(col == 2) {
                         xOffset = xSpacing;
-                        b1.dobj.bodyAttachment.offset.x -= xSpacing/2;
-                        b2.dobj.bodyAttachment.offset.x -= xSpacing/2;
+                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
+                        b2.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
                     }
                     buff.offset = {x: xOffset, y: originalyOffset + yOffset};
                     attachmentTick.offset = buff.offset;
                 });
+            }
+
+            //also create method to remove all buffs
+            unit.removeAllBuffs = function() {
+
             }
         }
         unit.reorderBuffs();
@@ -792,7 +803,7 @@ var gameUtils = {
         // buffSound.play();
         // buffAnim.tint = 0xe4f46a;
         graphicsUtils.addSomethingToRenderer(buffAnim, 'foreground');
-        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset})
+        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
         buffAnim.play();
     },
 };

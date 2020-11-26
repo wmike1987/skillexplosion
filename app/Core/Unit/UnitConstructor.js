@@ -172,6 +172,16 @@ function UnitConstructor(options) {
     /*
      * Convenience getters to access certain properties from the unit's body and vice-versa
      */
+    newUnit._defense = newUnit.defense;
+    Object.defineProperty(newUnit, 'defense', {
+        get: function() {
+            return this._defense;
+        },
+        set: function(value) {
+            this._defense = Math.max(0, value);
+        }
+    });
+
     Object.defineProperty(newUnit, 'isSleeping', {
         get: function() {
             return this.body.isSleeping;

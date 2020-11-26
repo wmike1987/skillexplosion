@@ -28,6 +28,19 @@ var moveable = {
     visibleSprite: null,
 
     moveableInit: function() {
+
+        //create setter for moveSpeed
+        var baseMoveSpeed = .1;
+        this._moveSpeed = this.moveSpeed;
+        Object.defineProperty(this, 'moveSpeed', {
+            get: function() {
+                return this._moveSpeed;
+            },
+            set: function(value) {
+                this._moveSpeed = Math.max(value, baseMoveSpeed);
+            }
+        });
+
         this.eventClickMappings[this.commands.move.key] = this.move;
         this.eventClickStateGathering[this.commands.move.key] = function() {
             return {isSoloMover: Object.keys(globals.currentGame.unitSystem.selectedUnits).length == 1};

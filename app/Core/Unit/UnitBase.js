@@ -778,9 +778,11 @@ var UnitBase = {
         }
         this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
         graphicsUtils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
+        petrifySound.play();
 
         var unit = this;
-        petrifySound.play();
+        var buffName = 'petrify';
+        gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'PetrifyBuff'})
         globals.currentGame.addTimer({
             name: 'petrified' + this.unitId,
             runs: 1,
@@ -795,9 +797,33 @@ var UnitBase = {
                 globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
                 unit.isoManagedTint = null;
                 unit.isoManagedAlpha = null;
+                unit.buffs[buffName].removeBuffImage();
             }
         });
     },
+
+    maim: function(duration) {
+        var movePenalty = .5;
+        var defensePenalty = 1;
+
+        var unit = this;
+        var buffName = 'maim';
+        gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'MaimBuff'})
+
+        unit.moveSpeed -= movePenalty;
+        unit.defense -= defensePenalty;
+        globals.currentGame.addTimer({
+            name: 'maim' + this.unitId,
+            runs: 1,
+            timeLimit: duration || 2000,
+            killsSelf: true,
+            callback: function() {
+                unit.moveSpeed += movePenalty;
+                unit.defense += defensePenalty;
+                unit.buffs[buffName].removeBuffImage();
+            }
+        });
+    }
 }
 
 export default UnitBase;
