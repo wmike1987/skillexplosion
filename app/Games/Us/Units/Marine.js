@@ -692,7 +692,7 @@ export default function Marine(options) {
     var allyArmorDuration = 10000;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 10 hp.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 8 hp.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 1 def for 10s.'],
         textureName: 'PositiveMindset',
         unit: marine,
@@ -705,14 +705,14 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                ally.giveHealth(10, marine);
+                ally.giveHealth(8, marine);
                 var lifeUpAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'MedicAnimations1',
-                    animationName: 'heal',
-                    speed: .8,
-                    transform: [ally.position.x, ally.position.y, 1.2, 1.2]
+                    spritesheetName: 'UtilityAnimations1',
+                    animationName: 'lifegain1',
+                    speed: 1.0,
+                    transform: [ally.position.x, ally.position.y, 1.0, 1.0]
                 });
-                lifeUpAnimation.tint = 0xff5252;
+                lifeUpAnimation.tint = 0xff1e08;
                 lifeUpAnimation.play();
                 lifeUpAnimation.alpha = 1;
                 healsound.play();
@@ -750,11 +750,11 @@ export default function Marine(options) {
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             gameUtils.applyBuffImageToUnit({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff'})
-            var f = Matter.Events.on(marine, 'prePerformedHeal', function(event) {
+            var f = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
                 event.healingObj.amount *= 2;
             })
             gameUtils.doSomethingAfterDuration(function() {
-                Matter.Events.off(marine, 'prePerformedHeal', f);
+                Matter.Events.off(marine, 'preReceiveHeal', f);
                 marine.buffs.rushofbloodabsorb.removeBuffImage();
             }, robDDuration)
         },
@@ -828,6 +828,45 @@ export default function Marine(options) {
         },
     })
 
+    var ssDDuration = 4000;
+    var ssADuration = 2000;
+    var spiritualState  = new Passive({
+        title: 'Spiritual State',
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 1 energy for every 1 hp recieved from healing for 2s.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies gain x2 energy/sec for 4s.'],
+        textureName: 'SpiritualState',
+        unit: marine,
+        defenseEventName: 'preSufferAttack',
+        defenseCooldown: 8000,
+        defenseDuration: ssDDuration,
+        aggressionEventName: 'kill',
+        aggressionCooldown: 9000,
+        aggressionDuration: ssADuration,
+        defenseAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            alliesAndSelf.forEach((unit) => {
+                gameUtils.applyBuffImageToUnit({name: "spiritualStateGain", unit: unit, textureName: 'SpiritualStateEnergyGainBuff'});
+                unit.energyRegenerationRate = unit.energyRegenerationRate*2;
+            })
+            gameUtils.doSomethingAfterDuration(function() {
+                alliesAndSelf.forEach((unit) => {
+                    unit.buffs.spiritualStateGain.removeBuffImage();
+                    unit.energyRegenerationRate = unit.energyRegenerationRate/2;
+                })
+            }, ssDDuration);
+        },
+        aggressionAction: function(event) {
+            gameUtils.applyBuffImageToUnit({name: "spiritualStateMatch", unit: marine, textureName: 'SpiritualStateBuff'})
+            var f = Matter.Events.on(marine, 'receiveHeal', function(event) {
+                marine.currentEnergy += event.amountDone;
+            })
+            gameUtils.doSomethingAfterDuration(function() {
+                Matter.Events.off(marine, 'receiveHeal', f);
+                marine.buffs.spiritualStateMatch.removeBuffImage();
+            }, ssADuration);
+        },
+    })
+
     var unitProperties = $.extend({
         unitType: 'Marine',
         health: 75,
@@ -847,7 +886,7 @@ export default function Marine(options) {
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
-        passiveAbilities: [givingSpirit, rushOfBlood, killerInstinct, clearPerspective],
+        passiveAbilities: [givingSpirit, rushOfBlood, spiritualState, killerInstinct, clearPerspective],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({
@@ -918,15 +957,15 @@ export default function Marine(options) {
                         }, function(unit) {
                             var lifeUpAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations1',
-                                animationName: 'manasteal',
-                                speed: .8,
-                                transform: [unit.position.x, unit.position.y, 1, 1]
+                                animationName: 'lifegain1',
+                                speed: 1.0,
+                                transform: [unit.position.x, unit.position.y, 1.0, 1.0]
                             });
-
-                            lifeUpAnimation.tint = 0xF80202;
+                            lifeUpAnimation.tint = 0xff1e08;
                             lifeUpAnimation.play();
                             lifeUpAnimation.alpha = 1;
-                            gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}});
+                            healsound.play();
+                            gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body});
                             graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
                             unit.giveHealth(currentAugment.healAmount, self);
                         })

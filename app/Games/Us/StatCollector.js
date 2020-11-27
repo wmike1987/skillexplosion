@@ -144,7 +144,7 @@ DamageCollector.prototype = Collector;
 
 var HealCollector = function(options) {
     this.name = "healingDone";
-    this.eventName = 'performedHeal';
+    this.eventName = 'performHeal';
     this.collectorFunction = function(event) {
         var healingUnit = event.performingUnit;
         var healingDone = event.amountDone;

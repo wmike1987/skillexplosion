@@ -485,12 +485,12 @@ var gameUtils = {
         return dir;
     },
 
-    getUnitAllies: function(meUnit) {
+    getUnitAllies: function(meUnit, includeMe) {
         var allies = [];
         this.applyToUnitsByTeam(function(team) {
             return meUnit.team == team;
         }, function(unit) {
-            return meUnit != unit;
+            return includeMe || meUnit != unit;
         }, function(unit) {
             allies.push(unit);
         });
@@ -664,7 +664,7 @@ var gameUtils = {
 
         globals.currentGame.addTimer(
             {
-                name: 'task:' + mathArrayUtils.getId(),
+                name: 'afterDurationTask:' + mathArrayUtils.getId(),
                 timeLimit: duration,
                 killsSelf: true,
                 executeOnNuke: options.executeOnNuke,

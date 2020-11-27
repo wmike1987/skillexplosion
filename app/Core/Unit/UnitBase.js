@@ -112,7 +112,7 @@ var UnitBase = {
 
     giveHealth: function(amount, performingUnit) {
         var healingObj = {amount: amount}
-        Matter.Events.trigger(this, 'prePerformedHeal', {performingUnit: performingUnit, healingObj: healingObj});
+        Matter.Events.trigger(this, 'preReceiveHeal', {performingUnit: performingUnit, healingObj: healingObj});
         amount = healingObj.amount;
 
         this.currentHealth += amount;
@@ -122,7 +122,8 @@ var UnitBase = {
             this.currentHealth = this.maxHealth;
         }
 
-        Matter.Events.trigger(globals.currentGame, 'performedHeal', {performingUnit: performingUnit, amountDone: healingDone});
+        Matter.Events.trigger(globals.currentGame, 'performHeal', {performingUnit: performingUnit, amountDone: healingDone});
+        Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});
     },
 
     _death: function() {

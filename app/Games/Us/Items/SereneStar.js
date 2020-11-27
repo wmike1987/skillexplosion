@@ -8,7 +8,7 @@ var manipulations = {
     events: {knifeKill: {currentEnergy: 5, callback: function(unit) {
         var manaStealAnimation = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations1',
-            animationName: 'manasteal',
+            animationName: 'lifegain1',
             speed: Math.random() + .5,
             transform: [unit.position.x, unit.position.y, 1.3, 1.3]
         });

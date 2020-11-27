@@ -26,8 +26,8 @@
 },
 "DeathWishBuff.png":
 {
-	"frame": {"x":306,"y":1,"w":28,"h":20},
-	"rotated": true,
+	"frame": {"x":1,"y":230,"w":28,"h":20},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
 	"sourceSize": {"w":32,"h":32}
@@ -66,8 +66,8 @@
 },
 "KeenEyeBuff.png":
 {
-	"frame": {"x":306,"y":31,"w":28,"h":20},
-	"rotated": true,
+	"frame": {"x":31,"y":230,"w":28,"h":20},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
 	"sourceSize": {"w":32,"h":32}
@@ -162,10 +162,34 @@
 },
 "RushOfBloodBuff.png":
 {
-	"frame": {"x":273,"y":203,"w":30,"h":26},
+	"frame": {"x":103,"y":229,"w":30,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":3,"w":30,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
+"SpiritualState.png":
+{
+	"frame": {"x":239,"y":195,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"SpiritualStateBuff.png":
+{
+	"frame": {"x":135,"y":229,"w":30,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":3,"w":30,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
+"SpiritualStateEnergyGainBuff.png":
+{
+	"frame": {"x":167,"y":229,"w":26,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":2,"w":26,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
 "ThrowingDagger.png":
@@ -178,8 +202,8 @@
 },
 "ThrowingDaggerBase.png":
 {
-	"frame": {"x":305,"y":203,"w":16,"h":28},
-	"rotated": false,
+	"frame": {"x":61,"y":230,"w":16,"h":28},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":24,"y":36,"w":16,"h":28},
 	"sourceSize": {"w":64,"h":64}
@@ -194,7 +218,7 @@
 },
 "VitalReserves.png":
 {
-	"frame": {"x":239,"y":195,"w":32,"h":32},
+	"frame": {"x":273,"y":203,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -205,8 +229,8 @@
 	"version": "1.0",
 	"image": "Marine.png",
 	"format": "RGBA8888",
-	"size": {"w":327,"h":232},
+	"size": {"w":318,"h":256},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:271247464bd488026767ca638adbbe8e:edae9ea2ae8d70a5d78a695862ef2697:1b146a7d1a1c5cd95f0c69a03767d9cf$"
+	"smartupdate": "$TexturePacker:SmartUpdate:55b09714442f6df2693147a5c1dcad42:6fb166d77d7cab76d3e47606eba22cee:1b146a7d1a1c5cd95f0c69a03767d9cf$"
 }
 }

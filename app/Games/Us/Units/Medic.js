@@ -691,7 +691,7 @@ export default function Medic(options) {
                                 fullheal.play();
                                 var replenAnimation = gameUtils.getAnimation({
                                     spritesheetName: 'UtilityAnimations1',
-                                    animationName: 'manasteal',
+                                    animationName: 'lifegain1',
                                     speed: .8,
                                     transform: [target.position.x, target.position.y+10, 1.2, 1.2]
                                 });

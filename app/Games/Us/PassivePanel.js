@@ -95,11 +95,11 @@ ConfigPanel.prototype.showPassives = function(unit) {
     var alphaPassive = .8;
 
     if(!this.currentAttackPassiveBorder) {
-        this.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0xf12a2a});
+        this.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0xff1414});
         this.currentAttackPassiveBorder.visible = false;
         this.currentAttackPassiveBorder.sortYOffset = 1000;
 
-        this.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0x55a3ff});
+        this.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0x0094ff});
         this.currentDefensePassiveBorder.visible = false;
         this.currentDefensePassiveBorder.sortYOffset = 1000;
     }
