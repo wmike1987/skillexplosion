@@ -302,6 +302,9 @@ export default function Marine(options) {
     var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});
     var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
 
+    //other
+    var healsound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
+
     //Dash
     var dashVelocity = .8;
     var dashSound = gameUtils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
@@ -343,6 +346,11 @@ export default function Marine(options) {
                     //only stop if we're still on the current dash command
                     self.stop();
                 }
+                if(self.commandQueue.getCurrentCommand().id == 'empty' || self.commandQueue.getCurrentCommand().method.name == 'throwKnife') {
+                    //if we're a knife or empty, become on alert
+                    self._becomeOnAlert();
+                }
+
                 commandObj.command.done();
             }
         })
@@ -684,31 +692,31 @@ export default function Marine(options) {
     var allyArmorDuration = 10000;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 5 hp.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 10 hp.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 1 def for 10s.'],
         textureName: 'PositiveMindset',
         unit: marine,
-        defenseEventName: 'preSufferedAttack',
+        defenseEventName: 'preSufferAttack',
         defenseDuration: gsDDuration,
         defenseCooldown: 5000,
         aggressionEventName: 'kill',
         aggressionDuration: gsADuration,
-        aggressionCooldown: 8000,
+        aggressionCooldown: 2000,
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                ally.giveHealth(5, marine);
+                ally.giveHealth(10, marine);
                 var lifeUpAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'UtilityAnimations1',
-                    animationName: 'manasteal',
+                    spritesheetName: 'MedicAnimations1',
+                    animationName: 'heal',
                     speed: .8,
-                    transform: [ally.position.x, ally.position.y, 1, 1]
+                    transform: [ally.position.x, ally.position.y, 1.2, 1.2]
                 });
-
-                lifeUpAnimation.tint = 0xF80202;
+                lifeUpAnimation.tint = 0xff5252;
                 lifeUpAnimation.play();
                 lifeUpAnimation.alpha = 1;
-                gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: ally.body, offset: {x: Math.random()*40-20, y: 25-(Math.random()*5)}});
+                healsound.play();
+                gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: ally.body});
                 graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
             })
         },
@@ -726,55 +734,58 @@ export default function Marine(options) {
         },
     })
 
-    var robDDuration = 2000;
+    var robDDuration = 3000;
     var robADuration = 3000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 2s.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 3s.'],
         aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.'],
         textureName: 'RushOfBlood',
         unit: marine,
-        defenseEventName: 'preSufferedAttack',
+        defenseEventName: 'preSufferAttack',
         defenseDuration: robDDuration,
         defenseCooldown: 9000,
         aggressionEventName: 'attack',
         aggressionDuration: robADuration,
         aggressionCooldown: 8000,
         defenseAction: function(event) {
+            gameUtils.applyBuffImageToUnit({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff'})
             var f = Matter.Events.on(marine, 'prePerformedHeal', function(event) {
                 event.healingObj.amount *= 2;
             })
             gameUtils.doSomethingAfterDuration(function() {
                 Matter.Events.off(marine, 'prePerformedHeal', f);
+                marine.buffs.rushofbloodabsorb.removeBuffImage();
             }, robDDuration)
         },
         aggressionAction: function(event) {
             marine.moveSpeed += .4;
-            gameUtils.applyBuffImageToUnit({name: "rushofblood", unit: marine, textureName: 'SpeedBuff'})
+            gameUtils.applyBuffImageToUnit({name: "rushofbloodspeed", unit: marine, textureName: 'SpeedBuff'})
             marine.rushofbloodTimer = globals.currentGame.addTimer({
                 name: 'rushofbloodTimerEnd' + marine.unitId,
                 runs: 1,
                 executeOnNuke: true,
                 timeLimit: robADuration,
                 totallyDoneCallback: function() {
-                    marine.buffs.rushofblood.removeBuffImage();
+                    marine.buffs.rushofbloodspeed.removeBuffImage();
                     marine.moveSpeed -= .4;
                 }
             })
         },
     })
 
-    var kiDDuration = 3000;
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
         aggressionDescription: ['Agression Mode (Upon firing)', 'Maim enemy for 3s.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Permanently reduce enemy base defense by 1.'],
         textureName: 'KillerInstinct',
         unit: marine,
-        defenseEventName: 'preSufferedAttack',
-        defenseDuration: kiDDuration,
+        defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
         aggressionEventName: 'attack',
+        aggressionPredicate: function(event) {
+            return !event.targetUnit.isDead;
+        },
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
@@ -790,10 +801,37 @@ export default function Marine(options) {
         },
     })
 
+    var cpADuration = 4000;
+    var clearPerspective  = new Passive({
+        title: 'Clear Perspective',
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Double rifle range for 4s.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
+        textureName: 'ClearPerspective',
+        unit: marine,
+        defenseEventName: 'sufferProjectile',
+        defenseCooldown: 9000,
+        aggressionEventName: 'kill',
+        aggressionCooldown: 9000,
+        aggressionDuration: cpADuration,
+        defenseAction: function(event) {
+            marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
+        },
+        aggressionAction: function(event) {
+            marine.honeRange = marine.honeRange*2;
+            marine.range = marine.range*2;
+            gameUtils.applyBuffImageToUnit({name: "keenEye", unit: marine, textureName: 'KeenEyeBuff'})
+            gameUtils.doSomethingAfterDuration(function() {
+                marine.honeRange = marine.honeRange/2;
+                marine.range = marine.range/2;
+                marine.buffs.keenEye.removeBuffImage();
+            }, cpADuration);
+        },
+    })
+
     var unitProperties = $.extend({
         unitType: 'Marine',
         health: 75,
-        defense: 10,
+        defense: 1,
         energy: 20,
         energyRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
@@ -809,7 +847,7 @@ export default function Marine(options) {
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
-        passiveAbilities: [givingSpirit, rushOfBlood, killerInstinct],
+        passiveAbilities: [givingSpirit, rushOfBlood, killerInstinct, clearPerspective],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

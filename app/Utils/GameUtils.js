@@ -714,11 +714,13 @@ var gameUtils = {
      * }
      */
     applyBuffImageToUnit: function(options) {
+        options = Object.assign({playSound: true}, options)
         var name = options.name;
         var unit = options.unit;
         var textureName = options.textureName;
         var scale = options.scale || {x: 1, y: 1};
         var originalyOffset = options.yoffset || -60;
+        var playSound = options.playSound;
         if(!unit.buffs) {
             unit.buffs = {};
             unit.orderedBuffs = [];
@@ -800,8 +802,9 @@ var gameUtils = {
             speed: 1.5,
             transform: [unit.position.x, unit.position.y, 1.0, 1.0]
         });
-        // buffSound.play();
-        // buffAnim.tint = 0xe4f46a;
+        if(playSound) {
+            buffSound.play();
+        }
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
         gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
         buffAnim.play();
@@ -1261,6 +1264,6 @@ mathArrayUtils.distanceBetweenUnits = mathArrayUtils.distanceBetweenBodies;
 mathArrayUtils.getId = mathArrayUtils.uuidv4;
 
 //sounds
-var buffSound = gameUtils.getSound('buffcreate.wav', {volume: .02, rate: 1.0});
+var buffSound = gameUtils.getSound('buffcreate.wav', {volume: .015, rate: 1.0});
 
 export {gameUtils, graphicsUtils, mathArrayUtils};

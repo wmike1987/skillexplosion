@@ -308,7 +308,7 @@ export default function Medic(options) {
             }
         })
 
-        if(currentAugment.name == 'petrify') {
+        if(currentAugment.name == 'ghost') {
             Matter.Events.on(shadow, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
@@ -393,11 +393,12 @@ export default function Medic(options) {
                 unit.getAbilityByName('Secret Step').energyCost += 2;
             }
         },{
-            name: 'petrify',
+            name: 'ghost',
             duration: 3000,
             icon: graphicsUtils.createDisplayObject('Petrify'),
-            title: 'Petrify',
-            description: ['Render unit hidden and incapable of movement for 3 seconds', 'by secret stepping through them.']
+            title: 'Ghost',
+            description: ['Petrify units for 3 seconds by stepping through them.'],
+            systemMessage: 'Petrified units cannot move, attack, nor be targeted by normal attacks.'
         },
         {
             name: 'soft landing',
@@ -539,30 +540,16 @@ export default function Medic(options) {
                         unit.maim();
                     }
                 }
-
-                if(currentAugment.name == 'maim') {
-                    var variation = Math.random()*.3;
-                    var maimBlast = gameUtils.getAnimation({
-                        spritesheetName: 'MedicAnimations1',
-                        animationName: 'maimblast',
-                        speed: .4+variation,
-                        transform: [unit.position.x, unit.position.y, 1+variation, 1+variation]
-                    });
-                    maimBlast.rotation = Math.random() * Math.PI;
-                    maimBlast.play();
-                    graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
-                } else {
-                    var scratchAnim = gameUtils.getAnimation({
-                        spritesheetName: 'UtilityAnimations1',
-                        animationName: 'scratch',
-                        speed: .35,
-                        transform: [unit.position.x, unit.position.y, .3, .3]
-                    });
-                    scratchAnim.rotation = Math.random() * Math.PI;
-                    scratchAnim.play();
-                    graphicsUtils.addSomethingToRenderer(scratchAnim, 'stageOne');
-                }
-
+                var variation = Math.random()*.3;
+                var maimBlast = gameUtils.getAnimation({
+                    spritesheetName: 'MedicAnimations1',
+                    animationName: 'maimblast',
+                    speed: .4+variation,
+                    transform: [unit.position.x, unit.position.y, 1+variation, 1+variation]
+                });
+                maimBlast.rotation = Math.random() * Math.PI;
+                maimBlast.play();
+                graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
             });
 
             if(currentAugment.name == 'maim' || currentAugment.name == 'shrapnel') {

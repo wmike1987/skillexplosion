@@ -28,7 +28,7 @@ export default function(options) {
             globals.currentGame.removeBody(this.body)
         },
         impactFunction: function(target) {
-            target.sufferAttack(this.damage, this.owningUnit);
+            target.sufferAttack(this.damage, this.owningUnit, {isProjectile: true});
             if(this.impactExtension) {
                 this.impactExtension(target);
             }

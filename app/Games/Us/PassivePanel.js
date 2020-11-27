@@ -95,30 +95,31 @@ ConfigPanel.prototype.showPassives = function(unit) {
     var alphaPassive = .8;
 
     if(!this.currentAttackPassiveBorder) {
-        this.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', {where: "hudOne", tint: 0xf90007});
+        this.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0xf12a2a});
         this.currentAttackPassiveBorder.visible = false;
         this.currentAttackPassiveBorder.sortYOffset = 1000;
 
-        this.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', {where: "hudOne", tint: 0x1c5cff});
+        this.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0x55a3ff});
         this.currentDefensePassiveBorder.visible = false;
         this.currentDefensePassiveBorder.sortYOffset = 1000;
     }
     $.each(unit.passiveAbilities, function(j, passive) {
         var xpos;
+        var yOffsetI = j % 3;
         if(j < 3) {
             xpos = passiveCenterX - 35
         } else {
             xpos = passiveCenterX + 35
         }
         if(!passive.icon) {
-            passive.icon = graphicsUtils.addSomethingToRenderer(passive.textureName, {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
-            passive.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+            passive.icon = graphicsUtils.addSomethingToRenderer(passive.textureName, {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
+            passive.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
             passive.lock.visible = false;
             passive.unlocked = true; //for debugging
-            passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
+            passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
             Tooltip.makeTooltippable(passive.actionBox, passive);
             graphicsUtils.makeSpriteSize(passive.actionBox, {x: 50, y: 50});
-            passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
+            passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
             passive.border.sortYOffset = -10;
             passive.actionBox.interactive = true;
 

@@ -790,6 +790,15 @@ var UnitSystem = function(properties) {
                  }
              }
 
+             if(event.key == 'Z' || event.key == 'z') {
+                 if(keyStates['Control']) {
+                     if(this.selectedUnit) {
+                         this.selectedUnit.currentEnergy = 100;
+                         // this.box.invalidateNextMouseUp = true;
+                     }
+                 }
+             }
+
              if(event.key == 'Y' || event.key == 'y') {
                  if(keyStates['Control']) {
                      //experiment with filter transitions

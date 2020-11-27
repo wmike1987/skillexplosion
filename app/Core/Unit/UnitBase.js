@@ -14,6 +14,7 @@ import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 var levelUpSound = gameUtils.getSound('levelup.wav', {volume: .45, rate: .8});
 var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: .06, rate: 1});
 var petrifySound = gameUtils.getSound('petrify.wav', {volume: .07, rate: 1});
+var maimSound = gameUtils.getSound('maimsound.wav', {volume: .5, rate: 1.6});
 
 //default unit attributes
 var UnitBase = {
@@ -69,9 +70,13 @@ var UnitBase = {
     currentBackpack: [null, null, null],
     dropItemsOnDeath: true,
 
-    sufferAttack: function(damage, attackingUnit) {
+    sufferAttack: function(damage, attackingUnit, options) {
+        options = Object.assign({isProjectile: false}, options);
         var damageObj = {damage: damage};
-        Matter.Events.trigger(this, 'preSufferedAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
+        Matter.Events.trigger(this, 'preSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
+        if(options.isProjectile) {
+            Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this});
+        }
 
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
@@ -93,7 +98,7 @@ var UnitBase = {
         } else {
             this.showLifeBar(true);
             if(!this.barTimer) {
-                this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 650, runs: 1, callback: function() {
+                this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {
                     if(!this.showingBarsWithAlt)
                     this.showLifeBar(false);
                 }.bind(this)})
@@ -102,7 +107,7 @@ var UnitBase = {
                 this.barTimer.reset();
             }
         }
-        Matter.Events.trigger(globals.currentGame, 'sufferedAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
+        Matter.Events.trigger(globals.currentGame, 'sufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
     },
 
     giveHealth: function(amount, performingUnit) {
@@ -784,7 +789,7 @@ var UnitBase = {
 
         var unit = this;
         var buffName = 'petrify';
-        gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'PetrifyBuff'})
+        gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'PetrifyBuff', playSound: false})
         globals.currentGame.addTimer({
             name: 'petrified' + this.unitId,
             runs: 1,
@@ -810,10 +815,11 @@ var UnitBase = {
 
         var unit = this;
         var buffName = 'maim';
-        gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'MaimBuff'})
+        gameUtils.applyBuffImageToUnit({name: buffName, unit: this, textureName: 'MaimBuff', playSound: false})
 
         unit.moveSpeed += movePenalty;
         unit.addDefenseAddition(defensePenalty);
+        maimSound.play();
         globals.currentGame.addTimer({
             name: 'maim' + this.unitId,
             runs: 1,

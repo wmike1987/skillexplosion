@@ -338,6 +338,9 @@ export default {
                 } else if(this.specifiedAttackTarget) {
                     if(!this.canTargetUnit(this.specifiedAttackTarget)) {
                         this.stop();
+                    } else {
+                        //else this specifiedAttackTarget is no longer with us, let's attack move to it
+                        this.attackSpecificTarget(this.specifiedAttackTarget.position, this.specifiedAttackTarget);
                     }
                 }
             }

@@ -162,7 +162,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             augment.border.alpha = alphaAugment;
                         }
                     })
-                    Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description});
+                    Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: augment.systemMessage});
 
                 }
                 if(currentAugment == augment) {

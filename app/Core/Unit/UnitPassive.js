@@ -35,6 +35,9 @@ export default function(options) {
             cooldown = this.aggressionCooldown;
             var f = Matter.Events.on(this.unit, this.aggressionEventName, function(event) {
                 if(!this.active || this.inProcess) return;
+                if(this.aggressionPredicate && !this.aggressionPredicate(event)) {
+                    return;
+                }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
                 this.aggressionAction(event);

@@ -131,7 +131,7 @@ KillCollector.prototype = Collector;
 
 var DamageCollector = function(options) {
     this.name = "damageDone";
-    this.eventName = 'sufferedAttack';
+    this.eventName = 'sufferAttack';
     this.collectorFunction = function(event) {
         var attackingUnit = event.performingUnit;
         var damageDone = event.amountDone;
@@ -157,7 +157,7 @@ HealCollector.prototype = Collector;
 
 var DamageTakenCollector = function(options) {
     this.name = "damageTaken";
-    this.eventName = 'sufferedAttack';
+    this.eventName = 'sufferAttack';
     this.collectorFunction = function(event) {
         var damageTaken = event.amountDone;
         if(options.sufferingPredicate(event)) {
