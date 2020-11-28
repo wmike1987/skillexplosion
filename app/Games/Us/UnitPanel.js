@@ -50,7 +50,7 @@ var unitPanel = function(options) {
     Tooltip.makeTooltippable(this.unitGritText, {title: 'Grit', updaters: {description: function() {
         var result = {index: 0, value: ''};
         if(this.prevailingUnit) {
-            result.value = 'Regenerate double hp while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.'
+            result.value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.'
         }
         return result;
     }.bind(this)}});
