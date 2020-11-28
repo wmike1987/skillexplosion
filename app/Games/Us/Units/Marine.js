@@ -692,7 +692,7 @@ export default function Marine(options) {
     var allyArmorDuration = 10000;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 8 hp.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 6 hp.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 1 def for 10s.'],
         textureName: 'PositiveMindset',
         unit: marine,
@@ -705,7 +705,7 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                ally.giveHealth(8, marine);
+                ally.giveHealth(6, marine);
                 var lifeUpAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
                     animationName: 'lifegain1',
@@ -739,7 +739,7 @@ export default function Marine(options) {
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 3s.'],
-        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.', 'Increase dodge by 15% for 3s'],
+        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -748,7 +748,6 @@ export default function Marine(options) {
         aggressionEventName: 'attack',
         aggressionDuration: robADuration,
         aggressionCooldown: 8000,
-        aggressionDescStyle: [styles.passiveAStyle, styles.abilityText, styles.abilityText, styles.cooldownText, styles.systemMessageText],
         defenseAction: function(event) {
             gameUtils.applyBuffImageToUnit({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff'})
             var f = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
@@ -760,8 +759,7 @@ export default function Marine(options) {
             }, robDDuration)
         },
         aggressionAction: function(event) {
-            marine.moveSpeed += .4;
-            marine.addDodgeAddition(15);
+            marine.moveSpeed += .5;
             gameUtils.applyBuffImageToUnit({name: "rushofbloodspeed", unit: marine, textureName: 'SpeedBuff'})
             marine.rushofbloodTimer = globals.currentGame.addTimer({
                 name: 'rushofbloodTimerEnd' + marine.unitId,
@@ -770,8 +768,7 @@ export default function Marine(options) {
                 timeLimit: robADuration,
                 totallyDoneCallback: function() {
                     marine.buffs.rushofbloodspeed.removeBuffImage();
-                    marine.moveSpeed -= .4;
-                    marine.removeDodgeAddition(15);
+                    marine.moveSpeed -= .5;
                 }
             })
         },
@@ -795,6 +792,7 @@ export default function Marine(options) {
             attackingUnit.defense -= 1;
             var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414})
             graphicsUtils.floatSprite(defenseDown, {direction: -1});
+            gameUtils.attachSomethingToBody({something: defenseDown, body: attackingUnit.body});
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
@@ -836,7 +834,7 @@ export default function Marine(options) {
     var spiritualState  = new Passive({
         title: 'Spiritual State',
         aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 1 energy for every 1 hp recieved from healing for 2s.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies gain x2 energy/sec for 4s.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4s.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -870,6 +868,39 @@ export default function Marine(options) {
         },
     })
 
+    var trueGrit  = new Passive({
+        title: 'True Grit',
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 3 grit for length of round.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 2 grit for length of round.'],
+        textureName: 'TrueGrit',
+        unit: marine,
+        defenseEventName: 'preSufferAttack',
+        defenseCooldown: 5000,
+        aggressionEventName: 'kill',
+        aggressionCooldown: 4000,
+        defenseAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            alliesAndSelf.forEach((unit) => {
+                var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position})
+                gameUtils.attachSomethingToBody({something: gritUp, body: unit.body});
+                graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
+                unit.addGritAddition(2);
+                gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
+                    unit.removeGritAddition(2)
+                })
+            })
+        },
+        aggressionAction: function(event) {
+            var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: marine.position})
+            gameUtils.attachSomethingToBody({something: gritUp, body: marine.body});
+            graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
+            marine.addGritAddition(2);
+            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
+                marine.removeGritAddition(2)
+            })
+        },
+    })
+
     var unitProperties = $.extend({
         unitType: 'Marine',
         health: 75,
@@ -890,7 +921,7 @@ export default function Marine(options) {
         // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
-        passiveAbilities: [givingSpirit, rushOfBlood, spiritualState, killerInstinct, clearPerspective],
+        passiveAbilities: [givingSpirit, rushOfBlood, spiritualState, killerInstinct, clearPerspective, trueGrit],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

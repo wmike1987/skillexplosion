@@ -913,7 +913,7 @@ var UnitBase = {
 
     removeGritAddition: function(value) {
         mathArrayUtils.removeObjectFromArray(value, this.gritAdditions);
-    }
+    },
 }
 
 export default UnitBase;

@@ -259,6 +259,7 @@ var game = {
                 this.shaneCollector.stopCurrentCollector();
                 this.ursulaCollector.stopCurrentCollector();
                 // this.gotoCamp();
+                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
                 this.gotoVictoryScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
                 this.resetUnit(this.shane);
                 this.resetUnit(this.ursula);
@@ -272,6 +273,7 @@ var game = {
                 this.itemSystem.removeAllItemsOnGround(true);
                 this.shaneCollector.stopCurrentCollector();
                 this.ursulaCollector.stopCurrentCollector();
+                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
                 this.gotoDefeatScreen();
                 this.resetUnit(this.shane);
                 this.resetUnit(this.ursula);

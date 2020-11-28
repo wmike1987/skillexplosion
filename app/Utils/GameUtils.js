@@ -220,7 +220,8 @@ var gameUtils = {
             if(something.type && something.type == 'body') {
                 Matter.Body.setPosition(something, Matter.Vector.add(body.position, tick.offset));
             } else {
-                something.position = Matter.Vector.add(body.lastDrawPosition || body.position, tick.offset);
+                var floatOffset = {x: 0, y: something.floatYOffset || 0}
+                something.position = Matter.Vector.add(body.lastDrawPosition || body.position, Matter.Vector.add(tick.offset, floatOffset));
             }
         }, false, callbackLocation);
         tick.offset = offset; //ability to change the offset via the tick
@@ -249,6 +250,14 @@ var gameUtils = {
         } else {
             return null;
         }
+    },
+
+    matterOnce: function(obj, eventName, f) {
+        var wrappedFunction = function() {
+            f.call();
+            Matter.Events.off(obj, eventName, wrappedFunction);
+        }
+        Matter.Events.on(obj, eventName, wrappedFunction);
     },
 
     scaleBody: function(body, x, y) {
@@ -681,6 +690,7 @@ var gameUtils = {
                 timeLimit: duration,
                 killsSelf: true,
                 executeOnNuke: options.executeOnNuke,
+                executeOnEvent: options.executeOnEvent,
                 totallyDoneCallback: function() {
                     callback();
                 }
@@ -737,6 +747,11 @@ var gameUtils = {
         if(!unit.buffs) {
             unit.buffs = {};
             unit.orderedBuffs = [];
+            unit.removeAllBuffs = function() {
+                unit.buffs.forEach((buff) => {
+                    buff.removeBuffImage();
+                })
+            }
         }
 
         if(!unit.buffs[name]) {
@@ -1005,11 +1020,15 @@ var graphicsUtils = {
     },
 
     floatSprite: function(sprite, options) {
-        options = Object.assign({direction: 1}, options);
+        options = Object.assign({direction: 1, runs: 34}, options);
+        if(!sprite.floatYOffset) {
+            sprite.floatYOffset = 0;
+        }
         sprite.alpha = 1.4;
-        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: 34, killsSelf: true, callback: function() {
+        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: options.runs, executeOnNuke: true, killsSelf: true, callback: function() {
             sprite.position.y -= 1 * options.direction;
-            sprite.alpha -= 1.4/34;
+            sprite.floatYOffset -= 1;
+            sprite.alpha -= 1.4/(options.runs);
         }, totallyDoneCallback: function() {
             graphicsUtils.removeSomethingFromRenderer(sprite, 'foreground');
         }.bind(this)})

@@ -2,7 +2,7 @@
 
 "ClearPerspective.png":
 {
-	"frame": {"x":251,"y":67,"w":32,"h":32},
+	"frame": {"x":67,"y":205,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -10,7 +10,7 @@
 },
 "DashIcon.png":
 {
-	"frame": {"x":104,"y":1,"w":100,"h":100},
+	"frame": {"x":1,"y":1,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -18,7 +18,7 @@
 },
 "DeathWish.png":
 {
-	"frame": {"x":281,"y":101,"w":32,"h":32},
+	"frame": {"x":288,"y":46,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,15 +26,15 @@
 },
 "DeathWishBuff.png":
 {
-	"frame": {"x":1,"y":230,"w":28,"h":20},
-	"rotated": false,
+	"frame": {"x":263,"y":149,"w":28,"h":20},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
 	"sourceSize": {"w":32,"h":32}
 },
 "DefensivePosture.png":
 {
-	"frame": {"x":285,"y":67,"w":32,"h":32},
+	"frame": {"x":195,"y":153,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,7 +42,7 @@
 },
 "FirstAidPouchIcon.png":
 {
-	"frame": {"x":281,"y":135,"w":32,"h":32},
+	"frame": {"x":229,"y":153,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -50,7 +50,7 @@
 },
 "FullyAuto.png":
 {
-	"frame": {"x":281,"y":169,"w":32,"h":32},
+	"frame": {"x":262,"y":87,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -58,7 +58,7 @@
 },
 "HoodedPeepIcon.png":
 {
-	"frame": {"x":103,"y":195,"w":32,"h":32},
+	"frame": {"x":290,"y":144,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -66,7 +66,7 @@
 },
 "KeenEyeBuff.png":
 {
-	"frame": {"x":31,"y":230,"w":28,"h":20},
+	"frame": {"x":101,"y":230,"w":28,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
@@ -74,7 +74,7 @@
 },
 "KillerInstinct.png":
 {
-	"frame": {"x":1,"y":196,"w":32,"h":32},
+	"frame": {"x":103,"y":196,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -82,7 +82,7 @@
 },
 "KnifeIcon.png":
 {
-	"frame": {"x":1,"y":94,"w":100,"h":100},
+	"frame": {"x":1,"y":103,"w":100,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
@@ -90,7 +90,7 @@
 },
 "M14Icon.png":
 {
-	"frame": {"x":206,"y":1,"w":64,"h":64},
+	"frame": {"x":196,"y":87,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -98,15 +98,15 @@
 },
 "MarineGrave.png":
 {
-	"frame": {"x":1,"y":1,"w":91,"h":101},
-	"rotated": true,
+	"frame": {"x":103,"y":1,"w":91,"h":101},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":44,"y":40,"w":91,"h":101},
 	"sourceSize": {"w":186,"h":197}
 },
 "MarineGroupPortrait.png":
 {
-	"frame": {"x":103,"y":103,"w":90,"h":90},
+	"frame": {"x":103,"y":104,"w":90,"h":90},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
@@ -114,15 +114,15 @@
 },
 "MarinePortrait.png":
 {
-	"frame": {"x":195,"y":103,"w":90,"h":84},
-	"rotated": true,
+	"frame": {"x":196,"y":1,"w":90,"h":84},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":90,"h":84},
 	"sourceSize": {"w":90,"h":90}
 },
 "MultiShot.png":
 {
-	"frame": {"x":35,"y":196,"w":32,"h":32},
+	"frame": {"x":137,"y":196,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -130,7 +130,7 @@
 },
 "PiercingKnife.png":
 {
-	"frame": {"x":69,"y":196,"w":32,"h":32},
+	"frame": {"x":171,"y":196,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -138,7 +138,7 @@
 },
 "PoisonTip.png":
 {
-	"frame": {"x":137,"y":195,"w":32,"h":32},
+	"frame": {"x":205,"y":187,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -146,7 +146,7 @@
 },
 "PositiveMindset.png":
 {
-	"frame": {"x":171,"y":195,"w":32,"h":32},
+	"frame": {"x":205,"y":221,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -154,7 +154,7 @@
 },
 "RushOfBlood.png":
 {
-	"frame": {"x":205,"y":195,"w":32,"h":32},
+	"frame": {"x":239,"y":187,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -162,15 +162,15 @@
 },
 "RushOfBloodBuff.png":
 {
-	"frame": {"x":103,"y":229,"w":30,"h":26},
-	"rotated": false,
+	"frame": {"x":296,"y":80,"w":30,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":3,"w":30,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
 "SpiritualState.png":
 {
-	"frame": {"x":239,"y":195,"w":32,"h":32},
+	"frame": {"x":239,"y":221,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -178,15 +178,15 @@
 },
 "SpiritualStateBuff.png":
 {
-	"frame": {"x":135,"y":229,"w":30,"h":26},
-	"rotated": false,
+	"frame": {"x":296,"y":112,"w":30,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":3,"w":30,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
 "SpiritualStateEnergyGainBuff.png":
 {
-	"frame": {"x":167,"y":229,"w":26,"h":26},
+	"frame": {"x":262,"y":121,"w":26,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":2,"w":26,"h":26},
@@ -194,15 +194,15 @@
 },
 "ThrowingDagger.png":
 {
-	"frame": {"x":272,"y":1,"w":32,"h":64},
-	"rotated": false,
+	"frame": {"x":1,"y":205,"w":32,"h":64},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":64},
 	"sourceSize": {"w":64,"h":64}
 },
 "ThrowingDaggerBase.png":
 {
-	"frame": {"x":61,"y":230,"w":16,"h":28},
+	"frame": {"x":131,"y":230,"w":16,"h":28},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":24,"y":36,"w":16,"h":28},
@@ -210,15 +210,23 @@
 },
 "ThrowingDaggerBlade.png":
 {
-	"frame": {"x":206,"y":67,"w":32,"h":43},
-	"rotated": true,
+	"frame": {"x":288,"y":1,"w":32,"h":43},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":0,"w":32,"h":43},
 	"sourceSize": {"w":64,"h":64}
 },
+"TrueGrit.png":
+{
+	"frame": {"x":273,"y":179,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
 "VitalReserves.png":
 {
-	"frame": {"x":273,"y":203,"w":32,"h":32},
+	"frame": {"x":273,"y":213,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -229,8 +237,8 @@
 	"version": "1.0",
 	"image": "Marine.png",
 	"format": "RGBA8888",
-	"size": {"w":318,"h":256},
+	"size": {"w":323,"h":254},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:55b09714442f6df2693147a5c1dcad42:6fb166d77d7cab76d3e47606eba22cee:1b146a7d1a1c5cd95f0c69a03767d9cf$"
+	"smartupdate": "$TexturePacker:SmartUpdate:ce31da84339be73e02af9a2db576e64d:c4f32c577324273c7b1cf47d9e5cdd31:1b146a7d1a1c5cd95f0c69a03767d9cf$"
 }
 }

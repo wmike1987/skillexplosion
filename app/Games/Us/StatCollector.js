@@ -63,6 +63,7 @@ var CollectorManager = function(options) {
         this.collectors.push(dashCollector);
         this.collectors.push(mineCollector);
         this.collectors.push(secretStepCollector);
+        this.collectors.push(dodgeCollector);
     }
 
     this.startCollecting = function() {
