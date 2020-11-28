@@ -873,6 +873,7 @@ export default function Marine(options) {
         defense: 1,
         energy: 20,
         energyRegenerationRate: 1,
+        healthRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
         graveSpriteName: 'MarineGrave',

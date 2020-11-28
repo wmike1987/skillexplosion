@@ -216,9 +216,49 @@ export default {
 		textBaseline: "bottom",
 	}),
 
+	unitGritStyle: new PIXI.TextStyle({
+		name: 'unitGritStyle',
+		fill: "#bea603",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 14,
+		strokeThickness: 2,
+		textBaseline: "bottom",
+	}),
+
+	unitDodgeStyle: new PIXI.TextStyle({
+		name: 'unitDodgeStyle',
+		fill: "#017340",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 14,
+		strokeThickness: 2,
+		textBaseline: "bottom",
+	}),
+
 	unitDefenseAdditionsStyle: new PIXI.TextStyle({
 		name: 'unitDefenseAdditionsStyle',
+		fill: "#4be0ee",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 12,
+		strokeThickness: 2,
+		textBaseline: "bottom",
+	}),
+
+	unitGritAdditionsStyle: new PIXI.TextStyle({
+		name: 'unitGritAdditionsStyle',
 		fill: "#b4c629",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 12,
+		strokeThickness: 2,
+		textBaseline: "bottom",
+	}),
+
+	unitDodgeAdditionsStyle: new PIXI.TextStyle({
+		name: 'unitDodgeAdditionsStyle',
+		fill: "#12af19",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
 		fontSize: 12,
@@ -293,6 +333,28 @@ export default {
 	    ],
 	    fontFamily: "Courier New",
 	    fontSize: 20,
+	    fontStyle: "italic",
+	    lineJoin: "bevel",
+	    miterLimit: 28,
+	    strokeThickness: 4,
+	    wordWrap: true,
+	    wordWrapWidth: 110
+	}),
+
+	dodgeText: new PIXI.TextStyle({
+		name: 'dodgeText',
+	    dropShadowAlpha: 0.6,
+	    dropShadowAngle: 0,
+	    dropShadowColor: "#e644ea",
+	    dropShadowDistance: 2,
+	    fill: [
+	        "#ff3e3e",
+	    ],
+	    fillGradientStops: [
+	        0.7
+	    ],
+	    fontFamily: "Courier New",
+	    fontSize: 14,
 	    fontStyle: "italic",
 	    lineJoin: "bevel",
 	    miterLimit: 28,

@@ -257,7 +257,10 @@ Tooltip.makeTooltippable = function(displayObject, options) {
 
     var stopTimeout = null;
     displayObject.on('mousemove', function(event) {
+        //escape routes
         if(displayObject.tooltipObj.visible || displayObject.tooltipObj.disabled) return;
+        if(!gameUtils.isPositionWithinCanvasBounds(event.data.global, {x: 1, y: 1})) return;
+
         if(stopTimeout) {
             clearTimeout(stopTimeout);
         }

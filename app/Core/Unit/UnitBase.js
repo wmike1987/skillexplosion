@@ -8,6 +8,7 @@ import Iso from '@core/Unit/IsoSpriteManager.js'
 import EmptySlot from '@core/Unit/EmptySlot.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
 import Command from '@core/Unit/Command.js'
+import styles from '@utils/Styles.js'
 import CommandQueue from '@core/Unit/CommandQueue.js'
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
@@ -24,6 +25,10 @@ var UnitBase = {
     currentHealth: 20,
     defense: 0,
     defenseAdditions: [],
+    dodge: 0,
+    dodgeAdditions: [],
+    grit: 0,
+    gritAdditions: [],
     level: 1,
     currentExperience: 0,
     nextLevelExp: 100,
@@ -71,6 +76,14 @@ var UnitBase = {
     dropItemsOnDeath: true,
 
     sufferAttack: function(damage, attackingUnit, options) {
+        if(this.attackDodged()) {
+            Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
+            Matter.Events.trigger(this, 'dodgeAttack', {performingUnit: this, damageObj: damageObj});
+            //display a miss graphic
+            graphicsUtils.floatText('Dodge!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeText});
+            return;
+        }
+
         options = Object.assign({isProjectile: false}, options);
         var damageObj = {damage: damage};
         Matter.Events.trigger(this, 'preSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
@@ -108,6 +121,12 @@ var UnitBase = {
             }
         }
         Matter.Events.trigger(globals.currentGame, 'sufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
+    },
+
+    attackDodged: function() {
+        var r = Math.random();
+        var dodgeSum = this.dodge + this.getDodgeAdditionSum();
+        return (r < dodgeSum/100);
     },
 
     giveHealth: function(amount, performingUnit) {
@@ -653,12 +672,25 @@ var UnitBase = {
             }
         }.bind(this));
 
-        //kill handler
-        Matter.Events.on(this, 'kill', function(event) {
-            if(!this.isDead) {
-                this.giveExperience(event.killedUnit.experienceWorth || 0);
+        //kill handler (disabled for now)
+        if(false) {
+            Matter.Events.on(this, 'kill', function(event) {
+                if(!this.isDead) {
+                    this.giveExperience(event.killedUnit.experienceWorth || 0);
+                }
+            }.bind(this))
+        }
+
+        //grit handling
+        this.gritHandler = globals.currentGame.addTickCallback(function() {
+            var gritSum = this.grit + this.getGritAdditionSum();
+            if(this.currentHealth < gritSum/100*this.maxHealth) {
+                this.gritMult = 2;
+            } else {
+                this.gritMult = 1;
             }
         }.bind(this))
+        gameUtils.deathPact(this, this.gritHandler);
 
         //regen energy
         this.energyRegen = globals.currentGame.addTimer({
@@ -673,14 +705,14 @@ var UnitBase = {
         });
         gameUtils.deathPact(this, this.energyRegen);
 
-        //regen energy
+        //regen health
         this.healthRegen = globals.currentGame.addTimer({
             name: 'healthRegen' + this.unitId,
             gogogo: true,
             timeLimit: 100,
             callback: function() {
                 if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
-                    this.currentHealth = Math.min(this.currentHealth + this.healthRegenerationRate/10 || 0, this.maxHealth);
+                    this.currentHealth = Math.min(this.currentHealth + ((this.healthRegenerationRate/10)*this.gritMult || 0), this.maxHealth);
                 }
             }.bind(this)
         });
@@ -843,14 +875,45 @@ var UnitBase = {
         return Math.max(-this.defense, sum);
     },
 
+    getDodgeAdditionSum: function() {
+        var sum = 0;
+        this.dodgeAdditions.forEach((addition) => {
+            sum += addition;
+        })
+        return Math.max(-this.dodge, sum);
+    },
+
+    getGritAdditionSum: function() {
+        var sum = 0;
+        this.gritAdditions.forEach((addition) => {
+            sum += addition;
+        })
+        return Math.max(-this.grit, sum);
+    },
+
     addDefenseAddition: function(amount) {
         this.defenseAdditions.push(amount);
     },
 
     removeDefenseAddition: function(value) {
         mathArrayUtils.removeObjectFromArray(value, this.defenseAdditions);
-    }
+    },
 
+    addDodgeAddition: function(amount) {
+        this.dodgeAdditions.push(amount);
+    },
+
+    removeDodgeAddition: function(value) {
+        mathArrayUtils.removeObjectFromArray(value, this.dodgeAdditions);
+    },
+
+    addGritAddition: function(amount) {
+        this.gritAdditions.push(amount);
+    },
+
+    removeGritAddition: function(value) {
+        mathArrayUtils.removeObjectFromArray(value, this.gritAdditions);
+    }
 }
 
 export default UnitBase;

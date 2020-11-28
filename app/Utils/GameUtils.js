@@ -322,6 +322,19 @@ var gameUtils = {
         return false;
     },
 
+    isPositionWithinCanvasBounds: function(position, buffer) {
+        if(buffer && !buffer.x) {
+            buffer = {x: buffer, y: buffer};
+        }
+        if(!buffer) buffer = {x: 0, y: 0};
+        if(position.x > 0 + buffer.x && position.x < this.getCanvasWidth() - buffer.x) {
+            if(position.y > 0 + buffer.y && position.y < this.getCanvasHeight() - buffer.y) {
+                return true;
+            }
+        }
+        return false;
+    },
+
     addRandomVariationToGivenPosition: function(position, randomFactorX, randomFactorY) {
         position.x += (1 - 2*Math.random()) * randomFactorX;
         position.y += (1 - 2*Math.random()) * (randomFactorY || randomFactorX);
@@ -1009,16 +1022,16 @@ var graphicsUtils = {
         } else {
             newStyle = styles.style;
         }
-        var startGameText = graphicsUtils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: gameUtils.getCanvasWidth()/2, y: gameUtils.getCanvasHeight()/2});
-        startGameText.position = position;
-        startGameText.alpha = 1.4;
+        var floatedText = graphicsUtils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: gameUtils.getCanvasWidth()/2, y: gameUtils.getCanvasHeight()/2});
+        floatedText.position = position;
+        floatedText.alpha = 1.4;
         globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
             if(!options.stationary) {
-                startGameText.position.y -= 1;
+                floatedText.position.y -= 1;
             }
-            startGameText.alpha -= 1.4/(options.runs || 34);
+            floatedText.alpha -= 1.4/(options.runs || 34);
         }, totallyDoneCallback: function() {
-            graphicsUtils.removeSomethingFromRenderer(startGameText, 'hud');
+            graphicsUtils.removeSomethingFromRenderer(floatedText, 'hud');
             if(options.deferred) options.deferred.resolve()
         }.bind(this)})
     },

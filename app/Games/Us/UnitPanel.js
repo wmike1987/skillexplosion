@@ -28,27 +28,43 @@ var unitPanel = function(options) {
 
     //unit status variables
     this.unitStatSpacing = 20;
-    this.unitStatYOffset = -6;
+    this.unitStatYOffset = -9;
     this.unitFrameCenterX = this.centerX - 226;
-    this.unitFrameOffset = 41.5;
-    this.unitNamePosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
-    this.unitLevelPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
-    this.unitDamagePosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY + this.unitStatYOffset};
-    this.unitArmorPosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
-    this.unitHealthPosition = {x: this.unitFrameCenterX-this.unitFrameOffset, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
-    this.unitSPTextPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatYOffset};
-    this.unitSPPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+    this.unitFrameOffset = 81.5/8;
+    this.unitNamePosition = {x: this.unitFrameCenterX, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
+    //this.unitLevelPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
+    this.unitDamagePosition = {x: this.unitFrameCenterX-this.unitFrameOffset*7, y: this.centerY + this.unitStatYOffset};
+    this.unitArmorPosition = {x: this.unitFrameCenterX-this.unitFrameOffset*7, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+    this.unitHealthPosition = {x: this.unitFrameCenterX-this.unitFrameOffset*7, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+    this.unitGritPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatYOffset};
+    this.unitDodgePosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
     this.unitEnergyPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
 
     this.unitNameText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
-    this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
-    this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle});
-    this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle});
+    //this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
+    this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle, anchor: {x: 0, y: .5}});
+    this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle, anchor: {x: 0, y: .5}});
     this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
-    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle});
-    this.unitSPText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPTextPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
-    this.unitSPAmount = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitSPPosition, where: 'hudOne', style: styles.unitSkillPointStyle});
-    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralEnergyStyle});
+    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle, anchor: {x: 0, y: .5}});
+    this.unitGritText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritStyle, anchor: {x: 0, y: .5}});
+    Tooltip.makeTooltippable(this.unitGritText, {title: 'Grit', updaters: {description: function() {
+        var result = {index: 0, value: ''};
+        if(this.prevailingUnit) {
+            result.value = 'Regenerate double hp while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.'
+        }
+        return result;
+    }.bind(this)}});
+    this.unitGritAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritAdditionsStyle});
+    this.unitDodgeText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeStyle, anchor: {x: 0, y: .5}});
+    Tooltip.makeTooltippable(this.unitDodgeText, {title: 'Dodge', updaters: {description: function() {
+        var result = {index: 0, value: 'Chance to dodge attack.'};
+        if(this.prevailingUnit) {
+            result.value = (this.prevailingUnit.dodge + this.prevailingUnit.getDodgeAdditionSum()) + '% chance to dodge attack.'
+        }
+        return result;
+    }.bind(this)}});
+    this.unitDodgeAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeAdditionsStyle});
+    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralEnergyStyle, anchor: {x: 0, y: .5}});
 
     //experience meter
     this.experienceMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: gameUtils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
@@ -94,6 +110,12 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.healthVialSquare,  {x: 0, y: 0});
     graphicsUtils.addSomethingToRenderer(this.healthVialSquare, 'hudNOne');
 
+    this.gritIndicator = graphicsUtils.createDisplayObject('TintableSquare', {tint: 0x717a04, scale: {x: 1, y: 1}, alpha: .6, anchor: {x: .5, y: 1}});
+    this.gritIndicator.position = {x: this.healthVialPosition.x, y: gameUtils.getCanvasHeight()}
+    graphicsUtils.addSomethingToRenderer(this.gritIndicator, 'hudNOne');
+    this.gritIndicator.sortYOffset += 2000;
+    this.gritIndicator.visible = false;
+
     //energy vial
     this.energyVialCenterY = this.centerY + 1;
     this.energyVialCenterX = this.centerX + 58;
@@ -136,6 +158,7 @@ var unitPanel = function(options) {
     this.updateHealthAndEnergyVialTick = globals.currentGame.addTickCallback(function() {
         if(this.prevailingUnit) {
             this.healthVialSquare.visible = true;
+            this.gritIndicator.visible = true;
             this.healthBubbles.visible = true;
             this.energyVialSquare.visible = true;
             this.energyBubbles.visible = true;
@@ -144,6 +167,14 @@ var unitPanel = function(options) {
             var healthPercent = this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth;
             graphicsUtils.makeSpriteSize(this.healthVialSquare, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
             graphicsUtils.makeSpriteSize(this.healthBubbles, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
+
+            //update grit
+            var gritPercent = Math.min(1.0, (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum())/100);
+            if(healthPercent < gritPercent) {
+                graphicsUtils.makeSpriteSize(this.gritIndicator, {x: this.vialDimensions.w, y: this.vialDimensions.h * healthPercent});
+            } else {
+                graphicsUtils.makeSpriteSize(this.gritIndicator, {x: this.vialDimensions.w, y: this.vialDimensions.h * gritPercent});
+            }
 
             if(this.prevailingUnit.maxEnergy > 0) {
                 var energyPercent = this.prevailingUnit.currentEnergy / this.prevailingUnit.maxEnergy;
@@ -154,6 +185,7 @@ var unitPanel = function(options) {
             graphicsUtils.makeSpriteSize(this.energyBubbles, {x: this.vialDimensions.w, y: this.vialDimensions.h * energyPercent});
         } else {
             this.healthVialSquare.visible = false;
+            this.gritIndicator.visible = false;
             this.healthBubbles.visible = false;
             this.energyVialSquare.visible = false;
             this.energyBubbles.visible = false;
@@ -372,15 +404,17 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
 
     //blank out unit stat panel
     if(!options.transitioningUnits) {
-        this.unitNameText.text = '--';
-        this.unitLevelText.text = '--';
-        this.unitDamageText.text = '--';
-        this.unitDefenseText.text = '--';
+        this.unitNameText.text = '-----';
+        //this.unitLevelText.text = '--';
+        this.unitDamageText.text = '';
+        this.unitDefenseText.text = '';
         this.unitDefenseAdditionsText.text = '';
-        this.unitHealthText.text = '--';
-        this.unitSPText.text = '--';
-        this.unitSPAmount.text = '--';
-        this.unitEnergyText.text = '--';
+        this.unitHealthText.text = '';
+        this.unitGritText.text = '';
+        this.unitGritAdditionsText.text = '';
+        this.unitDodgeText.text = '';
+        this.unitDodgeAdditionsText.text = '';
+        this.unitEnergyText.text = '';
     }
 
     //clear exp bar
@@ -551,7 +585,7 @@ unitPanel.prototype.displayUnitStats = function() {
                 this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
 
                 //level
-                this.unitLevelText.text = "Level " + this.prevailingUnit.level;
+                //this.unitLevelText.text = "Level " + this.prevailingUnit.level;
 
                 //damage (or heal)
                 var functionText = "";
@@ -560,15 +594,15 @@ unitPanel.prototype.displayUnitStats = function() {
                 }
                 this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
 
-                this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
                 //armor
+                this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
                 if(this.prevailingUnit.defenseAdditions.length > 0) {
                     var sign = '+';
                     if(this.prevailingUnit.getDefenseAdditionSum() < 0) {
                         sign = '';
                     }
                     this.unitDefenseAdditionsText.text = sign + this.prevailingUnit.getDefenseAdditionSum();
-                    this.unitDefenseAdditionsText.position = mathArrayUtils.clonePosition(this.unitDefenseText.position, {x: this.unitDefenseText.width/2});
+                    this.unitDefenseAdditionsText.position = mathArrayUtils.clonePosition(this.unitDefenseText.position, {x: this.unitDefenseText.width});
                 } else {
                     this.unitDefenseAdditionsText.text = '';
                 }
@@ -576,13 +610,30 @@ unitPanel.prototype.displayUnitStats = function() {
                 //health
                 this.unitHealthText.text = "HP: " + Math.floor(this.prevailingUnit.currentHealth);
 
-                //SP text and points
-                if(this.prevailingUnit.team == globals.currentGame.playerTeam) {
-                    this.unitSPText.text = "Skill Points";
-                    this.unitSPAmount.text = "- " + this.prevailingUnit.expendableSkillPoints + " -";
+                //grit
+                this.unitGritText.text = "Grt: " + this.prevailingUnit.grit;
+                if(this.prevailingUnit.gritAdditions.length > 0) {
+                    var sign = '+';
+                    if(this.prevailingUnit.getGritAdditionSum() < 0) {
+                        sign = '';
+                    }
+                    this.unitGritAdditionsText.text = sign + this.prevailingUnit.getGritAdditionSum();
+                    this.unitGritAdditionsText.position = mathArrayUtils.clonePosition(this.unitGritText.position, {x: this.unitGritText.width});
                 } else {
-                    this.unitSPText.text = "--";
-                    this.unitSPAmount.text = "--";
+                    this.unitGritAdditionsText.text = '';
+                }
+
+                //dodge
+                this.unitDodgeText.text = "Ddg: " + this.prevailingUnit.dodge;
+                if(this.prevailingUnit.dodgeAdditions.length > 0) {
+                    var sign = '+';
+                    if(this.prevailingUnit.getDodgeAdditionSum() < 0) {
+                        sign = '';
+                    }
+                    this.unitDodgeAdditionsText.text = sign + this.prevailingUnit.getDodgeAdditionSum();
+                    this.unitDodgeAdditionsText.position = mathArrayUtils.clonePosition(this.unitDodgeText.position, {x: this.unitDodgeText.width});
+                } else {
+                    this.unitDodgeAdditionsText.text = '';
                 }
 
                 //energy
