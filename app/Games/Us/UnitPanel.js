@@ -77,16 +77,27 @@ var unitPanel = function(options) {
     this.healthVialCenterX = this.centerX - 58;
     this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
     this.healthVial = graphicsUtils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
-    var hvtt = Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: "--------", descriptionStyle: styles.HPTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
+    var hvtt = Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: ['--------', '--------'], descriptionStyle: styles.HPTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
             tooltip.mainDescription.style.fill = graphicsUtils.percentAsHexColor(this.prevailingUnit.currentHealth/this.prevailingUnit.maxHealth);
         }
         return txt;
     }.bind(this), mainSystemMessage: function() {
-        if(this.prevailingUnit)
+        var result = {key: 'systemMessages', index: 1};
+        if(this.prevailingUnit) {
             var txt = "+" + this.prevailingUnit.healthRegenerationRate + " hp/sec";
-        return txt;
+        }
+        result.value = txt;
+        return result;
+    }.bind(this), gritUpdater: function() {
+        if(this.prevailingUnit) {
+            var result = {key: 'systemMessages', index: 0};
+            var gritAmount = Math.floor((this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum())/100 * this.prevailingUnit.maxHealth);
+            result.value = 'Grit: ' + gritAmount  +'hp';
+            return result;
+        }
+        return null;
     }.bind(this)}})
     graphicsUtils.makeSpriteSize(this.healthVial, this.vialDimensions);
 
@@ -127,9 +138,12 @@ var unitPanel = function(options) {
         }
         return txt;
     }.bind(this), mainSystemMessage: function() {
-        if(this.prevailingUnit)
+        var result = {key: 'systemMessages', index: 0};
+        if(this.prevailingUnit) {
             var txt = "+" + this.prevailingUnit.energyRegenerationRate + " energy/sec";
-        return txt;
+        }
+        result.value = txt;
+        return result;
     }.bind(this)}})
     graphicsUtils.makeSpriteSize(this.energyVial, this.vialDimensions);
 

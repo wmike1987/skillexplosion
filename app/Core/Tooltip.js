@@ -81,8 +81,12 @@ var Tooltip = function(options) {
                 if(result === null || result === undefined) {
                     return;
                 }
+                if(typeof result === 'object' && (result.value === null || result.value === undefined)) {
+                    return;
+                }
                 if(result.index != null) {
-                    tt[key][result.index].text = result.value;
+                    var iKey = result.key || key;
+                    tt[iKey][result.index].text = result.value;
                 } else if(tt[key].text != result) {
                     tt[key].text = result;
                     self.sizeBase();
