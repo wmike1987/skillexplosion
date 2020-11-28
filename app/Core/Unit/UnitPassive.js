@@ -12,16 +12,17 @@ export default function(options) {
     //Automate some of the panel tooltip text
     this.decoratedAggressionDescription = [].concat(this.aggressionDescription);
     var len = this.decoratedAggressionDescription.length;
-    this.decoratedAggressionDescription[len-1] = this.decoratedAggressionDescription[len-1] + ' (' + this.aggressionCooldown/1000 + 's cooldown)'
+    var aggCooldown = this.aggressionCooldown/1000 + ' second cooldown';
 
     this.decoratedDefenseDescription = [].concat(this.defenseDescription);
     var len = this.decoratedDefenseDescription.length;
-    this.decoratedDefenseDescription[len-1] = this.decoratedDefenseDescription[len-1] + ' (' + this.defenseCooldown/1000 + 's cooldown)'
+    var defCooldown = this.defenseCooldown/1000 + ' second cooldown';
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
-    this.description = this.decoratedAggressionDescription.concat(['Click to activate']).concat([' ']).concat(this.decoratedDefenseDescription.concat(['Ctrl+Click to activate']));
-    this.aggressionDescrStyle = [styles.passiveAStyle, styles.abilityText, styles.systemMessageText];
-    this.defensiveDescrStyle = [styles.passiveDStyle, styles.abilityText, styles.systemMessageText];
+    this.description = this.decoratedAggressionDescription.concat([aggCooldown]).concat(['Click to activate'])
+                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([aggCooldown])).concat(['Ctrl+Click to activate']);
+    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
+    this.defensiveDescrStyle = [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
     this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText].concat(this.defensiveDescrStyle));
 
     this.cooldownTimer = null;

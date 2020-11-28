@@ -739,7 +739,7 @@ export default function Marine(options) {
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 3s.'],
-        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.'],
+        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.', 'Increase dodge by 15% for 3s'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -748,6 +748,7 @@ export default function Marine(options) {
         aggressionEventName: 'attack',
         aggressionDuration: robADuration,
         aggressionCooldown: 8000,
+        aggressionDescStyle: [styles.passiveAStyle, styles.abilityText, styles.abilityText, styles.cooldownText, styles.systemMessageText],
         defenseAction: function(event) {
             gameUtils.applyBuffImageToUnit({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff'})
             var f = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
@@ -760,6 +761,7 @@ export default function Marine(options) {
         },
         aggressionAction: function(event) {
             marine.moveSpeed += .4;
+            marine.addDodgeAddition(15);
             gameUtils.applyBuffImageToUnit({name: "rushofbloodspeed", unit: marine, textureName: 'SpeedBuff'})
             marine.rushofbloodTimer = globals.currentGame.addTimer({
                 name: 'rushofbloodTimerEnd' + marine.unitId,
@@ -769,6 +771,7 @@ export default function Marine(options) {
                 totallyDoneCallback: function() {
                     marine.buffs.rushofbloodspeed.removeBuffImage();
                     marine.moveSpeed -= .4;
+                    marine.removeDodgeAddition(15);
                 }
             })
         },
