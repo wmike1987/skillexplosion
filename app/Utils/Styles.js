@@ -127,23 +127,6 @@ export default {
         strokeThickness: 6
     }),
 
-	unitHealthStyle: new PIXI.TextStyle({
-		name: 'unitHealthStyle',
-		fill: "#2EA003",
-		fillGradientType: 1,
-		fontFamily: "Helvetica",
-		fontSize: 18,
-		strokeThickness: 2,
-	}),
-
-	unitEnergyStyle: new PIXI.TextStyle({
-		name: 'unitEnergyStyle',
-		fill: "#9F33FF",
-		fillGradientType: 1,
-		fontFamily: "Helvetica",
-		fontSize: 16,
-		strokeThickness: 2,
-	}),
 
 	//Unit stat panel styles
 	unitNameStyle: new PIXI.TextStyle({
@@ -166,14 +149,14 @@ export default {
 		textBaseline: "bottom",
 	}),
 
-	unitGeneralStyle: new PIXI.TextStyle({
-		name: 'unitGeneralStyle',
+	unitGeneralHPStyle: new PIXI.TextStyle({
+		name: 'unitGeneralHPStyle',
 		fill: "#adadad",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitGeneralEnergyStyle: new PIXI.TextStyle({
@@ -183,7 +166,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitSkillPointStyle: new PIXI.TextStyle({
@@ -193,7 +176,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitDamageStyle: new PIXI.TextStyle({
@@ -203,7 +186,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitDefenseStyle: new PIXI.TextStyle({
@@ -213,7 +196,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitGritStyle: new PIXI.TextStyle({
@@ -223,7 +206,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitDodgeStyle: new PIXI.TextStyle({
@@ -233,7 +216,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 14,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitDefenseAdditionsStyle: new PIXI.TextStyle({
@@ -243,7 +226,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 12,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitGritAdditionsStyle: new PIXI.TextStyle({
@@ -253,7 +236,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 12,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	unitDodgeAdditionsStyle: new PIXI.TextStyle({
@@ -263,7 +246,7 @@ export default {
 		fontFamily: "Helvetica",
 		fontSize: 12,
 		strokeThickness: 2,
-		textBaseline: "bottom",
+		textBaseline: "center",
 	}),
 
 	abilityTitle: new PIXI.TextStyle({

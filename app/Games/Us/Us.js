@@ -128,6 +128,8 @@ var game = {
         //create empty scene and transition to camp scene
         this.currentStage = this.camps[0];
         this.currentCamp = this.currentStage.camp;
+
+        //for troubleshooting victory screen
         // this.gotoVictoryScreen();
         this.gotoCamp();
 

@@ -13,7 +13,7 @@ export default function() {
     return ic({
         manipulations: manipulations,
         name: "Medal Of Grit",
-        description: ["Add +1 to defense.", "Add +5 to maximum health.", "Add 8% to grit."],
+        description: ["Add +1 to armor.", "Add +5 to maximum health.", "Add 8% to grit."],
         icon: 'MedalOfGrit'
     })
 };

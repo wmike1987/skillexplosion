@@ -45,7 +45,7 @@ var unitPanel = function(options) {
     this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle, anchor: {x: 0, y: .5}});
     this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle, anchor: {x: 0, y: .5}});
     this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
-    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralStyle, anchor: {x: 0, y: .5}});
+    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralHPStyle, anchor: {x: 0, y: .5}});
     this.unitGritText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritStyle, anchor: {x: 0, y: .5}});
     Tooltip.makeTooltippable(this.unitGritText, {title: 'Grit', updaters: {description: function() {
         var result = {index: 0, value: ''};
@@ -94,7 +94,7 @@ var unitPanel = function(options) {
         if(this.prevailingUnit) {
             var result = {key: 'systemMessages', index: 0};
             var gritAmount = Math.floor((this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum())/100 * this.prevailingUnit.maxHealth);
-            result.value = 'Grit: ' + gritAmount  +'hp';
+            result.value = 'Grit: ' + gritAmount  +' hp';
             return result;
         }
         return null;
@@ -609,7 +609,7 @@ unitPanel.prototype.displayUnitStats = function() {
                 this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
 
                 //armor
-                this.unitDefenseText.text = "Def: " + this.prevailingUnit.defense;
+                this.unitDefenseText.text = "Arm: " + this.prevailingUnit.defense;
                 if(this.prevailingUnit.defenseAdditions.length > 0) {
                     var sign = '+';
                     if(this.prevailingUnit.getDefenseAdditionSum() < 0) {

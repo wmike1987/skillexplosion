@@ -32,6 +32,9 @@ var StatMaster = function(options) {
     }
 }
 
+/*
+ * Represent a blob of collectors
+ */
 var CollectorManager = function(options) {
     options = options || {};
     var damageCollector = new DamageCollector(options);
@@ -44,6 +47,7 @@ var CollectorManager = function(options) {
     var dashCollector = new DashCollector(options);
     var mineCollector = new MineCollector(options);
     var secretStepCollector = new SecretStepCollector(options);
+    var dodgeCollector = new DodgeCollector(options);
     this.collectors = [];
 
     if(options.collectors) {
@@ -233,5 +237,16 @@ var SecretStepCollector = function(options) {
     }.bind(this)
 }
 SecretStepCollector.prototype = Collector;
+
+var DodgeCollector = function(options) {
+    this.name = "attacksDodged";
+    this.eventName = 'dodgeAttack';
+    this.collectorFunction = function(event) {
+        if(options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this)
+}
+DodgeCollector.prototype = Collector;
 
 export default StatMaster;
