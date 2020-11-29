@@ -242,15 +242,6 @@ var common = {
                     value.immediateStart = false;
                 }
 
-                if(value.executeOnEvent && !value.listeningToEvent) {
-                    value.listeningToEvent = true;
-                    var eventName = value.executeOnEvent.name;
-                    var obj = value.executeOnEvent.obj;
-                    gameUtils.matterOnce(obj, eventName, function() {
-                        value.manualEndLife = true;
-                    })
-                }
-
                 while(value.timeLimit <= value.timeElapsed && value.runs > 0) {
                     if(value.runs > 0) {
                         value.percentDone = 0;

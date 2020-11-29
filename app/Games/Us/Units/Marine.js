@@ -356,43 +356,19 @@ export default function Marine(options) {
         })
 
         if(currentAugment.name == 'defensive posture') {
-            gameUtils.applyBuffImageToUnit({name: "defpostbuff", unit: this, textureName: 'DefensiveBuff'})
-            if(!self.defensivePostureActive)
+            marine.applyBuff({name: "defpostbuff", unit: this, textureName: 'DefensiveBuff', duration: 2000, applyChanges: function() {
                 self.addDefenseAddition(2);
-            self.defensivePostureActive = true;
-            self.dashAugTimer = globals.currentGame.addTimer({
-                name: 'defensePostureTimerEnd' + self.unitId,
-                runs: 1,
-                executeOnNuke: true,
-                timeLimit: 2000,
-                totallyDoneCallback: function() {
-                    self.buffs.defpostbuff.removeBuffImage();
-                    self.removeDefenseAddition(2);
-                    self.defensivePostureActive = false;
-                }
-            })
+            }, removeChanges: function() {
+                self.removeDefenseAddition(2);
+            }})
         } else if(currentAugment.name == 'death wish') {
-            gameUtils.applyBuffImageToUnit({name: "deathwishbuff", unit: this, textureName: 'DeathWishBuff'})
-            if(!self.deathWishActive)
+            marine.applyBuff({name: "deathwishbuff", unit: this, textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
                 self.damage += 10;
-            self.deathWishActive = true;
-            self.dashAugTimer = globals.currentGame.addTimer({
-                name: 'deathWishTimerEnd' + self.unitId,
-                runs: 1,
-                executeOnNuke: true,
-                timeLimit: 2000,
-                totallyDoneCallback: function() {
-                    self.buffs.deathwishbuff.removeBuffImage();
-                    self.damage -= 10;
-                    self.deathWishActive = false;
-                }
-            })
+            }, removeChanges: function() {
+                self.damage -= 10;
+            }})
         }
-
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
-        if(self.dashAugTimer) {
-            gameUtils.deathPact(this, self.dashAugTimer, 'dashAugTimer');
-        }
     }
     var dashAbility = new Ability({
         name: 'Dash',
@@ -705,6 +681,7 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
+                if(ally.isDead) return;
                 ally.giveHealth(6, marine);
                 var lifeUpAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
@@ -723,13 +700,13 @@ export default function Marine(options) {
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                ally.addDefenseAddition(1);
+                if(ally.isDead) return;
                 var id = mathArrayUtils.getId();
-                gameUtils.applyBuffImageToUnit({name: "givingSpiritDefBuff" + id, unit: ally, textureName: 'DefensiveBuff'})
-                gameUtils.doSomethingAfterDuration(function() {
+                ally.applyBuff({name: "givingSpiritDefBuff" + id, unit: ally, textureName: 'DefensiveBuff', duration: allyArmorDuration, applyChanges: function() {
+                    ally.addDefenseAddition(1);
+                }, removeChanges: function() {
                     ally.removeDefenseAddition(1);
-                    ally.buffs['givingSpiritDefBuff'+id].removeBuffImage();
-                }, allyArmorDuration, {executeOnNuke: true})
+                }})
             })
         },
     })
@@ -749,28 +726,21 @@ export default function Marine(options) {
         aggressionDuration: robADuration,
         aggressionCooldown: 8000,
         defenseAction: function(event) {
-            gameUtils.applyBuffImageToUnit({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff'})
-            var f = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
-                event.healingObj.amount *= 2;
-            })
-            gameUtils.doSomethingAfterDuration(function() {
-                Matter.Events.off(marine, 'preReceiveHeal', f);
-                marine.buffs.rushofbloodabsorb.removeBuffImage();
-            }, robDDuration)
+            var f = {};
+            marine.applyBuff({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
+                f.handler = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
+                    event.healingObj.amount *= 2;
+                })
+            }, removeChanges: function() {
+                Matter.Events.off(marine, 'preReceiveHeal', f.handler);
+            }})
         },
         aggressionAction: function(event) {
-            marine.moveSpeed += .5;
-            gameUtils.applyBuffImageToUnit({name: "rushofbloodspeed", unit: marine, textureName: 'SpeedBuff'})
-            marine.rushofbloodTimer = globals.currentGame.addTimer({
-                name: 'rushofbloodTimerEnd' + marine.unitId,
-                runs: 1,
-                executeOnNuke: true,
-                timeLimit: robADuration,
-                totallyDoneCallback: function() {
-                    marine.buffs.rushofbloodspeed.removeBuffImage();
-                    marine.moveSpeed -= .5;
-                }
-            })
+            marine.applyBuff({name: "rushofbloodspeed", unit: marine, textureName: 'SpeedBuff', duration: robADuration,  applyChanges: function() {
+                marine.moveSpeed += .5;
+            }, removeChanges: function() {
+                marine.moveSpeed -= .5;
+            }})
         },
     })
 
@@ -818,14 +788,13 @@ export default function Marine(options) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
         },
         aggressionAction: function(event) {
-            marine.honeRange = marine.honeRange*2;
-            marine.range = marine.range*2;
-            gameUtils.applyBuffImageToUnit({name: "keenEye", unit: marine, textureName: 'KeenEyeBuff'})
-            gameUtils.doSomethingAfterDuration(function() {
+            marine.applyBuff({name: "keenEye", unit: marine, textureName: 'KeenEyeBuff', duration: cpADuration, applyChanges: function() {
+                marine.honeRange = marine.honeRange*2;
+                marine.range = marine.range*2;
+            }, removeChanges: function() {
                 marine.honeRange = marine.honeRange/2;
                 marine.range = marine.range/2;
-                marine.buffs.keenEye.removeBuffImage();
-            }, cpADuration);
+            }})
         },
     })
 
@@ -846,32 +815,29 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                gameUtils.applyBuffImageToUnit({name: "spiritualStateGain", unit: unit, textureName: 'SpiritualStateEnergyGainBuff'});
-                unit.energyRegenerationRate = unit.energyRegenerationRate*2;
+                unit.applyBuff({name: "spiritualStateGain", unit: unit, textureName: 'SpiritualStateEnergyGainBuff', duration: ssDDuration, applyChanges: function() {
+                    unit.energyRegenerationMultiplier *= 2
+                }, removeChanges: function() {
+                    unit.energyRegenerationMultiplier /= 2
+                }})
             })
-            gameUtils.doSomethingAfterDuration(function() {
-                alliesAndSelf.forEach((unit) => {
-                    unit.buffs.spiritualStateGain.removeBuffImage();
-                    unit.energyRegenerationRate = unit.energyRegenerationRate/2;
-                })
-            }, ssDDuration);
         },
         aggressionAction: function(event) {
-            gameUtils.applyBuffImageToUnit({name: "spiritualStateMatch", unit: marine, textureName: 'SpiritualStateBuff'})
-            var f = Matter.Events.on(marine, 'receiveHeal', function(event) {
-                marine.currentEnergy += event.amountDone;
-            })
-            gameUtils.doSomethingAfterDuration(function() {
-                Matter.Events.off(marine, 'receiveHeal', f);
-                marine.buffs.spiritualStateMatch.removeBuffImage();
-            }, ssADuration);
+            var f = {};
+            marine.applyBuff({name: "spiritualStateMatch", unit: marine, textureName: 'SpiritualStateBuff', applyChanges: function() {
+                f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
+                    marine.currentEnergy += event.amountDone;
+                })
+            }, removeChanges: function() {
+                Matter.Events.off(marine, 'receiveHeal', f.handler);
+            }})
         },
     })
 
     var trueGrit  = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 3 grit for length of round.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 2 grit for length of round.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 4 grit for length of round.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 3 grit for length of round.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -894,9 +860,9 @@ export default function Marine(options) {
             var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: marine.position})
             gameUtils.attachSomethingToBody({something: gritUp, body: marine.body});
             graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
-            marine.addGritAddition(2);
+            marine.addGritAddition(3);
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                marine.removeGritAddition(2)
+                marine.removeGritAddition(3)
             })
         },
     })
@@ -988,7 +954,7 @@ export default function Marine(options) {
                         gameUtils.applyToUnitsByTeam(function(team) {
                             return self.team == team;
                         }, function(unit) {
-                            return mathArrayUtils.distanceBetweenUnits(self, unit) <= 100;
+                            return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
                         }, function(unit) {
                             var lifeUpAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations1',

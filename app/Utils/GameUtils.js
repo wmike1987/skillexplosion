@@ -252,12 +252,16 @@ var gameUtils = {
         }
     },
 
-    matterOnce: function(obj, eventName, f) {
+    matterOnce: function(obj, eventName, callback) {
         var wrappedFunction = function() {
-            f.call();
+            callback.call();
             Matter.Events.off(obj, eventName, wrappedFunction);
         }
-        Matter.Events.on(obj, eventName, wrappedFunction);
+        var removeFunction = function() {
+            Matter.Events.off(obj, eventName, wrappedFunction);
+        }
+        var f = Matter.Events.on(obj, eventName, wrappedFunction);
+        return {func: f, removeHandler: removeFunction};
     },
 
     scaleBody: function(body, x, y) {
@@ -684,13 +688,12 @@ var gameUtils = {
             return;
         }
 
-        globals.currentGame.addTimer(
+        return globals.currentGame.addTimer(
             {
-                name: 'afterDurationTask:' + mathArrayUtils.getId(),
+                name: options.timerName || ('afterDurationTask:' + mathArrayUtils.getId()),
                 timeLimit: duration,
                 killsSelf: true,
                 executeOnNuke: options.executeOnNuke,
-                executeOnEvent: options.executeOnEvent,
                 totallyDoneCallback: function() {
                     callback();
                 }
@@ -724,118 +727,6 @@ var gameUtils = {
 
     undeathPact: function(master, slave) {
         mathArrayUtils.removeObjectFromArray(slave, master.slaves);
-    },
-
-    /*
-     * Applies a buff graphic to a unit. This sets a buff object on the unit which can be used to remove the buff image.
-     * options {
-     *  unit
-     *  name
-     *  textureName
-     *  scale
-     *  tint
-     * }
-     */
-    applyBuffImageToUnit: function(options) {
-        options = Object.assign({playSound: true}, options)
-        var name = options.name;
-        var unit = options.unit;
-        var textureName = options.textureName;
-        var scale = options.scale || {x: 1, y: 1};
-        var originalyOffset = options.yoffset || -60;
-        var playSound = options.playSound;
-        if(!unit.buffs) {
-            unit.buffs = {};
-            unit.orderedBuffs = [];
-            unit.removeAllBuffs = function() {
-                unit.buffs.forEach((buff) => {
-                    buff.removeBuffImage();
-                })
-            }
-        }
-
-        if(!unit.buffs[name]) {
-            var buffObj = {
-                removeBuffImage: function() {
-                    if(unit.isDead) return;
-                    gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
-                    graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
-                    mathArrayUtils.removeObjectFromArray(unit.buffs[name], unit.orderedBuffs);
-                    var debuffAnim = gameUtils.getAnimation({
-                        spritesheetName: 'UtilityAnimations2',
-                        animationName: 'buffdestroy',
-                        speed: 4,
-                        transform: [unit.position.x, unit.position.y, .8, .8],
-                        onCompleteExtension: function() {
-                            unit.reorderBuffs();
-                        }
-                    });
-                    graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
-                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
-                    debuffAnim.play();
-                    gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
-                    unit.buffs[name] = null;
-                }
-            }
-            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageTwo', scale: {x: scale.x, y: scale.y}});
-            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true})
-            buffObj.dobj = dobj;
-            unit.buffs[name] = buffObj;
-            unit.orderedBuffs.push(buffObj);
-        }
-
-        //reorder buffs (could be multiple images to show, let's lay them out nicely, rows of three)
-        if(!unit.reorderBuffs) {
-            var b1 = null;
-            var b2 = null;
-            var xSpacing = 32;
-            var ySpacing = 32;
-            unit.reorderBuffs = function() {
-                unit.orderedBuffs.forEach((buff, i) => {
-                    var attachmentTick = buff.dobj.bodyAttachmentTick;
-                    var row = Math.floor(i/3);
-                    var yOffset = row * -ySpacing
-                    var col = i%3;
-                    var xOffset = 0;
-                    if(col == 0) {
-                        //start of a new row
-                        b1 = buff;
-                        b2 = null;
-                    } else if(col == 1) {
-                        xOffset = xSpacing/2;
-                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
-                        b2 = buff;
-                    } else if(col == 2) {
-                        xOffset = xSpacing;
-                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
-                        b2.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
-                    }
-                    buff.offset = {x: xOffset, y: originalyOffset + yOffset};
-                    attachmentTick.offset = buff.offset;
-                });
-            }
-
-            //also create method to remove all buffs
-            unit.removeAllBuffs = function() {
-
-            }
-        }
-        unit.reorderBuffs();
-
-        //always play the buff create animation
-        var buffAnim = gameUtils.getAnimation({
-            spritesheetName: 'UtilityAnimations2',
-            animationName: 'buffcreate',
-            // reverse: true,
-            speed: 1.5,
-            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
-        });
-        if(playSound) {
-            buffSound.play();
-        }
-        graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
-        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
-        buffAnim.play();
     },
 };
 
@@ -1294,8 +1185,5 @@ var mathArrayUtils = {
 mathArrayUtils.getIntBetween = mathArrayUtils.getRandomIntInclusive;
 mathArrayUtils.distanceBetweenUnits = mathArrayUtils.distanceBetweenBodies;
 mathArrayUtils.getId = mathArrayUtils.uuidv4;
-
-//sounds
-var buffSound = gameUtils.getSound('buffcreate.wav', {volume: .015, rate: 1.0});
 
 export {gameUtils, graphicsUtils, mathArrayUtils};
