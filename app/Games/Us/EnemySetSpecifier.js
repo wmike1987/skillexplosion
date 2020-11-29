@@ -5,8 +5,8 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
 var easyMode = false;
-var basicBottom = 3;
-var basicTop = 8;
+var basicBottom = 6;
+var basicTop = 11;
 
 var rareBottom = 2;
 var rareTop = 5;

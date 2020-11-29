@@ -824,7 +824,7 @@ export default function Marine(options) {
         },
         aggressionAction: function(event) {
             var f = {};
-            marine.applyBuff({name: "spiritualStateMatch", unit: marine, textureName: 'SpiritualStateBuff', applyChanges: function() {
+            marine.applyBuff({name: "spiritualStateMatch", unit: marine, duration: ssADuration, textureName: 'SpiritualStateBuff', applyChanges: function() {
                 f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
                     marine.currentEnergy += event.amountDone;
                 })

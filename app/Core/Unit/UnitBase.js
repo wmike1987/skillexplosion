@@ -79,6 +79,7 @@ var UnitBase = {
     dropItemsOnDeath: true,
 
     sufferAttack: function(damage, attackingUnit, options) {
+        attackingUnit = attackingUnit || {name: 'systemDamage'};
         if(this.attackDodged()) {
             Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
             Matter.Events.trigger(this, 'dodgeAttack', {performingUnit: this, damageObj: damageObj});
