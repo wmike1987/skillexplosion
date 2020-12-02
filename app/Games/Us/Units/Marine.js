@@ -716,13 +716,13 @@ export default function Marine(options) {
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 3s.'],
-        aggressionDescription: ['Agression Mode (Upon firing)', 'Increase movement speed for 3s.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 3s.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseDuration: robDDuration,
         defenseCooldown: 9000,
-        aggressionEventName: 'attack',
+        aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
         aggressionCooldown: 8000,
         defenseAction: function(event) {
@@ -746,16 +746,13 @@ export default function Marine(options) {
 
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
-        aggressionDescription: ['Agression Mode (Upon firing)', 'Maim enemy for 3s.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 3s.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Permanently reduce enemy base defense by 1.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
-        aggressionEventName: 'attack',
-        aggressionPredicate: function(event) {
-            return !event.targetUnit.isDead;
-        },
+        aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
@@ -766,9 +763,7 @@ export default function Marine(options) {
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
-            if(!targetUnit.isDead) {
-                targetUnit.maim();
-            }
+            targetUnit.maim();
         },
     })
 

@@ -20,10 +20,11 @@ export default function(options) {
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
     this.description = this.decoratedAggressionDescription.concat([aggCooldown]).concat(['Click to activate'])
-                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([aggCooldown])).concat(['Ctrl+Click to activate']);
+                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat(['Ctrl+Click to activate']);
     this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-    this.defensiveDescrStyle = [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
+    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
     this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText].concat(this.defensiveDescrStyle));
+    this.systemMessage = options.passiveSystemMessage;
 
     this.cooldownTimer = null;
     this.start = function(mode) {

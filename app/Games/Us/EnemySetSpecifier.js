@@ -4,12 +4,12 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
-var easyMode = false;
-var basicBottom = 6;
-var basicTop = 11;
+var easyMode = true;
+var basicBottom = 4;
+var basicTop = 9;
 
 var rareBottom = 2;
-var rareTop = 5;
+var rareTop = 4;
 
 var enemySetSpecifier = {
     create: function(options) {

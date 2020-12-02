@@ -4,6 +4,8 @@ import * as PIXI from 'pixi.js'
 import UC from '@core/Unit/UnitConstructor.js'
 import aug from '@core/Unit/_Augmentable.js'
 import Ability from '@core/Unit/UnitAbility.js'
+import styles from '@utils/Styles.js'
+import Passive from '@core/Unit/UnitPassive.js'
 import rv from '@core/Unit/_Revivable.js'
 import Projectile from '@core/Unit/UnitProjectile.js'
 import {globals} from '@core/Fundamental/GlobalState'
@@ -597,7 +599,7 @@ export default function Medic(options) {
             icon: graphicsUtils.createDisplayObject('Maim'),
             title: 'Maim',
             description: 'Maim enemies hit by blast for 5 seconds.',
-            systemMessage: 'Maimed enemies are slowed and suffer -1 defense.'
+            systemMessage: 'Maimed enemies are slowed and suffer -1 armor.'
         },
         {
             name: 'pressure plate',
@@ -716,6 +718,98 @@ export default function Medic(options) {
         }]
     })
 
+    var rsDDuration = 10000;
+    var rsADuration = 3000;
+    var raisedStakes  = new Passive({
+        title: 'Raised Stakes',
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Double healing cost and healing amount for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Gain 12 grit for 10 seconds.'],
+        textureName: 'RaisedStakes',
+        unit: medic,
+        defenseEventName: 'preSufferAttack',
+        defenseCooldown: 3000,
+        aggressionEventName: 'performHeal',
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            medic.applyBuff({name: "stakesGritBuff" + mathArrayUtils.getId(), unit: medic, duration: rsDDuration, textureName: 'GritBuff', applyChanges: function() {
+                medic.addGritAddition(12);
+            }, removeChanges: function() {
+                medic.removeGritAddition(12);
+            }})
+        },
+        aggressionAction: function(event) {
+            medic.applyBuff({name: "stakesHealBuff" + mathArrayUtils.getId(), unit: medic, duration: rsADuration, textureName: 'RaisedStakesBuff', applyChanges: function() {
+                var healAbility = medic.getAbilityByName('Heal');
+                healAbility.energyCost *= 2;
+                healAbility.healAmount *= 2;
+            }, removeChanges: function() {
+                var healAbility = medic.getAbilityByName('Heal');
+                healAbility.energyCost /= 2;
+                healAbility.healAmount /= 2;
+            }})
+        },
+    })
+
+    var wwDDuration = 3000;
+    var wwADuration = 3000;
+    var wickedWays  = new Passive({
+        title: 'Wicked Ways',
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
+        passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
+        textureName: 'WickedWays',
+        unit: medic,
+        defenseEventName: 'preSufferAttack',
+        defenseCooldown: 3000,
+        aggressionEventName: 'dealDamage',
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            var attackingUnit = event.performingUnit;
+            attackingUnit.condemn(wwDDuration, medic);
+        },
+        aggressionAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
+            alliesAndSelf.forEach((unit) => {
+                unit.applyBuff({name: "wwHealthGain", unit: unit, textureName: 'WickedWaysHealingBuff', duration: wwADuration, applyChanges: function() {
+                    unit.healthRegenerationMultiplier *= 2
+                }, removeChanges: function() {
+                    unit.healthRegenerationMultiplier /= 2
+                }})
+            })
+        },
+    })
+
+    var slADuration = 3000;
+    var slyLogic  = new Passive({
+        title: 'Sly Logic',
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant ally 30 dodge for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain 5 dodge for length of round.'],
+        textureName: 'SlyLogic',
+        unit: medic,
+        defenseEventName: 'preDodgeSufferAttack',
+        defenseCooldown: 7000,
+        aggressionEventName: 'performHeal',
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            event.damageObj.manualDodge = true;
+            medic.addDodgeAddition(5);
+            var dodgeUp = graphicsUtils.addSomethingToRenderer("DodgeBuff", {where: 'stageTwo', position: medic.position})
+            gameUtils.attachSomethingToBody({something: dodgeUp, body: medic.body});
+            graphicsUtils.floatSprite(dodgeUp, {runs: 50});
+            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
+                unit.removeDodgeAddition(5)
+            })
+        },
+        aggressionAction: function(event) {
+            var healedUnit = event.healedUnit;
+            healedUnit.applyBuff({name: "slyLogicDodgeBuff", unit: healedUnit, textureName: 'DodgeBuff', duration: slADuration, applyChanges: function() {
+                healedUnit.addDodgeAddition(30);
+            }, removeChanges: function() {
+                healedUnit.removeDodgeAddition(30);
+            }})
+        },
+    })
+
     var rad = options.radius || 25;
     var unitProperties = $.extend({
         unitType: 'Medic',
@@ -737,6 +831,7 @@ export default function Medic(options) {
         name: options.name,
         heightAnimation: 'up',
         abilities: [healAbility, secretStepAbility, mineAbility],
+        passiveAbilities: [raisedStakes, wickedWays, slyLogic],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

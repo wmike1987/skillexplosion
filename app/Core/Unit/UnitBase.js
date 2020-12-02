@@ -16,7 +16,9 @@ var levelUpSound = gameUtils.getSound('levelup.wav', {volume: .45, rate: .8});
 var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: .06, rate: 1});
 var petrifySound = gameUtils.getSound('petrify.wav', {volume: .07, rate: 1});
 var maimSound = gameUtils.getSound('maimsound.wav', {volume: .5, rate: 1.6});
+var condemnSound = gameUtils.getSound('condemn.wav', {volume: .15, rate: .9});
 var buffSound = gameUtils.getSound('buffcreate.wav', {volume: .015, rate: 1.0});
+var healSound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 
 //default unit attributes
 var UnitBase = {
@@ -39,6 +41,7 @@ var UnitBase = {
     energyRegenerationRate: 0,
     energyRegenerationMultiplier: 1,
     healthRegenerationRate: 0,
+    healthRegenerationMultiplier: 1,
     maxEnergy: 0,
     currentEnergy: 0,
     isSelectable: true,
@@ -79,8 +82,11 @@ var UnitBase = {
     dropItemsOnDeath: true,
 
     sufferAttack: function(damage, attackingUnit, options) {
-        attackingUnit = attackingUnit || {name: 'systemDamage'};
-        if(this.attackDodged()) {
+        options = Object.assign({isProjectile: false}, options);
+        attackingUnit = attackingUnit || {name: 'empty'};
+        var damageObj = {damage: damage};
+        Matter.Events.trigger(this, 'preDodgeSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
+        if(this.attackDodged() || damageObj.manualDodge) {
             Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
             Matter.Events.trigger(this, 'dodgeAttack', {performingUnit: this, damageObj: damageObj});
             //display a miss graphic
@@ -88,12 +94,11 @@ var UnitBase = {
             return;
         }
 
-        options = Object.assign({isProjectile: false}, options);
-        var damageObj = {damage: damage};
         Matter.Events.trigger(this, 'preSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
         if(options.isProjectile) {
             Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this});
         }
+        Matter.Events.trigger(attackingUnit, 'dealDamage', {targetUnit: this});
 
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
@@ -113,6 +118,7 @@ var UnitBase = {
                 Matter.Events.trigger(globals.currentGame, 'performKill', {performingUnit: attackingUnit});
             }
         } else {
+            Matter.Events.trigger(attackingUnit, 'dealNonLethalDamage', {targetUnit: this});
             this.showLifeBar(true);
             if(!this.barTimer) {
                 this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {
@@ -134,6 +140,7 @@ var UnitBase = {
     },
 
     giveHealth: function(amount, performingUnit) {
+        performingUnit = performingUnit || {name: 'empty'};
         var healingObj = {amount: amount}
         Matter.Events.trigger(this, 'preReceiveHeal', {performingUnit: performingUnit, healingObj: healingObj});
         amount = healingObj.amount;
@@ -146,6 +153,7 @@ var UnitBase = {
         }
 
         Matter.Events.trigger(globals.currentGame, 'performHeal', {performingUnit: performingUnit, amountDone: healingDone});
+        Matter.Events.trigger(performingUnit, 'performHeal', {healedUnit: this, performingUnit: performingUnit, amountDone: healingDone});
         Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});
     },
 
@@ -716,7 +724,7 @@ var UnitBase = {
             timeLimit: 100,
             callback: function() {
                 if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
-                    this.currentHealth = Math.min(this.currentHealth + ((this.healthRegenerationRate/10)*this.gritMult || 0), this.maxHealth);
+                    this.currentHealth = Math.min(this.currentHealth + ((this.healthRegenerationRate/10)*this.gritMult*this.healthRegenerationMultiplier || 0), this.maxHealth);
                 }
             }.bind(this)
         });
@@ -852,6 +860,35 @@ var UnitBase = {
             unit.moveSpeed -= movePenalty.toString();
             unit.removeDefenseAddition(defensePenalty);
         }})
+    },
+
+    condemn: function(duration, condemningUnit) {
+        var defensePenalty = -1;
+        var buffName = 'condemn';
+        condemnSound.play();
+        var handler;
+        this.applyBuff({name: buffName, unit: this, textureName: 'CondemnBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
+            this.addDefenseAddition(defensePenalty);
+            handler = gameUtils.matterOnce(this, 'death', function() {
+                var position1 = condemningUnit.position;
+                var offset2 = {x: Math.random()*40-20, y: Math.random()*40-20};
+                var offset3 = {x: Math.random()*40-20, y: Math.random()*40-20};
+                var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: .8, y: .8}})
+                var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: .8, y: .8}})
+                var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: .8, y: .8}})
+                gameUtils.attachSomethingToBody({something: condemnNote1, body: condemningUnit.body});
+                gameUtils.attachSomethingToBody({something: condemnNote2, body: condemningUnit.body, offset: offset2});
+                gameUtils.attachSomethingToBody({something: condemnNote3, body: condemningUnit.body, offset: offset3});
+                graphicsUtils.floatSprite(condemnNote1, {runs: 30});
+                graphicsUtils.floatSprite(condemnNote2, {runs: 28});
+                graphicsUtils.floatSprite(condemnNote3, {runs: 35});
+                condemningUnit.giveHealth(15);
+                healSound.play();
+            })
+        }, removeChanges: function() {
+            this.removeDefenseAddition(defensePenalty);
+            handler.removeHandler();
+        }.bind(this)})
     },
 
     //utility methods for units
