@@ -356,13 +356,13 @@ export default function Marine(options) {
         })
 
         if(currentAugment.name == 'defensive posture') {
-            marine.applyBuff({name: "defpostbuff", unit: this, textureName: 'DefensiveBuff', duration: 2000, applyChanges: function() {
+            marine.applyBuff({name: "defpostbuff", textureName: 'DefensiveBuff', duration: 2000, applyChanges: function() {
                 self.addDefenseAddition(2);
             }, removeChanges: function() {
                 self.removeDefenseAddition(2);
             }})
         } else if(currentAugment.name == 'death wish') {
-            marine.applyBuff({name: "deathwishbuff", unit: this, textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
+            marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
                 self.damage += 10;
             }, removeChanges: function() {
                 self.damage -= 10;
@@ -702,7 +702,7 @@ export default function Marine(options) {
             allies.forEach((ally) => {
                 if(ally.isDead) return;
                 var id = mathArrayUtils.getId();
-                ally.applyBuff({name: "givingSpiritDefBuff" + id, unit: ally, textureName: 'DefensiveBuff', duration: allyArmorDuration, applyChanges: function() {
+                ally.applyBuff({name: "givingSpiritDefBuff" + id, textureName: 'DefensiveBuff', duration: allyArmorDuration, applyChanges: function() {
                     ally.addDefenseAddition(1);
                 }, removeChanges: function() {
                     ally.removeDefenseAddition(1);
@@ -727,7 +727,7 @@ export default function Marine(options) {
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             var f = {};
-            marine.applyBuff({name: "rushofbloodabsorb", unit: marine, textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
+            marine.applyBuff({name: "rushofbloodabsorb", textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
                 f.handler = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
                     event.healingObj.amount *= 2;
                 })
@@ -736,7 +736,7 @@ export default function Marine(options) {
             }})
         },
         aggressionAction: function(event) {
-            marine.applyBuff({name: "rushofbloodspeed", unit: marine, textureName: 'SpeedBuff', duration: robADuration,  applyChanges: function() {
+            marine.applyBuff({name: "rushofbloodspeed", textureName: 'SpeedBuff', duration: robADuration,  applyChanges: function() {
                 marine.moveSpeed += .5;
             }, removeChanges: function() {
                 marine.moveSpeed -= .5;
@@ -783,7 +783,7 @@ export default function Marine(options) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
         },
         aggressionAction: function(event) {
-            marine.applyBuff({name: "keenEye", unit: marine, textureName: 'KeenEyeBuff', duration: cpADuration, applyChanges: function() {
+            marine.applyBuff({name: "keenEye", textureName: 'KeenEyeBuff', duration: cpADuration, applyChanges: function() {
                 marine.honeRange = marine.honeRange*2;
                 marine.range = marine.range*2;
             }, removeChanges: function() {
@@ -810,7 +810,7 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({name: "spiritualStateGain", unit: unit, textureName: 'SpiritualStateEnergyGainBuff', duration: ssDDuration, applyChanges: function() {
+                unit.applyBuff({name: "spiritualStateGain", textureName: 'SpiritualStateEnergyGainBuff', duration: ssDDuration, applyChanges: function() {
                     unit.energyRegenerationMultiplier *= 2
                 }, removeChanges: function() {
                     unit.energyRegenerationMultiplier /= 2
@@ -819,7 +819,7 @@ export default function Marine(options) {
         },
         aggressionAction: function(event) {
             var f = {};
-            marine.applyBuff({name: "spiritualStateMatch", unit: marine, duration: ssADuration, textureName: 'SpiritualStateBuff', applyChanges: function() {
+            marine.applyBuff({name: "spiritualStateMatch", duration: ssADuration, textureName: 'SpiritualStateBuff', applyChanges: function() {
                 f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
                     marine.currentEnergy += event.amountDone;
                 })

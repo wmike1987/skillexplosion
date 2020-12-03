@@ -56,6 +56,9 @@ export default function(options) {
             cooldown = this.defenseCooldown;
             var f = Matter.Events.on(this.unit, this.defenseEventName, function(event) {
                 if(!this.active || this.inProcess) return;
+                if(this.defensePredicate && !this.defensePredicate(event)) {
+                    return;
+                }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
                 this.defenseAction(event);

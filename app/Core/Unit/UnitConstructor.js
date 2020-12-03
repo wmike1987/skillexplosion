@@ -71,11 +71,16 @@ function UnitConstructor(options) {
                                 return enabled;
                             })
                         }
+                        if(ability.manuallyEnabled) {
+                            return true;
+                        }
                         return enabled;
                     }],
                     //defaults the pre exec interceptor to subtract energy and run any cost function on the ability
                     preExecuteInterceptors: [function() {
-                        newUnit.currentEnergy -= (ability.energyCost || 0);
+                        if(!ability.byPassEnergyCost) {
+                            newUnit.currentEnergy -= (ability.energyCost || 0);
+                        }
                         if(ability.costs) {
                             ability.costs.forEach(cost => {
                                 cost();
@@ -99,10 +104,15 @@ function UnitConstructor(options) {
                                 return enabled;
                             })
                         }
+                        if(ability.manuallyEnabled) {
+                            return true;
+                        }
                         return enabled;
                     }],
                     preExecuteInterceptors: [function() {
-                        newUnit.currentEnergy -= (ability.energyCost || 0);
+                        if(!ability.byPassEnergyCost) {
+                            newUnit.currentEnergy -= (ability.energyCost || 0);
+                        }
                         if(ability.costs) {
                             ability.costs.forEach(cost => {
                                 cost();

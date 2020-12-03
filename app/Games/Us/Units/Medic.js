@@ -363,6 +363,11 @@ export default function Medic(options) {
                       }
                   })
               }
+
+              //remove a free step if we have one
+              if(medic.freeSteps) {
+                  medic.buffs['freeSecretStep' + medic.freeSteps].removeBuff();
+              }
           }
         }.bind(this))
         gameUtils.deathPact(shadow, removeSelf);
@@ -731,14 +736,14 @@ export default function Medic(options) {
         aggressionEventName: 'performHeal',
         aggressionCooldown: 8000,
         defenseAction: function(event) {
-            medic.applyBuff({name: "stakesGritBuff" + mathArrayUtils.getId(), unit: medic, duration: rsDDuration, textureName: 'GritBuff', applyChanges: function() {
+            medic.applyBuff({name: "stakesGritBuff" + mathArrayUtils.getId(), duration: rsDDuration, textureName: 'GritBuff', applyChanges: function() {
                 medic.addGritAddition(12);
             }, removeChanges: function() {
                 medic.removeGritAddition(12);
             }})
         },
         aggressionAction: function(event) {
-            medic.applyBuff({name: "stakesHealBuff" + mathArrayUtils.getId(), unit: medic, duration: rsADuration, textureName: 'RaisedStakesBuff', applyChanges: function() {
+            medic.applyBuff({name: "stakesHealBuff" + mathArrayUtils.getId(), duration: rsADuration, textureName: 'RaisedStakesBuff', applyChanges: function() {
                 var healAbility = medic.getAbilityByName('Heal');
                 healAbility.energyCost *= 2;
                 healAbility.healAmount *= 2;
@@ -770,7 +775,7 @@ export default function Medic(options) {
         aggressionAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({name: "wwHealthGain", unit: unit, textureName: 'WickedWaysHealingBuff', duration: wwADuration, applyChanges: function() {
+                unit.applyBuff({name: "wwHealthGain", textureName: 'WickedWaysHealingBuff', duration: wwADuration, applyChanges: function() {
                     unit.healthRegenerationMultiplier *= 2
                 }, removeChanges: function() {
                     unit.healthRegenerationMultiplier /= 2
@@ -802,10 +807,59 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             var healedUnit = event.healedUnit;
-            healedUnit.applyBuff({name: "slyLogicDodgeBuff", unit: healedUnit, textureName: 'DodgeBuff', duration: slADuration, applyChanges: function() {
+            healedUnit.applyBuff({name: "slyLogicDodgeBuff", textureName: 'DodgeBuff', duration: slADuration, applyChanges: function() {
                 healedUnit.addDodgeAddition(30);
             }, removeChanges: function() {
                 healedUnit.removeDodgeAddition(30);
+            }})
+        },
+    })
+
+    var ffDDuration = 3000;
+    var ffADuration = 3000;
+    var familiarFace  = new Passive({
+        title: 'Familiar Face',
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free secret step (up to two).'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
+        textureName: 'FamiliarFace',
+        unit: medic,
+        defenseEventName: 'preSufferAttack',
+        defenseCooldown: 8000,
+        aggressionEventName: 'dealDamage',
+        aggressionCooldown: 6000,
+        aggressionPredicate: function() {
+            if(!medic.freeSteps) {
+                medic.freeSteps = 0;
+            }
+            return medic.freeSteps < 2;
+        },
+        defenseAction: function(event) {
+            medic.applyBuff({name: 'familiarFaceSpeed', textureName: 'SpeedBuff', duration: slADuration, applyChanges: function() {
+                medic.moveSpeed += .5;
+            }, removeChanges: function() {
+                medic.moveSpeed -= .5;
+            }})
+        },
+        aggressionAction: function(event) {
+            medic.applyBuff({name: 'freeSecretStep' + (medic.freeSteps+1), textureName: 'SecretStepBuff', duration: null, applyChanges: function() {
+                medic.freeSteps += 1;
+
+                if(!medic.freeSecretStepBuffs) {
+                    medic.freeSecretStepBuffs = [];
+                }
+                medic.freeSecretStepBuffs.push('freeSecretStep' + medic.freeSteps);
+
+                var ss = medic.getAbilityByName('Secret Step');
+                ss.manuallyEnabled = true;
+                ss.byPassEnergyCost = true;
+            }, removeChanges: function() {
+                mathArrayUtils.removeObjectFromArray('freeSecretStep' + medic.freeSteps, medic.freeSecretStepBuffs);
+                medic.freeSteps -= 1;
+                if(medic.freeSteps == 0) {
+                    var ss = medic.getAbilityByName('Secret Step');
+                    ss.manuallyEnabled = false;
+                    ss.byPassEnergyCost = false;
+                }
             }})
         },
     })
@@ -831,7 +885,7 @@ export default function Medic(options) {
         name: options.name,
         heightAnimation: 'up',
         abilities: [healAbility, secretStepAbility, mineAbility],
-        passiveAbilities: [raisedStakes, wickedWays, slyLogic],
+        passiveAbilities: [raisedStakes, wickedWays, slyLogic, familiarFace],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

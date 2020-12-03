@@ -1081,7 +1081,9 @@ var UnitBase = {
             //remove changes
             options.removeChanges();
         }
-        var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {executeOnNuke: true, timerName: this.unitId + name + 'buffRemove'});
+        if(buffDuration) {
+            var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {executeOnNuke: true, timerName: this.unitId + name + 'buffRemove'});
+        }
         if(!realizedBuff.removeBuff) {
             realizedBuff.removeBuff = function(preserveImage) {
                 //mainCleanUp
