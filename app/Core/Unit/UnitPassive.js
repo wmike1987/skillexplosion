@@ -31,9 +31,14 @@ export default function(options) {
         //stop previous
         this.stop();
 
+        if(this.preStart) {
+            this.preStart(mode);
+        }
+
         //start new
         var cooldown = 0.01;
         if(mode == attackPassive) {
+            if(!this.aggressionAction) return;
             cooldown = this.aggressionCooldown;
             var f = Matter.Events.on(this.unit, this.aggressionEventName, function(event) {
                 if(!this.active || this.inProcess) return;
@@ -53,6 +58,7 @@ export default function(options) {
                 Matter.Events.off(this.unit, this.aggressionEventName, f);
             }
         } else if(mode == defensePassive) {
+            if(!this.defenseAction) return;
             cooldown = this.defenseCooldown;
             var f = Matter.Events.on(this.unit, this.defenseEventName, function(event) {
                 if(!this.active || this.inProcess) return;
@@ -95,6 +101,9 @@ export default function(options) {
     }
 
     this.stop = function() {
+        if(this.preStop) {
+            this.preStop();
+        }
         this.active = false;
         this.inProcess = false;
         if(this.clearListener) {

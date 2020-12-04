@@ -801,7 +801,7 @@ export default function Marine(options) {
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4s.'],
         textureName: 'SpiritualState',
         unit: marine,
-        defenseEventName: 'preSufferAttack',
+        defenseEventName: 'sufferProjectile',
         defenseCooldown: 8000,
         defenseDuration: ssDDuration,
         aggressionEventName: 'kill',

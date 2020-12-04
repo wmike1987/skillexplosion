@@ -785,7 +785,7 @@ var UnitSystem = function(properties) {
                  if(keyStates['Control']) {
                      if(this.selectedUnit) {
                          this.selectedUnit.sufferAttack(10);
-                         // this.box.invalidateNextMouseUp = true;
+                         Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
                      }
                  }
              }

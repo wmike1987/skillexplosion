@@ -276,6 +276,11 @@ unitPanel.prototype.initialize = function(options) {
         this.updatePrevailingUnit(event.unit);
     }.bind(this))
 
+    //listen for when the prevailing unit changes
+    Matter.Events.on(this.unitSystem, 'unitPassiveRefresh', function(event) {
+        this.displayUnitPassives(event.unit);
+    }.bind(this))
+
     //listen for item pickup
     if(globals.currentGame.itemSystem) {
         Matter.Events.on(globals.currentGame.itemSystem, 'pickupItem', function(event) {

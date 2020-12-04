@@ -96,7 +96,7 @@ var UnitBase = {
 
         Matter.Events.trigger(this, 'preSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
         if(options.isProjectile) {
-            Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this});
+            Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
         }
         Matter.Events.trigger(attackingUnit, 'dealDamage', {targetUnit: this});
 
@@ -285,15 +285,20 @@ var UnitBase = {
     },
 
     equipPassive: function(passive, type) {
-
         //equip the new passive
         this[type] = passive;
+        Matter.Events.trigger(this, type + 'Equipped', {type: type, passive: passive})
         passive[type] = true;
         passive.isEquipped = true;
         passive.start(type);
     },
 
     unequipPassive: function(passive) {
+        var type = 'attackPassive';
+        if(passive.defensePassive) {
+            type = 'defensePassive';
+        }
+        Matter.Events.trigger(this, type + 'Unequipped', {type: type, passive: passive})
         passive.isEquipped = false;
         if(passive.attackPassive) {
             passive.attackPassive = false;
@@ -891,6 +896,17 @@ var UnitBase = {
         }.bind(this)})
     },
 
+    becomeHidden: function(duration) {
+        this.applyBuff({name: 'hidden', textureName: 'HiddenBuff', playSound: true, duration: duration || 2000, applyChanges: function() {
+            this.isTargetable = false;
+            this.isoManager.currentAnimation.alpha = .4;
+            this.isoManagedAlpha = .4;
+        }, removeChanges: function() {
+            this.isoManagedAlpha = null;
+            this.isTargetable = true;
+        }.bind(this)})
+    },
+
     //utility methods for units
     getDefenseAdditionSum: function() {
         var sum = 0;
@@ -975,6 +991,7 @@ var UnitBase = {
         if(!unit.buffs[name]) {
             var buffObj = {
                 removeBuffImage: function() {
+                    console.info('removing buff: ' + name + ' on unit: ' + unit.name);
                     gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
                     graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
                     mathArrayUtils.removeObjectFromArray(unit.buffs[name], unit.orderedBuffs);
@@ -994,6 +1011,10 @@ var UnitBase = {
                     unit.buffs[name] = null;
                     delete unit.buffs[name];
                 }
+            }
+
+            if(!textureName) {
+                textureName = 'TransparentSquare';
             }
             var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageTwo', scale: {x: scale.x, y: scale.y}});
             gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true})
@@ -1048,17 +1069,20 @@ var UnitBase = {
             speed: 1.5,
             transform: [unit.position.x, unit.position.y, 1.0, 1.0]
         });
-        if(playSound) {
-            buffSound.play();
-        }
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
         gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
         buffAnim.play();
+
+        //play sound
+        if(playSound) {
+            buffSound.play();
+        }
 
         //if the same buff already exists, destroy previous timers etc
         var realizedBuff = unit.buffs[name];
         if(buffAlreadyExists) {
             realizedBuff.removeBuff(true);
+            realizedBuff.removeBuff = null;
         }
 
         //apply the buff changes

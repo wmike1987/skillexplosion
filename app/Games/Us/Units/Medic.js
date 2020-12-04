@@ -349,19 +349,8 @@ export default function Medic(options) {
 
               var self = this;
               if(currentAugment.name == 'soft landing') {
-                  this.isTargetable = false;
-                  this.isoManager.currentAnimation.alpha = .4;
-                  this.isoManagedAlpha = .4;
-                  globals.currentGame.addTimer({
-                      name: 'softLanding' + self.unitId,
-                      runs: 1,
-                      timeLimit: currentAugment.duration,
-                      killsSelf: true,
-                      callback: function() {
-                          self.isoManagedAlpha = null;
-                          self.isTargetable = true;
-                      }
-                  })
+                  var duration = currentAugment.duration;
+                  this.becomeHidden(duration);
               }
 
               //remove a free step if we have one
@@ -787,7 +776,7 @@ export default function Medic(options) {
     var slADuration = 3000;
     var slyLogic  = new Passive({
         title: 'Sly Logic',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant ally 30 dodge for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies 30 dodge for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain 5 dodge for length of round.'],
         textureName: 'SlyLogic',
         unit: medic,
@@ -802,16 +791,18 @@ export default function Medic(options) {
             gameUtils.attachSomethingToBody({something: dodgeUp, body: medic.body});
             graphicsUtils.floatSprite(dodgeUp, {runs: 50});
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                unit.removeDodgeAddition(5)
+                medic.removeDodgeAddition(5)
             })
         },
         aggressionAction: function(event) {
-            var healedUnit = event.healedUnit;
-            healedUnit.applyBuff({name: "slyLogicDodgeBuff", textureName: 'DodgeBuff', duration: slADuration, applyChanges: function() {
-                healedUnit.addDodgeAddition(30);
-            }, removeChanges: function() {
-                healedUnit.removeDodgeAddition(30);
-            }})
+            var allies = gameUtils.getUnitAllies(medic);
+            allies.forEach((ally) => {
+                ally.applyBuff({name: "slyLogicDodgeBuff", textureName: 'DodgeBuff', duration: slADuration, applyChanges: function() {
+                    ally.addDodgeAddition(30);
+                }, removeChanges: function() {
+                    ally.removeDodgeAddition(30);
+                }})
+            })
         },
     })
 
@@ -864,6 +855,93 @@ export default function Medic(options) {
         },
     })
 
+    var dtDDuration = 3000;
+    var dtADuration = 3000;
+    var dtHandler = {};
+    var deepThought  = new Passive({
+        title: 'Deep Thought',
+        originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and become petrified for 1 second.'],
+        textureName: 'DeepThought',
+        unit: medic,
+        defenseEventName: 'sufferProjectile',
+        defenseCooldown: 8000,
+        aggressionEventName: 'kill',
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            medic.layMine();
+            medic.petrify(1000);
+        },
+        preStart: function(type) {
+            var passive = this;
+            if(medic.defensePassive) {
+                deepThought.aggressionAction = medic.defensePassive.aggressionAction;
+                deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
+                deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
+            }
+            if(type == 'attackPassive') {
+                var fe = Matter.Events.on(medic, 'defensePassiveEquipped', function(event) {
+                    Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
+                    Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fu);
+                    // Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
+                    deepThought.aggressionAction = event.passive.aggressionAction;
+                    deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
+                    deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
+                    passive.start('attackPassive');
+                })
+                var fu = Matter.Events.on(medic, 'defensePassiveUnequipped', function(event) {
+                    Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fe);
+                    Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+                    deepThought.aggressionAction = null;
+                    deepThought.aggressionDescription = deepThought.originalAggressionDescription;
+                    passive.start('attackPassive');
+                })
+                dtHandler.fe = fe;
+                dtHandler.fu = fu;
+            }
+        },
+        preStop: function(type) {
+            if(type == 'attackPassive') {
+                Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
+                Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+            }
+        }
+    })
+
+    var efDDuration = 3000;
+    var elegantForm  = new Passive({
+        title: 'Elegant Form',
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Become hidden for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 5 and gain 5 energy.'],
+        textureName: 'ElegantForm',
+        unit: medic,
+        defenseEventName: 'sufferProjectile',
+        defenseCooldown: 5000,
+        aggressionEventName: 'performHeal',
+        aggressionCooldown: 8000,
+        defenseAction: function(event) {
+            var damageObj = event.damageObj;
+            damageObj.damage = 5;
+            medic.currentEnergy += 5;
+            var energyUpAnimation = gameUtils.getAnimation({
+                spritesheetName: 'UtilityAnimations1',
+                animationName: 'starflurry',
+                speed: 1.5,
+                transform: [medic.position.x, medic.position.y-10, .8, 1.0]
+            });
+            energyUpAnimation.tint = 0xf629a8;
+            energyUpAnimation.play();
+            energyUpAnimation.alpha = 1;
+            healsound.play();
+            gameUtils.attachSomethingToBody({something: energyUpAnimation, body: medic.body});
+            graphicsUtils.addSomethingToRenderer(energyUpAnimation, 'foreground');
+        },
+        aggressionAction: function(event) {
+            medic.becomeHidden(efDDuration);
+        }
+    })
+
     var rad = options.radius || 25;
     var unitProperties = $.extend({
         unitType: 'Medic',
@@ -885,7 +963,7 @@ export default function Medic(options) {
         name: options.name,
         heightAnimation: 'up',
         abilities: [healAbility, secretStepAbility, mineAbility],
-        passiveAbilities: [raisedStakes, wickedWays, slyLogic, familiarFace],
+        passiveAbilities: [elegantForm, raisedStakes, wickedWays, slyLogic, familiarFace, deepThought],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({
