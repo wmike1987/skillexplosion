@@ -1055,7 +1055,7 @@ var graphicsUtils = {
         var shakeFrameLength = 32;
         var position = mathArrayUtils.clonePosition(sprite.position);
         sprite.independentRender = true; //in case we're on a body
-        globals.currentGame.addTimer(
+        var timer = globals.currentGame.addTimer(
             {
                 name: 'shake' + mathArrayUtils.getId(),
                 timeLimit: shakeFrameLength,
@@ -1070,6 +1070,7 @@ var graphicsUtils = {
                 }
             }
         )
+        return timer;
     },
 }
 

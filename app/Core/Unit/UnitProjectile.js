@@ -85,6 +85,7 @@ export default function(options) {
     }]
 
     globals.currentGame.addBody(this.body);
+    Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: this.body})
 
     if(this.autoSend) {
         this.send();

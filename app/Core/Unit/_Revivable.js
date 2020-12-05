@@ -25,7 +25,7 @@ export default {
             Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this})
             this.stop();
 
-            originalDeath.call(this);
+            var levelLocalEntities = originalDeath.call(this);
 
             this.reviveTimer = globals.currentGame.addTimer({
                 name: 'revive' + this.unitId,
@@ -53,6 +53,7 @@ export default {
                     }
                 }.bind(this)
             });
+            return levelLocalEntities;
         }
         this.death = revivableDeath;
     },

@@ -276,6 +276,7 @@ export default function Sentinel(options) {
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
+            return [shadow, anim];
         }}, options);
 
     return UC({

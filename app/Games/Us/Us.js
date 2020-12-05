@@ -17,7 +17,7 @@ import UnitSpawner from '@games/Us/UnitSpawner.js'
 import styles from '@utils/Styles.js'
 import * as CampNoir from '@games/Us/Stages/CampNoir.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
-import VictoryScreen from '@games/Us/Screens/VictoryScreen.js'
+import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js'
 import StatCollector from '@games/Us/StatCollector.js'
 // import DefeatScreen from '@games/Us/Screens/DefeatScreen.js'
 
@@ -42,6 +42,7 @@ var game = {
     enableItemSystem: true,
     noClickIndicator: true,
     camps: [CampNoir],
+    levelLocalEntities: [],
     currentCamp: null,
     currentScene: null,
     itemClasses: {
@@ -70,6 +71,10 @@ var game = {
                 return true;
             }
         }})
+
+        Matter.Events.on(this, 'LevelLocalEntityCreated', function(event) {
+            this.levelLocalEntities.push(event.entity);
+        }.bind(this))
     },
 
     play: function(options) {
@@ -130,7 +135,7 @@ var game = {
         this.currentCamp = this.currentStage.camp;
 
         //for troubleshooting victory screen
-        // this.gotoVictoryScreen();
+        // this.gotoEndLevelScreen();
         this.gotoCamp();
 
         //generate map
@@ -155,8 +160,8 @@ var game = {
             })
 
             //reset shane and urs
-            this.resetUnit(this.shane, {yoffset: 30});
-            this.resetUnit(this.ursula, {yoffset: 30});
+            this.resetUnit(this.shane, {yoffset: 40});
+            this.resetUnit(this.ursula, {yoffset: 40});
 
             //clean up spawner if it exists
             if(this.currentSpawner) {
@@ -165,9 +170,11 @@ var game = {
         }.bind(this))
     },
 
-    gotoVictoryScreen: function(collectors) {
+    gotoEndLevelScreen: function(collectors, defeat) {
         this.unitSystem.pause();
-        var vScreen = new VictoryScreen({shane: this.shane, ursula: this.ursula}, collectors);
+        this.unitSystem.deselectUnit(this.shane);
+        this.unitSystem.deselectUnit(this.ursula);
+        var vScreen = new EndLevelScreen({shane: this.shane, ursula: this.ursula}, collectors, {type: defeat ? 'defeat' : 'victory'});
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene(vScene);
         Matter.Events.on(this.currentScene, 'sceneFadeDone', () => {
@@ -239,6 +246,16 @@ var game = {
         //win/loss conditions
         var lossCondition = null;
         var winCondition = null;
+
+        var commonWinLossTasks = function() {
+            this.removeTickCallback(winCondition);
+            this.removeTickCallback(lossCondition);
+            this.shaneCollector.stopCurrentCollector();
+            this.ursulaCollector.stopCurrentCollector();
+            this.currentSpawner.cleanUp();
+            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+        }
+
         var winCondition = this.addTickCallback(function() {
             var enemySetsFulfilled = false;
             $.each(this.currentLevelDetails.enemySets, function(i, enemy) {
@@ -253,33 +270,40 @@ var game = {
             }
 
             if(!unitsOfOpposingTeamExist && enemySetsFulfilled && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
-                this.removeTickCallback(winCondition);
-                this.removeTickCallback(lossCondition);
+                commonWinLossTasks.call(this);
                 node.isCompleted = true;
-                this.shaneCollector.stopCurrentCollector();
-                this.ursulaCollector.stopCurrentCollector();
-                // this.gotoCamp();
-                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
-                this.gotoVictoryScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
-                this.resetUnit(this.shane);
-                this.resetUnit(this.ursula);
+                this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
+                this.removeAllLevelLocalEntities();
             }
         }.bind(this))
 
         var lossCondition = this.addTickCallback(function() {
             if(this.shane.isDead && this.ursula.isDead) {
-                this.removeTickCallback(lossCondition);
-                this.removeTickCallback(winCondition);
+                commonWinLossTasks.call(this);
                 this.itemSystem.removeAllItemsOnGround(true);
-                this.shaneCollector.stopCurrentCollector();
-                this.ursulaCollector.stopCurrentCollector();
-                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+                this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
                 this.gotoDefeatScreen();
-                this.resetUnit(this.shane);
-                this.resetUnit(this.ursula);
-                // this.gotoCamp();
+                this.removeAllLevelLocalEntities();
             }
         }.bind(this))
+    },
+
+    removeAllEnemyUnits: function() {
+        gameUtils.applyToUnitsByTeam(function(team) {
+            return team != this.playerTeam;
+        }.bind(this), null, function(unit) {
+            this.removeUnit(unit);
+        }.bind(this))
+    },
+
+    removeAllLevelLocalEntities: function() {
+        this.levelLocalEntities.forEach((entity) => {
+            if(entity.constructor.name == 'Sprite' || entity.constructor.name == 'Text' || entity.constructor.name == 'AnimatedSprite') {
+                graphicsUtils.removeSomethingFromRenderer(entity);
+            } else if(entity.type == 'body') {
+                this.removeBody(entity);
+            }
+        })
     },
 
     createNextLevelScene: function(levelObj) {

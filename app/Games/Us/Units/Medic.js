@@ -491,6 +491,11 @@ export default function Medic(options) {
                 }
             })
             gameUtils.deathPact(mine, mineTimer);
+            gameUtils.deathPact(mine, mineCracks);
+            gameUtils.deathPact(mine, stateZero);
+            gameUtils.deathPact(mine, stateOne);
+            gameUtils.deathPact(mine, stateTwo);
+            gameUtils.deathPact(mine, stateThree);
         } else {
             var mineTimer = globals.currentGame.addTimer({
                 name: mineState.id,
@@ -520,6 +525,7 @@ export default function Medic(options) {
             })
             gameUtils.deathPact(mine, mineTimer);
         }
+        Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: mine});
 
         mine.explode = function() {
             mineExplosion.play();
@@ -574,7 +580,10 @@ export default function Medic(options) {
             graphicsUtils.removeSomethingFromRenderer(mineCracks);
             globals.currentGame.removeBody(mine);
         }
-        commandObj.command.done();
+
+        if(commandObj) {
+            commandObj.command.done();
+        }
     }
 
     var mineAbility = new Ability({
@@ -862,7 +871,7 @@ export default function Medic(options) {
         title: 'Deep Thought',
         originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and become petrified for 1 second.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
         textureName: 'DeepThought',
         unit: medic,
         defenseEventName: 'sufferProjectile',
@@ -870,8 +879,9 @@ export default function Medic(options) {
         aggressionEventName: 'kill',
         aggressionCooldown: 8000,
         defenseAction: function(event) {
-            medic.layMine();
-            medic.petrify(1000);
+            var attackingUnit = event.performingUnit;
+            medic.getAbilityByName('Mine').method.call(medic, null);
+            attackingUnit.petrify(3000);
         },
         preStart: function(type) {
             var passive = this;
@@ -983,6 +993,7 @@ export default function Medic(options) {
             anim.play();
             deathSoundBlood.play();
             deathSound.play();
+            return [shadow, anim];
         },
         _init: function() {
             Object.defineProperty(this, 'position', {

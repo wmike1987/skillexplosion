@@ -375,6 +375,26 @@ export default {
 	    strokeThickness: 4
 	}),
 
+	statScreenVictoryTitleStyle: new PIXI.TextStyle({
+		name: 'statScreenVictoryTitleStyle',
+		fill: "White",
+		fontSize: 120,
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 2
+	}),
+
+	statScreenDefeatTitleStyle: new PIXI.TextStyle({
+		name: 'statScreenDefeatTitleStyle',
+		fill: "#810202",
+		fontSize: 120,
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 2
+	}),
+
 	statTitleStyle: new PIXI.TextStyle({
 		name: 'statTitleStyle',
 		fill: "red",

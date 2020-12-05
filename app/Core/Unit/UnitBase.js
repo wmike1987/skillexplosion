@@ -165,7 +165,10 @@ var UnitBase = {
         }
         this.isDead = true;
         Matter.Events.trigger(this, 'death', {});
-        this.death();
+        var levelLocalEntities = this.death();
+        levelLocalEntities.forEach((ent) => {
+            Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: ent});
+        })
     },
 
     death: function() {
@@ -715,8 +718,8 @@ var UnitBase = {
             gogogo: true,
             timeLimit: 100,
             callback: function() {
-                if(this.currentEnergy < this.maxEnergy) {
-                    this.currentEnergy = Math.min(this.currentEnergy + ((this.energyRegenerationRate/10)*this.energyRegenerationMultiplier) || 0, this.maxEnergy);
+                if(this.currentEnergy < this.maxEnergy && this.energyRegenerationRate) {
+                    this.currentEnergy = Math.min(this.currentEnergy + this.getTotalEnergyRegeneration()/10 || 0, this.maxEnergy);
                 }
             }.bind(this)
         });
@@ -729,7 +732,7 @@ var UnitBase = {
             timeLimit: 100,
             callback: function() {
                 if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
-                    this.currentHealth = Math.min(this.currentHealth + ((this.healthRegenerationRate/10)*this.gritMult*this.healthRegenerationMultiplier || 0), this.maxHealth);
+                    this.currentHealth = Math.min(this.currentHealth + this.getTotalHealthRegeneration()/10, this.maxHealth);
                 }
             }.bind(this)
         });
@@ -738,6 +741,14 @@ var UnitBase = {
         if(this._init) {
             this._init(); //per-unit hook
         }
+    },
+
+    getTotalHealthRegeneration: function() {
+        return this.healthRegenerationRate * this.gritMult * this.healthRegenerationMultiplier;
+    },
+
+    getTotalEnergyRegeneration: function() {
+        return this.energyRegenerationRate * this.energyRegenerationMultiplier;
     },
 
     addFilter: function(filter, filterArea) {
@@ -825,6 +836,7 @@ var UnitBase = {
     petrify: function(duration) {
         var unit = this;
         var buffName = 'petrify';
+        var shakeTimer = null;
         this.applyBuff({name: buffName, unit: this, textureName: 'PetrifyBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
             this.stop();
             this.canMove = false;
@@ -837,7 +849,8 @@ var UnitBase = {
                 globals.currentGame.invalidateTimer(this.petrifyTintTimer);
             }
             this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
-            graphicsUtils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
+            shakeTimer = graphicsUtils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
+            gameUtils.deathPact(unit, shakeTimer);
             petrifySound.play();
         }, removeChanges: function() {
             Matter.Sleeping.set(unit.body, false);
@@ -845,6 +858,7 @@ var UnitBase = {
             unit.canAttack = true;
             unit.isTargetable = true;
             unit.idleCancel = false;
+            gameUtils.undeathPact(unit, shakeTimer);
             globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
             unit.isoManagedTint = null;
             unit.isoManagedAlpha = null;

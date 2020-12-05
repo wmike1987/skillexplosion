@@ -902,6 +902,7 @@ export default function Marine(options) {
             anim.play();
             deathSound.play();
             deathSoundBlood.play();
+            return [shadow, anim];
         },
         _init: function() {
             if(!this.bypassRevival) {

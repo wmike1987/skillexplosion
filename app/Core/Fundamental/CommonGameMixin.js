@@ -597,7 +597,7 @@ var common = {
             } else if(slave.unload) {
                 // let's unload the sound, but it might be playing upon death, so let's wait then unload it
                 gameUtils.doSomethingAfterDuration(() => {slave.unload()}, 1500, {executeOnNuke: true});
-            } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text') {
+            } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text' || slave.constructor.name == 'AnimatedSprite') {
                 graphicsUtils.removeSomethingFromRenderer(slave);
             }
         }.bind(this));

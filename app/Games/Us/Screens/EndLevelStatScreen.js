@@ -47,7 +47,8 @@ var createContainer = function() {
     return container;
 }
 
-var VictoryScreen = function(units, statsObj) {
+var EndLevelStatScreen = function(units, statsObj, options) {
+    options = Object.assign({type: 'victory'}, options);
     //for troubleshooting victory screen
     if(true) {
         units = units || {
@@ -71,7 +72,7 @@ var VictoryScreen = function(units, statsObj) {
     var ursulaStats = statsObj.ursula.getStatMap();
 
     //Global vars
-    var startY = gameUtils.getCanvasHeight()/15;
+    var startY = gameUtils.getCanvasHeight()/15*2;
     var yIncrement = gameUtils.getCanvasHeight()/15;
     var stage = "hudText";
     var healthEnergyXOffset = 38;
@@ -115,6 +116,14 @@ var VictoryScreen = function(units, statsObj) {
         var scene = new Scene();
         scene.addBlackBackground();
 
+        var titleText = null;
+        if(options.type == 'victory') {
+            titleText = graphicsUtils.createDisplayObject("TEX+:" + 'Victory', {position: {x: gameUtils.getPlayableWidth()/2, y: gameUtils.getCanvasHeight()/15}, style: styles.statScreenVictoryTitleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        } else {
+            titleText = graphicsUtils.createDisplayObject("TEX+:" + 'Defeat', {position: {x: gameUtils.getPlayableWidth()/2, y: gameUtils.getCanvasHeight()/15}, style: styles.statScreenDefeatTitleStyle, where: "hudText", anchor: {x: .5, y: .5}});
+        }
+        scene.add(titleText);
+
         var skinnyDivider = '———————';
         var divider = '———————————';
 
@@ -123,12 +132,12 @@ var VictoryScreen = function(units, statsObj) {
         startPos.x -= 86;
         var marinePortrait = graphicsUtils.createDisplayObject('MarinePortrait', {position: startPos, where: stage});
         var marinePortraitBorder = graphicsUtils.createDisplayObject('PortraitBorder', {position: shanePosition(portrait), where: stage});
-        var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice, y: shaneY - unitStatTextBuffer - unitStatYSpacing}, style: unitDamageStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "Arm: " + shane.defense, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice, y: shaneY - unitStatTextBuffer}, style: unitDefenseStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var marineHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + shane.maxHealth, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice, y: shaneY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralHPStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var marineGrit = graphicsUtils.createDisplayObject("TEX+:" + "Grt: " + shane.grit, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: shaneY - unitStatTextBuffer - unitStatYSpacing}, style: unitGritStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var marineDodge = graphicsUtils.createDisplayObject("TEX+:" + "Ddg: " + shane.dodge, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: shaneY - unitStatTextBuffer}, style: unitDodgeStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var marineEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + shane.maxEnergy, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: shaneY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice, y: startY - unitStatTextBuffer - unitStatYSpacing}, style: unitDamageStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "Arm: " + shane.defense, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice, y: startY - unitStatTextBuffer}, style: unitDefenseStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var marineHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + shane.maxHealth, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice, y: startY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralHPStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var marineGrit = graphicsUtils.createDisplayObject("TEX+:" + "Grt: " + shane.grit, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: startY - unitStatTextBuffer - unitStatYSpacing}, style: unitGritStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var marineDodge = graphicsUtils.createDisplayObject("TEX+:" + "Ddg: " + shane.dodge, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: startY - unitStatTextBuffer}, style: unitDodgeStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var marineEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + shane.maxEnergy, {position: {x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: startY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: 0, y: .5}});
 
         // var defenseAdditionText = '';
         // if(shane.defenseAdditions.length > 0) {
@@ -194,12 +203,12 @@ var VictoryScreen = function(units, statsObj) {
         startPos.x -= 86;
         var medicPortrait = graphicsUtils.createDisplayObject('MedicPortrait', {position: startPos, where: stage});
         var medicPortraitBorder = graphicsUtils.createDisplayObject('PortraitBorder', {position: ursulaPosition(portrait), where: stage});
-        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + ursula.damageLabel + ursula.damage, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice, y: ursulaY - unitStatTextBuffer - unitStatYSpacing}, style: unitDamageStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "Arm: " + ursula.defense, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice, y: ursulaY - unitStatTextBuffer}, style: unitDefenseStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + ursula.maxHealth, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice, y: ursulaY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralHPStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var medicGrit = graphicsUtils.createDisplayObject("TEX+:" + "Grt: " + ursula.grit, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: ursulaY - unitStatTextBuffer - unitStatYSpacing}, style: unitGritStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var medicDodge = graphicsUtils.createDisplayObject("TEX+:" + "Ddg: " + ursula.dodge, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: ursulaY - unitStatTextBuffer}, style: unitDodgeStyle, where: "hudText", anchor: {x: 0, y: .5}});
-        var medicEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + ursula.maxEnergy, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: ursulaY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + ursula.damageLabel + ursula.damage, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice, y: startY - unitStatTextBuffer - unitStatYSpacing}, style: unitDamageStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "Arm: " + ursula.defense, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice, y: startY - unitStatTextBuffer}, style: unitDefenseStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + ursula.maxHealth, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice, y: startY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralHPStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var medicGrit = graphicsUtils.createDisplayObject("TEX+:" + "Grt: " + ursula.grit, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: startY - unitStatTextBuffer - unitStatYSpacing}, style: unitGritStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var medicDodge = graphicsUtils.createDisplayObject("TEX+:" + "Ddg: " + ursula.dodge, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: startY - unitStatTextBuffer}, style: unitDodgeStyle, where: "hudText", anchor: {x: 0, y: .5}});
+        var medicEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + ursula.maxEnergy, {position: {x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice*9, y: startY - unitStatTextBuffer + unitStatYSpacing}, style: unitGeneralEnergyStyle, where: "hudText", anchor: {x: 0, y: .5}});
         // var defenseAdditionText = '';
         // if(ursula.defenseAdditions.length > 0) {
         //     var sign = '+';
@@ -278,4 +287,4 @@ var VictoryScreen = function(units, statsObj) {
     };
 }
 
-export default VictoryScreen;
+export default EndLevelStatScreen;
