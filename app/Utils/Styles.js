@@ -219,9 +219,19 @@ export default {
 		textBaseline: "center",
 	}),
 
+	unitDamageAdditionsStyle: new PIXI.TextStyle({
+		name: 'unitDamageAdditionsStyle',
+		fill: "#b12626",
+		fillGradientType: 1,
+		fontFamily: "Helvetica",
+		fontSize: 12,
+		strokeThickness: 2,
+		textBaseline: "center",
+	}),
+
 	unitDefenseAdditionsStyle: new PIXI.TextStyle({
 		name: 'unitDefenseAdditionsStyle',
-		fill: "#4be0ee",
+		fill: "#24686f",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
 		fontSize: 12,
@@ -231,7 +241,7 @@ export default {
 
 	unitGritAdditionsStyle: new PIXI.TextStyle({
 		name: 'unitGritAdditionsStyle',
-		fill: "#b4c629",
+		fill: "#7d8a1e",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
 		fontSize: 12,
@@ -241,7 +251,7 @@ export default {
 
 	unitDodgeAdditionsStyle: new PIXI.TextStyle({
 		name: 'unitDodgeAdditionsStyle',
-		fill: "#12af19",
+		fill: "#0e7813",
 		fillGradientType: 1,
 		fontFamily: "Helvetica",
 		fontSize: 12,

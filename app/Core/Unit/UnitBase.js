@@ -26,6 +26,7 @@ var UnitBase = {
     isoManaged: true,
     maxHealth: 20,
     currentHealth: 20,
+    damageAdditions: [],
     defense: 0,
     defenseAdditions: [],
     dodge: 0,
@@ -946,6 +947,19 @@ var UnitBase = {
         return Math.max(-this.grit, sum);
     },
 
+    getDamageAdditionSum: function() {
+        var sum = 0;
+        this.damageAdditions.forEach((addition) => {
+            sum += addition;
+        })
+
+        var baseDamageAmount = this.damage;
+        if(this.damageMember && this.damageMember instanceof Function) {
+            baseDamageAmount = this.damageMember();
+        }
+        return Math.max(-baseDamageAmount, sum);
+    },
+
     addDefenseAddition: function(amount) {
         this.defenseAdditions.push(amount);
     },
@@ -968,6 +982,14 @@ var UnitBase = {
 
     removeGritAddition: function(value) {
         mathArrayUtils.removeObjectFromArray(value, this.gritAdditions);
+    },
+
+    addDamageAddition: function(amount) {
+        this.damageAdditions.push(amount);
+    },
+
+    removeDamageAddition: function(value) {
+        mathArrayUtils.removeObjectFromArray(value, this.damageAdditions);
     },
 
     /*

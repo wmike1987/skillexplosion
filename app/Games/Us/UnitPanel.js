@@ -30,19 +30,20 @@ var unitPanel = function(options) {
     this.unitStatSpacing = 20;
     this.unitStatYOffset = -9;
     this.unitFrameCenterX = this.centerX - 226;
-    this.unitFrameOffset = 81.5/8;
+    this.unitFrameOffset = 81.5/16;
     this.unitNamePosition = {x: this.unitFrameCenterX, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
     //this.unitLevelPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY - this.unitStatSpacing + this.unitStatYOffset};
-    this.unitDamagePosition = {x: this.unitFrameCenterX-this.unitFrameOffset*7, y: this.centerY + this.unitStatYOffset};
-    this.unitArmorPosition = {x: this.unitFrameCenterX-this.unitFrameOffset*7, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
-    this.unitHealthPosition = {x: this.unitFrameCenterX-this.unitFrameOffset*7, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
-    this.unitGritPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatYOffset};
-    this.unitDodgePosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
-    this.unitEnergyPosition = {x: this.unitFrameCenterX+this.unitFrameOffset, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+    this.unitDamagePosition = {x: this.unitFrameCenterX-this.unitFrameOffset*15, y: this.centerY + this.unitStatYOffset};
+    this.unitArmorPosition = {x: this.unitFrameCenterX-this.unitFrameOffset*15, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+    this.unitHealthPosition = {x: this.unitFrameCenterX-this.unitFrameOffset*15, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
+    this.unitGritPosition = {x: this.unitFrameCenterX+this.unitFrameOffset*2, y: this.centerY + this.unitStatYOffset};
+    this.unitDodgePosition = {x: this.unitFrameCenterX+this.unitFrameOffset*2, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
+    this.unitEnergyPosition = {x: this.unitFrameCenterX+this.unitFrameOffset*2, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
 
     this.unitNameText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
     //this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
     this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle, anchor: {x: 0, y: .5}});
+    this.unitDamageAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageAdditionsStyle});
     this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle, anchor: {x: 0, y: .5}});
     this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
     this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralHPStyle, anchor: {x: 0, y: .5}});
@@ -426,6 +427,7 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
         this.unitNameText.text = '-----';
         //this.unitLevelText.text = '--';
         this.unitDamageText.text = '';
+        this.unitDamageAdditionsText.text = '';
         this.unitDefenseText.text = '';
         this.unitDefenseAdditionsText.text = '';
         this.unitHealthText.text = '';
@@ -603,15 +605,22 @@ unitPanel.prototype.displayUnitStats = function() {
                 //name
                 this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
 
-                //level
-                //this.unitLevelText.text = "Level " + this.prevailingUnit.level;
-
                 //damage (or heal)
                 var functionText = "";
                 if(this.prevailingUnit.damageMember && this.prevailingUnit.damageMember instanceof Function) {
                     functionText = this.prevailingUnit.damageMember();
                 }
                 this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
+                if(this.prevailingUnit.damageAdditions.length > 0) {
+                    var sign = '+';
+                    if(this.prevailingUnit.getDamageAdditionSum() < 0) {
+                        sign = '';
+                    }
+                    this.unitDamageAdditionsText.text = sign + this.prevailingUnit.getDamageAdditionSum();
+                    this.unitDamageAdditionsText.position = mathArrayUtils.clonePosition(this.unitDamageText.position, {x: this.unitDamageText.width});
+                } else {
+                    this.unitDamageAdditionsText.text = '';
+                }
 
                 //armor
                 this.unitDefenseText.text = "Arm: " + this.prevailingUnit.defense;

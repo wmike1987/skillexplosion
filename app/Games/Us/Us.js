@@ -201,7 +201,6 @@ var game = {
     },
 
     initLevel: function(node) {
-        this.deactivateMap();
         this.currentLevelDetails = node.levelDetails;
 
         if(this.currentSpawner) {
@@ -242,6 +241,7 @@ var game = {
             }, 2400);
         }.bind(this))
         this.level += 1;
+        this.deactivateMap();
 
         //win/loss conditions
         var lossCondition = null;
@@ -253,6 +253,14 @@ var game = {
             this.shaneCollector.stopCurrentCollector();
             this.ursulaCollector.stopCurrentCollector();
             this.currentSpawner.cleanUp();
+            this.shane.canAttack = false;
+            this.ursula.canAttack = false;
+            this.shane.canMove = false;
+            this.ursula.canMove = false;
+            this.shane.isTargetable = false;
+            this.ursula.isTargetable = false;
+            gameUtils.moveUnitOffScreen(this.shane);
+            gameUtils.moveUnitOffScreen(this.ursula);
             Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
         }
 
@@ -304,6 +312,7 @@ var game = {
                 this.removeBody(entity);
             }
         })
+        this.levelLocalEntities = [];
     },
 
     createNextLevelScene: function(levelObj) {
@@ -324,6 +333,7 @@ var game = {
     createUrsula: function() {
         // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["SteadySyringe"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;
@@ -340,7 +350,6 @@ var game = {
         }
         this.unitSystem.deselectUnit(unit);
 
-        unit.isTargetable = true;
         var centerX;
         if(unit.name == 'Shane') {
             centerX = -30;
@@ -364,6 +373,7 @@ var game = {
             unit.stop();
         }
 
+        unit.isTargetable = true;
         unit.currentHealth = unit.maxHealth;
         unit.currentEnergy = unit.maxEnergy;
         unit.canMove = true;

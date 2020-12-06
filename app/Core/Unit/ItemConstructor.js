@@ -7,6 +7,10 @@ import Tooltip from '@core/Tooltip.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
+var capitalizeFirstLetter = function(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 var baseItem = {
     equip: function(unit) {
         $.each(this.manipulations, function(key, value) {
@@ -26,8 +30,8 @@ var baseItem = {
             } else if(value instanceof Function){
                 value.call(unit, true);
             } else {
-                if(value.addHandler) {
-                    unit[value.addHandler](value.value);
+                if(unit['add' + capitalizeFirstLetter(key)] instanceof Function) {
+                    unit['add' + capitalizeFirstLetter(key)](value.value);
                 } else {
                     unit[key] += value;
                 }
@@ -43,8 +47,8 @@ var baseItem = {
             }  else if(value instanceof Function){
                 value.call(unit, false);
             } else {
-                if(value.removeHandler) {
-                    unit[value.removeHandler](value.value);
+                if(unit['remove' + capitalizeFirstLetter(key)] instanceof Function) {
+                    unit['remove' + capitalizeFirstLetter(key)](value.value);
                 } else {
                     unit[key] -= value
                 }

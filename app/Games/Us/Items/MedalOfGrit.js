@@ -1,12 +1,10 @@
 import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
-    // defenseAdditions: {addHandler: 'addDefenseAddition', removeHandler: 'removeDefenseAddition', value: 1},
-    // gritAdditions: {addHandler: 'addGritAddition',  removeHandler: 'removeGritAddition', value: 8},
-    // dodgeAdditions: {addHandler: 'addDodgeAddition', removeHandler: 'removeDodgeAddition', value: 50},
-    dodge: 3,
-    grit: 8,
-    maxHealth: 5
+    defenseAddition: {value: 1},
+    gritAddition: {value: 8},
+    dodgeAddition: {value: 50},
+    damageAddition: {value: 20},
 }
 
 export default function() {

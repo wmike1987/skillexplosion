@@ -22,7 +22,8 @@ export default {
         if(this.attackExtension) {
             this.attackExtension(target);
         }
-        target.sufferAttack(this.damage, this);
+        var damageAmount = this.damage + this.getDamageAdditionSum();
+        target.sufferAttack(damageAmount, this);
     },
 
     //user defined

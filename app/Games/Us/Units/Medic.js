@@ -1060,7 +1060,8 @@ export default function Medic(options) {
                     if(!ppBypass)
                         this.currentEnergy -= thisAbility.energyCost;
 
-                    target.giveHealth(thisAbility.healAmount, this);
+                    var healAmount = thisAbility.healAmount + this.getDamageAdditionSum();
+                    target.giveHealth(healAmount, this);
                 },
                 attackHoneTeamPredicate: function(team) {
                     return this.team == team;

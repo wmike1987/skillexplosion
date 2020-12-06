@@ -16,7 +16,8 @@ var typeTokenMappings = {
 }
 
 //Define node object
-var MapLevelNode = function(levelDetails) {
+var MapLevelNode = function(levelDetails, mapRef) {
+    this.mapRef = mapRef;
     this.levelDetails = levelDetails;
     this.displayObject = graphicsUtils.createDisplayObject(typeTokenMappings[levelDetails.type], {scale: {x: 1, y: 1}});
     this.displayObject.interactive = true;
@@ -35,18 +36,20 @@ var MapLevelNode = function(levelDetails) {
     var self = this;
 
     this.displayObject.on('mouseover', function(event) {
-        if(!this.isCompleted)
+        if(!this.isCompleted && !this.mapRef.travelInProgress)
             this.displayObject.tint = 0x20cd2c;
     }.bind(this))
     this.displayObject.on('mouseout', function(event) {
-        if(!this.isCompleted)
+        if(!this.isCompleted && !this.mapRef.travelInProgress)
             this.displayObject.tint = 0xFFFFFF;
     }.bind(this))
     this.displayObject.on('mousedown', function(event) {
-        if(!self.isCompleted) {
-            globals.currentGame.initLevel(self);
+        if(!self.isCompleted && !this.mapRef.travelInProgress) {
+            this.mapRef.travelToNode(this, function() {
+                globals.currentGame.initLevel(self);
+            });
         }
-    })
+    }.bind(this))
 
     this.setPosition = function(position) {
         this.displayObject.position = position;
@@ -57,10 +60,24 @@ var MapLevelNode = function(levelDetails) {
 //Map object
 var map = function(specs) {
 
+    this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
+        isSensor: true,
+        frictionAir: 0.0,
+    });
+    this.headTokenBody.renderChildren = [{
+        id: 'headtoken',
+        data: "HeadToken",
+        stage: 'hudNOne'
+    }]
+    global.currentGame.addBody(this.headTokenBody);
+    Matter.Body.setPosition(this.headTokenBody, gameUtils.getCanvasCenter());
+    this.headTokenSprite = this.headTokenBody.renderlings.headtoken;
+    this.headTokenSprite.visible = false;
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {where: 'foreground', position: gameUtils.getPlayableCenter()});
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
     this.levels = specs.levels;
+    this.travelInProgress = false;
 
     this.graph = [];
     for(const key in this.levels) {
@@ -68,7 +85,7 @@ var map = function(specs) {
         for(var x = 0; x < this.levels[key]; x++) {
 
             var level = LevelSpecifier.create(key, specs.levelOptions);
-            var mapNode = new MapLevelNode(level);
+            var mapNode = new MapLevelNode(level, this);
 
             //Determine position
             var position;
@@ -89,8 +106,6 @@ var map = function(specs) {
         }
     }
 
-    this.currentLocationToken = graphicsUtils.createDisplayObject("HeadToken", {where: 'hudNOne', position: gameUtils.getPlayableCenter()})
-
     this.show = function() {
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
@@ -101,7 +116,7 @@ var map = function(specs) {
             graphicsUtils.addOrShowDisplayObject(node.displayObject)
         })
 
-        graphicsUtils.addOrShowDisplayObject(this.currentLocationToken);
+        graphicsUtils.addOrShowDisplayObject(this.headTokenSprite);
     }
 
     this.hide = function() {
@@ -111,7 +126,20 @@ var map = function(specs) {
             node.displayObject.tooltipObj.hide();
         })
 
-        this.currentLocationToken.visible = false;
+        this.headTokenSprite.visible = false;
+    }
+
+    this.travelToNode = function(node, destinationCallback) {
+        this.travelInProgress = true;
+        var position = mathArrayUtils.clonePosition(node.position, {y: 20});
+        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2, null, null, function() {
+            Matter.Body.setVelocity(this.headTokenBody, {
+                x: 0.0,
+                y: 0.0
+            });
+            this.travelInProgress = false;
+            destinationCallback();
+        }.bind(this));
     }
 }
 export default map;

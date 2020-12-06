@@ -277,7 +277,7 @@ var gameUtils = {
         }
     },
 
-    sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards) {
+    sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards, arrivedCallback) {
         //figure out the movement vector
         var velocityVector = Matter.Vector.sub(destination, body.position);
         var velocityScale = speed / Matter.Vector.magnitude(velocityVector);
@@ -286,9 +286,20 @@ var gameUtils = {
             Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
         } else {
             if (Matter.Vector.magnitude(velocityVector) < speed)
-            Matter.Body.setVelocity(body, velocityVector);
+                Matter.Body.setVelocity(body, velocityVector);
             else
-            Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+                Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+        }
+
+        if(arrivedCallback) {
+            var originalOrigin = {x: body.position.x, y: body.position.y};
+            var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, body.position));
+            var removeSelf = globals.currentGame.addTickCallback(function() {
+              if(gameUtils.bodyRanOffStage(body) || mathArrayUtils.distanceBetweenPoints(body.position, originalOrigin) >= originalDistance) {
+                  arrivedCallback();
+                  globals.currentGame.removeTickCallback(removeSelf);
+              }
+          })
         }
     },
 

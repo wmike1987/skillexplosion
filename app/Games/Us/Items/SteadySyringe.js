@@ -1,13 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
-    healAmount: function(isEquipping) {
-        if(isEquipping) {
-            this.getAbilityByName('Heal').healAmount += .5;
-        } else {
-            this.getAbilityByName('Heal').healAmount -= .5;
-        }
-    }
+    damageAddition: {value: .5}
 }
 
 export default function() {

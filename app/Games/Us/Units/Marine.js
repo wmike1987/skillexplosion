@@ -968,7 +968,8 @@ export default function Marine(options) {
                         })
                     }
 
-                    target.sufferAttack(this.damage*crit, this);
+                    var dTotal = this.damage + this.getDamageAdditionSum();
+                    target.sufferAttack(dTotal*crit, this);
                     if(critActive) {
                         criticalHitSound.play();
                         criticalHitSound2.play();
