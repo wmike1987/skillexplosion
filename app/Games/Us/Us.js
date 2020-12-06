@@ -74,7 +74,13 @@ var game = {
 
         Matter.Events.on(this, 'LevelLocalEntityCreated', function(event) {
             this.levelLocalEntities.push(event.entity);
-        }.bind(this))
+        }.bind(this));
+        Matter.Events.on(this, 'InitLevel', function(event) {
+            this.initLevel(event.node);
+        }.bind(this));
+        Matter.Events.on(this, 'GoToCamp', function(event) {
+            this.gotoCamp();
+        }.bind(this));
     },
 
     play: function(options) {
@@ -132,22 +138,25 @@ var game = {
 
         //create empty scene and transition to camp scene
         this.currentStage = this.camps[0];
-        this.currentCamp = this.currentStage.camp;
+        this.currentCamp = this.currentStage.campConstructor;
+
+        //generate map
+        this.map = this.currentStage.map.initializeMap();
 
         //for troubleshooting victory screen
         // this.gotoEndLevelScreen();
         this.gotoCamp();
-
-        //generate map
-        this.map = this.currentStage.map.initializeMap();
     },
 
     gotoCamp: function() {
-        var camp = this.currentCamp.initializeCamp();
-        this.currentScene.transitionToScene(camp);
-        this.unitSystem.unpause();
+        var camp = new this.currentCamp;
+        var cameScene = camp.initializeCamp();
+        this.currentScene.transitionToScene(cameScene);
 
-        Matter.Events.on(camp, 'initialize', function() {
+        //we could have come to camp from the map, so make sure it's closed
+        this.closeMap();
+
+        Matter.Events.on(cameScene, 'initialize', function() {
             //set camp active and trigger event
             this.campActive = true;
             Matter.Events.trigger(this, 'enteringCamp');
@@ -194,7 +203,7 @@ var game = {
 
     },
 
-    deactivateMap: function() {
+    closeMap: function() {
         this.unitSystem.unpause();
         this.mapActive = false;
         this.map.hide();
@@ -241,7 +250,7 @@ var game = {
             }, 2400);
         }.bind(this))
         this.level += 1;
-        this.deactivateMap();
+        this.closeMap();
 
         //win/loss conditions
         var lossCondition = null;

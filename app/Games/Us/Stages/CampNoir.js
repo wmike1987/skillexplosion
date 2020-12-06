@@ -10,7 +10,7 @@ import valueShader from '@shaders/ValueShader.js'
 import TileMapper from '@core/TileMapper.js'
 import Doodad from '@utils/Doodad.js'
 import Scene from '@core/Scene.js'
-import Map from '@games/Us/Map.js'
+import Map from '@games/Us/MapAndLevel/Map.js'
 
 var tileSize = 225;
 var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];
@@ -73,7 +73,10 @@ var camp = {
         return objs;
     },
 }
-Object.assign(camp, CommonCamp);
+
+var campConstructor = function() {
+    Object.assign(this, camp, CommonCamp);
+}
 
 
 var noirEnemySets = {
@@ -86,8 +89,8 @@ var map = {
         levels: {
             singles: 26,
             doubles: 1,
-            boss: 1,
-            norevives: 1,
+            // boss: 1,
+            // norevives: 1,
             mobs: 1,
             airDropStations: 6,
         },
@@ -96,6 +99,7 @@ var map = {
             tileSize: tileSize,
             acceptableTileTints: acceptableTileTints,
             getLevelTiles: levelTiles,
+            airDropTrees: ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'],
             levelTileExtension: function(scene, tint) {
                 tileExtension(scene, tint);
                 var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
@@ -110,4 +114,4 @@ var map = {
 }
 
 
-export {camp, map};
+export {campConstructor, map};

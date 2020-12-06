@@ -791,12 +791,12 @@ var graphicsUtils = {
         globals.currentGame.renderer.addToPixiStage(dobj, where);
     },
 
+    //We'll add if needed, and always set visible to true since the intention of this method is to show something
     addOrShowDisplayObject: function(displayObject) {
         if(!displayObject.parent) {
             this.addDisplayObjectToRenderer(displayObject);
-        } else {
-            displayObject.visible = true;
         }
+        displayObject.visible = true;
     },
 
     makeSpriteSize: function(sprite, size) {

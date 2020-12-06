@@ -3,7 +3,7 @@ import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
-import LevelSpecifier from '@games/Us/LevelSpecifier.js'
+import LevelSpecifier from '@games/Us/MapAndLevel/LevelSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 
 //Token Mappings
@@ -33,7 +33,10 @@ var MapLevelNode = function(levelDetails, mapRef) {
     Tooltip.makeTooltippable(this.displayObject, {
         title: levelDetails.type,
         description: enemyDescriptions,
-        descriptionIcons: enemyIcons});
+        descriptionIcons: enemyIcons
+    });
+
+    this.enterNode = levelDetails.enterNode;
 
     var self = this;
 
@@ -47,8 +50,10 @@ var MapLevelNode = function(levelDetails, mapRef) {
     }.bind(this))
     this.displayObject.on('mousedown', function(event) {
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
+            this.displayObject.tint = 0xff0000;
             this.mapRef.travelToNode(this, function() {
-                globals.currentGame.initLevel(self);
+                this.enterNode(self);
+                // globals.currentGame.initLevel(self);
                 this.displayObject.tint = 0xFFFFFF;
             }.bind(this));
         }
@@ -83,6 +88,12 @@ var map = function(specs) {
     this.travelInProgress = false;
 
     this.graph = [];
+
+    var mainCamp = LevelSpecifier.create('camp', specs.levelOptions);
+    var initialCampNode = new MapLevelNode(mainCamp, this);
+    initialCampNode.setPosition(gameUtils.getPlayableCenter());
+    this.graph.push(initialCampNode);
+
     for(const key in this.levels) {
 
         for(var x = 0; x < this.levels[key]; x++) {

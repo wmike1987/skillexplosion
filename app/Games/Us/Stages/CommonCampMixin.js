@@ -124,12 +124,14 @@ export default {
             }
         }.bind(globals.currentGame));
 
-        $('body').on('keydown.map', function( event ) {
-            var key = event.key.toLowerCase();
-            if(key == 'escape' && this.mapActive) {
-                this.deactivateMap();
-            }
-        }.bind(globals.currentGame))
+        campScene.add(function() {
+            $('body').on('keydown.map', function( event ) {
+                var key = event.key.toLowerCase();
+                if(key == 'escape' && this.mapActive) {
+                    this.closeMap();
+                }
+            }.bind(globals.currentGame))
+        })
 
         //Apply environment effects
         // var l1 = gameUtils.createAmbientLights([0x005846, 0x005846, 0x005846], 'background', 1.0, {sortYOffset: 5000});
