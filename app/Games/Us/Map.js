@@ -13,6 +13,8 @@ var typeTokenMappings = {
     boss: 'MapRedBattleToken',
     norevives: 'MapRedBattleToken',
     mobs: 'MobBattleToken',
+    camp: 'CampfireToken',
+    airDropStations: 'AirDropToken',
 }
 
 //Define node object
@@ -47,7 +49,8 @@ var MapLevelNode = function(levelDetails, mapRef) {
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
             this.mapRef.travelToNode(this, function() {
                 globals.currentGame.initLevel(self);
-            });
+                this.displayObject.tint = 0xFFFFFF;
+            }.bind(this));
         }
     }.bind(this))
 

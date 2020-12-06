@@ -88,7 +88,8 @@ var map = {
             doubles: 1,
             boss: 1,
             norevives: 1,
-            mobs: 1
+            mobs: 1,
+            airDropStations: 6,
         },
         levelOptions: {
             enemySets: noirEnemySets,
