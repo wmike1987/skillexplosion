@@ -899,9 +899,9 @@ var UnitBase = {
                 gameUtils.attachSomethingToBody({something: condemnNote1, body: condemningUnit.body});
                 gameUtils.attachSomethingToBody({something: condemnNote2, body: condemningUnit.body, offset: offset2});
                 gameUtils.attachSomethingToBody({something: condemnNote3, body: condemningUnit.body, offset: offset3});
-                graphicsUtils.floatSprite(condemnNote1, {runs: 30});
-                graphicsUtils.floatSprite(condemnNote2, {runs: 28});
-                graphicsUtils.floatSprite(condemnNote3, {runs: 35});
+                graphicsUtils.floatSprite(condemnNote1, {runs: 45});
+                graphicsUtils.floatSprite(condemnNote2, {runs: 50});
+                graphicsUtils.floatSprite(condemnNote3, {runs: 65});
                 condemningUnit.giveHealth(15);
                 healSound.play();
             })

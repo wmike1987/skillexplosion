@@ -8,25 +8,8 @@ import campfireShader from '@shaders/CampfireAtNightShader.js'
 import valueShader from '@shaders/ValueShader.js'
 import TileMapper from '@core/TileMapper.js'
 import Doodad from '@utils/Doodad.js'
+import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
 import Scene from '@core/Scene.js'
-
-/* options
- * start {x: , y: }
- * width, height
- * density (0-1)
- * possibleTrees []
- */
-var fillAreaWithTrees = function(options) {
-    var trees = [];
-    for(var x = options.start.x; x < options.start.x+options.width; x+=(220-options.density*200)) {
-        for(var y = options.start.y; y < options.start.y+options.height; y+=(220-options.density*200)) {
-            var tree = new Doodad({collides: true, autoAdd: false, radius: 120, texture: 'Doodads/'+mathArrayUtils.getRandomElementOfArray(options.possibleTrees), stage: 'stageTrees', scale: {x: 1.1, y: 1.1}, offset: {x: 0, y: -75}, sortYOffset: 75,
-            shadowIcon: 'IsoTreeShadow1', shadowScale: {x: 4, y: 4}, shadowOffset: {x: -6, y: 20}, position: {x: x+(Math.random()*100 - 50), y: y+(Math.random()*80 - 40)}})
-            trees.push(tree);
-        }
-    }
-    return trees;
-};
 
 export default {
     initializeCamp: function() {
@@ -60,10 +43,10 @@ export default {
         treeOptions.height = gameUtils.getPlayableHeight()+50;
         treeOptions.density = .3;
         treeOptions.possibleTrees = possibleTrees;
-        campScene.add(fillAreaWithTrees(treeOptions));
+        campScene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
 
         treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
-        campScene.add(fillAreaWithTrees(treeOptions));
+        campScene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
 
         //Init common doodads
         var flag = gameUtils.getAnimation({

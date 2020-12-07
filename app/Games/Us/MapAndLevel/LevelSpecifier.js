@@ -5,6 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import TileMapper from '@core/TileMapper.js'
+import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
 
 var levelSpecifier = {
     create: function(type, options) {
@@ -56,7 +57,7 @@ var doubles = function(options) {
         scene.add(tileMap);
 
         if(options.levelTileExtension) {
-            options.levelTileExtension(scene, tileTint);
+            options.levelTileExtension(scene, this.tileTint);
         }
     };
     this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: options.enemySets});
@@ -75,7 +76,7 @@ var mobs = function(options) {
         scene.add(tileMap);
 
         if(options.levelTileExtension) {
-            options.levelTileExtension(scene, tileTint);
+            options.levelTileExtension(scene, this.tileTint);
         }
     };
     this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: options.enemySets});
@@ -95,7 +96,7 @@ var airDropStations = function(options) {
     this.onCreate(options)
     this.type = 'airDropStations',
     this.enterNode = function() {
-        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
+        Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: this});
     };
     this.tileSize = 225;
     this.createTerrain = function(scene) {
@@ -103,9 +104,21 @@ var airDropStations = function(options) {
         scene.add(tileMap);
 
         if(options.levelTileExtension) {
-            options.levelTileExtension(scene, tileTint);
+            options.levelTileExtension(scene, this.tileTint);
         }
     };
+    this.createTrees = function(scene) {
+        var treeOptions = {};
+        treeOptions.start = {x: 0, y: 0};
+        treeOptions.width = 300;
+        treeOptions.height = gameUtils.getPlayableHeight()+50;
+        treeOptions.density = .3;
+        treeOptions.possibleTrees = options.possibleTrees;
+        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions))
+
+        treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
+        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
+    }
 }
 airDropStations.prototype = levelBase;
 

@@ -19,7 +19,6 @@ import * as CampNoir from '@games/Us/Stages/CampNoir.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js'
 import StatCollector from '@games/Us/StatCollector.js'
-// import DefeatScreen from '@games/Us/Screens/DefeatScreen.js'
 
 var targetScore = 1;
 
@@ -80,6 +79,9 @@ var game = {
         }.bind(this));
         Matter.Events.on(this, 'GoToCamp', function(event) {
             this.gotoCamp();
+        }.bind(this));
+        Matter.Events.on(this, 'InitAirDrop', function(event) {
+            this.initAirDrop(event.node);
         }.bind(this));
     },
 
@@ -199,10 +201,6 @@ var game = {
         })
     },
 
-    gotoDefeatScreen: function() {
-
-    },
-
     closeMap: function() {
         this.unitSystem.unpause();
         this.mapActive = false;
@@ -222,7 +220,6 @@ var game = {
 
         //reset any unfulfilled enemy states
         this.currentLevelDetails.resetLevel();
-
 
         //create new scene
         var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
@@ -303,6 +300,38 @@ var game = {
                 this.removeAllLevelLocalEntities();
             }
         }.bind(this))
+    },
+
+    initAirDrop: function(node) {
+        this.currentLevelDetails = node.levelDetails;
+
+        //create new scene
+        var airDropScene = new Scene();
+        //Init trees/doodads
+        this.currentLevelDetails.createTerrain(airDropScene);
+        this.currentLevelDetails.createTrees(airDropScene);
+
+        this.currentScene.transitionToScene(airDropScene);
+        Matter.Events.on(airDropScene, 'initialize', function() {
+            Matter.Events.trigger(this, 'enteringLevel');
+            this.resetUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            this.resetUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            var game = this;
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                game.heartbeat.play();
+            }, 800);
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                game.heartbeat.play();
+            }, 1600);
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.floatText("Air drop incoming!", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                game.heartbeat.play();
+            }, 2400);
+        }.bind(this))
+        this.level += 1;
+        this.closeMap();
     },
 
     removeAllEnemyUnits: function() {

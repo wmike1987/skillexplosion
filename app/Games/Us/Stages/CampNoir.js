@@ -31,6 +31,8 @@ var tileExtension = function(scene, tint) {
     scene.add(ornamentMap);
 };
 
+var possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'];
+
 var camp = {
     tileSize: tileSize,
     getBackgroundTiles: levelTiles,
@@ -47,7 +49,7 @@ var camp = {
     },
 
     getPossibleTrees: function() {
-        return ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'];
+        return possibleTrees;
     },
 
     getCampObjects: function() {
@@ -99,7 +101,7 @@ var map = {
             tileSize: tileSize,
             acceptableTileTints: acceptableTileTints,
             getLevelTiles: levelTiles,
-            airDropTrees: ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'],
+            possibleTrees: possibleTrees,
             levelTileExtension: function(scene, tint) {
                 tileExtension(scene, tint);
                 var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
