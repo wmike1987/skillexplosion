@@ -1,10 +1,9 @@
 import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
-    defenseAddition: {value: 1},
-    gritAddition: {value: 8},
-    dodgeAddition: {value: 50},
-    damageAddition: {value: 20},
+    defenseAddition: 1,
+    gritAddition: 8,
+    maxHealth: 5,
 }
 
 export default function() {

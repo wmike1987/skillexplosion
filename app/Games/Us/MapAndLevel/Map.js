@@ -52,6 +52,7 @@ var MapLevelNode = function(levelDetails, mapRef) {
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
             this.displayObject.tint = 0xff0000;
             this.mapRef.travelToNode(this, function() {
+                Matter.Events.trigger(globals.currentGame, "TravelFinished", {node: this});
                 this.enterNode(self);
                 // globals.currentGame.initLevel(self);
                 this.displayObject.tint = 0xFFFFFF;
@@ -146,7 +147,8 @@ var map = function(specs) {
     this.travelToNode = function(node, destinationCallback) {
         this.travelInProgress = true;
         var position = mathArrayUtils.clonePosition(node.position, {y: 20});
-        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2, null, null, function() {
+        Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node});
+        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
             Matter.Body.setVelocity(this.headTokenBody, {
                 x: 0.0,
                 y: 0.0

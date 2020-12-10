@@ -31,7 +31,7 @@ var baseItem = {
                 value.call(unit, true);
             } else {
                 if(unit['add' + capitalizeFirstLetter(key)] instanceof Function) {
-                    unit['add' + capitalizeFirstLetter(key)](value.value);
+                    unit['add' + capitalizeFirstLetter(key)](value);
                 } else {
                     unit[key] += value;
                 }
@@ -48,7 +48,7 @@ var baseItem = {
                 value.call(unit, false);
             } else {
                 if(unit['remove' + capitalizeFirstLetter(key)] instanceof Function) {
-                    unit['remove' + capitalizeFirstLetter(key)](value.value);
+                    unit['remove' + capitalizeFirstLetter(key)](value);
                 } else {
                     unit[key] -= value
                 }

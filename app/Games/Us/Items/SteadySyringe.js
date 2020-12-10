@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
-    damageAddition: {value: .5}
+    damageAddition: .5
 }
 
 export default function() {

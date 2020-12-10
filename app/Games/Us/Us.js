@@ -83,6 +83,23 @@ var game = {
         Matter.Events.on(this, 'InitAirDrop', function(event) {
             this.initAirDrop(event.node);
         }.bind(this));
+
+        Matter.Events.on(this, 'TravelStarted', function(event) {
+            this.shane.fatigue = 0;
+            this.ursula.fatigue = 0;
+            this.fatigueTimer = this.addTimer({
+                name: 'fatigueTimer',
+                gogogo: true,
+                timeLimit: 300,
+                callback: function() {
+                    this.shane.fatigue += 5;
+                    this.ursula.fatigue += 5;
+                }.bind(this)
+            })
+        }.bind(this));
+        Matter.Events.on(this, 'TravelFinished', function(event) {
+            this.invalidateTimer(this.fatigueTimer);
+        }.bind(this));
     },
 
     play: function(options) {
@@ -227,8 +244,8 @@ var game = {
         this.currentScene.transitionToScene(nextLevelScene);
         Matter.Events.on(nextLevelScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.resetUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
-            this.resetUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            this.resetUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
+            this.resetUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
             var game = this;
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
@@ -296,7 +313,6 @@ var game = {
                 commonWinLossTasks.call(this);
                 this.itemSystem.removeAllItemsOnGround(true);
                 this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
-                this.gotoDefeatScreen();
                 this.removeAllLevelLocalEntities();
             }
         }.bind(this))
@@ -411,9 +427,18 @@ var game = {
             unit.stop();
         }
 
-        unit.isTargetable = true;
         unit.currentHealth = unit.maxHealth;
         unit.currentEnergy = unit.maxEnergy;
+
+        //apply fatigue
+        if(options.applyFatigue && unit.fatigue) {
+            var healthPenalty = unit.fatigue*unit.maxHealth/100;
+            var energyPenalty = unit.fatigue*unit.maxEnergy/100;
+            unit.currentHealth -= healthPenalty;
+            unit.currentEnergy -= energyPenalty;
+        }
+
+        unit.isTargetable = true;
         unit.canMove = true;
         unit.canAttack = true;
         if(unit.hideGrave)
