@@ -330,6 +330,17 @@ export default {
 		strokeThickness: 1
 	}),
 
+	fatigueText:  new PIXI.TextStyle({
+		name: 'fatigueText',
+	    fill: "#888888",
+	    fontSize: 15,
+	    fontStyle: "italic",
+	    fontWeight: "lighter",
+	    lineJoin: "round",
+	    miterLimit: 0,
+	    strokeThickness: 1
+	}),
+
 	critHitText: new PIXI.TextStyle({
 		name: 'critHitText',
 	    dropShadowAlpha: 0.6,

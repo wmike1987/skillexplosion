@@ -90,10 +90,13 @@ var game = {
             this.fatigueTimer = this.addTimer({
                 name: 'fatigueTimer',
                 gogogo: true,
-                timeLimit: 300,
+                timeLimit: 75,
                 callback: function() {
-                    this.shane.fatigue += 5;
-                    this.ursula.fatigue += 5;
+                    this.shane.fatigue += 1;
+                    this.ursula.fatigue += 1;
+                    Matter.Events.trigger(this.map, 'SetFatigue', {amount: this.ursula.fatigue});
+                    this.shane.fatigue = Math.min(99, this.shane.fatigue);
+                    this.ursula.fatigue = Math.min(99, this.ursula.fatigue);
                 }.bind(this)
             })
         }.bind(this));
@@ -188,8 +191,8 @@ var game = {
             })
 
             //reset shane and urs
-            this.resetUnit(this.shane, {yoffset: 40});
-            this.resetUnit(this.ursula, {yoffset: 40});
+            this.setUnit(this.shane, {yoffset: 40});
+            this.setUnit(this.ursula, {yoffset: 40});
 
             //clean up spawner if it exists
             if(this.currentSpawner) {
@@ -244,8 +247,10 @@ var game = {
         this.currentScene.transitionToScene(nextLevelScene);
         Matter.Events.on(nextLevelScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.resetUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
-            this.resetUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
+            this.unitSystem.pause();
+            gameUtils.setCursorStyle('None');
+            this.setUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
+            this.setUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
             var game = this;
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
@@ -257,6 +262,8 @@ var game = {
             }, 1600);
             gameUtils.doSomethingAfterDuration(() => {
                 this.currentSpawner.initialize();
+                this.unitSystem.unpause();
+                gameUtils.setCursorStyle('Main');
                 graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
                 game.heartbeat.play();
                 this.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
@@ -330,8 +337,8 @@ var game = {
         this.currentScene.transitionToScene(airDropScene);
         Matter.Events.on(airDropScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.resetUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
-            this.resetUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            this.setUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            this.setUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
             var game = this;
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
@@ -394,7 +401,7 @@ var game = {
     },
 
     //used just for shane/urs
-    resetUnit: function(unit, options) {
+    setUnit: function(unit, options) {
         var options = options || {};
         var yoffset = options.yoffset || 0;
         var moveToCenter = options.moveToCenter;
@@ -414,13 +421,13 @@ var game = {
         }
 
         if(moveToCenter) {
-            this.unitSystem.pause();
             unit.body.collisionFilter.mask -= 0x0004;
-            gameUtils.setCursorStyle('None');
+            unit.showLifeBar();
+            unit.showEnergyBar();
             gameUtils.doSomethingAfterDuration(() => {
                 unit.body.collisionFilter.mask += 0x0004;
-                this.unitSystem.unpause();
-                gameUtils.setCursorStyle('Main');
+                unit.showLifeBar(false);
+                unit.showEnergyBar(false);
             }, 2400);
             unit.move(mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: centerX, y: 0}));
         } else {

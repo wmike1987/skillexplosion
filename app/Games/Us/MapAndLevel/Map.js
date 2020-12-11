@@ -5,6 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
 import LevelSpecifier from '@games/Us/MapAndLevel/LevelSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
+import styles from '@utils/Styles.js'
 
 //Token Mappings
 var typeTokenMappings = {
@@ -73,14 +74,26 @@ var map = function(specs) {
         isSensor: true,
         frictionAir: 0.0,
     });
+    var fatigueScaleX = 1;
+    var fatigueScaleY = 1;
     this.headTokenBody.renderChildren = [{
-        id: 'headtoken',
-        data: "HeadToken",
-        stage: 'hudNOne'
-    }]
+            id: 'headtoken',
+            data: "HeadToken",
+            stage: 'hudNOne'
+        },
+    ];
+    this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {position: {x: 100, y: 100}, style: styles.fatigueText, where: "hudNOne"});
+    Matter.Events.on(this, "SetFatigue", function(event) {
+        this.fatigueText.alpha = .9;
+        var amount = event.amount;
+        this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
+    }.bind(this))
     global.currentGame.addBody(this.headTokenBody);
+    gameUtils.attachSomethingToBody({something: this.fatigueText, body: this.headTokenBody, offset: {x: 0, y: 20}});
     Matter.Body.setPosition(this.headTokenBody, gameUtils.getCanvasCenter());
     this.headTokenSprite = this.headTokenBody.renderlings.headtoken;
+    this.fatigueBarSprite = this.headTokenBody.renderlings.fatigueBar;
+    this.fatigueFillSprite = this.headTokenBody.renderlings.fatigueFill;
     this.headTokenSprite.visible = false;
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {where: 'foreground', position: gameUtils.getPlayableCenter()});
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
@@ -122,6 +135,8 @@ var map = function(specs) {
     }
 
     this.show = function() {
+        this.fatigueText.text = 'Fatigue: ' + '0%';
+        this.fatigueText.alpha = .3;
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
             node.displayObject.where = 'hudNTwo'
@@ -132,6 +147,7 @@ var map = function(specs) {
         })
 
         graphicsUtils.addOrShowDisplayObject(this.headTokenSprite);
+        graphicsUtils.addOrShowDisplayObject(this.fatigueText);
     }
 
     this.hide = function() {
@@ -142,6 +158,7 @@ var map = function(specs) {
         })
 
         this.headTokenSprite.visible = false;
+        this.fatigueText.visible = false;
     }
 
     this.travelToNode = function(node, destinationCallback) {
