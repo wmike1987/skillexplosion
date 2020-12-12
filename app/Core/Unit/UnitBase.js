@@ -167,9 +167,11 @@ var UnitBase = {
         this.isDead = true;
         Matter.Events.trigger(this, 'death', {});
         var levelLocalEntities = this.death();
-        levelLocalEntities.forEach((ent) => {
-            Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: ent});
-        })
+        if(levelLocalEntities) {
+            levelLocalEntities.forEach((ent) => {
+                Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: ent});
+            })
+        }
     },
 
     death: function() {

@@ -219,6 +219,8 @@ var game = {
                 }
             }.bind(this))
         })
+
+        return vScene;
     },
 
     closeMap: function() {
@@ -245,6 +247,9 @@ var game = {
         var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
         this.campActive = false;
         this.currentScene.transitionToScene(nextLevelScene);
+        Matter.Events.on(nextLevelScene, 'afterSnapshotRender', function() {
+            this.closeMap();
+        }.bind(this))
         Matter.Events.on(nextLevelScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
             this.unitSystem.pause();
@@ -271,7 +276,6 @@ var game = {
             }, 2400);
         }.bind(this))
         this.level += 1;
-        this.closeMap();
 
         //win/loss conditions
         var lossCondition = null;
@@ -289,8 +293,6 @@ var game = {
             this.ursula.canMove = false;
             this.shane.isTargetable = false;
             this.ursula.isTargetable = false;
-            gameUtils.moveUnitOffScreen(this.shane);
-            gameUtils.moveUnitOffScreen(this.ursula);
             Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
         }
 
@@ -310,8 +312,12 @@ var game = {
             if(!unitsOfOpposingTeamExist && enemySetsFulfilled && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
                 commonWinLossTasks.call(this);
                 node.isCompleted = true;
-                this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
-                this.removeAllLevelLocalEntities();
+                var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
+                Matter.Events.on(sc, 'afterSnapshotRender', function() {
+                    gameUtils.moveUnitOffScreen(this.shane);
+                    gameUtils.moveUnitOffScreen(this.ursula);
+                    this.removeAllLevelLocalEntities();
+                }.bind(this))
             }
         }.bind(this))
 
@@ -319,8 +325,12 @@ var game = {
             if(this.shane.isDead && this.ursula.isDead) {
                 commonWinLossTasks.call(this);
                 this.itemSystem.removeAllItemsOnGround(true);
-                this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
-                this.removeAllLevelLocalEntities();
+                var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
+                Matter.Events.on(sc, 'afterSnapshotRender', function() {
+                    gameUtils.moveUnitOffScreen(this.shane);
+                    gameUtils.moveUnitOffScreen(this.ursula);
+                    this.removeAllLevelLocalEntities();
+                }.bind(this))
             }
         }.bind(this))
     },

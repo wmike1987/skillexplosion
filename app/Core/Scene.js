@@ -93,89 +93,93 @@ Scene.prototype.transitionToScene = function(options) {
 
     globals.currentGame.currentScene = newScene;
 
-    //define transition vars
-    var iterTime;
-    var fadeIn = null;
-    var fadeOut = null;
-    var cleanUp = null;
-    var inRuns = null;
-    var runs = null;
-    if(mode == SceneModes.BLACK) {
-        var tintDO = graphicsUtils.createDisplayObject('TintableSquare', {where: 'transitionLayer'});
-        graphicsUtils.addSomethingToRenderer(tintDO);
-        tintDO.position = gameUtils.getCanvasCenter();
-        tintDO.tint = 0x000000;
-        tintDO.alpha = 0;
-        graphicsUtils.makeSpriteSize(tintDO, gameUtils.getCanvasWH());
-        iterTime = 32;
-        runs = transitionLength/iterTime;
-        fadeIn = function() {
-            tintDO.alpha += (1 / (transitionLength/iterTime));
-        };
-        fadeOut = function() {
-            tintDO.alpha -= (1 / (transitionLength/iterTime));
-        };
-        cleanUp = function() {
-            graphicsUtils.removeSomethingFromRenderer(tintDO);
-        };
-    } else if(mode == SceneModes.FADE_AWAY) {
-        var currentGame = globals.currentGame;
-        const renderTexture = new PIXI.RenderTexture.create(gameUtils.getCanvasWidth(), gameUtils.getCanvasHeight());
-        const transitionSprite = new PIXI.Sprite(renderTexture);
-        var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
-        var renderer = globals.currentGame.renderer.pixiApp.renderer;
-        renderer.render(rStage, renderTexture)
-        graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
+    var handler = Matter.Events.on(globals.currentGame.gameLoop, 'afterRenderWorld', () => {
+        //define transition vars
+        var iterTime;
+        var fadeIn = null;
+        var fadeOut = null;
+        var cleanUp = null;
+        var inRuns = null;
+        var runs = null;
+        if(mode == SceneModes.BLACK) {
+            var tintDO = graphicsUtils.createDisplayObject('TintableSquare', {where: 'transitionLayer'});
+            graphicsUtils.addSomethingToRenderer(tintDO);
+            tintDO.position = gameUtils.getCanvasCenter();
+            tintDO.tint = 0x000000;
+            tintDO.alpha = 0;
+            graphicsUtils.makeSpriteSize(tintDO, gameUtils.getCanvasWH());
+            iterTime = 32;
+            runs = transitionLength/iterTime;
+            fadeIn = function() {
+                tintDO.alpha += (1 / (transitionLength/iterTime));
+            };
+            fadeOut = function() {
+                tintDO.alpha -= (1 / (transitionLength/iterTime));
+            };
+            cleanUp = function() {
+                graphicsUtils.removeSomethingFromRenderer(tintDO);
+            };
+        } else if(mode == SceneModes.FADE_AWAY) {
+            var currentGame = globals.currentGame;
+            const renderTexture = new PIXI.RenderTexture.create(gameUtils.getCanvasWidth(), gameUtils.getCanvasHeight());
+            const transitionSprite = new PIXI.Sprite(renderTexture);
+            var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
+            var renderer = globals.currentGame.renderer.pixiApp.renderer;
+            renderer.render(rStage, renderTexture)
+            graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
 
-        inRuns = 1;
-        iterTime = 32
-        runs = transitionLength/iterTime;
-        // var dShader = new PIXI.Filter(null, dissolveShader, {
-        //     a: Math.random()*10 + 10,
-        //     b: 10,
-        //     c: 555555,
-        //     progress: 1.0,
-        //     screenSize: gameUtils.getPlayableWH(),
-        //     gridSize: 8,
-        // });
-        // globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
+            inRuns = 1;
+            iterTime = 32
+            runs = transitionLength/iterTime;
+            // var dShader = new PIXI.Filter(null, dissolveShader, {
+                //     a: Math.random()*10 + 10,
+                //     b: 10,
+                //     c: 555555,
+                //     progress: 1.0,
+                //     screenSize: gameUtils.getPlayableWH(),
+                //     gridSize: 8,
+                // });
+                // globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
-        var dShader = new PIXI.Filter(null, circleDissolveShader, {
-            a: Math.random()*10 + 10,
-            b: 10,
-            c: 555555,
-            progress: 1.0,
-            screenSize: gameUtils.getPlayableWH(),
-            screenCenter: gameUtils.getCanvasCenter(),
-            gridSize: 2,
-            fadeOut: false,
-        });
-        globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
+                var dShader = new PIXI.Filter(null, circleDissolveShader, {
+                    a: Math.random()*10 + 10,
+                    b: 10,
+                    c: 555555,
+                    progress: 1.0,
+                    screenSize: gameUtils.getPlayableWH(),
+                    screenCenter: gameUtils.getCanvasCenter(),
+                    gridSize: 2,
+                    fadeOut: false,
+                });
+                globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
-        fadeIn = function() {};
-        fadeOut = function() {
-            dShader.uniforms.progress -= 1/(transitionLength/iterTime);
-        }
+                fadeIn = function() {};
+                fadeOut = function() {
+                    dShader.uniforms.progress -= 1/(transitionLength/iterTime);
+                }
 
-        cleanUp = function() {
-            graphicsUtils.removeSomethingFromRenderer(transitionSprite);
-            globals.currentGame.renderer.layers.transitionLayer.filters = [];
-        }
-    }
+                cleanUp = function() {
+                    graphicsUtils.removeSomethingFromRenderer(transitionSprite);
+                    globals.currentGame.renderer.layers.transitionLayer.filters = [];
+                }
+            }
 
-    newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
-        fadeIn();
-    }.bind(this), totallyDoneCallback: function() {
-        Matter.Events.trigger(this, 'clear');
-        this.clear();
-        newScene.initializeScene();
-        globals.currentGame.addTimer({name: 'sceneOut' + this.id, runs: runs, timeLimit: iterTime, killsSelf: true, callback: function() {
-            fadeOut();
-        }.bind(this), totallyDoneCallback: function() {
-            Matter.Events.trigger(newScene, 'sceneFadeDone');
-            cleanUp();
-        }.bind(this)})
-    }.bind(this)});
+            newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
+                fadeIn();
+            }.bind(this), totallyDoneCallback: function() {
+                Matter.Events.trigger(this, 'clear');
+                this.clear();
+                newScene.initializeScene();
+                globals.currentGame.addTimer({name: 'sceneOut' + this.id, runs: runs, timeLimit: iterTime, killsSelf: true, callback: function() {
+                    fadeOut();
+                }.bind(this), totallyDoneCallback: function() {
+                    Matter.Events.trigger(newScene, 'sceneFadeDone');
+                    cleanUp();
+                }.bind(this)})
+            }.bind(this)});
+        Matter.Events.trigger(this, 'afterSnapshotRender', {});
+        Matter.Events.off(globals.currentGame.gameLoop, 'afterRenderWorld', handler);
+    });
 };
 
 export default Scene;
