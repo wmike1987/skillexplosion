@@ -149,7 +149,7 @@ Scene.prototype.transitionToScene = function(options) {
                     screenSize: gameUtils.getPlayableWH(),
                     screenCenter: gameUtils.getCanvasCenter(),
                     gridSize: 2,
-                    fadeOut: false,
+                    fadeOut: options.fadeIn,
                 });
                 globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
@@ -177,7 +177,7 @@ Scene.prototype.transitionToScene = function(options) {
                     cleanUp();
                 }.bind(this)})
             }.bind(this)});
-        Matter.Events.trigger(this, 'afterSnapshotRender', {});
+        Matter.Events.trigger(newScene, 'afterSnapshotRender', {});
         Matter.Events.off(globals.currentGame.gameLoop, 'afterRenderWorld', handler);
     });
 };

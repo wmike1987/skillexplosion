@@ -422,6 +422,9 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
     //hide augment button
     this.unitAugmentPanel.hideOpenButton();
 
+    //hide passive button
+    this.unitPassivePanel.hideOpenButton();
+
     //blank out unit stat panel
     if(!options.transitioningUnits) {
         this.unitNameText.text = '-----';
@@ -522,7 +525,6 @@ unitPanel.prototype.updateUnitItems = function() {
             if(!icon.parent) {
                 var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                 graphicsUtils.makeSpriteSize(icon, 27);
-                gameUtils.deathPact(this.prevailingUnit, it);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -544,7 +546,6 @@ unitPanel.prototype.updateUnitItems = function() {
             if(!icon.parent) {
                 var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
                 graphicsUtils.makeSpriteSize(icon, 27);
-                gameUtils.deathPact(this.prevailingUnit, it);
             } else {
                 icon.position = {x: x, y: y};
                 icon.visible = true;
@@ -933,6 +934,16 @@ unitPanel.prototype.displayCommands = function() {
         }.bind(this))
     }
 };
+
+unitPanel.prototype.showAugmentsAndPassivesForUnit = function(unit) {
+    this.unitAugmentPanel.showForUnit(unit);
+    this.unitPassivePanel.showForUnit(unit);
+},
+
+unitPanel.prototype.hideAugmentsAndPassivesForUnit = function() {
+    this.unitAugmentPanel.hideForCurrentUnit();
+    this.unitPassivePanel.hideForCurrentUnit();
+},
 
 unitPanel.prototype.enterCamp = function() {
     this.unitAugmentPanel.lowerOpenButton();

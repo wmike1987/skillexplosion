@@ -3,7 +3,7 @@ import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
-import LevelSpecifier from '@games/Us/MapAndLevel/LevelSpecifier.js'
+import {levelSpecifier} from '@games/Us/MapAndLevel/LevelSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import styles from '@utils/Styles.js'
 
@@ -103,7 +103,7 @@ var map = function(specs) {
 
     this.graph = [];
 
-    var mainCamp = LevelSpecifier.create('camp', specs.levelOptions);
+    var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
     var initialCampNode = new MapLevelNode(mainCamp, this);
     initialCampNode.setPosition(gameUtils.getPlayableCenter());
     this.graph.push(initialCampNode);
@@ -112,7 +112,7 @@ var map = function(specs) {
 
         for(var x = 0; x < this.levels[key]; x++) {
 
-            var level = LevelSpecifier.create(key, specs.levelOptions);
+            var level = levelSpecifier.create(key, specs.worldSpecs);
             var mapNode = new MapLevelNode(level, this);
 
             //Determine position

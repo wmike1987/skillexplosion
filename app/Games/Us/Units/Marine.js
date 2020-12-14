@@ -2,7 +2,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Augmentable.js'
+import aug from '@core/Unit/_Unlocker.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import Passive from '@core/Unit/UnitPassive.js'
 import rv from '@core/Unit/_Revivable.js'
@@ -911,7 +911,7 @@ export default function Marine(options) {
             }
 
             $.extend(this, aug);
-            this.augmentableInit();
+            this.unlockerInit();
         }}, options);
 
     return UC({

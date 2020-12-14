@@ -12,7 +12,7 @@ var unitSpawner = function(enemySets) {
 
     var self = this;
 
-    this.initialize = function() {
+    this.start = function() {
         $.each(enemySets, function(i, enemy) {
             var total = 0;
             var itemsToGive = enemy.item ? enemy.item.total : 0;

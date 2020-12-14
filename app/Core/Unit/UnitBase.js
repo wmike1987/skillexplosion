@@ -721,6 +721,7 @@ var UnitBase = {
             gogogo: true,
             timeLimit: 100,
             callback: function() {
+                if(this.ignoreEnergyRegeneration) return;
                 if(this.currentEnergy < this.maxEnergy && this.energyRegenerationRate) {
                     this.currentEnergy = Math.min(this.currentEnergy + this.getTotalEnergyRegeneration()/10 || 0, this.maxEnergy);
                 }
@@ -734,6 +735,7 @@ var UnitBase = {
             gogogo: true,
             timeLimit: 100,
             callback: function() {
+                if(this.ignoreHealthRegeneration) return;
                 if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
                     this.currentHealth = Math.min(this.currentHealth + this.getTotalHealthRegeneration()/10, this.maxHealth);
                 }

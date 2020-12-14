@@ -96,7 +96,7 @@ var map = {
             mobs: 1,
             airDropStations: 6,
         },
-        levelOptions: {
+        worldSpecs: {
             enemySets: noirEnemySets,
             tileSize: tileSize,
             acceptableTileTints: acceptableTileTints,

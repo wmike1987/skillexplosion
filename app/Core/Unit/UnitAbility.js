@@ -3,8 +3,16 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 export default function(options) {
     Object.assign(this, options);
 
+    //Alter the ability's augments somewhat
     if(options.augments) {
-        options.augments.forEach(augment => augment.ability = this);
+        options.augments.forEach(augment => {
+            augment.ability = this;
+            if(augment.systemMessage) {
+                augment.systemMessage = [augment.systemMessage, 'Click to equip']
+            } else {
+                augment.systemMessage = 'Click to equip';
+            }
+        });
     }
 
     this.costs = [];
