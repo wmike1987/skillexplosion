@@ -73,9 +73,12 @@ var itemSystem = function(properties) {
             item.icon.alpha = .6;
             item.icon.tooltipObj.disabled = true;
             item.icon.sortYOffset = 1000;
-            item.grabCallback = globals.currentGame.addTickCallback(function() {
+            item.iconMoveCallback = globals.currentGame.addTickCallback(function() {
                 item.icon.position = {x: globals.currentGame.mousePosition.x - 0, y: globals.currentGame.mousePosition.y - 0};
             })
+            if(item.grabCallback) {
+                item.grabCallback();
+            }
             this.grabbedItem = item;
             this.canDropGrabbedItem = false;
             itemGrab.play();
@@ -83,26 +86,47 @@ var itemSystem = function(properties) {
         }.bind(this))
 
         this.grabDropListener = globals.currentGame.addListener('mousedown', function(event) {
-            if(!this.canDropGrabbedItem) { //this is so confusingly dumb
+            //This prevents this mousedown listener from dropping the item upon the 'mousedown' pickup
+            //listener event. In other words, the mousedown listeners were both occurring on the same frame
+            if(!this.canDropGrabbedItem) {
                 this.canDropGrabbedItem = true;
                 return;
             }
 
             if(!this.grabbedItem || event.which != 1) return;
             var item = this.grabbedItem;
-            globals.currentGame.removeTickCallback(item.grabCallback);
+
+            if(item.dropPredicate && !item.dropPredicate(globals.currentGame.mousePosition)) {
+                return;
+            }
+
+            //Clear the icon-follow callback
+            globals.currentGame.removeTickCallback(item.iconMoveCallback);
+            item.iconMoveCallback = null;
+
+            //Drop behavior
             if(gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
                 var variationX = Math.random()*60;
                 var dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35});
+
                 if(!gameUtils.isPositionWithinPlayableBounds(dropPosition)) {
                     dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 0});
                 }
-                item.drop(dropPosition, {fleeting: false});
-                item.icon.visible = false;
-                item.icon.alpha = 1;
-                item.icon.tooltipObj.disabled = false;
-                this.grabbedItem = null;
+
+                if(item.dropCallback) {
+                    var dropAnyway = item.dropCallback(globals.currentGame.mousePosition)
+                }
+
+                if(dropAnyway || !item.dropCallback) {
+                    //default drop behavior
+                    item.drop(dropPosition, {fleeting: false});
+                    item.icon.visible = false;
+                    item.icon.alpha = 1;
+                    item.icon.tooltipObj.disabled = false;
+                    this.grabbedItem = null;
+                }
             } else {
+                //Swap, place, or snap back behavior
                 var mouseOverSlottedItem = false;
                 var prevailingUnit = globals.currentGame.unitSystem.selectedUnit;
                 var allItems = prevailingUnit.getAllItems();
@@ -116,10 +140,16 @@ var itemSystem = function(properties) {
                     if(loopItem && loopItem != item && !loopItem.isEmptySlot) {
                         if(loopItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
                             if(item.worksWithSlot(loopItem.currentSlot)) {
+                                //pickup the currently slotted item
                                 prevailingUnit.unequipItem(loopItem);
                                 Matter.Events.trigger(this, 'usergrab', {item: loopItem})
-                                prevailingUnit.pickupItem(item, loopItem.currentSlot);
                                 loopItem.currentSlot = null;
+
+                                //equip the currently grabbed item
+                                prevailingUnit.pickupItem(item, loopItem.currentSlot);
+                                if(item.placeCallback) {
+                                    item.placeCallback();
+                                }
                                 this.canDropGrabbedItem = true;
                                 found = true;
                             }
@@ -133,6 +163,9 @@ var itemSystem = function(properties) {
                         if(blankItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
                             if(item.worksWithSlot(blankItem.currentSlot)) {
                                 prevailingUnit.pickupItem(item, blankItem.currentSlot);
+                                if(item.placeCallback) {
+                                    item.placeCallback();
+                                }
                                 found = true;
                             }
                         }
@@ -149,6 +182,10 @@ var itemSystem = function(properties) {
                         item.icon.alpha = 1;
                         item.icon.tooltipObj.disabled = false;
                         this.grabbedItem = null;
+                    } else {
+                        if(item.placeCallback) {
+                            item.placeCallback();
+                        }
                     }
                 }
             }
@@ -213,6 +250,14 @@ var itemSystem = function(properties) {
     },
 
     this.removeItem = function(item) {
+        if(this.grabbedItem == item) {
+            this.grabbedItem = false;
+        }
+
+        if(item.iconMoveCallback) {
+            globals.currentGame.removeTickCallback(item.iconMoveCallback);
+        }
+
         this.removeItemFromGround(item);
         this.items.delete(item);
         item.destroy();

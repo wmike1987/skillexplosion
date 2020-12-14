@@ -8,6 +8,7 @@ var equipShow = gameUtils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
 var equip = gameUtils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
 var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
+var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: .3, rate: .7});
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
@@ -29,19 +30,10 @@ ConfigPanel.prototype.initialize = function() {
 
     //close config windows when we click the canvas
     globals.currentGame.addListener("mousedown", function() {
-        if(globals.currentGame.campActive) {
+        if(globals.currentGame.campLikeActive) {
             this.hideForCurrentUnit();
         }
     }.bind(this), false, true);
-    //
-    // this.abilityBases = [];
-    // for(var x = 0; x < 3; x++) {
-    //     var base = graphicsUtils.addSomethingToRenderer('AugmentArmPanel', {where: 'hud', anchor: {x: .5, y: 1}, scale: {x: 0, y: 0}});
-    //     base.visible = false;
-    //     // graphicsUtils.makeSpriteSize(base, {w: 30, h: 150});
-    //     this.abilityBases.push(base)
-    //     base.sortYOffset = 1000;
-    // }
 
     this.configButtonHeight = 218;
     this.configButtonGlassHeight = 200;
@@ -82,7 +74,7 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     this.liftOpenButton();
 
     //hide for last unit
-    this.hideForCurrentUnit();
+    // this.hideForCurrentUnit();
 
     //set current unit
     this.currentUnit = unit;
@@ -108,7 +100,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                     var a = graphicsUtils.addSomethingToRenderer(augment.icon, {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
                     var l = augment.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                     augment.lock.visible = false;
-                    augment.unlocked = true; //for debugging
+                    // augment.unlocked = true; //for debugging
                     var ab = augment.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudTwo'});
                     graphicsUtils.makeSpriteSize(augment.actionBox, {x: 50, y: 50});
                     var b = augment.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: ability.position.x, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(j)}, where: 'hudOne'});
@@ -144,8 +136,10 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             //trigger event and trigger ability panel update
                             Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.currentUnit})
                             this.unitPanelRef.updateUnitAbilities();
-                        } else if(!augment.unlocked && unit.canUnlockAugment(augment)) {
-                            unit.unlockAugment(augment);
+                        } else if(!augment.unlocked && unit.canUnlockSomething(augment)) {
+                            unit.unlockSomething(augment);
+                            Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: augment.systemMessage});
+                            unlockAugmentSound.play();
                             augment.lock.visible = false;
                         }
                     }.bind(this))
@@ -162,7 +156,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             augment.border.alpha = alphaAugment;
                         }
                     })
-                    Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: augment.systemMessage});
+                    Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: "Locked"});
 
                 }
                 if(currentAugment == augment) {
@@ -199,11 +193,6 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
     var unit = this.currentUnit;
     this.currentUnit = null;
 
-    //hide infrastructure
-    // $.each(this.abilityBases, function(i, base) {
-    //     base.visible = false;
-    // })
-
     //hide augments
     $.each(unit.abilities, function(i, ability) {
         if(ability.augments) {
@@ -229,7 +218,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
 };
 
 ConfigPanel.prototype.lowerOpenButton = function() {
-    if(this.unitPanelRef.prevailingUnit && globals.currentGame.campActive) {
+    if(this.unitPanelRef.prevailingUnit && globals.currentGame.campLikeActive) {
         graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
         graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
         graphicsUtils.addOrShowDisplayObject(this.showButton);
@@ -258,6 +247,10 @@ ConfigPanel.prototype.liftOpenButton = function() {
     graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
     this.showButtonGlass.position = {x: this.showButtonGlass.position.x, y: gameUtils.getPlayableHeight()-this.configButtonGlassHeight/2}
     this.showButtonGlass.scale = {x: 1.00, y: 1.00};
+};
+
+ConfigPanel.prototype.collidesWithPoint = function(point) {
+    return (this.showButton.containsPoint(point));
 };
 
 ConfigPanel.prototype.cleanUp = function() {

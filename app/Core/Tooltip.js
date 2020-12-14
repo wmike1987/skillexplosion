@@ -255,6 +255,10 @@ Tooltip.prototype.hide = function() {
 };
 
 Tooltip.makeTooltippable = function(displayObject, options) {
+    //If we have an existing tooltip, just kill it
+    if(displayObject.tooltipObj) {
+        displayObject.tooltipObj.destroy();
+    }
     displayObject.interactive = true;
     options.position = displayObject.position;
     displayObject.tooltipObj = new Tooltip(options);

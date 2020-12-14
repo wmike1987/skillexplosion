@@ -8,6 +8,7 @@ var equipShow = gameUtils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
 var equip = gameUtils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
 var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
+var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: .3, rate: .7});
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
@@ -29,7 +30,7 @@ ConfigPanel.prototype.initialize = function() {
 
     //close config windows when we click the canvas
     globals.currentGame.addListener("mousedown", function() {
-        if(globals.currentGame.campActive) {
+        if(globals.currentGame.campLikeActive) {
             this.hideForCurrentUnit();
         }
     }.bind(this), false, true);
@@ -78,7 +79,7 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     this.liftOpenButton();
 
     //hide for last unit
-    this.hideForCurrentUnit();
+    // this.hideForCurrentUnit();
 
     //set current unit
     this.currentUnit = unit;
@@ -115,9 +116,10 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.icon = graphicsUtils.addSomethingToRenderer(passive.textureName, {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
             passive.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
             passive.lock.visible = false;
-            passive.unlocked = true; //for debugging
+            // passive.unlocked = true; //for debugging
             passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
-            Tooltip.makeTooltippable(passive.actionBox, passive);
+
+            Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Locked"}));
             graphicsUtils.makeSpriteSize(passive.actionBox, {x: 50, y: 50});
             passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
             passive.border.sortYOffset = -10;
@@ -126,7 +128,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.addSlave(passive.icon, passive.lock, passive.actionBox, passive.border);
 
             passive.actionBox.on('mousedown', function(event) {
-                if(keyStates['Control']) {
+                if(keyStates['Control'] && passive.unlocked) {
                     if(!passive.defensePassive) {
                         if(passive.attackPassive) {
                             unit.unequipPassive(passive);
@@ -143,7 +145,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         this.currentDefensePassiveBorder.visible = true;
                     }
                 } else {
-                    if(!passive.attackPassive) {
+                    if(!passive.attackPassive && passive.unlocked) {
                         if(passive.defensePassive) {
                             unit.unequipPassive(passive);
                             this.currentDefensePassiveBorder.visible = false;
@@ -168,8 +170,10 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     //trigger event and trigger ability panel update
                     Matter.Events.trigger(this, 'passiveEquip', {passive: passive, unit: this.currentUnit})
                     this.unitPanelRef.updateUnitPassives();
-                } else if(!passive.unlocked && unit.canUnlockAugment(passive)) {
-                    unit.unlockAugment(passive);
+                } else if(!passive.unlocked && unit.canUnlockSomething(passive)) {
+                    Tooltip.makeTooltippable(passive.actionBox, passive);
+                    unit.unlockSomething(passive);
+                    unlockAugmentSound.play();
                     passive.lock.visible = false;
                 }
             }.bind(this))
@@ -240,7 +244,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
 };
 
 ConfigPanel.prototype.lowerOpenButton = function() {
-    if(this.unitPanelRef.prevailingUnit && globals.currentGame.campActive) {
+    if(this.unitPanelRef.prevailingUnit && globals.currentGame.campLikeActive) {
         graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
         graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNTwo');
         graphicsUtils.addOrShowDisplayObject(this.showButtonSkinny);
@@ -277,6 +281,10 @@ ConfigPanel.prototype.liftOpenButton = function() {
     this.showButtonGlass.scale = {x: 1.00, y: 1.00};
 
     this.showButtonSkinny.visible = false;
+};
+
+ConfigPanel.prototype.collidesWithPoint = function(point) {
+    return (this.showButton.containsPoint(point));
 };
 
 ConfigPanel.prototype.cleanUp = function() {

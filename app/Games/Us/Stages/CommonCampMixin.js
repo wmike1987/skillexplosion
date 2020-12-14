@@ -99,7 +99,7 @@ export default {
             var canvasPoint = {x: 0, y: 0};
             gameUtils.pixiPositionToPoint(canvasPoint, event);
 
-            if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campActive) {
+            if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campLikeActive) {
                 self.openmap.play();
                 this.unitSystem.pause();
                 this.map.show();

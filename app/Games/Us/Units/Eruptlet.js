@@ -2,7 +2,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Augmentable.js'
+import aug from '@core/Unit/_Unlocker.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
@@ -261,15 +261,9 @@ export default function Eruptlet(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            var self = this;
-            var anim = gameUtils.getAnimation({
-                spritesheetName: 'BaseUnitAnimations1',
-                animationName: 'bloodsplat',
-                speed: .3,
-                transform: [self.position.x, self.position.y, .3, .3]
-            });
-            graphicsUtils.addSomethingToRenderer(anim);
-            anim.play();
+            if(!this.alreadyAttacked) {
+                this.attack();
+            }
             globals.currentGame.removeUnit(this);
         },
         _afterAddInit: function() {
@@ -316,9 +310,9 @@ export default function Eruptlet(options) {
             damage: 6,
             attack: function(target) {
                 var deathAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'BanelingAnimations1',
-                    animationName: 'banedeath',
-                    speed: 2,
+                    spritesheetName: 'EruptletAnimations1',
+                    animationName: 'eruptletExplode',
+                    speed: 1,
                     transform: [this.position.x, this.position.y, 1.5, 1.5]
                 });
 
@@ -335,7 +329,7 @@ export default function Eruptlet(options) {
                     unit.sufferAttack(this.damage, this);
                 }.bind(this));
                 this.alreadyAttacked = true;
-                if(!this.alreadyDied)
+                if(!this.isDead)
                     this.sufferAttack(10000);
             }
         },

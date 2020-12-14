@@ -13,6 +13,7 @@ var capitalizeFirstLetter = function(s) {
 
 var baseItem = {
     equip: function(unit) {
+        if(!this.manipulations) return;
         $.each(this.manipulations, function(key, value) {
             if(key == 'events') {
                 $.each(value, function(k, v) {
@@ -39,6 +40,7 @@ var baseItem = {
         }.bind(this))
     },
     unequip: function(unit) {
+        if(!this.manipulations) return;
         $.each(this.manipulations, function(key, value) {
             if(key == "events") {
                 $.each(value, function(k, v) {
@@ -234,6 +236,7 @@ var ic = function(options) {
     }
 
     newItem.destroy = function() {
+        this.itemDestroyed = true;
         if(this.icon.tooltipObj) {
             this.icon.tooltipObj.destroy();
         }
