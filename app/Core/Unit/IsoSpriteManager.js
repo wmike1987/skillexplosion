@@ -22,7 +22,7 @@ function IsoSpriteManager(options) {
 		set: function(value) {
 			this._isoManagedAlpha = value;
 			if(isoManager.currentAnimation) {
-				isoManager.currentAnimation.alpha = value || 1;
+				isoManager.currentAnimation.alpha = mathArrayUtils.isFalseNotZero(value) ? 1 : value;
 			}
 		},
 		configurable: true
@@ -113,7 +113,7 @@ function IsoSpriteManager(options) {
 		}
 
 		//ensure the current animation has the current iso properties
-		animation.alpha = this.unit.isoManagedAlpha || 1;
+		animation.alpha = mathArrayUtils.isFalseNotZero(this.unit.isoManagedAlpha) ? 1 : this.unit.isoManagedAlpha;
 		animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
 	}
 

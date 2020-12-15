@@ -120,6 +120,7 @@ var UnitBase = {
             }
         } else {
             Matter.Events.trigger(attackingUnit, 'dealNonLethalDamage', {targetUnit: this});
+            Matter.Events.trigger(this, 'sufferNonLethalAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
             this.showLifeBar(true);
             if(!this.barTimer) {
                 this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {

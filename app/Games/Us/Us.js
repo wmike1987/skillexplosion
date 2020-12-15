@@ -274,10 +274,13 @@ var game = {
                 game.heartbeat.play();
                 this.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
                 this.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+                this.initializeWinLossCondition(node);
             }, 2400);
         }.bind(this))
         this.level += 1;
+    },
 
+    initializeWinLossCondition: function(node) {
         //win/loss conditions
         var lossCondition = null;
         var winCondition = null;
@@ -333,8 +336,12 @@ var game = {
                     commonWinLossTasks.call(this);
                     this.itemSystem.removeAllItemsOnGround(true);
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
-                    Matter.Events.on(sc, 'afterSnapshotRender', function() {
+                    gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
                         this.removeAllLevelLocalEntities();
+                        var enemies = gameUtils.getUnitEnemies(this.shane);
+                        enemies.forEach((enemy) => {
+                            this.removeUnit(enemy);
+                        })
                     }.bind(this))
                 }, 600);
             }
@@ -495,6 +502,7 @@ game.assets = [
     {name: "SentinelAnimations1", target: "Textures/Us/SentinelAnimations1.json"},
     {name: "Eruptlet", target: "Textures/Us/Eruptlet.json"},
     {name: "EruptletAnimations1", target: "Textures/Us/EruptletAnimations1.json"},
+    {name: "Gargoyle", target: "Textures/Us/Gargoyle.json"},
 
     //items
     {name: "Items", target: "Textures/Us/Items.json"},

@@ -535,6 +535,17 @@ var gameUtils = {
         return allies;
     },
 
+    getUnitEnemies: function(meUnit) {
+        var enemies = [];
+        this.applyToUnitsByTeam(function(team) {
+            return meUnit.team != team;
+        }, null, function(unit) {
+            enemies.push(unit);
+        });
+
+        return enemies;
+    },
+
     getCanvasCenter: function() {
       return {x: this.getCanvasWidth()/2, y: this.getCanvasHeight()/2};
     },
@@ -1130,7 +1141,7 @@ var mathArrayUtils = {
 
     //This counts zero "0" as a valid value
     isFalseNotZero: function(value) {
-        return (!value && !value === 0);
+        return (!value && !(value === 0));
     },
 
     cloneVertices: function(vertices) {

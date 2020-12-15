@@ -8,8 +8,8 @@ import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
-export default function Eruptlet(options) {
-    var eruptlet = {};
+export default function Gargoyle(options) {
+    var gargoyle = {};
 
     var options = options || {};
     $.extend(options, {radius: 25}, options)
@@ -28,122 +28,121 @@ export default function Eruptlet(options) {
     var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['critterNW'].spineData);
     var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['critterNW'].spineData);
 
-    var animationSpeed = 1.0;
     var runAnimations = {
         up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
     };
 
     var attackAnimations = {
-        up: gameUtils.getSpineAnimation({
-            spine: spineNorth,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        upRight: gameUtils.getSpineAnimation({
-            spine: spineNorthEast,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        right: gameUtils.getSpineAnimation({
-            spine: spineEast,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        downRight: gameUtils.getSpineAnimation({
-            spine: spineSouthEast,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        down: gameUtils.getSpineAnimation({
-            spine: spineSouth,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        downLeft: gameUtils.getSpineAnimation({
-            spine: spineSouthWest,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        left: gameUtils.getSpineAnimation({
-            spine: spineWest,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-        upLeft: gameUtils.getSpineAnimation({
-            spine: spineNorthWest,
-            animationName: 'attack',
-            speed: 2,
-            times: 3,
-        }),
-    }
+                up: gameUtils.getSpineAnimation({
+                    spine: spineNorth,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                upRight: gameUtils.getSpineAnimation({
+                    spine: spineNorthEast,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                right: gameUtils.getSpineAnimation({
+                    spine: spineEast,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                downRight: gameUtils.getSpineAnimation({
+                    spine: spineSouthEast,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                down: gameUtils.getSpineAnimation({
+                    spine: spineSouth,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                downLeft: gameUtils.getSpineAnimation({
+                    spine: spineSouthWest,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                left: gameUtils.getSpineAnimation({
+                    spine: spineWest,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+                upLeft: gameUtils.getSpineAnimation({
+                    spine: spineNorthWest,
+                    animationName: 'attack',
+                    speed: 2,
+                    times: 3,
+                }),
+            }
 
     var otherAnimations = {
 
     }
 
-    var scale = .06;
+    var scale = .1;
     var sc = {x: scale, y: scale};
     var adjustedUpDownsc = {x: scale, y: scale};
     var flipsc = {x: -1 * sc.x, y: sc.y};
@@ -152,7 +151,7 @@ export default function Eruptlet(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .6, y: .6},
+        scale: {x: .8, y: .8},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -162,7 +161,7 @@ export default function Eruptlet(options) {
     {
         id: 'selectionPending',
         data: 'IsometricSelectedPending',
-        scale: {x: .72, y: .72},
+        scale: {x: 1, y: 1},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -239,22 +238,25 @@ export default function Eruptlet(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var burstSound = gameUtils.getSound('eruptletburst.wav', {volume: .08, rate: 1});
+    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
+    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
+    var transform = gameUtils.getSound('gargoyletransform.wav', {volume: .35, rate: 1});
 
     var unitProperties = $.extend({
-        unitType: 'Eruptlet',
-        health: 20,
-        defense: 2,
+        unitType: 'Gargoyle',
+        health: 25,
+        defense: 1,
         energy: 0,
         energyRegenerationRate: 0,
+        healthRegenerationRate: 2,
         experienceWorth: 20,
         hitboxWidth: 25,
         hitboxHeight: 25,
         hitboxYOffset: 10,
         itemsEnabled: true,
         // adjustHitbox: true,
-        portrait: graphicsUtils.createDisplayObject('EruptletPortrait'),
-        wireframe: graphicsUtils.createDisplayObject('EruptletGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('GargoylePortrait'),
+        wireframe: graphicsUtils.createDisplayObject('GargoyleGroupPortrait'),
         team: options.team || 4,
         priority: 50,
         name: options.name,
@@ -262,10 +264,24 @@ export default function Eruptlet(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            if(!this.alreadyAttacked) {
-                this.attack();
-            }
+            var self = this;
+            var anim = gameUtils.getAnimation({
+                spritesheetName: 'CritterAnimations1',
+                animationName: 'critterdeath',
+                speed: .25,
+                fadeAway: true,
+                fadeTime: 8000,
+                transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
+            });
+            graphicsUtils.addSomethingToRenderer(anim);
+            anim.play();
+            deathSound.play();
+
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
+            return [shadow, anim];
         },
         _afterAddInit: function() {
             $.each(this.body.renderlings, function(key, renderling) {
@@ -280,27 +296,63 @@ export default function Eruptlet(options) {
                               slot.currentSpriteName.includes('North_0003_Layer-1---5'))
                             {
                                 slot.color.r = .2;
-                                slot.color.g = 1.0;
-                                slot.color.b = 0.2;
+                                slot.color.g = .4;
+                                slot.color.b = 1.0;
                                 slot.color.a = 1.0;
                             }
                         }
                     })
                 }
             });
+
+            //gargoyle heal
+            this.stoneFormAvailable = true;
+            this.stoneFormCooldown = 8000;
+            this.stoneFormLength = 3000;
+            Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
+                if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2) {
+                    this.stoneFormAvailable = false;
+                    gameUtils.doSomethingAfterDuration(() => {
+                        this.stoneFormAvailable = true;
+                    }, this.stoneFormCooldown + this.stoneFormLength);
+
+                    transform.play();
+                    this.applyBuff({name: "gargBuff", textureName: 'DefensiveBuff', duration: this.stoneFormLength, applyChanges: function() {
+                        this.stop();
+                        this.canMove = false;
+                        this.canAttack = false;
+                        this.isoManagedTint = 0x4d4d4d;
+                        this.isoManagedAlpha = 0;
+                        this.healthRegenerationRateMult = 2;
+                        Matter.Sleeping.set(this.body, true);
+                        this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', position: this.position})
+                        this.defense += 10;
+                    }.bind(this), removeChanges: function() {
+                        this.healthRegenerationRateMult = 2;
+                        this.isoManagedTint = null;
+                        this.canMove = true;
+                        this.canAttack = true;
+                        this.defense -= 10;
+                        this.isoManagedAlpha = 1;
+                        Matter.Sleeping.set(this.body, false);
+                        this.healthRegenerationRateMult = 1;
+                        graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
+                    }.bind(this)})
+                }
+            }.bind(this))
         },
     }, options)
 
     return UC({
-        givenUnitObj: eruptlet,
+        givenUnitObj: gargoyle,
         renderChildren: rc,
         radius: options.radius,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [burstSound, unitProperties.portrait, unitProperties.wireframe],
+        slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 1.5,
+            moveSpeed: 2.5,
             walkAnimations: runAnimations,
         },
         attacker: {
@@ -308,31 +360,18 @@ export default function Eruptlet(options) {
             cooldown: 650,
             honeRange: 300,
             range: options.radius*2,
-            damage: 12,
-            attack: function(target) {
-                var deathAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'EruptletAnimations1',
-                    animationName: 'eruptletExplode',
-                    speed: 1,
-                    transform: [this.position.x, this.position.y, 1.5, 1.5]
+            damage: 8,
+            attackExtension: function(target) {
+                var bloodAnimation = gameUtils.getAnimation({
+                    spritesheetName: 'UtilityAnimations1',
+                    animationName: 'GenericHit',
+                    speed: 1.0,
+                    transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
                 });
-
-                deathAnimation.rotation = Math.random() * Math.PI;
-                deathAnimation.play();
-                burstSound.play();
-                graphicsUtils.addSomethingToRenderer(deathAnimation, 'stageOne');
-
-                var blastRadius = 70;
-                var bodiesToDamage = [];
-                gameUtils.applyToUnitsByTeam(function(team) {return this.team != team}.bind(this), function(unit) {
-                    return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
-                }.bind(this), function(unit) {
-                    unit.sufferAttack(this.damage, this);
-                }.bind(this));
-                this.alreadyAttacked = true;
-                if(!this.isDead)
-                    this.sufferAttack(10000);
-            }
+                graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                bloodAnimation.play();
+                attackSound.play();
+            },
         },
     });
 }
