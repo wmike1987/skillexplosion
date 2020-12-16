@@ -65,6 +65,9 @@ Scene.prototype.clear = function() {
         this._clearExtension();
     }
     this.objects = [];
+    //Since this fadeTimer callback on the newScene has its context as the current scene
+    //there was a chain of scenes held together by the bound 'this'. Aka a memory leak.
+    this.fadeTimer = null;
 };
 
 var SceneModes = {

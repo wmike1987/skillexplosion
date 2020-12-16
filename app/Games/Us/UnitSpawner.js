@@ -9,10 +9,27 @@ var unitSpawner = function(enemySets) {
     this.id = mathArrayUtils.uuidv4();
 
     this.timers = [];
+    this.pool = {};
 
     var self = this;
 
+    this.startPooling = function() {
+        $.each(enemySets, function(i, enemy) {
+            //create a timer to fill the enemy pool between hz to spread out the load
+            var poolTimer = globals.currentGame.addTimer({
+                name: 'poolSpawner' + i + this.id + enemy.type,
+                runs: enemy.spawn.total,
+                timeLimit: enemy.spawn.hz/(enemy.spawn.atATime || 1),
+                callback: function() {
+                    this.insertIntoPool(enemy.constructor, enemy.constructor({team: 4}));
+                }.bind(this)
+            })
+            this.timers.push(poolTimer);
+        }.bind(this))
+    };
+
     this.start = function() {
+        var spawner = this;
         $.each(enemySets, function(i, enemy) {
             var total = 0;
             var itemsToGive = enemy.item ? enemy.item.total : 0;
@@ -24,11 +41,13 @@ var unitSpawner = function(enemySets) {
                     if(enemy.fulfilled) return;
                     for(var x = 0; x < (enemy.spawn.atATime || 1); x++) {
                         var lastUnit = false;
+                        if(total >= enemy.spawn.total) return;
                         if(total == Math.floor(enemy.spawn.total-1)) lastUnit = true;
                         total++;
 
                         //Create unit
-                        var newUnit = enemy.constructor({team: 4});
+                        // var newUnit = enemy.constructor({team: 4});
+                        var newUnit = spawner.getFromPool(enemy.constructor);
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                         newUnit.honeRange = 5000;
                         gameUtils.placeBodyJustOffscreen(newUnit);
@@ -55,12 +74,34 @@ var unitSpawner = function(enemySets) {
                     }
                 }
             })
+
             this.timers.push(spawnTimer);
         }.bind(this))
     }
 
     this.cleanUp = function() {
         globals.currentGame.invalidateTimer(this.timers);
+        $.each(this.pool, function(key, value) {
+            value.forEach((unit) => {
+                globals.currentGame.removeUnit(unit);
+            })
+        })
+        this.pool = null;
+    }
+
+    this.getFromPool = function(unitConstructor) {
+        var newUnits = this.pool[unitConstructor.name];
+        if(newUnits && newUnits.length > 0) {
+            var unit = newUnits.shift();
+        }
+        return unit;
+    }
+
+    this.insertIntoPool = function(unitConstructor, newUnit) {
+        if(!this.pool[unitConstructor.name]) {
+            this.pool[unitConstructor.name] = [];
+        }
+        this.pool[unitConstructor.name].push(newUnit);
     }
 }
 export default unitSpawner;

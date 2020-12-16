@@ -120,7 +120,7 @@ var ic = function(options) {
 
         var baseTint = 0x00042D;
         newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
-        newItem.nameDisplay = graphicsUtils.createDisplayObject('TEXT:' + newItem.name, {style: styles.regularItemName})
+        newItem.nameDisplay = graphicsUtils.createDisplayObject('TEX+:' + newItem.name, {style: styles.regularItemName})
         graphicsUtils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 25});
 
         newItem.showName = function(bool) {

@@ -108,16 +108,16 @@ var game = {
 
 	    /***create buttons***/
 	    //plus
-	    var add = graphicsUtils.addSomethingToRenderer('TEXT:' + '+', null, {style: $.extend({}, style), x: this.canvas.width/2-(2*buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var add = graphicsUtils.addSomethingToRenderer('TEX+:' + '+', null, {style: $.extend({}, style), x: this.canvas.width/2-(2*buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //minus
-	    var subtract = graphicsUtils.addSomethingToRenderer('TEXT:' + '–', null, {style: $.extend({}, style), x: this.canvas.width/2-(buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var subtract = graphicsUtils.addSomethingToRenderer('TEX+:' + '–', null, {style: $.extend({}, style), x: this.canvas.width/2-(buttonSpacing) + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //multiply
-	    var multiply = graphicsUtils.addSomethingToRenderer('TEXT:' + 'x', null, {style: $.extend({}, style), x: this.canvas.width/2+0 + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var multiply = graphicsUtils.addSomethingToRenderer('TEX+:' + 'x', null, {style: $.extend({}, style), x: this.canvas.width/2+0 + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //divide
-	    var divide = graphicsUtils.addSomethingToRenderer('TEXT:' + '÷', null, {style: $.extend({}, style), x: this.canvas.width/2+buttonSpacing + buttonSpacing/2, y: this.canvas.height*3/4});
+	    var divide = graphicsUtils.addSomethingToRenderer('TEX+:' + '÷', null, {style: $.extend({}, style), x: this.canvas.width/2+buttonSpacing + buttonSpacing/2, y: this.canvas.height*3/4});
 
 	    //create MATCH text
 	    graphicsUtils.addSomethingToRenderer('MatchChalk', null, {style: $.extend({}, style), x: this.canvas.width/2-(1.5*buttonSpacing), y: this.canvas.height*1/4});
@@ -243,7 +243,7 @@ var game = {
 	        }
 	    }
 
-	    var firstSprite = graphicsUtils.addSomethingToRenderer('TEXT:' + first.toString(), null, {style: matchStyle, x: this.canvas.width/2, y: this.canvas.height/4});
+	    var firstSprite = graphicsUtils.addSomethingToRenderer('TEX+:' + first.toString(), null, {style: matchStyle, x: this.canvas.width/2, y: this.canvas.height/4});
 	    firstSprite.numericalValue = first;
 		this.currentMatch = firstSprite;
 
@@ -273,7 +273,7 @@ var game = {
         var newNumber = Matter.Bodies.circle(0, 0, 20, { restitution: .95, frictionAir: 0});
         newNumber.renderChildren = [{
 	        id: mathArrayUtils.uuidv4(),
-	        data: 'TEXT:' + value.toString(),
+	        data: 'TEX+:' + value.toString(),
 	        options: {style: $.extend({}, sequenceStyle)},
 	        offset: {x: 0, y: 0}
         }]

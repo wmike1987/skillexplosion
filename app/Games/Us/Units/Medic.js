@@ -490,12 +490,6 @@ export default function Medic(options) {
                     }
                 }
             })
-            gameUtils.deathPact(mine, mineTimer);
-            gameUtils.deathPact(mine, mineCracks);
-            gameUtils.deathPact(mine, stateZero);
-            gameUtils.deathPact(mine, stateOne);
-            gameUtils.deathPact(mine, stateTwo);
-            gameUtils.deathPact(mine, stateThree);
         } else {
             var mineTimer = globals.currentGame.addTimer({
                 name: mineState.id,
@@ -523,8 +517,13 @@ export default function Medic(options) {
                     }
                 }
             })
-            gameUtils.deathPact(mine, mineTimer);
         }
+        gameUtils.deathPact(mine, mineTimer);
+        gameUtils.deathPact(mine, mineCracks);
+        gameUtils.deathPact(mine, stateZero);
+        gameUtils.deathPact(mine, stateOne);
+        gameUtils.deathPact(mine, stateTwo);
+        gameUtils.deathPact(mine, stateThree);
         Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: mine});
 
         mine.explode = function() {

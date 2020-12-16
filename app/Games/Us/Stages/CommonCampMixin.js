@@ -152,12 +152,13 @@ export default {
         this.treeShader.myName = 'treeShader';
         this.backgroundLightShader.myName = 'campfire';
         this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
+        var flameTimer = null;
         if(true) {
             var initLight = function() {
                 globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
                 globals.currentGame.renderer.layers.stage.filters = [this.stageLightShader];
                 globals.currentGame.renderer.layers.stageTrees.filters = [this.treeShader];
-                var flameTimer = globals.currentGame.addTimer({
+                flameTimer = globals.currentGame.addTimer({
                     name: 'flame',
                     gogogo: true,
                     timeLimit: 90,
@@ -189,9 +190,11 @@ export default {
             this.entercamp.play();
         }.bind(this));
 
+
         campScene._clearExtension = function() {
             this.removeTickCallback(mapHoverTick);
             this.removePriorityMouseDownEvent(mapClickListener);
+            globals.currentGame.invalidateTimer(flameTimer);
             this.renderer.layers.background.filters = [];
             this.renderer.layers.stage.filters = [];
             this.renderer.layers.stageTrees.filters = [];

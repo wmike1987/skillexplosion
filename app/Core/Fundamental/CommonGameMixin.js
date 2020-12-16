@@ -168,8 +168,8 @@ var common = {
         }.bind(this), true, false);
 
         //fps (ctrl + shift + f to toggle)
-        this.lastDeltaText = graphicsUtils.addSomethingToRenderer("TEXT:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
-        this.fpsText = graphicsUtils.addSomethingToRenderer("TEXT:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
+        this.lastDeltaText = graphicsUtils.addSomethingToRenderer("TEX+:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
+        this.fpsText = graphicsUtils.addSomethingToRenderer("TEX+:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
         this.fpsText.persists = true;
         this.lastDeltaText.persists = true;
         this.addTickCallback(function(event) {
@@ -188,7 +188,7 @@ var common = {
         this.fpsText.visible = false;
 
         //create paused game text and hide initially
-        var pausedGameText = graphicsUtils.addSomethingToRenderer("TEXT:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+        var pausedGameText = graphicsUtils.addSomethingToRenderer("TEX+:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
         pausedGameText.visible = false;
 
         //keydown listener for ctrl shift f and ctrl shift x
@@ -296,7 +296,7 @@ var common = {
         if(this.preGameExtension) {
             onClick = this.preGameExtension() || function() {};
         } else {
-            var startGameText = graphicsUtils.addSomethingToRenderer("TEXT:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+            var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
             onClick = function() {
                 graphicsUtils.removeSomethingFromRenderer(startGameText);
             }
@@ -369,14 +369,14 @@ var common = {
         //score overlay
         this.s = {s: 0, t: 0, f: 0};
         if(!this.hideScore) {
-            this.score = graphicsUtils.addSomethingToRenderer("TEXT:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
+            this.score = graphicsUtils.addSomethingToRenderer("TEX+:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
             this.score.persists = true;
             this.setScore(0);
         }
 
         //wave overlay
         if(this.showWave) {
-            this.wave = graphicsUtils.addSomethingToRenderer("TEXT:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
+            this.wave = graphicsUtils.addSomethingToRenderer("TEX+:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
             this.wave.persists = true;
             this.setWave(0);
         }
@@ -384,9 +384,9 @@ var common = {
         //timer overlay, if necessary
         if(!this.hideEndCondition) {
             if(this.victoryCondition.type == 'timed') {
-                this.gameTime = graphicsUtils.addSomethingToRenderer("TEXT:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
             } else if (this.victoryCondition.type == 'lives') {
-                this.hudLives = graphicsUtils.addSomethingToRenderer("TEXT:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
             }
         }
 

@@ -217,12 +217,12 @@ var game = {
 	    seq.second = second;
 	    seq.renderChildren = [{
 	        id: 'first',
-	        data: 'TEXT:' + first,
+	        data: 'TEX+:' + first,
 	        options: {style: greenScoreStyle},
 	        offset: {x: 0, y: 0}
         }, {
             id: 'second',
-	        data: 'TEXT:' + second,
+	        data: 'TEX+:' + second,
 	        options: {style: greenScoreStyle},
 	        offset: {x: (second == 'Tab' ? 34 : (second == 'w' ? 20 : 18)) - (first == '1' || first == 'f' || first == 'r' || first == 't' ? 2 : 0), y: 0}
         }]

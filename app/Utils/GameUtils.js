@@ -954,7 +954,7 @@ var graphicsUtils = {
         } else {
             newStyle = styles.style;
         }
-        var floatedText = graphicsUtils.addSomethingToRenderer("TEXT:"+text, 'hud', {style: options.style || newStyle, x: gameUtils.getCanvasWidth()/2, y: gameUtils.getCanvasHeight()/2});
+        var floatedText = graphicsUtils.addSomethingToRenderer("TEX+:"+text, 'hud', {style: options.style || newStyle, x: gameUtils.getCanvasWidth()/2, y: gameUtils.getCanvasHeight()/2});
         floatedText.position = position;
         floatedText.alpha = 1.4;
         globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {

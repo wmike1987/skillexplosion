@@ -8,7 +8,7 @@ var equipShow = gameUtils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
 var equip = gameUtils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
 var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
-var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: .3, rate: .7});
+var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: .16, rate: 1});
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;

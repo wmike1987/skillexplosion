@@ -59,17 +59,17 @@ var Dialogue = function Dialogue(options) {
 
     this.play = function(options) {
         if(this.killed) return;
-        
+
         options = options || {};
         if(this.title) {
-            this.realizedText = graphicsUtils.createDisplayObject("TEXT:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
             this.realizedText.position.x = (gameUtils.getPlayableWidth()/2-this.realizedText.width/2);
         } else {
-            this.realizedText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEX+: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
 
-            this.realizedActorText = graphicsUtils.createDisplayObject("TEXT: ", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedActorText = graphicsUtils.createDisplayObject("TEX+: ", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedActorText.position.y += (options.yOffset || 0);
         }
         this.realizedText.resolution = 2;

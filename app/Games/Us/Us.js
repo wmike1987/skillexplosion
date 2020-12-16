@@ -88,6 +88,17 @@ var game = {
         Matter.Events.on(this, 'TravelStarted', function(event) {
             this.shane.fatigue = 0;
             this.ursula.fatigue = 0;
+
+            //cleanup and reset the previous unit spawner
+            var node = event.node;
+            this.currentLevelDetails = node.levelDetails;
+            if(this.currentLevelDetails) {
+                //if this level has enemies, start the pool as we travel
+                if(this.currentLevelDetails.enemySets.length > 0) {
+                    this.currentSpawner = new UnitSpawner(this.currentLevelDetails.enemySets);
+                    this.currentSpawner.startPooling();
+                }
+            }
             this.fatigueTimer = this.addTimer({
                 name: 'fatigueTimer',
                 gogogo: true,
@@ -124,7 +135,7 @@ var game = {
         var a8 = new Dialogue({actor: "Shane", text: "Is the coffee ready?", delayAfterEnd: 1500});
 
         var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 2000, done: function() {
-            dialogueScene.add(graphicsUtils.addSomethingToRenderer("TEXT:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
+            dialogueScene.add(graphicsUtils.addSomethingToRenderer("TEX+:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
         }});
         dialogueScene.add(chain);
         chain.play();
@@ -145,7 +156,7 @@ var game = {
         var titleScene = new Scene();
         this.currentScene = titleScene;
         var background = graphicsUtils.createDisplayObject('SplashColored', {where: 'hudText', anchor: {x: 0, y: 0}});
-        var startGameText = graphicsUtils.addSomethingToRenderer("TEXT:Click To Begin", {where: 'hudText', style: styles.titleOneStyle, x: this.canvas.width/2, y: this.canvas.height*3/4});
+        var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:Click To Begin", {where: 'hudText', style: styles.titleOneStyle, x: this.canvas.width/2, y: this.canvas.height*3/4});
         graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
         titleScene.add(background);
         titleScene.add(startGameText);
@@ -231,19 +242,6 @@ var game = {
     },
 
     initLevel: function(node) {
-        this.currentLevelDetails = node.levelDetails;
-
-        if(this.currentSpawner) {
-            this.currentSpawner.cleanUp();
-        }
-
-        if(this.currentLevelDetails) {
-            this.currentSpawner = new UnitSpawner(this.currentLevelDetails.enemySets);
-        }
-
-        //reset any unfulfilled enemy states
-        this.currentLevelDetails.resetLevel();
-
         //create new scene
         var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
         this.currentScene.transitionToScene(nextLevelScene);
@@ -257,6 +255,7 @@ var game = {
             gameUtils.setCursorStyle('None');
             this.setUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
             this.setUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
+            this.currentSpawner.startPooling();
             var game = this;
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
@@ -334,6 +333,7 @@ var game = {
                 this.endDelayInProgress = true;
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
+                    this.currentLevelDetails.resetLevel();
                     this.itemSystem.removeAllItemsOnGround(true);
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
                     gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {

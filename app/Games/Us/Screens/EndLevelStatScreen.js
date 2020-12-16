@@ -153,7 +153,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         // }
 
         var placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {position: shanePosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        graphicsUtils.graduallyTint(marinePortraitBorder, 0x18bb96, 0xa80505, 6000);
+        var tintMarineBorder = graphicsUtils.graduallyTint(marinePortraitBorder, 0x18bb96, 0xa80505, 6000);
         this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth,
             marineEnergy, marineDamage, marineDefense, /*marineDefenseAdditions,*/ marineGrit, marineDodge]);
 
@@ -223,7 +223,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         // }
 
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {position: ursulaPosition(reg), style: statDividerStyle, where: "hudText", anchor: {x: .5, y: .5}});
-        graphicsUtils.graduallyTint(medicPortraitBorder, 0x18bb96, 0x20902f, 6000);
+        var tintMedicBorder =graphicsUtils.graduallyTint(medicPortraitBorder, 0x18bb96, 0x20902f, 6000);
         this.ursulaStats.push([medicPortrait, medicPortraitBorder, placeholder, medicHealth, medicEnergy, medicDamage,
                               medicDefense, /*ursulaDefenseAdditions,*/ medicGrit, medicDodge]);
 
@@ -268,7 +268,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
 
         //Continue button
-        scene.add(graphicsUtils.addSomethingToRenderer("TEXT:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
+        scene.add(graphicsUtils.addSomethingToRenderer("TEX+:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
 
         //Add everything to the scene
         this.shaneStats.forEach((objArr) => {
@@ -282,6 +282,11 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                 scene.add(obj);
             })
         })
+
+        scene._clearExtension = function() {
+            globals.currentGame.invalidateTimer(tintMarineBorder);
+            globals.currentGame.invalidateTimer(tintMedicBorder);
+        }
         return scene;
     };
 

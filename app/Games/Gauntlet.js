@@ -444,7 +444,7 @@ var game = {
 	    //apply number text to target
 	    $.each(this.currentTargets, function(i, tintArray) {
 	        $.each(tintArray, function(i, target) {
-	            target.numberSprite = graphicsUtils.addSomethingToRenderer("TEXT:"+target.numberValue, 'hud', {style: $.extend({}, numberStyle, {fill: target.tint}), x: target.position.x, y: target.position.y});
+	            target.numberSprite = graphicsUtils.addSomethingToRenderer("TEX+:"+target.numberValue, 'hud', {style: $.extend({}, numberStyle, {fill: target.tint}), x: target.position.x, y: target.position.y});
 	        }.bind(this))
 	    }.bind(this))
 

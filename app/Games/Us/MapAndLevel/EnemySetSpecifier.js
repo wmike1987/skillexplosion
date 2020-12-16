@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
-var easyMode = true;
+var easyMode = false;
 var basicBottom = 4;
 var basicTop = 9;
 
@@ -41,7 +41,7 @@ var enemySetSpecifier = {
                 constructor: mobNormal.c,
                 wave: 1,
                 icon: mobNormal.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(12, 15), hz: 1800, atATime: 5},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(25, 35), hz: 1800, atATime: 8},
                 item: {type: 'worn', total: 1}
             })
 

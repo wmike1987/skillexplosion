@@ -18,7 +18,7 @@ var Tooltip = function(options) {
     this.buffer = 5;
     this.iconBuffer = 0;
 
-    this.title = graphicsUtils.createDisplayObject('TEXT:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
+    this.title = graphicsUtils.createDisplayObject('TEX+:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {style: styles.abilityTitle, anchor: textAnchor});
 
     //build descriptions
     this.description = [];
@@ -29,10 +29,10 @@ var Tooltip = function(options) {
             if($.isArray(options.descriptionStyle)) {
                 style = options.descriptionStyle[i];
             }
-            this.description.push(graphicsUtils.createDisplayObject('TEXT:' + descr, {style: style, anchor: textAnchor}));
+            this.description.push(graphicsUtils.createDisplayObject('TEX+:' + descr, {style: style, anchor: textAnchor}));
         }.bind(this))
     } else {
-        this.description.push(graphicsUtils.createDisplayObject('TEXT:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
+        this.description.push(graphicsUtils.createDisplayObject('TEX+:' + options.description, {style: options.descriptionStyle || styles.abilityText, anchor: textAnchor}));
     }
     this.mainDescription = this.description[0];
 
@@ -62,10 +62,10 @@ var Tooltip = function(options) {
     //build system messages
     if($.isArray(options.systemMessage)) {
         $.each(options.systemMessage, function(i, sysMessage) {
-            this.systemMessages.push(graphicsUtils.createDisplayObject('TEXT:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
+            this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
         }.bind(this))
     } else if(options.systemMessage){
-        this.systemMessages.push(graphicsUtils.createDisplayObject('TEXT:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
+        this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
     }
     this.mainSystemMessage = this.systemMessages[0];
 

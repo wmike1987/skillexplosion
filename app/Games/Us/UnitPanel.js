@@ -40,14 +40,14 @@ var unitPanel = function(options) {
     this.unitDodgePosition = {x: this.unitFrameCenterX+this.unitFrameOffset*2, y: this.centerY + this.unitStatSpacing + this.unitStatYOffset};
     this.unitEnergyPosition = {x: this.unitFrameCenterX+this.unitFrameOffset*2, y: this.centerY + this.unitStatSpacing*2 + this.unitStatYOffset};
 
-    this.unitNameText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
-    //this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
-    this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle, anchor: {x: 0, y: .5}});
-    this.unitDamageAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageAdditionsStyle});
-    this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle, anchor: {x: 0, y: .5}});
-    this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
-    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralHPStyle, anchor: {x: 0, y: .5}});
-    this.unitGritText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritStyle, anchor: {x: 0, y: .5}});
+    this.unitNameText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitNamePosition, where: 'hudOne', style: styles.unitNameStyle});
+    //this.unitLevelText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitLevelPosition, where: 'hudOne', style: styles.unitLevelStyle});
+    this.unitDamageText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageStyle, anchor: {x: 0, y: .5}});
+    this.unitDamageAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:--', {anchor: {x: 0, y: .5}, position: this.unitDamagePosition, where: 'hudOne', style: styles.unitDamageAdditionsStyle});
+    this.unitDefenseText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseStyle, anchor: {x: 0, y: .5}});
+    this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:--', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
+    this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralHPStyle, anchor: {x: 0, y: .5}});
+    this.unitGritText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritStyle, anchor: {x: 0, y: .5}});
     Tooltip.makeTooltippable(this.unitGritText, {title: 'Grit', updaters: {description: function() {
         var result = {index: 0, value: ''};
         if(this.prevailingUnit) {
@@ -55,8 +55,8 @@ var unitPanel = function(options) {
         }
         return result;
     }.bind(this)}});
-    this.unitGritAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritAdditionsStyle});
-    this.unitDodgeText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeStyle, anchor: {x: 0, y: .5}});
+    this.unitGritAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:--', {anchor: {x: 0, y: .5}, position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritAdditionsStyle});
+    this.unitDodgeText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeStyle, anchor: {x: 0, y: .5}});
     Tooltip.makeTooltippable(this.unitDodgeText, {title: 'Dodge', updaters: {description: function() {
         var result = {index: 0, value: 'Chance to dodge attack.'};
         if(this.prevailingUnit) {
@@ -64,8 +64,8 @@ var unitPanel = function(options) {
         }
         return result;
     }.bind(this)}});
-    this.unitDodgeAdditionsText = graphicsUtils.addSomethingToRenderer('TEXT:--', {anchor: {x: 0, y: .5}, position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeAdditionsStyle});
-    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEXT:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralEnergyStyle, anchor: {x: 0, y: .5}});
+    this.unitDodgeAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:--', {anchor: {x: 0, y: .5}, position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeAdditionsStyle});
+    this.unitEnergyText = graphicsUtils.addSomethingToRenderer('TEX+:--', {position: this.unitEnergyPosition, where: 'hudOne', style: styles.unitGeneralEnergyStyle, anchor: {x: 0, y: .5}});
 
     //experience meter
     this.experienceMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {position: {x: 0, y: gameUtils.getPlayableHeight()+1}, anchor: {x: 0, y: 0}, where: 'hudOne'});
