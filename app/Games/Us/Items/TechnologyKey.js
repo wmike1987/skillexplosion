@@ -6,7 +6,8 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 export default function() {
     return ic({
         name: "Technology Key",
-        description: "Drop on locked skill to unlock.",
+        description: "Unlocks an ability.",
+        systemMessage: "Drop on ability to unlock.",
         icon: 'TechnologyKey',
         dropCallback: function(position) {
             this.owningUnit.removeUnlockerKey();

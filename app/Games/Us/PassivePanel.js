@@ -82,7 +82,7 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     // this.hideForCurrentUnit();
 
     //set current unit
-    this.currentUnit = unit;
+    this.prevailingUnit = unit;
 
     //play sounds
     equipShow.play();
@@ -168,7 +168,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     lastPassive.border.visible = true;
 
                     //trigger event and trigger ability panel update
-                    Matter.Events.trigger(this, 'passiveEquip', {passive: passive, unit: this.currentUnit})
+                    Matter.Events.trigger(this, 'passiveEquip', {passive: passive, unit: this.prevailingUnit})
                     this.unitPanelRef.updateUnitPassives();
                 } else if(!passive.unlocked && unit.canUnlockSomething(passive)) {
                     Tooltip.makeTooltippable(passive.actionBox, passive);
@@ -216,13 +216,13 @@ ConfigPanel.prototype.showPassives = function(unit) {
 }
 
 ConfigPanel.prototype.hideForCurrentUnit = function() {
-    if(!this.currentUnit) {
+    if(!this.prevailingUnit) {
         return;
     }
 
     //release current unit
-    var unit = this.currentUnit;
-    this.currentUnit = null;
+    var unit = this.prevailingUnit;
+    this.prevailingUnit = null;
 
     //hide augments
     $.each(unit.passiveAbilities, function(i, passive) {

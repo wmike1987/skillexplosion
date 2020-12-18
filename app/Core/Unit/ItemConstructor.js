@@ -116,7 +116,11 @@ var ic = function(options) {
             gameUtils.setCursorStyle('server:MainCursor.png');
         }.bind(this))
 
-        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: clickToGrab});
+        var sysMessage = clickToGrab;
+        if(newItem.systemMessage) {
+            var sysMessage = [newItem.systemMessage, clickToGrab]
+        }
+        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: sysMessage});
 
         var baseTint = 0x00042D;
         newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});

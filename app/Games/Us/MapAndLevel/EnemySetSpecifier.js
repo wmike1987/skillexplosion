@@ -8,6 +8,9 @@ var easyMode = false;
 var basicBottom = 4;
 var basicTop = 9;
 
+var hardenedBottom = 8;
+var hardenedTop = 15;
+
 var rareBottom = 2;
 var rareTop = 4;
 
@@ -34,6 +37,27 @@ var enemySetSpecifier = {
                 spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop)/(easyMode ? 2 : 1), hz: 2500, maxOnField: 1},
                 item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
             })
+        }
+        else if(type == 'hardened') {
+            //Hardened normal
+            var basicNormal = unitMenu[possibleEnemies.hardened.normal];
+            enemySets.push({
+                constructor: basicNormal.c,
+                icon: basicNormal.p,
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop)/(easyMode ? 2 : 1),  hz: 2200, maxOnField: 1, atATime: 2},
+                item: {type: 'worn', total: 1}
+            })
+
+            //Hardened rare
+            if(possibleEnemies.hardened.rare) {
+                var basicRare = unitMenu[possibleEnemies.hardened.rare];
+                enemySets.push({
+                    constructor: basicRare.c,
+                    icon: basicRare.p,
+                    spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop)/(easyMode ? 2 : 1), hz: 2500, maxOnField: 1},
+                    item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
+                })
+            }
         } else if(type == 'mobs') {
             //Mob noraml
             var mobNormal = unitMenu[possibleEnemies.mobs.normal];

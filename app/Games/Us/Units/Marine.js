@@ -370,6 +370,9 @@ export default function Marine(options) {
         }
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
     }
+
+    var vrHpCost = 3;
+    var vrECost = 2;
     var dashAbility = new Ability({
         name: 'Dash',
         key: 'd',
@@ -379,7 +382,7 @@ export default function Marine(options) {
         title: 'Dash',
         description: 'Quickly move throughout the battlefield.',
         hotkey: 'D',
-        energyCost: 3,
+        energyCost: 5,
         enablers: [function(commandObj) {
             return marine.canMove;
         }.bind(this)],
@@ -388,17 +391,17 @@ export default function Marine(options) {
                 name: 'vital reserves',
                 icon: graphicsUtils.createDisplayObject('VitalReserves'),
                 title: 'Vital Reserves',
-                description: 'Alter dash cost to 2 hp, 1 energy.',
+                description: 'Alter dash cost to ' + vrHpCost + ' hp, ' + vrECost + ' energy.',
                 equip: function(unit) {
                     this.oldEnergyCost = this.ability.energyCost;
-                    this.ability.energyCost = 1;
+                    this.ability.energyCost = vrECost;
                     this.ability.hpEnable = this.ability.enablers.push(function() {
-                        return unit.currentHealth > 2;
+                        return unit.currentHealth > vrHpCost;
                     })
                     this.ability.hpCost = this.ability.costs.push(function() {
-                        return unit.currentHealth -= 2;
+                        return unit.currentHealth -= vrHpCost;
                     })
-                    this.ability.customCostText = "HP: 2 and E: 1";
+                    this.ability.customCostText = 'HP: ' + vrHpCost + 'and E: ' + vrECost;
                 },
                 unequip: function(unit) {
                     this.ability.energyCost = this.oldEnergyCost;

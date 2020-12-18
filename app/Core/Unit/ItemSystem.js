@@ -126,6 +126,9 @@ var itemSystem = function(properties) {
                     this.grabbedItem = null;
                 }
             } else {
+                if(item.placePredicate && !item.placePredicate(globals.currentGame.mousePosition)) {
+                    return;
+                }
                 //Swap, place, or snap back behavior
                 var mouseOverSlottedItem = false;
                 var prevailingUnit = globals.currentGame.unitSystem.selectedUnit;
@@ -148,7 +151,7 @@ var itemSystem = function(properties) {
                                 //equip the currently grabbed item
                                 prevailingUnit.pickupItem(item, loopItem.currentSlot);
                                 if(item.placeCallback) {
-                                    item.placeCallback();
+                                    item.placeCallback(globals.currentGame.mousePosition);
                                 }
                                 this.canDropGrabbedItem = true;
                                 found = true;
@@ -164,7 +167,7 @@ var itemSystem = function(properties) {
                             if(item.worksWithSlot(blankItem.currentSlot)) {
                                 prevailingUnit.pickupItem(item, blankItem.currentSlot);
                                 if(item.placeCallback) {
-                                    item.placeCallback();
+                                    item.placeCallback(globals.currentGame.mousePosition);
                                 }
                                 found = true;
                             }
@@ -184,7 +187,7 @@ var itemSystem = function(properties) {
                         this.grabbedItem = null;
                     } else {
                         if(item.placeCallback) {
-                            item.placeCallback();
+                            item.placeCallback(globals.currentGame.mousePosition);
                         }
                     }
                 }

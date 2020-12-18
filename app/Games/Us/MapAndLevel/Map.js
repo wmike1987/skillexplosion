@@ -10,6 +10,7 @@ import styles from '@utils/Styles.js'
 //Token Mappings
 var typeTokenMappings = {
     singles: 'MapGoldBattleToken',
+    hardened: 'MapRedBattleToken',
     doubles: 'MapRedBattleToken',
     boss: 'MapRedBattleToken',
     norevives: 'MapRedBattleToken',

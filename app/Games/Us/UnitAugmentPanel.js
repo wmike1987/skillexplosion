@@ -77,7 +77,7 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     // this.hideForCurrentUnit();
 
     //set current unit
-    this.currentUnit = unit;
+    this.prevailingUnit = unit;
 
     //play sounds
     equipShow.play();
@@ -117,7 +117,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             //unequip existing augment
                             if(ability.currentAugment) {
                                 if(ability.currentAugment.unequip)
-                                    ability.currentAugment.unequip(this.currentUnit);
+                                    ability.currentAugment.unequip(this.prevailingUnit);
                                 ability.currentAugment.border.scale = {x: 1, y: 1};
                                 ability.currentAugment.border.alpha = alphaAugment;
                                 ability.currentAugment.border.visible = true;
@@ -129,12 +129,12 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             //equip augment
                             ability.currentAugment = augment;
                             if(ability.currentAugment.equip) {
-                                ability.currentAugment.equip(this.currentUnit);
+                                ability.currentAugment.equip(this.prevailingUnit);
                             }
                             equip.play();
 
                             //trigger event and trigger ability panel update
-                            Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.currentUnit})
+                            Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.prevailingUnit})
                             this.unitPanelRef.updateUnitAbilities();
                         } else if(!augment.unlocked && unit.canUnlockSomething(augment)) {
                             unit.unlockSomething(augment);
@@ -185,13 +185,13 @@ ConfigPanel.prototype.showAugments = function(unit) {
 }
 
 ConfigPanel.prototype.hideForCurrentUnit = function() {
-    if(!this.currentUnit) {
+    if(!this.prevailingUnit) {
         return;
     }
 
     //release current unit
-    var unit = this.currentUnit;
-    this.currentUnit = null;
+    var unit = this.prevailingUnit;
+    this.prevailingUnit = null;
 
     //hide augments
     $.each(unit.abilities, function(i, ability) {

@@ -36,6 +36,25 @@ var singles = function(options) {
 }
 singles.prototype = levelBase;
 
+var hardened = function(options) {
+    this.type = 'hardened';
+    this.onCreate(options)
+    this.enterNode = function() {
+        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
+    };
+    this.tileSize = 225;
+    this.createTerrain = function(scene) {
+        var tileMap = TileMapper.produceTileMap({possibleTextures: options.getLevelTiles(), tileWidth: options.tileSize, tileTint: this.tileTint});
+        scene.add(tileMap);
+
+        if(options.levelTileExtension) {
+            options.levelTileExtension(scene, this.tileTint);
+        }
+    };
+    this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: options.enemySets});
+}
+hardened.prototype = levelBase;
+
 var doubles = function(options) {
     this.type = 'doubles';
     this.onCreate(options)
@@ -85,6 +104,7 @@ camp.prototype = levelBase;
 
 var levelTypeMappings = {
     singles: singles,
+    hardened: hardened,
     camp: camp,
     doubles: doubles,
     mobs: mobs,

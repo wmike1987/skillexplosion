@@ -83,6 +83,7 @@ var campConstructor = function() {
 
 var noirEnemySets = {
     basic: {normal: 'Critter', rare: 'Sentinel'},
+    hardened: {normal: 'Gargoyle'},
     mobs: {normal: 'Eruptlet', rare: 'Sentinel'},
 }
 
@@ -90,6 +91,7 @@ var map = {
     options: {
         levels: {
             singles: 26,
+            hardened: 5,
             doubles: 1,
             // boss: 1,
             // norevives: 1,

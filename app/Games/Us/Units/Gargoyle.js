@@ -307,8 +307,8 @@ export default function Gargoyle(options) {
 
             //gargoyle heal
             this.stoneFormAvailable = true;
-            this.stoneFormCooldown = 8000;
-            this.stoneFormLength = 3000;
+            this.stoneFormCooldown = 2000;
+            this.stoneFormLength = 800;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
                 if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2) {
                     this.stoneFormAvailable = false;
@@ -323,19 +323,18 @@ export default function Gargoyle(options) {
                         this.canAttack = false;
                         this.isoManagedTint = 0x4d4d4d;
                         this.isoManagedAlpha = 0;
-                        this.healthRegenerationRateMult = 2;
+                        this.healthRegenerationMultiplier = 8;
                         Matter.Sleeping.set(this.body, true);
                         this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', position: this.position})
                         this.defense += 10;
                     }.bind(this), removeChanges: function() {
-                        this.healthRegenerationRateMult = 2;
+                        this.healthRegenerationMultiplier = 1;
                         this.isoManagedTint = null;
                         this.canMove = true;
                         this.canAttack = true;
                         this.defense -= 10;
                         this.isoManagedAlpha = 1;
                         Matter.Sleeping.set(this.body, false);
-                        this.healthRegenerationRateMult = 1;
                         graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
                     }.bind(this)})
                 }
@@ -352,15 +351,15 @@ export default function Gargoyle(options) {
         slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 2.5,
+            moveSpeed: 3.0,
             walkAnimations: runAnimations,
         },
         attacker: {
             attackAnimations: attackAnimations,
-            cooldown: 650,
+            cooldown: 450,
             honeRange: 300,
             range: options.radius*2,
-            damage: 8,
+            damage: 6,
             attackExtension: function(target) {
                 var bloodAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
