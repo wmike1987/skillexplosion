@@ -308,7 +308,7 @@ export default function Gargoyle(options) {
             //gargoyle heal
             this.stoneFormAvailable = true;
             this.stoneFormCooldown = 2000;
-            this.stoneFormLength = 800;
+            this.stoneFormLength = 1200;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
                 if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2) {
                     this.stoneFormAvailable = false;
@@ -359,7 +359,7 @@ export default function Gargoyle(options) {
             cooldown: 450,
             honeRange: 300,
             range: options.radius*2,
-            damage: 6,
+            damage: 8,
             attackExtension: function(target) {
                 var bloodAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',

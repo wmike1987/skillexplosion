@@ -15,6 +15,7 @@ export default function() {
             if(currentUnitPortrait.containsPoint(position)) {
                 currentUnit.grit += 3;
                 currentUnit.maxHealth += 3;
+                Matter.Events.trigger(currentUnit, 'consume', {});
                 globals.currentGame.itemSystem.removeItem(this);
                 return false;
             }

@@ -96,7 +96,8 @@ var map = {
             // boss: 1,
             // norevives: 1,
             mobs: 1,
-            airDropStations: 6,
+            airDropStations: 4,
+            airDropSpecialStations: 4,
         },
         worldSpecs: {
             enemySets: noirEnemySets,

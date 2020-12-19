@@ -947,6 +947,18 @@ var graphicsUtils = {
         }.bind(this)})
     },
 
+    rotateSprite: function(sprite, options) {
+        options = Object.assign({direction: 1, speed: 10}, options);
+
+        var rotationTimer = globals.currentGame.addTimer({name: mathArrayUtils.getId(), gogogo: true, executeOnNuke: true, tickCallback: function(deltaTime) {
+            sprite.rotation += 1/1000 * options.speed;
+        }})
+
+        Matter.Events.on(sprite, 'destroy', function() {
+            globals.currentGame.invalidateTimer(rotationTimer);
+        })
+    },
+
     floatText: function(text, position, options) {
         options = options || {};
         if(options.textSize) {

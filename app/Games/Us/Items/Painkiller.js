@@ -14,6 +14,7 @@ export default function() {
             var currentUnit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;
             if(currentUnitPortrait.containsPoint(position)) {
                 currentUnit.defense += 1;
+                Matter.Events.trigger(currentUnit, 'consume', {});
                 globals.currentGame.itemSystem.removeItem(this);
                 return false;
             }

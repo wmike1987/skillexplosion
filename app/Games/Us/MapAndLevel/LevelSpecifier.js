@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js'
 import levelBase from '@games/Us/MapAndLevel/LevelBase.js'
-import airDropStation from '@games/Us/MapAndLevel/AirDropStation.js'
+import {airDropStation, airDropSpecialStation} from '@games/Us/MapAndLevel/AirDropStation.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import TileMapper from '@core/TileMapper.js'
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
@@ -109,6 +109,7 @@ var levelTypeMappings = {
     doubles: doubles,
     mobs: mobs,
     airDropStations: airDropStation,
+    airDropSpecialStations: airDropSpecialStation,
 }
 
 export {levelSpecifier};

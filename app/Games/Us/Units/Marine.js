@@ -304,6 +304,7 @@ export default function Marine(options) {
 
     //other
     var healsound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
+    var yeahsound = gameUtils.getSound('shaneyeah.wav', {volume: .1, rate: 1.0});
 
     //Dash
     var dashVelocity = .8;
@@ -877,6 +878,7 @@ export default function Marine(options) {
         graveSpriteName: 'MarineGrave',
         team: options.team || 4,
         priority: 10,
+        consumeSound: yeahsound,
         hitboxWidth: 35,
         hitboxHeight: 60,
         itemsEnabled: true,
@@ -924,7 +926,7 @@ export default function Marine(options) {
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
             slaves: [dashSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
-                     poisonSound, criticalHitSound, criticalHitSound2, unitProperties.wireframe, unitProperties.portrait],
+                     poisonSound, criticalHitSound, criticalHitSound2, yeahsound, unitProperties.wireframe, unitProperties.portrait],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 2.35,

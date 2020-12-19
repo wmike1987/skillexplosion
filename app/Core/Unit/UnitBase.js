@@ -493,6 +493,10 @@ var UnitBase = {
             })
         }.bind(this));
 
+        Matter.Events.on(this, "consume", function() {
+            this.consumeSound.play();
+        }.bind(this));
+
         //hover Method
         this.hover = function(event) {
             if(this.team != event.team) {
