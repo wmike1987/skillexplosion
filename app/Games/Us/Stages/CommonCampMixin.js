@@ -78,10 +78,10 @@ export default {
         this.campfire = campfire;
 
         //Add map
-        var mapTableSprite = graphicsUtils.createDisplayObject('MapTable');
+        var mapTableSprite = graphicsUtils.createDisplayObject('mapbox');
         var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [mapTableSprite], stage: 'stage',
-        scale: {x: 1.2, y: 1.2}, offset: {x: 0, y: 0}, sortYOffset: 0,
-        shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.3, y: 1.3}, shadowOffset: {x: 0, y: 15},
+        scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
+        shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
         position: {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}})
         campScene.add(mapTable);
 
@@ -100,7 +100,6 @@ export default {
             gameUtils.pixiPositionToPoint(canvasPoint, event);
 
             if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campLikeActive) {
-                self.openmap.play();
                 this.unitSystem.pause();
                 this.map.show();
                 this.mapActive = true;

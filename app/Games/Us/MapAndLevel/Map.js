@@ -86,6 +86,8 @@ var MapLevelNode = function(options) {
 }
 
 //Map object
+var openmapSound = gameUtils.getSound('openmap.wav', {volume: .15, rate: 1.0});
+var openmapSound2 = gameUtils.getSound('openmap2.wav', {volume: .03, rate: 1.0});
 var map = function(specs) {
 
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
@@ -209,7 +211,7 @@ var map = function(specs) {
                 })
             },
             travelCallback: function() {
-
+                return true;
             }
         });
 
@@ -220,6 +222,8 @@ var map = function(specs) {
     this.show = function() {
         this.fatigueText.text = 'Fatigue: ' + '0%';
         this.fatigueText.alpha = .3;
+        openmapSound.play();
+        openmapSound2.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
             node.displayObject.where = 'hudNTwo'
@@ -238,6 +242,14 @@ var map = function(specs) {
         this.graph.forEach(node => {
             node.displayObject.visible = this.mapSprite.visible;
             node.displayObject.tooltipObj.hide();
+            if(node.prereqs) {
+                node.prereqs.forEach((pr) => {
+                    if(pr.focusCircle) {
+                        graphicsUtils.removeSomethingFromRenderer(pr.focusCircle);
+                        pr.displayObject.scale = {x: 1.0, y: 1.0};
+                    }
+                })
+            }
         })
 
         this.headTokenSprite.visible = false;

@@ -1,4 +1,6 @@
 import * as $ from 'jquery'
+import * as Matter from 'matter-js'
+import {globals} from '@core/Fundamental/GlobalState.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 var levelBase = {
@@ -6,6 +8,9 @@ var levelBase = {
         this.enemySets.forEach(set => {
             set.fulfilled = false;
         })
+    },
+    enterNode: function() {
+        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
     },
     enemySets: [],
     onCreate: function(options) {

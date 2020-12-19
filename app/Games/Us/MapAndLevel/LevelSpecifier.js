@@ -20,9 +20,6 @@ var levelSpecifier = {
 var singles = function(options) {
     this.type = 'singles';
     this.onCreate(options)
-    this.enterNode = function() {
-        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
-    };
     this.tileSize = 225;
     this.createTerrain = function(scene) {
         var tileMap = TileMapper.produceTileMap({possibleTextures: options.getLevelTiles(), tileWidth: options.tileSize, tileTint: this.tileTint});
@@ -39,9 +36,6 @@ singles.prototype = levelBase;
 var hardened = function(options) {
     this.type = 'hardened';
     this.onCreate(options)
-    this.enterNode = function() {
-        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
-    };
     this.tileSize = 225;
     this.createTerrain = function(scene) {
         var tileMap = TileMapper.produceTileMap({possibleTextures: options.getLevelTiles(), tileWidth: options.tileSize, tileTint: this.tileTint});
@@ -58,9 +52,6 @@ hardened.prototype = levelBase;
 var doubles = function(options) {
     this.type = 'doubles';
     this.onCreate(options)
-    this.enterNode = function() {
-        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
-    };
     this.tileSize = 225;
     this.createTerrain = function(scene) {
         var tileMap = TileMapper.produceTileMap({possibleTextures: options.getLevelTiles(), tileWidth: options.tileSize, tileTint: this.tileTint});
@@ -77,9 +68,6 @@ doubles.prototype = levelBase;
 var mobs = function(options) {
     this.type = 'mobs';
     this.onCreate(options)
-    this.enterNode = function() {
-        Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: this});
-    };
     this.tileSize = 225;
     this.createTerrain = function(scene) {
         var tileMap = TileMapper.produceTileMap({possibleTextures: options.getLevelTiles(), tileWidth: options.tileSize, tileTint: this.tileTint});

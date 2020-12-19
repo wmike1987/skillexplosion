@@ -60,14 +60,22 @@ var giveUnitItem = function(options) {
     //This is assuming a particular structure of the Item files within the project and game
     const target = options.gamePrefix+'/Items/'+options.name+'.js';
     import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
-        item = item.default;
+        var item = item.default();
         if(options.unit.isDead) {
-            var item = item();
             item.drop(options.unit.position);
         } else {
-            options.unit.pickupItem(item(), null, true);
+            options.unit.pickupItem(item, null, true);
         }
     })
 }
 
-export default {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem};
+var dropItemAtPosition = function(options) {
+    //This is assuming a particular structure of the Item files within the project and game
+    const target = options.gamePrefix+'/Items/'+options.name+'.js';
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
+        item = item.default();
+        item.drop(options.position);
+    })
+}
+
+export default {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem, dropItemAtPosition: dropItemAtPosition};

@@ -39,12 +39,10 @@ var camp = {
     tileMapExtension: tileExtension,
 
     initSounds: function() {
-        this.openmap = gameUtils.getSound('openmap.wav', {volume: .15, rate: 1.0});
         this.entercamp = gameUtils.getSound('entercamp.wav', {volume: .05, rate: .75});
     },
 
     cleanUpSounds: function() {
-        this.openmap.unload();
         this.entercamp.unload();
     },
 

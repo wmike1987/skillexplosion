@@ -365,7 +365,7 @@ var game = {
         }.bind(this))
         Matter.Events.on(airDropScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.currentLevelDetails.startAirDrop();
+            this.currentLevelDetails.startAirDrop(airDropScene);
             this.setUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
             this.setUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
             var game = this;
@@ -405,10 +405,13 @@ var game = {
          // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
          ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["AwarenessTonic"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["StoutShot"], unit: this.shane});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["SlipperySoup"], unit: this.shane});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["LifeExtract"], unit: this.shane});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["ChemicalConcentrate"], unit: this.shane});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["TechnologyKey"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["SlipperySoup"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["LifeExtract"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["ChemicalConcentrate"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["TechnologyKey"], unit: this.shane});
+
+
+
 
          gameUtils.moveUnitOffScreen(this.shane);
          return this.shane;
