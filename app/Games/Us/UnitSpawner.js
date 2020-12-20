@@ -61,7 +61,7 @@ var unitSpawner = function(enemySets) {
                                 giveItem = mathArrayUtils.flipCoin() && mathArrayUtils.flipCoin();
                             }
                             if(giveItem) {
-                                ItemUtils.giveUnitItem({gamePrefix: 'Us', name: mathArrayUtils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
+                                ItemUtils.giveUnitItem({gamePrefix: 'Us', itemName: mathArrayUtils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]), unit: newUnit});
                                 itemsToGive--;
                             }
                         }

@@ -5,11 +5,12 @@ var manipulations = {
     maxEnergy: 5,
 }
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         manipulations: manipulations,
         name: "Medal Of Merit",
         description: ["Add +1 to armor.", "Add +5 to maximum energy."],
         icon: 'MedalOfMerit'
-    })
+    }, options);
+    return new ic(item);
 };

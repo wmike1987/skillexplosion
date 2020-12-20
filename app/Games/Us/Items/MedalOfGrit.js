@@ -6,11 +6,12 @@ var manipulations = {
     maxHealth: 5,
 }
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         manipulations: manipulations,
         name: "Medal Of Grit",
         description: ["Add +1 to armor.", "Add +5 to maximum health.", "Add 8% to grit."],
         icon: 'MedalOfGrit'
-    })
+    }, options);
+    return new ic(item);
 };

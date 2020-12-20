@@ -4,11 +4,12 @@ var manipulations = {
     healthRegenerationRate: 1,
 }
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         manipulations: manipulations,
         name: "Ring Of Renewal",
         description: "Regenerate +1 hp per second.",
         icon: 'RingOfWellBeing'
-    })
+    }, options);
+    return new ic(item);
 };

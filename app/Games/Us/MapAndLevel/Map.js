@@ -87,7 +87,8 @@ var MapLevelNode = function(options) {
 
 //Map object
 var openmapSound = gameUtils.getSound('openmap.wav', {volume: .15, rate: 1.0});
-var openmapSound2 = gameUtils.getSound('openmap2.wav', {volume: .03, rate: 1.0});
+var openmapSound2 = gameUtils.getSound('openmap2.wav', {volume: .06, rate: .8});
+var openmapSound3 = gameUtils.getSound('openmap3.wav', {volume: .04, rate: .8});
 var map = function(specs) {
 
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
@@ -222,8 +223,9 @@ var map = function(specs) {
     this.show = function() {
         this.fatigueText.text = 'Fatigue: ' + '0%';
         this.fatigueText.alpha = .3;
-        openmapSound.play();
+        // openmapSound.play();
         openmapSound2.play();
+        openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
             node.displayObject.where = 'hudNTwo'

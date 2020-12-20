@@ -236,6 +236,10 @@ var itemSystem = function(properties) {
         this.items.add(item);
     },
 
+    this.itemIsRegistered = function(item) {
+        return this.items.has(item);
+    },
+
     this.pickupItem = function(item) {
         item.pickup();
         this.removeItemFromGround(item);

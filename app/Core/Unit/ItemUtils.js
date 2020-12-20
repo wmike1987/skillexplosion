@@ -51,16 +51,16 @@ var initiateBlinkDeath = function(options) {
 }
 
 var giveUnitItem = function(options) {
-    if(Array.isArray(options.name)) {
-        var len = options.name.length;
+    if(Array.isArray(options.itemName)) {
+        var len = options.itemName.length;
         var index = Math.floor(Math.random() * len);
-        options.name = options.name[index];
+        options.itemName = options.itemName[index];
     }
 
     //This is assuming a particular structure of the Item files within the project and game
-    const target = options.gamePrefix+'/Items/'+options.name+'.js';
+    const target = options.gamePrefix+'/Items/'+options.itemName+'.js';
     import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
-        var item = item.default();
+        var item = item.default(options);
         if(options.unit.isDead) {
             item.drop(options.unit.position);
         } else {
@@ -71,11 +71,19 @@ var giveUnitItem = function(options) {
 
 var dropItemAtPosition = function(options) {
     //This is assuming a particular structure of the Item files within the project and game
-    const target = options.gamePrefix+'/Items/'+options.name+'.js';
+    const target = options.gamePrefix+'/Items/'+options.itemName+'.js';
     import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
-        item = item.default();
+        item = item.default(options);
         item.drop(options.position);
     })
 }
 
-export default {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem, dropItemAtPosition: dropItemAtPosition};
+var createItemObj = function(options) {
+    //This is assuming a particular structure of the Item files within the project and game
+    const target = options.gamePrefix+'/Items/'+options.itemName+'.js';
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
+        options.itemDeferred.resolve(item.default(options));
+    })
+}
+
+export default {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem, dropItemAtPosition: dropItemAtPosition, createItemObj: createItemObj};

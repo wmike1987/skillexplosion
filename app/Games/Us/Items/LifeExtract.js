@@ -3,8 +3,8 @@ import * as Matter from 'matter-js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         name: "Life Extract",
         description: "Consume to increase max hp by 6.",
         systemMessage: "Drop on unit portrait to consume.",
@@ -20,5 +20,6 @@ export default function() {
             }
             return true;
         },
-    })
+    }, options);
+    return new ic(item);
 };

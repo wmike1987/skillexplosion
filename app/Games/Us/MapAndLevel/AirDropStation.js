@@ -5,6 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals, mousePosition} from '@core/Fundamental/GlobalState.js'
 import levelBase from '@games/Us/MapAndLevel/LevelBase.js'
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
+import Tooltip from '@core/Tooltip.js'
 import TileMapper from '@core/TileMapper.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
 import Doodad from '@utils/Doodad.js'
@@ -120,12 +121,12 @@ var airDropSpecialStation = function(options) {
     }
 
     this.startAirDrop = function(scene) {
+        var selection = Object.create(selectionMechanism);
+        selection.presentChoices({numberOfChoices: 3, possibleChoices: ['TechnologyKey', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
         //begin dialogue
-        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission...", delayAfterEnd: 2000})
-        var a1 = new Dialogue({actor: "MacMurray", text: "Shane, Ursula... air drop is en route. What do you need?"});
-        var chain = new DialogueChain([title, a1], {startDelay: 1500, done: function() {
-            var selection = Object.create(selectionMechanism);
-            selection.presentChoices({numberOfChoices: 1, possibleChoices: ['TechnologyKey']});
+        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
+        var a1 = new Dialogue({actor: "MacMurray", text: "Air drop is en route. What do you need?", backgroundBox: true, letterSpeed: 100});
+        var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
         }});
         scene.add(chain);
         chain.play();
@@ -144,8 +145,42 @@ var selectionMechanism = {
     },
 
     _displayChoices: function() {
-        this.presentedChoices.forEach((choice) => {
+        var length = this.presentedChoices.length;
+        var spacing = gameUtils.getPlayableWidth()/10;
+        var subtractionAmount = spacing/2 * (length-1);
+        var j = 0;
 
+        this.items = [];
+        this.presentedChoices.forEach((choice) => {
+            var itemDef = $.Deferred();
+            ItemUtils.createItemObj({gamePrefix: 'Us', itemName: choice, position: gameUtils.getPlayableCenter(), dontAddToItemSystem: true, itemDeferred: itemDef});
+            itemDef.done(function(item) {
+                this.items.push(item);
+
+                //show item icon
+                graphicsUtils.addDisplayObjectToRenderer(item.icon);
+                item.icon.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: j*spacing - subtractionAmount, y: -100});
+                Tooltip.makeTooltippable(item.icon, Object.assign(item.originalTooltipObj, {systemMessage: 'Click to receive from air drop.'}));
+                j++;
+
+                //mouse down listener
+                var f = function(event) {
+                    this._makeSelection(item);
+                }.bind(this);
+                item.icon.on('mousedown', f)
+                item.removeAirDrop = function() {
+                    item.icon.off('mousedown', f);
+                }
+            }.bind(this))
+        })
+    },
+
+    _makeSelection: function(item) {
+        globals.currentGame.itemSystem.registerItem(item);
+        item.drop(item.icon.position);
+        this.items.forEach((item) => {
+            item.icon.visible = false;
+            item.removeAirDrop();
         })
     },
 
@@ -155,10 +190,7 @@ var selectionMechanism = {
 
         this._chooseRandomItems();
 
-        this.presentedChoices.forEach((itemName) => {
-            ItemUtils.dropItemAtPosition({gamePrefix: 'Us', name: itemName, position: gameUtils.getPlayableCenter()});
-        })
-
+        this._displayChoices();
     },
 };
 

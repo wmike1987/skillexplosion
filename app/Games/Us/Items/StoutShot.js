@@ -3,8 +3,8 @@ import * as Matter from 'matter-js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         name: "Stout Shot",
         description: "Consume to gain 3 grit and increase max hp by 3.",
         systemMessage: "Drop on unit portrait to consume.",
@@ -21,5 +21,6 @@ export default function() {
             }
             return true;
         },
-    })
+    }, options);
+    return new ic(item);
 };

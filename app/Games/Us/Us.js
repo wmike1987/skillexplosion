@@ -401,18 +401,9 @@ var game = {
 
     createShane: function() {
          this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
-         //this.shane.noIdle = true;
-         // this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["AwarenessTonic"], unit: this.shane});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["StoutShot"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["SlipperySoup"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["LifeExtract"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["ChemicalConcentrate"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["TechnologyKey"], unit: this.shane});
-
-
-
-
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["StoutShot"], unit: this.shane});
+         ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
          return this.shane;
     },
@@ -420,9 +411,9 @@ var game = {
     createUrsula: function() {
         // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["SteadySyringe"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["Painkiller"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", name: ["CrudeBlend"], unit: this.ursula});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.ursula});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Painkiller"], unit: this.ursula});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["CrudeBlend"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;

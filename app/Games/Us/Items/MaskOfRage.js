@@ -4,11 +4,12 @@ var manipulations = {
     damageAddition: 5,
 }
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         manipulations: manipulations,
         name: "Mask Of Rage",
         description: "Add +5 to base damage.",
         icon: 'MaskOfRage'
-    })
+    }, options);
+    return new ic(item);
 };

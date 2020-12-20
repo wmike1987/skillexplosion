@@ -28,6 +28,7 @@ var Dialogue = function Dialogue(options) {
     var defaults = {
         textBeginPosition: {x: 50, y: 75},
         titleBeginPosition: {x: null, y: 40},
+        backgroundBox: false,
         actorLetterSpeed: 40,
         letterSpeed: 80,
         delayAfterEnd: 1500,
@@ -65,11 +66,15 @@ var Dialogue = function Dialogue(options) {
             this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
             this.realizedText.position.x = (gameUtils.getPlayableWidth()/2-this.realizedText.width/2);
+            this.fullTextWidth = this.realizedText.width;
+            this.fullTextHeight = this.realizedText.height;
         } else {
-            this.realizedText = graphicsUtils.createDisplayObject("TEX+: ", {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
+            this.fullTextWidth = this.realizedText.width;
+            this.fullTextHeight = this.realizedText.height;
 
-            this.realizedActorText = graphicsUtils.createDisplayObject("TEX+: ", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedActorText = graphicsUtils.createDisplayObject("TEX+:", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedActorText.position.y += (options.yOffset || 0);
         }
         this.realizedText.resolution = 2;
@@ -80,19 +85,25 @@ var Dialogue = function Dialogue(options) {
           this.realizedPictureBorder.tint = 0x919191;
         }
 
+        if(this.backgroundBox) {
+            this.backgroundBox = graphicsUtils.addSomethingToRenderer('TintableSquare', {where: 'hudOne', position: this.realizedText.position, anchor: {x: 0, y: 0}});
+            graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.fullTextWidth, y: this.fullTextHeight});
+            this.backgroundBox.tint = 0x181618;
+        }
+
         var currentLetter = 0;
         var picRealized = false;
         var d = this;
         var currentBlink = 0;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
-            var fadeOverLetters = 5;
 
             if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
                 d.pictureTriggeredFromWord = true;
             }
 
             //fade in picture
+            var fadeOverLetters = 5;
             if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger) || d.pictureTriggeredFromWord) {
                 graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
                 graphicsUtils.addOrShowDisplayObject(d.realizedPictureBorder);
@@ -141,6 +152,7 @@ var Dialogue = function Dialogue(options) {
         graphicsUtils.removeSomethingFromRenderer(this.realizedActorText);
         graphicsUtils.removeSomethingFromRenderer(this.realizedPicture);
         graphicsUtils.removeSomethingFromRenderer(this.realizedPictureBorder);
+        graphicsUtils.removeSomethingFromRenderer(this.backgroundBox);
         this.keypressSound.unload();
     };
 

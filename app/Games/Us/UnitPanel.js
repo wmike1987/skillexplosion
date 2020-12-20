@@ -497,20 +497,17 @@ unitPanel.prototype.updateUnitItems = function() {
             if(item == null)
                 return;
             var icon = item.icon;
-            icon.alpha = 1;
+
+            //determine position
             var x = i % 2 == 0 ? this.itemCenterX : this.itemCenterX + this.itemXSpacing;
             var yLevel = Math.floor(i / 2);
             var y = this.itemCenterY + this.itemXSpacing * yLevel;
-            if(!icon.parent) {
-                var it = graphicsUtils.addSomethingToRenderer(icon, 'hudOne', {position: {x: x, y: y}});
-                graphicsUtils.makeSpriteSize(icon, 27);
-            } else {
-                icon.position = {x: x, y: y};
-                icon.visible = true;
-            }
+            graphicsUtils.addOrShowDisplayObject(icon);
+            icon.position = {x: x, y: y};
 
-            if(item.isEmptySlot) {
-                icon.alpha = 0;
+            //set the empty slot to not be visible
+            if(!item.isEmptySlot) {
+                item.currentSlot.slotDef.icon.visible = false;
             }
         }.bind(this))
 
@@ -530,8 +527,9 @@ unitPanel.prototype.updateUnitItems = function() {
                 icon.visible = true;
             }
 
-            if(item.isEmptySlot) {
-                icon.alpha = 0;
+            //set the empty slot to not be visible
+            if(!item.isEmptySlot) {
+                item.currentSlot.slotDef.icon.visible = false;
             }
         }.bind(this))
 
@@ -551,8 +549,9 @@ unitPanel.prototype.updateUnitItems = function() {
                 icon.visible = true;
             }
 
-            if(item.isEmptySlot) {
-                icon.alpha = 0;
+            //set the empty slot to not be visible
+            if(!item.isEmptySlot) {
+                item.currentSlot.slotDef.icon.visible = false;
             }
         }.bind(this))
     }

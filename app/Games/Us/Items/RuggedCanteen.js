@@ -4,11 +4,12 @@ var manipulations = {
     maxHealth: 12,
 }
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         manipulations: manipulations,
         name: "Rugged Canteen",
         description: "Add +" + manipulations.maxHealth + " to maximum health.",
         icon: 'RuggedCanteen'
-    })
+    }, options);
+    return new ic(item);
 };

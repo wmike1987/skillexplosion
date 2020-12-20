@@ -3,8 +3,8 @@ import * as Matter from 'matter-js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
-export default function() {
-    return ic({
+export default function(options) {
+    var item = Object.assign({
         name: "Technology Key",
         description: "Unlocks an ability.",
         systemMessage: "Drop on ability to unlock.",
@@ -44,5 +44,6 @@ export default function() {
             var unitPassivePanel = globals.currentGame.unitSystem.unitPanel.unitPassivePanel;
             return (!unitAugmentPanel.collidesWithPoint(dropPosition) && !unitPassivePanel.collidesWithPoint(dropPosition));
         }
-    })
+    }, options);
+    return new ic(item);
 };

@@ -79,9 +79,8 @@ var ic = function(options) {
     newItem.id = mathArrayUtils.uuidv4();
     newItem.eventFunctions = {};
 
-    //create icon
-    newItem.icon = graphicsUtils.createDisplayObject(newItem.icon); //note that this icon will not die upon removing the item
-    var clickToGrab = '(Click to grab item)';
+    newItem.icon = graphicsUtils.createDisplayObject(newItem.icon, {where: 'hudOne'}); //note that this icon will not die upon removing the item
+    graphicsUtils.makeSpriteSize(newItem.icon, 27);
     newItem.icon.interactive = true;
 
     //mouse hover event
@@ -109,18 +108,19 @@ var ic = function(options) {
     if(!newItem.isEmptySlot) {
         //drop item
         newItem.icon.on('mousedown', function(event) {
-            if(globals.currentGame.itemSystem.isGrabbing()) return;
+            if(globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
             newItem.owningUnit.unequipItem(newItem);
             Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem})
             newItem.mouseInside = false;
             gameUtils.setCursorStyle('server:MainCursor.png');
         }.bind(this))
 
-        var sysMessage = clickToGrab;
+        var sysMessage = '(Click to grab item)';
         if(newItem.systemMessage) {
-            var sysMessage = [newItem.systemMessage, clickToGrab]
+            var sysMessage = [newItem.systemMessage, sysMessage]
         }
-        Tooltip.makeTooltippable(newItem.icon, {title: newItem.name, description: newItem.description, systemMessage: sysMessage});
+        newItem.originalTooltipObj = {title: newItem.name, description: newItem.description, systemMessage: sysMessage}
+        Tooltip.makeTooltippable(newItem.icon, newItem.originalTooltipObj);
 
         var baseTint = 0x00042D;
         newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
@@ -177,6 +177,7 @@ var ic = function(options) {
                     Matter.Events.trigger(globals.currentGame.itemSystem, 'dropItem', {item: item});
                     item.isDropping = false;
                     item.currentSlot = null;
+                    item.manuallyManaged = false;
                     if(options.fleeting)
                         ItemUtils.initiateBlinkDeath({item: item});
                     itemDropSound.play();
@@ -255,9 +256,13 @@ var ic = function(options) {
         globals.currentGame.removeTickCallback(newItem.hoverListener);
         if(this.itemDrop)
             graphicsUtils.removeSomethingFromRenderer(this.itemDrop);
-    },
+    }
 
-    globals.currentGame.addItem(newItem);
+    if(!options.dontAddToItemSystem) {
+        globals.currentGame.addItem(newItem);
+    } else {
+        newItem.manuallyManaged = true;
+    }
     return newItem;
 }
 
