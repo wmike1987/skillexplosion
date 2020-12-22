@@ -3,7 +3,7 @@ import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
-import {levelSpecifier} from '@games/Us/MapAndLevel/LevelSpecifier.js'
+import {levelSpecifier} from '@games/Us/MapAndLevel/Levels/LevelSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import styles from '@utils/Styles.js'
 
@@ -24,9 +24,23 @@ var typeTokenMappings = {
 var MapLevelNode = function(options) {
     this.mapRef = options.mapRef;
     this.levelDetails = options.levelDetails;
-    this.displayObject = graphicsUtils.createDisplayObject(typeTokenMappings[this.levelDetails.type], {scale: {x: 1, y: 1}});
-    this.displayObject.interactive = true;
+    this.travelPredicate = options.travelPredicate;
 
+    if(options.manualTokens) {
+        //custom map token
+        this.displayObject = graphicsUtils.createDisplayObject('TransparentSquare', {where: 'hudNOne', scale: {x: 50, y: 50}});
+        this.displayObject.interactive = true;
+        this.manualTokens = options.manualTokens.call(this);
+        this.manualTokens.forEach((token) => {
+            token.interactive = true;
+        })
+    } else {
+        //default behavior
+        this.displayObject = graphicsUtils.createDisplayObject(typeTokenMappings[this.levelDetails.type], {where: 'hudNTwo', scale: {x: 1, y: 1}});
+        this.displayObject.interactive = true;
+    }
+
+    //Build informational tooltip
     var enemyDescriptions = [];
     var enemyIcons = [];
     var self = this;
@@ -41,17 +55,23 @@ var MapLevelNode = function(options) {
         descriptionIcons: enemyIcons
     });
 
+    //Call init() if specified
     if(options.init) {
         options.init.call(this);
     }
 
-    this.enterNode = this.levelDetails.enterNode;
+    //Establish event handlers
     this.displayObject.on('mouseover', function(event) {
         if(!this.isCompleted && !this.mapRef.travelInProgress) {
             if(options.hoverCallback) {
                 options.hoverCallback.call(self);
             }
             this.displayObject.tint = 0x20cd2c;
+            if(this.manualTokens) {
+                this.manualTokens.forEach((token) => {
+                    token.tint = 0x20cd2c;
+                })
+            }
         }
     }.bind(this))
     this.displayObject.on('mouseout', function(event) {
@@ -60,19 +80,24 @@ var MapLevelNode = function(options) {
                 options.unhoverCallback.call(self);
             }
             this.displayObject.tint = 0xFFFFFF;
+            if(this.manualTokens) {
+                this.manualTokens.forEach((token) => {
+                    token.tint = 0xFFFFFF;
+                })
+            }
         }
     }.bind(this))
     this.displayObject.on('mousedown', function(event) {
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
             this.displayObject.tint = 0xff0000;
             var canTravel = true;
-            if(options.travelCallback) {
-                canTravel = options.travelCallback.call(self);
+            if(options.travelPredicate) {
+                canTravel = this.travelPredicate();
             }
             if(canTravel) {
                 this.mapRef.travelToNode(this, function() {
                     Matter.Events.trigger(globals.currentGame, "TravelFinished", {node: this});
-                    this.enterNode(self);
+                    this.levelDetails.enterNode(self);
                     this.displayObject.tint = 0xFFFFFF;
                 }.bind(this));
             }
@@ -81,16 +106,36 @@ var MapLevelNode = function(options) {
 
     this.setPosition = function(position) {
         this.displayObject.position = position;
+        if(this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                token.position = position;
+            })
+        }
         this.position = position;
+    }
+
+    this.cleanUp = function() {
+        graphicsUtils.removeSomethingFromRenderer(this.displayObject);
+        if(this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                graphicsUtils.removeSomethingFromRenderer(token);
+            })
+        }
     }
 }
 
-//Map object
+/*
+ * Main Map object
+ */
+//Map sounds
 var openmapSound = gameUtils.getSound('openmap.wav', {volume: .15, rate: 1.0});
 var openmapSound2 = gameUtils.getSound('openmap2.wav', {volume: .06, rate: .8});
 var openmapSound3 = gameUtils.getSound('openmap3.wav', {volume: .04, rate: .8});
+
+//Creates the map, the map head, the map nodes and their tooltips, as well as initializes the level obj which the player will enter upon clicking the node
 var map = function(specs) {
 
+    //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
         isSensor: true,
         frictionAir: 0.0,
@@ -103,32 +148,37 @@ var map = function(specs) {
             stage: 'hudNOne'
         },
     ];
+    global.currentGame.addBody(this.headTokenBody);
+    this.headTokenSprite = this.headTokenBody.renderlings.headtoken;
+    this.headTokenSprite.visible = false;
+    Matter.Body.setPosition(this.headTokenBody, gameUtils.getCanvasCenter());
+
+    //setup fatigue functionality
     this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {position: {x: 100, y: 100}, style: styles.fatigueText, where: "hudNOne"});
     Matter.Events.on(this, "SetFatigue", function(event) {
         this.fatigueText.alpha = .9;
         var amount = event.amount;
         this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
     }.bind(this))
-    global.currentGame.addBody(this.headTokenBody);
     gameUtils.attachSomethingToBody({something: this.fatigueText, body: this.headTokenBody, offset: {x: 0, y: 20}});
-    Matter.Body.setPosition(this.headTokenBody, gameUtils.getCanvasCenter());
-    this.headTokenSprite = this.headTokenBody.renderlings.headtoken;
     this.fatigueBarSprite = this.headTokenBody.renderlings.fatigueBar;
     this.fatigueFillSprite = this.headTokenBody.renderlings.fatigueFill;
-    this.headTokenSprite.visible = false;
+
+    //Create main map sprite
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {where: 'foreground', position: gameUtils.getPlayableCenter()});
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
     this.levels = specs.levels;
     this.travelInProgress = false;
-
     this.graph = [];
 
+    //Add the camp node
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
     var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this});
     initialCampNode.setPosition(gameUtils.getPlayableCenter());
     this.graph.push(initialCampNode);
 
+    //Non-airdrop levels
     for(const key in this.levels) {
         if(key.includes('airDrop')) continue;
         for(var x = 0; x < this.levels[key]; x++) {
@@ -155,11 +205,16 @@ var map = function(specs) {
         }
     }
 
+    //Add air drop stations
     var airDrops = this.levels.airDropStations + this.levels.airDropSpecialStations;
     for(var x = 0; x < airDrops; x++) {
         var key = 'airDropStations';
+        var regularTokenName = 'AirDropToken';
+        var specialTokenName = 'AirDropTokenGleam';
         if(x >= this.levels.airDropStations) {
             key = 'airDropSpecialStations';
+            var regularTokenName = 'AirDropSpecialToken';
+            var specialTokenName = 'AirDropSpecialTokenGleam'
         }
 
         //Determine position
@@ -211,8 +266,31 @@ var map = function(specs) {
                     node.displayObject.scale = {x: 1.0, y: 1.0};
                 })
             },
-            travelCallback: function() {
-                return true;
+            travelPredicate: function() {
+                var allowed = false;
+                return this.prereqs.every((pr) => {
+                    return pr.isCompleted;
+                })
+            },
+            manualTokens: function() {
+                var regularToken = graphicsUtils.createDisplayObject(regularTokenName, {where: 'hudNTwo'});
+                var specialToken = graphicsUtils.createDisplayObject(specialTokenName, {where: 'hudNTwo'});
+                Matter.Events.on(this.mapRef, 'showMap', function() {
+                    if(this.travelPredicate()) {
+                        regularToken.visible = true;
+                        specialToken.visible = true;
+                        if(!this.gleamTimer) {
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 1200);
+                            Matter.Events.on(regularToken, 'destroy', () => {
+                                globals.currentGame.invalidateTimer(this.gleamTimer);
+                            })
+                        }
+                    } else {
+                        regularToken.visible = true;
+                        specialToken.visible = false;
+                    }
+                }.bind(this))
+                return [regularToken, specialToken];
             }
         });
 
@@ -228,22 +306,34 @@ var map = function(specs) {
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
-            node.displayObject.where = 'hudNTwo'
             if(node.isCompleted) {
                 node.displayObject.tint = 0x002404;
             }
             graphicsUtils.addOrShowDisplayObject(node.displayObject)
+            if(node.manualTokens) {
+                node.manualTokens.forEach((token) => {
+                    graphicsUtils.addOrShowDisplayObject(token)
+                })
+            }
         })
 
         graphicsUtils.addOrShowDisplayObject(this.headTokenSprite);
         graphicsUtils.addOrShowDisplayObject(this.fatigueText);
+
+        Matter.Events.trigger(this, 'showMap', {});
     }
 
     this.hide = function() {
+        Matter.Events.trigger(this, 'hideMap', {});
         this.mapSprite.visible = false;
         this.graph.forEach(node => {
             node.displayObject.visible = this.mapSprite.visible;
             node.displayObject.tooltipObj.hide();
+            if(node.manualTokens) {
+                node.manualTokens.forEach((token) => {
+                    token.visible = this.mapSprite.visible;
+                })
+            }
             if(node.prereqs) {
                 node.prereqs.forEach((pr) => {
                     if(pr.focusCircle) {

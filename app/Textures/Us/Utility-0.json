@@ -8,9 +8,25 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
 	"sourceSize": {"w":50,"h":50}
 },
-"AirDropToken.png":
+"AirDropSpecialTokenGleam.png":
 {
 	"frame": {"x":1575,"y":744,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+},
+"AirDropToken.png":
+{
+	"frame": {"x":1575,"y":796,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+},
+"AirDropTokenGleam.png":
+{
+	"frame": {"x":1575,"y":848,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -50,7 +66,7 @@
 },
 "AugmentBorder.png":
 {
-	"frame": {"x":1487,"y":1280,"w":36,"h":36},
+	"frame": {"x":1483,"y":1332,"w":36,"h":36},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":36,"h":36},
@@ -58,7 +74,7 @@
 },
 "AugmentBorderGold.png":
 {
-	"frame": {"x":1575,"y":796,"w":50,"h":50},
+	"frame": {"x":1575,"y":900,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -66,7 +82,7 @@
 },
 "AugmentBorderWhite.png":
 {
-	"frame": {"x":1575,"y":848,"w":50,"h":50},
+	"frame": {"x":1575,"y":952,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -98,7 +114,7 @@
 },
 "backpack.png":
 {
-	"frame": {"x":1549,"y":1229,"w":32,"h":46},
+	"frame": {"x":1539,"y":1281,"w":32,"h":46},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":46},
@@ -130,7 +146,7 @@
 },
 "CampfireToken.png":
 {
-	"frame": {"x":1575,"y":900,"w":50,"h":50},
+	"frame": {"x":1575,"y":1004,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -226,7 +242,7 @@
 },
 "FireMapToken.png":
 {
-	"frame": {"x":1497,"y":1229,"w":49,"h":50},
+	"frame": {"x":1487,"y":1281,"w":49,"h":50},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":49,"h":50},
@@ -250,7 +266,7 @@
 },
 "LevelCompletedToken.png":
 {
-	"frame": {"x":1575,"y":952,"w":50,"h":50},
+	"frame": {"x":1431,"y":1311,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -258,7 +274,7 @@
 },
 "LockIcon.png":
 {
-	"frame": {"x":1525,"y":1280,"w":32,"h":32},
+	"frame": {"x":1521,"y":1332,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -290,7 +306,7 @@
 },
 "MapGoldBattleToken.png":
 {
-	"frame": {"x":1575,"y":1004,"w":50,"h":50},
+	"frame": {"x":1497,"y":1177,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -298,7 +314,7 @@
 },
 "MapNodeFocusCircle.png":
 {
-	"frame": {"x":1431,"y":1311,"w":50,"h":50},
+	"frame": {"x":1549,"y":1177,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -306,7 +322,7 @@
 },
 "MapRedBattleToken.png":
 {
-	"frame": {"x":1497,"y":1177,"w":50,"h":50},
+	"frame": {"x":1497,"y":1229,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -330,7 +346,7 @@
 },
 "medicpack.png":
 {
-	"frame": {"x":1483,"y":1318,"w":34,"h":32},
+	"frame": {"x":1482,"y":1370,"w":34,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":34,"h":32},
@@ -338,7 +354,7 @@
 },
 "MobBattleToken.png":
 {
-	"frame": {"x":1549,"y":1177,"w":50,"h":50},
+	"frame": {"x":1549,"y":1229,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -378,7 +394,7 @@
 },
 "singletire.png":
 {
-	"frame": {"x":1583,"y":1229,"w":45,"h":28},
+	"frame": {"x":1573,"y":1281,"w":45,"h":28},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":45,"h":28},
@@ -490,6 +506,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1626,"h":2020},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b622e8a4356780c14616116449b3104f:8ba30b11f6b62b581a6fb3dee53151de:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:d331399b785bfee80ee96f24b829e924:9d8c321ce5db9dbdd82a475e45cea23d:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

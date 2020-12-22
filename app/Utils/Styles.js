@@ -272,7 +272,7 @@ export default {
 		fill: "#D3D7E8",
 		fontFamily: "Tahoma, Geneva, sans-serif",
 		fontSize: 14,
-		textBaseline: "bottom",
+		textBaseline: "center",
 		strokeThickness: 1
 	}),
 

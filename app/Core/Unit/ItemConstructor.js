@@ -110,7 +110,7 @@ var ic = function(options) {
         newItem.icon.on('mousedown', function(event) {
             if(globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
             newItem.owningUnit.unequipItem(newItem);
-            Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem})
+            Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem, unit: newItem.owningUnit})
             newItem.mouseInside = false;
             gameUtils.setCursorStyle('server:MainCursor.png');
         }.bind(this))

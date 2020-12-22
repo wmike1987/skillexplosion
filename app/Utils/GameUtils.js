@@ -903,7 +903,7 @@ var graphicsUtils = {
 
     fadeSprite: function(sprite, rate) {
         sprite.alpha = sprite.alpha || 1.0;
-        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: 1.0/rate, killsSelf: true, callback: function() {
+        globals.currentGame.addTimer({name: 'fadeSprite:' + mathArrayUtils.getId(), timeLimit: 16, runs: 1.0/rate, killsSelf: true, callback: function() {
             sprite.alpha -= rate;
         }, totallyDoneCallback: function() {
             graphicsUtils.removeSomethingFromRenderer(sprite);
@@ -920,7 +920,7 @@ var graphicsUtils = {
         }
         var runs = time/16;
         var rate = (finalAlpha-startingAlpha)/runs;
-        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
+        globals.currentGame.addTimer({name: 'fadeSpriteOverTime:' + mathArrayUtils.getId(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
             sprite.alpha += rate;
         }, totallyDoneCallback: function() {
             if(!fadeIn) {
@@ -932,13 +932,41 @@ var graphicsUtils = {
         }.bind(this)})
     },
 
+    fadeBetweenSprites: function(sprite1, sprite2, duration, pauseDuration) {
+        pauseDuration = pauseDuration || 0;
+        sprite1.alpha = 1;
+        sprite2.alpha = 0;
+        graphicsUtils.addOrShowDisplayObject(sprite1);
+        graphicsUtils.addOrShowDisplayObject(sprite2);
+        var forward = true; //from sprite1 --> sprite2
+        var timer = globals.currentGame.addTimer({name: 'fadebetweensprites:'+ mathArrayUtils.getId(), gogogo: true, tickCallback:
+            function(deltaTime) {
+                var amountDone = deltaTime/duration;
+                if(forward) {
+                    sprite1.alpha -= amountDone;
+                    sprite2.alpha += amountDone;
+                    if(sprite2.alpha >= 1.0) {
+                        forward = false;
+                    }
+                } else {
+                    sprite2.alpha -= amountDone;
+                    sprite1.alpha += amountDone;
+                    if(sprite1.alpha >= 1.0) {
+                        forward = true;
+                    }
+                }
+            }
+        });
+        return timer;
+    },
+
     floatSprite: function(sprite, options) {
         options = Object.assign({direction: 1, runs: 34}, options);
         if(!sprite.floatYOffset) {
             sprite.floatYOffset = 0;
         }
         sprite.alpha = 1.4;
-        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 16, runs: options.runs, executeOnNuke: true, killsSelf: true, callback: function() {
+        globals.currentGame.addTimer({name: 'floatSprite:' + mathArrayUtils.getId(), timeLimit: 16, runs: options.runs, executeOnNuke: true, killsSelf: true, callback: function() {
             sprite.position.y -= 1 * options.direction;
             sprite.floatYOffset -= 1;
             sprite.alpha -= 1.4/(options.runs);
@@ -950,7 +978,7 @@ var graphicsUtils = {
     rotateSprite: function(sprite, options) {
         options = Object.assign({direction: 1, speed: 10}, options);
 
-        var rotationTimer = globals.currentGame.addTimer({name: mathArrayUtils.getId(), gogogo: true, executeOnNuke: true, tickCallback: function(deltaTime) {
+        var rotationTimer = globals.currentGame.addTimer({name: 'rotateSprite:' + mathArrayUtils.getId(), gogogo: true, executeOnNuke: true, tickCallback: function(deltaTime) {
             sprite.rotation += 1/1000 * options.speed;
         }})
 
@@ -969,7 +997,7 @@ var graphicsUtils = {
         var floatedText = graphicsUtils.addSomethingToRenderer("TEX+:"+text, 'hud', {style: options.style || newStyle, x: gameUtils.getCanvasWidth()/2, y: gameUtils.getCanvasHeight()/2});
         floatedText.position = position;
         floatedText.alpha = 1.4;
-        globals.currentGame.addTimer({name: mathArrayUtils.getId(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
+        globals.currentGame.addTimer({name: 'floatText:' + mathArrayUtils.getId(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
             if(!options.stationary) {
                 floatedText.position.y -= 1;
             }
@@ -1052,7 +1080,7 @@ var graphicsUtils = {
         var utils = this;
         var forward = true;
         return globals.currentGame.addTimer({
-            name: 'gradualTint' + mathArrayUtils.getId(),
+            name: 'gradualTint:' + mathArrayUtils.getId(),
             runs: 1,
             timeLimit: transitionTime,
             resetExtension: function() {

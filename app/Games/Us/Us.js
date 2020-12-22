@@ -243,7 +243,7 @@ var game = {
 
     initLevel: function(node) {
         //create new scene
-        var nextLevelScene = this.createNextLevelScene(this.currentLevelDetails);
+        var nextLevelScene = this.createNextLevelTerrain(this.currentLevelDetails);
         this.currentScene.transitionToScene(nextLevelScene);
         this.campLikeActive = false;
         Matter.Events.on(nextLevelScene, 'afterSnapshotRender', function() {
@@ -351,6 +351,12 @@ var game = {
     initAirDrop: function(node) {
         this.currentLevelDetails = node.levelDetails;
 
+        //mark node as completed
+        node.isCompleted = true;
+
+        //camp-like area active
+        this.campLikeActive = true;
+
         //create new scene
         var airDropScene = new Scene();
 
@@ -358,7 +364,6 @@ var game = {
         this.currentLevelDetails.createTerrain(airDropScene);
         this.currentLevelDetails.createTrees(airDropScene);
         this.currentScene.transitionToScene(airDropScene);
-        this.campLikeActive = true;
 
         Matter.Events.on(airDropScene, 'afterSnapshotRender', function() {
             this.closeMap();
@@ -393,7 +398,7 @@ var game = {
     },
 
     //Probably don't really need this anymore
-    createNextLevelScene: function(levelObj) {
+    createNextLevelTerrain: function(levelObj) {
         var scene = new Scene();
         levelObj.createTerrain(scene);
         return scene;
