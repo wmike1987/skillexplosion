@@ -73,6 +73,16 @@ var MapLevelNode = function(options) {
                 })
             }
         }
+
+        //if we're a prerequisite to something, highlight the master
+        if(this.chosenAsPrereq && !this.master.isCompleted) {
+            var node = this.master;
+            node.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: node.position, scale: {x: 1.1, y: 1.1}});
+            this.master.manualTokens.forEach((token) => {
+                token.scale = {x: 1.1, y: 1.1};
+            })
+            graphicsUtils.rotateSprite(node.focusCircle, {speed: 20});
+        }
     }.bind(this))
     this.displayObject.on('mouseout', function(event) {
         if(!this.isCompleted && !this.mapRef.travelInProgress) {
@@ -85,6 +95,15 @@ var MapLevelNode = function(options) {
                     token.tint = 0xFFFFFF;
                 })
             }
+        }
+        //if we're a prerequisite to something, unhighlight the master
+        if(this.chosenAsPrereq && !this.master.isCompleted) {
+            var node = this.master;
+            graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
+            this.master.manualTokens.forEach((token) => {
+                token.scale = {x: 1.0, y: 1.0};
+            })
+            node.focusCirlce = null;
         }
     }.bind(this))
     this.displayObject.on('mousedown', function(event) {
@@ -135,6 +154,9 @@ var openmapSound3 = gameUtils.getSound('openmap3.wav', {volume: .04, rate: .8});
 //Creates the map, the map head, the map nodes and their tooltips, as well as initializes the level obj which the player will enter upon clicking the node
 var map = function(specs) {
 
+    //camp location
+    var campLocation = gameUtils.getPlayableCenter();
+
     //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
         isSensor: true,
@@ -151,7 +173,7 @@ var map = function(specs) {
     global.currentGame.addBody(this.headTokenBody);
     this.headTokenSprite = this.headTokenBody.renderlings.headtoken;
     this.headTokenSprite.visible = false;
-    Matter.Body.setPosition(this.headTokenBody, gameUtils.getCanvasCenter());
+    Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(campLocation, {y: 20}));
 
     //setup fatigue functionality
     this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {position: {x: 100, y: 100}, style: styles.fatigueText, where: "hudNOne"});
@@ -207,8 +229,9 @@ var map = function(specs) {
             }.bind(this))
             return [regularToken, specialToken];
         }});
-    initialCampNode.setPosition(gameUtils.getPlayableCenter());
+    initialCampNode.setPosition(campLocation);
     this.graph.push(initialCampNode);
+    this.lastNode = initialCampNode;
 
     //Non-airdrop levels
     for(const key in this.levels) {
@@ -269,7 +292,7 @@ var map = function(specs) {
             init: function() {
                 this.prereqs = [];
 
-                //choose two battle nodes to be the prereqs
+                //choose close battle nodes to be the prerequisites
                 var count = 0;
                 var prereqDistanceLimit = 200;
                 do {
@@ -280,6 +303,7 @@ var map = function(specs) {
                     var node = mathArrayUtils.getRandomElementOfArray(this.mapRef.graph);
                     if(node.isBattleNode && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(position, node.position) < prereqDistanceLimit) {
                         node.chosenAsPrereq = true;
+                        node.master = this;
                         this.prereqs.push(node);
                     }
                     count++;
@@ -375,13 +399,15 @@ var map = function(specs) {
                     token.visible = this.mapSprite.visible;
                 })
             }
-            if(node.prereqs) {
-                node.prereqs.forEach((pr) => {
-                    if(pr.focusCircle) {
-                        graphicsUtils.removeSomethingFromRenderer(pr.focusCircle);
-                        pr.displayObject.scale = {x: 1.0, y: 1.0};
-                    }
-                })
+            if(node.focusCircle) {
+                graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
+                if(!node.manualTokens) {
+                    node.displayObject.scale = {x: 1.0, y: 1.0};
+                } else {
+                    node.manualTokens.forEach((token) => {
+                        token.scale = {x: 1.0, y: 1.0};
+                    })
+                }
             }
         })
 
@@ -401,6 +427,10 @@ var map = function(specs) {
             this.travelInProgress = false;
             destinationCallback();
         }.bind(this));
+    }
+
+    this.revertHeadToPreviousLocation = function() {
+        Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {y: 20}));
     }
 }
 export default map;

@@ -5,7 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function(options) {
     var item = Object.assign({
-        name: "Slippery Blend",
+        name: "Slippery Soup",
         description: "Consume to gain 4 dodge.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'NeonGreenSyringe',

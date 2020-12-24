@@ -5,7 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function(options) {
     var item = Object.assign({
-        name: "Rough Brine",
+        name: "Coarse Brine",
         description: "Consume to gain 6 grit.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'BlueYellowSyringe',

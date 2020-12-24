@@ -318,6 +318,7 @@ var game = {
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
                     node.isCompleted = true;
+                    this.map.lastNode = node;
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
                     Matter.Events.on(sc, 'afterSnapshotRender', function() {
                         gameUtils.moveUnitOffScreen(this.shane);
@@ -342,6 +343,7 @@ var game = {
                         enemies.forEach((enemy) => {
                             this.removeUnit(enemy);
                         })
+                        this.map.revertHeadToPreviousLocation();
                     }.bind(this))
                 }, 600);
             }

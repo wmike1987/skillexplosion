@@ -1157,6 +1157,9 @@ var graphicsUtils = {
                 }
             }
         )
+        Matter.Events.on(sprite, 'destroy', () => {
+            timer.invalidate();
+        })
         return timer;
     },
 

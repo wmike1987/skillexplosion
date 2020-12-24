@@ -847,6 +847,9 @@ var UnitBase = {
 
     petrify: function(duration) {
         var unit = this;
+        if(unit.isDead) {
+            return;
+        }
         var buffName = 'petrify';
         var shakeTimer = null;
         this.applyBuff({name: buffName, unit: this, textureName: 'PetrifyBuff', playSound: false, duration: duration || 2000, applyChanges: function() {

@@ -66,6 +66,12 @@ var airDropStation = function(options) {
                 }
             }.bind(globals.currentGame))
         })
+
+        scene.addCleanUpTask(() => {
+            globals.currentGame.removePriorityMouseDownEvent(mapClickListener);
+            globals.currentGame.removeTickCallback(mapHoverTick);
+            $('body').off('keydown.map');
+        })
     };
 
     this.createTrees = function(scene) {
@@ -88,7 +94,7 @@ var airDropStation = function(options) {
         var a1 = new Dialogue({actor: "MacMurray", text: "Stimulant drop is en route. What do you need?", backgroundBox: true, letterSpeed: 100});
         var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
-            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'RoughBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
+            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
             chain.cleanUp();
             self.airDropActive = true;
         }});
@@ -152,6 +158,12 @@ var airDropSpecialStation = function(options) {
                     this.closeMap();
                 }
             }.bind(globals.currentGame))
+        })
+
+        scene.addCleanUpTask(() => {
+            globals.currentGame.removePriorityMouseDownEvent(mapClickListener);
+            globals.currentGame.removeTickCallback(mapHoverTick);
+            $('body').off('keydown.map');
         })
     };
 

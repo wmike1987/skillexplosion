@@ -14,6 +14,7 @@ import circleDissolveShader from '@shaders/CircleDissolveShader.js'
 var Scene = function() {
     this.id = mathArrayUtils.uuidv4();
     this.objects = [];
+    this.cleanUpTasks = [];
     this.isScene = true;
 };
 
@@ -53,6 +54,10 @@ Scene.prototype.add = function(objOrArray) {
     $.merge(this.objects, objOrArray);
 };
 
+Scene.prototype.addCleanUpTask = function(f) {
+    this.cleanUpTasks.push(f);
+};
+
 Scene.prototype.clear = function() {
     $.each(this.objects, function(i, obj) {
         if(obj.cleanUp) {
@@ -61,10 +66,16 @@ Scene.prototype.clear = function() {
             graphicsUtils.removeSomethingFromRenderer(obj);
         }
     })
+
+    $.each(this.cleanUpTasks, function(i, obj) {
+        obj();
+    })
+
     if(this._clearExtension) {
         this._clearExtension();
     }
     this.objects = [];
+    this.cleanUpTasks = [];
     //Since this fadeTimer callback on the newScene has its context as the current scene
     //there was a chain of scenes held together by the bound 'this'. Aka a memory leak.
     this.fadeTimer = null;
