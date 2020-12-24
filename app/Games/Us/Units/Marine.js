@@ -957,19 +957,9 @@ export default function Marine(options) {
                         }, function(unit) {
                             return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
                         }, function(unit) {
-                            var lifeUpAnimation = gameUtils.getAnimation({
-                                spritesheetName: 'UtilityAnimations1',
-                                animationName: 'lifegain1',
-                                speed: 1.0,
-                                transform: [unit.position.x, unit.position.y, 1.0, 1.0]
-                            });
-                            lifeUpAnimation.tint = 0xff1e08;
-                            lifeUpAnimation.play();
-                            lifeUpAnimation.alpha = 1;
+                            graphicsUtils.applyGainAnimationToUnit(unit, 0x95002d);
                             healsound.play();
-                            gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: unit.body});
-                            graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
-                            unit.giveHealth(currentAugment.healAmount, self);
+                            unit.giveHealth(currentAugment.healAmount, unit);
                         })
                     }
 

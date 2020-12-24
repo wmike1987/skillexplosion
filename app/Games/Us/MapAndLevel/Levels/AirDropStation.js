@@ -36,6 +36,7 @@ var airDropStation = function(options) {
         scene.add(mapTable);
 
         var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
+            if(!this.airDropActive) return;
             if(Matter.Vertices.contains(mapTable.body.vertices, mousePosition)) {
                 mapTableSprite.tint = 0xff33cc;
             } else {
@@ -46,6 +47,7 @@ var airDropStation = function(options) {
         var self = this;
         //Establish map click listeners
         var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
+            if(!self.airDropActive) return;
             var canvasPoint = {x: 0, y: 0};
             gameUtils.pixiPositionToPoint(canvasPoint, event);
 
@@ -81,11 +83,14 @@ var airDropStation = function(options) {
 
     this.startAirDrop = function(scene) {
         var selection = Object.create(selectionMechanism);
-        selection.presentChoices({numberOfChoices: 3, possibleChoices: ['TechnologyKey', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
         var a1 = new Dialogue({actor: "MacMurray", text: "Stimulant drop is en route. What do you need?", backgroundBox: true, letterSpeed: 100});
+        var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
+            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'RoughBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
+            chain.cleanUp();
+            self.airDropActive = true;
         }});
         scene.add(chain);
         chain.play();
@@ -118,6 +123,7 @@ var airDropSpecialStation = function(options) {
         scene.add(mapTable);
 
         var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
+            if(!this.airDropActive) return;
             if(Matter.Vertices.contains(mapTable.body.vertices, mousePosition)) {
                 mapTableSprite.tint = 0xff33cc;
             } else {
@@ -128,6 +134,7 @@ var airDropSpecialStation = function(options) {
         var self = this;
         //Establish map click listeners
         var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
+            if(!self.airDropActive) return;
             var canvasPoint = {x: 0, y: 0};
             gameUtils.pixiPositionToPoint(canvasPoint, event);
 
@@ -163,11 +170,14 @@ var airDropSpecialStation = function(options) {
 
     this.startAirDrop = function(scene) {
         var selection = Object.create(selectionMechanism);
-        selection.presentChoices({numberOfChoices: 3, possibleChoices: ['TechnologyKey', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
         var a1 = new Dialogue({actor: "MacMurray", text: "Technology is en route. What do you need?", backgroundBox: true, letterSpeed: 100});
+        var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
+            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['TechnologyKey', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
+            chain.cleanUp();
+            self.airDropActive = true;
         }});
         scene.add(chain);
         chain.play();
@@ -201,7 +211,7 @@ var selectionMechanism = {
                 //show item icon
                 graphicsUtils.addDisplayObjectToRenderer(item.icon);
                 item.icon.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: j*spacing - subtractionAmount, y: -100});
-                Tooltip.makeTooltippable(item.icon, Object.assign(item.originalTooltipObj, {systemMessage: 'Click to receive from air drop.'}));
+                Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {systemMessage: 'Click to receive from air drop.'}));
                 j++;
 
                 //mouse down listener

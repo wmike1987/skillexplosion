@@ -737,10 +737,14 @@ var common = {
             this.invalidated = false;
         }
 
+        timer.invalidate = () => {
+            this.invalidateTimer(timer);
+        }
+
         return timer;
     },
     invalidateTimer: function(timer) {
-        if(!timer) return;
+        if(!timer || timer.invalidted) return;
         if($.isArray(timer)) {
             $.each(timer, function(i, timer) {
                 timer.invalidated = true;
@@ -751,12 +755,11 @@ var common = {
             delete this.timers[timer.name];
         }
     },
-    addToTimer: function(timer, amount) {
-        timer.timeElapsed -= amount;
-    },
+
     getTimer: function(timerName) {
         return this.timers[timerName];
     },
+
     invalidateTimers: function(clearPersistables) {
         $.each(this.timers, function(i, timer) {
             if(timer && !clearPersistables && timer.persists) return;

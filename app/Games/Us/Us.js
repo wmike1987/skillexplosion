@@ -406,8 +406,8 @@ var game = {
 
     createShane: function() {
          this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["StoutShot"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
          ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
          return this.shane;
@@ -416,9 +416,6 @@ var game = {
     createUrsula: function() {
         // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Painkiller"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["CrudeBlend"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;

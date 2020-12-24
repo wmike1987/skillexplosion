@@ -359,7 +359,7 @@ export default function Gargoyle(options) {
             cooldown: 450,
             honeRange: 300,
             range: options.radius*2,
-            damage: 8,
+            damage: 9,
             attackExtension: function(target) {
                 var bloodAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',

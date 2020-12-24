@@ -932,27 +932,52 @@ var graphicsUtils = {
         }.bind(this)})
     },
 
-    fadeBetweenSprites: function(sprite1, sprite2, duration, pauseDuration) {
+    //if bottonPause is null, both sides pause according to pauseDuration
+    fadeBetweenSprites: function(sprite1, sprite2, duration, pauseDuration, bottomPause) {
+        var equalPause = mathArrayUtils.isFalseNotZero(bottomPause);
         pauseDuration = pauseDuration || 0;
         sprite1.alpha = 1;
         sprite2.alpha = 0;
         graphicsUtils.addOrShowDisplayObject(sprite1);
         graphicsUtils.addOrShowDisplayObject(sprite2);
         var forward = true; //from sprite1 --> sprite2
+        var pauseAmount = 0;
+        var paused = false;
         var timer = globals.currentGame.addTimer({name: 'fadebetweensprites:'+ mathArrayUtils.getId(), gogogo: true, tickCallback:
             function(deltaTime) {
                 var amountDone = deltaTime/duration;
+                if(paused) {
+                    var localPauseDuration = pauseDuration;
+                    pauseAmount += deltaTime;
+                    if(equalPause) { //if equal pause, who cares
+                        //do nothing
+                    } else {
+                        if(forward) { //at the bottom, wanting to go forward
+                            localPauseDuration = bottomPause;
+                        } else { //at the top, wanting to go down
+                            //do nothing
+                        }
+                    }
+                    if(pauseAmount > localPauseDuration) {
+                        pauseAmount = 0;
+                        paused = false;
+                    } else {
+                        return;
+                    }
+                }
                 if(forward) {
                     sprite1.alpha -= amountDone;
                     sprite2.alpha += amountDone;
                     if(sprite2.alpha >= 1.0) {
                         forward = false;
+                        paused = true;
                     }
                 } else {
                     sprite2.alpha -= amountDone;
                     sprite1.alpha += amountDone;
                     if(sprite1.alpha >= 1.0) {
                         forward = true;
+                        paused = true;
                     }
                 }
             }
@@ -1134,6 +1159,44 @@ var graphicsUtils = {
         )
         return timer;
     },
+
+    applyGainAnimationToUnit: function(unit, tint) {
+        var a1 = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations1',
+            animationName: 'lifegain1',
+            speed: 1,
+            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
+        });
+
+        var a2 = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations1',
+            animationName: 'lifegain1',
+            speed: 1.75,
+            transform: [unit.position.x+15, unit.position.y + 10, .5, .5]
+        });
+
+        var a3 = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations1',
+            animationName: 'lifegain1',
+            speed: 1.5,
+            transform: [unit.position.x-10, unit.position.y + 7, .33, .33]
+        });
+
+        a1.play();
+        a2.play();
+        a3.play();
+
+        a1.tint = tint;
+        a2.tint = tint;
+        a3.tint = tint;
+
+        gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: 0, y: 0}});
+        gameUtils.attachSomethingToBody({something: a2, body: unit.body, offset: {x: 15, y: 10}});
+        gameUtils.attachSomethingToBody({something: a3, body: unit.body, offset: {x: -10, y: 7}});
+        graphicsUtils.addSomethingToRenderer(a1, 'foreground');
+        graphicsUtils.addSomethingToRenderer(a2, 'foreground');
+        graphicsUtils.addSomethingToRenderer(a3, 'foreground');
+    }
 }
 
 var mathArrayUtils = {

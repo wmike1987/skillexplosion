@@ -494,7 +494,9 @@ var UnitBase = {
         }.bind(this));
 
         Matter.Events.on(this, "consume", function() {
-            this.consumeSound.play();
+            if(this.consumeSound) {
+                this.consumeSound.play();
+            }
         }.bind(this));
 
         //hover Method
@@ -892,6 +894,7 @@ var UnitBase = {
     },
 
     condemn: function(duration, condemningUnit) {
+        if(this.isDead) return;
         var defensePenalty = -1;
         var buffName = 'condemn';
         condemnSound.play();

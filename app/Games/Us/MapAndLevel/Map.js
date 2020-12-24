@@ -174,7 +174,39 @@ var map = function(specs) {
 
     //Add the camp node
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
-    var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this});
+    var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,
+        travelPredicate: function() {
+            var allowed = false;
+            return true;
+        },
+        manualTokens: function() {
+            var regularToken = graphicsUtils.createDisplayObject('CampfireToken', {where: 'hudNTwo'});
+            var specialToken = graphicsUtils.createDisplayObject('CampfireTokenGleam', {where: 'hudNTwo'});
+            Matter.Events.on(this.mapRef, 'showMap', function() {
+                if(this.isCompleted) {
+                    regularToken.visible = true;
+                    specialToken.visible = false;
+                    regularToken.alpha = .5;
+                    regularToken.tint = 0x002404;
+                    this.gleamTimer.invalidate();
+                } else {
+                    if(this.travelPredicate()) {
+                        regularToken.visible = true;
+                        specialToken.visible = true;
+                        if(!this.gleamTimer) {
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                            Matter.Events.on(regularToken, 'destroy', () => {
+                                this.gleamTimer.invalidate();
+                            })
+                        }
+                    } else {
+                        regularToken.visible = true;
+                        specialToken.visible = false;
+                    }
+                }
+            }.bind(this))
+            return [regularToken, specialToken];
+        }});
     initialCampNode.setPosition(gameUtils.getPlayableCenter());
     this.graph.push(initialCampNode);
 
@@ -276,18 +308,26 @@ var map = function(specs) {
                 var regularToken = graphicsUtils.createDisplayObject(regularTokenName, {where: 'hudNTwo'});
                 var specialToken = graphicsUtils.createDisplayObject(specialTokenName, {where: 'hudNTwo'});
                 Matter.Events.on(this.mapRef, 'showMap', function() {
-                    if(this.travelPredicate()) {
-                        regularToken.visible = true;
-                        specialToken.visible = true;
-                        if(!this.gleamTimer) {
-                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 1200);
-                            Matter.Events.on(regularToken, 'destroy', () => {
-                                globals.currentGame.invalidateTimer(this.gleamTimer);
-                            })
-                        }
-                    } else {
+                    if(this.isCompleted) {
                         regularToken.visible = true;
                         specialToken.visible = false;
+                        regularToken.alpha = .5;
+                        regularToken.tint = 0x002404;
+                        this.gleamTimer.invalidate();
+                    } else {
+                        if(this.travelPredicate()) {
+                            regularToken.visible = true;
+                            specialToken.visible = true;
+                            if(!this.gleamTimer) {
+                                this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                                Matter.Events.on(regularToken, 'destroy', () => {
+                                    this.gleamTimer.invalidate();
+                                })
+                            }
+                        } else {
+                            regularToken.visible = true;
+                            specialToken.visible = false;
+                        }
                     }
                 }.bind(this))
                 return [regularToken, specialToken];
@@ -308,6 +348,7 @@ var map = function(specs) {
         this.graph.forEach(node => {
             if(node.isCompleted) {
                 node.displayObject.tint = 0x002404;
+                node.displayObject.alpha = .5;
             }
             graphicsUtils.addOrShowDisplayObject(node.displayObject)
             if(node.manualTokens) {
