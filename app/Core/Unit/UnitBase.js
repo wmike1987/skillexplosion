@@ -83,6 +83,8 @@ var UnitBase = {
     dropItemsOnDeath: true,
 
     sufferAttack: function(damage, attackingUnit, options) {
+        if(this.unitRemoved) return;
+
         options = Object.assign({isProjectile: false}, options);
         attackingUnit = attackingUnit || {name: 'empty'};
         var damageObj = {damage: damage};
@@ -484,6 +486,7 @@ var UnitBase = {
         Matter.Events.on(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
 
         Matter.Events.on(this, "onremove", function() {
+            this.unitRemoved = true;
             Matter.Events.off(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
             if(!this.itemsEnabled) return;
             $.each(this.getCompleteSetOfItemObjects(), function(i, item) {

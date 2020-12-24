@@ -302,6 +302,9 @@ var game = {
         this.endDelayInProgress = false;
         var winCondition = this.addTickCallback(function() {
             var enemySetsFulfilled = false;
+            // var fulfilled = this.currentLevelDetails.enemySets.every((eset) => {
+            //     return eset.fulfilled;
+            // })
             $.each(this.currentLevelDetails.enemySets, function(i, enemy) {
                 enemySetsFulfilled = enemy.fulfilled;
                 return enemySetsFulfilled;
