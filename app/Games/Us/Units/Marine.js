@@ -511,7 +511,7 @@ export default function Marine(options) {
         Matter.Events.on(knife, 'onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
-            if(otherUnit != this && otherUnit && otherUnit.isAttackable) {
+            if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
                 if(currentAugment.name == 'poison tip') {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
