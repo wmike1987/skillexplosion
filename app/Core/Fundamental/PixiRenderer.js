@@ -6,12 +6,37 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils'
 
-//module
+//pixi object frequency destroyer
+// var PixiObjDestroyer = function(renderer) {
+// 	this.objs = [];
+// 	this.init = function() {
+// 		//update sprites after Matter.Runner tick
+// 		Matter.Events.on(renderer.engine.runner, 'tick', function(event) {
+// 			var pixiObj = this.objs.shift();
+// 			if(pixiObj && !pixiObj._destroyed) {
+// 				pixiObj.destroy();
+// 			}
+// 		}.bind(this));
+// 	}
+//
+// 	this.destroy = function(pixiObj) {
+// 		this.objs.push(pixiObj);
+// 	}
+//
+// 	this.cleanUp = function() {
+// 		this.objs = [];
+// 	}
+// }
+
+//main renderer module
 var renderer = function(engine, options) {
 	var options = options || {};
 	var appendToElement = options.appendToElement || document.body;
 
 	this.engine = engine;
+
+	// this.frequencyDestroyer = new PixiObjDestroyer(this);
+	// this.frequencyDestroyer.init();
 
 	//create stages (these don't handle sorting, see the laying group below)
 	this.stages = {
@@ -89,7 +114,6 @@ var renderer = function(engine, options) {
 
 	this.renderWorld = function(engine, tickEvent) {
 		var bodies = Matter.Composite.allBodies(engine.world);
-		// this.stages.background.filters = [];
 
 		bodies.forEach(function(body) {
 			var drawPosition = null;
@@ -126,6 +150,11 @@ var renderer = function(engine, options) {
 			//loop through fully fledged sprites and latch them to the body's coordinates
 			$.each(body.renderlings, function(property, sprite) {
 				if(sprite.independentRender) {
+					return;
+				}
+
+				if(body.softRemove) {
+					sprite.visible = false;
 					return;
 				}
 
@@ -464,13 +493,14 @@ var renderer = function(engine, options) {
 
 	//helper method for removing the child from its parent and calling the destroy method on the object being removed
 	this.removeAndDestroyChild = function(stage, child) {
-	    stage.removeChild(child);
+		stage.removeChild(child);
 		if(child.constructor.name == 'Particle') {
 			child.emitter.cleanup();
 		}
 	    else if(child.destroy && !child._destroyed) {
 			Matter.Events.trigger(child, 'destroy', {});
 			child.destroy(); //i'm unsure if I need to check for a destroy method first
+			// this.frequencyDestroyer.destroy(child);
 		} else if(child._destroyed) {
 			// console.info("removing object that's already been destroyed")
 		}
@@ -478,8 +508,11 @@ var renderer = function(engine, options) {
 
 	//destroy the whole pixi app
 	this.destroy = function() {
-	    if(this.pixiApp)
-		    this.pixiApp.destroy(true, true);
+	    if(this.pixiApp) {
+			this.pixiApp.destroy(true, true);
+		}
+
+		// this.frequencyDestroyer.cleanUp();
 	};
 
 	this.drawWireFrame = function(body) {

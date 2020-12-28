@@ -31,6 +31,8 @@ var unitSpawner = function(enemySets) {
     this.start = function() {
         var spawner = this;
         $.each(enemySets, function(i, enemy) {
+            console.info('enemy total: ' + Math.floor(enemy.spawn.total))
+            console.info('floor of enemy total: ' + Math.floor(enemy.spawn.total-1))
             var total = 0;
             var itemsToGive = enemy.item ? enemy.item.total : 0;
             var spawnTimer = globals.currentGame.addTimer({

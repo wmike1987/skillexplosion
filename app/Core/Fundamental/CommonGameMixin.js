@@ -191,6 +191,37 @@ var common = {
         var pausedGameText = graphicsUtils.addSomethingToRenderer("TEX+:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
         pausedGameText.visible = false;
 
+        //frequency body remover, space out removing bodies from the Matter world
+        var myGame = this;
+        this.softRemover = {
+            bodies: [],
+            remove: function(body) {
+                if(body.unit) {
+                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: body.unit})
+                }
+                body.softRemove = true;
+                body.collisionFilter =
+                {
+                    category: 0x0000,
+                    mask: 0,
+                    group: -1
+                },
+                this.bodies.push(body);
+            },
+            init: function() {
+                this.myTick = Matter.Events.on(myGame.engine.runner, 'tick', function(event) {
+                    var body = this.bodies.shift();
+                    if(body) {
+                        Matter.World.remove(myGame.world, [body]);
+                    }
+                }.bind(this))
+            },
+            cleanUp: function() {
+                this.bodies = [];
+            }
+        }
+        this.softRemover.init();
+
         //keydown listener for ctrl shift f and ctrl shift x
         $('body').on('keydown', function( event ) {
             if(keyStates['Shift'] && keyStates['Control']) {
@@ -529,7 +560,7 @@ var common = {
         Matter.World.add(this.world, body);
     },
 
-    removeBody: function(body) {
+    removeBody: function(body, hardRemove) {
 
         //just in case?
         if(body.hasBeenRemoved) return;
@@ -541,14 +572,18 @@ var common = {
 
         //clear slaves (deathPact())
         if(body.slaves) {
-            this.removeSlaves(body.slaves);
+            this.removeSlaves(body.slaves, hardRemove);
         }
 
         //turn off events on this body (probably doesn't actually matter since the events live of the object itself)
         Matter.Events.off(body);
 
         //remove body from world
-        Matter.World.remove(this.world, [body]);
+        if(hardRemove) {
+            Matter.World.remove(this.world, [body]);
+        } else { //we're a soft remove
+            this.softRemover.remove(body);
+        }
 
         //clean up vertice history
         var index = this.vertexHistories.indexOf(body);
@@ -559,16 +594,16 @@ var common = {
         body.hasBeenRemoved = true;
     },
 
-    removeBodies: function(bodies) {
+    removeBodies: function(bodies, hardRemove) {
         var copy = bodies.slice();
         $.each(copy, function(index, body) {
-            this.removeBody(body);
+            this.removeBody(body, hardRemove);
         }.bind(this))
     },
 
     //This method has the heart but is poorly designed
     //Right now it'll support slaves which are units, bodies, tickCallbacks, timers, functions to execute, howerl sounds, and sprites
-    removeSlaves: function(slaves) {
+    removeSlaves: function(slaves, hardBodyRemove) {
         //Iterate over a copy since some of these cleanUp methods can remove slaves themselves. Namely the removeSomethingFrom
         //renderer method.
         var slaveCopy = [].concat(slaves);
@@ -578,7 +613,7 @@ var common = {
                 //console.info("removing " + slave)
             }
             else if(slave.type == 'body') { //is body
-                this.removeBody(slave);
+                this.removeBody(slave, hardBodyRemove);
                 // console.info("removing " + slave)
             }
             else if(slave.isTickCallback) {
@@ -589,7 +624,7 @@ var common = {
                 this.invalidateTimer(slave);
                 //console.info("removing " + slave)
             } else if(slave.slaves) {
-                this.removeSlaves(slave.slaves);
+                this.removeSlaves(slave.slaves, hardBodyRemove);
             }
             else if(slave instanceof Function) {
                 //console.info("removing " + slave)
@@ -638,6 +673,7 @@ var common = {
             this.nukeExtension(options);
         }
 
+
         Matter.Events.off(this);
 
         if(!this.world) return;
@@ -655,7 +691,8 @@ var common = {
         }.bind(this))
 
         //Remove bodies safely (removeBodies())
-        this.removeBodies(this.world.bodies);
+        this.removeBodies(this.world.bodies, true);
+        this.softRemover.cleanUp();
 
         //Clear the matter world (I cant recall if this is necessary)
         Matter.World.clear(this.world, false);

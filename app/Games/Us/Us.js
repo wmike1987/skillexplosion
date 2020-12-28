@@ -263,11 +263,11 @@ var game = {
             }, 800);
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                this.unitSystem.unpause();
                 game.heartbeat.play();
             }, 1600);
             gameUtils.doSomethingAfterDuration(() => {
                 this.currentSpawner.start();
-                this.unitSystem.unpause();
                 gameUtils.setCursorStyle('Main');
                 graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
                 game.heartbeat.play();
@@ -301,22 +301,17 @@ var game = {
 
         this.endDelayInProgress = false;
         var winCondition = this.addTickCallback(function() {
-            var enemySetsFulfilled = false;
-            // var fulfilled = this.currentLevelDetails.enemySets.every((eset) => {
-            //     return eset.fulfilled;
-            // })
-            $.each(this.currentLevelDetails.enemySets, function(i, enemy) {
-                enemySetsFulfilled = enemy.fulfilled;
-                return enemySetsFulfilled;
+            var fulfilled = this.currentLevelDetails.enemySets.every((eset) => {
+                return eset.fulfilled;
             })
-            if(!enemySetsFulfilled) return;
+            if(!fulfilled) return;
 
             var unitsOfOpposingTeamExist = false;
             if(this.unitsByTeam[4] && this.unitsByTeam[4].length > 0) {
                 unitsOfOpposingTeamExist = true;
             }
 
-            if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && enemySetsFulfilled && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
+            if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
                 this.endDelayInProgress = true;
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
@@ -410,13 +405,15 @@ var game = {
     },
 
     createShane: function() {
-         this.shane = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
+         var s = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
+         this.shane = s;
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
-         return this.shane;
+         s.position = gameUtils.getPlayableCenter();
+         return s;
     },
 
     createUrsula: function() {
