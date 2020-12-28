@@ -6,7 +6,7 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 
 export default {
     revivableInit: function() {
-        this.reviveTime = 6000;
+        this.reviveTime = this.reviveTime || 6000;
         var reviveTickTime = 100;
         var originalDeath = this.death;
         var revivableDeath = function() {
@@ -23,6 +23,7 @@ export default {
             this.isTargetable = false;
             gameUtils.moveUnitOffScreen(this);
             Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this})
+            this.isSelectable = false;
             this.stop();
 
             var levelLocalEntities = originalDeath.call(this);
@@ -67,6 +68,7 @@ export default {
         this.currentHealth = this.maxHealth/2;
         this.position = this.reviveCenter;
         this.isTargetable = true;
+        this.isSelectable = true;
         this.canAttack = true;
         this.canMove = true;
     },

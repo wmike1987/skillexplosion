@@ -402,7 +402,7 @@ export default function Marine(options) {
                     this.ability.hpCost = this.ability.costs.push(function() {
                         return unit.currentHealth -= vrHpCost;
                     })
-                    this.ability.customCostText = 'HP: ' + vrHpCost + 'and E: ' + vrECost;
+                    this.ability.customCostText = 'HP: ' + vrHpCost + ' and E: ' + vrECost;
                 },
                 unequip: function(unit) {
                     this.ability.energyCost = this.oldEnergyCost;
@@ -511,7 +511,7 @@ export default function Marine(options) {
         Matter.Events.on(knife, 'onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
-            if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
+            if(otherUnit != this && otherUnit && otherUnit.isAttackable) {
                 if(currentAugment.name == 'poison tip') {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
@@ -871,7 +871,7 @@ export default function Marine(options) {
         health: 75,
         defense: 1,
         energy: 20,
-        energyRegenerationRate: 1,
+        energyRegenerationRate: .25,
         healthRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
@@ -957,7 +957,7 @@ export default function Marine(options) {
                         }, function(unit) {
                             return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
                         }, function(unit) {
-                            graphicsUtils.applyGainAnimationToUnit(unit, 0x95002d);
+                            graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
                             healsound.play();
                             unit.giveHealth(currentAugment.healAmount, unit);
                         })

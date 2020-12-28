@@ -87,7 +87,7 @@ var unitPanel = function(options) {
     }.bind(this), mainSystemMessage: function() {
         var result = {key: 'systemMessages', index: 1};
         if(this.prevailingUnit) {
-            var txt = 'Regen: +' + (this.prevailingUnit.getTotalHealthRegeneration()) + " hp/sec";
+            var txt = 'Regen: +' + this.prevailingUnit.getTotalHealthRegeneration().toFixed(2) + " hp/sec";
         }
         result.value = txt;
         return result;
@@ -141,7 +141,7 @@ var unitPanel = function(options) {
     }.bind(this), mainSystemMessage: function() {
         var result = {key: 'systemMessages', index: 0};
         if(this.prevailingUnit) {
-            var txt = 'Regen: +' + this.prevailingUnit.getTotalEnergyRegeneration() + " energy/sec";
+            var txt = 'Regen: +' + this.prevailingUnit.getTotalEnergyRegeneration().toFixed(2) + " energy/sec";
         }
         result.value = txt;
         return result;

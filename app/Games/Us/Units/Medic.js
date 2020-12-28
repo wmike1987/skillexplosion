@@ -964,6 +964,7 @@ export default function Medic(options) {
             return this.getAbilityByName('Heal').healAmount;
         },
         energyRegenerationRate: 1.5,
+        healthRegenerationRate: .25,
         portrait: graphicsUtils.createDisplayObject('MedicPortrait'),
         wireframe: graphicsUtils.createDisplayObject('MedicGroupPortrait'),
         graveSpriteName: 'MedicGrave',

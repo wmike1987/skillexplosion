@@ -26,7 +26,7 @@ var enemySetSpecifier = {
                 constructor: basicNormal.c,
                 icon: basicNormal.p,
                 spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop)/(easyMode ? 2 : 1),  hz: 2200, maxOnField: 1},
-                item: {type: 'worn', total: 1}
+                item: {type: 'worn', total: mathArrayUtils.getRandomElementOfArray([0,0,0,0,0,0,1])}
             })
 
             //Basic rare
@@ -35,7 +35,7 @@ var enemySetSpecifier = {
                 constructor: basicRare.c,
                 icon: basicRare.p,
                 spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop)/(easyMode ? 2 : 1), hz: 2500, maxOnField: 1},
-                item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
+                item: {type: 'rugged', total: mathArrayUtils.getRandomElementOfArray([0,0,0,0,0,0,1])}
             })
         }
         else if(type == 'hardened') {
@@ -45,7 +45,7 @@ var enemySetSpecifier = {
                 constructor: basicNormal.c,
                 icon: basicNormal.p,
                 spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop)/(easyMode ? 2 : 1),  hz: 2200, maxOnField: 1, atATime: 2},
-                item: {type: 'worn', total: 1}
+                item: {type: 'worn', total: mathArrayUtils.getRandomElementOfArray([0,0,1])}
             })
 
             //Hardened rare

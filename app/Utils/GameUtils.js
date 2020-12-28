@@ -1166,39 +1166,30 @@ var graphicsUtils = {
     applyGainAnimationToUnit: function(unit, tint) {
         var a1 = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations1',
-            animationName: 'lifegain1',
-            speed: 1,
-            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
-        });
-
-        var a2 = gameUtils.getAnimation({
-            spritesheetName: 'UtilityAnimations1',
-            animationName: 'lifegain1',
-            speed: 1.75,
-            transform: [unit.position.x+15, unit.position.y + 10, .5, .5]
-        });
-
-        var a3 = gameUtils.getAnimation({
-            spritesheetName: 'UtilityAnimations1',
-            animationName: 'lifegain1',
+            animationName: 'starflurry',
             speed: 1.5,
-            transform: [unit.position.x-10, unit.position.y + 7, .33, .33]
+            transform: [unit.position.x, unit.position.y-10, .8, 1.0]
         });
+        a1.play();
+        a1.alpha = 1;
+        // healsound.play();
+        gameUtils.attachSomethingToBody({something: a1, body: unit.body});
+        graphicsUtils.addSomethingToRenderer(a1, 'foreground');
 
         a1.play();
-        a2.play();
-        a3.play();
+        // a2.play();
+        // a3.play();
 
         a1.tint = tint;
-        a2.tint = tint;
-        a3.tint = tint;
+        // a2.tint = tint;
+        // a3.tint = tint;
 
-        gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: 0, y: 0}});
-        gameUtils.attachSomethingToBody({something: a2, body: unit.body, offset: {x: 15, y: 10}});
-        gameUtils.attachSomethingToBody({something: a3, body: unit.body, offset: {x: -10, y: 7}});
+        // gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: 0, y: 0}});
+        // gameUtils.attachSomethingToBody({something: a2, body: unit.body, offset: {x: 15, y: 10}});
+        // gameUtils.attachSomethingToBody({something: a3, body: unit.body, offset: {x: -10, y: 7}});
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');
-        graphicsUtils.addSomethingToRenderer(a2, 'foreground');
-        graphicsUtils.addSomethingToRenderer(a3, 'foreground');
+        // graphicsUtils.addSomethingToRenderer(a2, 'foreground');
+        // graphicsUtils.addSomethingToRenderer(a3, 'foreground');
     }
 }
 
