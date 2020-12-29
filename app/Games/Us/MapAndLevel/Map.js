@@ -62,6 +62,8 @@ var MapLevelNode = function(options) {
 
     //Establish event handlers
     this.displayObject.on('mouseover', function(event) {
+        if(!this.mapRef.mouseEventsAllowed) return;
+
         if(!this.isCompleted && !this.mapRef.travelInProgress) {
             if(options.hoverCallback) {
                 options.hoverCallback.call(self);
@@ -85,6 +87,8 @@ var MapLevelNode = function(options) {
         }
     }.bind(this))
     this.displayObject.on('mouseout', function(event) {
+        if(!this.mapRef.mouseEventsAllowed) return;
+
         if(!this.isCompleted && !this.mapRef.travelInProgress) {
             if(options.unhoverCallback) {
                 options.unhoverCallback.call(self);
@@ -107,6 +111,8 @@ var MapLevelNode = function(options) {
         }
     }.bind(this))
     this.displayObject.on('mousedown', function(event) {
+        if(!this.mapRef.mouseEventsAllowed) return;
+
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
             this.displayObject.tint = 0xff0000;
             var canTravel = true;
@@ -193,6 +199,8 @@ var map = function(specs) {
     this.levels = specs.levels;
     this.travelInProgress = false;
     this.graph = [];
+
+    this.mouseEventsAllowed = true;
 
     //Add the camp node
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
@@ -413,7 +421,11 @@ var map = function(specs) {
 
         this.headTokenSprite.visible = false;
         this.fatigueText.visible = false;
-    }
+    },
+
+    this.allowMouseEvents = function(value) {
+        this.mouseEventsAllowed = value;
+    },
 
     this.travelToNode = function(node, destinationCallback) {
         this.travelInProgress = true;

@@ -221,15 +221,22 @@ var game = {
         var vScreen = new EndLevelScreen({shane: this.shane, ursula: this.ursula}, collectors, {type: defeat ? 'defeat' : 'victory'});
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene(vScene);
+
+        var blankScene = new Scene();
         Matter.Events.on(this.currentScene, 'sceneFadeDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
                 if(key == 'escape') {
                     $('body').off('keydown.uskeydown');
                     this.map.show();
-                    this.currentScene.transitionToScene({newScene: new Scene(), fadeIn: true}); //show the map and transition to an empty scene
+                    this.map.allowMouseEvents(false);
+                    this.currentScene.transitionToScene({newScene: blankScene, fadeIn: true}); //show the map and transition to an empty scene
                 }
             }.bind(this))
+        })
+
+        gameUtils.matterOnce(blankScene, 'sceneFadeDone', () => {
+            this.map.allowMouseEvents(true);
         })
 
         return vScene;

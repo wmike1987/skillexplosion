@@ -513,6 +513,9 @@ var common = {
         //Handle unitsByTeam. Since unitsByTeam is a loopable datastructure let's grep instead of splice
         //(don't want to alter the array since we might be iterating over it)
         if(unit.team) {
+            if(!this.unitsByTeam[unit.team]) { //this could happen if we try to remove a pooled unit but haven't added a unit of that team to the game yet
+                this.unitsByTeam[unit.team] = [];
+            }
             var bbtindex = this.unitsByTeam[unit.team].indexOf(unit);
             if(bbtindex > -1)
                 this.unitsByTeam[unit.team] = $.grep(this.unitsByTeam[unit.team], function(obj, index) {
