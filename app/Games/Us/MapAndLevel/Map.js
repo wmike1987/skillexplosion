@@ -25,6 +25,7 @@ var MapLevelNode = function(options) {
     this.mapRef = options.mapRef;
     this.levelDetails = options.levelDetails;
     this.travelPredicate = options.travelPredicate;
+    this.type = this.levelDetails.type;
 
     if(options.manualTokens) {
         //custom map token
@@ -65,14 +66,18 @@ var MapLevelNode = function(options) {
         if(!this.mapRef.mouseEventsAllowed) return;
 
         if(!this.isCompleted && !this.mapRef.travelInProgress) {
+            var doDefault = true;
             if(options.hoverCallback) {
-                options.hoverCallback.call(self);
+                doDefault = options.hoverCallback.call(self);
             }
-            this.displayObject.tint = 0x20cd2c;
-            if(this.manualTokens) {
-                this.manualTokens.forEach((token) => {
-                    token.tint = 0x20cd2c;
-                })
+
+            if(doDefault) {
+                this.displayObject.tint = 0x20cd2c;
+                if(this.manualTokens) {
+                    this.manualTokens.forEach((token) => {
+                        token.tint = 0x20cd2c;
+                    })
+                }
             }
         }
 
@@ -90,14 +95,17 @@ var MapLevelNode = function(options) {
         if(!this.mapRef.mouseEventsAllowed) return;
 
         if(!this.isCompleted && !this.mapRef.travelInProgress) {
+            var doDefault = true;
             if(options.unhoverCallback) {
-                options.unhoverCallback.call(self);
+                doDefault = options.unhoverCallback.call(self);
             }
-            this.displayObject.tint = 0xFFFFFF;
-            if(this.manualTokens) {
-                this.manualTokens.forEach((token) => {
-                    token.tint = 0xFFFFFF;
-                })
+            if(doDefault) {
+                this.displayObject.tint = 0xFFFFFF;
+                if(this.manualTokens) {
+                    this.manualTokens.forEach((token) => {
+                        token.tint = 0xFFFFFF;
+                    })
+                }
             }
         }
         //if we're a prerequisite to something, unhighlight the master
@@ -200,44 +208,59 @@ var map = function(specs) {
     this.travelInProgress = false;
     this.graph = [];
 
+    //setup other properties
     this.mouseEventsAllowed = true;
+    this.nodeCount = 0;
 
     //Add the camp node
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
     var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,
         travelPredicate: function() {
-            var allowed = false;
-            return true;
+            return this.mapRef.nodeCount % 2 == 0 && this.mapRef.currentNode != this;
+        },
+        hoverCallback: function() {
+            return this.travelPredicate();
+        },
+        unhoverCallback: function() {
+            return this.travelPredicate();
         },
         manualTokens: function() {
             var regularToken = graphicsUtils.createDisplayObject('CampfireToken', {where: 'hudNTwo'});
             var specialToken = graphicsUtils.createDisplayObject('CampfireTokenGleam', {where: 'hudNTwo'});
             Matter.Events.on(this.mapRef, 'showMap', function() {
-                if(this.isCompleted) {
+                if(this.travelPredicate()) {
+                    regularToken.visible = true;
+                    specialToken.visible = true;
+                    if(!this.gleamTimer) {
+                        this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                        Matter.Events.on(regularToken, 'destroy', () => {
+                            this.gleamTimer.invalidate();
+                        })
+                    }
+                    regularToken.tint = 0xFFFFFF;
+                    specialToken.tint = 0xFFFFFF;
+                    regularToken.visible = true;
+                    specialToken.visible = true;
+                    this.gleamTimer.reset();
+                } else {
+                    if(this.mapRef.currentNode == this) {
+                        regularToken.alpha = 1
+                        regularToken.tint = 0xFFFFFF;
+                    } else {
+                        regularToken.alpha = .5;
+                        regularToken.tint = 0x002404;
+                    }
                     regularToken.visible = true;
                     specialToken.visible = false;
-                    regularToken.alpha = .5;
-                    regularToken.tint = 0x002404;
-                    this.gleamTimer.invalidate();
-                } else {
-                    if(this.travelPredicate()) {
-                        regularToken.visible = true;
-                        specialToken.visible = true;
-                        if(!this.gleamTimer) {
-                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
-                            Matter.Events.on(regularToken, 'destroy', () => {
-                                this.gleamTimer.invalidate();
-                            })
-                        }
-                    } else {
-                        regularToken.visible = true;
-                        specialToken.visible = false;
+                    if(this.gleamTimer) {
+                        this.gleamTimer.paused = true;
                     }
                 }
             }.bind(this))
             return [regularToken, specialToken];
         }});
     initialCampNode.setPosition(campLocation);
+    this.currentNode = initialCampNode;
     this.graph.push(initialCampNode);
     this.lastNode = initialCampNode;
 
@@ -323,12 +346,14 @@ var map = function(specs) {
                     graphicsUtils.rotateSprite(node.focusCircle, {speed: 20});
                     node.displayObject.scale = {x: 1.25, y: 1.25};
                 })
+                return true;
             },
             unhoverCallback: function() {
                 this.prereqs.forEach((node) => {
                     graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
                     node.displayObject.scale = {x: 1.0, y: 1.0};
                 })
+                return true;
             },
             travelPredicate: function() {
                 var allowed = false;
@@ -429,6 +454,7 @@ var map = function(specs) {
 
     this.travelToNode = function(node, destinationCallback) {
         this.travelInProgress = true;
+        this.currentNode = node;
         var position = mathArrayUtils.clonePosition(node.position, {y: 20});
         Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node});
         gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
@@ -437,12 +463,17 @@ var map = function(specs) {
                 y: 0.0
             });
             this.travelInProgress = false;
+            if(node.levelDetails.type != 'camp') {
+                this.nodeCount++;
+            }
             destinationCallback();
         }.bind(this));
     }
 
-    this.revertHeadToPreviousLocation = function() {
+    this.revertHeadToPreviousLocationDueToDefeat = function() {
         Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {y: 20}));
+        this.currentNode = this.lastNode;
+        this.nodeCount--;
     }
 }
 export default map;

@@ -982,6 +982,11 @@ var graphicsUtils = {
                 }
             }
         });
+        timer.resetExtension = function() {
+            sprite1.alpha = 1;
+            sprite2.alpha = 0;
+            forward = true;
+        }
         return timer;
     },
 

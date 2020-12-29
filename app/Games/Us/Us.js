@@ -320,10 +320,10 @@ var game = {
 
             if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
                 this.endDelayInProgress = true;
+                this.map.lastNode = node;
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
                     node.isCompleted = true;
-                    this.map.lastNode = node;
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
                     Matter.Events.on(sc, 'afterSnapshotRender', function() {
                         gameUtils.moveUnitOffScreen(this.shane);
@@ -348,7 +348,7 @@ var game = {
                         enemies.forEach((enemy) => {
                             this.removeUnit(enemy);
                         })
-                        this.map.revertHeadToPreviousLocation();
+                        this.map.revertHeadToPreviousLocationDueToDefeat();
                     }.bind(this))
                 }, 600);
             }
@@ -363,6 +363,9 @@ var game = {
 
         //camp-like area active
         this.campLikeActive = true;
+
+        //set last-node
+        this.map.lastNode = node;
 
         //create new scene
         var airDropScene = new Scene();
