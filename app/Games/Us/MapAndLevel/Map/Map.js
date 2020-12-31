@@ -6,237 +6,7 @@ import Tooltip from '@core/Tooltip.js'
 import {levelSpecifier} from '@games/Us/MapAndLevel/Levels/LevelSpecifier.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import styles from '@utils/Styles.js'
-
-//Token Mappings
-var typeTokenMappings = {
-    singles: 'MapGoldBattleToken',
-    hardened: 'MapRedBattleToken',
-    doubles: 'MapRedBattleToken',
-    boss: 'MapRedBattleToken',
-    norevives: 'MapRedBattleToken',
-    mobs: 'MobBattleToken',
-    camp: 'CampfireToken',
-    airDropStations: 'AirDropToken',
-    airDropSpecialStations: 'AirDropSpecialToken',
-}
-
-var hoverTick = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
-
-//Define node object
-var MapLevelNode = function(options) {
-    this.mapRef = options.mapRef;
-    this.levelDetails = options.levelDetails;
-    this.travelPredicate = options.travelPredicate;
-    this.type = this.levelDetails.type;
-
-    if(options.manualTokens) {
-        //custom map token
-        this.displayObject = graphicsUtils.createDisplayObject('TransparentSquare', {where: 'hudNOne', scale: {x: 50, y: 50}});
-        this.displayObject.interactive = true;
-        this.manualTokens = options.manualTokens.call(this);
-        this.manualTokens.forEach((token) => {
-            token.interactive = true;
-        })
-    } else {
-        //default behavior
-        this.displayObject = graphicsUtils.createDisplayObject(typeTokenMappings[this.levelDetails.type], {where: 'hudNTwo', scale: {x: 1, y: 1}});
-        this.displayObject.interactive = true;
-    }
-
-    //Build informational tooltip
-    var enemyDescriptions = [];
-    var enemyIcons = [];
-    var self = this;
-    this.levelDetails.enemySets.forEach(set => {
-        self.isBattleNode = true;
-        enemyDescriptions.push(' x ' + set.spawn.total);
-        enemyIcons.push(set.icon);
-    })
-    Tooltip.makeTooltippable(this.displayObject, {
-        title: this.levelDetails.type,
-        description: enemyDescriptions,
-        descriptionIcons: enemyIcons
-    });
-
-    //Call init() if specified
-    if(options.init) {
-        options.init.call(this);
-    }
-
-    //Establish event handlers
-    this.displayObject.on('mouseover', function(event) {
-        if(!this.mapRef.mouseEventsAllowed) return;
-
-        if(!this.isCompleted && !this.mapRef.travelInProgress) {
-            var doDefault = true;
-            if(options.hoverCallback) {
-                doDefault = options.hoverCallback.call(self);
-            }
-
-            if(doDefault) {
-                hoverTick.play();
-                this.displayObject.tint = 0x20cd2c;
-                if(this.manualTokens) {
-                    this.manualTokens.forEach((token) => {
-                        token.tint = 0x20cd2c;
-                    })
-                }
-            }
-        }
-
-        //if we're a prerequisite to something, highlight the master
-        if(this.chosenAsPrereq && !this.master.isCompleted) {
-            var node = this.master;
-            node.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: node.position, scale: {x: 1.1, y: 1.1}});
-            this.master.manualTokens.forEach((token) => {
-                token.scale = {x: 1.1, y: 1.1};
-            })
-            graphicsUtils.rotateSprite(node.focusCircle, {speed: 20});
-        }
-    }.bind(this))
-    this.displayObject.on('mouseout', function(event) {
-        if(!this.mapRef.mouseEventsAllowed) return;
-
-        if(!this.isCompleted && !this.mapRef.travelInProgress) {
-            var doDefault = true;
-            if(options.unhoverCallback) {
-                doDefault = options.unhoverCallback.call(self);
-            }
-            if(doDefault) {
-                this.displayObject.tint = 0xFFFFFF;
-                if(this.manualTokens) {
-                    this.manualTokens.forEach((token) => {
-                        token.tint = 0xFFFFFF;
-                    })
-                }
-            }
-        }
-        //if we're a prerequisite to something, unhighlight the master
-        if(this.chosenAsPrereq && !this.master.isCompleted) {
-            var node = this.master;
-            graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
-            this.master.manualTokens.forEach((token) => {
-                token.scale = {x: 1.0, y: 1.0};
-            })
-            node.focusCirlce = null;
-        }
-    }.bind(this))
-    this.displayObject.on('mousedown', function(event) {
-        if(!this.mapRef.mouseEventsAllowed) return;
-
-        if(!self.isCompleted && !this.mapRef.travelInProgress) {
-            var canTravel = true;
-            if(options.travelPredicate) {
-                canTravel = this.travelPredicate();
-            }
-            if(canTravel) {
-                // this.complete();
-                graphicsUtils.graduallyTint(this.displayObject, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
-                this.displayObject.tooltipObj.hide();
-                this.mapRef.travelToNode(this, function() {
-                    Matter.Events.trigger(globals.currentGame, "TravelFinished", {node: this});
-                    this.levelDetails.enterNode(self);
-                    this.displayObject.tint = 0xFFFFFF;
-                }.bind(this));
-            }
-        }
-    }.bind(this))
-
-    if(options.deactivateToken) {
-        this.deactivateToken = options.deactivateToken;
-    }
-
-    this.cleanUp = function() {
-        graphicsUtils.removeSomethingFromRenderer(this.displayObject);
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                graphicsUtils.removeSomethingFromRenderer(token);
-            })
-        }
-    }
-}
-
-MapLevelNode.prototype.deactivateToken = function() {
-    this.displayObject.tint = 0x002404;
-    this.displayObject.alpha = .5;
-}
-
-MapLevelNode.prototype.complete = function() {
-    this.isCompleted = true;
-    this.justCompleted = true;
-    this.displayObject.tooltipObj.destroy();
-
-    //setup flip animation
-    var halfFlipTime = null
-    var flipTime = null;
-    var setFlipTime = function(time) {
-        flipTime = time;
-        halfFlipTime = time/2;
-    }
-    setFlipTime(800);
-    var totalDone = 0;
-    var spinningIn = true;
-    var self = this;
-    var spins = 1;
-    var percentDone = 0;
-    var slowDownThreshold = 0;
-    this.isSpinning = true;
-    this.flipTimer = globals.currentGame.addTimer({
-        name: 'nodeFlipTimer' + mathArrayUtils.getId(),
-        gogogo: true,
-        tickCallback: function(deltaTime) {
-            //if we're on our last flip, make it slow down during the turn
-            if(spins <= slowDownThreshold) {
-                var shelf = (slowDownThreshold - spins) * (1/slowDownThreshold);
-                var fullPercentageDone = shelf + (spinningIn ? (percentDone/2)*(1/slowDownThreshold) : (1/slowDownThreshold/2)+(percentDone/2)*(1/slowDownThreshold));
-                deltaTime *= Math.max(.20, 1-fullPercentageDone);
-            }
-
-            totalDone += deltaTime;
-            percentDone = totalDone/halfFlipTime;
-
-            if(percentDone >= 1) {
-                percentDone = 0;
-                totalDone = 0;
-                if(!spinningIn) {
-                    spins--;
-                    if(spins == 0) {
-                        this.invalidate();
-                        self.displayObject.scale.x = 1;
-                        self.isSpinning = false;
-                        return;
-                    }
-                }
-                spinningIn = !spinningIn;
-
-                if(spinningIn) {
-                    self.displayObject.tint = 0xFFFFFF;
-                } else {
-                    if(spins > 1) {
-                        self.displayObject.tint = 0xbdbdbd;
-                    } else {
-                        self.deactivateToken();
-                    }
-                }
-            }
-            if(spinningIn) {
-                self.displayObject.scale.x = 1-percentDone;
-            } else {
-                self.displayObject.scale.x = percentDone;
-            }
-        }
-    })
-}
-
-MapLevelNode.prototype.setPosition = function(position) {
-    this.displayObject.position = position;
-    if(this.manualTokens) {
-        this.manualTokens.forEach((token) => {
-            token.position = position;
-        })
-    }
-    this.position = position;
-}
+import MapLevelNode from '@games/Us/MapAndLevel/Map/MapNode.js'
 
 /*
  * Main Map object
@@ -373,6 +143,7 @@ var map = function(specs) {
     }
 
     //Add air drop stations
+    var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volume: .03, rate: 1});
     var airDrops = this.levels.airDropStations + this.levels.airDropSpecialStations;
     for(var x = 0; x < airDrops; x++) {
         var key = 'airDropStations';
@@ -444,9 +215,20 @@ var map = function(specs) {
                     return pr.isCompleted;
                 })
             },
+            mouseDownCallback: function() {
+                this.manualTokens.forEach((token) => {
+                    graphicsUtils.graduallyTint(token, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
+                })
+                this.displayObject.tooltipObj.disable();
+                this.displayObject.tooltipObj.hide();
+                airDropClickTokenSound.play();
+                return false;
+            },
             manualTokens: function() {
                 var regularToken = graphicsUtils.createDisplayObject(regularTokenName, {where: 'hudNTwo'});
                 var specialToken = graphicsUtils.createDisplayObject(specialTokenName, {where: 'hudNTwo'});
+                this.regularToken = regularToken;
+                this.specialToken = specialToken;
                 Matter.Events.on(this.mapRef, 'showMap', function() {
                     if(this.isCompleted) {
                         this.deactivateToken();
@@ -469,10 +251,10 @@ var map = function(specs) {
                 return [regularToken, specialToken];
             },
             deactivateToken: function() {
-                regularToken.visible = true;
-                specialToken.visible = false;
-                regularToken.alpha = .5;
-                regularToken.tint = 0x002404;
+                this.regularToken.visible = true;
+                this.specialToken.visible = false;
+                this.regularToken.alpha = .5;
+                this.regularToken.tint = 0x002404;
                 this.gleamTimer.invalidate();
             }
         });

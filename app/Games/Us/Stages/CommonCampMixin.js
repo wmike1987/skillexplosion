@@ -189,7 +189,6 @@ export default {
             this.entercamp.play();
         }.bind(this));
 
-
         campScene._clearExtension = function() {
             this.removeTickCallback(mapHoverTick);
             this.removePriorityMouseDownEvent(mapClickListener);

@@ -239,6 +239,14 @@ Tooltip.prototype.display = function(position) {
     this.base.visible = true;
 };
 
+Tooltip.prototype.disable = function() {
+    this.disabled = true;
+}
+
+Tooltip.prototype.enable = function() {
+    this.disabled = false;
+}
+
 Tooltip.prototype.hide = function() {
     this.visible = false;
     this.title.visible = false;
@@ -279,7 +287,7 @@ Tooltip.makeTooltippable = function(displayObject, options) {
             }
         } else {
             stopTimeout = setTimeout(function() {
-                if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
+                if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
             }.bind(this), 100)

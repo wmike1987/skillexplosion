@@ -1203,6 +1203,70 @@ var graphicsUtils = {
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');
         // graphicsUtils.addSomethingToRenderer(a2, 'foreground');
         // graphicsUtils.addSomethingToRenderer(a3, 'foreground');
+    },
+
+    spinSprite: function(sprite, spins, initialFlipTime, slowDownThreshold, lastTurn, doneCallback) {
+        //setup flip animation
+        var halfFlipTime = null
+        var flipTime = null;
+        var setFlipTime = function(time) {
+            flipTime = time;
+            halfFlipTime = time/2;
+        }
+        setFlipTime(initialFlipTime || 800);
+        var totalDone = 0;
+        var spinningIn = true;
+        var self = this;
+        var spins = spins || 1;
+        var percentDone = 0;
+        var slowDownThreshold = slowDownThreshold || 0;
+        this.isSpinning = true;
+        this.flipTimer = globals.currentGame.addTimer({
+            name: 'nodeFlipTimer' + mathArrayUtils.getId(),
+            gogogo: true,
+            tickCallback: function(deltaTime) {
+                //if we're on our last flip, make it slow down during the turn
+                if(spins <= slowDownThreshold) {
+                    var shelf = (slowDownThreshold - spins) * (1/slowDownThreshold);
+                    var fullPercentageDone = shelf + (spinningIn ? (percentDone/2)*(1/slowDownThreshold) : (1/slowDownThreshold/2)+(percentDone/2)*(1/slowDownThreshold));
+                    deltaTime *= Math.max(.20, 1-fullPercentageDone);
+                }
+
+                totalDone += deltaTime;
+                percentDone = totalDone/halfFlipTime;
+
+                if(percentDone >= 1) {
+                    percentDone = 0;
+                    totalDone = 0;
+                    if(!spinningIn) {
+                        spins--;
+                        if(spins == 0) {
+                            doneCallback();
+                            this.invalidate();
+                            sprite.scale.x = 1;
+                            self.isSpinning = false;
+                            return;
+                        }
+                    }
+                    spinningIn = !spinningIn;
+
+                    if(spinningIn) {
+                        sprite.tint = 0xFFFFFF;
+                    } else {
+                        if(spins > 1) {
+                            sprite.tint = 0xbdbdbd;
+                        } else if(lastTurn){
+                            lastTurn();
+                        }
+                    }
+                }
+                if(spinningIn) {
+                    sprite.scale.x = 1-percentDone;
+                } else {
+                    sprite.scale.x = percentDone;
+                }
+            }
+        })
     }
 }
 

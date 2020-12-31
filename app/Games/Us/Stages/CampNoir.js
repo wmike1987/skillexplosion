@@ -10,7 +10,7 @@ import valueShader from '@shaders/ValueShader.js'
 import TileMapper from '@core/TileMapper.js'
 import Doodad from '@utils/Doodad.js'
 import Scene from '@core/Scene.js'
-import Map from '@games/Us/MapAndLevel/Map.js'
+import Map from '@games/Us/MapAndLevel/Map/Map.js'
 
 var tileSize = 225;
 var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];

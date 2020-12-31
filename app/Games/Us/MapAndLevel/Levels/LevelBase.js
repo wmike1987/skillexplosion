@@ -9,12 +9,16 @@ var levelBase = {
             set.fulfilled = false;
         })
     },
-    enterNode: function(node) {
+    enterLevel: function(node) {
         Matter.Events.trigger(globals.currentGame, 'InitLevel', {node: node});
+    },
+    getEntrySound: function() {
+        return this.entrySound;
     },
     enemySets: [],
     onCreate: function(options) {
         this.tileTint = mathArrayUtils.getRandomElementOfArray(options.acceptableTileTints);
+        this.entrySound = options.entrySound;
     }
 }
 

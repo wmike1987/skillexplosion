@@ -11,11 +11,14 @@ import ItemUtils from '@core/Unit/ItemUtils.js'
 import Doodad from '@utils/Doodad.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 
+var entrySound = gameUtils.getSound('enterairdrop1.wav', {volume: .04, rate: 1});
+
 var airDropStation = function(options) {
     this.type = 'airDropStations';
     this.prereqCount = 2;
+    options.entrySound = entrySound;
     this.onCreate(options)
-    this.enterNode = function(node) {
+    this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
     };
     this.tileSize = 225;
@@ -88,6 +91,7 @@ var airDropStation = function(options) {
     }
 
     this.startAirDrop = function(scene) {
+        this.entrySound.play();
         var selection = Object.create(selectionMechanism);
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
@@ -107,8 +111,9 @@ airDropStation.prototype = levelBase;
 var airDropSpecialStation = function(options) {
     this.type = 'airDropSpecialStations';
     this.prereqCount = 3;
+    options.entrySound = entrySound;
     this.onCreate(options)
-    this.enterNode = function(node) {
+    this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
     };
     this.tileSize = 225;
@@ -181,6 +186,7 @@ var airDropSpecialStation = function(options) {
     }
 
     this.startAirDrop = function(scene) {
+        this.entrySound.play();
         var selection = Object.create(selectionMechanism);
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
