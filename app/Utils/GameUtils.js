@@ -1106,9 +1106,10 @@ var graphicsUtils = {
         return this.rgbToHex(newR, newG, newB);
     },
 
-    graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds) {
+    graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds, times) {
         var utils = this;
         var forward = true;
+        var totalRuns = times*2;
         return globals.currentGame.addTimer({
             name: 'gradualTint:' + mathArrayUtils.getId(),
             runs: 1,
@@ -1138,6 +1139,13 @@ var graphicsUtils = {
                 } else {
                     this.reset();
                     forward = tempForward;
+                }
+
+                if(times) {
+                    totalRuns--;
+                    if(!totalRuns) {
+                        this.invalidate();
+                    }
                 }
             }
         })

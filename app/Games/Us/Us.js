@@ -325,8 +325,8 @@ var game = {
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
-                    node.complete();
-                    gameUtils.matterOnce(sc, 'sceneFadeOutBegin', function() {
+                    // node.complete();
+                    gameUtils.matterOnce(sc, 'sceneFadeOutDone', function() {
                         node.complete();
                     }.bind(this))
                     gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {

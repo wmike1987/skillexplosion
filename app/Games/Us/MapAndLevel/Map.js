@@ -125,13 +125,14 @@ var MapLevelNode = function(options) {
         if(!this.mapRef.mouseEventsAllowed) return;
 
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
-            this.displayObject.tint = 0xff0000;
             var canTravel = true;
             if(options.travelPredicate) {
                 canTravel = this.travelPredicate();
             }
             if(canTravel) {
                 // this.complete();
+                graphicsUtils.graduallyTint(this.displayObject, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
+                this.displayObject.tooltipObj.hide();
                 this.mapRef.travelToNode(this, function() {
                     Matter.Events.trigger(globals.currentGame, "TravelFinished", {node: this});
                     this.levelDetails.enterNode(self);
@@ -162,6 +163,7 @@ MapLevelNode.prototype.deactivateToken = function() {
 
 MapLevelNode.prototype.complete = function() {
     this.isCompleted = true;
+    this.justCompleted = true;
     this.displayObject.tooltipObj.destroy();
 
     //setup flip animation
@@ -171,13 +173,13 @@ MapLevelNode.prototype.complete = function() {
         flipTime = time;
         halfFlipTime = time/2;
     }
-    setFlipTime(80);
+    setFlipTime(800);
     var totalDone = 0;
     var spinningIn = true;
     var self = this;
-    var spins = 20;
+    var spins = 1;
     var percentDone = 0;
-    var slowDownThreshold = 5;
+    var slowDownThreshold = 0;
     this.isSpinning = true;
     this.flipTimer = globals.currentGame.addTimer({
         name: 'nodeFlipTimer' + mathArrayUtils.getId(),
@@ -187,7 +189,7 @@ MapLevelNode.prototype.complete = function() {
             if(spins <= slowDownThreshold) {
                 var shelf = (slowDownThreshold - spins) * (1/slowDownThreshold);
                 var fullPercentageDone = shelf + (spinningIn ? (percentDone/2)*(1/slowDownThreshold) : (1/slowDownThreshold/2)+(percentDone/2)*(1/slowDownThreshold));
-                deltaTime *= Math.max(.25, 1-fullPercentageDone);
+                deltaTime *= Math.max(.20, 1-fullPercentageDone);
             }
 
             totalDone += deltaTime;
@@ -488,7 +490,11 @@ var map = function(specs) {
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
             if(node.isCompleted) {
-                node.deactivateToken();
+                if(node.justCompleted) {
+                    node.justCompleted = false;
+                } else {
+                    node.deactivateToken();
+                }
             }
             graphicsUtils.addOrShowDisplayObject(node.displayObject)
             if(node.manualTokens) {
