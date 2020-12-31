@@ -20,6 +20,8 @@ var typeTokenMappings = {
     airDropSpecialStations: 'AirDropSpecialToken',
 }
 
+var hoverTick = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
+
 //Define node object
 var MapLevelNode = function(options) {
     this.mapRef = options.mapRef;
@@ -72,6 +74,7 @@ var MapLevelNode = function(options) {
             }
 
             if(doDefault) {
+                hoverTick.play();
                 this.displayObject.tint = 0x20cd2c;
                 if(this.manualTokens) {
                     this.manualTokens.forEach((token) => {
@@ -128,6 +131,7 @@ var MapLevelNode = function(options) {
                 canTravel = this.travelPredicate();
             }
             if(canTravel) {
+                // this.complete();
                 this.mapRef.travelToNode(this, function() {
                     Matter.Events.trigger(globals.currentGame, "TravelFinished", {node: this});
                     this.levelDetails.enterNode(self);
@@ -137,14 +141,8 @@ var MapLevelNode = function(options) {
         }
     }.bind(this))
 
-    this.setPosition = function(position) {
-        this.displayObject.position = position;
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                token.position = position;
-            })
-        }
-        this.position = position;
+    if(options.deactivateToken) {
+        this.deactivateToken = options.deactivateToken;
     }
 
     this.cleanUp = function() {
@@ -155,6 +153,87 @@ var MapLevelNode = function(options) {
             })
         }
     }
+}
+
+MapLevelNode.prototype.deactivateToken = function() {
+    this.displayObject.tint = 0x002404;
+    this.displayObject.alpha = .5;
+}
+
+MapLevelNode.prototype.complete = function() {
+    this.isCompleted = true;
+    this.displayObject.tooltipObj.destroy();
+
+    //setup flip animation
+    var halfFlipTime = null
+    var flipTime = null;
+    var setFlipTime = function(time) {
+        flipTime = time;
+        halfFlipTime = time/2;
+    }
+    setFlipTime(80);
+    var totalDone = 0;
+    var spinningIn = true;
+    var self = this;
+    var spins = 20;
+    var percentDone = 0;
+    var slowDownThreshold = 5;
+    this.isSpinning = true;
+    this.flipTimer = globals.currentGame.addTimer({
+        name: 'nodeFlipTimer' + mathArrayUtils.getId(),
+        gogogo: true,
+        tickCallback: function(deltaTime) {
+            //if we're on our last flip, make it slow down during the turn
+            if(spins <= slowDownThreshold) {
+                var shelf = (slowDownThreshold - spins) * (1/slowDownThreshold);
+                var fullPercentageDone = shelf + (spinningIn ? (percentDone/2)*(1/slowDownThreshold) : (1/slowDownThreshold/2)+(percentDone/2)*(1/slowDownThreshold));
+                deltaTime *= Math.max(.25, 1-fullPercentageDone);
+            }
+
+            totalDone += deltaTime;
+            percentDone = totalDone/halfFlipTime;
+
+            if(percentDone >= 1) {
+                percentDone = 0;
+                totalDone = 0;
+                if(!spinningIn) {
+                    spins--;
+                    if(spins == 0) {
+                        this.invalidate();
+                        self.displayObject.scale.x = 1;
+                        self.isSpinning = false;
+                        return;
+                    }
+                }
+                spinningIn = !spinningIn;
+
+                if(spinningIn) {
+                    self.displayObject.tint = 0xFFFFFF;
+                } else {
+                    if(spins > 1) {
+                        self.displayObject.tint = 0xbdbdbd;
+                    } else {
+                        self.deactivateToken();
+                    }
+                }
+            }
+            if(spinningIn) {
+                self.displayObject.scale.x = 1-percentDone;
+            } else {
+                self.displayObject.scale.x = percentDone;
+            }
+        }
+    })
+}
+
+MapLevelNode.prototype.setPosition = function(position) {
+    this.displayObject.position = position;
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            token.position = position;
+        })
+    }
+    this.position = position;
 }
 
 /*
@@ -344,7 +423,9 @@ var map = function(specs) {
                 this.prereqs.forEach((node) => {
                     node.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', position: node.position, scale: {x: 1.4, y: 1.4}});
                     graphicsUtils.rotateSprite(node.focusCircle, {speed: 20});
-                    node.displayObject.scale = {x: 1.25, y: 1.25};
+                    if(!node.isSpinning) {
+                        node.displayObject.scale = {x: 1.25, y: 1.25};
+                    }
                 })
                 return true;
             },
@@ -366,11 +447,7 @@ var map = function(specs) {
                 var specialToken = graphicsUtils.createDisplayObject(specialTokenName, {where: 'hudNTwo'});
                 Matter.Events.on(this.mapRef, 'showMap', function() {
                     if(this.isCompleted) {
-                        regularToken.visible = true;
-                        specialToken.visible = false;
-                        regularToken.alpha = .5;
-                        regularToken.tint = 0x002404;
-                        this.gleamTimer.invalidate();
+                        this.deactivateToken();
                     } else {
                         if(this.travelPredicate()) {
                             regularToken.visible = true;
@@ -388,6 +465,13 @@ var map = function(specs) {
                     }
                 }.bind(this))
                 return [regularToken, specialToken];
+            },
+            deactivateToken: function() {
+                regularToken.visible = true;
+                specialToken.visible = false;
+                regularToken.alpha = .5;
+                regularToken.tint = 0x002404;
+                this.gleamTimer.invalidate();
             }
         });
 
@@ -404,13 +488,12 @@ var map = function(specs) {
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
             if(node.isCompleted) {
-                node.displayObject.tint = 0x002404;
-                node.displayObject.alpha = .5;
+                node.deactivateToken();
             }
             graphicsUtils.addOrShowDisplayObject(node.displayObject)
             if(node.manualTokens) {
                 node.manualTokens.forEach((token) => {
-                    graphicsUtils.addOrShowDisplayObject(token)
+                    graphicsUtils.addOrShowDisplayObject(token);
                 })
             }
         })

@@ -1,0 +1,104 @@
+
+skeleton.png
+size: 411.75, 246.50
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm1
+  rotate: true
+  xy: 299.50, 0.50
+  size: 51.75, 89.50
+  orig: 59.75, 104.50
+  offset: 4.00, 7.75
+  index: -1
+arm2
+  rotate: false
+  xy: 299.50, 181.75
+  size: 58.00, 64.25
+  orig: 66.75, 76.75
+  offset: 4.25, 9.00
+  index: -1
+finger
+  rotate: false
+  xy: 356.25, 95.75
+  size: 13.25, 11.50
+  orig: 16.25, 14.00
+  offset: 1.50, 1.25
+  index: -1
+foot2
+  rotate: true
+  xy: 0.50, 2.75
+  size: 42.75, 51.00
+  orig: 53.50, 59.00
+  offset: 7.75, 3.00
+  index: -1
+hand
+  rotate: true
+  xy: 389.50, 29.75
+  size: 22.50, 21.75
+  orig: 27.00, 25.75
+  offset: 2.25, 2.00
+  index: -1
+head-side
+  rotate: false
+  xy: 358.00, 193.00
+  size: 43.00, 53.00
+  orig: 46.75, 57.00
+  offset: 1.75, 1.75
+  index: -1
+hips-side
+  rotate: true
+  xy: 52.00, 4.25
+  size: 41.25, 72.25
+  orig: 49.25, 88.00
+  offset: 4.50, 8.00
+  index: -1
+leg1up
+  rotate: false
+  xy: 299.50, 92.25
+  size: 56.25, 89.00
+  orig: 65.00, 103.00
+  offset: 4.75, 6.75
+  index: -1
+leg1up-back
+  rotate: true
+  xy: 124.75, 5.25
+  size: 40.25, 93.75
+  orig: 52.00, 98.50
+  offset: 5.75, 2.00
+  index: -1
+leg2down
+  rotate: true
+  xy: 299.50, 52.75
+  size: 39.00, 101.50
+  orig: 50.75, 104.50
+  offset: 6.75, 1.75
+  index: -1
+shoulder1
+  rotate: true
+  xy: 262.00, 7.75
+  size: 37.75, 35.25
+  orig: 37.75, 35.25
+  offset: 0.00, 0.00
+  index: -1
+shoulder1-copy
+  rotate: false
+  xy: 219.00, 8.75
+  size: 42.50, 36.75
+  orig: 43.00, 40.50
+  offset: 0.50, 2.50
+  index: -1
+spear
+  rotate: false
+  xy: 0.50, 46.00
+  size: 298.50, 200.00
+  orig: 305.25, 205.75
+  offset: 0.00, 5.75
+  index: -1
+torso-side
+  rotate: false
+  xy: 356.25, 107.75
+  size: 49.00, 73.50
+  orig: 58.75, 83.00
+  offset: 5.25, 4.75
+  index: -1

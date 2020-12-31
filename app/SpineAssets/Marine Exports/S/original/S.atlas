@@ -1,0 +1,153 @@
+
+S.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Gun2
+  rotate: true
+  xy: 138, 105
+  size: 47, 67
+  orig: 47, 67
+  offset: 0, 0
+  index: -1
+Side_0000_Layer-18
+  rotate: true
+  xy: 112, 56
+  size: 29, 19
+  orig: 29, 19
+  offset: 0, 0
+  index: -1
+Side_0001_Layer-17
+  rotate: false
+  xy: 2, 87
+  size: 134, 65
+  orig: 134, 65
+  offset: 0, 0
+  index: -1
+Side_0002_Layer-4
+  rotate: true
+  xy: 452, 474
+  size: 36, 47
+  orig: 36, 47
+  offset: 0, 0
+  index: -1
+Side_0003_Layer-10-copy
+  rotate: false
+  xy: 379, 396
+  size: 28, 33
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Side_0004_Layer-10
+  rotate: true
+  xy: 413, 434
+  size: 28, 33
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Side_0006_Layer-12-copy
+  rotate: false
+  xy: 240, 115
+  size: 25, 37
+  orig: 25, 37
+  offset: 0, 0
+  index: -1
+Side_0007_Layer-12
+  rotate: true
+  xy: 330, 314
+  size: 33, 29
+  orig: 33, 29
+  offset: 0, 0
+  index: -1
+Side_0008_Layer-6
+  rotate: false
+  xy: 2, 10
+  size: 54, 75
+  orig: 54, 75
+  offset: 0, 0
+  index: -1
+Side_0009_Layer-11-copy
+  rotate: true
+  xy: 58, 2
+  size: 29, 41
+  orig: 29, 41
+  offset: 0, 0
+  index: -1
+Side_0010_Layer-11
+  rotate: true
+  xy: 101, 2
+  size: 29, 41
+  orig: 29, 41
+  offset: 0, 0
+  index: -1
+Side_0011_Layer-9-copy
+  rotate: false
+  xy: 138, 89
+  size: 19, 14
+  orig: 19, 14
+  offset: 0, 0
+  index: -1
+Side_0012_Layer-9
+  rotate: false
+  xy: 138, 89
+  size: 19, 14
+  orig: 19, 14
+  offset: 0, 0
+  index: -1
+Side_0013_Layer-8-copy
+  rotate: false
+  xy: 58, 33
+  size: 25, 52
+  orig: 25, 52
+  offset: 0, 0
+  index: -1
+Side_0014_Layer-7-copy
+  rotate: false
+  xy: 207, 108
+  size: 31, 44
+  orig: 31, 44
+  offset: 0, 0
+  index: -1
+Side_0015_Layer-8
+  rotate: false
+  xy: 85, 33
+  size: 25, 52
+  orig: 25, 52
+  offset: 0, 0
+  index: -1
+Side_0016_Layer-7
+  rotate: false
+  xy: 330, 349
+  size: 31, 44
+  orig: 31, 44
+  offset: 0, 0
+  index: -1
+drop shadow
+  rotate: false
+  xy: 330, 464
+  size: 120, 46
+  orig: 120, 46
+  offset: 0, 0
+  index: -1
+front_0001_Layer-17
+  rotate: false
+  xy: 379, 431
+  size: 32, 31
+  orig: 32, 31
+  offset: 0, 0
+  index: -1
+gun2A
+  rotate: false
+  xy: 330, 395
+  size: 47, 67
+  orig: 47, 67
+  offset: 0, 0
+  index: -1
+muzzle flash
+  rotate: false
+  xy: 2, 154
+  size: 326, 356
+  orig: 326, 356
+  offset: 0, 0
+  index: -1

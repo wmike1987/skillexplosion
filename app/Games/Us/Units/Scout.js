@@ -1,0 +1,314 @@
+import * as Matter from 'matter-js'
+import * as $ from 'jquery'
+import * as PIXI from 'pixi.js'
+import UC from '@core/Unit/UnitConstructor.js'
+import aug from '@core/Unit/_Unlocker.js'
+import Ability from '@core/Unit/UnitAbility.js'
+import style from '@utils/Styles.js'
+import {globals} from '@core/Fundamental/GlobalState'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+
+export default function Critter(options) {
+    var critter = {};
+
+    var options = options || {};
+    $.extend(options, {radius: 25}, options)
+
+    //animation settings
+    var runSpeed = .9;
+    var runSpeedBonus = .25;
+    var shootSpeed = 1;
+
+    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanN'].spineData);
+    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanS'].spineData);
+    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanW'].spineData);
+    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanW'].spineData);
+    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanSW'].spineData);
+    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanSW'].spineData);
+    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanNW'].spineData);
+    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanNW'].spineData);
+
+    var runAnimations = {
+        up: gameUtils.getSpineAnimation({
+            spine: spineNorth,
+            animationName: 'walk',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        upRight: gameUtils.getSpineAnimation({
+            spine: spineNorthEast,
+            animationName: 'run',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        right: gameUtils.getSpineAnimation({
+            spine: spineEast,
+            animationName: 'run',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        downRight: gameUtils.getSpineAnimation({
+            spine: spineSouthEast,
+            animationName: 'run',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        down: gameUtils.getSpineAnimation({
+            spine: spineSouth,
+            animationName: 'walk',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        downLeft: gameUtils.getSpineAnimation({
+            spine: spineSouthWest,
+            animationName: 'run',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        left: gameUtils.getSpineAnimation({
+            spine: spineWest,
+            animationName: 'run',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+        upLeft: gameUtils.getSpineAnimation({
+            spine: spineNorthWest,
+            animationName: 'run',
+            speed: 1,
+            loop: true,
+            canInterruptSelf: false
+        }),
+    };
+
+    var attackAnimations = {
+        up: gameUtils.getSpineAnimation({
+            spine: spineNorth,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        upRight: gameUtils.getSpineAnimation({
+            spine: spineNorthEast,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        right: gameUtils.getSpineAnimation({
+            spine: spineEast,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        downRight: gameUtils.getSpineAnimation({
+            spine: spineSouthEast,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        down: gameUtils.getSpineAnimation({
+            spine: spineSouth,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        downLeft: gameUtils.getSpineAnimation({
+            spine: spineSouthWest,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        left: gameUtils.getSpineAnimation({
+            spine: spineWest,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+        upLeft: gameUtils.getSpineAnimation({
+            spine: spineNorthWest,
+            animationName: 'attack',
+            speed: 1,
+            times: 3,
+        }),
+    }
+
+    var otherAnimations = {
+
+    }
+
+    var sc = {x: .08, y: .08};
+    var adjustedUpDownsc = {x: .08, y: .08};
+    var flipsc = {x: -1 * sc.x, y: sc.y};
+    var yOffset = -40;
+    var nwswyOffset = -25;
+    var rc = [
+    {
+        id: 'selected',
+        data: 'IsometricSelected',
+        scale: {x: .9, y: .9},
+        stage: 'stageNOne',
+        visible: false,
+        avoidIsoMgr: true,
+        rotate: 'none',
+        offset: {x: 0, y: 22},
+    },
+    {
+        id: 'selectionPending',
+        data: 'IsometricSelectedPending',
+        scale: {x: 1.1, y: 1.1},
+        stage: 'stageNOne',
+        visible: false,
+        avoidIsoMgr: true,
+        rotate: 'none',
+        offset: {x: 0, y: 22},
+    },{
+        id: 'left',
+        data: spineWest,
+        scale: flipsc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: yOffset},
+    },{
+        id: 'right',
+        data: spineEast,
+        scale: sc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: yOffset}
+    },
+    {
+        id: 'up',
+        data: spineNorth,
+        scale: adjustedUpDownsc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: yOffset+5}
+    },
+    {
+        id: 'down',
+        data: spineSouth,
+        scale: adjustedUpDownsc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: yOffset}
+    },
+    {
+        id: 'upLeft',
+        data: spineNorthWest,
+        scale: flipsc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: nwswyOffset}
+    },
+    {
+        id: 'upRight',
+        data: spineNorthEast,
+        scale: sc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: nwswyOffset}
+    },
+    {
+        id: 'downRight',
+        data: spineSouthEast,
+        scale: sc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: nwswyOffset}
+    }, {
+        id: 'downLeft',
+        data: spineSouthWest,
+        scale: flipsc,
+        rotate: 'none',
+        visible: false,
+        offset: {x: 0, y: nwswyOffset}
+    },{
+        id: 'shadow',
+        data: 'IsoShadowBlurred',
+        scale: {x: .8, y: .8},
+        visible: true,
+        avoidIsoMgr: true,
+        rotate: 'none',
+        stage: "stageNTwo",
+        offset: {x: 0, y: 22}}];
+
+    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
+    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
+
+    var unitProperties = $.extend({
+        unitType: 'Critter',
+        health: 20,
+        defense: 1,
+        energy: 0,
+        energyRegenerationRate: 0,
+        experienceWorth: 20,
+        hitboxWidth: 40,
+        hitboxHeight: 40,
+        hitboxYOffset: 5,
+        itemsEnabled: true,
+        portrait: graphicsUtils.createDisplayObject('CritterPortrait'),
+        wireframe: graphicsUtils.createDisplayObject('CritterGroupPortrait'),
+        team: options.team || 4,
+        priority: 50,
+        name: options.name,
+        heightAnimation: 'up',
+        idleSpecificAnimation: true,
+        abilities: [],
+        death: function() {
+            var self = this;
+            var anim = gameUtils.getAnimation({
+                spritesheetName: 'CritterAnimations1',
+                animationName: 'critterdeath',
+                speed: .25,
+                fadeAway: true,
+                fadeTime: 8000,
+                transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
+            });
+            graphicsUtils.addSomethingToRenderer(anim);
+            anim.play();
+            deathSound.play();
+
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.addSomethingToRenderer(shadow);
+            globals.currentGame.removeUnit(this);
+            return [shadow, anim];
+        }}, options);
+
+    return UC({
+            givenUnitObj: critter,
+            renderChildren: rc,
+            radius: options.radius,
+            mass: options.mass || 8,
+            mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+            slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
+            unit: unitProperties,
+            moveable: {
+                moveSpeed: 3.00,
+                walkAnimations: runAnimations,
+            }, attacker: {
+                attackAnimations: attackAnimations,
+                cooldown: 650,
+                honeRange: 300,
+                range: options.radius*2+10,
+                damage: 6,
+                attackExtension: function(target) {
+                    var bloodAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'GenericHit',
+                        speed: 1.0,
+                        transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
+                    });
+                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                    bloodAnimation.play();
+                    attackSound.play();
+                },
+            },
+    });
+}

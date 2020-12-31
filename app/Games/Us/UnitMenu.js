@@ -6,6 +6,7 @@ import Medic from '@games/Us/Units/Medic.js'
 import Sentinel from '@games/Us/Units/Sentinel.js'
 import Eruptlet from '@games/Us/Units/Eruptlet.js'
 import Gargoyle from '@games/Us/Units/Gargoyle.js'
+import Scout from '@games/Us/Units/Scout.js'
 
 var unitMenu = {};
 unitMenu['EnemyMarine'] = {c: EnemyMarine, p: 'MarinePortrait'},
@@ -16,5 +17,6 @@ unitMenu['Medic'] = {c: Medic, p: 'MedicPortrait'};
 unitMenu['Sentinel'] = {c: Sentinel, p: 'SentinelPortrait'};
 unitMenu['Eruptlet'] = {c: Eruptlet, p: 'EruptletPortrait'};
 unitMenu['Gargoyle'] = {c: Gargoyle, p: 'GargoylePortrait'};
+unitMenu['Scout'] = {c: Scout, p: 'GargoylePortrait'};
 
 export default unitMenu;

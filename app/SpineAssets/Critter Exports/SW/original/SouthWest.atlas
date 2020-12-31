@@ -1,0 +1,90 @@
+
+SouthWest.png
+size: 285,1249
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Neck
+  rotate: false
+  xy: 116, 264
+  size: 96, 207
+  orig: 96, 207
+  offset: 0, 0
+  index: -1
+Southwest_0000_Layer-1---1
+  rotate: false
+  xy: 131, 486
+  size: 50, 100
+  orig: 50, 100
+  offset: 0, 0
+  index: -1
+Southwest_0001_Layer-1---2
+  rotate: false
+  xy: 159, 604
+  size: 90, 96
+  orig: 90, 96
+  offset: 0, 0
+  index: -1
+Southwest_0002_Layer-1---3
+  rotate: false
+  xy: 0, 586
+  size: 159, 114
+  orig: 159, 114
+  offset: 0, 0
+  index: -1
+Southwest_0003_Layer-1---4
+  rotate: false
+  xy: 0, 471
+  size: 131, 115
+  orig: 131, 115
+  offset: 0, 0
+  index: -1
+Southwest_0004_Layer-1---5
+  rotate: false
+  xy: 0, 700
+  size: 235, 312
+  orig: 235, 312
+  offset: 0, 0
+  index: -1
+Southwest_0005_Layer-1---6
+  rotate: false
+  xy: 212, 415
+  size: 58, 189
+  orig: 58, 189
+  offset: 0, 0
+  index: -1
+Southwest_0006_Layer-1---7
+  rotate: false
+  xy: 0, 1012
+  size: 269, 237
+  orig: 269, 237
+  offset: 0, 0
+  index: -1
+Southwest_0007_Layer-1---8
+  rotate: false
+  xy: 86, 14
+  size: 91, 226
+  orig: 91, 226
+  offset: 0, 0
+  index: -1
+Southwest_0008_Layer-1---9
+  rotate: false
+  xy: 0, 0
+  size: 86, 240
+  orig: 86, 240
+  offset: 0, 0
+  index: -1
+Southwest_0009_Layer-1---10
+  rotate: false
+  xy: 0, 240
+  size: 116, 231
+  orig: 116, 231
+  offset: 0, 0
+  index: -1
+Southwest_0010_Layer-1---11
+  rotate: false
+  xy: 177, 3
+  size: 108, 261
+  orig: 108, 261
+  offset: 0, 0
+  index: -1

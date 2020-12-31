@@ -1,0 +1,139 @@
+
+S.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Gun2
+  rotate: false
+  xy: 330, 434
+  size: 106, 76
+  orig: 106, 76
+  offset: 0, 0
+  index: -1
+Limbs_0013_Layer-1---14
+  rotate: true
+  xy: 112, 2
+  size: 24, 13
+  orig: 24, 13
+  offset: 0, 0
+  index: -1
+Limbs_0014_Layer-1---15
+  rotate: false
+  xy: 438, 449
+  size: 23, 13
+  orig: 23, 13
+  offset: 0, 0
+  index: -1
+Side_0001_Layer-17
+  rotate: false
+  xy: 2, 76
+  size: 169, 76
+  orig: 169, 76
+  offset: 0, 0
+  index: -1
+Side_0002_Layer-4
+  rotate: false
+  xy: 330, 344
+  size: 54, 88
+  orig: 54, 88
+  offset: 0, 0
+  index: -1
+Side_0003_Layer-10-copy
+  rotate: false
+  xy: 281, 122
+  size: 44, 30
+  orig: 44, 30
+  offset: 0, 0
+  index: -1
+Side_0004_Layer-10
+  rotate: false
+  xy: 438, 464
+  size: 42, 46
+  orig: 42, 46
+  offset: 0, 0
+  index: -1
+Side_0006_Layer-12-copy
+  rotate: true
+  xy: 482, 483
+  size: 27, 28
+  orig: 27, 28
+  offset: 0, 0
+  index: -1
+Side_0007_Layer-12
+  rotate: false
+  xy: 482, 456
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: -1
+Side_0008_Layer-6
+  rotate: false
+  xy: 330, 262
+  size: 57, 80
+  orig: 57, 80
+  offset: 0, 0
+  index: -1
+Side_0009_Layer-11-copy
+  rotate: false
+  xy: 281, 88
+  size: 23, 32
+  orig: 23, 32
+  offset: 0, 0
+  index: -1
+Side_0010_Layer-11
+  rotate: false
+  xy: 386, 384
+  size: 23, 48
+  orig: 23, 48
+  offset: 0, 0
+  index: -1
+Side_0013_Layer-8-copy
+  rotate: true
+  xy: 2, 7
+  size: 19, 53
+  orig: 19, 53
+  offset: 0, 0
+  index: -1
+Side_0014_Layer-7-copy
+  rotate: false
+  xy: 124, 29
+  size: 27, 45
+  orig: 27, 45
+  offset: 0, 0
+  index: -1
+Side_0015_Layer-8
+  rotate: true
+  xy: 57, 8
+  size: 18, 53
+  orig: 18, 53
+  offset: 0, 0
+  index: -1
+Side_0016_Layer-7
+  rotate: false
+  xy: 330, 215
+  size: 27, 45
+  orig: 27, 45
+  offset: 0, 0
+  index: -1
+drop shadow
+  rotate: false
+  xy: 2, 28
+  size: 120, 46
+  orig: 120, 46
+  offset: 0, 0
+  index: -1
+gun2A
+  rotate: false
+  xy: 173, 76
+  size: 106, 76
+  orig: 106, 76
+  offset: 0, 0
+  index: -1
+muzzle flash
+  rotate: false
+  xy: 2, 154
+  size: 326, 356
+  orig: 326, 356
+  offset: 0, 0
+  index: -1

@@ -19,6 +19,7 @@ import * as CampNoir from '@games/Us/Stages/CampNoir.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js'
 import StatCollector from '@games/Us/StatCollector.js'
+import UnitMenu from '@games/Us/UnitMenu.js'
 
 var targetScore = 1;
 
@@ -140,7 +141,7 @@ var game = {
         dialogueScene.add(chain);
         chain.play();
         this.currentScene.transitionToScene(dialogueScene);
-        Matter.Events.on(this.currentScene, 'sceneFadeDone', () => {
+        Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
                 if(key == 'escape') {
@@ -223,7 +224,7 @@ var game = {
         this.currentScene.transitionToScene(vScene);
 
         var blankScene = new Scene();
-        Matter.Events.on(this.currentScene, 'sceneFadeDone', () => {
+        Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
                 if(key == 'escape') {
@@ -235,7 +236,7 @@ var game = {
             }.bind(this))
         })
 
-        gameUtils.matterOnce(blankScene, 'sceneFadeDone', () => {
+        gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
             this.map.allowMouseEvents(true);
         })
 
@@ -323,9 +324,12 @@ var game = {
                 this.map.lastNode = node;
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
-                    node.isCompleted = true;
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
-                    Matter.Events.on(sc, 'afterSnapshotRender', function() {
+                    node.complete();
+                    gameUtils.matterOnce(sc, 'sceneFadeOutBegin', function() {
+                        node.complete();
+                    }.bind(this))
+                    gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
                         gameUtils.moveUnitOffScreen(this.shane);
                         gameUtils.moveUnitOffScreen(this.ursula);
                         this.removeAllLevelLocalEntities();
@@ -359,7 +363,7 @@ var game = {
         this.currentLevelDetails = node.levelDetails;
 
         //mark node as completed
-        node.isCompleted = true;
+        node.complete();
 
         //camp-like area active
         this.campLikeActive = true;
@@ -423,6 +427,11 @@ var game = {
          // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
          s.position = gameUtils.getPlayableCenter();
+
+         // var u = this.createUnit('Scout');
+         // this.addUnit(u);
+         // u.position = gameUtils.getPlayableCenter();
+
          return s;
     },
 
@@ -432,6 +441,12 @@ var game = {
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;
+    },
+
+    createUnit: function(constructorName) {
+        var unit = UnitMenu[constructorName].c({team: this.playerTeam, name: mathArrayUtils.getId(), dropItemsOnDeath: false});
+        gameUtils.moveUnitOffScreen(unit);
+        return unit;
     },
 
     //used just for shane/urs
@@ -559,6 +574,12 @@ game.assets = [
     {name: "alienS", target: "SpineAssets/Alien Export/S/S.json"},
     {name: "alienSW", target: "SpineAssets/Alien Export/SW/SW.json"},
     {name: "alienW", target: "SpineAssets/Alien Export/W/W.json"},
+
+    {name: "pikemanN", target: "SpineAssets/Pikeman Exports/N/skeleton.json"},
+    {name: "pikemanNW", target: "SpineAssets/Pikeman Exports/NW/skeleton.json"},
+    {name: "pikemanS", target: "SpineAssets/Pikeman Exports/S/skeleton.json"},
+    {name: "pikemanSW", target: "SpineAssets/Pikeman Exports/SW/skeleton.json"},
+    {name: "pikemanW", target: "SpineAssets/Pikeman Exports/W/skeleton.json"},
 
 ]
 

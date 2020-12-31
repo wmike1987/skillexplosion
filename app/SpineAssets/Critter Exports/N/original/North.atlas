@@ -1,0 +1,104 @@
+
+North.png
+size: 394,632
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Neck
+  rotate: false
+  xy: 154, 214
+  size: 96, 207
+  orig: 96, 207
+  offset: 0, 0
+  index: -1
+North_0000_Layer-1---2
+  rotate: false
+  xy: 212, 97
+  size: 89, 88
+  orig: 89, 88
+  offset: 0, 0
+  index: -1
+North_0001_Layer-1---3
+  rotate: false
+  xy: 301, 97
+  size: 89, 88
+  orig: 89, 88
+  offset: 0, 0
+  index: -1
+North_0002_Layer-1---4
+  rotate: false
+  xy: 58, 33
+  size: 97, 51
+  orig: 97, 51
+  offset: 0, 0
+  index: -1
+North_0003_Layer-1---5
+  rotate: false
+  xy: 250, 185
+  size: 97, 51
+  orig: 97, 51
+  offset: 0, 0
+  index: -1
+North_0004_Layer-1---6
+  rotate: false
+  xy: 0, 196
+  size: 154, 225
+  orig: 154, 225
+  offset: 0, 0
+  index: -1
+North_0005_Layer-1---7
+  rotate: false
+  xy: 0, 7
+  size: 58, 189
+  orig: 58, 189
+  offset: 0, 0
+  index: -1
+North_0006_Layer-1---8
+  rotate: false
+  xy: 212, 0
+  size: 57, 97
+  orig: 57, 97
+  offset: 0, 0
+  index: -1
+North_0007_Layer-1---9
+  rotate: false
+  xy: 269, 0
+  size: 57, 97
+  orig: 57, 97
+  offset: 0, 0
+  index: -1
+North_0008_Layer-1---10
+  rotate: false
+  xy: 0, 421
+  size: 230, 211
+  orig: 230, 211
+  offset: 0, 0
+  index: -1
+North_0009_Layer-1---11
+  rotate: false
+  xy: 230, 434
+  size: 144, 198
+  orig: 144, 198
+  offset: 0, 0
+  index: -1
+North_0010_Layer-1---12
+  rotate: false
+  xy: 250, 236
+  size: 144, 198
+  orig: 144, 198
+  offset: 0, 0
+  index: -1
+North_0011_Layer-1---13
+  rotate: false
+  xy: 58, 84
+  size: 77, 112
+  orig: 77, 112
+  offset: 0, 0
+  index: -1
+North_0012_Layer-1---14
+  rotate: false
+  xy: 135, 84
+  size: 77, 112
+  orig: 77, 112
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,83 @@
+
+South.png
+size: 429,658
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Neck
+  rotate: false
+  xy: 138, 220
+  size: 96, 207
+  orig: 96, 207
+  offset: 0, 0
+  index: -1
+South_0000_Layer-1---1
+  rotate: false
+  xy: 234, 261
+  size: 104, 129
+  orig: 104, 129
+  offset: 0, 0
+  index: -1
+South_0001_Layer-1---2
+  rotate: false
+  xy: 137, 91
+  size: 105, 129
+  orig: 105, 129
+  offset: 0, 0
+  index: -1
+South_0002_Layer-1---3
+  rotate: false
+  xy: 137, 0
+  size: 52, 91
+  orig: 52, 91
+  offset: 0, 0
+  index: -1
+South_0003_Layer-1---4
+  rotate: false
+  xy: 189, 0
+  size: 52, 91
+  orig: 52, 91
+  offset: 0, 0
+  index: -1
+South_0004_Layer-1---5
+  rotate: false
+  xy: 237, 390
+  size: 177, 268
+  orig: 177, 268
+  offset: 0, 0
+  index: -1
+South_0005_Layer-1---6
+  rotate: false
+  xy: 338, 155
+  size: 91, 235
+  orig: 91, 235
+  offset: 0, 0
+  index: -1
+South_0006_Layer-1---7
+  rotate: false
+  xy: 242, 26
+  size: 91, 235
+  orig: 91, 235
+  offset: 0, 0
+  index: -1
+South_0007_Layer-1---8
+  rotate: false
+  xy: 0, 427
+  size: 237, 231
+  orig: 237, 231
+  offset: 0, 0
+  index: -1
+South_0008_Layer-1---9
+  rotate: false
+  xy: 0, 37
+  size: 137, 195
+  orig: 137, 195
+  offset: 0, 0
+  index: -1
+South_0009_Layer-1---10
+  rotate: false
+  xy: 0, 232
+  size: 138, 195
+  orig: 138, 195
+  offset: 0, 0
+  index: -1

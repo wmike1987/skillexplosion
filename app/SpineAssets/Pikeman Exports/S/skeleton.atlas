@@ -1,0 +1,104 @@
+
+skeleton.png
+size: 474.50, 163.75
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Alien_Spearmen parts and sides/arm1
+  rotate: false
+  xy: 258.25, 55.75
+  size: 51.25, 89.00
+  orig: 59.75, 104.50
+  offset: 4.00, 7.75
+  index: -1
+Alien_Spearmen parts and sides/arm2
+  rotate: true
+  xy: 403.25, 56.25
+  size: 54.00, 60.50
+  orig: 66.75, 76.75
+  offset: 5.00, 10.75
+  index: -1
+Alien_Spearmen parts and sides/finger
+  rotate: true
+  xy: 365.00, 63.50
+  size: 12.75, 11.25
+  orig: 16.25, 14.00
+  offset: 1.75, 1.50
+  index: -1
+Alien_Spearmen parts and sides/foot1
+  rotate: true
+  xy: 403.25, 110.75
+  size: 34.00, 62.25
+  orig: 45.00, 79.75
+  offset: 5.75, 9.00
+  index: -1
+Alien_Spearmen parts and sides/hand
+  rotate: true
+  xy: 428.00, 2.00
+  size: 22.50, 21.75
+  orig: 27.00, 25.75
+  offset: 2.25, 2.00
+  index: -1
+Alien_Spearmen parts and sides/head-front
+  rotate: false
+  xy: 382.50, 4.25
+  size: 45.00, 51.50
+  orig: 50.25, 57.75
+  offset: 2.75, 3.00
+  index: -1
+Alien_Spearmen parts and sides/hips-front
+  rotate: false
+  xy: 365.00, 76.75
+  size: 37.75, 68.00
+  orig: 44.25, 77.00
+  offset: 3.50, 4.25
+  index: -1
+Alien_Spearmen parts and sides/leg1up
+  rotate: false
+  xy: 310.00, 57.25
+  size: 54.50, 87.50
+  orig: 65.00, 103.00
+  offset: 5.25, 7.50
+  index: -1
+Alien_Spearmen parts and sides/leg2bfront
+  rotate: false
+  xy: 237.50, 47.75
+  size: 20.25, 97.00
+  orig: 35.25, 104.50
+  offset: 7.25, 3.75
+  index: -1
+Alien_Spearmen parts and sides/shoulder2
+  rotate: true
+  xy: 428.00, 25.00
+  size: 30.75, 33.75
+  orig: 38.25, 42.25
+  offset: 3.75, 4.25
+  index: -1
+Alien_Spearmen parts and sides/spear-S
+  rotate: true
+  xy: 237.50, 145.25
+  size: 18.00, 236.50
+  orig: 63.75, 246.00
+  offset: 20.50, 4.75
+  index: -1
+Alien_Spearmen parts and sides/torso-front
+  rotate: true
+  xy: 310.00, 1.75
+  size: 55.00, 72.00
+  orig: 55.00, 72.00
+  offset: 0.00, 0.00
+  index: -1
+Alien_Spearmen parts and sides/torso-side
+  rotate: true
+  xy: 237.50, 0.50
+  size: 46.75, 72.00
+  orig: 58.75, 83.00
+  offset: 6.25, 5.50
+  index: -1
+Alien_Spearmen/spear_effect
+  rotate: false
+  xy: 0.50, 4.00
+  size: 236.50, 159.25
+  orig: 288.75, 201.25
+  offset: 26.75, 18.50
+  index: -1

@@ -1,0 +1,132 @@
+
+NW.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Legs-BackQ_0000_Layer-54
+  rotate: true
+  xy: 124, 2
+  size: 22, 55
+  orig: 22, 55
+  offset: 0, 0
+  index: -1
+Legs-BackQ_0002_Layer-52
+  rotate: true
+  xy: 124, 2
+  size: 22, 55
+  orig: 22, 55
+  offset: 0, 0
+  index: -1
+Legs-BackQ_0001_Layer-53
+  rotate: false
+  xy: 239, 111
+  size: 35, 41
+  orig: 35, 41
+  offset: 0, 0
+  index: -1
+Legs-BackQ_0003_Layer-51
+  rotate: false
+  xy: 239, 111
+  size: 35, 41
+  orig: 35, 41
+  offset: 0, 0
+  index: -1
+Limbs_0013_Layer-1---14
+  rotate: false
+  xy: 2, 8
+  size: 24, 13
+  orig: 24, 13
+  offset: 0, 0
+  index: -1
+Limbs_0014_Layer-1---15
+  rotate: false
+  xy: 330, 317
+  size: 23, 13
+  orig: 23, 13
+  offset: 0, 0
+  index: -1
+drop shadow
+  rotate: false
+  xy: 2, 23
+  size: 120, 46
+  orig: 120, 46
+  offset: 0, 0
+  index: -1
+gun
+  rotate: true
+  xy: 2, 71
+  size: 81, 174
+  orig: 81, 174
+  offset: 0, 0
+  index: -1
+muzzle flash
+  rotate: false
+  xy: 2, 154
+  size: 326, 356
+  orig: 326, 356
+  offset: 0, 0
+  index: -1
+quarterback_0000_Layer-1---1
+  rotate: false
+  xy: 330, 382
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+quarterback_0002_Layer-1---3
+  rotate: false
+  xy: 124, 26
+  size: 38, 43
+  orig: 38, 43
+  offset: 0, 0
+  index: -1
+quarterback_0003_Layer-1---4
+  rotate: false
+  xy: 382, 406
+  size: 37, 26
+  orig: 37, 26
+  offset: 0, 0
+  index: -1
+quarterback_0004_Layer-1---5
+  rotate: false
+  xy: 276, 120
+  size: 23, 32
+  orig: 23, 32
+  offset: 0, 0
+  index: -1
+quarterback_0005_Layer-1---6
+  rotate: false
+  xy: 178, 74
+  size: 59, 78
+  orig: 59, 78
+  offset: 0, 0
+  index: -1
+quarterback_0006_Layer-1---7
+  rotate: false
+  xy: 330, 332
+  size: 23, 48
+  orig: 23, 48
+  offset: 0, 0
+  index: -1
+quarterback_0007_Layer-1---8
+  rotate: false
+  xy: 239, 81
+  size: 27, 28
+  orig: 27, 28
+  offset: 0, 0
+  index: -1
+quarterback_0008_Layer-1---9
+  rotate: true
+  xy: 355, 352
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: -1
+quarterback_0015_Layer-1---16
+  rotate: false
+  xy: 330, 434
+  size: 169, 76
+  orig: 169, 76
+  offset: 0, 0
+  index: -1

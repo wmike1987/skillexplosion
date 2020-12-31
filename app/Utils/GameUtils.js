@@ -1006,10 +1006,10 @@ var graphicsUtils = {
     },
 
     rotateSprite: function(sprite, options) {
-        options = Object.assign({direction: 1, speed: 10}, options);
+        options = Object.assign({direction: 1, speed: 1}, options);
 
         var rotationTimer = globals.currentGame.addTimer({name: 'rotateSprite:' + mathArrayUtils.getId(), gogogo: true, executeOnNuke: true, tickCallback: function(deltaTime) {
-            sprite.rotation += 1/1000 * options.speed;
+            sprite.rotation += deltaTime/20000 * options.speed;
         }})
 
         Matter.Events.on(sprite, 'destroy', function() {
