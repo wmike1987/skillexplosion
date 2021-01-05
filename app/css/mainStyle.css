@@ -171,10 +171,13 @@ text {
 
 .game {
   /*cursor:pointer;*/
-  color: blue;
+  color: white;
   text-decoration: underline;
-  display: inline-block;
   font-size: 25px;
+  margin: auto;
+  width: 10%;
+  border: 3px solid green;
+  padding: 10px;
 }
 
 .gameCategoryTitle {

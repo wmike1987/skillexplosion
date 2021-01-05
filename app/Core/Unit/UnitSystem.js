@@ -3,8 +3,9 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
+import {PathingSystem} from '@core/Unit/_Pathing.js'
 
-var UnitSystemAssets = [    {name: "BaseUnit", target: "Textures/Us/BaseUnit.json"}];
+var UnitSystemAssets = [{name: "BaseUnit", target: "Textures/Us/BaseUnit.json"}];
 
 var UnitSystem = function(properties) {
 
@@ -41,6 +42,12 @@ var UnitSystem = function(properties) {
                 systemRef: this,
                 position: {x: gameUtils.getCanvasCenter().x, y: gameUtils.getCanvasHeight() - globals.currentGame.worldOptions.unitPanelHeight/2}});
                 this.unitPanel.initialize();
+        }
+
+        //establish pathing system
+        if(this.enablePathingSystem) {
+            this.pathingSystem = new PathingSystem(properties);
+            this.pathingSystem.init();
         }
 
         //destination marker

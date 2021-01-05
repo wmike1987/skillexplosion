@@ -97,15 +97,15 @@ var common = {
          */
          if(this.enableUnitSystem) {
              // Create new unit system, letting it share some common game properties
-             this.unitSystem = new UnitSystem(options);
+             this.unitSystem = new UnitSystem(Object.assign({enablePathingSystem: this.enablePathingSystem}, options));
          }
 
          /*
           * Incorporate ItemSystem if specified
           */
          if(this.enableItemSystem) {
-             // Create new item system, letting it share some common game properties
-             this.itemSystem = new ItemSystem(options);
+             // Create new item system
+             this.itemSystem = new ItemSystem();
          }
 
         //begin tracking previous frame positions and attributes

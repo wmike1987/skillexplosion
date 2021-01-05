@@ -141,6 +141,7 @@ function UnitConstructor(options) {
     // body.drawWire = true;
     body.collisionFilter.mask -= 0x0002;
     body.unit = newUnit; //reference to parent
+    body.isCollisionBody = true;
 
     //**************************************************************
     // create selection body, or use the collision body if specified

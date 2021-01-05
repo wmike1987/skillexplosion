@@ -5,6 +5,7 @@ import * as PIXI from 'pixi.js'
 import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils'
+import {PIXIHooks, StatsJSAdapter} from 'gstats'
 
 //pixi object frequency destroyer
 // var PixiObjDestroyer = function(renderer) {
@@ -207,9 +208,12 @@ var renderer = function(engine, options) {
 		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;
 
+		//destroy the accessibility plugin which was/is causing a div to appear and affects the browser's scroll bar
+		this.pixiApp.renderer.plugins.accessibility.destroy()
+
 		//add-on gstats (ctrl + shift + f to show)
-		// var pixiHooks = new GStats.PIXIHooks(this.pixiApp);
-		// this.stats = new GStats.StatsJSAdapter(pixiHooks);
+		// var pixiHooks = new PIXIHooks(this.pixiApp);
+		// this.stats = new StatsJSAdapter(pixiHooks);
 		// document.body.appendChild(this.stats.stats.dom || this.stats.stats.domElement);
 		// this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
 		// this.stats.stats.dom.style.visibility = 'hidden';

@@ -10,6 +10,7 @@
   "author": "Mike Warner",
   "license": "ISC",
   "dependencies": {
+    "gstats": "^0.1.0",
     "howler": "^2.2.0",
     "jquery": "^3.5.1",
     "matter-js": "^0.14.2",

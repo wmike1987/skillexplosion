@@ -129,7 +129,7 @@ var map = function(specs) {
             var nodeBuffer = 100;
             do {
                 collision = false;
-                position = gameUtils.getRandomPlacementWithinPlayableBounds(50);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, 50);
                 for(let node of this.graph) {
                     if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                         collision = true;

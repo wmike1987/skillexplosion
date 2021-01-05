@@ -333,6 +333,20 @@ var gameUtils = {
         return placement;
     },
 
+    getRandomPositionWithinRadiusAroundPoint: function(point, radius, buffer) {
+        var position = {x: 0, y: 0};
+        buffer = buffer || 0;
+        radius = radius - buffer;
+
+        do {
+            position.x = point.x-radius + (Math.random() * (radius*2));
+            position.y = point.y-radius + (Math.random() * (radius*2));
+
+        } while (position.y > this.getPlayableHeight() || position.y < 0 || position.x > this.getPlayableWidth() || position.x < 0)
+
+        return position;
+    },
+
     isPositionWithinPlayableBounds: function(position, buffer) {
         if(buffer && !buffer.x) {
             buffer = {x: buffer, y: buffer};
