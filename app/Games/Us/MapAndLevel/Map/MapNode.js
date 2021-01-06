@@ -24,16 +24,21 @@ var hoverTick = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
 var clickTokenSound = gameUtils.getSound('clickbattletoken1.wav', {volume: .05, rate: 1});
 var clickTokenSound2 = gameUtils.getSound('clickbattletoken2.wav', {volume: .04, rate: .9});
 
+var defaultTokenSize = 40;
+var enlargedTokenSize = 50;
+
 //Define node object
 var MapLevelNode = function(options) {
     this.mapRef = options.mapRef;
     this.levelDetails = options.levelDetails;
     this.travelPredicate = options.travelPredicate;
     this.type = this.levelDetails.type;
+    this.defaultTokenSize = options.tokenSize || defaultTokenSize;
+    this.enlargedTokenSize = options.largeTokenSize || enlargedTokenSize;
 
     if(options.manualTokens) {
         //custom map token
-        this.displayObject = graphicsUtils.createDisplayObject('TransparentSquare', {where: 'hudNOne', scale: {x: 50, y: 50}});
+        this.displayObject = graphicsUtils.createDisplayObject('TransparentSquare', {where: 'hudNOne', scale: {x: this.defaultTokenSize, y: this.defaultTokenSize}});
         this.displayObject.interactive = true;
         this.manualTokens = options.manualTokens.call(this);
         this.manualTokens.forEach((token) => {
@@ -42,6 +47,7 @@ var MapLevelNode = function(options) {
     } else {
         //default behavior
         this.displayObject = graphicsUtils.createDisplayObject(typeTokenMappings[this.levelDetails.type], {where: 'hudNTwo', scale: {x: 1, y: 1}});
+        graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
         this.displayObject.interactive = true;
     }
 
@@ -90,12 +96,7 @@ var MapLevelNode = function(options) {
 
         //if we're a prerequisite to something, highlight the master
         if(this.chosenAsPrereq && !this.master.isCompleted) {
-            var node = this.master;
-            node.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: node.position, scale: {x: 1.1, y: 1.1}});
-            this.master.manualTokens.forEach((token) => {
-                token.scale = {x: 1.1, y: 1.1};
-            })
-            graphicsUtils.rotateSprite(node.focusCircle, {speed: 20});
+            this.master.focusNode();
         }
     }.bind(this))
 
@@ -118,17 +119,14 @@ var MapLevelNode = function(options) {
         }
         //if we're a prerequisite to something, unhighlight the master
         if(this.chosenAsPrereq && !this.master.isCompleted) {
-            var node = this.master;
-            graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
-            this.master.manualTokens.forEach((token) => {
-                token.scale = {x: 1.0, y: 1.0};
-            })
-            node.focusCirlce = null;
+            this.master.unfocusNode();
         }
     }.bind(this))
 
     this.displayObject.on('mousedown', function(event) {
         if(!this.mapRef.mouseEventsAllowed) return;
+
+        // this.playCompleteAnimation();
 
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
             var canTravel = true;
@@ -161,6 +159,38 @@ var MapLevelNode = function(options) {
     if(options.deactivateToken) {
         this.deactivateToken = options.deactivateToken;
     }
+
+    this.focusNode = function() {
+        if(!this.isSpinning) {
+            this.isFocused = true;
+            this.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: this.position});
+            graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
+            graphicsUtils.makeSpriteSize(this.focusCircle, this.enlargedTokenSize);
+            graphicsUtils.rotateSprite(this.focusCircle, {speed: 20});
+
+            if(this.manualTokens) {
+                this.manualTokens.forEach((token) => {
+                    graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
+                })
+            }
+        }
+    },
+
+    this.unfocusNode = function() {
+        if(!this.isSpinning) {
+            this.isFocused = false;
+            graphicsUtils.removeSomethingFromRenderer(this.focusCircle);
+            this.focusCirlce = null;
+            graphicsUtils.makeSpriteSize(this.focusCircle, this.defaultTokenSize);
+            graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
+
+            if(this.manualTokens) {
+                this.manualTokens.forEach((token) => {
+                    graphicsUtils.makeSpriteSize(token, this.defaultTokenSize);
+                })
+            }
+        }
+    },
 
     this.cleanUp = function() {
         graphicsUtils.removeSomethingFromRenderer(this.displayObject);

@@ -129,7 +129,7 @@ var map = function(specs) {
             var nodeBuffer = 100;
             do {
                 collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, 50);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, 20);
                 for(let node of this.graph) {
                     if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                         collision = true;
@@ -171,7 +171,7 @@ var map = function(specs) {
         } while(collision)
 
         var level = levelSpecifier.create(key, specs.worldSpecs);
-        var mapNode = new MapLevelNode({levelDetails: level, mapRef: this,
+        var mapNode = new MapLevelNode({levelDetails: level, mapRef: this, tokenSize: 50, largeTokenSize: 60,
             init: function() {
                 this.prereqs = [];
 
@@ -194,18 +194,13 @@ var map = function(specs) {
             },
             hoverCallback: function() {
                 this.prereqs.forEach((node) => {
-                    node.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', position: node.position, scale: {x: 1.4, y: 1.4}});
-                    graphicsUtils.rotateSprite(node.focusCircle, {speed: 20});
-                    if(!node.isSpinning) {
-                        node.displayObject.scale = {x: 1.25, y: 1.25};
-                    }
+                    node.focusNode();
                 })
                 return true;
             },
             unhoverCallback: function() {
                 this.prereqs.forEach((node) => {
-                    graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
-                    node.displayObject.scale = {x: 1.0, y: 1.0};
+                    node.unfocusNode();
                 })
                 return true;
             },
@@ -303,15 +298,9 @@ var map = function(specs) {
                     token.visible = this.mapSprite.visible;
                 })
             }
-            if(node.focusCircle) {
+            if(node.isFocused) {
+                node.unfocusNode();
                 graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
-                if(!node.manualTokens) {
-                    node.displayObject.scale = {x: 1.0, y: 1.0};
-                } else {
-                    node.manualTokens.forEach((token) => {
-                        token.scale = {x: 1.0, y: 1.0};
-                    })
-                }
             }
         })
 

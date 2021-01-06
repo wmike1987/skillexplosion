@@ -1234,6 +1234,7 @@ var graphicsUtils = {
         var spins = spins || 1;
         var percentDone = 0;
         var slowDownThreshold = slowDownThreshold || 0;
+        var originalScaleX = sprite.scale.x;
         this.isSpinning = true;
         this.flipTimer = globals.currentGame.addTimer({
             name: 'nodeFlipTimer' + mathArrayUtils.getId(),
@@ -1257,7 +1258,7 @@ var graphicsUtils = {
                         if(spins == 0) {
                             doneCallback();
                             this.invalidate();
-                            sprite.scale.x = 1;
+                            sprite.scale.x = originalScaleX;
                             self.isSpinning = false;
                             return;
                         }
@@ -1275,9 +1276,9 @@ var graphicsUtils = {
                     }
                 }
                 if(spinningIn) {
-                    sprite.scale.x = 1-percentDone;
+                    sprite.scale.x = originalScaleX-(percentDone*originalScaleX);
                 } else {
-                    sprite.scale.x = percentDone;
+                    sprite.scale.x = percentDone*originalScaleX;
                 }
             }
         })
