@@ -90,10 +90,13 @@ ConfigPanel.prototype.showAugments = function(unit) {
     $.each(unit.abilities, function(i, ability) {
         var currentAugment = ability.currentAugment;
         if(ability.augments) {
-            ability.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
-            ability.currentAugmentBorder.visible = false;
-            ability.currentAugmentBorder.sortYOffset = 1000;
-            ability.addSlave(ability.currentAugmentBorder);
+            if(!ability.currentAugmentBorder) {
+                ability.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
+                ability.currentAugmentBorder.id = ability.name;
+                ability.currentAugmentBorder.visible = false;
+                ability.currentAugmentBorder.sortYOffset = 1000;
+                ability.addSlave(ability.currentAugmentBorder);
+            }
             var alphaAugment = .8;
             $.each(ability.augments, function(j, augment) {
                 if(!augment.icon.parent) {

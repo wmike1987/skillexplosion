@@ -15,7 +15,7 @@ var entrySound = gameUtils.getSound('enterairdrop1.wav', {volume: .04, rate: 1})
 
 var airDropStation = function(options) {
     this.type = 'airDropStations';
-    this.prereqCount = 2;
+    this.prereqCount = 1;
     options.entrySound = entrySound;
     this.onCreate(options)
     this.enterLevel = function(node) {
@@ -78,16 +78,16 @@ var airDropStation = function(options) {
     };
 
     this.createTrees = function(scene) {
-        var treeOptions = {};
-        treeOptions.start = {x: 0, y: 0};
-        treeOptions.width = 300;
-        treeOptions.height = gameUtils.getPlayableHeight()+50;
-        treeOptions.density = .3;
-        treeOptions.possibleTrees = options.possibleTrees;
-        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions))
-
-        treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
-        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
+        // var treeOptions = {};
+        // treeOptions.start = {x: 0, y: 0};
+        // treeOptions.width = 300;
+        // treeOptions.height = gameUtils.getPlayableHeight()+50;
+        // treeOptions.density = .001;
+        // treeOptions.possibleTrees = options.possibleTrees;
+        // scene.add(SceneryUtils.fillAreaWithTrees(treeOptions))
+        //
+        // treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
+        // scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
     }
 
     this.startAirDrop = function(scene) {
@@ -173,16 +173,16 @@ var airDropSpecialStation = function(options) {
     };
 
     this.createTrees = function(scene) {
-        var treeOptions = {};
-        treeOptions.start = {x: 0, y: 0};
-        treeOptions.width = 300;
-        treeOptions.height = gameUtils.getPlayableHeight()+50;
-        treeOptions.density = .3;
-        treeOptions.possibleTrees = options.possibleTrees;
-        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions))
-
-        treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
-        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
+        // var treeOptions = {};
+        // treeOptions.start = {x: 0, y: 0};
+        // treeOptions.width = 300;
+        // treeOptions.height = gameUtils.getPlayableHeight()+50;
+        // treeOptions.density = .001;
+        // treeOptions.possibleTrees = options.possibleTrees;
+        // scene.add(SceneryUtils.fillAreaWithTrees(treeOptions))
+        //
+        // treeOptions.start = {x: gameUtils.getPlayableWidth()-200, y: 0};
+        // scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
     }
 
     this.startAirDrop = function(scene) {

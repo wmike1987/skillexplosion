@@ -316,7 +316,6 @@ var map = function(specs) {
         this.travelInProgress = true;
         this.currentNode = node;
         var position = mathArrayUtils.clonePosition(node.position, {y: 20});
-        Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node});
         gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
             Matter.Body.setVelocity(this.headTokenBody, {
                 x: 0.0,
@@ -328,6 +327,8 @@ var map = function(specs) {
             }
             destinationCallback();
         }.bind(this));
+        console.info(this.headTokenBody.velocity);
+        Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node, headVelocity: this.headTokenBody.velocity});
     }
 
     this.revertHeadToPreviousLocationDueToDefeat = function() {

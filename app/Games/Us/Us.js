@@ -92,6 +92,23 @@ var game = {
             this.shane.fatigue = 0;
             this.ursula.fatigue = 0;
 
+            //figure out starting offset from which the chars will move into the center
+            var headX = Math.abs(event.headVelocity.x);
+            var headY = Math.abs(event.headVelocity.y);
+            var buffer = 80;
+            var xSteps = (gameUtils.getPlayableWidth()/2 + buffer)/headX;
+            var ySteps = (gameUtils.getPlayableHeight()/2 + buffer)/headY;
+            var xPos = 0;
+            var yPos = 0;
+            if(xSteps <= ySteps) {
+                xPos = -event.headVelocity.x * xSteps;
+                yPos = -event.headVelocity.y * xSteps;
+            } else {
+                xPos = -event.headVelocity.x * ySteps;
+                yPos = -event.headVelocity.y * ySteps;
+            }
+            this.offscreenStartLocation = {x: xPos, y: yPos};
+
             //cleanup and reset the previous unit spawner
             var node = event.node;
             this.currentLevelDetails = node.levelDetails;
@@ -207,8 +224,8 @@ var game = {
             })
 
             //reset shane and urs
-            this.setUnit(this.shane, {yoffset: 40});
-            this.setUnit(this.ursula, {yoffset: 40});
+            this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 40})});
+            this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 40})});
 
             //clean up spawner if it exists
             if(this.currentSpawner) {
@@ -263,8 +280,10 @@ var game = {
             Matter.Events.trigger(this, 'enteringLevel');
             this.unitSystem.pause();
             gameUtils.setCursorStyle('None');
-            this.setUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
-            this.setUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true, applyFatigue: true});
+            var shaneStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -20});
+            var ursulaStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 20});
+            this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(shaneStart, this.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
+            this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(ursulaStart, this.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
             this.currentSpawner.startPooling();
             var game = this;
             gameUtils.doSomethingAfterDuration(() => {
@@ -387,8 +406,8 @@ var game = {
         Matter.Events.on(airDropScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
             this.currentLevelDetails.startAirDrop(airDropScene);
-            this.setUnit(this.shane, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
-            this.setUnit(this.ursula, {yoffset: gameUtils.getCanvasHeight()/2, moveToCenter: true});
+            this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), this.offscreenStartLocation), moveToCenter: true});
+            this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), this.offscreenStartLocation), moveToCenter: true});
             var game = this;
         }.bind(this))
         this.level += 1;
@@ -426,9 +445,11 @@ var game = {
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
          s.position = gameUtils.getPlayableCenter();
+         this.shane.damage = 10000;
 
          // var u = this.createUnit('Scout');
          // this.addUnit(u);
@@ -454,7 +475,7 @@ var game = {
     //used just for shane/urs
     setUnit: function(unit, options) {
         var options = options || {};
-        var yoffset = options.yoffset || 0;
+        var position = options.position;
         var moveToCenter = options.moveToCenter;
 
         if(unit.isDead) {
@@ -465,10 +486,10 @@ var game = {
         var centerX;
         if(unit.name == 'Shane') {
             centerX = -30;
-            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: centerX, y: yoffset});;
+            unit.position = position;
         } else {
             centerX = 30;
-            unit.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: centerX, y: yoffset});
+            unit.position = position;
         }
 
         unit.isTargetable = true;
