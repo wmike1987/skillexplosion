@@ -121,7 +121,7 @@ var map = function(specs) {
         for(var x = 0; x < this.levels[key]; x++) {
 
             var level = levelSpecifier.create(key, specs.worldSpecs);
-            var mapNode = new MapLevelNode({levelDetails: level, mapRef: this});
+            var mapNode = level.createMapNode({levelDetails: level, mapRef: this});
 
             //Determine position
             var position;
@@ -129,7 +129,7 @@ var map = function(specs) {
             var nodeBuffer = 100;
             do {
                 collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, 20);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
                 for(let node of this.graph) {
                     if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                         collision = true;
@@ -137,8 +137,18 @@ var map = function(specs) {
                     }
                 }
             } while(collision)
-            mapNode.setPosition(position);
-            this.graph.push(mapNode);
+
+            if(level.manualSetPosition) {
+                level.manualSetPosition(position);
+            } else {
+                mapNode.setPosition(position);
+            }
+
+            if(level.manualAddToGraph) {
+                level.manualAddToGraph(this.graph)
+            } else {
+                this.graph.push(mapNode);
+            }
         }
     }
 
@@ -211,9 +221,7 @@ var map = function(specs) {
                 })
             },
             mouseDownCallback: function() {
-                this.manualTokens.forEach((token) => {
-                    graphicsUtils.graduallyTint(token, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
-                })
+                this.flashNode();
                 this.displayObject.tooltipObj.disable();
                 this.displayObject.tooltipObj.hide();
                 airDropClickTokenSound.play();
@@ -266,6 +274,7 @@ var map = function(specs) {
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
+            node.setToDefaultState();
             if(node.isCompleted) {
                 if(node.justCompleted) {
                     node.justCompleted = false;
@@ -292,7 +301,9 @@ var map = function(specs) {
         this.mapSprite.visible = false;
         this.graph.forEach(node => {
             node.displayObject.visible = this.mapSprite.visible;
-            node.displayObject.tooltipObj.hide();
+            if(node.displayObject.tooltipObj) {
+                node.displayObject.tooltipObj.hide();
+            }
             if(node.manualTokens) {
                 node.manualTokens.forEach((token) => {
                     token.visible = this.mapSprite.visible;
@@ -315,7 +326,7 @@ var map = function(specs) {
     this.travelToNode = function(node, destinationCallback) {
         this.travelInProgress = true;
         this.currentNode = node;
-        var position = mathArrayUtils.clonePosition(node.position, {y: 20});
+        var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {y: 20});
         gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
             Matter.Body.setVelocity(this.headTokenBody, {
                 x: 0.0,

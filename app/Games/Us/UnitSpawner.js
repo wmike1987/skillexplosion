@@ -14,6 +14,7 @@ var unitSpawner = function(enemySets) {
     var self = this;
 
     this.startPooling = function() {
+        this.isPooling = true;
         $.each(enemySets, function(i, enemy) {
             //create a timer to fill the enemy pool between hz to spread out the load
             var poolTimer = globals.currentGame.addTimer({

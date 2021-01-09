@@ -253,8 +253,8 @@ var gameUtils = {
     },
 
     matterOnce: function(obj, eventName, callback) {
-        var wrappedFunction = function() {
-            callback.call();
+        var wrappedFunction = function(event) {
+            callback(event);
             Matter.Events.off(obj, eventName, wrappedFunction);
         }
         var removeFunction = function() {

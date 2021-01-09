@@ -155,45 +155,45 @@ Scene.prototype.transitionToScene = function(options) {
                 // });
                 // globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
-                var dShader = new PIXI.Filter(null, circleDissolveShader, {
-                    a: Math.random()*10 + 10,
-                    b: 10,
-                    c: 555555,
-                    progress: 1.0,
-                    screenSize: gameUtils.getPlayableWH(),
-                    screenCenter: gameUtils.getCanvasCenter(),
-                    gridSize: 2,
-                    fadeOut: options.fadeIn,
-                });
-                globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
+            var dShader = new PIXI.Filter(null, circleDissolveShader, {
+                a: Math.random()*10 + 10,
+                b: 10,
+                c: 555555,
+                progress: 1.0,
+                screenSize: gameUtils.getPlayableWH(),
+                screenCenter: gameUtils.getCanvasCenter(),
+                gridSize: 2,
+                fadeOut: options.fadeIn,
+            });
+            globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
-                fadeIn = function() {};
-                fadeOut = function() {
-                    dShader.uniforms.progress -= 1/(transitionLength/iterTime);
-                }
-
-                cleanUp = function() {
-                    graphicsUtils.removeSomethingFromRenderer(transitionSprite);
-                    globals.currentGame.renderer.layers.transitionLayer.filters = [];
-                }
+            fadeIn = function() {};
+            fadeOut = function() {
+                dShader.uniforms.progress -= 1/(transitionLength/iterTime);
             }
 
-            Matter.Events.trigger(this, 'sceneFadeOutBegin');
-            Matter.Events.trigger(newScene, 'sceneFadeInBegin');
-            newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
-                fadeIn();
+            cleanUp = function() {
+                graphicsUtils.removeSomethingFromRenderer(transitionSprite);
+                globals.currentGame.renderer.layers.transitionLayer.filters = [];
+            }
+        }
+
+        Matter.Events.trigger(this, 'sceneFadeOutBegin');
+        Matter.Events.trigger(newScene, 'sceneFadeInBegin');
+        newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
+            fadeIn();
+        }.bind(this), totallyDoneCallback: function() {
+            Matter.Events.trigger(this, 'clear');
+            this.clear();
+            newScene.initializeScene();
+            globals.currentGame.addTimer({name: 'sceneOut' + this.id, runs: runs, timeLimit: iterTime, killsSelf: true, callback: function() {
+                fadeOut();
             }.bind(this), totallyDoneCallback: function() {
-                Matter.Events.trigger(this, 'clear');
-                this.clear();
-                newScene.initializeScene();
-                globals.currentGame.addTimer({name: 'sceneOut' + this.id, runs: runs, timeLimit: iterTime, killsSelf: true, callback: function() {
-                    fadeOut();
-                }.bind(this), totallyDoneCallback: function() {
-                    Matter.Events.trigger(this, 'sceneFadeOutDone');
-                    Matter.Events.trigger(newScene, 'sceneFadeInDone');
-                    cleanUp();
-                }.bind(this)})
-            }.bind(this)});
+                Matter.Events.trigger(this, 'sceneFadeOutDone');
+                Matter.Events.trigger(newScene, 'sceneFadeInDone');
+                cleanUp();
+            }.bind(this)})
+        }.bind(this)});
         Matter.Events.trigger(newScene, 'afterSnapshotRender', {});
         Matter.Events.off(globals.currentGame.gameLoop, 'afterRenderWorld', handler);
     });

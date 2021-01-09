@@ -1,0 +1,108 @@
+import * as Matter from 'matter-js'
+import * as $ from 'jquery'
+import * as PIXI from 'pixi.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import {globals, mousePosition} from '@core/Fundamental/GlobalState.js'
+import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js'
+import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
+import Tooltip from '@core/Tooltip.js'
+import TileMapper from '@core/TileMapper.js'
+import ItemUtils from '@core/Unit/ItemUtils.js'
+import Doodad from '@utils/Doodad.js'
+import {Dialogue, DialogueChain} from '@core/Dialogue.js'
+import {levelSpecifier} from '@games/Us/MapAndLevel/Levels/LevelSpecifier.js'
+import tokenMappings from '@games/Us/MapAndLevel/Map/TokenMappings.js'
+import MapLevelNode from '@games/Us/MapAndLevel/Map/MapNode.js'
+
+var multiLevel = function(options) {
+    var multiRef = this;
+    var backgroundNodeTint = 0x3c002f;
+    this.chain = [];
+    this.levelTypes = options.levelTypes || ['singles', 'hardened', 'mobs'];
+
+    this.levelTypes.forEach((type) => {
+        this.chain.push(levelSpecifier.create(type, options));
+    })
+
+    //process the chain on the first node
+    this.chain[0].customWinBehavior
+
+    this.tokenSize = 40;
+    this.largeTokenSize = 50;
+    this.mapNodes = [];
+
+    var highlightAllNodes = function() {
+        multiRef.mapNodes.forEach(node => {
+            node.tintNode(backgroundNodeTint);
+        })
+        return true;
+    }
+
+    var unhighlightAllNodes = function() {
+        multiRef.mapNodes.forEach(node => {
+            node.untintNode();
+        })
+        return true;
+    }
+
+    var mouseDown = function() {
+        this.sizeNode();
+        multiRef.mapNodes.forEach(node => {
+            node.tintNode(backgroundNodeTint);
+        })
+        multiRef.mapNodes[0].untintNode();
+        multiRef.mapNodes[0].flashNode();
+        multiRef.mapNodes[0].sizeNode(multiRef.mapNodes[0].enlargedTokenSize);
+        return {flash: false, sound: true, customPosition: multiRef.centerPosition, nodeToEnter: multiRef.mapNodes[0]};
+    }
+
+    this.createMapNode = function(options) {
+        this.chain.forEach((level) => {
+            this.mapNodes.push(new MapLevelNode({levelDetails: level, mapRef: options.mapRef,
+                hoverCallback: highlightAllNodes,
+                unhoverCallback: unhighlightAllNodes,
+                mouseDownCallback: mouseDown}));
+        })
+        return null;
+    }
+
+    var spacing = 20;
+    this.manualSetPosition = function(position) {
+
+        var i = -spacing;
+        this.mapNodes.forEach((node, index) => {
+            node.setPosition(mathArrayUtils.clonePosition(position, {x: i}));
+            node.travelPosition = position;
+            i += spacing;
+
+            //sort them appropriately
+            node.setNodeZ(-index);
+        })
+    }
+
+    this.manualAddToGraph = function(graph) {
+        this.mapNodes.forEach((node) => {
+            graph.push(node);
+        })
+    }
+
+    //modify the each level to comprehend that it's part of a chain
+    this.chain.forEach((level, index) => {
+        //upon reset, reset all nodes in the chain
+        level.originalResetLevel = level.resetLevel;
+        level.resetLevel = function() {
+            multiRef.chain.forEach(level => {
+                level.originalResetLevel();
+            })
+        }
+
+        if(index < this.chain.length-1) {
+            level.customWinBehavior = function() {
+                globals.currentGame.startEnemySpawn(multiRef.chain[index+1])
+            }
+        }
+    })
+}
+multiLevel.prototype = levelBase;
+
+export {multiLevel};
