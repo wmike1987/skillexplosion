@@ -23,6 +23,11 @@ var MapLevelNode = function(options) {
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
 
+    //Call init() if specified
+    if(options.init) {
+        options.init.call(this);
+    }
+
     var myNode = this;
     gameUtils.matterOnce(this.levelDetails, 'endLevelActions', function(event) {
         myNode.complete();
@@ -63,11 +68,6 @@ var MapLevelNode = function(options) {
         description: enemyDescriptions,
         descriptionIcons: enemyIcons
     });
-
-    //Call init() if specified
-    if(options.init) {
-        options.init.call(this);
-    }
 
     //Establish event handlers
     this.displayObject.on('mouseover', function(event) {
@@ -257,6 +257,9 @@ var MapLevelNode = function(options) {
             this.manualTokens.forEach((token) => {
                 graphicsUtils.removeSomethingFromRenderer(token);
             })
+        }
+        if(this.cleanUpExtension) {
+            this.cleanUpExtension();
         }
     };
 }

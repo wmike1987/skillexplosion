@@ -88,7 +88,7 @@ var noirEnemySets = {
 var map = {
     options: {
         levels: {
-            singles: 1,
+            singles: 4,
             hardened: 0,
             // boss: 1,
             // norevives: 1,

@@ -44,8 +44,8 @@ mobs.prototype = levelBase;
 var camp = function(options) {
     this.type = 'camp';
     this.onCreate(options)
-    this.enterLevel = function() {
-        Matter.Events.trigger(globals.currentGame, 'GoToCamp', {node: this});
+    this.enterLevel = function(node) {
+        Matter.Events.trigger(globals.currentGame, 'GoToCamp', {node: node});
     }
 }
 camp.prototype = levelBase;

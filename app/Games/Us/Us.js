@@ -403,9 +403,6 @@ var game = {
         //camp-like area active
         this.campLikeActive = true;
 
-        //set last-node
-        this.map.lastNode = node;
-
         //create new scene
         var airDropScene = new Scene();
 

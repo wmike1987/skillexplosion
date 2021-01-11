@@ -67,12 +67,19 @@ var map = function(specs) {
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
     var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,
         travelPredicate: function() {
-            return this.mapRef.nodeCount % 2 == 0 && this.mapRef.currentNode != this;
+            return this.mapRef.nodeCount % 3 == 0 && this.mapRef.currentNode != this;
         },
         hoverCallback: function() {
+            if(this.mapRef.currentNode != this && !this.travelPredicate()) {
+                graphicsUtils.addOrShowDisplayObject(this.availabilityText);
+                var nodesLeft = 3 - this.mapRef.nodeCount % 3;
+                var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
+                this.availabilityText.text = 'Available in ' + nodesLeft + roundS;
+            }
             return this.travelPredicate();
         },
         unhoverCallback: function() {
+            this.availabilityText.visible = false;
             return this.travelPredicate();
         },
         manualTokens: function() {
@@ -109,11 +116,19 @@ var map = function(specs) {
                 }
             }.bind(this))
             return [regularToken, specialToken];
-        }});
+        },
+        init: function() {
+            this.availabilityText = graphicsUtils.createDisplayObject('TEX+:Available in 3 rounds.', {position: mathArrayUtils.clonePosition(campLocation, {y: -40}), style: styles.fatigueText, where: 'hudNTwo'});
+        },
+        cleanUpExtension: function() {
+            graphicsUtils.removeSomethingFromRenderer(this.availabilityText);
+        }
+    });
+
     initialCampNode.setPosition(campLocation);
+    this.campNode = initialCampNode;
     this.currentNode = initialCampNode;
     this.graph.push(initialCampNode);
-    this.lastNode = initialCampNode;
 
     //Non-airdrop levels
     for(const key in this.levels) {
@@ -325,6 +340,7 @@ var map = function(specs) {
 
     this.travelToNode = function(node, destinationCallback) {
         this.travelInProgress = true;
+        this.lastNode = this.currentNode;
         this.currentNode = node;
         var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {y: 20});
         gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
