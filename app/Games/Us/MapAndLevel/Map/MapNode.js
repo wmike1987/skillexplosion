@@ -63,11 +63,14 @@ var MapLevelNode = function(options) {
         enemyDescriptions.push(' x ' + set.spawn.total);
         enemyIcons.push(set.icon);
     });
+
+    //create the tooltip with a few assumptions
     Tooltip.makeTooltippable(this.displayObject, {
-        title: this.levelDetails.type,
-        description: enemyDescriptions,
+        title: options.tooltipTitle || this.levelDetails.type,
+        description: options.tooltipDescription || enemyDescriptions,
         descriptionIcons: enemyIcons
     });
+    this.tooltip = this.displayObject.tooltip;
 
     //Establish event handlers
     this.displayObject.on('mouseover', function(event) {

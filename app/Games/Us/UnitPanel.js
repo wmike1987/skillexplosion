@@ -48,7 +48,7 @@ var unitPanel = function(options) {
     this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:', {anchor: {x: 0, y: .5}, position: this.unitArmorPosition, where: 'hudOne', style: styles.unitDefenseAdditionsStyle});
     this.unitHealthText = graphicsUtils.addSomethingToRenderer('TEX+:', {position: this.unitHealthPosition, where: 'hudOne', style: styles.unitGeneralHPStyle, anchor: {x: 0, y: .5}});
     this.unitGritText = graphicsUtils.addSomethingToRenderer('TEX+:', {position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritStyle, anchor: {x: 0, y: .5}});
-    Tooltip.makeTooltippable(this.unitGritText, {title: 'Grit', updaters: {description: function() {
+    Tooltip.makeTooltippable(this.unitGritText, {title: 'Grit', updaters: {descriptions: function() {
         var result = {index: 0, value: ''};
         if(this.prevailingUnit) {
             result.value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.'
@@ -57,7 +57,7 @@ var unitPanel = function(options) {
     }.bind(this)}});
     this.unitGritAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:', {anchor: {x: 0, y: .5}, position: this.unitGritPosition, where: 'hudOne', style: styles.unitGritAdditionsStyle});
     this.unitDodgeText = graphicsUtils.addSomethingToRenderer('TEX+:', {position: this.unitDodgePosition, where: 'hudOne', style: styles.unitDodgeStyle, anchor: {x: 0, y: .5}});
-    Tooltip.makeTooltippable(this.unitDodgeText, {title: 'Dodge', updaters: {description: function() {
+    Tooltip.makeTooltippable(this.unitDodgeText, {title: 'Dodge', updaters: {descriptions: function() {
         var result = {index: 0, value: 'Chance to dodge attack.'};
         if(this.prevailingUnit) {
             result.value = (this.prevailingUnit.dodge + this.prevailingUnit.getDodgeAdditionSum()) + '% chance to dodge attack.'

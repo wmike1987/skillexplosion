@@ -122,7 +122,9 @@ var map = function(specs) {
         },
         cleanUpExtension: function() {
             graphicsUtils.removeSomethingFromRenderer(this.availabilityText);
-        }
+        },
+        tooltipTitle: 'Camp Noir',
+        tooltipDescription: '',
     });
 
     initialCampNode.setPosition(campLocation);
