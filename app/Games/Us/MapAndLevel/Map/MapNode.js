@@ -126,13 +126,14 @@ var MapLevelNode = function(options) {
             }
 
             if(canTravel) {
+                //defaults
                 var behavior = {flash: true, sound: true, nodeToEnter: this};
                 if(options.mouseDownCallback) {
                     var ret =  options.mouseDownCallback.call(self);
                     if(ret) {
                         Object.assign(behavior, options.mouseDownCallback.call(self));
                     } else {
-                        behavior = {flash: false, sound: false};
+                        Object.assign(behavior, {flash: false, sound: false});
                     }
                 }
 
