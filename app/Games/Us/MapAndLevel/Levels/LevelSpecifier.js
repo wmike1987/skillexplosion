@@ -11,8 +11,18 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
 
 var levelSpecifier = {
     create: function(type, options) {
-        var TypeMapping = levelTypeMappings[type];
-        return new TypeMapping(options);
+        var typeMapping = levelTypeMappings[type];
+        if(typeMapping) {
+            return new typeMapping(options);
+        } else {
+            var levelObj = Object.create(levelBase);
+            levelObj.type = type;
+            levelObj.tileSize = 225;
+            levelObj.onCreate(options);
+            var customEnemySetConfig = options.enemySets[type];
+            levelObj.enemySets = EnemySetSpecifier.create({type: type, worldSpecs: options});
+            return levelObj;
+        }
     }
 }
 

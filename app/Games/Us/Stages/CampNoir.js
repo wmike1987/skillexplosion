@@ -83,6 +83,7 @@ var noirEnemySets = {
     basic: {normal: 'Critter', rare: 'Sentinel'},
     hardened: {normal: 'Gargoyle'},
     mobs: {normal: 'Eruptlet', rare: 'Sentinel'},
+    sentinels: {normal: 'Sentinel', amount: 10, atATime: 2, hz: 4500},
 }
 
 var map = {
@@ -90,11 +91,12 @@ var map = {
         levels: {
             singles: 4,
             hardened: 0,
+            // sentinels: 1,
             // boss: 1,
             // norevives: 1,
             mobs: 0,
             airDropStations: 1,
-            multiLevel: 1,
+            // multiLevel: 1,
             airDropSpecialStations: 0,
         },
         worldSpecs: {

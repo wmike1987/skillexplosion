@@ -5,6 +5,8 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
 var easyMode = true;
+var innerMultiplier = 1.0;
+var outerMultiplier = 2.0;
 var basicBottom = 4;
 var basicTop = 9;
 
@@ -65,7 +67,7 @@ var enemySetSpecifier = {
                 constructor: mobNormal.c,
                 wave: 1,
                 icon: mobNormal.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(25, 35), hz: 1800, atATime: 8},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(15, 20), hz: 1800, atATime: 8},
                 item: {type: 'worn', total: 1}
             })
 
@@ -77,6 +79,17 @@ var enemySetSpecifier = {
                 icon: mobRare.p,
                 spawn: {total: mathArrayUtils.getRandomIntInclusive(3, 4), hz: 4500, maxOnField: 1},
                 item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
+            })
+        } else { //for custom levels
+            var enemySetSpecs = options.worldSpecs.enemySets[type];
+            var normal = unitMenu[enemySetSpecs.normal];
+
+            enemySets.push({
+                constructor: normal.c,
+                wave: 1,
+                icon: normal.p,
+                spawn: {total: enemySetSpecs.amount || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySetSpecs.hz || 4500,
+                    atATime: enemySetSpecs.atATime || 1, maxOnField: 1}
             })
         }
 

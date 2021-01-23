@@ -8,6 +8,7 @@ var tokenMappings = {
     camp: 'CampfireToken',
     airDropStations: 'AirDropToken',
     airDropSpecialStations: 'AirDropSpecialToken',
+    default: 'MapGoldBattleToken',
 }
 
 export default tokenMappings;

@@ -158,7 +158,7 @@ var game = {
                 var key = event.key.toLowerCase();
                 if(key == 'escape') {
                     //clear dialogue and start initial level
-                    this.initialLevel();
+                    this.postInit();
                     $('body').off('keydown.uskeydown');
                 }
             }.bind(this))
@@ -176,7 +176,7 @@ var game = {
         titleScene.initializeScene();
     },
 
-    initialLevel: function() {
+    postInit: function() {
         //create our units
         this.createShane();
         this.createUrsula();

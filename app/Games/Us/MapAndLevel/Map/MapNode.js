@@ -47,7 +47,8 @@ var MapLevelNode = function(options) {
         })
     } else {
         //default behavior
-        this.displayObject = graphicsUtils.createDisplayObject(tokenMappings[this.levelDetails.type], {where: 'hudNTwo', scale: {x: 1, y: 1}});
+        var tokenMapping = tokenMappings[this.levelDetails.type] || tokenMappings['default'];
+        this.displayObject = graphicsUtils.createDisplayObject(tokenMapping, {where: 'hudNTwo', scale: {x: 1, y: 1}});
         graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
         this.displayObject.interactive = true;
     }
@@ -240,11 +241,11 @@ var MapLevelNode = function(options) {
     };
 
     this.unfocusNode = function() {
+        if(!this.focusCircle) return;
         if(!this.isSpinning) {
             this.isFocused = false;
             graphicsUtils.removeSomethingFromRenderer(this.focusCircle);
-            this.focusCirlce = null;
-            graphicsUtils.makeSpriteSize(this.focusCircle, this.defaultTokenSize);
+            this.focusCircle = null;
             graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
 
             if(this.manualTokens) {

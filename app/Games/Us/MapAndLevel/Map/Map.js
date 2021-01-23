@@ -61,21 +61,14 @@ var map = function(specs) {
 
     //setup other properties
     this.mouseEventsAllowed = true;
-    this.nodeCount = 0;
 
     //Add the camp node
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
     var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,tokenSize: 50, largeTokenSize: 55,
         travelPredicate: function() {
-            return this.mapRef.nodeCount % 3 == 0 && this.mapRef.currentNode != this;
+            return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
         },
         hoverCallback: function() {
-            // if(this.mapRef.currentNode != this && !this.travelPredicate()) {
-            //     graphicsUtils.addOrShowDisplayObject(this.availabilityText);
-            //     var nodesLeft = 3 - this.mapRef.nodeCount % 3;
-            //     var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
-            //     this.availabilityText.text = 'Available in ' + nodesLeft + roundS;
-            // }
             return this.travelPredicate();
         },
         unhoverCallback: function() {
@@ -118,10 +111,25 @@ var map = function(specs) {
             return [regularToken, specialToken];
         },
         init: function() {
+            Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
+                if(!this.campAvailableCount) {
+                    this.campAvailableCount = 0;
+                }
+                this.campAvailableCount++;
+
+                if(event.node == this) {
+                    this.campAvailableCount = 0;
+                }
+            }.bind(this));
+
+            Matter.Events.on(globals.currentGame, 'TravelReset', function() {
+                this.campAvailableCount--;
+            }.bind(this));
+
             Matter.Events.on(this.mapRef, 'showMap', function() {
                 var availabilityText = 'Available Now';
                 if(this.mapRef.currentNode != this && !this.travelPredicate()) {
-                    var nodesLeft = 3 - this.mapRef.nodeCount % 3;
+                    var nodesLeft = 3 - this.campAvailableCount % 3;
                     var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
                     availabilityText = 'Available in ' + nodesLeft + roundS;
                 }
@@ -360,9 +368,6 @@ var map = function(specs) {
                 y: 0.0
             });
             this.travelInProgress = false;
-            if(node.levelDetails.type != 'camp') {
-                this.nodeCount++;
-            }
             destinationCallback();
         }.bind(this));
         console.info(this.headTokenBody.velocity);
@@ -372,7 +377,7 @@ var map = function(specs) {
     this.revertHeadToPreviousLocationDueToDefeat = function() {
         Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {y: 20}));
         this.currentNode = this.lastNode;
-        this.nodeCount--;
+        Matter.Events.trigger(globals.currentGame, "TravelReset", {resetToNode: this.lastNode});
     }
 }
 export default map;
