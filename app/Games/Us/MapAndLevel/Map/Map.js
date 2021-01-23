@@ -65,21 +65,21 @@ var map = function(specs) {
 
     //Add the camp node
     var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
-    var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,
+    var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,tokenSize: 50, largeTokenSize: 55,
         travelPredicate: function() {
             return this.mapRef.nodeCount % 3 == 0 && this.mapRef.currentNode != this;
         },
         hoverCallback: function() {
-            if(this.mapRef.currentNode != this && !this.travelPredicate()) {
-                graphicsUtils.addOrShowDisplayObject(this.availabilityText);
-                var nodesLeft = 3 - this.mapRef.nodeCount % 3;
-                var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
-                this.availabilityText.text = 'Available in ' + nodesLeft + roundS;
-            }
+            // if(this.mapRef.currentNode != this && !this.travelPredicate()) {
+            //     graphicsUtils.addOrShowDisplayObject(this.availabilityText);
+            //     var nodesLeft = 3 - this.mapRef.nodeCount % 3;
+            //     var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
+            //     this.availabilityText.text = 'Available in ' + nodesLeft + roundS;
+            // }
             return this.travelPredicate();
         },
         unhoverCallback: function() {
-            this.availabilityText.visible = false;
+            // this.availabilityText.visible = false;
             return this.travelPredicate();
         },
         manualTokens: function() {
@@ -105,8 +105,8 @@ var map = function(specs) {
                         regularToken.alpha = 1
                         regularToken.tint = 0xFFFFFF;
                     } else {
-                        regularToken.alpha = .5;
-                        regularToken.tint = 0x002404;
+                        regularToken.alpha = 1;
+                        regularToken.tint = 0x7c7c7c;
                     }
                     regularToken.visible = true;
                     specialToken.visible = false;
@@ -118,10 +118,19 @@ var map = function(specs) {
             return [regularToken, specialToken];
         },
         init: function() {
-            this.availabilityText = graphicsUtils.createDisplayObject('TEX+:Available in 3 rounds.', {position: mathArrayUtils.clonePosition(campLocation, {y: -40}), style: styles.fatigueText, where: 'hudNTwo'});
+            Matter.Events.on(this.mapRef, 'showMap', function() {
+                var availabilityText = 'Available Now';
+                if(this.mapRef.currentNode != this && !this.travelPredicate()) {
+                    var nodesLeft = 3 - this.mapRef.nodeCount % 3;
+                    var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
+                    availabilityText = 'Available in ' + nodesLeft + roundS;
+                }
+                this.displayObject.tooltipObj.setMainDescription(availabilityText);
+            }.bind(this));
+            // this.availabilityText = graphicsUtils.createDisplayObject('TEX+:Available in 3 rounds.', {position: mathArrayUtils.clonePosition(campLocation, {y: -40}), style: styles.fatigueText, where: 'hudNTwo'});
         },
         cleanUpExtension: function() {
-            graphicsUtils.removeSomethingFromRenderer(this.availabilityText);
+            // graphicsUtils.removeSomethingFromRenderer(this.availabilityText);
         },
         tooltipTitle: 'Camp Noir',
         tooltipDescription: '',

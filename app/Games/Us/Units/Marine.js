@@ -383,7 +383,7 @@ export default function Marine(options) {
         title: 'Dash',
         description: 'Quickly move throughout the battlefield.',
         hotkey: 'D',
-        energyCost: 5,
+        energyCost: 4,
         enablers: [function(commandObj) {
             return marine.canMove;
         }.bind(this)],
