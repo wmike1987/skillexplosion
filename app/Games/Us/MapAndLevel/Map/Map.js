@@ -41,6 +41,7 @@ var map = function(specs) {
     Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(campLocation, {y: 20}));
 
     //setup fatigue functionality
+    this.startingFatigue = 0;
     this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {position: {x: 100, y: 100}, style: styles.fatigueText, where: "hudNOne"});
     Matter.Events.on(this, "SetFatigue", function(event) {
         this.fatigueText.alpha = .9;
@@ -48,8 +49,6 @@ var map = function(specs) {
         this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
     }.bind(this))
     gameUtils.attachSomethingToBody({something: this.fatigueText, body: this.headTokenBody, offset: {x: 0, y: 20}});
-    this.fatigueBarSprite = this.headTokenBody.renderlings.fatigueBar;
-    this.fatigueFillSprite = this.headTokenBody.renderlings.fatigueFill;
 
     //Create main map sprite
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {where: 'foreground', position: gameUtils.getPlayableCenter()});
@@ -126,6 +125,10 @@ var map = function(specs) {
                 this.campAvailableCount--;
             }.bind(this));
 
+            Matter.Events.on(this, 'ArrivedAtNode', function() {
+                this.mapRef.startingFatigue = 0;
+            }.bind(this));
+
             Matter.Events.on(this.mapRef, 'showMap', function() {
                 var availabilityText = 'Available Now';
                 if(this.mapRef.currentNode != this && !this.travelPredicate()) {
@@ -135,10 +138,9 @@ var map = function(specs) {
                 }
                 this.displayObject.tooltipObj.setMainDescription(availabilityText);
             }.bind(this));
-            // this.availabilityText = graphicsUtils.createDisplayObject('TEX+:Available in 3 rounds.', {position: mathArrayUtils.clonePosition(campLocation, {y: -40}), style: styles.fatigueText, where: 'hudNTwo'});
         },
         cleanUpExtension: function() {
-            // graphicsUtils.removeSomethingFromRenderer(this.availabilityText);
+
         },
         tooltipTitle: 'Camp Noir',
         tooltipDescription: '',
@@ -228,7 +230,7 @@ var map = function(specs) {
                         prereqDistanceLimit += 100;
                     }
                     var node = mathArrayUtils.getRandomElementOfArray(this.mapRef.graph);
-                    if(node.isBattleNode && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(position, node.position) < prereqDistanceLimit) {
+                    if(node.canBePrereq() && node.isBattleNode && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(position, node.position) < prereqDistanceLimit) {
                         node.chosenAsPrereq = true;
                         node.master = this;
                         this.prereqs.push(node);
@@ -301,7 +303,7 @@ var map = function(specs) {
     }
 
     this.show = function() {
-        this.fatigueText.text = 'Fatigue: ' + '0%';
+        this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = .3;
         // openmapSound.play();
         openmapSound2.play();
@@ -361,6 +363,7 @@ var map = function(specs) {
         this.travelInProgress = true;
         this.lastNode = this.currentNode;
         this.currentNode = node;
+        this.startingFatigue += 5;
         var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {y: 20});
         gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
             Matter.Body.setVelocity(this.headTokenBody, {
@@ -368,15 +371,17 @@ var map = function(specs) {
                 y: 0.0
             });
             this.travelInProgress = false;
+            Matter.Events.trigger(node, "ArrivedAtNode", {});
             destinationCallback();
         }.bind(this));
         console.info(this.headTokenBody.velocity);
-        Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node, headVelocity: this.headTokenBody.velocity});
+        Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node, headVelocity: this.headTokenBody.velocity, startingFatigue: this.startingFatigue});
     }
 
     this.revertHeadToPreviousLocationDueToDefeat = function() {
         Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {y: 20}));
         this.currentNode = this.lastNode;
+        this.startingFatigue -= 5;
         Matter.Events.trigger(globals.currentGame, "TravelReset", {resetToNode: this.lastNode});
     }
 }

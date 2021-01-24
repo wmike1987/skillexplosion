@@ -89,14 +89,14 @@ var noirEnemySets = {
 var map = {
     options: {
         levels: {
-            singles: 4,
+            singles: 0,
             hardened: 0,
-            // sentinels: 1,
+            sentinels: 0,
             // boss: 1,
             // norevives: 1,
             mobs: 0,
-            airDropStations: 1,
-            // multiLevel: 1,
+            airDropStations: 0,
+            multiLevel: 1,
             airDropSpecialStations: 0,
         },
         worldSpecs: {

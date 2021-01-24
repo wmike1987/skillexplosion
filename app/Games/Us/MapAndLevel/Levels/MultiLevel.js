@@ -25,8 +25,6 @@ var multiLevel = function(options) {
     })
 
     //process the chain on the first node
-    this.chain[0].customWinBehavior
-
     this.tokenSize = 40;
     this.largeTokenSize = 50;
     this.mapNodes = [];
@@ -63,6 +61,33 @@ var multiLevel = function(options) {
                 unhoverCallback: unhighlightAllNodes,
                 mouseDownCallback: mouseDown}));
         })
+
+        //disallow these from being prereqs
+        multiRef.mapNodes.forEach(node => {
+            node.canBePrereq = function() {
+                return false;
+            };
+        })
+
+        //alter the last node's completion behavior (if we are the last level, have the node completion trigger the other nodes' completion)
+        var lastNodeIndex = this.chain.length-1;
+        var lastNode = this.mapNodes[lastNodeIndex];
+        lastNode._nodeCompleteExtension = function() {
+            this.mapNodes.forEach((node, jndex) => {
+                if(jndex != lastNodeIndex) {
+                    node.complete();
+                }
+            })
+        }.bind(this)
+
+        lastNode._playCompleteAnimationExtension = function() {
+            this.mapNodes.forEach((node, jndex) => {
+                if(jndex != lastNodeIndex) {
+                    node.playCompleteAnimation();
+                }
+            })
+        }.bind(this)
+
         return null;
     }
 
@@ -96,6 +121,7 @@ var multiLevel = function(options) {
             })
         }
 
+        //if we not the last node, have the win behavior start the next level
         if(index < this.chain.length-1) {
             level.customWinBehavior = function() {
                 globals.currentGame.startEnemySpawn(multiRef.chain[index+1])

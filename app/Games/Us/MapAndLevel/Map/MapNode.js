@@ -161,112 +161,6 @@ var MapLevelNode = function(options) {
     if(options.deactivateToken) {
         this.deactivateToken = options.deactivateToken;
     };
-
-    this.focusNode = function() {
-        if(!this.isSpinning) {
-            this.isFocused = true;
-            this.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: this.position});
-            graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
-            graphicsUtils.makeSpriteSize(this.focusCircle, this.enlargedTokenSize);
-            graphicsUtils.rotateSprite(this.focusCircle, {speed: 20});
-
-            if(this.manualTokens) {
-                this.manualTokens.forEach((token) => {
-                    graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
-                })
-            }
-        }
-    };
-
-    var tintValue = 0x20cd2c;
-    this.tintNode = function(value) {
-        this.displayObject.tint = value || tintValue;
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                token.tint = value || tintValue;
-            })
-        }
-    };
-
-    this.untintNode = function() {
-        this.displayObject.tint = 0xFFFFFF;
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                token.tint = 0xFFFFFF;
-            })
-        }
-    };
-
-    this.flashNode = function() {
-        graphicsUtils.graduallyTint(this.displayObject, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                graphicsUtils.graduallyTint(token, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
-            })
-        }
-    };
-
-    this.sizeNode = function(size) {
-        graphicsUtils.makeSpriteSize(this.displayObject, size || this.defaultTokenSize);
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                graphicsUtils.makeSpriteSize(token, size || this.defaultTokenSize);
-            })
-        }
-    };
-
-    // this.bringNodeToForefront = function() {
-    //     this.displayObject.originalSortYOffset = this.displayObject.sortYOffset;
-    //     this.displayObject.sortYOffset = 1000;
-    //     if(this.manualTokens) {
-    //         this.manualTokens.forEach((token) => {
-    //             token.originalSortYOffset = token.sortYOffset;
-    //             token.sortYOffset = 1000;
-    //         })
-    //     }
-    // }
-
-    this.setNodeZ = function(z) {
-        this.displayObject.sortYOffset = z;
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                token.sortYOffset = z;
-            })
-        }
-    };
-
-    this.setToDefaultState = function() {
-        this.sizeNode();
-        this.untintNode();
-    };
-
-    this.unfocusNode = function() {
-        if(!this.focusCircle) return;
-        if(!this.isSpinning) {
-            this.isFocused = false;
-            graphicsUtils.removeSomethingFromRenderer(this.focusCircle);
-            this.focusCircle = null;
-            graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
-
-            if(this.manualTokens) {
-                this.manualTokens.forEach((token) => {
-                    graphicsUtils.makeSpriteSize(token, this.defaultTokenSize);
-                })
-            }
-        }
-    },
-
-    this.cleanUp = function() {
-        graphicsUtils.removeSomethingFromRenderer(this.displayObject);
-        if(this.manualTokens) {
-            this.manualTokens.forEach((token) => {
-                graphicsUtils.removeSomethingFromRenderer(token);
-            })
-        }
-        if(this.cleanUpExtension) {
-            this.cleanUpExtension();
-        }
-    };
 }
 
 MapLevelNode.prototype.deactivateToken = function() {
@@ -278,6 +172,9 @@ MapLevelNode.prototype.complete = function() {
     this.isCompleted = true;
     this.justCompleted = true;
     this.displayObject.tooltipObj.destroy();
+    if(this._nodeCompleteExtension) {
+        this._nodeCompleteExtension();
+    }
 }
 
 MapLevelNode.prototype.playCompleteAnimation = function() {
@@ -288,6 +185,14 @@ MapLevelNode.prototype.playCompleteAnimation = function() {
     }, () => {
         node.isSpinning = false;
     });
+
+    if(this._playCompleteAnimationExtension) {
+        this._playCompleteAnimationExtension();
+    }
+}
+
+MapLevelNode.prototype.canBePrereq = function() {
+    return true;
 }
 
 MapLevelNode.prototype.setPosition = function(position) {
@@ -300,5 +205,99 @@ MapLevelNode.prototype.setPosition = function(position) {
     this.position = position;
 }
 
+MapLevelNode.prototype.cleanUp = function() {
+    graphicsUtils.removeSomethingFromRenderer(this.displayObject);
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            graphicsUtils.removeSomethingFromRenderer(token);
+        })
+    }
+    if(this.cleanUpExtension) {
+        this.cleanUpExtension();
+    }
+}
+
+MapLevelNode.prototype.focusNode = function() {
+    if(!this.isSpinning) {
+        this.isFocused = true;
+        this.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: this.position});
+        graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
+        graphicsUtils.makeSpriteSize(this.focusCircle, this.enlargedTokenSize);
+        graphicsUtils.rotateSprite(this.focusCircle, {speed: 20});
+
+        if(this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
+            })
+        }
+    }
+}
+
+MapLevelNode.prototype.tintNode = function(value) {
+    var tintValue = 0x20cd2c;
+    this.displayObject.tint = value || tintValue;
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            token.tint = value || tintValue;
+        })
+    }
+}
+
+MapLevelNode.prototype.untintNode = function() {
+    this.displayObject.tint = 0xFFFFFF;
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            token.tint = 0xFFFFFF;
+        })
+    }
+};
+
+MapLevelNode.prototype.flashNode = function(position) {
+    graphicsUtils.graduallyTint(this.displayObject, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            graphicsUtils.graduallyTint(token, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
+        })
+    }
+};
+
+MapLevelNode.prototype.sizeNode = function(size) {
+    graphicsUtils.makeSpriteSize(this.displayObject, size || this.defaultTokenSize);
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            graphicsUtils.makeSpriteSize(token, size || this.defaultTokenSize);
+        })
+    }
+};
+
+MapLevelNode.prototype.setNodeZ = function(z) {
+    this.displayObject.sortYOffset = z;
+    if(this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            token.sortYOffset = z;
+        })
+    }
+};
+
+MapLevelNode.prototype.setToDefaultState = function() {
+    this.sizeNode();
+    this.untintNode();
+};
+
+MapLevelNode.prototype.unfocusNode = function() {
+    if(!this.focusCircle) return;
+    if(!this.isSpinning) {
+        this.isFocused = false;
+        graphicsUtils.removeSomethingFromRenderer(this.focusCircle);
+        this.focusCircle = null;
+        graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
+
+        if(this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                graphicsUtils.makeSpriteSize(token, this.defaultTokenSize);
+            })
+        }
+    }
+};
 
 export default MapLevelNode;

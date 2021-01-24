@@ -808,9 +808,11 @@ var UnitSystem = function(properties) {
 
              if(event.key == 'Y' || event.key == 'y') {
                  if(keyStates['Control']) {
-                     //experiment with filter transitions
-                     //this.renderer.stage
-
+                     this.selectedUnit.damage = 10000;
+                     this.selectedUnit.cooldown = .1;
+                     this.selectedUnit.honeRange = 1500;
+                     this.selectedUnit.range = 1500;
+                     this.selectedUnit.moveSpeed = 10;
                  }
              }
 

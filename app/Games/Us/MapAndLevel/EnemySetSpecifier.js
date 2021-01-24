@@ -7,27 +7,30 @@ import unitMenu from '@games/Us/UnitMenu.js'
 var easyMode = true;
 var innerMultiplier = 1.0;
 var outerMultiplier = 2.0;
-var basicBottom = 4;
-var basicTop = 9;
+var outerMobMultiplier = 1.5;
+var basicBottom = 2;
+var basicTop = 4;
 
-var hardenedBottom = 8;
-var hardenedTop = 15;
+var hardenedBottom = 2;
+var hardenedTop = 6;
 
 var rareBottom = 2;
-var rareTop = 4;
+var rareTop = 3;
 
 var enemySetSpecifier = {
     create: function(options) {
         var type = options.type;
         var possibleEnemies = options.possibleEnemies;
         var enemySets = [];
+        var multiplier = options.outerLevel ? outerMultiplier : innerMultiplier;
+        var mobMultiplier = options.outerLevel ? outerMobMultiplier : innerMultiplier;
         if(type == 'singles') {
             //Basic normal
             var basicNormal = unitMenu[possibleEnemies.basic.normal];
             enemySets.push({
                 constructor: basicNormal.c,
                 icon: basicNormal.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop)/(easyMode ? 2 : 1),  hz: 2200, maxOnField: 1},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop) * multiplier,  hz: 2200, maxOnField: 1},
                 item: {type: 'worn', total: mathArrayUtils.getRandomElementOfArray([0,0,0,0,0,0,1])}
             })
 
@@ -36,7 +39,7 @@ var enemySetSpecifier = {
             enemySets.push({
                 constructor: basicRare.c,
                 icon: basicRare.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop)/(easyMode ? 2 : 1), hz: 2500, maxOnField: 1},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop) * multiplier, hz: 2500, maxOnField: 1},
                 item: {type: 'rugged', total: mathArrayUtils.getRandomElementOfArray([0,0,0,0,0,0,1])}
             })
         }
@@ -46,7 +49,7 @@ var enemySetSpecifier = {
             enemySets.push({
                 constructor: basicNormal.c,
                 icon: basicNormal.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop)/(easyMode ? 2 : 1),  hz: 2200, maxOnField: 1, atATime: 2},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop) * multiplier,  hz: 2200, maxOnField: 1, atATime: 2},
                 item: {type: 'worn', total: mathArrayUtils.getRandomElementOfArray([0,0,1])}
             })
 
@@ -56,7 +59,7 @@ var enemySetSpecifier = {
                 enemySets.push({
                     constructor: basicRare.c,
                     icon: basicRare.p,
-                    spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop)/(easyMode ? 2 : 1), hz: 2500, maxOnField: 1},
+                    spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop) * multiplier, hz: 2500, maxOnField: 1},
                     item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
                 })
             }
@@ -67,8 +70,7 @@ var enemySetSpecifier = {
                 constructor: mobNormal.c,
                 wave: 1,
                 icon: mobNormal.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(15, 20), hz: 1800, atATime: 8},
-                item: {type: 'worn', total: 1}
+                spawn: {total: Math.ceil(mathArrayUtils.getRandomIntInclusive(20, 23) * mobMultiplier), hz: 2200, atATime: 8},
             })
 
             //Mob rare
@@ -77,7 +79,7 @@ var enemySetSpecifier = {
                 constructor: mobRare.c,
                 wave: 1,
                 icon: mobRare.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(3, 4), hz: 4500, maxOnField: 1},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(2, 2) * multiplier, hz: 6000, maxOnField: 1},
                 item: {type: 'rugged', total: mathArrayUtils.getRandomIntInclusive(0, 1)}
             })
         } else { //for custom levels

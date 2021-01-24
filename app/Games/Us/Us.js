@@ -89,8 +89,8 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            this.shane.fatigue = 0;
-            this.ursula.fatigue = 0;
+            this.shane.fatigue = event.startingFatigue || 0;
+            this.ursula.fatigue = event.startingFatigue || 0;
 
             //figure out starting offset from which the chars will move into the center
             var headX = Math.abs(event.headVelocity.x);
@@ -262,17 +262,17 @@ var game = {
     },
 
     setCurrentLevel: function(level) {
-        this.currentLevelDetails = level;
+        this.currentLevel = level;
         //if this level has enemies, start the pool as we travel
-        if(this.currentLevelDetails.enemySets.length > 0) {
-            this.currentSpawner = new UnitSpawner(this.currentLevelDetails.enemySets);
+        if(this.currentLevel.enemySets.length > 0) {
+            this.currentSpawner = new UnitSpawner(this.currentLevel.enemySets);
             this.currentSpawner.startPooling();
         }
     },
 
     initCurrentLevel: function() {
         //create new scene
-        var nextLevelScene = this.createNextLevelTerrain(this.currentLevelDetails);
+        var nextLevelScene = this.createNextLevelTerrain(this.currentLevel);
         this.currentScene.transitionToScene(nextLevelScene);
         this.campLikeActive = false;
         Matter.Events.on(nextLevelScene, 'afterSnapshotRender', function() {
@@ -343,7 +343,7 @@ var game = {
 
         this.endDelayInProgress = false;
         var winCondition = this.addTickCallback(function() {
-            var fulfilled = this.currentLevelDetails.enemySets.every((eset) => {
+            var fulfilled = this.currentLevel.enemySets.every((eset) => {
                 return eset.fulfilled;
             })
             if(!fulfilled) return;
@@ -356,13 +356,13 @@ var game = {
             if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
                 this.endDelayInProgress = true;
                 gameUtils.doSomethingAfterDuration(() => {
-                    if(this.currentLevelDetails.customWinBehavior) {
+                    if(this.currentLevel.customWinBehavior) {
                         removeCurrentConditions.call(this);
-                        this.currentLevelDetails.customWinBehavior();
+                        this.currentLevel.customWinBehavior();
                     } else {
                         commonWinLossTasks.call(this);
                         var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
-                        Matter.Events.trigger(this.currentLevelDetails, 'endLevelActions', {endLevelScene: sc});
+                        Matter.Events.trigger(this.currentLevel, 'endLevelActions', {endLevelScene: sc});
                         gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
                             gameUtils.moveUnitOffScreen(this.shane);
                             gameUtils.moveUnitOffScreen(this.ursula);
@@ -378,7 +378,7 @@ var game = {
                 this.endDelayInProgress = true;
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
-                    this.currentLevelDetails.resetLevel();
+                    this.currentLevel.resetLevel();
                     this.itemSystem.removeAllItemsOnGround(true);
                     var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
                     gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
@@ -395,7 +395,7 @@ var game = {
     },
 
     initAirDrop: function(node) {
-        this.currentLevelDetails = node.levelDetails;
+        this.currentLevel = node.levelDetails;
 
         //mark node as completed
         node.complete();
@@ -407,8 +407,8 @@ var game = {
         var airDropScene = new Scene();
 
         //Init trees/doodads
-        this.currentLevelDetails.createTerrain(airDropScene);
-        this.currentLevelDetails.createTrees(airDropScene);
+        this.currentLevel.createTerrain(airDropScene);
+        this.currentLevel.createTrees(airDropScene);
         this.currentScene.transitionToScene(airDropScene);
 
         Matter.Events.on(airDropScene, 'afterSnapshotRender', function() {
@@ -416,7 +416,7 @@ var game = {
         }.bind(this))
         Matter.Events.on(airDropScene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.currentLevelDetails.startAirDrop(airDropScene);
+            this.currentLevel.startAirDrop(airDropScene);
             this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), this.offscreenStartLocation), moveToCenter: true});
             this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), this.offscreenStartLocation), moveToCenter: true});
             var game = this;
