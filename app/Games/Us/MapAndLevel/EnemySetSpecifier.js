@@ -11,7 +11,7 @@ var outerMobMultiplier = 1.5;
 var basicBottom = 2;
 var basicTop = 4;
 
-var hardenedBottom = 2;
+var hardenedBottom = 4;
 var hardenedTop = 6;
 
 var rareBottom = 2;
@@ -49,7 +49,7 @@ var enemySetSpecifier = {
             enemySets.push({
                 constructor: basicNormal.c,
                 icon: basicNormal.p,
-                spawn: {total: mathArrayUtils.getRandomIntInclusive(basicBottom, basicTop) * multiplier,  hz: 2200, maxOnField: 1, atATime: 2},
+                spawn: {total: mathArrayUtils.getRandomIntInclusive(hardenedBottom, hardenedTop) * multiplier,  hz: 2200, maxOnField: 1, atATime: 2},
                 item: {type: 'worn', total: mathArrayUtils.getRandomElementOfArray([0,0,1])}
             })
 

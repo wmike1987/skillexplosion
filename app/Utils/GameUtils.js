@@ -1235,6 +1235,9 @@ var graphicsUtils = {
         var percentDone = 0;
         var slowDownThreshold = slowDownThreshold || 0;
         var originalScaleX = sprite.scale.x;
+        var frontTint = 0xFFFFFF;
+        var backTint = 0x525254;
+        var faceShowing = 'front';
         this.isSpinning = true;
         this.flipTimer = globals.currentGame.addTimer({
             name: 'nodeFlipTimer' + mathArrayUtils.getId(),
@@ -1265,14 +1268,25 @@ var graphicsUtils = {
                     }
                     spinningIn = !spinningIn;
 
-                    if(spinningIn) {
-                        sprite.tint = 0xFFFFFF;
-                    } else {
-                        if(spins > 1) {
-                            sprite.tint = 0xbdbdbd;
-                        } else if(lastTurn){
-                            lastTurn();
+                    //determine face
+                    if(!spinningIn) {
+                        if(faceShowing == 'front') {
+                            faceShowing = 'back';
+                        } else {
+                            faceShowing = 'front'
                         }
+                    }
+
+                    //set tint based on face
+                    if(faceShowing == 'front') {
+                        sprite.tint = frontTint;
+                    } else {
+                        sprite.tint = backTint;
+                    }
+
+                    //call last turn if desired
+                    if(spins <= 1 && !spinningIn && lastTurn) {
+                        lastTurn();
                     }
                 }
                 if(spinningIn) {

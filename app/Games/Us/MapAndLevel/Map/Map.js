@@ -130,11 +130,13 @@ var map = function(specs) {
             }.bind(this));
 
             Matter.Events.on(this.mapRef, 'showMap', function() {
-                var availabilityText = 'Available Now';
+                var availabilityText = 'Available now.';
                 if(this.mapRef.currentNode != this && !this.travelPredicate()) {
                     var nodesLeft = 3 - this.campAvailableCount % 3;
                     var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
                     availabilityText = 'Available in ' + nodesLeft + roundS;
+                } else if(this.mapRef.currentNode == this) {
+                    availabilityText = 'Currently in camp.'
                 }
                 this.displayObject.tooltipObj.setMainDescription(availabilityText);
             }.bind(this));
@@ -310,13 +312,14 @@ var map = function(specs) {
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
-            node.setToDefaultState();
             if(node.isCompleted) {
-                if(node.justCompleted) {
+                if(node.justCompleted) { //just completed allows the node to signal it deactivation with an animation the first time
                     node.justCompleted = false;
                 } else {
                     node.deactivateToken();
                 }
+            } else {
+                node.setToDefaultState();
             }
             graphicsUtils.addOrShowDisplayObject(node.displayObject)
             if(node.manualTokens) {

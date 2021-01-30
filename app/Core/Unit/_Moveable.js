@@ -96,10 +96,10 @@ var moveable = {
 
         //don't do anything if they're already at their destination
         if (this.body.position.x == destination.x && this.body.position.y == destination.y)
-            return;
+            return {moveCancelled: true};
 
         if(!this.canMove)
-            return;
+            return {moveCancelled: true};
 
         //set state
         this.destination = destination;
@@ -168,6 +168,8 @@ var moveable = {
 
         if(this.moveExtension)
             this.moveExtension();
+
+        return {moveCancelled: false};
     },
     stop: function() {
 

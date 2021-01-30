@@ -31,7 +31,7 @@ var MapLevelNode = function(options) {
     var myNode = this;
     gameUtils.matterOnce(this.levelDetails, 'endLevelActions', function(event) {
         myNode.complete();
-        gameUtils.matterOnce(event.endLevelScene, 'sceneFadeOutDone', function() {
+        gameUtils.matterOnce(event.endLevelScene, 'sceneFadeOutBegin', function() {
             myNode.playCompleteAnimation();
         })
         globals.currentGame.map.lastNode = myNode;
@@ -118,7 +118,9 @@ var MapLevelNode = function(options) {
     this.displayObject.on('mousedown', function(event) {
         if(!this.mapRef.mouseEventsAllowed) return;
 
+        //for debugging
         // this.playCompleteAnimation();
+        // return;
 
         if(!self.isCompleted && !this.mapRef.travelInProgress) {
             var canTravel = true;
@@ -180,7 +182,8 @@ MapLevelNode.prototype.complete = function() {
 MapLevelNode.prototype.playCompleteAnimation = function() {
     var node = this;
     node.isSpinning = true;
-    graphicsUtils.spinSprite(this.displayObject, 1, 800, 0, () => {
+    node.sizeNode();
+    graphicsUtils.spinSprite(this.displayObject, 10, 150, 2, () => {
         node.deactivateToken();
     }, () => {
         node.isSpinning = false;

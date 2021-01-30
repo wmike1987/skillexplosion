@@ -53,8 +53,10 @@ export default {
             this.attackMoveDestination = null;
             this.attackMoving = false;
             this.isHoldingPosition = false;
-            originalMove.call(this, destination, commandObj);
-            this._becomePeaceful();
+            var moveInfo = originalMove.call(this, destination, commandObj);
+            if(!moveInfo.moveCancelled) {
+                this._becomePeaceful();
+            }
         }
 
         //extend stop
