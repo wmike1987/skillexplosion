@@ -8,6 +8,7 @@ import * as $ from 'jquery'
 import * as h from  'howler'
 import styles from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
+import gleamShader from '@shaders/GleamShader.js'
 
 var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 var begin = ["BEGIN"];
@@ -767,6 +768,11 @@ var gameUtils = {
 };
 
 var graphicsUtils = {
+
+    getLayer: function(layerName) {
+        return globals.currentGame.renderer.layers[layerName];
+    },
+
     addSomethingToRenderer: function(something, where, options) {
         if($.type(where) == 'object') {
             options = where;
@@ -1199,24 +1205,13 @@ var graphicsUtils = {
         });
         a1.play();
         a1.alpha = 1;
-        // healsound.play();
         gameUtils.attachSomethingToBody({something: a1, body: unit.body});
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');
 
         a1.play();
-        // a2.play();
-        // a3.play();
 
         a1.tint = tint;
-        // a2.tint = tint;
-        // a3.tint = tint;
-
-        // gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: 0, y: 0}});
-        // gameUtils.attachSomethingToBody({something: a2, body: unit.body, offset: {x: 15, y: 10}});
-        // gameUtils.attachSomethingToBody({something: a3, body: unit.body, offset: {x: -10, y: 7}});
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');
-        // graphicsUtils.addSomethingToRenderer(a2, 'foreground');
-        // graphicsUtils.addSomethingToRenderer(a3, 'foreground');
     },
 
     spinSprite: function(sprite, spins, initialFlipTime, slowDownThreshold, lastTurn, doneCallback) {
@@ -1296,7 +1291,42 @@ var graphicsUtils = {
                 }
             }
         })
-    }
+    },
+
+    addGleamToSprite: function(options) {
+        options = Object.assign({runs: 1, duration: 1000, leanAmount: 80.0}, options)
+        var sprite, duration, pauseDuration, runs, leanAmount;
+        ({sprite, duration, pauseDuration, runs, leanAmount} = options);
+
+        var gShader = new PIXI.Filter(null, gleamShader, {
+            progress: 0.0,
+            screenSize: gameUtils.getPlayableWH(),
+            leanAmount: leanAmount,
+        });
+        sprite.filters = [gShader];
+        pauseDuration = pauseDuration || 0;
+
+        sprite.gleamTimer = globals.currentGame.addTimer({name: 'gleamTimer' + mathArrayUtils.getId(), runs: 1, timeLimit: duration || 1000,
+            tickCallback: function() {
+                gShader.uniforms.progress = this.percentDone;
+            }, totallyDoneCallback: function() {
+                if(pauseDuration) {
+                    globals.currentGame.addTimer({name: 'gleamPauseTimer' + mathArrayUtils.getId(), runs: 1, killsSelf: true, timeLimit: pauseDuration,
+                        totallyDoneCallback: function()  {
+                            sprite.gleamTimer.reset();
+                        }
+                    });
+                } else {
+                    this.reset();
+                }
+            }
+        });
+
+        sprite.removeGleam = function() {
+            sprite.filters = [];
+            sprite.gleamTimer.invalidate();
+        }
+    },
 }
 
 var mathArrayUtils = {

@@ -16,8 +16,8 @@ var initiateBlinkDeath = function(options) {
     var t = globals.currentGame.addTimer({name: 'itemRemove' + item.body.id, runs: timerTime, timeLimit: 50,
     callback: function() {
         $.each(item.renderlings, function(i, rl) {
-            if(this.totalPercentDone > .5) {
-                if(this.totalPercentDone < .8) {
+            if(this.totalPercentOfRunsDone > .5) {
+                if(this.totalPercentOfRunsDone < .8) {
                     if(this.currentRun % 4 == 0 || this.currentRun-1 % 4 == 0) {
                         rl.alpha = .3;
                     } else {

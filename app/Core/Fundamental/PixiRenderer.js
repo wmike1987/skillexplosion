@@ -213,12 +213,12 @@ var renderer = function(engine, options) {
 		this.pixiApp.renderer.plugins.accessibility.destroy()
 
 		//add-on gstats (ctrl + shift + f to show)
-		// var pixiHooks = new PIXIHooks(this.pixiApp);
-		// window.Stats = Stats;
-		// this.stats = new StatsJSAdapter(pixiHooks, window.stats);
-		// document.body.appendChild(this.stats.stats.dom || this.stats.stats.domElement);
-		// this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
-		// this.stats.stats.dom.style.visibility = 'hidden';
+		var pixiHooks = new PIXIHooks(this.pixiApp);
+		window.Stats = Stats;
+		this.stats = new StatsJSAdapter(pixiHooks, window.stats);
+		document.body.appendChild(this.stats.stats.dom || this.stats.stats.domElement);
+		this.pixiApp.ticker.add(this.stats.update.bind(this.stats));
+		this.stats.stats.dom.style.visibility = 'hidden';
 
 		//setup pixi interaction
 		this.interaction = this.pixiApp.renderer.plugins.interaction;

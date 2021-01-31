@@ -252,20 +252,28 @@ var common = {
             //from within another timer. I actually need to make sure this matters.
             var tempTimers = $.extend({}, this.timers);
             $.each(tempTimers, function(key, value) {
-
-                if(!value) return;
-
-                if(value.done || value.paused || value.invalidated || value.runs === 0) return;
-
-                if(!value.timeElapsed) value.timeElapsed = 0;
-                if(!value.totalElapsedTime) value.totalElapsedTime = 0;
-                if(!value.runs) value.runs = value.gogogo ? 9999999 : 1;
+                if(!value || value.done || value.paused || value.invalidated || value.runs === 0) {
+                    return;
+                }
+                if(!value.timeElapsed) {
+                    value.timeElapsed = 0;
+                }
+                if(!value.totalElapsedTime) {
+                    value.totalElapsedTime = 0;
+                }
+                if(value.runs == 'gogogo') {
+                    value.runs = null;
+                    value.gogogo = true;
+                }
+                if(!value.runs) {
+                    value.runs = 1;
+                }
 
                 value.started = true;
                 value.timeElapsed += event.deltaTime;
                 value.totalElapsedTime += event.deltaTime;
                 value.percentDone = Math.min(value.timeElapsed/value.timeLimit, 1);
-                value.totalPercentDone = Math.min(value.currentRun/value.originalRuns, 1);
+                value.totalPercentOfRunsDone = Math.min(value.currentRun/value.originalRuns, 1);
 
                 if(value.tickCallback) value.tickCallback(event.deltaTime);
                 if(value.immediateStart) {
@@ -279,7 +287,9 @@ var common = {
                         value.timeElapsed -= value.timeLimit;
                         value.currentRun = value.originalRuns - value.runs;
                         if(value.callback) value.callback();
-                        value.runs--;
+                        if(!value.gogogo) {
+                            value.runs--;
+                        }
 
                         if(value.runs > 0) {
                             var callBackPaused = value.paused;
@@ -763,10 +773,9 @@ var common = {
             var options = options || {};
             this.timeElapsed = 0;
             this.percentDone = 0;
-            this.totalPercentDone = 0;
+            this.totalPercentOfRunsDone = 0;
 
-            if(this.runs == 0)
-                this.runs = null;
+            this.runs = timer.originalRuns;
             if(options.runs)
                 this.runs = options.runs;
             if(this.resetExtension)
