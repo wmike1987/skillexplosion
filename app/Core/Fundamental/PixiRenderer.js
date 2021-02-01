@@ -379,7 +379,7 @@ var renderer = function(engine, options) {
 		if(typeof something === 'string') {
 
 			//Text
-			var textPlusId = 'TEX+:';
+			var textPlusId = 'TEXT:';
 			if(something.indexOf(textPlusId) >= 0) {
 				var t = new PIXI.Text(something.substring(something.indexOf(textPlusId)+5), options.style);
 				t.resolution = 1;
@@ -387,7 +387,7 @@ var renderer = function(engine, options) {
 			}
 
 			//BitmapText
-			var bitmapTextId = 'TEXT:';
+			var bitmapTextId = 'TEX+:';
 			if(something.indexOf(bitmapTextId) >= 0) {
 				var name = options.style.name;
 				if(!this.bitmapFontCache[name]) {
