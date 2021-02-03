@@ -500,6 +500,9 @@ var UnitBase = {
             if(this.consumeSound) {
                 this.consumeSound.play();
             }
+            if(this.portrait) {
+                graphicsUtils.addGleamToSprite({sprite: this.portrait, duration: 400, leanAmount: 30, gleamWidth: 20});
+            }
         }.bind(this));
 
         //hover Method

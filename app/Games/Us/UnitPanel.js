@@ -254,7 +254,7 @@ var unitPanel = function(options) {
     this.frame.interactive = true;
     this.frameBacking = graphicsUtils.createDisplayObject('TintableSquare', {persists: true, position: this.position, tint: 0x5e5e5b});
     graphicsUtils.makeSpriteSize(this.frameBacking, {w: gameUtils.getCanvasWidth(), h: gameUtils.getUnitPanelHeight()});
-    graphicsUtils.addGleamToSprite({sprite: graphicsUtils.getLayer('hud'), duration: 500, pauseDuration: 8000, leanAmount: 50});
+    // graphicsUtils.addGleamToSprite({sprite: graphicsUtils.getLayer('hud'), duration: 500, pauseDuration: 8000, leanAmount: 50});
 };
 
 unitPanel.prototype.initialize = function(options) {

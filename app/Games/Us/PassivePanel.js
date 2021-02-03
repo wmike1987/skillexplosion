@@ -139,6 +139,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'defensePassive');
+                        graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
                         this.currentDefensePassiveBorder.position = passive.icon.position;
@@ -155,6 +156,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'attackPassive');
+                        graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
                         this.currentAttackPassiveBorder.position = passive.icon.position;
@@ -175,6 +177,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     unit.unlockSomething(passive);
                     unlockAugmentSound.play();
                     passive.lock.visible = false;
+                    graphicsUtils.addGleamToSprite({sprite: passive.icon})
                 }
             }.bind(this))
             passive.actionBox.on('mouseover', function(event) {

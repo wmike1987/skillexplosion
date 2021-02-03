@@ -134,6 +134,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             if(ability.currentAugment.equip) {
                                 ability.currentAugment.equip(this.prevailingUnit);
                             }
+                            graphicsUtils.addGleamToSprite({sprite: augment.icon, gleamWidth: 10, duration: 350});
                             equip.play();
 
                             //trigger event and trigger ability panel update
@@ -143,6 +144,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             unit.unlockSomething(augment);
                             Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: augment.systemMessage});
                             unlockAugmentSound.play();
+                            graphicsUtils.addGleamToSprite({sprite: augment.icon})
                             augment.lock.visible = false;
                         }
                     }.bind(this))

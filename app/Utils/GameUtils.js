@@ -849,6 +849,11 @@ var graphicsUtils = {
         return sprite.scale;
     },
 
+    getInvertedSpritePosition: function(sprite) {
+        var invertedY = gameUtils.getCanvasHeight() - sprite.position.y;
+        return {x: sprite.position.x, y: invertedY};
+    },
+
     removeSomethingFromRenderer: function(something, where) {
         if(!something) return;
 
@@ -1294,14 +1299,21 @@ var graphicsUtils = {
     },
 
     addGleamToSprite: function(options) {
-        options = Object.assign({runs: 1, duration: 1000, leanAmount: 80.0}, options)
-        var sprite, duration, pauseDuration, runs, leanAmount;
-        ({sprite, duration, pauseDuration, runs, leanAmount} = options);
+        options = Object.assign({runs: 1, duration: 750, leanAmount: 10.0, gleamWidth: 35.0}, options)
+        var sprite, duration, pauseDuration, runs, leanAmount, gleamWidth;
+        ({sprite, duration, pauseDuration, runs, leanAmount, gleamWidth} = options);
+
+        //remove previous gleam
+        if(sprite.removeGleam) {
+            sprite.removeGleam();
+        }
 
         var gShader = new PIXI.Filter(null, gleamShader, {
             progress: 0.0,
-            screenSize: gameUtils.getPlayableWH(),
+            spriteSize: {x: sprite.width, y: sprite.height},
+            spritePosition: graphicsUtils.getInvertedSpritePosition(sprite),
             leanAmount: leanAmount,
+            gleamWidth: gleamWidth,
         });
         sprite.filters = [gShader];
         pauseDuration = pauseDuration || 0;
@@ -1309,6 +1321,7 @@ var graphicsUtils = {
         sprite.gleamTimer = globals.currentGame.addTimer({name: 'gleamTimer' + mathArrayUtils.getId(), runs: 1, timeLimit: duration || 1000,
             tickCallback: function() {
                 gShader.uniforms.progress = this.percentDone;
+                gShader.uniforms.spritePosition = graphicsUtils.getInvertedSpritePosition(sprite);
             }, totallyDoneCallback: function() {
                 if(pauseDuration) {
                     globals.currentGame.addTimer({name: 'gleamPauseTimer' + mathArrayUtils.getId(), runs: 1, killsSelf: true, timeLimit: pauseDuration,
@@ -1317,13 +1330,13 @@ var graphicsUtils = {
                         }
                     });
                 } else {
-                    this.reset();
+                    sprite.removeGleam();
                 }
             }
         });
 
         sprite.removeGleam = function() {
-            sprite.filters = [];
+            mathArrayUtils.removeObjectFromArray(gShader, sprite.filters);
             sprite.gleamTimer.invalidate();
         }
     },

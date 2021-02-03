@@ -453,8 +453,11 @@ var game = {
     createShane: function() {
          var s = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
          this.shane = s;
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
