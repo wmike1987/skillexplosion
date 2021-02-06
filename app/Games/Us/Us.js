@@ -131,6 +131,8 @@ var game = {
     },
 
     play: function(options) {
+        this.postInit();
+        return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
 

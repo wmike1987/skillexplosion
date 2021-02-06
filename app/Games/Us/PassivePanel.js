@@ -177,7 +177,6 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     unit.unlockSomething(passive);
                     unlockAugmentSound.play();
                     passive.lock.visible = false;
-                    graphicsUtils.addGleamToSprite({sprite: passive.icon})
                 }
             }.bind(this))
             passive.actionBox.on('mouseover', function(event) {

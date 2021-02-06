@@ -7,23 +7,17 @@ export default `
     uniform vec2 spritePosition;
     uniform float leanAmount;
     uniform float gleamWidth;
+    uniform bool alphaIncluded;
+    uniform bool artificialBoost;
 
     void main()
     {
         vec4 fg = texture2D(uSampler, vTextureCoord);
-        if(fg.a < .3) {
+        if(!alphaIncluded && fg.a < .3) {
             gl_FragColor = fg;
             return;
         }
 
-        float top = 1.02;
-        float lightProgress = 1.0 + progress*(top-1.0); //1-1.5
-        if(lightProgress >= ((top-1.0)/2.0 + 1.0)) {
-            lightProgress = ((top-1.0)/2.0 + 1.0)*2.0 - lightProgress;
-        }
-        float lightMagnifier = pow(lightProgress, 200.0);
-
-        vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, 1.0);
         float gleamWidth = gleamWidth;
 
         float relativeXFragCoord = gl_FragCoord.x - (spritePosition.x-spriteSize.x/2.0);
@@ -40,6 +34,43 @@ export default `
         if(xLocation >= startingPixel && xLocation-gleamWidth < startingPixel) {
             inGleam = true;
         }
+
+        //top is never actually reached
+        float top = 1.01;
+        float lightProgress = 1.0 + progress*(top-1.0); //1-top
+        if(lightProgress >= ((top-1.0)/2.0 + 1.0)) {
+            lightProgress = ((top-1.0)/2.0 + 1.0)*2.0 - lightProgress;
+        }
+
+        float expTop = 60.0;
+        float expProgress = 1.0 + progress*(expTop-1.0); //1-expTop;
+        if(expProgress >= ((expTop-1.0)/2.0 + 1.0)) {
+            expProgress = ((expTop-1.0)/2.0 + 1.0)*2.0 - expProgress;
+        }
+        float lightMagnifier = pow(lightProgress, expProgress * expProgress);
+
+        float alpha = 1.0;
+        if(alphaIncluded && progress < 1.0 && inGleam && fg.a < .3) {
+            float alphaTop = 2.0;
+            float alphaFix;
+            alphaFix = 1.0 + progress*(alphaTop-1.0); //1-alphaTop
+            if(alphaFix >= ((alphaTop-1.0)/2.0 + 1.0)) {
+                alphaFix = ((alphaTop-1.0)/2.0 + 1.0)*2.0 - alphaFix;
+            }
+            fg.r = alphaFix*.1;
+            fg.g = alphaFix*.1;
+            fg.b = alphaFix*.1;
+            alpha = alphaFix - 1.5;
+        }
+
+        if(artificialBoost && inGleam && fg.r < .5 && fg.g < .1 && fg.b < .1) {
+            float boostAmount = .2;
+            fg.r = boostAmount;
+            fg.g = boostAmount;
+            fg.b = boostAmount;
+        }
+
+        vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, alpha);
 
         if(inGleam) {
             gl_FragColor = gleamColor;

@@ -144,7 +144,6 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             unit.unlockSomething(augment);
                             Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: augment.systemMessage});
                             unlockAugmentSound.play();
-                            graphicsUtils.addGleamToSprite({sprite: augment.icon})
                             augment.lock.visible = false;
                         }
                     }.bind(this))

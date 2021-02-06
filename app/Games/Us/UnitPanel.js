@@ -77,7 +77,7 @@ var unitPanel = function(options) {
     this.healthVialCenterY = this.centerY + 1;
     this.healthVialCenterX = this.centerX - 58;
     this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
-    this.healthVial = graphicsUtils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudOne'});
+    this.healthVial = graphicsUtils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudNOne', sortYOffset: 2000});
     var hvtt = Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: ['--------', '--------'], descriptionStyle: styles.HPTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
@@ -132,7 +132,7 @@ var unitPanel = function(options) {
     this.energyVialCenterY = this.centerY + 1;
     this.energyVialCenterX = this.centerX + 58;
     this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
-    this.energyVial = graphicsUtils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud'});
+    this.energyVial = graphicsUtils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hudNOne', sortYOffset: 2000});
     Tooltip.makeTooltippable(this.energyVial, {title: "Energy", systemMessage: "+X energy/sec", descriptionStyle: styles.EnergyTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
@@ -235,13 +235,13 @@ var unitPanel = function(options) {
 
     //item variables
     this.itemCenterX = this.centerX + 85.5;
-    this.itemCenterY = gameUtils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
+    this.itemCenterY = gameUtils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13.5;
     this.itemXSpacing = 30;
     this.itemYSpacing = 30;
 
     //specialty item variables
     this.spItemCenterX = this.centerX - 85.5;
-    this.spItemCenterY = gameUtils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13;
+    this.spItemCenterY = gameUtils.getPlayableHeight() + this.barOffset + 2 /* the 2 is a little buffer area */ + 13.5;
     this.spItemYSpacing = 30;
 
     //backpack item variables

@@ -1299,9 +1299,9 @@ var graphicsUtils = {
     },
 
     addGleamToSprite: function(options) {
-        options = Object.assign({runs: 1, duration: 750, leanAmount: 10.0, gleamWidth: 35.0}, options)
-        var sprite, duration, pauseDuration, runs, leanAmount, gleamWidth;
-        ({sprite, duration, pauseDuration, runs, leanAmount, gleamWidth} = options);
+        options = Object.assign({runs: 1, duration: 750, leanAmount: 10.0, gleamWidth: 35.0, alphaIncluded: false, artificialBoost: false}, options)
+        var artificialBoost, sprite, duration, pauseDuration, runs, leanAmount, gleamWidth, alphaIncluded;
+        ({artificialBoost, alphaIncluded, sprite, duration, pauseDuration, runs, leanAmount, gleamWidth} = options);
 
         //remove previous gleam
         if(sprite.removeGleam) {
@@ -1314,6 +1314,8 @@ var graphicsUtils = {
             spritePosition: graphicsUtils.getInvertedSpritePosition(sprite),
             leanAmount: leanAmount,
             gleamWidth: gleamWidth,
+            alphaIncluded: alphaIncluded,
+            artificialBoost: artificialBoost,
         });
         sprite.filters = [gShader];
         pauseDuration = pauseDuration || 0;

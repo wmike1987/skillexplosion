@@ -268,6 +268,7 @@ var UnitBase = {
 
     equipItem: function(item) {
         item.equip(this);
+        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, artificialBoost: true, duration: 650});
     },
 
     unequipItem: function(item) {
@@ -501,7 +502,7 @@ var UnitBase = {
                 this.consumeSound.play();
             }
             if(this.portrait) {
-                graphicsUtils.addGleamToSprite({sprite: this.portrait, duration: 350, leanAmount: 30, gleamWidth: 20});
+                graphicsUtils.graduallyTint(this.portrait, 0xFFFFFF, 0x4ecc1a, 100, null, false, 3);
             }
         }.bind(this));
 
