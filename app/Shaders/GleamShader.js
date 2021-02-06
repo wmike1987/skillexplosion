@@ -16,7 +16,14 @@ export default `
             return;
         }
 
-        vec4 gleamColor = vec4(fg.r*3.5, fg.g*3.5, fg.b*3.5, 1.0);
+        float top = 1.02;
+        float lightProgress = 1.0 + progress*(top-1.0); //1-1.5
+        if(lightProgress >= ((top-1.0)/2.0 + 1.0)) {
+            lightProgress = ((top-1.0)/2.0 + 1.0)*2.0 - lightProgress;
+        }
+        float lightMagnifier = pow(lightProgress, 200.0);
+
+        vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, 1.0);
         float gleamWidth = gleamWidth;
 
         float relativeXFragCoord = gl_FragCoord.x - (spritePosition.x-spriteSize.x/2.0);

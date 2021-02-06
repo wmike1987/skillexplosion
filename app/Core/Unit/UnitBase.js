@@ -501,7 +501,7 @@ var UnitBase = {
                 this.consumeSound.play();
             }
             if(this.portrait) {
-                graphicsUtils.addGleamToSprite({sprite: this.portrait, duration: 400, leanAmount: 30, gleamWidth: 20});
+                graphicsUtils.addGleamToSprite({sprite: this.portrait, duration: 350, leanAmount: 30, gleamWidth: 20});
             }
         }.bind(this));
 
