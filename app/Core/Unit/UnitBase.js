@@ -268,7 +268,7 @@ var UnitBase = {
 
     equipItem: function(item) {
         item.equip(this);
-        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 25, power: .1, leanAmount: 1, duration: 5000});
+        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, power: .1, leanAmount: 12, duration: 500});
     },
 
     unequipItem: function(item) {
