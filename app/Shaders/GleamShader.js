@@ -8,7 +8,7 @@ export default `
     uniform float leanAmount;
     uniform float gleamWidth;
     uniform bool alphaIncluded;
-    uniform bool artificialBoost;
+    uniform float power;
 
     void main()
     {
@@ -31,6 +31,7 @@ export default `
         float startingPixel = progress * (spriteSize.x + leanAmount*2.0 + gleamWidth*2.0) - leanAmount - gleamWidth;
 
         bool inGleam = false;
+        float distanceFromGleamCenter = 0.0;
         if(xLocation >= startingPixel && xLocation-gleamWidth < startingPixel) {
             inGleam = true;
         }
@@ -63,11 +64,12 @@ export default `
             alpha = alphaFix - 1.5;
         }
 
-        if(artificialBoost && inGleam && fg.r < .5 && fg.g < .1 && fg.b < .1) {
-            float boostAmount = .2;
-            fg.r = boostAmount;
-            fg.g = boostAmount;
-            fg.b = boostAmount;
+        float minValue = 1.5;
+        float minValueBoost = .1;
+        if(inGleam && (fg.r*lightMagnifier + fg.g*lightMagnifier + fg.b*lightMagnifier < minValue)) {
+            fg.r = minValueBoost;
+            fg.g = minValueBoost;
+            fg.b = minValueBoost;
         }
 
         vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, alpha);
