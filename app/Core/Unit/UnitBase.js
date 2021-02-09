@@ -1049,7 +1049,7 @@ var UnitBase = {
         if(!unit.buffs[name]) {
             var buffObj = {
                 removeBuffImage: function() {
-                    console.info('removing buff: ' + name + ' on unit: ' + unit.name);
+                    unit.buffs[name].dobj.removeGleam();
                     gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
                     graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
                     mathArrayUtils.removeObjectFromArray(unit.buffs[name], unit.orderedBuffs);
@@ -1128,6 +1128,7 @@ var UnitBase = {
             transform: [unit.position.x, unit.position.y, 1.0, 1.0]
         });
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
+        graphicsUtils.addGleamToSprite({sprite: unit.buffs[name].dobj, duration: 650, gleamWidth: 10});
         gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
         buffAnim.play();
 

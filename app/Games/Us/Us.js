@@ -237,16 +237,27 @@ var game = {
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene(vScene);
 
+        var escapeBehavior = function() {
+            this.map.show();
+            this.map.allowMouseEvents(false);
+            this.currentScene.transitionToScene({newScene: blankScene, fadeIn: true});
+        }.bind(this)
+
+        var handler = gameUtils.matterOnce(globals.currentGame, "TravelReset", function(event) {
+            if(event.resetToNode.type == 'camp') {
+                escapeBehavior = this.gotoCamp.bind(this);
+            }
+        }.bind(this));
+
         var blankScene = new Scene();
         Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
                 if(key == 'escape') {
                     $('body').off('keydown.uskeydown');
-                    this.map.show();
-                    this.map.allowMouseEvents(false);
-                    this.currentScene.transitionToScene({newScene: blankScene, fadeIn: true}); //show the map and transition to an empty scene
+                    escapeBehavior();
                 }
+                handler.removeHandler();
             }.bind(this))
         })
 
