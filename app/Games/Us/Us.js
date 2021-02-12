@@ -16,10 +16,12 @@ import UnitPanel from '@games/Us/UnitPanel.js'
 import UnitSpawner from '@games/Us/UnitSpawner.js'
 import styles from '@utils/Styles.js'
 import * as CampNoir from '@games/Us/Stages/CampNoir.js'
-import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js'
 import StatCollector from '@games/Us/StatCollector.js'
 import UnitMenu from '@games/Us/UnitMenu.js'
+
+import {ShaneIntro} from '@games/Us/Dialogues/ShaneIntro.js'
+import {Dialogue, DialogueChain} from '@core/Dialogue.js'
 
 var targetScore = 1;
 
@@ -131,7 +133,13 @@ var game = {
     },
 
     play: function(options) {
-        this.postInit();
+
+        var shaneIntro = ShaneIntro.create();
+        this.currentScene.transitionToScene(shaneIntro.scene);
+        shaneIntro.play();
+
+
+        // this.postInit();
         return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();

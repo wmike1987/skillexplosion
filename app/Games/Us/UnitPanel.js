@@ -77,7 +77,7 @@ var unitPanel = function(options) {
     this.healthVialCenterY = this.centerY + 1;
     this.healthVialCenterX = this.centerX - 58;
     this.healthVialPosition = {x: this.healthVialCenterX, y: this.healthVialCenterY};
-    this.healthVial = graphicsUtils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hudNOne', sortYOffset: 2000});
+    this.healthVial = graphicsUtils.addSomethingToRenderer('Vial', {position: this.healthVialPosition, where: 'hud', sortYOffset: 2000});
     var hvtt = Tooltip.makeTooltippable(this.healthVial, {title: "Health", systemMessage: ['--------', '--------'], descriptionStyle: styles.HPTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
@@ -132,7 +132,7 @@ var unitPanel = function(options) {
     this.energyVialCenterY = this.centerY + 1;
     this.energyVialCenterX = this.centerX + 58;
     this.energyVialPosition = {x: this.energyVialCenterX, y: this.energyVialCenterY};
-    this.energyVial = graphicsUtils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hudNOne', sortYOffset: 2000});
+    this.energyVial = graphicsUtils.addSomethingToRenderer('Vial2', {position: this.energyVialPosition, where: 'hud', sortYOffset: 2000});
     Tooltip.makeTooltippable(this.energyVial, {title: "Energy", systemMessage: "+X energy/sec", descriptionStyle: styles.EnergyTTStyle, noDelay: true, updaters: {mainDescription: function(tooltip) {
         if(this.prevailingUnit) {
             var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
