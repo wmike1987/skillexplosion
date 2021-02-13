@@ -1,0 +1,132 @@
+
+W.png
+size: 473,142
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Shoulder 1
+  rotate: true
+  xy: 364, 19
+  size: 34, 32
+  orig: 36, 36
+  offset: 0, 2
+  index: -1
+Shoulder 2
+  rotate: false
+  xy: 328, 16
+  size: 34, 34
+  orig: 37, 37
+  offset: 3, 2
+  index: -1
+Side_0006_Layer-12-copy
+  rotate: false
+  xy: 397, 60
+  size: 25, 36
+  orig: 25, 37
+  offset: 0, 0
+  index: -1
+Side_0007_Layer-12
+  rotate: true
+  xy: 398, 26
+  size: 32, 28
+  orig: 33, 29
+  offset: 1, 1
+  index: -1
+Side_0009_Layer-11-copy
+  rotate: false
+  xy: 368, 56
+  size: 27, 40
+  orig: 29, 41
+  offset: 2, 1
+  index: -1
+Side_0010_Layer-11
+  rotate: false
+  xy: 338, 55
+  size: 28, 41
+  orig: 29, 41
+  offset: 0, 0
+  index: -1
+Side_0012_Layer-9
+  rotate: false
+  xy: 328, 2
+  size: 15, 12
+  orig: 19, 14
+  offset: 2, 2
+  index: -1
+Spear_effect_1
+  rotate: false
+  xy: 209, 98
+  size: 262, 42
+  orig: 270, 53
+  offset: 0, 8
+  index: -1
+Torso
+  rotate: false
+  xy: 209, 14
+  size: 55, 82
+  orig: 58, 83
+  offset: 0, 1
+  index: -1
+additional fingers
+  rotate: true
+  xy: 364, 3
+  size: 14, 20
+  orig: 17, 20
+  offset: 2, 0
+  index: -1
+boot1
+  rotate: false
+  xy: 297, 2
+  size: 29, 45
+  orig: 29, 45
+  offset: 0, 0
+  index: -1
+front_0000_Layer-18
+  rotate: false
+  xy: 398, 3
+  size: 27, 21
+  orig: 30, 21
+  offset: 1, 0
+  index: -1
+front_0001_Layer-17
+  rotate: true
+  xy: 424, 67
+  size: 29, 26
+  orig: 32, 31
+  offset: 3, 2
+  index: -1
+gun
+  rotate: true
+  xy: 2, 2
+  size: 138, 205
+  orig: 139, 205
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 266, 49
+  size: 39, 47
+  orig: 45, 48
+  offset: 4, 1
+  index: -1
+leg
+  rotate: false
+  xy: 307, 52
+  size: 29, 44
+  orig: 31, 44
+  offset: 2, 0
+  index: -1
+thigh1
+  rotate: false
+  xy: 307, 52
+  size: 29, 44
+  orig: 31, 44
+  offset: 1, 0
+  index: -1
+quarter_0005_Layer-1---6
+  rotate: false
+  xy: 266, 2
+  size: 29, 45
+  orig: 29, 45
+  offset: 0, 0
+  index: -1

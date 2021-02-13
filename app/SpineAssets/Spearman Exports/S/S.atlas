@@ -1,0 +1,160 @@
+
+S.png
+size: 536,142
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Side_0000_Layer-18
+  rotate: true
+  xy: 513, 47
+  size: 27, 21
+  orig: 30, 21
+  offset: 1, 0
+  index: -1
+Side_0001_Layer-17
+  rotate: false
+  xy: 2, 51
+  size: 232, 89
+  orig: 232, 89
+  offset: 0, 0
+  index: -1
+Side_0002_Layer-4
+  rotate: false
+  xy: 277, 52
+  size: 40, 49
+  orig: 40, 49
+  offset: 0, 0
+  index: -1
+Side_0003_Layer-10-copy
+  rotate: false
+  xy: 374, 69
+  size: 28, 32
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Side_0004_Layer-10
+  rotate: false
+  xy: 374, 69
+  size: 28, 32
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Side_0006_Layer-12-copy
+  rotate: false
+  xy: 348, 64
+  size: 24, 37
+  orig: 25, 37
+  offset: 0, 0
+  index: -1
+Side_0007_Layer-12
+  rotate: true
+  xy: 404, 71
+  size: 30, 27
+  orig: 33, 29
+  offset: 3, 1
+  index: -1
+Side_0008_Layer-6
+  rotate: true
+  xy: 413, 15
+  size: 54, 71
+  orig: 54, 75
+  offset: 0, 4
+  index: -1
+Side_0009_Layer-11-copy
+  rotate: false
+  xy: 236, 101
+  size: 28, 39
+  orig: 29, 41
+  offset: 1, 1
+  index: -1
+Side_0010_Layer-11
+  rotate: false
+  xy: 319, 61
+  size: 27, 40
+  orig: 29, 41
+  offset: 0, 1
+  index: -1
+Side_0011_Layer-9-copy
+  rotate: true
+  xy: 486, 5
+  size: 15, 12
+  orig: 19, 14
+  offset: 2, 1
+  index: -1
+Side_0012_Layer-9
+  rotate: true
+  xy: 486, 5
+  size: 15, 12
+  orig: 19, 14
+  offset: 2, 1
+  index: -1
+Side_0013_Layer-8-copy
+  rotate: true
+  xy: 482, 76
+  size: 25, 52
+  orig: 25, 52
+  offset: 0, 0
+  index: -1
+Side_0014_Layer-7-copy
+  rotate: false
+  xy: 266, 6
+  size: 29, 44
+  orig: 31, 44
+  offset: 2, 0
+  index: -1
+Side_0015_Layer-8
+  rotate: false
+  xy: 486, 22
+  size: 25, 52
+  orig: 25, 52
+  offset: 0, 0
+  index: -1
+Side_0016_Layer-7
+  rotate: false
+  xy: 297, 6
+  size: 29, 44
+  orig: 31, 44
+  offset: 2, 0
+  index: -1
+Spear
+  rotate: false
+  xy: 2, 2
+  size: 262, 47
+  orig: 262, 47
+  offset: 0, 0
+  index: -1
+Spear_effect_1
+  rotate: false
+  xy: 266, 103
+  size: 264, 37
+  orig: 270, 53
+  offset: 0, 11
+  index: -1
+Torso
+  rotate: true
+  xy: 328, 3
+  size: 56, 83
+  orig: 58, 83
+  offset: 2, 0
+  index: -1
+head
+  rotate: false
+  xy: 236, 52
+  size: 39, 47
+  orig: 45, 48
+  offset: 2, 1
+  index: -1
+open_another_hand
+  rotate: true
+  xy: 433, 72
+  size: 29, 21
+  orig: 34, 26
+  offset: 4, 0
+  index: -1
+open_hand
+  rotate: true
+  xy: 456, 73
+  size: 28, 24
+  orig: 34, 26
+  offset: 5, 0
+  index: -1

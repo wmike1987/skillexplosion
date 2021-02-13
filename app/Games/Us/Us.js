@@ -134,10 +134,9 @@ var game = {
 
     play: function(options) {
 
-        var shaneIntro = ShaneIntro.create();
+        var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
         this.currentScene.transitionToScene(shaneIntro.scene);
         shaneIntro.play();
-
 
         // this.postInit();
         return;
@@ -148,7 +147,7 @@ var game = {
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000})
         var a1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command...",
           picture: 'NewMessage.png', pictureWordTrigger: 'Incoming'});
-        var a2 = new Dialogue({pauseAtPeriod: false, actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor--", delayAfterEnd: 0,
+        var a2 = new Dialogue({pauseAtPeriods: false, actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor--", delayAfterEnd: 0,
           picture: '302.png', pictureWordTrigger: '3:00'});
         var a3 = new Dialogue({interrupt: true, actor: "Ursula", text: "It's from MacMurray...", picture: 'MacMurray.png', pictureWordTrigger: 'from'});
         var a4 = new Dialogue({actor: "Shane", text: "Christ... That can only mean--", delayAfterEnd: 0});
@@ -633,11 +632,11 @@ game.assets = [
     {name: "alienSW", target: "SpineAssets/Alien Export/SW/SW.json"},
     {name: "alienW", target: "SpineAssets/Alien Export/W/W.json"},
 
-    {name: "pikemanN", target: "SpineAssets/Pikeman Exports/N/skeleton.json"},
-    {name: "pikemanNW", target: "SpineAssets/Pikeman Exports/NW/skeleton.json"},
-    {name: "pikemanS", target: "SpineAssets/Pikeman Exports/S/skeleton.json"},
-    {name: "pikemanSW", target: "SpineAssets/Pikeman Exports/SW/skeleton.json"},
-    {name: "pikemanW", target: "SpineAssets/Pikeman Exports/W/skeleton.json"},
+    // {name: "spearmanN", target: "SpineAssets/Spearman Exports/N/N.json"},
+    // {name: "spearmanNW", target: "SpineAssets/Spearman Exports/NW/NW.json"},
+    // {name: "spearmanS", target: "SpineAssets/Spearman Exports/S/S.json"},
+    // {name: "spearmanSW", target: "SpineAssets/Spearman Exports/SW/SW.json"},
+    // {name: "spearmanW", target: "SpineAssets/Spearman Exports/W/W.json"},
 
 ]
 

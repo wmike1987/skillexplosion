@@ -19,14 +19,14 @@ export default function Critter(options) {
     var runSpeedBonus = .25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanN'].spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanS'].spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanW'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanW'].spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanSW'].spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanSW'].spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanNW'].spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['pikemanNW'].spineData);
+    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanN'].spineData);
+    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanS'].spineData);
+    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanW'].spineData);
+    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanW'].spineData);
+    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanSW'].spineData);
+    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanSW'].spineData);
+    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanNW'].spineData);
+    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanNW'].spineData);
 
     var runAnimations = {
         up: gameUtils.getSpineAnimation({

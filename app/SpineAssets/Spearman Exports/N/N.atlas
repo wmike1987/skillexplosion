@@ -1,0 +1,111 @@
+
+N.png
+size: 101,475
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Back_0000_Layer-4
+  rotate: false
+  xy: 56, 350
+  size: 40, 49
+  orig: 40, 49
+  offset: 0, 0
+  index: -1
+Back_0001_Layer-10-copy
+  rotate: true
+  xy: 2, 13
+  size: 28, 32
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Back_0002_Layer-10
+  rotate: true
+  xy: 2, 13
+  size: 28, 32
+  orig: 28, 33
+  offset: 0, 0
+  index: -1
+Back_0004_Layer-12-copy
+  rotate: true
+  xy: 43, 28
+  size: 24, 37
+  orig: 25, 37
+  offset: 0, 0
+  index: -1
+Back_0005_Layer-12
+  rotate: true
+  xy: 72, 401
+  size: 30, 27
+  orig: 33, 29
+  offset: 3, 1
+  index: -1
+Back_0006_Layer-6
+  rotate: true
+  xy: 2, 421
+  size: 52, 68
+  orig: 54, 75
+  offset: 1, 3
+  index: -1
+Back_0007_Layer-11-copy
+  rotate: true
+  xy: 2, 43
+  size: 28, 39
+  orig: 29, 41
+  offset: 1, 1
+  index: -1
+Back_0008_Layer-11
+  rotate: false
+  xy: 72, 433
+  size: 27, 40
+  orig: 29, 41
+  offset: 0, 1
+  index: -1
+Back_0009_Layer-8-copy
+  rotate: true
+  xy: 2, 394
+  size: 25, 52
+  orig: 25, 52
+  offset: 0, 0
+  index: -1
+Back_0010_Layer-7-copy
+  rotate: true
+  xy: 2, 73
+  size: 29, 44
+  orig: 31, 44
+  offset: 0, 0
+  index: -1
+Back_0011_Layer-8
+  rotate: true
+  xy: 2, 368
+  size: 24, 52
+  orig: 25, 52
+  offset: 0, 0
+  index: -1
+Back_0012_Layer-7
+  rotate: true
+  xy: 48, 54
+  size: 29, 44
+  orig: 31, 44
+  offset: 2, 0
+  index: -1
+Back_0013_Layer-18
+  rotate: false
+  xy: 36, 2
+  size: 28, 24
+  orig: 34, 26
+  offset: 5, 0
+  index: -1
+Spear
+  rotate: true
+  xy: 2, 104
+  size: 262, 47
+  orig: 262, 47
+  offset: 0, 0
+  index: -1
+Spear_effect_1
+  rotate: true
+  xy: 51, 85
+  size: 263, 45
+  orig: 270, 53
+  offset: 0, 6
+  index: -1

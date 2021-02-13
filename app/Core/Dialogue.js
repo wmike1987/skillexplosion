@@ -14,7 +14,7 @@ var pictureStyles = {
  *   text
  *   textBeginPosition
  *   letterSpeed
- *   pauseAtPeriod
+ *   pauseAtPeriods
  *   stallInfinite
  *   style
  *   picture
@@ -25,21 +25,25 @@ var pictureStyles = {
  */
 var Dialogue = function Dialogue(options) {
     var defaults = {
+        text: '',
+        actorText: '',
         textBeginPosition: {x: 50, y: 75},
         titleBeginPosition: {x: null, y: 40},
         backgroundBox: false,
         actorLetterSpeed: 40,
         letterSpeed: 80,
         delayAfterEnd: 1500,
-        pauseAtPeriod: true,
+        pauseAtPeriods: true,
+        pauseAtCommas: true,
         leftSpaceBuffer: 0,
         actorIdleTime: 0,
         style: styles.dialogueStyle,
+        actionStyle: styles.actionStyle,
         actorStyle: styles.dialogueActorStyle,
         titleStyle: styles.dialogueTitleStyle,
         pictureDelay: 0,
         pictureStyle: pictureStyles.FADE_IN,
-        picturePosition: {x: gameUtils.getPlayableWidth()*4/5, y: gameUtils.getCanvasHeight()/2}
+        picturePosition: {x: gameUtils.getPlayableWidth()*4/5, y: gameUtils.getCanvasHeight()/2},
     }
     $.extend(this, defaults, options);
 
@@ -53,12 +57,14 @@ var Dialogue = function Dialogue(options) {
 
     this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: .3, rate: 1});
 
-    //setup text vars
+    //Establish actor text at creation time since it's used in continuations
     this.actorText = this.actor ? this.actor + ": " : "";
 
     this.play = function(options) {
         if(this.killed) return;
+        options = options || {};
 
+        //Create the left space buffer (either explicitly defined or the actor text width)
         var spaceBuffer = "";
         if(this.leftSpaceBuffer) {
             for(var c = 0; c < this.leftSpaceBuffer; c++) {
@@ -69,22 +75,36 @@ var Dialogue = function Dialogue(options) {
                 spaceBuffer += " ";
             }
         }
-        this.text = spaceBuffer + this.text;
 
-        options = options || {};
+        //Realize text
         if(this.title) {
             this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
             this.realizedText.position.x = (gameUtils.getPlayableWidth()/2-this.realizedText.width/2);
             this.fullTextWidth = this.realizedText.width;
             this.fullTextHeight = this.realizedText.height;
-        } else {
+        } else /*we are a main piece of text*/{
+            this.text = spaceBuffer + this.text;
             this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedText.position.y += (options.yOffset || 0);
             this.fullTextWidth = this.realizedText.width;
             this.fullTextHeight = this.realizedText.height;
             this.realizedActorText = graphicsUtils.createDisplayObject("TEX+:", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedActorText.position.y += (options.yOffset || 0);
+        }
+
+        //create action text if specified
+        if(this.actionText) {
+            if(this.text.trim() == '') {
+                this.delayAfterEnd = 300;
+            }
+            this.actionText.word = spaceBuffer + this.actionText.word;
+            this.actionTextState = {started: false, done: false};
+            this.realizedActionText = graphicsUtils.createDisplayObject("TEX+:"+this.actionText.word, {position: this.textBeginPosition, style: this.actionStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedActionText.alpha = 0;
+            this.realizedActionText.position.y += (options.yOffset || 0);
+            this.fullActionTextWidth = this.realizedActionText.width;
+            this.fullActionTextHeight = this.realizedActionText.height;
         }
         this.realizedText.resolution = 2;
 
@@ -105,7 +125,6 @@ var Dialogue = function Dialogue(options) {
         var d = this;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
-
             if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
                 d.pictureTriggeredFromWord = true;
             }
@@ -128,15 +147,16 @@ var Dialogue = function Dialogue(options) {
 
             graphicsUtils.addOrShowDisplayObject(d.realizedText);
             if(currentLetter < d.text.length) {
+                var actorTextDone = currentLetter == d.actorText.length-1;
                 //if our actor is fulfilled, let's see if our actor needs to idle before continuing to the dialogue
-                if(d.realizedActorText && d.actorIdleTime && currentLetter == d.actorText.length-1) {
+                if(d.realizedActorText && d.actorIdleTime && actorTextDone) {
                     if(!d.actorIdlingBegan) {
                         d.actorIdleBeats = d.actorIdleTime*2;
                         d.actorIdlingBegan = true;
                     }
-                    var thinkingText = '';
+                    var thinkingText = ' .';
                     if(d.actorIdleBeats % 2 == 0) {
-                        thinkingText = '.';
+                        thinkingText = '';
                         d.actorIdleTime--;
                     }
 
@@ -146,8 +166,52 @@ var Dialogue = function Dialogue(options) {
                     return;
                 }
 
+                //let's play our action word if our actor is done
+                //handle action text (action text will occur first and then disappear over time, releasing the dialogue text upon totally fading)
+                if(actorTextDone && d.actionTextState && !d.actionTextState.done) {
+                    if(!d.actionTextState.started) {
+                        d.actionTextState.started = true;
+
+                        //default is to fade in then back out
+                        var fadingIn = true;
+                        var runs = 2;
+                        var duration = d.actionText.actionDuration ? d.actionText.actionDuration/2 : 2000;
+                        var top = 1.5;
+
+                        if(d.actionText.fadeOutOnly) {
+                            d.realizedActionText.alpha = 1.0;
+                            runs = 1;
+                            duration = d.actionText.actionDuration
+                            fadingIn = false;
+                            top = 1.0;
+                        }
+
+                        globals.currentGame.addTimer({name: 'dialogueActionFade:' + mathArrayUtils.getId(), runs: runs, killsSelf: true, timeLimit: duration,
+                            tickCallback: function(delta) {
+                                if(fadingIn) {
+                                    d.realizedActionText.alpha = this.percentDone * top;
+                                } else {
+                                    var max = 0;
+                                    if(d.actionText.leaveTrace) {
+                                        max = .2;
+                                    }
+                                    d.realizedActionText.alpha = Math.max(max, top-(this.percentDone*top));
+                                }
+                            },
+                            callback: function() {
+                                fadingIn = !fadingIn;
+                            },
+                            totallyDoneCallback: function() {
+                                d.actionTextState.done = true;
+                            }
+                        })
+                        graphicsUtils.addOrShowDisplayObject(d.realizedActionText);
+                    }
+                    return;
+                }
+
                 //process text
-                //first check if we have left space buffer, which will immediately satisfy
+                //first check if we have left space buffer, which we'll immediately satisfy
                 if(currentLetter < d.leftSpaceBuffer) {
                     currentLetter = d.leftSpaceBuffer;
                 }
@@ -161,14 +225,18 @@ var Dialogue = function Dialogue(options) {
                     d.realizedActorText.text = d.actorText.substring(0, currentLetter);
                     d.currentLetterSpeed = d.actorLetterSpeed;
                 } else {
-                    d.keypressSound.play();
+                    if(d.text.substring(currentLetter, currentLetter+1) != '') {
+                        d.keypressSound.play();
+                    }
                     this.timeLimit = d.letterSpeed;
                     d.currentLetterSpeed = d.letterSpeed;
                 }
 
-                //pause at periods
-                if(d.pauseAtPeriod && d.text.substring(currentLetter-1, currentLetter) == '.' && d.text.substring(currentLetter, currentLetter+1) == ' ') {
+                //pause at periods/commas, this includes 'end periods' even in ellipses.
+                if(d.pauseAtPeriods && d.text.substring(currentLetter-1, currentLetter) == '.' && d.text.substring(currentLetter, currentLetter+1) == ' ') {
                     this.timeLimit = d.letterSpeed * 5;
+                } else if(d.pauseAtCommas && d.text.substring(currentLetter-1, currentLetter) == ',' && d.text.substring(currentLetter, currentLetter+1) == ' ') {
+                    this.timeLimit = d.letterSpeed * 3;
                 } else {
                     this.timeLimit = d.currentLetterSpeed;
                 }
@@ -200,6 +268,7 @@ var Dialogue = function Dialogue(options) {
         graphicsUtils.removeSomethingFromRenderer(this.realizedPicture);
         graphicsUtils.removeSomethingFromRenderer(this.realizedPictureBorder);
         graphicsUtils.removeSomethingFromRenderer(this.backgroundBox);
+        graphicsUtils.removeSomethingFromRenderer(this.realizedActionText);
         this.keypressSound.unload();
     };
 
@@ -249,8 +318,8 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 })
                 currentDia.deferred.done(arrayOfDialogues[j+1].play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}))
             } else {
-                if(options.done) {
-                    currentDia.deferred.done(options.done);
+                if(this.done) {
+                    currentDia.deferred.done(this.done);
                 }
             }
         }

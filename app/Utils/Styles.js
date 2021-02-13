@@ -452,6 +452,15 @@ export default {
 	    miterLimit: 0
 	}),
 
+	actionStyle: new PIXI.TextStyle({
+		name: 'actionStyle',
+	    fill: "#00d9ff",
+        fontStyle: "italic",
+	    fontFamily: "\"Lucida Console\", Monaco, monospace",
+	    fontSize: 18,
+	    miterLimit: 0
+	}),
+
 	dialogueActorStyle: new PIXI.TextStyle({
 		name: 'dialogueActorStyle',
 		fill: "#ffffff",
