@@ -114,7 +114,18 @@ var map = {
     },
 
     initializeMap: function() {
-        return new Map(this.options);
+        this.map = new Map(this.options);
+        return this.map;
+    },
+
+    phaseOne: function() {
+        this.map.addCampNode();
+        this.map.addMapNode('sentinels');
+        this.map.addMapNode('airDropStations');
+    },
+
+    phaseTwo: function() {
+
     }
 }
 

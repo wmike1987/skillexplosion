@@ -3,7 +3,7 @@ import * as Matter from 'matter-js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import TileMapper from '@core/TileMapper.js'
-import MapLevelNode from '@games/Us/MapAndLevel/Map/MapNode.js'
+import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js'
 
 var levelBase = {
     resetLevel: function() {
@@ -18,21 +18,21 @@ var levelBase = {
         return this.entrySound;
     },
     enemySets: [],
-    onCreate: function(options) {
-        this.levelOptions = Object.assign({}, options);
-        this.tileTint = mathArrayUtils.getRandomElementOfArray(options.acceptableTileTints);
-        this.entrySound = options.entrySound;
+    onCreate: function(worldSpecs) {
+        this.worldSpecs = Object.assign({}, worldSpecs);
+        this.tileTint = mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
+        this.entrySound = worldSpecs.entrySound;
     },
     createTerrain: function(scene) {
-        var tileMap = TileMapper.produceTileMap({possibleTextures: this.levelOptions.getLevelTiles(), tileWidth: this.levelOptions.tileSize, tileTint: this.tileTint});
+        var tileMap = TileMapper.produceTileMap({possibleTextures: this.worldSpecs.getLevelTiles(), tileWidth: this.worldSpecs.tileSize, tileTint: this.tileTint});
         scene.add(tileMap);
 
-        if(this.levelOptions.levelTileExtension) {
-            this.levelOptions.levelTileExtension(scene, this.tileTint);
+        if(this.worldSpecs.levelTileExtension) {
+            this.worldSpecs.levelTileExtension(scene, this.tileTint);
         }
     },
     createMapNode: function(options) {
-        return new MapLevelNode(options);
+        return new MapNode(options);
     }
 }
 

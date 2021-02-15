@@ -54,6 +54,7 @@ var map = function(specs) {
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {where: 'foreground', position: gameUtils.getPlayableCenter()});
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
+    this.worldSpecs = specs;
     this.levels = specs.levels;
     this.travelInProgress = false;
     this.graph = [];
@@ -61,147 +62,102 @@ var map = function(specs) {
     //setup other properties
     this.mouseEventsAllowed = true;
 
-    //Add the camp node
-    var mainCamp = levelSpecifier.create('camp', specs.worldSpecs);
-    var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,tokenSize: 50, largeTokenSize: 55,
-        travelPredicate: function() {
-            return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
-        },
-        hoverCallback: function() {
-            return this.travelPredicate();
-        },
-        unhoverCallback: function() {
-            // this.availabilityText.visible = false;
-            return this.travelPredicate();
-        },
-        manualTokens: function() {
-            var regularToken = graphicsUtils.createDisplayObject('CampfireToken', {where: 'hudNTwo'});
-            var specialToken = graphicsUtils.createDisplayObject('CampfireTokenGleam', {where: 'hudNTwo'});
-            Matter.Events.on(this.mapRef, 'showMap', function() {
-                if(this.travelPredicate()) {
-                    regularToken.visible = true;
-                    specialToken.visible = true;
-                    if(!this.gleamTimer) {
-                        this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
-                        Matter.Events.on(regularToken, 'destroy', () => {
-                            this.gleamTimer.invalidate();
-                        })
-                    }
-                    regularToken.tint = 0xFFFFFF;
-                    specialToken.tint = 0xFFFFFF;
-                    regularToken.visible = true;
-                    specialToken.visible = true;
-                    this.gleamTimer.reset();
-                } else {
-                    if(this.mapRef.currentNode == this) {
-                        regularToken.alpha = 1
+    this.addCampNode = function() {
+        //Add the camp node
+        var mainCamp = levelSpecifier.create('camp', this.worldSpecs.worldSpecs);
+        var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,tokenSize: 50, largeTokenSize: 55,
+            travelPredicate: function() {
+                return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+            },
+            hoverCallback: function() {
+                return this.travelPredicate();
+            },
+            unhoverCallback: function() {
+                // this.availabilityText.visible = false;
+                return this.travelPredicate();
+            },
+            manualTokens: function() {
+                var regularToken = graphicsUtils.createDisplayObject('CampfireToken', {where: 'hudNTwo'});
+                var specialToken = graphicsUtils.createDisplayObject('CampfireTokenGleam', {where: 'hudNTwo'});
+                Matter.Events.on(this.mapRef, 'showMap', function() {
+                    if(this.travelPredicate()) {
+                        regularToken.visible = true;
+                        specialToken.visible = true;
+                        if(!this.gleamTimer) {
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                            Matter.Events.on(regularToken, 'destroy', () => {
+                                this.gleamTimer.invalidate();
+                            })
+                        }
                         regularToken.tint = 0xFFFFFF;
+                        specialToken.tint = 0xFFFFFF;
+                        regularToken.visible = true;
+                        specialToken.visible = true;
+                        this.gleamTimer.reset();
                     } else {
-                        regularToken.alpha = 1;
-                        regularToken.tint = 0x7c7c7c;
+                        if(this.mapRef.currentNode == this) {
+                            regularToken.alpha = 1
+                            regularToken.tint = 0xFFFFFF;
+                        } else {
+                            regularToken.alpha = 1;
+                            regularToken.tint = 0x7c7c7c;
+                        }
+                        regularToken.visible = true;
+                        specialToken.visible = false;
+                        if(this.gleamTimer) {
+                            this.gleamTimer.paused = true;
+                        }
                     }
-                    regularToken.visible = true;
-                    specialToken.visible = false;
-                    if(this.gleamTimer) {
-                        this.gleamTimer.paused = true;
+                }.bind(this))
+                return [regularToken, specialToken];
+            },
+            init: function() {
+                Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
+                    if(!this.campAvailableCount) {
+                        this.campAvailableCount = 0;
                     }
-                }
-            }.bind(this))
-            return [regularToken, specialToken];
-        },
-        init: function() {
-            Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
-                if(!this.campAvailableCount) {
-                    this.campAvailableCount = 0;
-                }
-                this.campAvailableCount++;
+                    this.campAvailableCount++;
 
-                if(event.node == this) {
-                    this.campAvailableCount = 0;
-                }
-            }.bind(this));
-
-            Matter.Events.on(globals.currentGame, 'TravelReset', function() {
-                this.campAvailableCount--;
-            }.bind(this));
-
-            Matter.Events.on(this, 'ArrivedAtNode', function() {
-                this.mapRef.startingFatigue = 0;
-            }.bind(this));
-
-            Matter.Events.on(this.mapRef, 'showMap', function() {
-                var availabilityText = 'Available now.';
-                if(this.mapRef.currentNode != this && !this.travelPredicate()) {
-                    var nodesLeft = 3 - this.campAvailableCount % 3;
-                    var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
-                    availabilityText = 'Available in ' + nodesLeft + roundS;
-                } else if(this.mapRef.currentNode == this) {
-                    availabilityText = 'Currently in camp.'
-                }
-                this.displayObject.tooltipObj.setMainDescription(availabilityText);
-            }.bind(this));
-        },
-        cleanUpExtension: function() {
-
-        },
-        tooltipTitle: 'Camp Noir',
-        tooltipDescription: '',
-    });
-
-    initialCampNode.setPosition(campLocation);
-    this.campNode = initialCampNode;
-    this.currentNode = initialCampNode;
-    this.graph.push(initialCampNode);
-
-    //Non-airdrop levels
-    for(const key in this.levels) {
-        if(key.includes('airDrop')) continue;
-        for(var x = 0; x < this.levels[key]; x++) {
-
-            var level = levelSpecifier.create(key, specs.worldSpecs);
-            var mapNode = level.createMapNode({levelDetails: level, mapRef: this});
-
-            //Determine position
-            var position;
-            var collision;
-            var nodeBuffer = 100;
-            do {
-                collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
-                for(let node of this.graph) {
-                    if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
-                        collision = true;
-                        break;
+                    if(event.node == this) {
+                        this.campAvailableCount = 0;
                     }
-                }
-            } while(collision)
+                }.bind(this));
 
-            if(level.manualSetPosition) {
-                level.manualSetPosition(position);
-            } else {
-                mapNode.setPosition(position);
-            }
+                Matter.Events.on(globals.currentGame, 'TravelReset', function() {
+                    this.campAvailableCount--;
+                }.bind(this));
 
-            if(level.manualAddToGraph) {
-                level.manualAddToGraph(this.graph)
-            } else {
-                this.graph.push(mapNode);
-            }
-        }
+                Matter.Events.on(this, 'ArrivedAtNode', function() {
+                    this.mapRef.startingFatigue = 0;
+                }.bind(this));
+
+                Matter.Events.on(this.mapRef, 'showMap', function() {
+                    var availabilityText = 'Available now.';
+                    if(this.mapRef.currentNode != this && !this.travelPredicate()) {
+                        var nodesLeft = 3 - this.campAvailableCount % 3;
+                        var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
+                        availabilityText = 'Available in ' + nodesLeft + roundS;
+                    } else if(this.mapRef.currentNode == this) {
+                        availabilityText = 'Currently in camp.'
+                    }
+                    this.displayObject.tooltipObj.setMainDescription(availabilityText);
+                }.bind(this));
+            },
+            cleanUpExtension: function() {
+
+            },
+            tooltipTitle: 'Camp Noir',
+            tooltipDescription: '',
+        });
+
+        initialCampNode.setPosition(campLocation);
+        this.campNode = initialCampNode;
+        this.currentNode = initialCampNode;
+        this.graph.push(initialCampNode);
     }
 
-    //Add air drop stations
-    var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volume: .03, rate: 1});
-    var airDrops = this.levels.airDropStations + this.levels.airDropSpecialStations;
-    for(var x = 0; x < airDrops; x++) {
-        var key = 'airDropStations';
-        var regularTokenName = 'AirDropToken';
-        var specialTokenName = 'AirDropTokenGleam';
-        if(x >= this.levels.airDropStations) {
-            key = 'airDropSpecialStations';
-            var regularTokenName = 'AirDropSpecialToken';
-            var specialTokenName = 'AirDropSpecialTokenGleam'
-        }
+    this.addMapNode = function(levelType) {
+        var level = levelSpecifier.create(levelType, this.worldSpecs.worldSpecs);
 
         //Determine position
         var position;
@@ -209,7 +165,7 @@ var map = function(specs) {
         var nodeBuffer = 100;
         do {
             collision = false;
-            position = gameUtils.getRandomPlacementWithinPlayableBounds(50);
+            position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
             for(let node of this.graph) {
                 if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                     collision = true;
@@ -218,90 +174,20 @@ var map = function(specs) {
             }
         } while(collision)
 
-        var level = levelSpecifier.create(key, specs.worldSpecs);
-        var mapNode = new MapLevelNode({levelDetails: level, mapRef: this, tokenSize: 50, largeTokenSize: 60,
-            init: function() {
-                this.prereqs = [];
+        //air drop station needs the position upon init to determine its prerequisites
+        var mapNode = level.createMapNode({levelDetails: level, mapRef: this, position: position});
 
-                //choose close battle nodes to be the prerequisites
-                var count = 0;
-                var prereqDistanceLimit = 200;
-                do {
-                    if(count > 30) {
-                        count = 0;
-                        prereqDistanceLimit += 100;
-                    }
-                    var node = mathArrayUtils.getRandomElementOfArray(this.mapRef.graph);
-                    if(node.canBePrereq() && node.isBattleNode && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(position, node.position) < prereqDistanceLimit) {
-                        node.chosenAsPrereq = true;
-                        node.master = this;
-                        this.prereqs.push(node);
-                    }
-                    count++;
-                } while(this.prereqs.length < level.prereqCount)
-            },
-            hoverCallback: function() {
-                this.prereqs.forEach((node) => {
-                    node.focusNode();
-                })
-                return true;
-            },
-            unhoverCallback: function() {
-                this.prereqs.forEach((node) => {
-                    node.unfocusNode();
-                })
-                return true;
-            },
-            travelPredicate: function() {
-                var allowed = false;
-                return this.prereqs.every((pr) => {
-                    return pr.isCompleted;
-                })
-            },
-            mouseDownCallback: function() {
-                this.flashNode();
-                this.displayObject.tooltipObj.disable();
-                this.displayObject.tooltipObj.hide();
-                airDropClickTokenSound.play();
-                return false;
-            },
-            manualTokens: function() {
-                var regularToken = graphicsUtils.createDisplayObject(regularTokenName, {where: 'hudNTwo'});
-                var specialToken = graphicsUtils.createDisplayObject(specialTokenName, {where: 'hudNTwo'});
-                this.regularToken = regularToken;
-                this.specialToken = specialToken;
-                Matter.Events.on(this.mapRef, 'showMap', function() {
-                    if(this.isCompleted) {
-                        this.deactivateToken();
-                    } else {
-                        if(this.travelPredicate()) {
-                            regularToken.visible = true;
-                            specialToken.visible = true;
-                            if(!this.gleamTimer) {
-                                this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
-                                Matter.Events.on(regularToken, 'destroy', () => {
-                                    this.gleamTimer.invalidate();
-                                })
-                            }
-                        } else {
-                            regularToken.visible = true;
-                            specialToken.visible = false;
-                        }
-                    }
-                }.bind(this))
-                return [regularToken, specialToken];
-            },
-            deactivateToken: function() {
-                this.regularToken.visible = true;
-                this.specialToken.visible = false;
-                this.regularToken.alpha = .5;
-                this.regularToken.tint = 0x002404;
-                this.gleamTimer.invalidate();
-            }
-        });
+        if(level.manualSetPosition) {
+            level.manualSetPosition(position);
+        } else {
+            mapNode.setPosition(position);
+        }
 
-        mapNode.setPosition(position);
-        this.graph.push(mapNode);
+        if(level.manualAddToGraph) {
+            level.manualAddToGraph(this.graph)
+        } else {
+            this.graph.push(mapNode);
+        }
     }
 
     this.show = function() {

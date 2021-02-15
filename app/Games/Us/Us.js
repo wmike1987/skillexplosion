@@ -134,11 +134,11 @@ var game = {
 
     play: function(options) {
 
-        var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
-        this.currentScene.transitionToScene(shaneIntro.scene);
-        shaneIntro.play();
+        // var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
+        // this.currentScene.transitionToScene(shaneIntro.scene);
+        // shaneIntro.play();
 
-        // this.postInit();
+        this.postInit();
         return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
@@ -198,6 +198,7 @@ var game = {
 
         //generate map
         this.map = this.currentStage.map.initializeMap();
+        this.currentStage.map.phaseOne();
 
         //for troubleshooting victory screen
         // this.gotoEndLevelScreen();
@@ -428,7 +429,7 @@ var game = {
 
         //Init trees/doodads
         this.currentLevel.createTerrain(airDropScene);
-        this.currentLevel.createTrees(airDropScene);
+        // this.currentLevel.createTrees(airDropScene);
         this.currentScene.transitionToScene(airDropScene);
 
         Matter.Events.on(airDropScene, 'afterSnapshotRender', function() {
