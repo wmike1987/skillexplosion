@@ -15,12 +15,24 @@ $(document).ready(async function() {
 
     //override spine slot def
     PIXI.spine.core.Slot.prototype.setToSetupPose = function () {
-      if (this.color.a == 0) {
-        this.color.setFromColor(this.data.color);
+      this.color.setFromColor(this.data.color);
+      if (this.customColor) {
+        this.color.setFromColor(this.customColor);
+      }
+      if(this.customPreserveAlpha) {
+          var customColorWithAlpha = {
+              r: this.customColor.r,
+              g: this.customColor.g,
+              b: this.customColor.b,
+              a: this.data.color.a
+          }
+          this.color.setFromColor(customColorWithAlpha);
       }
       if (this.darkColor != null)
         this.darkColor.setFromColor(this.data.darkColor);
-      if (this.data.attachmentName == null) this.attachment = null;
+      if (this.data.attachmentName == null) {
+          this.attachment = null;
+      }
       else {
         this.attachment = null;
         this.setAttachment(

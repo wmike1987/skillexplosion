@@ -182,7 +182,8 @@ var UnitBase = {
     },
 
     canTargetUnit: function(unit) {
-        return unit.isTargetable && this.team != unit.team;
+        return true;
+        // return unit.isTargetable && this.team != unit.team;
     },
 
     pickupItem: function(item, explicitSlot, systemGivenItem) {

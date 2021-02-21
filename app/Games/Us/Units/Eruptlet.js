@@ -279,10 +279,7 @@ export default function Eruptlet(options) {
                               slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
                               slot.currentSpriteName.includes('North_0003_Layer-1---5'))
                             {
-                                slot.color.r = .2;
-                                slot.color.g = 1.0;
-                                slot.color.b = 0.2;
-                                slot.color.a = 1.0;
+                                slot.customColor = {r: .2, g: 1.0, b: 0.2, a: 1.0};
                             }
                         }
                     })

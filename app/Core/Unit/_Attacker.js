@@ -266,8 +266,11 @@ export default {
             gameUtils.applyToUnitsByTeam(function(team) {
                 if(this.attackHoneTeamPredicate)
                     return this.attackHoneTeamPredicate(team);
-                else
+                else if(!this.specifiedAttackTarget){
                     return this.team != team;
+                } else {
+                    return team == this.specifiedAttackTarget.team;
+                }
             }.bind(this), function(unit) {
                 if(unit) {
                     return this.canTargetUnit(unit);

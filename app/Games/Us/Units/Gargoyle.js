@@ -295,10 +295,7 @@ export default function Gargoyle(options) {
                               slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
                               slot.currentSpriteName.includes('North_0003_Layer-1---5'))
                             {
-                                slot.color.r = .2;
-                                slot.color.g = .4;
-                                slot.color.b = 1.0;
-                                slot.color.a = 1.0;
+                                slot.customColor = {r: .2, g: .4, b: 1.0, a: 1.0};
                             }
                         }
                     })

@@ -8,7 +8,7 @@ import style from '@utils/Styles.js'
 import {globals} from '@core/Fundamental/GlobalState'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
-export default function Scout(options) {
+export default function Ghost(options) {
     var critter = {};
 
     var options = options || {};
@@ -19,69 +19,65 @@ export default function Scout(options) {
     var runSpeedBonus = .25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanN'].spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanS'].spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanW'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanW'].spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanSW'].spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanSW'].spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanNW'].spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanNW'].spineData);
+    //The ghost character has all its spine data in one sheet, but we need two instances of it in order to scale it
+    //for East (-1 scale) and West direction.
+    var spineAll = new PIXI.spine.Spine(PIXI.Loader.shared.resources['apparitionAll'].spineData);
+    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['apparitionAll'].spineData);
 
     var runSpeed = 1.3;
     var runAnimations = {
         up: gameUtils.getSpineAnimation({
-            spine: spineNorth,
-            animationName: 'walk',
+            spine: spineAll,
+            animationName: 'walk_N',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         upRight: gameUtils.getSpineAnimation({
-            spine: spineNorthEast,
-            animationName: 'walk',
+            spine: spineEast,
+            animationName: 'walk_NW',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         right: gameUtils.getSpineAnimation({
             spine: spineEast,
-            animationName: 'walk',
+            animationName: 'walk_W',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         downRight: gameUtils.getSpineAnimation({
-            spine: spineSouthEast,
-            animationName: 'walk',
+            spine: spineEast,
+            animationName: 'walk_SW',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         down: gameUtils.getSpineAnimation({
-            spine: spineSouth,
-            animationName: 'walk',
+            spine: spineAll,
+            animationName: 'walk_S',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         downLeft: gameUtils.getSpineAnimation({
-            spine: spineSouthWest,
-            animationName: 'walk',
+            spine: spineAll,
+            animationName: 'walk_SW',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         left: gameUtils.getSpineAnimation({
-            spine: spineWest,
-            animationName: 'walk',
+            spine: spineAll,
+            animationName: 'walk_W',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
         }),
         upLeft: gameUtils.getSpineAnimation({
-            spine: spineNorthWest,
-            animationName: 'walk',
+            spine: spineAll,
+            animationName: 'walk_NW',
             speed: runSpeed,
             loop: true,
             canInterruptSelf: false
@@ -91,50 +87,50 @@ export default function Scout(options) {
     var attackSpeed = 2;
     var attackAnimations = {
         up: gameUtils.getSpineAnimation({
-            spine: spineNorth,
-            animationName: 'attack',
+            spine: spineAll,
+            animationName: 'attack_N',
             speed: attackSpeed,
             times: 1,
         }),
         upRight: gameUtils.getSpineAnimation({
-            spine: spineNorthEast,
-            animationName: 'attack',
+            spine: spineEast,
+            animationName: 'attack_NW',
             speed: attackSpeed,
             times: 1,
         }),
         right: gameUtils.getSpineAnimation({
             spine: spineEast,
-            animationName: 'attack',
+            animationName: 'attack_W',
             speed: attackSpeed,
             times: 1,
         }),
         downRight: gameUtils.getSpineAnimation({
-            spine: spineSouthEast,
-            animationName: 'attack',
+            spine: spineEast,
+            animationName: 'attack_SW',
             speed: attackSpeed,
             times: 1,
         }),
         down: gameUtils.getSpineAnimation({
-            spine: spineSouth,
-            animationName: 'attack',
+            spine: spineAll,
+            animationName: 'attack_S',
             speed: attackSpeed,
             times: 1,
         }),
         downLeft: gameUtils.getSpineAnimation({
-            spine: spineSouthWest,
-            animationName: 'attack',
+            spine: spineAll,
+            animationName: 'attack_SW',
             speed: attackSpeed,
             times: 1,
         }),
         left: gameUtils.getSpineAnimation({
-            spine: spineWest,
-            animationName: 'attack',
+            spine: spineAll,
+            animationName: 'attack_W',
             speed: attackSpeed,
             times: 1,
         }),
         upLeft: gameUtils.getSpineAnimation({
-            spine: spineNorthWest,
-            animationName: 'attack',
+            spine: spineAll,
+            animationName: 'Death',
             speed: attackSpeed,
             times: 1,
         }),
@@ -171,7 +167,7 @@ export default function Scout(options) {
         offset: {x: 0, y: 22},
     },{
         id: 'left',
-        data: spineWest,
+        data: spineAll,
         scale: sc,
         rotate: 'none',
         visible: false,
@@ -186,7 +182,7 @@ export default function Scout(options) {
     },
     {
         id: 'up',
-        data: spineNorth,
+        data: spineAll,
         scale: adjustedUpDownsc,
         rotate: 'none',
         visible: false,
@@ -194,7 +190,7 @@ export default function Scout(options) {
     },
     {
         id: 'down',
-        data: spineSouth,
+        data: spineAll,
         scale: adjustedUpDownsc,
         rotate: 'none',
         visible: false,
@@ -202,7 +198,7 @@ export default function Scout(options) {
     },
     {
         id: 'upLeft',
-        data: spineNorthWest,
+        data: spineAll,
         scale: sc,
         rotate: 'none',
         visible: false,
@@ -210,7 +206,7 @@ export default function Scout(options) {
     },
     {
         id: 'upRight',
-        data: spineNorthEast,
+        data: spineEast,
         scale: flipsc,
         rotate: 'none',
         visible: false,
@@ -218,14 +214,14 @@ export default function Scout(options) {
     },
     {
         id: 'downRight',
-        data: spineSouthEast,
+        data: spineEast,
         scale: flipsc,
         rotate: 'none',
         visible: false,
         offset: {x: 0, y: nwswyOffset}
     }, {
         id: 'downLeft',
-        data: spineSouthWest,
+        data: spineAll,
         scale: sc,
         rotate: 'none',
         visible: false,
@@ -281,7 +277,23 @@ export default function Scout(options) {
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
             return [shadow, anim];
-        }}, options);
+        },
+        _afterAddInit: function() {
+            $.each(this.body.renderlings, function(key, renderling) {
+                if(renderling.skeleton) {
+                    $.each(renderling.skeleton.slots, function(i, slot) {
+                        if(slot.currentMesh) {
+                            if(slot.currentMeshName.includes('Attack_effect'))
+                            {
+                                slot.customColor = {r: 1.0, g: 0.0, b: 0.2, a: 1.0};
+                                slot.customPreserveAlpha = true;
+                            }
+                        }
+                    })
+                }
+            });
+        },
+    }, options);
 
     return UC({
             givenUnitObj: critter,

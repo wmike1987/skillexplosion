@@ -1,12 +1,12 @@
 
 S.png
-size: 536,142
+size: 533,142
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Side_0000_Layer-18
   rotate: true
-  xy: 513, 47
+  xy: 456, 74
   size: 27, 21
   orig: 30, 21
   offset: 1, 0
@@ -90,7 +90,7 @@ Side_0012_Layer-9
   index: -1
 Side_0013_Layer-8-copy
   rotate: true
-  xy: 482, 76
+  xy: 479, 76
   size: 25, 52
   orig: 25, 52
   offset: 0, 0
@@ -150,11 +150,4 @@ open_another_hand
   size: 29, 21
   orig: 34, 26
   offset: 4, 0
-  index: -1
-open_hand
-  rotate: true
-  xy: 456, 73
-  size: 28, 24
-  orig: 34, 26
-  offset: 5, 0
   index: -1

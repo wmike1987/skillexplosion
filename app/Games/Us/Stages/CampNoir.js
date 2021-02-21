@@ -122,6 +122,7 @@ var map = {
         this.map.addCampNode();
         this.map.addMapNode('sentinels');
         this.map.addMapNode('airDropStations');
+        this.map.addMapNode('mobs');
     },
 
     phaseTwo: function() {

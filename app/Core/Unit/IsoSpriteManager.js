@@ -56,6 +56,7 @@ function IsoSpriteManager(options) {
 		Matter.Events.on(this.unit, 'stop', function() {
 			if(this.currentMoveAnimation)
 				this.currentMoveAnimation.stop();
+			this.stopCurrentAnimation();
 			this.currentMoveAnimation = null;
 			if(!this.idleTimer)
 				this.idle();
@@ -105,7 +106,8 @@ function IsoSpriteManager(options) {
 		//turn one on
 		this.currentAnimation = animation;
 		animation.isStopped = false;
-		animation.visible = true;
+		animation.visible = true; //this triggers the spine obj to become visible too
+
 		if(options.stop) {
 			animation.stop();
 		} else {

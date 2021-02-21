@@ -485,9 +485,9 @@ var game = {
          s.position = gameUtils.getPlayableCenter();
          // this.shane.damage = 10000;
 
-         // var u = this.createUnit('Scout');
-         // this.addUnit(u);
-         // u.position = gameUtils.getPlayableCenter();
+         var u = this.createUnit('Ghost');
+         this.addUnit(u);
+         u.position = gameUtils.getPlayableCenter();
 
          return s;
     },
@@ -633,12 +633,13 @@ game.assets = [
     {name: "alienSW", target: "SpineAssets/Alien Export/SW/SW.json"},
     {name: "alienW", target: "SpineAssets/Alien Export/W/W.json"},
 
-    // {name: "spearmanN", target: "SpineAssets/Spearman Exports/N/N.json"},
-    // {name: "spearmanNW", target: "SpineAssets/Spearman Exports/NW/NW.json"},
-    // {name: "spearmanS", target: "SpineAssets/Spearman Exports/S/S.json"},
-    // {name: "spearmanSW", target: "SpineAssets/Spearman Exports/SW/SW.json"},
-    // {name: "spearmanW", target: "SpineAssets/Spearman Exports/W/W.json"},
+    {name: "spearmanN", target: "SpineAssets/Spearman Exports/N/N.json"},
+    {name: "spearmanNW", target: "SpineAssets/Spearman Exports/NW/NW.json"},
+    {name: "spearmanS", target: "SpineAssets/Spearman Exports/S/S.json"},
+    {name: "spearmanSW", target: "SpineAssets/Spearman Exports/SW/SW.json"},
+    {name: "spearmanW", target: "SpineAssets/Spearman Exports/W/W.json"},
 
+    {name: "apparitionAll", target: "SpineAssets/Apparition Export/skeleton.json"},
 ]
 
 export default $.extend({}, CommonGameMixin, game);

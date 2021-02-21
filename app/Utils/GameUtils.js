@@ -170,8 +170,8 @@ var gameUtils = {
             options.spine.currentAnimation = options.animationName;
 
             //Clear track
-            options.spine.state.clearTrack(0);
             options.spine.skeleton.setToSetupPose();
+            options.spine.state.clearTrack(0);
 
             //Set animation speed
             options.spine.state.timeScale = options.speed || 1;
@@ -192,6 +192,8 @@ var gameUtils = {
 
         anim.stop = function() {
             options.spine.state.clearTrack(0);
+            options.spine.state.clearTrack(1);
+            options.spine.skeleton.setToSetupPose();
             options.spine.currentAnimation = null;
         }
 
