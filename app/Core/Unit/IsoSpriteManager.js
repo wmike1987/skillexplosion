@@ -72,11 +72,23 @@ function IsoSpriteManager(options) {
 	}
 
 	this.playSpecifiedAnimation = function(animationName, direction, options) {
-		if(this.unit[animationName+'Animations'] && ((options.movePrecedence && this.currentDirection == direction && this.unit.isMoving) || !this.unit.isMoving)) {
+		if(!this.unit[animationName+'Animations']) return;
+		var playAnimation = false;
+		if(options.movePrecedence && this.currentDirection == direction && this.unit.isMoving) {
+			playAnimation = true;
+		}
+
+		if(!this.unit.isMoving) {
+			playAnimation = true;
+		}
+
+		if(options.force) {
+			playAnimation = true;
+		}
+
+		if(playAnimation) {
 			this.switchAnimation(this.unit[animationName+'Animations'][direction])
 			this.currentDirection = direction;
-		} else {
-			return;
 		}
 	}
 

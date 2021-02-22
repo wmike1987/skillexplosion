@@ -133,6 +133,15 @@ var gameUtils = {
         options = $.extend({canInterruptSelf: true}, options)
         var anim = {spine: options.spine};
 
+        if(options.listeners) {
+            var arrListeners = mathArrayUtils.convertToArray(options.listeners);
+            arrListeners.forEach(listener => {
+                var event = {};
+                event[listener.name] = listener.f;
+                anim.spine.state.addListener(event);
+            })
+        }
+
         Object.defineProperty(anim, 'visible', {
             set: function(v) {
                 options.spine.visible = v;
@@ -1387,6 +1396,17 @@ var mathArrayUtils = {
         })
 
         return array;
+    },
+
+    convertToArray: function(object) {
+        var arr;
+        if(!$.isArray(object)) {
+            arr = [object];
+        } else {
+            arr = object;
+        }
+
+        return arr;
     },
 
     //This counts zero "0" as a valid value

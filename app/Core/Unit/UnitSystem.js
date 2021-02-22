@@ -1024,12 +1024,12 @@ var UnitSystem = function(properties) {
     this.changeSelectionState = function(units, state, newValue) {
         if(!units) return;
         if(units.renderlings && units.renderlings[state]) { //if we were supplied just one unit
-            if(units.isSelectable)
+            // if(units.isSelectable)
                 units.renderlings[state].visible = newValue;
         }
         else { //we have many
             $.each(units, function(key, unit) {
-                if(unit != null && unit.isSelectable && unit.renderlings && unit.renderlings[state])
+                if(unit != null && /*unit.isSelectable &&*/ unit.renderlings && unit.renderlings[state])
                     unit.renderlings[state].visible = newValue;
             })
         }

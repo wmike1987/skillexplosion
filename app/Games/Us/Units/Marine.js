@@ -373,7 +373,7 @@ export default function Marine(options) {
     }
 
     var vrHpCost = 3;
-    var vrECost = 2;
+    var vrECost = 1.5;
     var dashAbility = new Ability({
         name: 'Dash',
         key: 'd',
@@ -383,7 +383,7 @@ export default function Marine(options) {
         title: 'Dash',
         description: 'Quickly move throughout the battlefield.',
         hotkey: 'D',
-        energyCost: 4,
+        energyCost: 3,
         enablers: [function(commandObj) {
             return marine.canMove;
         }.bind(this)],
@@ -835,7 +835,7 @@ export default function Marine(options) {
 
     var trueGrit  = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 4 grit for length of round.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 5 grit for length of round.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 3 grit for length of round.'],
         textureName: 'TrueGrit',
         unit: marine,
@@ -849,9 +849,9 @@ export default function Marine(options) {
                 var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position})
                 gameUtils.attachSomethingToBody({something: gritUp, body: unit.body});
                 graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
-                unit.addGritAddition(2);
+                unit.addGritAddition(3);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                    unit.removeGritAddition(2)
+                    unit.removeGritAddition(3)
                 })
             })
         },
@@ -859,9 +859,9 @@ export default function Marine(options) {
             var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: marine.position})
             gameUtils.attachSomethingToBody({something: gritUp, body: marine.body});
             graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
-            marine.addGritAddition(3);
+            marine.addGritAddition(5);
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                marine.removeGritAddition(3)
+                marine.removeGritAddition(5)
             })
         },
     })

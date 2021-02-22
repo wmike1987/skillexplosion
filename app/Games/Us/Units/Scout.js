@@ -111,7 +111,7 @@ export default function Scout(options) {
         downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'attack',
-            speed: attackSpeed,
+            speed: attackSpeed*1.5,
             times: 1,
         }),
         down: gameUtils.getSpineAnimation({
@@ -123,7 +123,7 @@ export default function Scout(options) {
         downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'attack',
-            speed: attackSpeed,
+            speed: attackSpeed*1.5,
             times: 1,
         }),
         left: gameUtils.getSpineAnimation({
@@ -240,8 +240,8 @@ export default function Scout(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
+    var attackSound = gameUtils.getSound('spearmanattack.wav', {volume: .08, rate: 1.0});
+    var deathSound = gameUtils.getSound('spearmandeathsound.wav', {volume: .1, rate: 1.0});
 
     var unitProperties = $.extend({
         unitType: 'Critter',
@@ -265,12 +265,12 @@ export default function Scout(options) {
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({
-                spritesheetName: 'CritterAnimations1',
-                animationName: 'critterdeath',
+                spritesheetName: 'SpearmanAnimations1',
+                animationName: 'AlienSpearmanDeath',
                 speed: .25,
                 fadeAway: true,
                 fadeTime: 8000,
-                transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
+                transform: [self.deathPosition.x+5, self.deathPosition.y-28, 1.1, 1.1]
             });
             graphicsUtils.addSomethingToRenderer(anim);
             anim.play();

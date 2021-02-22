@@ -182,7 +182,7 @@ var UnitBase = {
     },
 
     canTargetUnit: function(unit) {
-        return true;
+        return unit.isTargetable;
         // return unit.isTargetable && this.team != unit.team;
     },
 
@@ -943,6 +943,21 @@ var UnitBase = {
             this.isoManagedAlpha = null;
             this.isTargetable = true;
         }.bind(this)})
+    },
+
+    //simulates a dead unit without moving it or removing it
+    nullify: function() {
+        this.stop();
+        this.showLifeBar(false);
+        this.hideLifeBar = true;
+        this.isDead = false;
+        this.isTargetable = false;
+        this.isAttackable = false;
+        this.canMove = false;
+        this.canAttack = false;
+        this.isSelectable = false;
+        this.body.collisionFilter.mask = 0;
+        currentGame.unitSystem.deselectUnit(this);
     },
 
     //utility methods for units

@@ -1,0 +1,151 @@
+{"frames": {
+
+"AlienSpearmanDeath0.png":
+{
+	"frame": {"x":261,"y":460,"w":97,"h":106},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":80,"y":80,"w":97,"h":106},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath1.png":
+{
+	"frame": {"x":369,"y":460,"w":75,"h":123},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":79,"y":61,"w":75,"h":123},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath2.png":
+{
+	"frame": {"x":135,"y":458,"w":100,"h":124},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":55,"w":100,"h":124},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath3.png":
+{
+	"frame": {"x":289,"y":342,"w":117,"h":116},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":76,"y":64,"w":117,"h":116},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath4.png":
+{
+	"frame": {"x":151,"y":340,"w":116,"h":136},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":68,"y":40,"w":116,"h":136},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath5.png":
+{
+	"frame": {"x":162,"y":205,"w":133,"h":137},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":61,"y":38,"w":133,"h":137},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath6.png":
+{
+	"frame": {"x":1,"y":303,"w":148,"h":142},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":42,"w":148,"h":142},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath7.png":
+{
+	"frame": {"x":1,"y":155,"w":159,"h":146},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":54,"y":47,"w":159,"h":146},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath8.png":
+{
+	"frame": {"x":1,"y":1,"w":165,"h":152},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":49,"y":41,"w":165,"h":152},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath9.png":
+{
+	"frame": {"x":168,"y":1,"w":154,"h":138},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":50,"y":55,"w":154,"h":138},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath10.png":
+{
+	"frame": {"x":324,"y":54,"w":142,"h":122},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":72,"w":142,"h":122},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath11.png":
+{
+	"frame": {"x":1,"y":447,"w":132,"h":110},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":87,"w":132,"h":110},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath12.png":
+{
+	"frame": {"x":301,"y":231,"w":123,"h":109},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":102,"w":123,"h":109},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath13.png":
+{
+	"frame": {"x":168,"y":141,"w":152,"h":62},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":142,"w":152,"h":62},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath14.png":
+{
+	"frame": {"x":324,"y":1,"w":172,"h":51},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":151,"w":172,"h":51},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath15.png":
+{
+	"frame": {"x":322,"y":178,"w":174,"h":51},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":151,"w":174,"h":51},
+	"sourceSize": {"w":256,"h":256}
+},
+"AlienSpearmanDeath16.png":
+{
+	"frame": {"x":426,"y":231,"w":174,"h":51},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":151,"w":174,"h":51},
+	"sourceSize": {"w":256,"h":256}
+}},
+"animations": {
+	"AlienSpearmanDeath": ["AlienSpearmanDeath0.png","AlienSpearmanDeath1.png","AlienSpearmanDeath2.png","AlienSpearmanDeath3.png","AlienSpearmanDeath4.png","AlienSpearmanDeath5.png","AlienSpearmanDeath6.png","AlienSpearmanDeath7.png","AlienSpearmanDeath8.png","AlienSpearmanDeath9.png","AlienSpearmanDeath10.png","AlienSpearmanDeath11.png","AlienSpearmanDeath12.png","AlienSpearmanDeath13.png","AlienSpearmanDeath14.png","AlienSpearmanDeath15.png","AlienSpearmanDeath16.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "SpearmanAnimations1.png",
+	"format": "RGBA8888",
+	"size": {"w":497,"h":559},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:908990baf2d9f1099bb05835df2aa7b1:991bf077cd9e8e36ecfbbbb45df053dd:97f110fc31c339f591d35e1255532055$"
+}
+}

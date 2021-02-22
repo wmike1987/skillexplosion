@@ -19,11 +19,19 @@ export default {
 
     //default
     attack: function(target) {
+        var attackManipulations = {delay: 0};
         if(this.attackExtension) {
-            this.attackExtension(target);
+            var ret = this.attackExtension(target);
+            if(ret) {
+                attackManipulations = ret;
+            }
         }
-        var damageAmount = this.damage + this.getDamageAdditionSum();
-        target.sufferAttack(damageAmount, this);
+        gameUtils.doSomethingAfterDuration(function() {
+            if(this.isAttacking) {
+                var damageAmount = this.damage + this.getDamageAdditionSum();
+                target.sufferAttack(damageAmount, this);
+            }
+        }.bind(this), attackManipulations.delay)
     },
 
     //user defined
@@ -94,7 +102,6 @@ export default {
         this.eventClickMappings[this.commands.move.key] = this.move;
 
         this.canAttack = true;
-        this.isAttackable = true;
 
         this._becomeOnAlert();
     },

@@ -9,7 +9,7 @@ import {globals} from '@core/Fundamental/GlobalState'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 export default function Ghost(options) {
-    var critter = {};
+    var ghost = {};
 
     var options = options || {};
     $.extend(options, {radius: 25}, options)
@@ -130,14 +130,24 @@ export default function Ghost(options) {
         }),
         upLeft: gameUtils.getSpineAnimation({
             spine: spineAll,
-            animationName: 'Death',
+            animationName: 'attack_NW',
             speed: attackSpeed,
             times: 1,
         }),
     }
 
-    var otherAnimations = {
-
+    var deathAnimations = {
+        south: gameUtils.getSpineAnimation({
+            spine: spineAll,
+            animationName: 'Death',
+            speed: attackSpeed,
+            times: 1,
+            listeners: {name: 'complete', f: function(entry) {
+                if(entry.animation.name == 'Death') {
+                    globals.currentGame.removeUnit(ghost);
+                }
+            }}
+        }),
     }
 
     var sc = {x: .48, y: .48};
@@ -236,11 +246,11 @@ export default function Ghost(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
+    var attackSound = gameUtils.getSound('ghostattack.wav', {volume: .15, rate: .8});
+    var deathSound = gameUtils.getSound('ghostdeathsound.wav', {volume: .1, rate: 1.0});
 
     var unitProperties = $.extend({
-        unitType: 'Critter',
+        unitType: 'Ghost',
         health: 20,
         defense: 1,
         energy: 0,
@@ -250,6 +260,7 @@ export default function Ghost(options) {
         hitboxHeight: 40,
         hitboxYOffset: 5,
         itemsEnabled: true,
+        deathAnimations: deathAnimations,
         portrait: graphicsUtils.createDisplayObject('CritterPortrait'),
         wireframe: graphicsUtils.createDisplayObject('CritterGroupPortrait'),
         team: options.team || 4,
@@ -259,24 +270,9 @@ export default function Ghost(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            var self = this;
-            var anim = gameUtils.getAnimation({
-                spritesheetName: 'CritterAnimations1',
-                animationName: 'critterdeath',
-                speed: .25,
-                fadeAway: true,
-                fadeTime: 8000,
-                transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
-            });
-            graphicsUtils.addSomethingToRenderer(anim);
-            anim.play();
+            this.nullify();
+            this.isoManager.playSpecifiedAnimation('death', 'south', {force: true});
             deathSound.play();
-
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
-            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
-            graphicsUtils.addSomethingToRenderer(shadow);
-            globals.currentGame.removeUnit(this);
-            return [shadow, anim];
         },
         _afterAddInit: function() {
             $.each(this.body.renderlings, function(key, renderling) {
@@ -285,7 +281,7 @@ export default function Ghost(options) {
                         if(slot.currentMesh) {
                             if(slot.currentMeshName.includes('Attack_effect'))
                             {
-                                slot.customColor = {r: 1.0, g: 0.0, b: 0.2, a: 1.0};
+                                slot.customColor = {r: 1.0, g: 1.0, b: 0.0, a: 1.0};
                                 slot.customPreserveAlpha = true;
                             }
                         }
@@ -296,7 +292,7 @@ export default function Ghost(options) {
     }, options);
 
     return UC({
-            givenUnitObj: critter,
+            givenUnitObj: ghost,
             renderChildren: rc,
             radius: options.radius,
             mass: options.mass || 8,
@@ -313,15 +309,22 @@ export default function Ghost(options) {
                 range: options.radius*2+10,
                 damage: 6,
                 attackExtension: function(target) {
-                    var bloodAnimation = gameUtils.getAnimation({
-                        spritesheetName: 'UtilityAnimations1',
-                        animationName: 'GenericHit',
-                        speed: 1.0,
-                        transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
-                    });
-                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
-                    bloodAnimation.play();
-                    attackSound.play();
+                    var self = this;
+                    var attackDelay = 200;
+                    gameUtils.doSomethingAfterDuration(function() {
+                        if(self.isAttacking) {
+                            var bloodAnimation = gameUtils.getAnimation({
+                                spritesheetName: 'UtilityAnimations1',
+                                animationName: 'GenericHit',
+                                speed: 1.0,
+                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .5, .5]
+                            });
+                            graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                            bloodAnimation.play();
+                            attackSound.play();
+                        }
+                    }, attackDelay);
+                    return {delay: attackDelay};
                 },
             },
     });

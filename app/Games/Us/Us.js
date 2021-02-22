@@ -487,7 +487,10 @@ var game = {
 
          var u = this.createUnit('Ghost');
          this.addUnit(u);
+         var p = this.createUnit('Scout');
+         this.addUnit(p);
          u.position = gameUtils.getPlayableCenter();
+         p.position = gameUtils.getPlayableCenter();
 
          return s;
     },
@@ -591,6 +594,7 @@ game.assets = [
     {name: "Eruptlet", target: "Textures/Us/Eruptlet.json"},
     {name: "EruptletAnimations1", target: "Textures/Us/EruptletAnimations1.json"},
     {name: "Gargoyle", target: "Textures/Us/Gargoyle.json"},
+    {name: "SpearmanAnimations1", target: "Textures/Us/SpearmanAnimations1.json"},
 
     //items
     {name: "Items", target: "Textures/Us/Items.json"},
