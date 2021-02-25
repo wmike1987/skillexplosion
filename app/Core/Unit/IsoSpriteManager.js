@@ -21,8 +21,8 @@ function IsoSpriteManager(options) {
 		},
 		set: function(value) {
 			this._isoManagedAlpha = value;
-			if(isoManager.currentAnimation) {
-				isoManager.currentAnimation.alpha = mathArrayUtils.isFalseNotZero(value) ? 1 : value;
+			if(isoManager.visibleIsoSprite) {
+				isoManager.visibleIsoSprite.alpha = mathArrayUtils.isFalseNotZero(value) ? 1 : value;
 			}
 		},
 		configurable: true
@@ -33,8 +33,8 @@ function IsoSpriteManager(options) {
 		},
 		set: function(value) {
 			this._isoManagedTint = value;
-			if(isoManager.currentAnimation) {
-				isoManager.currentAnimation.tint = value || 0xFFFFFF;
+			if(isoManager.visibleIsoSprite) {
+				isoManager.visibleIsoSprite.tint = value || 0xFFFFFF;
 			}
 		},
 		configurable: true
@@ -117,6 +117,7 @@ function IsoSpriteManager(options) {
 
 		//turn one on
 		this.currentAnimation = animation;
+		this.visibleIsoSprite = animation;
 		animation.isStopped = false;
 		animation.visible = true; //this triggers the spine obj to become visible too
 

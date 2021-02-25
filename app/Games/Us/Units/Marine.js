@@ -356,11 +356,12 @@ export default function Marine(options) {
             }
         })
 
+        var defensivePostureGain = 4;
         if(currentAugment.name == 'defensive posture') {
-            marine.applyBuff({name: "defpostbuff", textureName: 'DefensiveBuff', duration: 2000, applyChanges: function() {
-                self.addDefenseAddition(2);
+            marine.applyBuff({name: "defpostbuff", textureName: 'DefensiveBuff', duration: 3000, applyChanges: function() {
+                self.addDefenseAddition(defensivePostureGain);
             }, removeChanges: function() {
-                self.removeDefenseAddition(2);
+                self.removeDefenseAddition(defensivePostureGain);
             }})
         } else if(currentAugment.name == 'death wish') {
             marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
@@ -413,16 +414,12 @@ export default function Marine(options) {
             },
             {
                 name: 'defensive posture',
-                chance: .2,
-                multiplier: 2,
                 icon: graphicsUtils.createDisplayObject('DefensivePosture'),
                 title: 'Defensive Posture',
-                description: 'Gain 2 defense upon dashing for 2 seconds.'
+                description: 'Gain 4 defense upon dashing for 3 seconds.'
             },
             {
                 name: 'death wish',
-                healAmount: 15,
-                chance: .5,
                 icon: graphicsUtils.createDisplayObject('DeathWish'),
                 title: 'Death Wish',
                 description: 'Increase damage by 10 upon dashing for 2 seconds.'
@@ -672,13 +669,13 @@ export default function Marine(options) {
     var allyArmorDuration = 10000;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 6 hp.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 1 def for 10s.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant ally 4 hp.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 2 def for 10s.'],
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseDuration: gsDDuration,
-        defenseCooldown: 5000,
+        defenseCooldown: 1000,
         aggressionEventName: 'kill',
         aggressionDuration: gsADuration,
         aggressionCooldown: 2000,
@@ -707,9 +704,9 @@ export default function Marine(options) {
                 if(ally.isDead) return;
                 var id = mathArrayUtils.getId();
                 ally.applyBuff({name: "givingSpiritDefBuff" + id, textureName: 'DefensiveBuff', duration: allyArmorDuration, applyChanges: function() {
-                    ally.addDefenseAddition(1);
+                    ally.addDefenseAddition(2);
                 }, removeChanges: function() {
-                    ally.removeDefenseAddition(1);
+                    ally.removeDefenseAddition(2);
                 }})
             })
         },
@@ -798,10 +795,10 @@ export default function Marine(options) {
     })
 
     var ssDDuration = 4000;
-    var ssADuration = 2000;
+    var ssADuration = 4000;
     var spiritualState  = new Passive({
         title: 'Spiritual State',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 1 energy for every 1 hp recieved from healing for 2s.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 1 energy for every 1 hp recieved from healing for 4s.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4s.'],
         textureName: 'SpiritualState',
         unit: marine,

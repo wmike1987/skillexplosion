@@ -872,7 +872,7 @@ var UnitBase = {
                 globals.currentGame.invalidateTimer(this.petrifyTintTimer);
             }
             this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
-            shakeTimer = graphicsUtils.shakeSprite(this.isoManager.currentAnimation.spine, 400);
+            shakeTimer = graphicsUtils.shakeSprite(this.isoManager.visibleIsoSprite.spine, 400);
             gameUtils.deathPact(unit, shakeTimer);
             petrifySound.play();
         }, removeChanges: function() {
@@ -937,7 +937,7 @@ var UnitBase = {
     becomeHidden: function(duration) {
         this.applyBuff({name: 'hidden', textureName: 'HiddenBuff', playSound: true, duration: duration || 2000, applyChanges: function() {
             this.isTargetable = false;
-            this.isoManager.currentAnimation.alpha = .4;
+            this.isoManager.visibleIsoSprite.alpha = .4;
             this.isoManagedAlpha = .4;
         }, removeChanges: function() {
             this.isoManagedAlpha = null;

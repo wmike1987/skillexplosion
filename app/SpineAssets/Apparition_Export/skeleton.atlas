@@ -1,0 +1,76 @@
+
+skeleton.png
+size: 411,267
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Attack_effect
+  rotate: true
+  xy: 2, 137
+  size: 128, 330
+  orig: 166, 355
+  offset: 18, 13
+  index: -1
+apparition_hand0
+  rotate: true
+  xy: 316, 80
+  size: 50, 53
+  orig: 50, 53
+  offset: 0, 0
+  index: -1
+apparition_hand1
+  rotate: false
+  xy: 371, 71
+  size: 38, 59
+  orig: 38, 59
+  offset: 0, 0
+  index: -1
+apparition_hand2
+  rotate: false
+  xy: 370, 10
+  size: 38, 59
+  orig: 38, 59
+  offset: 0, 0
+  index: -1
+apparition_hand3
+  rotate: true
+  xy: 316, 33
+  size: 45, 52
+  orig: 46, 52
+  offset: 0, 0
+  index: -1
+apparition_torsoN
+  rotate: false
+  xy: 2, 3
+  size: 80, 132
+  orig: 80, 132
+  offset: 0, 0
+  index: -1
+apparition_torsoNW
+  rotate: false
+  xy: 166, 5
+  size: 75, 130
+  orig: 75, 130
+  offset: 0, 0
+  index: -1
+apparition_torsoS
+  rotate: false
+  xy: 84, 3
+  size: 80, 132
+  orig: 80, 132
+  offset: 0, 0
+  index: -1
+apparition_torsoSW
+  rotate: false
+  xy: 334, 132
+  size: 75, 133
+  orig: 75, 133
+  offset: 0, 0
+  index: -1
+apparition_torsoW
+  rotate: false
+  xy: 243, 2
+  size: 71, 133
+  orig: 72, 134
+  offset: 1, 0
+  index: -1

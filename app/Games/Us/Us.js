@@ -643,7 +643,7 @@ game.assets = [
     {name: "spearmanSW", target: "SpineAssets/Spearman Exports/SW/SW.json"},
     {name: "spearmanW", target: "SpineAssets/Spearman Exports/W/W.json"},
 
-    {name: "apparitionAll", target: "SpineAssets/Apparition Export/skeleton.json"},
+    {name: "apparitionAll", target: "SpineAssets/Apparition_Export/skeleton.json"},
 ]
 
 export default $.extend({}, CommonGameMixin, game);

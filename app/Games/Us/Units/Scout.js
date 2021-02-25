@@ -301,15 +301,22 @@ export default function Scout(options) {
                 range: options.radius*2+10,
                 damage: 6,
                 attackExtension: function(target) {
-                    var bloodAnimation = gameUtils.getAnimation({
-                        spritesheetName: 'UtilityAnimations1',
-                        animationName: 'GenericHit',
-                        speed: 1.0,
-                        transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
-                    });
-                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
-                    bloodAnimation.play();
+                    var attackDelay = 100;
+                    var self = this;
+                    gameUtils.doSomethingAfterDuration(function() {
+                        if(self.isAttacking) {
+                            var bloodAnimation = gameUtils.getAnimation({
+                                spritesheetName: 'UtilityAnimations1',
+                                animationName: 'GenericHit',
+                                speed: 1.0,
+                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .5, .5]
+                            });
+                            graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                            bloodAnimation.play();
+                        }
+                    }, attackDelay);
                     attackSound.play();
+                    return {delay: attackDelay};
                 },
             },
     });
