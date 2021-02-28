@@ -269,22 +269,28 @@ var common = {
                     value.runs = 1;
                 }
 
+                if(value.skipToEnd) {
+                    value.timeLimitOverride = .01;
+                }
+
+                var activeTimeLimit = value.timeLimitOverride || value.timeLimit;
+
                 value.started = true;
                 value.timeElapsed += event.deltaTime;
                 value.totalElapsedTime += event.deltaTime;
-                value.percentDone = Math.min(value.timeElapsed/value.timeLimit, 1);
+                value.percentDone = Math.min(value.timeElapsed/activeTimeLimit, 1);
                 value.totalPercentOfRunsDone = Math.min(value.currentRun/value.originalRuns, 1);
 
                 if(value.tickCallback) value.tickCallback(event.deltaTime);
                 if(value.immediateStart) {
-                    value.timeElapsed = value.timeLimit;
+                    value.timeElapsed = activeTimeLimit;
                     value.immediateStart = false;
                 }
 
-                while(value.timeLimit <= value.timeElapsed && value.runs > 0) {
+                while(activeTimeLimit <= value.timeElapsed && value.runs > 0) {
                     if(value.runs > 0) {
                         value.percentDone = 0;
-                        value.timeElapsed -= value.timeLimit;
+                        value.timeElapsed -= activeTimeLimit;
                         value.currentRun = value.originalRuns - value.runs;
                         if(value.callback) value.callback();
                         if(!value.gogogo) {

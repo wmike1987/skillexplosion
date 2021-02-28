@@ -3,7 +3,7 @@ import * as $ from 'jquery'
 import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import Tooltip from '@core/Tooltip.js'
-import {levelSpecifier} from '@games/Us/MapAndLevel/Levels/LevelSpecifier.js'
+import {levelFactory} from '@games/Us/MapAndLevel/Levels/LevelFactory.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import styles from '@utils/Styles.js'
 import MapLevelNode from '@games/Us/MapAndLevel/Map/MapNode.js'
@@ -64,7 +64,7 @@ var map = function(specs) {
 
     this.addCampNode = function() {
         //Add the camp node
-        var mainCamp = levelSpecifier.create('camp', this.worldSpecs.worldSpecs);
+        var mainCamp = levelFactory.create('camp', this.worldSpecs.worldSpecs);
         var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,tokenSize: 50, largeTokenSize: 55,
             travelPredicate: function() {
                 return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
@@ -157,7 +157,7 @@ var map = function(specs) {
     }
 
     this.addMapNode = function(levelType) {
-        var level = levelSpecifier.create(levelType, this.worldSpecs.worldSpecs);
+        var level = levelFactory.create(levelType, this.worldSpecs.worldSpecs);
 
         //Determine position
         var position;

@@ -2,7 +2,7 @@ import * as Matter from 'matter-js'
 import * as $ from 'jquery'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import styles from '@utils/Styles.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
 
 var pictureStyles = {
     FADE_IN: "FADE_IN"
@@ -55,7 +55,7 @@ var Dialogue = function Dialogue(options) {
         this.pauseAfterWord = [this.pauseAfterWord];
     }
 
-    this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: .3, rate: 1});
+    this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: .25, rate: 1});
 
     //Establish actor text at creation time since it's used in continuations
     this.actorText = this.actor ? this.actor + ": " : "";
@@ -186,22 +186,23 @@ var Dialogue = function Dialogue(options) {
                             top = 1.0;
                         }
 
-                        globals.currentGame.addTimer({name: 'dialogueActionFade:' + mathArrayUtils.getId(), runs: runs, killsSelf: true, timeLimit: duration,
+                        var minAlpha = 0;
+                        if(d.actionText.leaveTrace) {
+                            minAlpha = .2;
+                        }
+                        d.actionTextTimer = globals.currentGame.addTimer({name: 'dialogueActionFade:' + mathArrayUtils.getId(), runs: runs, killsSelf: true, timeLimit: duration,
                             tickCallback: function(delta) {
                                 if(fadingIn) {
                                     d.realizedActionText.alpha = this.percentDone * top;
                                 } else {
-                                    var max = 0;
-                                    if(d.actionText.leaveTrace) {
-                                        max = .2;
-                                    }
-                                    d.realizedActionText.alpha = Math.max(max, top-(this.percentDone*top));
+                                    d.realizedActionText.alpha = Math.max(minAlpha, top-(this.percentDone*top));
                                 }
                             },
                             callback: function() {
                                 fadingIn = !fadingIn;
                             },
                             totallyDoneCallback: function() {
+                                d.realizedActionText.alpha = minAlpha;
                                 d.actionTextState.done = true;
                             }
                         })
@@ -226,7 +227,9 @@ var Dialogue = function Dialogue(options) {
                     d.currentLetterSpeed = d.actorLetterSpeed;
                 } else {
                     if(d.text.substring(currentLetter, currentLetter+1) != '') {
-                        d.keypressSound.play();
+                        if(!d.skipSound) {
+                            d.keypressSound.play();
+                        }
                     }
                     this.timeLimit = d.letterSpeed;
                     d.currentLetterSpeed = d.letterSpeed;
@@ -254,6 +257,9 @@ var Dialogue = function Dialogue(options) {
 
                 if(currentLetter == d.text.length) {
                     d.resolveTime = this.totalElapsedTime + d.delayAfterEnd;
+                    if(d.skipped) {
+                        d.resolveTime = 0;
+                    }
                 }
             } else if(!d.stallInfinite && this.totalElapsedTime >= d.resolveTime){
                 d.deferred.resolve();
@@ -284,6 +290,16 @@ var Dialogue = function Dialogue(options) {
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
     }
+
+    this.speedUp = function() {
+        this.skipped = true;
+        this.resolveTime = 0;
+        this.textTimer.skipToEnd = true;
+        if(this.actionTextTimer) {
+            this.actionTextTimer.skipToEnd = true;
+        }
+        this.skipSound = true;
+    }
 }
 
 var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
@@ -291,6 +307,8 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         dialogSpacing: 30,
         startDelay: 1000,
     };
+
+    this.id = mathArrayUtils.getId();
     this.arrayOfDialogues = arrayOfDialogues;
     $.extend(this, defaults, options);
 
@@ -316,7 +334,10 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 currentDia.deferred.done(() => {
                   currentDia.leaveText();
                 })
-                currentDia.deferred.done(arrayOfDialogues[j+1].play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}))
+                currentDia.deferred.done(nextDia.play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}))
+                currentDia.deferred.done(function() {
+                    this.currentDia = nextDia;
+                }.bind(this))
             } else {
                 if(this.done) {
                     currentDia.deferred.done(this.done);
@@ -327,7 +348,18 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         //start the chain
         gameUtils.doSomethingAfterDuration(() => {
             arrayOfDialogues[0].play()
+            this.currentDia = arrayOfDialogues[0];
         }, this.startDelay);
+
+        //escape to speed up current line
+        $('body').on('keydown.' + 'speedUpChain:' + this.id, function( event ) {
+            var key = event.key.toLowerCase();
+            if(key == 'escape') {
+                if(this.currentDia) {
+                    this.currentDia.speedUp();
+                }
+            }
+        }.bind(this))
     },
 
     this.cleanUp = function() {
@@ -338,6 +370,9 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         this.arrayOfDialogues.forEach((dialogue) => {
             dialogue.cleanUp();
         });
+
+        $('body').off('keydown.' + 'speedUpChain:' + this.id);
+        $('body').off('keydown.' + 'escapeChain:' + this.id);
     };
 
     this.initialize = function() {

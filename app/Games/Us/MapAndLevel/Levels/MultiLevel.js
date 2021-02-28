@@ -10,7 +10,7 @@ import TileMapper from '@core/TileMapper.js'
 import ItemUtils from '@core/Unit/ItemUtils.js'
 import Doodad from '@utils/Doodad.js'
 import {Dialogue, DialogueChain} from '@core/Dialogue.js'
-import {levelSpecifier} from '@games/Us/MapAndLevel/Levels/LevelSpecifier.js'
+import {levelFactory} from '@games/Us/MapAndLevel/Levels/LevelFactory.js'
 import tokenMappings from '@games/Us/MapAndLevel/Map/TokenMappings.js'
 import MapLevelNode from '@games/Us/MapAndLevel/Map/MapNode.js'
 
@@ -21,7 +21,7 @@ var multiLevel = function(options) {
     this.levelTypes = options.levelTypes || ['singles', 'hardened', 'mobs'];
 
     this.levelTypes.forEach((type) => {
-        this.chain.push(levelSpecifier.create(type, options));
+        this.chain.push(levelFactory.create(type, options));
     })
 
     //process the chain on the first node

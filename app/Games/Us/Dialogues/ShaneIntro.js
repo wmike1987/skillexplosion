@@ -21,7 +21,7 @@ var ShaneIntro = function(options) {
             actionText: {word: "Grunts", actionDuration: 1500, leaveTrace: true}}));
         ds.push(new Dialogue({actor: "MacMurray",
             text: "There you are, are you intact?",
-            actionText: {word: "Sighs", actionDuration: 800, fadeOutOnly: true},
+            actionText: {word: "Sighs", actionDuration: 1200, fadeOutOnly: true},
             delayAfterEnd: 0,
             pauseAfterWord: {word: 'are,', duration: 800}}));
         ds.push(new Dialogue({actor: "Shane",

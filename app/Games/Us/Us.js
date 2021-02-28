@@ -134,11 +134,11 @@ var game = {
 
     play: function(options) {
 
-        // var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
-        // this.currentScene.transitionToScene(shaneIntro.scene);
-        // shaneIntro.play();
+        var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
+        this.currentScene.transitionToScene(shaneIntro.scene);
+        shaneIntro.play();
 
-        this.postInit();
+        // this.postInit();
         return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
@@ -165,7 +165,7 @@ var game = {
         Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
-                if(key == 'escape') {
+                if(key == 'space') {
                     //clear dialogue and start initial level
                     this.postInit();
                     $('body').off('keydown.uskeydown');
@@ -261,7 +261,7 @@ var game = {
         Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
-                if(key == 'escape') {
+                if(key == 'space') {
                     $('body').off('keydown.uskeydown');
                     escapeBehavior();
                 }

@@ -9,7 +9,7 @@ import {multiLevel} from '@games/Us/MapAndLevel/Levels/MultiLevel.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
 
-var levelSpecifier = {
+var levelFactory = {
     create: function(type, worldSpecs) {
         var TypeMapping = levelTypeMappings[type];
         if(TypeMapping) {
@@ -26,7 +26,7 @@ var levelSpecifier = {
     }
 }
 
-//Level types
+//Common Level types
 var singles = function(worldSpecs) {
     this.type = 'singles';
     this.onCreate(worldSpecs)
@@ -70,4 +70,4 @@ var levelTypeMappings = {
     multiLevel: multiLevel,
 }
 
-export {levelSpecifier};
+export {levelFactory};

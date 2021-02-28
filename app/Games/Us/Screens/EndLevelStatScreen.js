@@ -268,7 +268,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
 
         //Continue button
-        scene.add(graphicsUtils.addSomethingToRenderer("TEX+:ESC to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
+        scene.add(graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}}));
 
         //Add everything to the scene
         this.shaneStats.forEach((objArr) => {
