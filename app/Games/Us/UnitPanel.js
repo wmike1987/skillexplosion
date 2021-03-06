@@ -498,6 +498,9 @@ unitPanel.prototype.displayUnitPortrait = function() {
 
 unitPanel.prototype.updateUnitItems = function() {
     if(this.prevailingUnit) {
+        //show nothing for non-player team units
+        if(this.prevailingUnit.team != globals.currentGame.playerTeam) return;
+
         //regular items
         $.each(this.prevailingUnit.currentItems, function(i, item) {
             if(item == null)

@@ -123,6 +123,10 @@ var map = {
         this.map.addMapNode('sentinels');
         this.map.addMapNode('airDropStations');
         this.map.addMapNode('mobs');
+        this.map.addMapNode('basic');
+        this.map.addMapNode('basic');
+        this.map.addMapNode('basic');
+        this.map.addMapNode('multiLevel');
     },
 
     phaseTwo: function() {

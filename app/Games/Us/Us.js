@@ -134,11 +134,11 @@ var game = {
 
     play: function(options) {
 
-        var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
-        this.currentScene.transitionToScene(shaneIntro.scene);
-        shaneIntro.play();
+        // var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
+        // this.currentScene.transitionToScene(shaneIntro.scene);
+        // shaneIntro.play();
 
-        // this.postInit();
+        this.postInit();
         return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
@@ -165,7 +165,7 @@ var game = {
         Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
-                if(key == 'space') {
+                if(key == ' ') {
                     //clear dialogue and start initial level
                     this.postInit();
                     $('body').off('keydown.uskeydown');
@@ -220,11 +220,11 @@ var game = {
             Matter.Events.trigger(this, 'enteringCamp');
 
             //remove enemy units
-            gameUtils.applyToUnitsByTeam(function(team) {
-                return (team != globals.currentGame.playerTeam);
-            }, null, function(unit) {
-                globals.currentGame.removeUnit(unit);
-            })
+            // gameUtils.applyToUnitsByTeam(function(team) {
+            //     return (team != globals.currentGame.playerTeam);
+            // }, null, function(unit) {
+            //     globals.currentGame.removeUnit(unit);
+            // })
 
             //reset shane and urs
             this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 40})});
@@ -261,7 +261,7 @@ var game = {
         Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
             $('body').on('keydown.uskeydown', function( event ) {
                 var key = event.key.toLowerCase();
-                if(key == 'space') {
+                if(key == ' ') {
                     $('body').off('keydown.uskeydown');
                     escapeBehavior();
                 }
@@ -485,12 +485,14 @@ var game = {
          s.position = gameUtils.getPlayableCenter();
          // this.shane.damage = 10000;
 
-         var u = this.createUnit('Ghost');
-         this.addUnit(u);
-         var p = this.createUnit('Scout');
+         // var u = this.createUnit('Ghost');
+         // this.addUnit(u);
+         var p = this.createUnit('DestructibleBox', this.neutralTeam);
+
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: p});
          this.addUnit(p);
-         u.position = gameUtils.getPlayableCenter();
-         p.position = gameUtils.getPlayableCenter();
+         p.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: 100});
+         // p.position = {x: 300, y: 300};
 
          return s;
     },
@@ -504,8 +506,8 @@ var game = {
         return this.ursula;
     },
 
-    createUnit: function(constructorName) {
-        var unit = UnitMenu[constructorName].c({team: this.playerTeam, name: mathArrayUtils.getId(), dropItemsOnDeath: false});
+    createUnit: function(constructorName, team) {
+        var unit = UnitMenu[constructorName].c({team: team || this.playerTeam});
         gameUtils.moveUnitOffScreen(unit);
         return unit;
     },
@@ -606,6 +608,7 @@ game.assets = [
     // {name: "Utility1", target: "Textures/Us/Utility-1.json"},
     {name: "UtilityAnimations1", target: "Textures/Us/UtilityAnimations1.json"},
     {name: "UtilityAnimations2", target: "Textures/Us/UtilityAnimations2.json"},
+    {name: "UtilityAnimations3", target: "Textures/Us/UtilityAnimations3.json"},
 
     {name: "Cinematic", target: "Textures/Us/Cinematic.json"},
 

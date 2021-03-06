@@ -274,7 +274,7 @@ export default {
                 if(this.attackHoneTeamPredicate)
                     return this.attackHoneTeamPredicate(team);
                 else if(!this.specifiedAttackTarget){
-                    return this.team != team;
+                    return this.team != team && globals.currentGame.neutralTeam != team;
                 } else {
                     return team == this.specifiedAttackTarget.team;
                 }

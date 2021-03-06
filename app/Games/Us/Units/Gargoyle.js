@@ -88,55 +88,55 @@ export default function Gargoyle(options) {
     };
 
     var attackAnimations = {
-                up: gameUtils.getSpineAnimation({
-                    spine: spineNorth,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                upRight: gameUtils.getSpineAnimation({
-                    spine: spineNorthEast,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                right: gameUtils.getSpineAnimation({
-                    spine: spineEast,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                downRight: gameUtils.getSpineAnimation({
-                    spine: spineSouthEast,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                down: gameUtils.getSpineAnimation({
-                    spine: spineSouth,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                downLeft: gameUtils.getSpineAnimation({
-                    spine: spineSouthWest,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                left: gameUtils.getSpineAnimation({
-                    spine: spineWest,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-                upLeft: gameUtils.getSpineAnimation({
-                    spine: spineNorthWest,
-                    animationName: 'attack',
-                    speed: 2,
-                    times: 3,
-                }),
-            }
+        up: gameUtils.getSpineAnimation({
+            spine: spineNorth,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        upRight: gameUtils.getSpineAnimation({
+            spine: spineNorthEast,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        right: gameUtils.getSpineAnimation({
+            spine: spineEast,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        downRight: gameUtils.getSpineAnimation({
+            spine: spineSouthEast,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        down: gameUtils.getSpineAnimation({
+            spine: spineSouth,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        downLeft: gameUtils.getSpineAnimation({
+            spine: spineSouthWest,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        left: gameUtils.getSpineAnimation({
+            spine: spineWest,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+        upLeft: gameUtils.getSpineAnimation({
+            spine: spineNorthWest,
+            animationName: 'attack',
+            speed: 2,
+            times: 3,
+        }),
+    }
 
     var otherAnimations = {
 

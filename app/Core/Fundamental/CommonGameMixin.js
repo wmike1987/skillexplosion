@@ -35,6 +35,7 @@ var common = {
     frames: 0,
     frameSecondCounter: 0,
     playerTeam: 100,
+    neutralTeam: 49,
     lagCompensation: 3,
     commonAssets: [{name: "CommonGameTextures", target: "Textures/CommonGameTextures.json"}],
 

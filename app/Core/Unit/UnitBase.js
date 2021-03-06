@@ -217,7 +217,11 @@ var UnitBase = {
         //spawn new item of same type
         var spawnPosition = {};
         do {
-            spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)}
+            if(this.forcedItemDropOffset) {
+                spawnPosition = mathArrayUtils.clonePosition(this.position, this.forcedItemDropOffset);
+            } else {
+                spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)}
+            }
         } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition))
 
         item.drop(spawnPosition);
