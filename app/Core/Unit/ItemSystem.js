@@ -63,6 +63,35 @@ var itemSystem = function(properties) {
              }
         }.bind(this));
 
+        //listen for when the prevailing unit changes
+        Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
+            var item = this.isGrabbing();
+            if(item) {
+                var pickedUp = item.owningUnit.pickupItem(item, item.currentSlot)
+                item.icon.visible = false;
+                item.icon.alpha = 1;
+                item.icon.tooltipObj.disabled = false;
+                this.grabbedItem = null;
+
+                //Clear the icon-follow callback
+                globals.currentGame.removeTickCallback(item.iconMoveCallback);
+                item.iconMoveCallback = null;
+                if(!pickedUp) {
+                    if(item.owningUnit.isDead) {
+                        this.removeItem(item);
+                    } else {
+                        var variationX = Math.random()*60;
+                        var dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35});
+                        do {
+                            dropPosition = {x: item.owningUnit.position.x + (Math.random()*60 - 30), y: item.owningUnit.position.y + (Math.random()*60 - 30)}
+                        } while (!gameUtils.isPositionWithinPlayableBounds(dropPosition))
+                        item.drop(dropPosition, {fleeting: false});
+                    }
+                }
+                return;
+            }
+        }.bind(this))
+
         Matter.Events.on(this, 'dropItem', function(event) {
             this.addItemOnGround(event.item);
         }.bind(this))
@@ -108,10 +137,9 @@ var itemSystem = function(properties) {
             if(gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
                 var variationX = Math.random()*60;
                 var dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 35});
-
-                if(!gameUtils.isPositionWithinPlayableBounds(dropPosition)) {
-                    dropPosition = Matter.Vector.add(item.owningUnit.position, {x: 35-variationX, y: 0});
-                }
+                do {
+                    dropPosition = {x: item.owningUnit.position.x + (Math.random()*60 - 30), y: item.owningUnit.position.y + (Math.random()*60 - 30)}
+                } while (!gameUtils.isPositionWithinPlayableBounds(dropPosition))
 
                 if(item.dropCallback) {
                     var dropAnyway = item.dropCallback(globals.currentGame.mousePosition)
@@ -175,7 +203,7 @@ var itemSystem = function(properties) {
                     }.bind(this))
                 }
 
-                //else return item to it's current location
+                //else attempt to "pickup" again in the items currentSlot or drop
                 if(!found) {
                     if(!prevailingUnit.pickupItem(item, item.currentSlot)) {
                         var variationX = Math.random()*60;

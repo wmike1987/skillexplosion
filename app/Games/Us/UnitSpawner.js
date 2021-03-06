@@ -22,7 +22,7 @@ var unitSpawner = function(enemySets) {
                 runs: enemy.spawn.total,
                 timeLimit: enemy.spawn.hz/(enemy.spawn.atATime || 1),
                 callback: function() {
-                    this.insertIntoPool(enemy.constructor, enemy.constructor({team: 4}));
+                    this.insertIntoPool(enemy.constructor, enemy.constructor({team: globals.currentGame.enemyTeam}));
                 }.bind(this)
             })
             this.timers.push(poolTimer);

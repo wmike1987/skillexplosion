@@ -789,9 +789,9 @@ export default function Medic(options) {
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
-        defenseCooldown: 7000,
+        defenseCooldown: 8000,
         aggressionEventName: 'performHeal',
-        aggressionCooldown: 8000,
+        aggressionCooldown: 7000,
         defenseAction: function(event) {
             event.damageObj.manualDodge = true;
             medic.addDodgeAddition(5);
@@ -926,7 +926,7 @@ export default function Medic(options) {
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'sufferProjectile',
-        defenseCooldown: 5000,
+        defenseCooldown: 3000,
         aggressionEventName: 'performHeal',
         aggressionCooldown: 8000,
         defenseAction: function(event) {

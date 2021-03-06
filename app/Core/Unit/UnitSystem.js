@@ -762,7 +762,7 @@ var UnitSystem = function(properties) {
             }
             if(frontMostUnit) {
                 pastHoveredUnits = [frontMostUnit];
-                frontMostUnit.hover({team: globals.currentGame.playerTeam});
+                frontMostUnit.hover();
                 this.hoveredUnit = frontMostUnit;
             }
         }.bind(this))

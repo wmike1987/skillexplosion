@@ -370,7 +370,7 @@ var game = {
             if(!fulfilled) return;
 
             var unitsOfOpposingTeamExist = false;
-            if(this.unitsByTeam[4] && this.unitsByTeam[4].length > 0) {
+            if(this.unitsByTeam[this.enemyTeam] && this.unitsByTeam[this.enemyTeam].length > 0) {
                 unitsOfOpposingTeamExist = true;
             }
 
@@ -480,6 +480,9 @@ var game = {
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
          gameUtils.moveUnitOffScreen(this.shane);
          s.position = gameUtils.getPlayableCenter();
@@ -500,6 +503,8 @@ var game = {
     createUrsula: function() {
         // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         this.ursula = Medic({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);

@@ -56,7 +56,7 @@ export default function DestructibleBox(options) {
     }];
 
     box.tintMe = function(tint) {
-        this.renderlings.main.tint = 0x918e90;
+        this.renderlings.main.tint = tint;
     }
 
     box.untintMe = function() {

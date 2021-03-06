@@ -72,7 +72,6 @@ var UnitBase = {
             type: 'key'
         }
     },
-    team: 4,
     eventClickMappings: {},
     eventClickStateGathering: {},
     eventKeyMappings: {},
@@ -81,6 +80,9 @@ var UnitBase = {
     currentSpecialtyItems: [null, null, null],
     currentBackpack: [null, null, null],
     dropItemsOnDeath: true,
+    friendlyTint: 0x32ff28,
+    enemyTint: 0x9d2a2a,
+    neutralTint: 0xb8b62d,
 
     sufferAttack: function(damage, attackingUnit, options) {
         if(this.unitRemoved) return;
@@ -187,7 +189,15 @@ var UnitBase = {
     },
 
     pickupItem: function(item, explicitSlot, systemGivenItem) {
+        //verify explicit slot. If it's filled, nullify it so we'll locate a slot
+        if(explicitSlot) {
+            if(!explicitSlot.location[explicitSlot.index].isEmptySlot) {
+                explicitSlot = null;
+            }
+        }
+
         var slot = explicitSlot || this.findItemSlot(item);
+
         if(slot) {
             //set ownership
             item.owningUnit = this;
@@ -211,7 +221,7 @@ var UnitBase = {
         return slot;
     },
 
-    dropItem: function(item) {
+    _dropItem: function(item) {
         if(item.isEmptySlot) return; //do nothing with a blank item
 
         //spawn new item of same type
@@ -233,17 +243,17 @@ var UnitBase = {
     dropAllItems: function() {
         $.each(this.currentItems, function(i, item) {
             if(item) {
-                this.dropItem(item);
+                this._dropItem(item);
             }
         }.bind(this))
         $.each(this.currentSpecialtyItems, function(i, item) {
             if(item) {
-                this.dropItem(item);
+                this._dropItem(item);
             }
         }.bind(this))
         $.each(this.currentBackpack, function(i, item) {
             if(item) {
-                this.dropItem(item);
+                this._dropItem(item);
             }
         }.bind(this))
     },
@@ -512,17 +522,22 @@ var UnitBase = {
         }.bind(this));
 
         //hover Method
-        this.hover = function(event) {
-            if(this.team != event.team) {
+        this.hover = function() {
+            if(this.team == globals.currentGame.enemyTeam) {
                 if(this.tintMe) {
-                    this.tintMe(0xc63e04);
+                    this.tintMe(this.enemyTint);
                 }
-                this.isoManagedTint = 0xc31111;
+                this.isoManagedTint = this.enemyTint;
+            } else if(this.team == globals.currentGame.neutralTeam){
+                if(this.tintMe) {
+                    this.tintMe(this.neutralTint);
+                }
+                this.isoManagedTint = this.neutralTint;
             } else {
                 if(this.tintMe) {
-                    this.tintMe(0x018526);
+                    this.tintMe(this.friendlyTint);
                 }
-                this.isoManagedTint = 0x3afc53;
+                this.isoManagedTint = this.friendlyTint;
             }
 
         };
