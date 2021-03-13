@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js'
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import unitMenu from '@games/Us/UnitMenu.js'
 
-var easyMode = true;
+var easyMode = false;
 var innerMultiplier = 1.0;
 var outerMultiplier = 2.0;
 var outerMobMultiplier = 1.5;
@@ -92,7 +92,16 @@ var enemySetSpecifier = {
                 icon: normal.p,
                 spawn: {total: enemySetSpecs.amount || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySetSpecs.hz || 4500,
                     atATime: enemySetSpecs.atATime || 1, maxOnField: 1}
-            })
+            });
+
+            // //Basic rare
+            // var rare = unitMenu[enemySetSpecs.rare];
+            // enemySets.push({
+            //     constructor: rare.c,
+            //     icon: rare.p,
+            //     spawn: {total: mathArrayUtils.getRandomIntInclusive(rareBottom, rareTop) * multiplier, hz: 2500, maxOnField: 1},
+            //     item: {type: 'rugged', total: mathArrayUtils.getRandomElementOfArray([0,0,0,0,0,0,1])}
+            // })
         }
 
         return enemySets;

@@ -285,6 +285,29 @@ export default function Medic(options) {
         gameUtils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
         Matter.Events.trigger(globals.currentGame, 'secretStep', {performingUnit: this});
 
+        //play smoke animation
+        //play animation
+        var dashAnimation = gameUtils.getAnimation({
+            spritesheetName: 'MarineAnimations1',
+            animationName: 'dash',
+            speed: .2,
+            transform: [this.position.x, this.position.y, 2.5, 2.5]
+        });
+
+        Matter.Events.on(shadow, 'onCollide', function(pair) {
+            var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
+            var otherUnit = otherBody.unit;
+            if(otherUnit && otherUnit == medic) {
+                console.info("WOW");
+            }
+        })
+
+        dashAnimation.play();
+        dashAnimation.alpha = .6;
+        dashAnimation.tint = 0x1d1d1d;
+        dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'south');
+        graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
+
         //create footprints
         var footprintFrequency = currentAugment.name == 'fleet feet' ? 30 : 60;
         var footprintDirection = mathArrayUtils.pointInDirection(this.position, destination);
@@ -372,7 +395,7 @@ export default function Medic(options) {
         title: 'Secret Step',
         description: 'Safely relocate to anywhere on the map.',
         hotkey: 'D',
-        energyCost: 10,
+        energyCost: 0,
         predicates: [function(commandObj) {
             return mathArrayUtils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
         }],

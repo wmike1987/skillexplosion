@@ -115,7 +115,7 @@ var common = {
             $.each(this.vertexHistories, function(index, body) {
                 body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
             }
-        )}.bind(this), true, 'beforeStep');
+        )}.bind(this), true, 'beforeTick');
 
         var maxLagToAccountFor = this.lagCompensation;
         this.addTickCallback(function() {
