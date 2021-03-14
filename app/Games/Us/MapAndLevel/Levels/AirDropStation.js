@@ -162,7 +162,7 @@ var airDropStation = function(options) {
     this.specialTokenName = 'AirDropTokenGleam';
     this.prereqCount = 1;
     options.entrySound = entrySound;
-    this.onCreate(options)
+    // this.onCreate(options)
     this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
     };
@@ -192,7 +192,7 @@ var airDropSpecialStation = function(options) {
     this.specialTokenName = 'AirDropSpecialTokenGleam'
     this.prereqCount = 3;
     options.entrySound = entrySound;
-    this.onCreate(options)
+    // this.onCreate(options)
     this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
     };

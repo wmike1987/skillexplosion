@@ -288,24 +288,16 @@ export default function Medic(options) {
         //play smoke animation
         //play animation
         var dashAnimation = gameUtils.getAnimation({
-            spritesheetName: 'MarineAnimations1',
-            animationName: 'dash',
-            speed: .2,
-            transform: [this.position.x, this.position.y, 2.5, 2.5]
+            spritesheetName: 'MedicAnimations2',
+            animationName: 'medicdash',
+            speed: .6,
+            transform: [this.position.x, this.position.y, 2, 5]
         });
 
-        Matter.Events.on(shadow, 'onCollide', function(pair) {
-            var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
-            var otherUnit = otherBody.unit;
-            if(otherUnit && otherUnit == medic) {
-                console.info("WOW");
-            }
-        })
-
         dashAnimation.play();
-        dashAnimation.alpha = .6;
-        dashAnimation.tint = 0x1d1d1d;
-        dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'south');
+        dashAnimation.alpha = .35;
+        dashAnimation.tint = 0xa2a2a2;
+        dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'north');
         graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
         //create footprints

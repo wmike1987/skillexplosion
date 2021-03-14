@@ -55,7 +55,6 @@ var map = function(specs) {
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
     this.worldSpecs = specs;
-    this.levels = specs.levels;
     this.travelInProgress = false;
     this.graph = [];
 
@@ -64,7 +63,7 @@ var map = function(specs) {
 
     this.addCampNode = function() {
         //Add the camp node
-        var mainCamp = levelFactory.create('camp', this.worldSpecs.worldSpecs);
+        var mainCamp = levelFactory.create('camp', this.worldSpecs);
         var initialCampNode = new MapLevelNode({levelDetails: mainCamp, mapRef: this,tokenSize: 50, largeTokenSize: 55,
             travelPredicate: function() {
                 return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
@@ -156,8 +155,8 @@ var map = function(specs) {
         this.graph.push(initialCampNode);
     }
 
-    this.addMapNode = function(levelType) {
-        var level = levelFactory.create(levelType, this.worldSpecs.worldSpecs);
+    this.addMapNode = function(levelType, options) {
+        var level = levelFactory.create(levelType, this.worldSpecs, options);
 
         //Determine position
         var position;

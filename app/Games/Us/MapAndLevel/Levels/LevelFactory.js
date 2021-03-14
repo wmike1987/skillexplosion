@@ -10,61 +10,59 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
 
 var levelFactory = {
-    create: function(type, worldSpecs) {
-        var TypeMapping = levelTypeMappings[type];
+    create: function(type, worldSpecs, options) {
+        var options = options || {outer: false};
+        var TypeMapping = specialtyLevels[type];
         if(TypeMapping) {
-            return new TypeMapping(worldSpecs);
+            var level = new TypeMapping(worldSpecs);
+            level.onCreate(type, worldSpecs, options);
+            return level;
         } else {
             var levelObj = Object.create(levelBase);
             levelObj.type = type;
             levelObj.tileSize = 225;
-            levelObj.onCreate(worldSpecs);
-            var customEnemySetConfig = worldSpecs.enemySets[type];
-            levelObj.enemySets = EnemySetSpecifier.create({type: type, worldSpecs: worldSpecs});
+            levelObj.onCreate(type, worldSpecs, options);
+            levelObj.enemySets = EnemySetSpecifier.create(type, worldSpecs, options);
             return levelObj;
         }
     }
 }
 
-//Common Level types
-var singles = function(worldSpecs) {
-    this.type = 'singles';
-    this.onCreate(worldSpecs)
-    this.tileSize = 225;
-    this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
-}
-singles.prototype = levelBase;
-
-var hardened = function(worldSpecs) {
-    this.type = 'hardened';
-    this.onCreate(worldSpecs)
-    this.tileSize = 225;
-    this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
-}
-hardened.prototype = levelBase;
-
-var mobs = function(worldSpecs) {
-    this.type = 'mobs';
-    this.onCreate(worldSpecs)
-    this.tileSize = 225;
-    this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
-}
-mobs.prototype = levelBase;
-
-var camp = function(worldSpecs) {
-    this.type = 'camp';
-    this.onCreate(worldSpecs)
+// //Common Level types
+// var singles = function(worldSpecs, options) {
+//     this.type = 'singles';
+//     this.onCreate(worldSpecs)
+//     this.tileSize = 225;
+//     this.enemySets = EnemySetSpecifier.create(type, worldSpecs);
+// }
+// singles.prototype = levelBase;
+//
+// var hardened = function(worldSpecs) {
+//     this.type = 'hardened';
+//     this.onCreate(worldSpecs)
+//     this.tileSize = 225;
+//     this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
+// }
+// hardened.prototype = levelBase;
+//
+// var mobs = function(worldSpecs) {
+//     this.type = 'mobs';
+//     this.onCreate(worldSpecs)
+//     this.tileSize = 225;
+//     this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
+// }
+// mobs.prototype = levelBase;
+//
+var camp = function(worldSpecs, options) {
+    this.onCreate('camp', worldSpecs, options)
     this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'GoToCamp', {node: node});
     }
 }
 camp.prototype = levelBase;
 
-var levelTypeMappings = {
-    singles: singles,
-    hardened: hardened,
+var specialtyLevels = {
     camp: camp,
-    mobs: mobs,
     airDropStations: airDropStation,
     airDropSpecialStations: airDropSpecialStation,
     multiLevel: multiLevel,

@@ -18,7 +18,8 @@ var levelBase = {
         return this.entrySound;
     },
     enemySets: [],
-    onCreate: function(worldSpecs) {
+    onCreate: function(type, worldSpecs, options) {
+        this.type = type;
         this.worldSpecs = Object.assign({}, worldSpecs);
         this.tileTint = mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
         this.entrySound = worldSpecs.entrySound;

@@ -80,41 +80,32 @@ var campConstructor = function() {
 
 
 var noirEnemySets = {
-    basic: {normal: 'Critter', amount: 6, atATime: 2, hz: 4500, rare: 'Sentinel'},
-    hardened: {normal: 'Gargoyle'},
-    mobs: {normal: 'Eruptlet', rare: 'Sentinel'},
-    sentinels: {normal: 'Sentinel', amount: 6, atATime: 3, hz: 4500},
+    basic: [{type: 'Critter', amount: 6, atATime: 2, hz: 4000}, {type: 'Sentinel', amount: 3, atATime: 1, hz: 4500}],
+    outerBasic: [{type: 'Critter', amount: 12, atATime: 2, hz: 4000}, {type: 'Sentinel', amount: 3, atATime: 1, hz: 4000}],
+    hardened: [{type: 'Gargoyle', amount: 4, atATime: 1, hz: 2500}],
+    outerHardened: [{type: 'Gargoyle', amount: 8, atATime: 2, hz: 4500}],
+    mobs: [{type: 'Eruptlet', amount: 25, atATime: 5, hz: 5000}],
+    outerMobs: [{type: 'Eruptlet', amount: 50, atATime: 10, hz: 4000}, {type: 'Sentinel', amount: 3, atATime: 1, hz: 6000}],
+    sentinels: [{type: 'Sentinel', amount: 6, atATime: 3, hz: 4500}],
+    outerSentinels: [{type: 'Sentinel', amount: 10, atATime: 2, hz: 5000}],
 }
 
 var map = {
-    options: {
-        levels: {
-            // singles: 4,
-            // hardened: 0,
-            // sentinels: 1,
-            // // boss: 1,
-            // // norevives: 1,
-            // mobs: 0,
-            // airDropStations: 1,
-            // multiLevel: 1,
-            // airDropSpecialStations: 1,
-        },
-        worldSpecs: {
-            enemySets: noirEnemySets,
-            tileSize: tileSize,
-            acceptableTileTints: acceptableTileTints,
-            getLevelTiles: levelTiles,
-            possibleTrees: possibleTrees,
-            levelTileExtension: function(scene, tint) {
-                tileExtension(scene, tint);
-                var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
-                scene.add(l1);
-            }
+    worldSpecs: {
+        enemySets: noirEnemySets,
+        tileSize: tileSize,
+        acceptableTileTints: acceptableTileTints,
+        getLevelTiles: levelTiles,
+        possibleTrees: possibleTrees,
+        levelTileExtension: function(scene, tint) {
+            tileExtension(scene, tint);
+            var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', .2);
+            scene.add(l1);
         }
     },
 
     initializeMap: function() {
-        this.map = new Map(this.options);
+        this.map = new Map(this.worldSpecs);
         return this.map;
     },
 

@@ -18,7 +18,7 @@ var multiLevel = function(options) {
     var multiRef = this;
     var backgroundNodeTint = 0x3c002f;
     this.chain = [];
-    this.levelTypes = options.levelTypes || ['singles', 'hardened', 'mobs'];
+    this.levelTypes = options.levelTypes || ['basic', 'hardened', 'mobs'];
 
     this.levelTypes.forEach((type) => {
         this.chain.push(levelFactory.create(type, options));
