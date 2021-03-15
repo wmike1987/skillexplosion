@@ -387,7 +387,7 @@ export default function Medic(options) {
         title: 'Secret Step',
         description: 'Safely relocate to anywhere on the map.',
         hotkey: 'D',
-        energyCost: 0,
+        energyCost: 10,
         predicates: [function(commandObj) {
             return mathArrayUtils.distanceBetweenPoints(commandObj.command.target, commandObj.command.unit.position) != 0;
         }],
@@ -657,8 +657,8 @@ export default function Medic(options) {
         },
         {
             name: 'lightest touch',
-            rangeDelta: 40,
-            healDelta: 1.0,
+            rangeDelta: 60,
+            healDelta: 1.5,
             icon: graphicsUtils.createDisplayObject('LightestTouch'),
             title: 'Lightest Touch',
             description: 'Increase healing range and healing amount.',

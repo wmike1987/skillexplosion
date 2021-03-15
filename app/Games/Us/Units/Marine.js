@@ -295,8 +295,8 @@ export default function Marine(options) {
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
 
     //crit
-    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: .18, rate: .9});
-    var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: .08, rate: .7});
+    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: .03, rate: 1.0});
+    var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: .00, rate: .5});
 
     //death
     var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});

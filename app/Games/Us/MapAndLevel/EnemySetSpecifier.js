@@ -30,7 +30,7 @@ var enemySetSpecifier = {
                     constructor: constructor.c,
                     wave: 1,
                     icon: constructor.p,
-                    spawn: {total: enemySpec.amount || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
+                    spawn: {total: enemySpec.amount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
                         atATime: enemySpec.atATime || 1, maxOnField: 1}
                 });
             })

@@ -64,7 +64,7 @@ export default function DestructibleBox(options) {
     }
 
     var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
+    var deathSound = gameUtils.getSound('boxexplode.wav', {volume: .025, rate: 1.75});
 
     var unitProperties = $.extend({
         unitType: 'Box',
