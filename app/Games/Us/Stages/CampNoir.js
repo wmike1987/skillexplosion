@@ -111,13 +111,13 @@ var map = {
 
     phaseOne: function() {
         this.map.addCampNode();
-        this.map.addMapNode('sentinels');
-        this.map.addMapNode('airDropStations');
+        // this.map.addMapNode('shaneLearning', {position: {x: 200, y: 180}, levelId: 'shaneLearning'});
         this.map.addMapNode('mobs');
         this.map.addMapNode('basic');
         this.map.addMapNode('basic');
-        this.map.addMapNode('basic');
-        this.map.addMapNode('multiLevel');
+        this.map.addMapNode('airDropStations');
+        // this.map.addMapNode('basic');
+        // this.map.addMapNode('multiLevel');
     },
 
     phaseTwo: function() {

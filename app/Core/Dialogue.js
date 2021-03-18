@@ -44,6 +44,8 @@ var Dialogue = function Dialogue(options) {
         pictureDelay: 0,
         pictureStyle: pictureStyles.FADE_IN,
         picturePosition: {x: gameUtils.getPlayableWidth()*4/5, y: gameUtils.getCanvasHeight()/2},
+        pictureFadeSpeed: 5, //this is measured in letters since we approach opache per callback of the text timer
+        picutreOffset: {x: 0, y: 0},
     }
     $.extend(this, defaults, options);
 
@@ -109,9 +111,13 @@ var Dialogue = function Dialogue(options) {
         this.realizedText.resolution = 2;
 
         if(this.picture) {
-          this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {alpha: 0, position: this.picturePosition, where: "hudText"});
-          this.realizedPictureBorder = graphicsUtils.createDisplayObject("CinemaBorder", {alpha: 0, position: this.picturePosition, where: "hudText"});
-          this.realizedPictureBorder.tint = 0x919191;
+            var picPosition = mathArrayUtils.clonePosition(this.picturePosition, this.pictureOffset);
+            this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {alpha: 0, position: picPosition, where: "hudText"});
+            this.realizedPictureBorder = graphicsUtils.createDisplayObject("CinemaBorder", {alpha: 0, position: picPosition, where: "hudText"});
+            if(this.pictureSize) {
+                graphicsUtils.makeSpriteSize(this.realizedPictureBorder, this.pictureSize);
+            }
+            this.realizedPictureBorder.tint = 0x919191;
         }
 
         if(this.backgroundBox) {
@@ -135,13 +141,14 @@ var Dialogue = function Dialogue(options) {
             }
 
             //fade in picture
-            var fadeOverLetters = 5;
-            if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger) || d.pictureTriggeredFromWord) {
+            if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger)
+             || d.pictureTriggeredFromWord
+             || (d.realizedPicture && d.skipped)) {
                 graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
                 graphicsUtils.addOrShowDisplayObject(d.realizedPictureBorder);
                 if(d.realizedPicture.alpha < 1.0) {
-                  d.realizedPicture.alpha += 1/fadeOverLetters;
-                  d.realizedPictureBorder.alpha += 1/fadeOverLetters;
+                  d.realizedPicture.alpha += 1/d.pictureFadeSpeed;
+                  d.realizedPictureBorder.alpha += 1/d.pictureFadeSpeed;
                 }
             }
 

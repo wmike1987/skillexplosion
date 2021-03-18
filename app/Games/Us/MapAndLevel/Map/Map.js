@@ -156,25 +156,29 @@ var map = function(specs) {
     }
 
     this.addMapNode = function(levelType, options) {
+        options = options || {};
         var level = levelFactory.create(levelType, this.worldSpecs, options);
 
         //Determine position
-        var position;
+        var position = options.position;
         var collision;
         var nodeBuffer = 100;
-        do {
-            collision = false;
-            position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
-            for(let node of this.graph) {
-                if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
-                    collision = true;
-                    break;
+        if(!position) {
+            do {
+                collision = false;
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
+                for(let node of this.graph) {
+                    if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
+                        collision = true;
+                        break;
+                    }
                 }
-            }
-        } while(collision)
+            } while(collision)
+        }
 
         //air drop station needs the position upon init to determine its prerequisites
         var mapNode = level.createMapNode({levelDetails: level, mapRef: this, position: position});
+        level.mapNode = mapNode; //add back reference
 
         if(level.manualSetPosition) {
             level.manualSetPosition(position);
@@ -264,13 +268,21 @@ var map = function(specs) {
         }.bind(this));
         console.info(this.headTokenBody.velocity);
         Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node, headVelocity: this.headTokenBody.velocity, startingFatigue: this.startingFatigue});
-    }
+    },
 
     this.revertHeadToPreviousLocationDueToDefeat = function() {
         Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {y: 20}));
         this.currentNode = this.lastNode;
         this.startingFatigue -= 5;
         Matter.Events.trigger(globals.currentGame, "TravelReset", {resetToNode: this.lastNode});
+    },
+
+    this.findLevelById = function(id) {
+        if(!this.graph) return null;
+        var levelNode = this.graph.find(node => {
+            return id == node.levelDetails.levelId;
+        });
+        return levelNode.levelDetails;
     }
 }
 export default map;

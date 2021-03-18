@@ -550,7 +550,7 @@ var renderer = function(engine, options) {
 			graphics.drawPolygon(vertices);
 		}
 		graphics.endFill();
-		this.addToPixiStage(graphics);
+		this.addToPixiStage(graphics, 'hud');
 	};
 }
 

@@ -290,7 +290,7 @@ export default function Medic(options) {
         var dashAnimation = gameUtils.getAnimation({
             spritesheetName: 'MedicAnimations2',
             animationName: 'medicdash',
-            speed: .6,
+            speed: .5,
             transform: [this.position.x, this.position.y, 2, 5]
         });
 

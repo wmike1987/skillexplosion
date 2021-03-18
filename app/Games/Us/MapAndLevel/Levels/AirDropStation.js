@@ -162,10 +162,18 @@ var airDropStation = function(options) {
     this.specialTokenName = 'AirDropTokenGleam';
     this.prereqCount = 1;
     options.entrySound = entrySound;
-    // this.onCreate(options)
     this.enterLevel = function(node) {
-        Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
+        Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {level: node.levelDetails});
     };
+
+    this.onInitLevel = function(scene) {
+        var game = globals.currentGame;
+        game.campLikeActive = true;
+        game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
+        game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
+        this.startAirDrop(scene);
+    },
+
     this.tileSize = 225;
 
     this.startAirDrop = function(scene) {
@@ -192,7 +200,6 @@ var airDropSpecialStation = function(options) {
     this.specialTokenName = 'AirDropSpecialTokenGleam'
     this.prereqCount = 3;
     options.entrySound = entrySound;
-    // this.onCreate(options)
     this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
     };

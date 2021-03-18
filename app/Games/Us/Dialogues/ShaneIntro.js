@@ -16,14 +16,17 @@ var ShaneIntro = function(options) {
         ds.push(new Dialogue({blinkLastLetter: false, title: true, text: "Somewhere on planet Mega...", delayAfterEnd: 2000}));
         ds.push(new Dialogue({actor: "MacMurray", text: "Shane, your pod must have touched down by now... do you read me?", letterSpeed: 30}));
         ds.push(new Dialogue({text: "...", delayAfterEnd: 1000}));
-        ds.push(new Dialogue({text: "...", delayAfterEnd: 2000}));
+        ds.push(new Dialogue({text: "...", delayAfterEnd: 4500, picture: 'HappyLanding.png', pictureDelay: 2250,
+            pictureSize: 256,
+            pictureFadeSpeed: 25,
+            pictureOffset: {x: 50, y: -150}}));
         ds.push(new Dialogue({actor: "Shane",
             actionText: {word: "Grunts", actionDuration: 1500, leaveTrace: true}}));
         ds.push(new Dialogue({actor: "MacMurray",
             text: "There you are, are you intact?",
             actionText: {word: "Sighs", actionDuration: 1200, fadeOutOnly: true},
             delayAfterEnd: 0,
-            pauseAfterWord: {word: 'are,', duration: 800}}));
+            pauseAfterWord: {word: 'are,', duration: 650}}));
         ds.push(new Dialogue({actor: "Shane",
             actorIdleSpeed: 500,
             actorIdleTime: 3,
@@ -36,6 +39,11 @@ var ShaneIntro = function(options) {
             interrupt: true,
             pauseAfterWord: {word: 'know.', duration: 950},
             text: "I know. That's why I've sent you to Mega.",
+            picture: 'ThePlanet.png',
+            pictureWordTrigger: 'Mega',
+            pictureSize: 256,
+            pictureFadeSpeed: 10,
+            pictureOffset: {x: 50, y: -150},
             delayAfterEnd: 700,
             speedChangeAfterWord: {word: 'know.', speed: 80}}));
         ds.push(new Dialogue({actor: "Shane",

@@ -1,0 +1,28 @@
+{"frames": {
+
+"SpearmanPortrait.png":
+{
+	"frame": {"x":1,"y":1,"w":90,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
+	"sourceSize": {"w":90,"h":90}
+},
+"SpearmanWireframe.png":
+{
+	"frame": {"x":93,"y":1,"w":90,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
+	"sourceSize": {"w":90,"h":90}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Spearman.png",
+	"format": "RGBA8888",
+	"size": {"w":184,"h":92},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:164e1678650ed464170fd53accd8c2c4:c56b5b292fdb6e5fee5a6c81bb9b158d:1d800f338b8442bb7e14276ef7932227$"
+}
+}

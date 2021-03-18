@@ -1,0 +1,28 @@
+{"frames": {
+
+"GhostPortrait.png":
+{
+	"frame": {"x":1,"y":1,"w":90,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
+	"sourceSize": {"w":90,"h":90}
+},
+"GhostWireframe.png":
+{
+	"frame": {"x":93,"y":1,"w":90,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":90},
+	"sourceSize": {"w":90,"h":90}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Ghost.png",
+	"format": "RGBA8888",
+	"size": {"w":184,"h":92},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4333c68670ccae5922ecff7c2c98195b:407eaea1d1bd7225d41fdde732040160:ff3e9a8b54142e62d75cddf875b0748d$"
+}
+}

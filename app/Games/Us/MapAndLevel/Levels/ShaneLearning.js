@@ -16,11 +16,26 @@ var entrySound = gameUtils.getSound('enterairdrop1.wav', {volume: .04, rate: 1})
 var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volume: .03, rate: 1});
 
 //Create the air drop base
-var shaneLearning = Object.create(levelBase);
 
-shaneLearning.createMapNode = function(options) {
+var shaneLearning = function(options) {
 
-    return mapNode;
+    this.createTerrainExtension = function(scene) {
+        var podDoodad = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 130, texture: ['LandingPod'], stage: 'stage',
+        scale: {x: .6, y: .6}, offset: {x: 0, y: 30}, sortYOffset: 10,
+        shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
+        position: {x: gameUtils.getCanvasCenter().x-200, y: gameUtils.getPlayableHeight()-500}})
+        scene.add(podDoodad);
+    }
+
+    this.enterLevel = function() {
+        Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {level: this});
+    }
+
+    this.onInitLevel = function() {
+        globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});
+    }
+
 }
+shaneLearning.prototype = levelBase;
 
 export {shaneLearning};

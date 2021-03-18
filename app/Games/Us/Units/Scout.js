@@ -244,7 +244,7 @@ export default function Scout(options) {
     var deathSound = gameUtils.getSound('spearmandeathsound.wav', {volume: .1, rate: 1.0});
 
     var unitProperties = $.extend({
-        unitType: 'Critter',
+        unitType: 'Scout',
         health: 20,
         defense: 1,
         energy: 0,
@@ -254,8 +254,8 @@ export default function Scout(options) {
         hitboxHeight: 40,
         hitboxYOffset: 5,
         itemsEnabled: true,
-        portrait: graphicsUtils.createDisplayObject('CritterPortrait'),
-        wireframe: graphicsUtils.createDisplayObject('CritterGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('SpearmanPortrait'),
+        wireframe: graphicsUtils.createDisplayObject('SpearmanWireframe'),
         team: options.team || 4,
         priority: 50,
         name: options.name,

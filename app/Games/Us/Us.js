@@ -45,7 +45,8 @@ var game = {
     enableItemSystem: true,
     noClickIndicator: true,
     hideScore: true,
-    camps: [CampNoir],
+    currentWorldIndex: 0,
+    worlds: [CampNoir],
     levelLocalEntities: [],
     currentCamp: null,
     currentScene: null,
@@ -86,8 +87,8 @@ var game = {
         Matter.Events.on(this, 'GoToCamp', function(event) {
             this.gotoCamp();
         }.bind(this));
-        Matter.Events.on(this, 'InitAirDrop', function(event) {
-            this.initAirDrop(event.node);
+        Matter.Events.on(this, 'InitCustomLevel', function(event) {
+            this.initCustomLevel(event.level);
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
@@ -134,11 +135,15 @@ var game = {
 
     play: function(options) {
 
-        // var shaneIntro = new ShaneIntro({done: this.postInit.bind(this)});
-        // this.currentScene.transitionToScene(shaneIntro.scene);
-        // shaneIntro.play();
+        var shaneIntro = new ShaneIntro({done: () => {
+            this.postInit();
+            // this.initNextMap();
+            // this.initShane();
+        }});
+        this.currentScene.transitionToScene(shaneIntro.scene);
+        shaneIntro.play();
 
-        this.postInit();
+        // this.postInit();
         return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
@@ -185,28 +190,39 @@ var game = {
         titleScene.initializeScene();
     },
 
-    postInit: function() {
-        //create our units
+    initNextMap: function() {
+        this.currentWorld = this.worlds[this.currentWorldIndex++];
+        this.currentCamp = this.currentWorld.campConstructor;
+        this.map = this.currentWorld.map.initializeMap();
+        this.currentWorld.map.phaseOne();
+    },
+
+    initShane: function() {
         this.createShane();
-        this.createUrsula();
         this.addUnit(this.shane);
-        this.addUnit(this.ursula);
+        this.gotoLevelById('shaneLearning');
+    },
 
+    postInit: function() {
         //create empty scene and transition to camp scene
-        this.currentStage = this.camps[0];
-        this.currentCamp = this.currentStage.campConstructor;
-
-        //generate map
-        this.map = this.currentStage.map.initializeMap();
-        this.currentStage.map.phaseOne();
 
         //for troubleshooting victory screen
         // this.gotoEndLevelScreen();
+        this.initNextMap();
+        this.createShane();
+        this.addUnit(this.shane);
+        this.createUrsula();
+        this.addUnit(this.ursula);
         this.gotoCamp();
     },
 
+    gotoLevelById: function(id) {
+        var level = this.map.findLevelById('shaneLearning');
+        level.enterLevel();
+    },
+
     gotoCamp: function() {
-        var camp = new this.currentCamp;
+        var camp = new this.currentCamp();
         var cameScene = camp.initializeCamp();
         this.currentScene.transitionToScene(cameScene);
         Matter.Events.on(cameScene, 'afterSnapshotRender', () => {
@@ -293,13 +309,14 @@ var game = {
 
     initCurrentLevel: function() {
         //create new scene
-        var nextLevelScene = this.createNextLevelTerrain(this.currentLevel);
-        this.currentScene.transitionToScene(nextLevelScene);
+        var scene = new Scene();
+        this.currentLevel.createTerrain(scene);
+        this.currentScene.transitionToScene(scene);
         this.campLikeActive = false;
-        Matter.Events.on(nextLevelScene, 'afterSnapshotRender', function() {
+        Matter.Events.on(scene, 'afterSnapshotRender', function() {
             this.closeMap();
         }.bind(this))
-        Matter.Events.on(nextLevelScene, 'initialize', function() {
+        Matter.Events.on(scene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
             this.unitSystem.pause();
             gameUtils.setCursorStyle('None');
@@ -415,34 +432,25 @@ var game = {
         }.bind(this))
     },
 
-    initAirDrop: function(node) {
-        this.currentLevel = node.levelDetails;
+    initCustomLevel: function(level) {
+        this.currentLevel = level;
 
         //mark node as completed
-        node.complete();
+        level.mapNode.complete();
 
-        //camp-like area active
-        this.campLikeActive = true;
-
-        //create new scene
-        var airDropScene = new Scene();
+        var scene = new Scene();
 
         //Init trees/doodads
-        this.currentLevel.createTerrain(airDropScene);
-        // this.currentLevel.createTrees(airDropScene);
-        this.currentScene.transitionToScene(airDropScene);
+        this.currentLevel.createTerrain(scene);
+        this.currentScene.transitionToScene(scene);
 
-        Matter.Events.on(airDropScene, 'afterSnapshotRender', function() {
+        Matter.Events.on(scene, 'afterSnapshotRender', function() {
             this.closeMap();
         }.bind(this))
-        Matter.Events.on(airDropScene, 'initialize', function() {
+        Matter.Events.on(scene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            this.currentLevel.startAirDrop(airDropScene);
-            this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), this.offscreenStartLocation), moveToCenter: true});
-            this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), this.offscreenStartLocation), moveToCenter: true});
-            var game = this;
+            level.onInitLevel(scene);
         }.bind(this))
-        this.level += 1;
     },
 
     removeAllEnemyUnits: function() {
@@ -464,13 +472,6 @@ var game = {
         this.levelLocalEntities = [];
     },
 
-    //Probably don't really need this anymore
-    createNextLevelTerrain: function(levelObj) {
-        var scene = new Scene();
-        levelObj.createTerrain(scene);
-        return scene;
-    },
-
     createShane: function() {
          var s = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
          this.shane = s;
@@ -490,11 +491,11 @@ var game = {
 
          // var u = this.createUnit('Ghost');
          // this.addUnit(u);
-         var p = this.createUnit('DestructibleBox', this.neutralTeam);
-
-         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: p});
-         this.addUnit(p);
-         p.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: 100});
+         // var p = this.createUnit('DestructibleBox', this.neutralTeam);
+         //
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: p});
+         // this.addUnit(p);
+         // u.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: 100});
          // p.position = {x: 300, y: 300};
 
          return s;
@@ -601,7 +602,9 @@ game.assets = [
     {name: "Eruptlet", target: "Textures/Us/Eruptlet.json"},
     {name: "EruptletAnimations1", target: "Textures/Us/EruptletAnimations1.json"},
     {name: "Gargoyle", target: "Textures/Us/Gargoyle.json"},
+    {name: "Spearman", target: "Textures/Us/Spearman.json"},
     {name: "SpearmanAnimations1", target: "Textures/Us/SpearmanAnimations1.json"},
+    {name: "Ghost", target: "Textures/Us/Ghost.json"},
 
     //items
     {name: "Items", target: "Textures/Us/Items.json"},

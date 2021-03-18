@@ -5,6 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js'
 import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js'
 import {airDropStation, airDropSpecialStation} from '@games/Us/MapAndLevel/Levels/AirDropStation.js'
+import {shaneLearning} from '@games/Us/MapAndLevel/Levels/ShaneLearning.js'
 import {multiLevel} from '@games/Us/MapAndLevel/Levels/MultiLevel.js'
 import {globals} from '@core/Fundamental/GlobalState.js'
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
@@ -12,7 +13,7 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
 var levelFactory = {
     create: function(type, worldSpecs, options) {
         var options = options || {outer: false};
-        var TypeMapping = specialtyLevels[type];
+        var TypeMapping = predefinedTypes[type];
         if(TypeMapping) {
             var level = new TypeMapping(worldSpecs);
             level.onCreate(type, worldSpecs, options);
@@ -28,31 +29,6 @@ var levelFactory = {
     }
 }
 
-// //Common Level types
-// var singles = function(worldSpecs, options) {
-//     this.type = 'singles';
-//     this.onCreate(worldSpecs)
-//     this.tileSize = 225;
-//     this.enemySets = EnemySetSpecifier.create(type, worldSpecs);
-// }
-// singles.prototype = levelBase;
-//
-// var hardened = function(worldSpecs) {
-//     this.type = 'hardened';
-//     this.onCreate(worldSpecs)
-//     this.tileSize = 225;
-//     this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
-// }
-// hardened.prototype = levelBase;
-//
-// var mobs = function(worldSpecs) {
-//     this.type = 'mobs';
-//     this.onCreate(worldSpecs)
-//     this.tileSize = 225;
-//     this.enemySets = EnemySetSpecifier.create({type: this.type, possibleEnemies: worldSpecs.enemySets});
-// }
-// mobs.prototype = levelBase;
-//
 var camp = function(worldSpecs, options) {
     this.onCreate('camp', worldSpecs, options)
     this.enterLevel = function(node) {
@@ -61,11 +37,12 @@ var camp = function(worldSpecs, options) {
 }
 camp.prototype = levelBase;
 
-var specialtyLevels = {
+var predefinedTypes = {
     camp: camp,
     airDropStations: airDropStation,
     airDropSpecialStations: airDropSpecialStation,
     multiLevel: multiLevel,
+    shaneLearning: shaneLearning,
 }
 
 export {levelFactory};
