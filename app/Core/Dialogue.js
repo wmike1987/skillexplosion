@@ -15,7 +15,6 @@ var pictureStyles = {
  *   textBeginPosition
  *   letterSpeed
  *   pauseAtPeriods
- *   stallInfinite
  *   style
  *   picture
  *   pictureDelay
@@ -265,10 +264,17 @@ var Dialogue = function Dialogue(options) {
                 if(currentLetter == d.text.length) {
                     d.resolveTime = this.totalElapsedTime + d.delayAfterEnd;
                     if(d.skipped) {
-                        d.resolveTime = 0;
+                        d.resolveTime = 0; //this basically voids any delayAfterEnd
                     }
                 }
-            } else if(!d.stallInfinite && this.totalElapsedTime >= d.resolveTime){
+            } else if(this.totalElapsedTime >= d.resolveTime){
+                if(d.withholdResolve) {
+                    return;
+                }
+                if(d.fadeOutAfterDone) {
+                    d.realizedText.alpha = .2;
+                    d.realizedActorText.alpha = .2;
+                }
                 d.deferred.resolve();
             }
         }})

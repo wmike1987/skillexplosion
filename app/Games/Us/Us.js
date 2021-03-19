@@ -136,9 +136,9 @@ var game = {
     play: function(options) {
 
         var shaneIntro = new ShaneIntro({done: () => {
-            this.postInit();
-            // this.initNextMap();
-            // this.initShane();
+            // this.postInit();
+            this.initNextMap();
+            this.initShane();
         }});
         this.currentScene.transitionToScene(shaneIntro.scene);
         shaneIntro.play();
