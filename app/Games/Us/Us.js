@@ -480,7 +480,7 @@ var game = {
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
-         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
@@ -512,11 +512,11 @@ var game = {
         return this.ursula;
     },
 
-    createUnit: function(constructorName, team) {
-        var unit = UnitMenu[constructorName].c({team: team || this.playerTeam});
-        gameUtils.moveUnitOffScreen(unit);
-        return unit;
-    },
+    // createUnit: function(constructorName, team) {
+    //     var unit = UnitMenu[constructorName].c({team: team || this.playerTeam});
+    //     gameUtils.moveUnitOffScreen(unit);
+    //     return unit;
+    // },
 
     //used just for shane/urs
     setUnit: function(unit, options) {

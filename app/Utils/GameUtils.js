@@ -264,9 +264,13 @@ var gameUtils = {
         }
     },
 
-    matterOnce: function(obj, eventName, callback) {
+    matterOnce: function(obj, eventName, callback, options) {
+        options = options || {};
         var wrappedFunction = function(event) {
-            callback(event);
+            var result = callback(event);
+            if(options.conditionalOff && !result) {
+                return;
+            }
             Matter.Events.off(obj, eventName, wrappedFunction);
         }
         var removeFunction = function() {

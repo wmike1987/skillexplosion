@@ -168,6 +168,7 @@ export default {
 
         //move unit, rawly
         this.rawMove(this.attackMoveDestination, commandObj);
+        Matter.Events.trigger(this, 'attackMove', {destination: destination});
 
         //become alert to nearby enemies
         this._becomeOnAlert(commandObj);

@@ -274,6 +274,7 @@ var Dialogue = function Dialogue(options) {
                 if(d.fadeOutAfterDone) {
                     d.realizedText.alpha = .2;
                     d.realizedActorText.alpha = .2;
+                    d.backgroundBox.alpha = .5;
                 }
                 d.deferred.resolve();
             }

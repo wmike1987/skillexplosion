@@ -217,6 +217,7 @@ var UnitBase = {
             item.currentSlot = slot;
 
             Matter.Events.trigger(globals.currentGame.itemSystem, 'pickupItem', {item: item, unit: this});
+            Matter.Events.trigger(this, 'pickupItem', {item: item});
         }
         return slot;
     },

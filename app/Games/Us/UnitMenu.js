@@ -9,6 +9,7 @@ import Gargoyle from '@games/Us/Units/Gargoyle.js'
 import Scout from '@games/Us/Units/Scout.js'
 import Ghost from '@games/Us/Units/Ghost.js'
 import DestructibleBox from '@games/Us/Units/DestructibleBox.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 
 var unitMenu = {};
 unitMenu['EnemyMarine'] = {c: EnemyMarine, p: 'MarinePortrait'},
@@ -22,5 +23,11 @@ unitMenu['Gargoyle'] = {c: Gargoyle, p: 'GargoylePortrait'};
 unitMenu['Scout'] = {c: Scout, p: 'GargoylePortrait'};
 unitMenu['Ghost'] = {c: Ghost, p: 'GargoylePortrait'};
 unitMenu['DestructibleBox'] = {c: DestructibleBox, p: 'GargoylePortrait'};
+
+unitMenu.createUnit = function(constructor, team) {
+    var unit = this[constructor].c({team: team || this.playerTeam});
+    gameUtils.moveUnitOffScreen(unit);
+    return unit;
+}
 
 export default unitMenu;
