@@ -24,8 +24,9 @@ unitMenu['Scout'] = {c: Scout, p: 'GargoylePortrait'};
 unitMenu['Ghost'] = {c: Ghost, p: 'GargoylePortrait'};
 unitMenu['DestructibleBox'] = {c: DestructibleBox, p: 'GargoylePortrait'};
 
-unitMenu.createUnit = function(constructor, team) {
-    var unit = this[constructor].c({team: team || this.playerTeam});
+unitMenu.createUnit = function(constructor, options) {
+    var unit = this[constructor].c(options);
+
     gameUtils.moveUnitOffScreen(unit);
     return unit;
 }

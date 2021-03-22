@@ -66,7 +66,7 @@
 },
 "AugmentBorder.png":
 {
-	"frame": {"x":1717,"y":948,"w":36,"h":36},
+	"frame": {"x":1717,"y":901,"w":36,"h":36},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":36,"h":36},
@@ -114,7 +114,7 @@
 },
 "backpack.png":
 {
-	"frame": {"x":1707,"y":654,"w":32,"h":46},
+	"frame": {"x":1679,"y":2005,"w":32,"h":46},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":46},
@@ -186,7 +186,7 @@
 },
 "Container1Middle.png":
 {
-	"frame": {"x":1679,"y":1821,"w":24,"h":62},
+	"frame": {"x":1679,"y":1887,"w":24,"h":62},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":14,"w":24,"h":62},
@@ -218,8 +218,8 @@
 },
 "doubletire.png":
 {
-	"frame": {"x":1679,"y":1939,"w":51,"h":42},
-	"rotated": true,
+	"frame": {"x":1709,"y":602,"w":51,"h":42},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":51,"h":42},
 	"sourceSize": {"w":51,"h":42}
@@ -258,11 +258,19 @@
 },
 "FireMapToken.png":
 {
-	"frame": {"x":1717,"y":896,"w":49,"h":50},
+	"frame": {"x":1717,"y":849,"w":49,"h":50},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":49,"h":50},
 	"sourceSize": {"w":50,"h":50}
+},
+"FocusZone.png":
+{
+	"frame": {"x":1679,"y":1821,"w":64,"h":32},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":17,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":64}
 },
 "gunrack.png":
 {
@@ -274,7 +282,7 @@
 },
 "HeadToken.png":
 {
-	"frame": {"x":1717,"y":986,"w":44,"h":24},
+	"frame": {"x":1717,"y":939,"w":44,"h":24},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":11,"w":44,"h":24},
@@ -290,7 +298,7 @@
 },
 "LevelCompletedToken.png":
 {
-	"frame": {"x":1709,"y":602,"w":50,"h":50},
+	"frame": {"x":1762,"y":601,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -298,7 +306,7 @@
 },
 "LockIcon.png":
 {
-	"frame": {"x":1717,"y":1068,"w":32,"h":32},
+	"frame": {"x":1717,"y":1021,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -306,7 +314,7 @@
 },
 "Logs.png":
 {
-	"frame": {"x":1679,"y":1885,"w":52,"h":35},
+	"frame": {"x":1679,"y":1951,"w":52,"h":35},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":37,"y":61,"w":52,"h":35},
@@ -330,7 +338,7 @@
 },
 "MapGoldBattleToken.png":
 {
-	"frame": {"x":1717,"y":688,"w":50,"h":50},
+	"frame": {"x":1707,"y":646,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -338,7 +346,7 @@
 },
 "MapNodeFocusCircle.png":
 {
-	"frame": {"x":1717,"y":740,"w":50,"h":50},
+	"frame": {"x":1759,"y":653,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -346,7 +354,7 @@
 },
 "MapRedBattleToken.png":
 {
-	"frame": {"x":1717,"y":792,"w":50,"h":50},
+	"frame": {"x":1717,"y":745,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -370,7 +378,7 @@
 },
 "medicpack.png":
 {
-	"frame": {"x":1717,"y":1032,"w":34,"h":32},
+	"frame": {"x":1717,"y":985,"w":34,"h":32},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":34,"h":32},
@@ -378,7 +386,7 @@
 },
 "MobBattleToken.png":
 {
-	"frame": {"x":1717,"y":844,"w":50,"h":50},
+	"frame": {"x":1717,"y":797,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -418,7 +426,7 @@
 },
 "singletire.png":
 {
-	"frame": {"x":1679,"y":1992,"w":45,"h":28},
+	"frame": {"x":1717,"y":698,"w":45,"h":28},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":45,"h":28},
@@ -530,6 +538,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1830,"h":2038},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:6b9140d78b13d1240fd53409ea7e5568:a3b7da51e531e75f1e7c683bd5683049:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:fc8d2071ac071546c1f7d7d5ee9ec3f0:6fac1088f701e13eb33bb149c97d254f:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

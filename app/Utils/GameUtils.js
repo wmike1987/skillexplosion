@@ -280,6 +280,10 @@ var gameUtils = {
         return {func: f, removeHandler: removeFunction};
     },
 
+    matterConditionalOnce: function(obj, eventName, callback) {
+        this.matterOnce(obj, eventName, callback, {conditionalOff: true})
+    },
+
     scaleBody: function(body, x, y) {
         Matter.Body.scale(body, x, y);
         body.render.sprite.xScale *= x;
@@ -1146,7 +1150,7 @@ var graphicsUtils = {
         return this.rgbToHex(newR, newG, newB);
     },
 
-    graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds, times) {
+    graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds, times, onEnd) {
         var utils = this;
         var forward = true;
         var totalRuns = times*2;
@@ -1185,10 +1189,25 @@ var graphicsUtils = {
                     totalRuns--;
                     if(!totalRuns) {
                         this.invalidate();
+                        if(onEnd) {
+                            onEnd();
+                        }
                     }
                 }
             }
         })
+    },
+
+    flashSprite: function(options) {
+        if(options.constructor.name == 'Sprite') {
+            var sprite = options;
+        } else {
+            var sprite = options.sprite;
+        }
+        var times = options.times || 4;
+        var toColor = options.toColor || 0xf20000;
+        var duration = options.duration || 100;
+        this.graduallyTint(sprite, 0xFFFFFF, toColor, duration, null, null, times, options.onEnd);
     },
 
     shakeSprite: function(sprite, duration) {

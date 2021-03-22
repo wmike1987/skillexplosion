@@ -140,6 +140,9 @@ function UnitConstructor(options) {
     });
     // body.drawWire = true;
     body.collisionFilter.mask -= 0x0002;
+    if(unitObj.noWall) {
+        body.collisionFilter.mask -= 0x0004;
+    }
     body.unit = newUnit; //reference to parent
     body.isCollisionBody = true;
 

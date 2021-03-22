@@ -19,12 +19,16 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 *   }
 */
 var doodad = function(options) {
-    var options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: false}, options);
+    var options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true}, options);
 
     // create body
     this.body = Matter.Bodies.circle(-5000, -5000, options.radius, {
         isStatic: true,
     });
+
+    if(options.bodyScale) {
+        Matter.Body.scale(this.body, options.bodyScale.x || 1, options.bodyScale.y || 1)
+    }
 
     //default position
     if(!options.position) {

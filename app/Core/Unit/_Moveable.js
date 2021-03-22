@@ -133,7 +133,6 @@ var moveable = {
             timeLimit: 550,
             callback: function() {
                 if (this.lastPosition && this.isMoving && !this.isHoning && !this.isAttacking) {
-                    //clickPointSprite2.position = this.position;
                     if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                         if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {
                             this.stop();
@@ -141,7 +140,6 @@ var moveable = {
                         }
                     }
                 }
-                //clickPointSprite.position = this.lastPosition || {x: 0, y: 0};
                 this.lastPosition = Matter.Vector.clone(this.body.position);
             }.bind(this)
         };
@@ -217,6 +215,7 @@ var moveable = {
         //overshoot buffer
         if (this.destination.x + alteredOvershootBuffer > this.body.position.x && this.destination.x - alteredOvershootBuffer < this.body.position.x) {
             if (this.destination.y + alteredOvershootBuffer > this.body.position.y && this.destination.y - alteredOvershootBuffer < this.body.position.y) {
+                Matter.Events.trigger(this, 'destinationReached', {destination: this.destination});
                 this.stop();
                 commandObj.command.done();
             }

@@ -22,7 +22,7 @@ var levelBase = {
         options = options || {};
         this.type = type;
         this.worldSpecs = Object.assign({}, worldSpecs);
-        this.tileTint = mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
+        this.tileTint = options.tint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
         this.entrySound = worldSpecs.entrySound;
         if(options.levelId) {
             this.levelId = options.levelId;
