@@ -18,24 +18,30 @@ var shaneLearning = function(options) {
     var enter = gameUtils.getSound('entershanelearn.wav', {volume: .14, rate: 1.0});
     var achieve = gameUtils.getSound('fullheal.wav', {volume: .06, rate: .65});
 
-    this.createTerrainExtension = function(scene) {
+    this.initExtension = function() {
+        this.campLikeActive = true;
+    }
+
+    this.fillLevelSceneExtension = function(scene) {
         var podDoodad = new Doodad({drawWire: false, autoAdd: false, radius: 130, texture: ['LandingPod'], stage: 'stage',
         scale: {x: .6, y: .6}, bodyScale: {y: .65}, offset: {x: 0, y: 30}, sortYOffset: 10,
         shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
         position: {x: gameUtils.getCanvasCenter().x-200, y: gameUtils.getPlayableHeight()-500}})
         scene.add(podDoodad);
 
-        this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.box});
+        this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.box, immortal: true});
         globals.currentGame.addUnit(this.box);
         this.box.position = {x: 750, y: 300};
+
+        this.createMapTable(scene, {position: mathArrayUtils.clonePosition(podDoodad.body.position, {y: 135})});
     }
 
     this.enterLevel = function() {
         Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {level: this});
     }
 
-    this.onInitLevel = function(scene) {
+    this.onEnterLevel = function(scene) {
         globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});
         enter.play();
         //begin dialogue
@@ -44,12 +50,15 @@ var shaneLearning = function(options) {
         var a2 = new Dialogue({actor: "Task", text: "Right click to move shane to the beacon.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var a3 = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a5 = new Dialogue({actor: "Alert", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a6 = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a7 = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var self = this;
-        var chain = new DialogueChain([title, a1, a2, a3, a4, a5], {startDelay: 200, done: function() {
-            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
+        var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7], {startDelay: 200, done: function() {
             chain.cleanUp();
-        }});
+            this.mapTableActive = true;
+        }.bind(this)});
+
 
         var moveBeaconLocation = {x: 200, y: 400};
 
@@ -66,6 +75,7 @@ var shaneLearning = function(options) {
                         if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
                         graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500)}});
                         achieve.play();
+                        this.box.isTargetable = true;
                         gameUtils.doSomethingAfterDuration(() => {
                             a2.withholdResolve = false;
 
@@ -89,14 +99,44 @@ var shaneLearning = function(options) {
                                             critter1.honeRange = 200;
                                             critter2.honeRange = 200;
 
-                                            gameUtils.matterConditionalOnce(globals.currentGame.shane, 'attackMove', (event) => {
+                                            var done = function() {
                                                 achieve.play();
                                                 gameUtils.doSomethingAfterDuration(() => {
                                                     a5.withholdResolve = false;
+                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'dash', (event) => {
+                                                        achieve.play();
+                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                            a6.withholdResolve = false;
+                                                            gameUtils.matterConditionalOnce(globals.currentGame.shane, 'knifeThrow',(event) => {
+                                                                achieve.play();
+                                                                gameUtils.doSomethingAfterDuration(() => {
+                                                                    a7.withholdResolve = false;
+                                                                })
+                                                            })
+                                                            return true;
+                                                        }, 1000)
+                                                        return true;
+                                                    })
                                                 }, 1000);
+                                            }
+
+                                            var crittersKilled = 0;
+                                            gameUtils.matterConditionalOnce(critter1, 'death', (event) => {
+                                                crittersKilled++;
+                                                if(crittersKilled == 2) {
+                                                    done();
+                                                }
                                                 return true;
-                                            });
-                                        }, 1000);
+                                            })
+
+                                            gameUtils.matterConditionalOnce(critter2, 'death', (event) => {
+                                                crittersKilled++;
+                                                if(crittersKilled == 2) {
+                                                    done();
+                                                }
+                                                return true;
+                                            })
+                                        });
                                         return true;
                                     });
                                 }, 1000);

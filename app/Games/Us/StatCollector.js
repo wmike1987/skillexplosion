@@ -186,7 +186,7 @@ DamageReducedByArmorCollector.prototype = Collector;
 
 var KnivesThrownCollector = function(options) {
     this.name = "knivesThrown";
-    this.eventName = 'performKnifeThrow';
+    this.eventName = 'knifeThrow';
     this.collectorFunction = function(event) {
         if(options.predicate(event)) {
             this.value += 1;

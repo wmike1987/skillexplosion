@@ -323,6 +323,7 @@ export default function Marine(options) {
         Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
         dashSound.play();
         Matter.Events.trigger(globals.currentGame, 'dash', {performingUnit: this});
+        Matter.Events.trigger(this, 'dash');
 
         //play animation
         var dashAnimation = gameUtils.getAnimation({
@@ -508,7 +509,7 @@ export default function Marine(options) {
         Matter.Events.on(knife, 'onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
-            if(otherUnit != this && otherUnit && otherUnit.isAttackable && otherUnit.team != this.team) {
+            if(otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
                 if(currentAugment.name == 'poison tip') {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
@@ -577,7 +578,8 @@ export default function Marine(options) {
             })
         }
 
-        Matter.Events.trigger(globals.currentGame, 'performKnifeThrow', {performingUnit: this});
+        Matter.Events.trigger(globals.currentGame, 'knifeThrow', {performingUnit: this});
+        Matter.Events.trigger(this, 'knifeThrow');
     };
     var knifeAbility = new Ability({
         name: 'Throw Knife',

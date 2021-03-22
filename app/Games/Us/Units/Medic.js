@@ -544,7 +544,7 @@ export default function Medic(options) {
         mine.explode = function() {
             mineExplosion.play();
             gameUtils.applyToUnitsByTeam(function(team) {return medic.team != team}, function(unit) {
-                return (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.isAttackable);
+                return (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.canTakeAbilityDamage);
             }.bind(this), function(unit) {
                 var dmg = mineState.damage;
                 if(mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {

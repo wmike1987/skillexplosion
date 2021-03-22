@@ -16,13 +16,13 @@ var levelFactory = {
         var TypeMapping = predefinedTypes[type];
         if(TypeMapping) {
             var level = new TypeMapping(worldSpecs);
-            level.onCreate(type, worldSpecs, options);
+            level.init(type, worldSpecs, options);
             return level;
         } else {
             var levelObj = Object.create(levelBase);
             levelObj.type = type;
             levelObj.tileSize = 225;
-            levelObj.onCreate(type, worldSpecs, options);
+            levelObj.init(type, worldSpecs, options);
             levelObj.enemySets = EnemySetSpecifier.create(type, worldSpecs, options);
             return levelObj;
         }
@@ -30,7 +30,7 @@ var levelFactory = {
 }
 
 var camp = function(worldSpecs, options) {
-    this.onCreate('camp', worldSpecs, options)
+    this.init('camp', worldSpecs, options)
     this.enterLevel = function(node) {
         Matter.Events.trigger(globals.currentGame, 'GoToCamp', {node: node});
     }

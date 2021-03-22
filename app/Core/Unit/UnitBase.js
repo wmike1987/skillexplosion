@@ -23,6 +23,7 @@ var healSound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
 //default unit attributes
 var UnitBase = {
     isUnit: true,
+    isTargetable: true,
     isoManaged: true,
     maxHealth: 20,
     currentHealth: 20,
@@ -235,7 +236,7 @@ var UnitBase = {
             }
         } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition))
 
-        item.drop(spawnPosition);
+        item.drop(spawnPosition, {fleeting: !item.immortal});
 
         //remove added benefits (if necessary)
         this.unequipItem(item);
@@ -570,6 +571,7 @@ var UnitBase = {
             }
         };
 
+        this._isTargetable = this.isTargetable;
         Object.defineProperty(this, 'isTargetable', {
             get: function() {
                 return this._isTargetable && gameUtils.isPositionWithinPlayableBounds(this.position);
@@ -580,19 +582,18 @@ var UnitBase = {
             },
 			configurable: true
         });
-        this.isTargetable = true;
 
-        Object.defineProperty(this, 'isAttackable', {
+        Object.defineProperty(this, 'canTakeAbilityDamage', {
             get: function() {
-                return this._isAttackable && gameUtils.isPositionWithinPlayableBounds(this.position);
+                return this._canTakeAbilityDamage && gameUtils.isPositionWithinPlayableBounds(this.position);
             },
 
             set: function(value) {
-                this._isAttackable = value;
+                this._canTakeAbilityDamage = value;
             },
 			configurable: true
         });
-        this.isAttackable = true;
+        this.canTakeAbilityDamage = true;
 
         Matter.Events.on(this, 'addUnit', function() {
             if(this._afterAddInit) {
@@ -972,7 +973,7 @@ var UnitBase = {
         this.hideLifeBar = true;
         this.isDead = false;
         this.isTargetable = false;
-        this.isAttackable = false;
+        this.canTakeAbilityDamage = false;
         this.canMove = false;
         this.canAttack = false;
         this.isSelectable = false;

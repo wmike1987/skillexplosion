@@ -39,7 +39,7 @@ var game = {
     gameName: 'Us',
     level: 1,
     // victoryCondition: {type: 'timed', limit: 5},
-    victoryCondition: {type: 'lives', limit: 3},
+    victoryCondition: {type: 'unlimited'},
     enableUnitSystem: true,
     enablePathingSystem: true,
     enableItemSystem: true,
@@ -310,7 +310,7 @@ var game = {
     initCurrentLevel: function() {
         //create new scene
         var scene = new Scene();
-        this.currentLevel.createTerrain(scene);
+        this.currentLevel.fillLevelScene(scene);
         this.currentScene.transitionToScene(scene);
         this.campLikeActive = false;
         Matter.Events.on(scene, 'afterSnapshotRender', function() {
@@ -441,7 +441,7 @@ var game = {
         var scene = new Scene();
 
         //Init trees/doodads
-        this.currentLevel.createTerrain(scene);
+        this.currentLevel.fillLevelScene(scene);
         this.currentScene.transitionToScene(scene);
 
         Matter.Events.on(scene, 'afterSnapshotRender', function() {
@@ -449,7 +449,7 @@ var game = {
         }.bind(this))
         Matter.Events.on(scene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
-            level.onInitLevel(scene);
+            level.onEnterLevel(scene);
         }.bind(this))
     },
 

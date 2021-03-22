@@ -17,59 +17,19 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volum
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
-commonAirDropStation.createTerrain = function(scene) {
+commonAirDropStation.fillLevelScene = function(scene) {
     var tileMap = TileMapper.produceTileMap({possibleTextures: this.worldSpecs.getLevelTiles(), tileWidth: this.worldSpecs.tileSize, tileTint: this.tileTint});
     scene.add(tileMap);
+
+    this.initExtension = function() {
+        this.campLikeActive = true;
+    }
 
     if(this.worldSpecs.levelTileExtension) {
         this.worldSpecs.levelTileExtension(scene, this.tileTint);
     }
 
-    //Add map
-    var mapTableSprite = graphicsUtils.createDisplayObject('mapbox');
-    var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [mapTableSprite], stage: 'stage',
-    scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
-    shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
-    position: {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}})
-    scene.add(mapTable);
-
-    var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
-        if(!this.airDropActive) return;
-        if(Matter.Vertices.contains(mapTable.body.vertices, mousePosition)) {
-            mapTableSprite.tint = 0xff33cc;
-        } else {
-            mapTableSprite.tint = 0xFFFFFF;
-        }
-    }.bind(this));
-
-    var self = this;
-    //Establish map click listeners
-    var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
-        if(!self.airDropActive) return;
-        var canvasPoint = {x: 0, y: 0};
-        gameUtils.pixiPositionToPoint(canvasPoint, event);
-
-        if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && this.campLikeActive) {
-            this.unitSystem.pause();
-            this.map.show();
-            this.mapActive = true;
-        }
-    }.bind(globals.currentGame));
-
-    scene.add(function() {
-        $('body').on('keydown.map', function( event ) {
-            var key = event.key.toLowerCase();
-            if(key == 'escape' && this.mapActive) {
-                this.closeMap();
-            }
-        }.bind(globals.currentGame))
-    })
-
-    scene.addCleanUpTask(() => {
-        globals.currentGame.removePriorityMouseDownEvent(mapClickListener);
-        globals.currentGame.removeTickCallback(mapHoverTick);
-        $('body').off('keydown.map');
-    })
+    this.createMapTable();
 };
 commonAirDropStation.createMapNode = function(options) {
     var mapNode = new MapNode({levelDetails: options.levelDetails, mapRef: options.mapRef, tokenSize: 50, largeTokenSize: 60,
@@ -166,9 +126,8 @@ var airDropStation = function(options) {
         Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {level: node.levelDetails});
     };
 
-    this.onInitLevel = function(scene) {
+    this.onEnterLevel = function(scene) {
         var game = globals.currentGame;
-        game.campLikeActive = true;
         game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
         game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
         this.startAirDrop(scene);
@@ -186,7 +145,8 @@ var airDropStation = function(options) {
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
             selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
             chain.cleanUp();
-            self.airDropActive = true;
+            self.mapTableActive = true;
+
         }});
         scene.add(chain);
         chain.play();
@@ -215,7 +175,7 @@ var airDropSpecialStation = function(options) {
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
             selection.presentChoices({numberOfChoices: 3, possibleChoices: ['TechnologyKey', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
             chain.cleanUp();
-            self.airDropActive = true;
+            self.mapTableActive = true;
         }});
         scene.add(chain);
         chain.play();
