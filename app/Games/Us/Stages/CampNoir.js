@@ -113,9 +113,9 @@ var map = {
         this.map.addCampNode();
         this.map.addMapNode('shaneLearning', {position: {x: 200, y: 180}, levelId: 'shaneLearning', tint: 0x7848ee});
         // this.map.addMapNode('mobs');
+        this.map.addMapNode('basic');
         // this.map.addMapNode('basic');
-        // this.map.addMapNode('basic');
-        // this.map.addMapNode('airDropStations');
+        this.map.addMapNode('airDropStations');
         // this.map.addMapNode('basic');
         // this.map.addMapNode('multiLevel');
     },

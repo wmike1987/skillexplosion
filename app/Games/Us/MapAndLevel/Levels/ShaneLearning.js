@@ -34,7 +34,7 @@ var shaneLearning = function(options) {
         globals.currentGame.addUnit(this.box);
         this.box.position = {x: 750, y: 300};
 
-        this.createMapTable(scene, {position: mathArrayUtils.clonePosition(podDoodad.body.position, {y: 135})});
+        this.createMapTable(scene, {position: mathArrayUtils.clonePosition(podDoodad.body.position, {x: -80, y: 100})});
     }
 
     this.enterLevel = function() {
@@ -51,17 +51,20 @@ var shaneLearning = function(options) {
         var a3 = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a6 = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a7 = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a6 = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a7 = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var self = this;
-        var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7], {startDelay: 200, done: function() {
+        var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
+            var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it, make your way to camp.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         }.bind(this)});
 
-
+        //First dialogue chain
         var moveBeaconLocation = {x: 200, y: 400};
-
+        var pauseAfterCompleteTime = 750;
         gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
             if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Shane') {
                 achieve.play();
@@ -69,7 +72,7 @@ var shaneLearning = function(options) {
                     a1.withholdResolve = false;
 
                     var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
-                    graphicsUtils.flashSprite({sprite: moveBeacon, duration: 500});
+                    graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 8});
                     gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
                         var destination = event.destination;
                         if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
@@ -111,13 +114,24 @@ var shaneLearning = function(options) {
                                                                 achieve.play();
                                                                 gameUtils.doSomethingAfterDuration(() => {
                                                                     a7.withholdResolve = false;
-                                                                })
+                                                                    var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                    globals.currentGame.addUnit(critter1);
+                                                                    critter1.position = {x: -50, y: 500};
+                                                                    critter1.move({x: 200, y: 500})
+                                                                    critter1.honeRange = 200;
+                                                                    gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
+                                                                        achieve.play();
+                                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                                            a8.withholdResolve = false;
+                                                                        }, pauseAfterCompleteTime);
+                                                                    })
+                                                                }, pauseAfterCompleteTime)
+                                                                return true;
                                                             })
-                                                            return true;
-                                                        }, 1000)
+                                                        }, pauseAfterCompleteTime)
                                                         return true;
                                                     })
-                                                }, 1000);
+                                                }, pauseAfterCompleteTime);
                                             }
 
                                             var crittersKilled = 0;
@@ -139,16 +153,16 @@ var shaneLearning = function(options) {
                                         });
                                         return true;
                                     });
-                                }, 1000);
+                                }, pauseAfterCompleteTime);
                                 return true;
                             });
-                        }, 1000);
+                        }, pauseAfterCompleteTime);
                         return true;
                     });
-                }, 1000);
+                }, pauseAfterCompleteTime);
                 return true;
             }
-        }, {conditionalOff: true});
+        });
         scene.add(chain);
         scene.addCleanUpTask(() => {
             enter.unload();
