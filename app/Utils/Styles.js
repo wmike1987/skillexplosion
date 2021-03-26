@@ -444,6 +444,14 @@ export default {
 		strokeThickness: 4
 	}),
 
+	taskDialogue: new PIXI.TextStyle({
+		name: 'taskDialogue',
+		fill: "#00962a",
+		fontFamily: "\"Lucida Console\", Monaco, monospace",
+		fontSize: 18,
+		miterLimit: 0
+	}),
+
 	dialogueStyle: new PIXI.TextStyle({
 		name: 'dialogueStyle',
 	    fill: "#00b3ff",

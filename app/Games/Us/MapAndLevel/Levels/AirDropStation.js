@@ -17,19 +17,18 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volum
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
+commonAirDropStation.initExtension = function() {
+    this.campLikeActive = true;
+}
 commonAirDropStation.fillLevelScene = function(scene) {
     var tileMap = TileMapper.produceTileMap({possibleTextures: this.worldSpecs.getLevelTiles(), tileWidth: this.worldSpecs.tileSize, tileTint: this.tileTint});
     scene.add(tileMap);
-
-    this.initExtension = function() {
-        this.campLikeActive = true;
-    }
 
     if(this.worldSpecs.levelTileExtension) {
         this.worldSpecs.levelTileExtension(scene, this.tileTint);
     }
 
-    this.createMapTable();
+    this.createMapTable(scene);
 };
 commonAirDropStation.createMapNode = function(options) {
     var mapNode = new MapNode({levelDetails: options.levelDetails, mapRef: options.mapRef, tokenSize: 50, largeTokenSize: 60,
@@ -146,7 +145,6 @@ var airDropStation = function(options) {
             selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
             chain.cleanUp();
             self.mapTableActive = true;
-
         }});
         scene.add(chain);
         chain.play();

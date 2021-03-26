@@ -92,8 +92,13 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            this.shane.fatigue = event.startingFatigue || 0;
-            this.ursula.fatigue = event.startingFatigue || 0;
+            this.unitsToAffect = [this.shane, this.ursula].filter((el) => {
+                return el != null;
+            });
+
+            this.unitsToAffect.forEach((unit) => {
+                unit.fatigue = event.startingFatigue || 0;
+            })
 
             //figure out starting offset from which the chars will move into the center
             var headX = Math.abs(event.headVelocity.x);
@@ -120,15 +125,17 @@ var game = {
                 gogogo: true,
                 timeLimit: 75,
                 callback: function() {
-                    this.shane.fatigue += 1;
-                    this.ursula.fatigue += 1;
-                    Matter.Events.trigger(this.map, 'SetFatigue', {amount: this.ursula.fatigue});
-                    this.shane.fatigue = Math.min(99, this.shane.fatigue);
-                    this.ursula.fatigue = Math.min(99, this.ursula.fatigue);
+                    this.unitsToAffect.forEach((unit) => {
+                        unit.fatigue += 1;
+                    })
+                    Matter.Events.trigger(this.map, 'SetFatigue', {amount: this.unitsToAffect[0].fatigue});
+                    this.unitsToAffect.forEach((unit) => {
+                        unit.fatigue = Math.min(99, unit.fatigue);
+                    })
                 }.bind(this)
             })
         }.bind(this));
-        Matter.Events.on(this, 'TravelFinished', function(event) {
+        Matter.Events.on(this, 'travelFinished', function(event) {
             this.invalidateTimer(this.fatigueTimer);
         }.bind(this));
     },
@@ -217,20 +224,20 @@ var game = {
     },
 
     gotoLevelById: function(id) {
-        var level = this.map.findLevelById('shaneLearning');
+        var level = this.map.findLevelById(id);
         level.enterLevel();
     },
 
     gotoCamp: function() {
         var camp = new this.currentCamp();
-        var cameScene = camp.initializeCamp();
-        this.currentScene.transitionToScene(cameScene);
-        Matter.Events.on(cameScene, 'afterSnapshotRender', () => {
+        var campScene = camp.initializeCamp();
+        this.currentScene.transitionToScene(campScene);
+        Matter.Events.on(campScene, 'afterSnapshotRender', () => {
             //we could have come to camp from the map, so make sure it's closed
             this.closeMap();
         })
 
-        Matter.Events.on(cameScene, 'initialize', function() {
+        Matter.Events.on(campScene, 'initialize', function() {
             //set camp active and trigger event
             this.campLikeActive = true;
             Matter.Events.trigger(this, 'enteringCamp');
@@ -312,7 +319,6 @@ var game = {
         var scene = new Scene();
         this.currentLevel.fillLevelScene(scene);
         this.currentScene.transitionToScene(scene);
-        this.campLikeActive = false;
         Matter.Events.on(scene, 'afterSnapshotRender', function() {
             this.closeMap();
         }.bind(this))
@@ -367,15 +373,14 @@ var game = {
 
         var commonWinLossTasks = function() {
             removeCurrentConditions.call(this);
+            this.unitsToAffect.forEach((unit) => {
+                unit.canAttack = false;
+                unit.canMove = false;
+                unit.isTargetable = false;
+            })
             this.shaneCollector.stopCurrentCollector();
             this.ursulaCollector.stopCurrentCollector();
             this.currentSpawner.cleanUp();
-            this.shane.canAttack = false;
-            this.ursula.canAttack = false;
-            this.shane.canMove = false;
-            this.ursula.canMove = false;
-            this.shane.isTargetable = false;
-            this.ursula.isTargetable = false;
             Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
         }
 
@@ -397,13 +402,21 @@ var game = {
                     if(this.currentLevel.customWinBehavior) {
                         removeCurrentConditions.call(this);
                         this.currentLevel.customWinBehavior();
+                    } else if(this.currentLevel.gotoMapOnWin) {
+                        Matter.Events.trigger(this.currentLevel, 'endLevelActions', {endLevelScene: sc});
+                        this.map.show();
+                        this.removeAllLevelLocalEntities();
+                        this.unitsToAffect.forEach((unit) => {
+                            gameUtils.moveUnitOffScreen(unit);
+                        })
                     } else {
                         commonWinLossTasks.call(this);
                         var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
                         Matter.Events.trigger(this.currentLevel, 'endLevelActions', {endLevelScene: sc});
                         gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            gameUtils.moveUnitOffScreen(this.shane);
-                            gameUtils.moveUnitOffScreen(this.ursula);
+                            this.unitsToAffect.forEach((unit) => {
+                                gameUtils.moveUnitOffScreen(unit);
+                            })
                             this.removeAllLevelLocalEntities();
                         }.bind(this))
                     }
@@ -412,21 +425,35 @@ var game = {
         }.bind(this))
 
         var lossCondition = this.addTickCallback(function() {
-            if(!this.endDelayInProgress && this.shane.isDead && this.ursula.isDead) {
+            if(!this.endDelayInProgress) {
+                var stillAlive = this.unitsToAffect.some((unit) => {
+                    return !unit.isDead;
+                })
+                if(stillAlive) return;
                 this.endDelayInProgress = true;
                 gameUtils.doSomethingAfterDuration(() => {
                     commonWinLossTasks.call(this);
                     this.currentLevel.resetLevel();
                     this.itemSystem.removeAllItemsOnGround(true);
-                    var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
-                    gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
+                    if(this.currentLevel.gotoMapOnWin) {
                         this.removeAllLevelLocalEntities();
                         var enemies = gameUtils.getUnitEnemies(this.shane);
                         enemies.forEach((enemy) => {
                             this.removeUnit(enemy);
                         })
                         this.map.revertHeadToPreviousLocationDueToDefeat();
-                    }.bind(this))
+                        this.map.show();
+                    } else {
+                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
+                            this.removeAllLevelLocalEntities();
+                            var enemies = gameUtils.getUnitEnemies(this.shane);
+                            enemies.forEach((enemy) => {
+                                this.removeUnit(enemy);
+                            })
+                            this.map.revertHeadToPreviousLocationDueToDefeat();
+                        }.bind(this))
+                        var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
+                    }
                 }, 600);
             }
         }.bind(this))
@@ -437,6 +464,9 @@ var game = {
 
         //mark node as completed
         level.mapNode.complete();
+        gameUtils.matterOnce(this.map, 'showMap', () => {
+            level.mapNode.playCompleteAnimation();
+        })
 
         var scene = new Scene();
 
@@ -512,14 +542,10 @@ var game = {
         return this.ursula;
     },
 
-    // createUnit: function(constructorName, team) {
-    //     var unit = UnitMenu[constructorName].c({team: team || this.playerTeam});
-    //     gameUtils.moveUnitOffScreen(unit);
-    //     return unit;
-    // },
-
     //used just for shane/urs
     setUnit: function(unit, options) {
+        if(!unit) return;
+
         var options = options || {};
         var position = options.position;
         var moveToCenter = options.moveToCenter;

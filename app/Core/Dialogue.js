@@ -36,7 +36,7 @@ var Dialogue = function Dialogue(options) {
         pauseAtCommas: true,
         leftSpaceBuffer: 0,
         actorIdleTime: 0,
-        style: styles.dialogueStyle,
+        style: options.isTask ? styles.taskDialogue : styles.dialogueStyle,
         actionStyle: styles.actionStyle,
         actorStyle: styles.dialogueActorStyle,
         titleStyle: styles.dialogueTitleStyle,

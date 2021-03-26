@@ -16,7 +16,7 @@ import UnitMenu from '@games/Us/UnitMenu.js'
 //Create the air drop base
 var shaneLearning = function(options) {
     var enter = gameUtils.getSound('entershanelearn.wav', {volume: .14, rate: 1.0});
-    var achieve = gameUtils.getSound('fullheal.wav', {volume: .06, rate: .65});
+    var achieve = gameUtils.getSound('fullheal.wav', {volume: .045, rate: .75});
 
     this.initExtension = function() {
         this.campLikeActive = true;
@@ -42,29 +42,45 @@ var shaneLearning = function(options) {
     }
 
     this.onEnterLevel = function(scene) {
+        var pauseAfterCompleteTime = 750;
+
         globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});
         enter.play();
         //begin dialogue
-        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 2000})
-        var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Shane.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a2 = new Dialogue({actor: "Task", text: "Right click to move shane to the beacon.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a3 = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a6 = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a7 = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750})
+        var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Shane.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a2 = new Dialogue({actor: "Task", text: "Right click to move shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a3 = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a6 = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a7 = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, withholdResolve: true});
         var self = this;
+        this.mapTableActive = true;
         var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
-            var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it, make your way to camp.", fadeOutAfterDone: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+            var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it, make your way to camp.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+            var bchain = new DialogueChain([b1, b2], {startDelay: 1000, done: function() {
+                bchain.cleanUp();
+            }});
+            gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+                achieve.play();
+                gameUtils.doSomethingAfterDuration(() => {
+                    b1.withholdResolve = false;
+                    gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
+                        achieve.play();
+                        b2.withholdResolve = false;
+                    })
+                }, pauseAfterCompleteTime);
+            });
+            bchain.play();
         }.bind(this)});
 
         //First dialogue chain
         var moveBeaconLocation = {x: 200, y: 400};
-        var pauseAfterCompleteTime = 750;
         gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
             if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Shane') {
                 achieve.play();

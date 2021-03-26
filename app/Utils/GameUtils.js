@@ -1413,12 +1413,12 @@ var mathArrayUtils = {
         }
     },
 
-    flattenObjectToArray: function(object) {
-        var array = $.map(object, function(obj, key) {
-            return [obj];
+    operateOnObjectByKey: function(object, operatorFunc) {
+        if(!object) return;
+        var keys = Object.keys(object);
+        keys.forEach(key => {
+            operatorFunc(key, object[key]);
         })
-
-        return array;
     },
 
     convertToArray: function(object) {

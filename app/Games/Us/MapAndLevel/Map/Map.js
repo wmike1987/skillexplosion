@@ -32,7 +32,13 @@ var map = function(specs) {
     this.headTokenBody.renderChildren = [{
             id: 'headtoken',
             data: "HeadToken",
-            stage: 'hudNOne'
+            stage: 'hudNOne',
+        },
+        {
+            id: 'shaneOnly',
+            data: "ShaneHeadToken",
+            stage: 'hudNOne',
+            visible: false
         },
     ];
     global.currentGame.addBody(this.headTokenBody);
@@ -157,7 +163,7 @@ var map = function(specs) {
 
     this.addMapNode = function(levelType, options) {
         options = options || {};
-        var level = levelFactory.create(levelType, this.worldSpecs, options);
+        var level = levelFactory.create(levelType, this.worldSpecs, options.levelOptions);
 
         //Determine position
         var position = options.position;
@@ -191,6 +197,8 @@ var map = function(specs) {
         } else {
             this.graph.push(mapNode);
         }
+
+        return mapNode;
     }
 
     this.show = function() {
@@ -222,6 +230,7 @@ var map = function(specs) {
         graphicsUtils.addOrShowDisplayObject(this.fatigueText);
 
         Matter.Events.trigger(this, 'showMap', {});
+        Matter.Events.trigger(globals.currentGame, 'showMap', {});
     }
 
     this.hide = function() {
@@ -283,6 +292,30 @@ var map = function(specs) {
             return id == node.levelDetails.levelId;
         });
         return levelNode.levelDetails;
+    },
+
+    this.setHeadToken = function(renderlingId) {
+        var self = this;
+        mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {
+            if(key == renderlingId) {
+                rl.visible = true;
+                self.headTokenSprite = rl;
+            } else {
+                rl.visible = false;
+            }
+        });
+    },
+
+    //this takes either a raw position or a map node
+    this.setHeadTokenPosition = function(options) {
+        if(options.node) {
+            var node = options.node;
+            var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {y: 20});
+            Matter.Body.setPosition(this.headTokenBody, position);
+            this.currentNode = node;
+        } else {
+            Matter.Body.setPosition(this.headTokenBody, options);
+        }
     }
 }
 export default map;

@@ -23,15 +23,12 @@ var levelBase = {
     enemySets: [],
 
     init: function(type, worldSpecs, options) {
-        options = options || {};
+        Object.assign(this, options || {});
         this.type = type;
         this.campLikeActive = false;
         this.worldSpecs = Object.assign({}, worldSpecs);
-        this.tileTint = options.tint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
+        this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
         this.entrySound = worldSpecs.entrySound;
-        if(options.levelId) {
-            this.levelId = options.levelId;
-        }
         if(this.initExtension) {
             this.initExtension();
         }

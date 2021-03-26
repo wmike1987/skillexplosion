@@ -31,9 +31,14 @@ var MapLevelNode = function(options) {
     var myNode = this;
     gameUtils.matterOnce(this.levelDetails, 'endLevelActions', function(event) {
         myNode.complete();
-        gameUtils.matterOnce(event.endLevelScene, 'sceneFadeOutBegin', function() {
+
+        if(event.endLevelScene) {
+            gameUtils.matterOnce(event.endLevelScene, 'sceneFadeOutBegin', function() {
+                myNode.playCompleteAnimation();
+            })
+        } else {
             myNode.playCompleteAnimation();
-        })
+        }
         globals.currentGame.map.lastNode = myNode;
     })
 
@@ -151,11 +156,12 @@ var MapLevelNode = function(options) {
                 }
 
                 this.mapRef.travelToNode(behavior.nodeToEnter, function() {
-                    Matter.Events.trigger(globals.currentGame, "TravelFinished", {node: behavior.nodeToEnter});
+                    Matter.Events.trigger(globals.currentGame, "travelFinished", {node: behavior.nodeToEnter});
                     this.levelDetails.enterLevel(self);
                     behavior.nodeToEnter.untintNode();
                     this.displayObject.tooltipObj.enable();
                 }.bind(this));
+                Matter.Events.trigger(globals.currentGame, "travelStarted", {node: behavior.nodeToEnter});
             }
         }
     }.bind(this));
@@ -177,6 +183,11 @@ MapLevelNode.prototype.complete = function() {
     if(this._nodeCompleteExtension) {
         this._nodeCompleteExtension();
     }
+}
+
+MapLevelNode.prototype.completeAndPlayAnimation = function() {
+    this.complete();
+    this.playCompleteAnimation();
 }
 
 MapLevelNode.prototype.playCompleteAnimation = function() {

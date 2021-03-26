@@ -110,14 +110,14 @@ var map = {
     },
 
     phaseOne: function() {
+        var firstLevelPosition = {x: 200, y: 180};
         this.map.addCampNode();
-        this.map.addMapNode('shaneLearning', {position: {x: 200, y: 180}, levelId: 'shaneLearning', tint: 0x7848ee});
-        // this.map.addMapNode('mobs');
-        this.map.addMapNode('basic');
-        // this.map.addMapNode('basic');
-        this.map.addMapNode('airDropStations');
-        // this.map.addMapNode('basic');
-        // this.map.addMapNode('multiLevel');
+        var learningNode = this.map.addMapNode('shaneLearning', {position: firstLevelPosition, levelOptions: {levelId: 'shaneLearning', tileTint: 0x7848ee}});
+        this.map.setHeadToken('shaneOnly');
+        this.map.setHeadTokenPosition({node: learningNode});
+        this.map.addMapNode('basic', {position: mathArrayUtils.clonePosition(firstLevelPosition, {x: 100, y: 150}), levelOptions: {gotoMapOnWin: true}});
+        this.map.addMapNode('basic', {position: mathArrayUtils.clonePosition(firstLevelPosition, {x: 200, y: 180}), levelOptions: {gotoMapOnWin: true}});
+        this.map.addMapNode('airDropStations', {position: mathArrayUtils.clonePosition(firstLevelPosition, {x: 280, y: 150})});
     },
 
     phaseTwo: function() {
