@@ -19,6 +19,7 @@ var MapLevelNode = function(options) {
     this.mapRef = options.mapRef;
     this.levelDetails = options.levelDetails;
     this.travelPredicate = options.travelPredicate;
+    this.enterSelfBehavior = options.enterSelfBehavior;
     this.type = this.levelDetails.type;
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
@@ -156,13 +157,17 @@ var MapLevelNode = function(options) {
                     clickTokenSound2.play();
                 }
 
-                this.mapRef.travelToNode(behavior.nodeToEnter, function() {
-                    Matter.Events.trigger(globals.currentGame, "travelFinished", {node: behavior.nodeToEnter});
-                    this.levelDetails.enterLevel(self);
-                    behavior.nodeToEnter.untintNode();
-                    this.displayObject.tooltipObj.enable();
-                }.bind(this));
-                Matter.Events.trigger(globals.currentGame, "travelStarted", {node: behavior.nodeToEnter});
+                if(behavior.nodeToEnter == globals.currentGame.currentLevel.mapNode && this.enterSelfBehavior) {
+                    this.enterSelfBehavior();
+                } else {
+                    this.mapRef.travelToNode(behavior.nodeToEnter, function() {
+                        Matter.Events.trigger(globals.currentGame, "travelFinished", {node: behavior.nodeToEnter});
+                        this.levelDetails.enterLevel(self);
+                        behavior.nodeToEnter.untintNode();
+                        this.displayObject.tooltipObj.enable();
+                    }.bind(this));
+                    Matter.Events.trigger(globals.currentGame, "travelStarted", {node: behavior.nodeToEnter});
+                }
             }
         }
     }.bind(this));

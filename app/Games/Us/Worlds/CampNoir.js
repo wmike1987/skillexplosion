@@ -2,7 +2,6 @@ import * as $ from 'jquery';
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
 import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js';
-import CommonCamp from './CommonCampMixin.js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
@@ -74,10 +73,8 @@ var camp = {
     },
 };
 
-Object.assign(camp, CommonCamp);
-
 var noirEnemySets = {
-    basic: [{type: 'Critter', amount: 2, atATime: 2, hz: 4000}, {type: 'Sentinel', amount: 0, atATime: 1, hz: 4500}],
+    basic: [{type: 'Critter', amount: 2, atATime: 2, hz: 4000}, {type: 'Sentinel', amount: 1, atATime: 1, hz: 4500}],
     outerBasic: [{type: 'Critter', amount: 12, atATime: 2, hz: 4000}, {type: 'Sentinel', amount: 3, atATime: 1, hz: 4000}],
     hardened: [{type: 'Gargoyle', amount: 4, atATime: 1, hz: 2500}],
     outerHardened: [{type: 'Gargoyle', amount: 8, atATime: 2, hz: 4500}],
@@ -108,7 +105,7 @@ var campNoir = {
 
     phaseOne: function() {
         var firstLevelPosition = {x: 200, y: 180};
-        this.map.addMapNode('camp', {levelOptions: {camp: camp}});
+        this.map.addMapNode('camp', {levelOptions: {levelId: 'camp', camp: camp, tileTint: 0xFFFFFF}});
         var learningNode = this.map.addMapNode('shaneLearning', {position: firstLevelPosition, levelOptions: {levelId: 'shaneLearning', tileTint: 0x7848ee}});
         this.map.setHeadToken('shaneOnly');
         this.map.setHeadTokenPosition({node: learningNode});

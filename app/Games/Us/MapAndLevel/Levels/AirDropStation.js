@@ -19,13 +19,13 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volum
 var commonAirDropStation = Object.create(levelBase);
 commonAirDropStation.initExtension = function() {
     this.campLikeActive = true;
+    this.completeUponEntry = true;
+    this.mode = this.possibleModes.CUSTOM;
 };
 commonAirDropStation.fillLevelSceneExtension = function(scene) {
     this.createMapTable(scene);
 };
-commonAirDropStation.onEnterLevel = function(scene) {
 
-}
 commonAirDropStation.createMapNode = function(options) {
     var mapNode = new MapNode({levelDetails: options.levelDetails, mapRef: options.mapRef, tokenSize: 50, largeTokenSize: 60,
         init: function() {
@@ -117,9 +117,7 @@ var airDropStation = function(options) {
     this.specialTokenName = 'AirDropTokenGleam';
     this.prereqCount = 1;
     options.entrySound = entrySound;
-    this.enterLevel = function(node) {
-        Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {level: node.levelDetails});
-    };
+    this.tileSize = 225.0;
 
     this.onEnterLevel = function(scene) {
         var game = globals.currentGame;
@@ -139,9 +137,7 @@ var airDropStation = function(options) {
         }});
         scene.add(chain);
         chain.play();
-    },
-
-    this.tileSize = 225.0;
+    };
 };
 airDropStation.prototype = commonAirDropStation;
 
@@ -151,9 +147,6 @@ var airDropSpecialStation = function(options) {
     this.specialTokenName = 'AirDropSpecialTokenGleam';
     this.prereqCount = 3;
     options.entrySound = entrySound;
-    this.enterLevel = function(node) {
-        Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {node: node});
-    };
     this.tileSize = 225;
 
     this.onEnterLevel = function(scene) {

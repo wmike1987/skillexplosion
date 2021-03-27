@@ -18,6 +18,7 @@ var shaneLearning = function(options) {
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
     this.initExtension = function() {
+        this.completeUponEntry = true;
         this.mode = this.possibleModes.CUSTOM;
     };
 

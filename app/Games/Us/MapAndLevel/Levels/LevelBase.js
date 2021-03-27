@@ -118,9 +118,6 @@ var levelBase = {
 
     initializeWinLossCondition: function() {
         var game = globals.currentGame;
-        //win/loss conditions
-        var lossCondition = null;
-        var winCondition = null;
 
         var removeCurrentConditions = function() {
             game.removeTickCallback(winCondition);
@@ -159,6 +156,7 @@ var levelBase = {
                         removeCurrentConditions();
                         this.customWinBehavior();
                     } else if(this.gotoMapOnWin) {
+                        commonWinLossTasks();
                         Matter.Events.trigger(this, 'endLevelActions');
                         var sc = game.transitionToBlankScene();
                         gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
@@ -196,6 +194,7 @@ var levelBase = {
                     this.resetLevel();
                     game.itemSystem.removeAllItemsOnGround(true);
                     if(this.gotoMapOnWin) {
+                        commonWinLossTasks();
                         game.removeAllLevelLocalEntities();
                         var enemies = gameUtils.getUnitEnemies(game.shane);
                         enemies.forEach((enemy) => {
@@ -267,11 +266,12 @@ var modes = {
             var level = this;
             game.currentLevel = level;
 
-            //mark node as completed
-            level.mapNode.complete();
-            gameUtils.matterOnce(game.map, 'showMap', () => {
-                level.mapNode.playCompleteAnimation();
-            });
+            if(this.completeUponEntry) {
+                level.mapNode.complete();
+                gameUtils.matterOnce(game.map, 'showMap', () => {
+                    level.mapNode.playCompleteAnimation();
+                });
+            }
 
             Matter.Events.on(scene, 'afterSnapshotRender', function() {
                 game.closeMap();

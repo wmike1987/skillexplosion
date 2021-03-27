@@ -211,35 +211,11 @@ var game = {
         this.addUnit(this.shane);
         this.createUrsula();
         this.addUnit(this.ursula);
-        this.gotoCamp();
     },
 
     gotoLevelById: function(id) {
         var level = this.map.findLevelById(id);
         level.enterLevel();
-    },
-
-    gotoCamp: function() {
-        var campScene = this.currentCamp.initializeCampScene();
-        this.currentScene.transitionToScene(campScene);
-        Matter.Events.on(campScene, 'afterSnapshotRender', () => {
-            //we could have come to camp from the map, so make sure it's closed
-            this.closeMap();
-        });
-
-        Matter.Events.on(campScene, 'initialize', function() {
-            //set camp active and trigger event
-            Matter.Events.trigger(this, 'enteringCamp');
-
-            //reset shane and urs
-            this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 40})});
-            this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 40})});
-
-            //clean up spawner if it exists
-            if(this.currentSpawner) {
-                this.currentSpawner.cleanUp();
-            }
-        }.bind(this));
     },
 
     transitionToBlankScene: function() {
@@ -264,7 +240,7 @@ var game = {
 
         var handler = gameUtils.matterOnce(globals.currentGame, "TravelReset", function(event) {
             if(event.resetToNode.type == 'camp') {
-                escapeBehavior = this.gotoCamp.bind(this);
+                escapeBehavior = this.gotoLevelById.bind(this, 'camp');
             }
         }.bind(this));
 
@@ -306,179 +282,6 @@ var game = {
         return this.currentLevel.campLikeActive;
     },
 
-    initCurrentLevel: function() {
-        //create new scene
-        var scene = new Scene();
-        this.currentLevel.fillLevelScene(scene);
-        this.currentScene.transitionToScene(scene);
-        Matter.Events.on(scene, 'afterSnapshotRender', function() {
-            this.closeMap();
-        }.bind(this));
-        Matter.Events.on(scene, 'initialize', function() {
-            Matter.Events.trigger(this, 'enteringLevel');
-            this.unitSystem.pause();
-            gameUtils.setCursorStyle('None');
-            var shaneStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -20});
-            var ursulaStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 20});
-            this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(shaneStart, this.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
-            this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(ursulaStart, this.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
-            this.startEnemySpawn();
-        }.bind(this));
-        this.level += 1;
-    },
-
-    //the level parameter is optional
-    startEnemySpawn: function(level) {
-        if(level) {
-            this.setCurrentLevel(level);
-        }
-        var game = this;
-        gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
-            game.heartbeat.play();
-        }, 800);
-        gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
-            this.unitSystem.unpause();
-            game.heartbeat.play();
-        }, 1600);
-        gameUtils.doSomethingAfterDuration(() => {
-            this.currentSpawner.start();
-            gameUtils.setCursorStyle('Main');
-            graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
-            game.heartbeat.play();
-            this.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
-            this.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
-            this.initializeWinLossCondition();
-        }, 2400);
-    },
-
-    initializeWinLossCondition: function() {
-        //win/loss conditions
-        var lossCondition = null;
-        var winCondition = null;
-
-        var removeCurrentConditions = function() {
-            this.removeTickCallback(winCondition);
-            this.removeTickCallback(lossCondition);
-        };
-
-        var commonWinLossTasks = function() {
-            removeCurrentConditions.call(this);
-            this.unitsInPlay.forEach((unit) => {
-                unit.canAttack = false;
-                unit.canMove = false;
-                unit.isTargetable = false;
-            });
-            this.shaneCollector.stopCurrentCollector();
-            this.ursulaCollector.stopCurrentCollector();
-            this.currentSpawner.cleanUp();
-            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
-        };
-
-        this.endDelayInProgress = false;
-        var winCondition = this.addTickCallback(function() {
-            var fulfilled = this.currentLevel.enemySets.every((eset) => {
-                return eset.fulfilled;
-            });
-            if(!fulfilled) return;
-
-            var unitsOfOpposingTeamExist = false;
-            if(this.unitsByTeam[this.enemyTeam] && this.unitsByTeam[this.enemyTeam].length > 0) {
-                unitsOfOpposingTeamExist = true;
-            }
-
-            if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && this.itemSystem.itemsOnGround.length == 0 && this.itemSystem.getDroppingItems().length == 0) {
-                this.endDelayInProgress = true;
-                gameUtils.doSomethingAfterDuration(() => {
-                    if(this.currentLevel.customWinBehavior) {
-                        removeCurrentConditions.call(this);
-                        this.currentLevel.customWinBehavior();
-                    } else if(this.currentLevel.gotoMapOnWin) {
-                        Matter.Events.trigger(this.currentLevel, 'endLevelActions');
-                        var sc = this.transitionToBlankScene();
-                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            this.removeAllLevelLocalEntities();
-                            this.map.show();
-                            this.unitsInPlay.forEach((unit) => {
-                                gameUtils.moveUnitOffScreen(unit);
-                            });
-                            this.removeAllLevelLocalEntities();
-                        }.bind(this));
-                    } else {
-                        commonWinLossTasks.call(this);
-                        var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
-                        Matter.Events.trigger(this.currentLevel, 'endLevelActions', {endLevelScene: sc});
-                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            this.unitsInPlay.forEach((unit) => {
-                                gameUtils.moveUnitOffScreen(unit);
-                            });
-                            this.removeAllLevelLocalEntities();
-                        }.bind(this));
-                    }
-                }, 400);
-            }
-        }.bind(this));
-
-        var lossCondition = this.addTickCallback(function() {
-            if(!this.endDelayInProgress) {
-                var stillAlive = this.unitsInPlay.some((unit) => {
-                    return !unit.isDead;
-                });
-                if(stillAlive) return;
-                this.endDelayInProgress = true;
-                gameUtils.doSomethingAfterDuration(() => {
-                    commonWinLossTasks.call(this);
-                    this.currentLevel.resetLevel();
-                    this.itemSystem.removeAllItemsOnGround(true);
-                    if(this.currentLevel.gotoMapOnWin) {
-                        this.removeAllLevelLocalEntities();
-                        var enemies = gameUtils.getUnitEnemies(this.shane);
-                        enemies.forEach((enemy) => {
-                            this.removeUnit(enemy);
-                        });
-                        this.map.revertHeadToPreviousLocationDueToDefeat();
-                        this.map.show();
-                    } else {
-                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            this.removeAllLevelLocalEntities();
-                            var enemies = gameUtils.getUnitEnemies(this.shane);
-                            enemies.forEach((enemy) => {
-                                this.removeUnit(enemy);
-                            });
-                            this.map.revertHeadToPreviousLocationDueToDefeat();
-                        }.bind(this));
-                        var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
-                    }
-                }, 600);
-            }
-        }.bind(this));
-    },
-
-    initCustomLevel: function(level) {
-        this.currentLevel = level;
-
-        //mark node as completed
-        level.mapNode.complete();
-        gameUtils.matterOnce(this.map, 'showMap', () => {
-            level.mapNode.playCompleteAnimation();
-        });
-
-        var scene = new Scene();
-
-        //Init trees/doodads
-        this.currentLevel.fillLevelScene(scene);
-        this.currentScene.transitionToScene(scene);
-
-        Matter.Events.on(scene, 'afterSnapshotRender', function() {
-            this.closeMap();
-        }.bind(this));
-        Matter.Events.on(scene, 'initialize', function() {
-            Matter.Events.trigger(this, 'enteringLevel');
-            level.onEnterLevel(scene);
-        }.bind(this));
-    },
-
     removeAllEnemyUnits: function() {
         gameUtils.applyToUnitsByTeam(function(team) {
             return team != this.playerTeam;
@@ -502,9 +305,9 @@ var game = {
          var s = Marine({team: this.playerTeam, name: 'Shane', dropItemsOnDeath: false, adjustHitbox: false});
          this.shane = s;
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
-         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
          // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});

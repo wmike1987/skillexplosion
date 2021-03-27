@@ -41,7 +41,7 @@ var campLevel = function() {
         treeOptions.start = {x: 0, y: 0};
         treeOptions.width = 300;
         treeOptions.height = gameUtils.getPlayableHeight()+50;
-        treeOptions.density = 0.3;
+        treeOptions.density = 0.05;
         treeOptions.possibleTrees = possibleTrees;
         scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
 
@@ -221,6 +221,9 @@ var campLevel = function() {
                     }
                 }.bind(this));
                 return [regularToken, specialToken];
+            },
+            enterSelfBehavior: function() {
+                globals.currentGame.closeMap();
             },
             init: function() {
                 Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {

@@ -174,13 +174,14 @@ var itemSystem = function(properties) {
                                 //pickup the currently slotted item
                                 prevailingUnit.unequipItem(loopItem);
                                 Matter.Events.trigger(this, 'usergrab', {item: loopItem})
-                                loopItem.currentSlot = null;
 
                                 //equip the currently grabbed item
                                 prevailingUnit.pickupItem(item, loopItem.currentSlot);
                                 if(item.placeCallback) {
                                     item.placeCallback(globals.currentGame.mousePosition);
                                 }
+                                
+                                loopItem.currentSlot = null;
                                 this.canDropGrabbedItem = true;
                                 found = true;
                             }
