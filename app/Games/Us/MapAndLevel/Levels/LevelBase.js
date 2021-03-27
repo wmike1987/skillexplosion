@@ -1,20 +1,30 @@
-import * as $ from 'jquery'
-import * as Matter from 'matter-js'
-import {globals, mousePosition} from '@core/Fundamental/GlobalState.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import TileMapper from '@core/TileMapper.js'
-import Doodad from '@utils/Doodad.js'
-import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js'
+import * as $ from 'jquery';
+import * as Matter from 'matter-js';
+import {globals, mousePosition} from '@core/Fundamental/GlobalState.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import TileMapper from '@core/TileMapper.js';
+import Doodad from '@utils/Doodad.js';
+import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
+import styles from '@utils/Styles.js';
+import Scene from '@core/Scene.js';
 
 var levelBase = {
     resetLevel: function() {
         this.enemySets.forEach(set => {
             set.fulfilled = false;
-        })
+        });
     },
 
+    // enterLevel: function(node) {
+    //     Matter.Events.trigger(globals.currentGame, 'InitCurrentLevel', {node: node});
+    // },
+
     enterLevel: function(node) {
-        Matter.Events.trigger(globals.currentGame, 'InitCurrentLevel', {node: node});
+        var scene = new Scene();
+        this.fillLevelScene(scene);
+
+        globals.currentGame.currentScene.transitionToScene(scene);
+        this.mode.enter.call(this, scene);
     },
 
     getEntrySound: function() {
@@ -24,15 +34,20 @@ var levelBase = {
 
     init: function(type, worldSpecs, options) {
         Object.assign(this, options || {});
+
+        //defaults
         this.type = type;
+        this.possibleModes = modes;
+        this.mode = modes.SPAWN;
         this.campLikeActive = false;
         this.worldSpecs = Object.assign({}, worldSpecs);
         this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
         this.entrySound = worldSpecs.entrySound;
-        if(this.initExtension) {
-            this.initExtension();
-        }
 
+        //hook to override defaults
+        if(this.initExtension) {
+            this.initExtension(type, worldSpecs, options);
+        }
     },
 
     fillLevelScene: function(scene) {
@@ -59,7 +74,7 @@ var levelBase = {
         var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [mapTableSprite], stage: 'stage',
         scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
         shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
-        position: options.position || {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}})
+        position: options.position || {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}});
         scene.add(mapTable);
 
         var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
@@ -78,7 +93,7 @@ var levelBase = {
             var canvasPoint = {x: 0, y: 0};
             gameUtils.pixiPositionToPoint(canvasPoint, event);
 
-            if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive && self.campLikeActive) {
+            if(Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive) {
                 this.unitSystem.pause();
                 this.map.show();
                 this.mapActive = true;
@@ -91,15 +106,182 @@ var levelBase = {
                 if(key == 'escape' && this.mapActive) {
                     this.closeMap();
                 }
-            }.bind(globals.currentGame))
-        })
+            }.bind(globals.currentGame));
+        });
 
         scene.addCleanUpTask(() => {
             globals.currentGame.removePriorityMouseDownEvent(mapClickListener);
             globals.currentGame.removeTickCallback(mapHoverTick);
             $('body').off('keydown.map');
-        })
+        });
+    },
+
+    initializeWinLossCondition: function() {
+        var game = globals.currentGame;
+        //win/loss conditions
+        var lossCondition = null;
+        var winCondition = null;
+
+        var removeCurrentConditions = function() {
+            game.removeTickCallback(winCondition);
+            game.removeTickCallback(lossCondition);
+        };
+
+        var commonWinLossTasks = function() {
+            removeCurrentConditions.call(this);
+            game.unitsInPlay.forEach((unit) => {
+                unit.canAttack = false;
+                unit.canMove = false;
+                unit.isTargetable = false;
+            });
+            game.shaneCollector.stopCurrentCollector();
+            game.ursulaCollector.stopCurrentCollector();
+            game.currentSpawner.cleanUp();
+            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+        };
+
+        this.endDelayInProgress = false;
+        var winCondition = game.addTickCallback(function() {
+            var fulfilled = this.enemySets.every((eset) => {
+                return eset.fulfilled;
+            });
+            if(!fulfilled) return;
+
+            var unitsOfOpposingTeamExist = false;
+            if(game.unitsByTeam[game.enemyTeam] && game.unitsByTeam[game.enemyTeam].length > 0) {
+                unitsOfOpposingTeamExist = true;
+            }
+
+            if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0) {
+                this.endDelayInProgress = true;
+                gameUtils.doSomethingAfterDuration(() => {
+                    if(this.customWinBehavior) {
+                        removeCurrentConditions();
+                        this.customWinBehavior();
+                    } else if(this.gotoMapOnWin) {
+                        Matter.Events.trigger(this, 'endLevelActions');
+                        var sc = game.transitionToBlankScene();
+                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
+                            game.removeAllLevelLocalEntities();
+                            game.map.show();
+                            game.unitsInPlay.forEach((unit) => {
+                                gameUtils.moveUnitOffScreen(unit);
+                            });
+                            game.removeAllLevelLocalEntities();
+                        });
+                    } else {
+                        commonWinLossTasks();
+                        var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()});
+                        Matter.Events.trigger(this, 'endLevelActions', {endLevelScene: sc});
+                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
+                            game.unitsInPlay.forEach((unit) => {
+                                gameUtils.moveUnitOffScreen(unit);
+                            });
+                            game.removeAllLevelLocalEntities();
+                        });
+                    }
+                }, 400);
+            }
+        }.bind(this));
+
+        var lossCondition = game.addTickCallback(function() {
+            if(!this.endDelayInProgress) {
+                var stillAlive = game.unitsInPlay.some((unit) => {
+                    return !unit.isDead;
+                });
+                if(stillAlive) return;
+                this.endDelayInProgress = true;
+                gameUtils.doSomethingAfterDuration(() => {
+                    commonWinLossTasks();
+                    this.resetLevel();
+                    game.itemSystem.removeAllItemsOnGround(true);
+                    if(this.gotoMapOnWin) {
+                        game.removeAllLevelLocalEntities();
+                        var enemies = gameUtils.getUnitEnemies(game.shane);
+                        enemies.forEach((enemy) => {
+                            game.removeUnit(enemy);
+                        });
+                        game.map.revertHeadToPreviousLocationDueToDefeat();
+                        game.map.show();
+                    } else {
+                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
+                            game.removeAllLevelLocalEntities();
+                            var enemies = gameUtils.getUnitEnemies(game.shane);
+                            enemies.forEach((enemy) => {
+                                game.removeUnit(enemy);
+                            });
+                            game.map.revertHeadToPreviousLocationDueToDefeat();
+                        });
+                        var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()}, true);
+                    }
+                }, 600);
+            }
+        }.bind(this));
     }
-}
+};
+
+var modes = {
+    SPAWN: {
+        enter: function(scene) {
+            var game = globals.currentGame;
+            var level = this;
+            //create new scene
+            Matter.Events.on(scene, 'afterSnapshotRender', function() {
+                game.closeMap();
+            });
+            Matter.Events.on(scene, 'initialize', function() {
+                Matter.Events.trigger(game, 'enteringLevel');
+                game.unitSystem.pause();
+                gameUtils.setCursorStyle('None');
+                var shaneStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -20});
+                var ursulaStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 20});
+                game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(shaneStart, game.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
+                game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(ursulaStart, game.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
+
+                //start enemy spawn
+                gameUtils.doSomethingAfterDuration(() => {
+                    graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                    game.heartbeat.play();
+                }, 800);
+                gameUtils.doSomethingAfterDuration(() => {
+                    graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                    game.unitSystem.unpause();
+                    game.heartbeat.play();
+                }, 1600);
+                gameUtils.doSomethingAfterDuration(() => {
+                    game.currentSpawner.start();
+                    gameUtils.setCursorStyle('Main');
+                    graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+                    game.heartbeat.play();
+                    game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
+                    game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+                    level.initializeWinLossCondition();
+                }, 2400);
+            });
+            game.level += 1;
+        }
+    },
+    CUSTOM: {
+        enter: function(scene) {
+            var game = globals.currentGame;
+            var level = this;
+            game.currentLevel = level;
+
+            //mark node as completed
+            level.mapNode.complete();
+            gameUtils.matterOnce(game.map, 'showMap', () => {
+                level.mapNode.playCompleteAnimation();
+            });
+
+            Matter.Events.on(scene, 'afterSnapshotRender', function() {
+                game.closeMap();
+            });
+            Matter.Events.on(scene, 'initialize', function() {
+                Matter.Events.trigger(game, 'enteringLevel');
+                level.onEnterLevel(scene);
+            });
+        }
+    },
+};
 
 export default levelBase;

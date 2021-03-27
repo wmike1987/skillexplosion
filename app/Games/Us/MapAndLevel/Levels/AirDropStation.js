@@ -1,35 +1,31 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals, mousePosition} from '@core/Fundamental/GlobalState.js'
-import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js'
-import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
-import Tooltip from '@core/Tooltip.js'
-import TileMapper from '@core/TileMapper.js'
-import ItemUtils from '@core/Unit/ItemUtils.js'
-import Doodad from '@utils/Doodad.js'
-import {Dialogue, DialogueChain} from '@core/Dialogue.js'
-import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals, mousePosition} from '@core/Fundamental/GlobalState.js';
+import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js';
+import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
+import Tooltip from '@core/Tooltip.js';
+import TileMapper from '@core/TileMapper.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
+import Doodad from '@utils/Doodad.js';
+import {Dialogue, DialogueChain} from '@core/Dialogue.js';
+import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 
-var entrySound = gameUtils.getSound('enterairdrop1.wav', {volume: .04, rate: 1});
-var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volume: .03, rate: 1});
+var entrySound = gameUtils.getSound('enterairdrop1.wav', {volume: 0.04, rate: 1});
+var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {volume: 0.03, rate: 1});
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
 commonAirDropStation.initExtension = function() {
     this.campLikeActive = true;
-}
-commonAirDropStation.fillLevelScene = function(scene) {
-    var tileMap = TileMapper.produceTileMap({possibleTextures: this.worldSpecs.getLevelTiles(), tileWidth: this.worldSpecs.tileSize, tileTint: this.tileTint});
-    scene.add(tileMap);
-
-    if(this.worldSpecs.levelTileExtension) {
-        this.worldSpecs.levelTileExtension(scene, this.tileTint);
-    }
-
+};
+commonAirDropStation.fillLevelSceneExtension = function(scene) {
     this.createMapTable(scene);
 };
+commonAirDropStation.onEnterLevel = function(scene) {
+
+}
 commonAirDropStation.createMapNode = function(options) {
     var mapNode = new MapNode({levelDetails: options.levelDetails, mapRef: options.mapRef, tokenSize: 50, largeTokenSize: 60,
         init: function() {
@@ -50,25 +46,25 @@ commonAirDropStation.createMapNode = function(options) {
                     this.prereqs.push(node);
                 }
                 count++;
-            } while(this.prereqs.length < this.levelDetails.prereqCount)
+            } while(this.prereqs.length < this.levelDetails.prereqCount);
         },
         hoverCallback: function() {
             this.prereqs.forEach((node) => {
                 node.focusNode();
-            })
+            });
             return true;
         },
         unhoverCallback: function() {
             this.prereqs.forEach((node) => {
                 node.unfocusNode();
-            })
+            });
             return true;
         },
         travelPredicate: function() {
             var allowed = false;
             return this.prereqs.every((pr) => {
                 return pr.isCompleted;
-            })
+            });
         },
         mouseDownCallback: function() {
             this.flashNode();
@@ -93,27 +89,27 @@ commonAirDropStation.createMapNode = function(options) {
                             this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
                             Matter.Events.on(regularToken, 'destroy', () => {
                                 this.gleamTimer.invalidate();
-                            })
+                            });
                         }
                     } else {
                         regularToken.visible = true;
                         specialToken.visible = false;
                     }
                 }
-            }.bind(this))
+            }.bind(this));
             return [regularToken, specialToken];
         },
         deactivateToken: function() {
             this.regularToken.visible = true;
             this.specialToken.visible = false;
-            this.regularToken.alpha = .5;
+            this.regularToken.alpha = 0.5;
             this.regularToken.tint = 0x002404;
             this.gleamTimer.invalidate();
         }
     });
 
     return mapNode;
-}
+};
 
 var airDropStation = function(options) {
     this.type = 'airDropStations';
@@ -129,16 +125,11 @@ var airDropStation = function(options) {
         var game = globals.currentGame;
         game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
         game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
-        this.startAirDrop(scene);
-    },
 
-    this.tileSize = 225;
-
-    this.startAirDrop = function(scene) {
         this.entrySound.play();
         var selection = Object.create(selectionMechanism);
         //begin dialogue
-        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
+        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000});
         var a1 = new Dialogue({actor: "MacMurray", text: "Stimulant drop is en route. What do you need?", backgroundBox: true, letterSpeed: 50});
         var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
@@ -148,26 +139,28 @@ var airDropStation = function(options) {
         }});
         scene.add(chain);
         chain.play();
-    }
-}
+    },
+
+    this.tileSize = 225.0;
+};
 airDropStation.prototype = commonAirDropStation;
 
 var airDropSpecialStation = function(options) {
     this.type = 'airDropSpecialStations';
     this.regularTokenName = 'AirDropSpecialToken';
-    this.specialTokenName = 'AirDropSpecialTokenGleam'
+    this.specialTokenName = 'AirDropSpecialTokenGleam';
     this.prereqCount = 3;
     options.entrySound = entrySound;
     this.enterLevel = function(node) {
-        Matter.Events.trigger(globals.currentGame, 'InitAirDrop', {node: node});
+        Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {node: node});
     };
     this.tileSize = 225;
 
-    this.startAirDrop = function(scene) {
+    this.onEnterLevel = function(scene) {
         this.entrySound.play();
         var selection = Object.create(selectionMechanism);
         //begin dialogue
-        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000})
+        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000});
         var a1 = new Dialogue({actor: "MacMurray", text: "Technology is en route. What do you need?", backgroundBox: true, letterSpeed: 50});
         var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
@@ -177,8 +170,8 @@ var airDropSpecialStation = function(options) {
         }});
         scene.add(chain);
         chain.play();
-    }
-}
+    };
+};
 airDropSpecialStation.prototype = commonAirDropStation;
 
 var selectionMechanism = {
@@ -214,12 +207,12 @@ var selectionMechanism = {
                 var f = function(event) {
                     this._makeSelection(item);
                 }.bind(this);
-                item.icon.on('mousedown', f)
+                item.icon.on('mousedown', f);
                 item.removeAirDrop = function() {
                     item.icon.off('mousedown', f);
-                }
-            }.bind(this))
-        })
+                };
+            }.bind(this));
+        });
     },
 
     _makeSelection: function(item) {
@@ -238,7 +231,7 @@ var selectionMechanism = {
             if(i != item) {
                 i.destroy();
             }
-        })
+        });
     },
 
     presentChoices: function(options) {

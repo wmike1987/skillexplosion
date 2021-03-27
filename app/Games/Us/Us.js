@@ -1,27 +1,28 @@
-import * as $ from 'jquery'
-import * as Matter from 'matter-js'
-import * as PIXI from 'pixi.js'
-import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import Marine from '@games/Us/Units/Marine.js'
-import Medic from '@games/Us/Units/Medic.js'
-import campfireShader from '@shaders/CampfireAtNightShader.js'
-import valueShader from '@shaders/ValueShader.js'
-import TileMapper from '@core/TileMapper.js'
-import Doodad from '@utils/Doodad.js'
-import ItemUtils from '@core/Unit/ItemUtils.js'
-import Scene from '@core/Scene.js'
-import UnitPanel from '@games/Us/UnitPanel.js'
-import UnitSpawner from '@games/Us/UnitSpawner.js'
-import styles from '@utils/Styles.js'
-import * as CampNoir from '@games/Us/Stages/CampNoir.js'
-import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js'
-import StatCollector from '@games/Us/StatCollector.js'
-import UnitMenu from '@games/Us/UnitMenu.js'
+import * as $ from 'jquery';
+import * as Matter from 'matter-js';
+import * as PIXI from 'pixi.js';
+import {CommonGameMixin} from '@core/Fundamental/CommonGameMixin.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import Marine from '@games/Us/Units/Marine.js';
+import Medic from '@games/Us/Units/Medic.js';
+import campfireShader from '@shaders/CampfireAtNightShader.js';
+import valueShader from '@shaders/ValueShader.js';
+import TileMapper from '@core/TileMapper.js';
+import Doodad from '@utils/Doodad.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
+import Scene from '@core/Scene.js';
+import UnitPanel from '@games/Us/UnitPanel.js';
+import UnitSpawner from '@games/Us/UnitSpawner.js';
+import styles from '@utils/Styles.js';
+import {campNoir} from '@games/Us/Worlds/CampNoir.js';
+import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js';
+import StatCollector from '@games/Us/StatCollector.js';
+import UnitMenu from '@games/Us/UnitMenu.js';
 
-import {ShaneIntro} from '@games/Us/Dialogues/ShaneIntro.js'
-import {Dialogue, DialogueChain} from '@core/Dialogue.js'
+import {ShaneIntro} from '@games/Us/Dialogues/ShaneIntro.js';
+import {CampIntro} from '@games/Us/Dialogues/CampIntroAndUrsulaLearning.js';
+import {Dialogue, DialogueChain} from '@core/Dialogue.js';
 
 var targetScore = 1;
 
@@ -46,7 +47,7 @@ var game = {
     noClickIndicator: true,
     hideScore: true,
     currentWorldIndex: 0,
-    worlds: [CampNoir],
+    worlds: [campNoir],
     levelLocalEntities: [],
     currentCamp: null,
     currentScene: null,
@@ -59,14 +60,14 @@ var game = {
     },
 
     initExtension: function() {
-        this.heartbeat = gameUtils.getSound('heartbeat.wav', {volume: .12, rate: .9});
+        this.heartbeat = gameUtils.getSound('heartbeat.wav', {volume: 0.12, rate: 0.9});
         this.shaneCollector = new StatCollector({predicate: function(event) {
             if(event.performingUnit.name == 'Shane')
                 return true;
         }, sufferingPredicate: function(event) {
             if(event.sufferingUnit.name == 'Shane')
                 return true;
-        }})
+        }});
 
         this.ursulaCollector = new StatCollector({predicate: function(event) {
             if(event.performingUnit.name == 'Ursula') {
@@ -76,29 +77,20 @@ var game = {
             if(event.sufferingUnit.name == 'Ursula') {
                 return true;
             }
-        }})
+        }});
 
         Matter.Events.on(this, 'LevelLocalEntityCreated', function(event) {
             this.levelLocalEntities.push(event.entity);
         }.bind(this));
-        Matter.Events.on(this, 'InitCurrentLevel', function(event) {
-            this.initCurrentLevel();
-        }.bind(this));
-        Matter.Events.on(this, 'GoToCamp', function(event) {
-            this.gotoCamp();
-        }.bind(this));
-        Matter.Events.on(this, 'InitCustomLevel', function(event) {
-            this.initCustomLevel(event.level);
-        }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            this.unitsToAffect = [this.shane, this.ursula].filter((el) => {
+            this.unitsInPlay = [this.shane, this.ursula].filter((el) => {
                 return el != null;
             });
 
-            this.unitsToAffect.forEach((unit) => {
+            this.unitsInPlay.forEach((unit) => {
                 unit.fatigue = event.startingFatigue || 0;
-            })
+            });
 
             //figure out starting offset from which the chars will move into the center
             var headX = Math.abs(event.headVelocity.x);
@@ -125,15 +117,15 @@ var game = {
                 gogogo: true,
                 timeLimit: 75,
                 callback: function() {
-                    this.unitsToAffect.forEach((unit) => {
+                    this.unitsInPlay.forEach((unit) => {
                         unit.fatigue += 1;
-                    })
-                    Matter.Events.trigger(this.map, 'SetFatigue', {amount: this.unitsToAffect[0].fatigue});
-                    this.unitsToAffect.forEach((unit) => {
+                    });
+                    Matter.Events.trigger(this.map, 'SetFatigue', {amount: this.unitsInPlay[0].fatigue});
+                    this.unitsInPlay.forEach((unit) => {
                         unit.fatigue = Math.min(99, unit.fatigue);
-                    })
+                    });
                 }.bind(this)
-            })
+            });
         }.bind(this));
         Matter.Events.on(this, 'travelFinished', function(event) {
             this.invalidateTimer(this.fatigueTimer);
@@ -156,7 +148,7 @@ var game = {
         dialogueScene.addBlackBackground();
 
         //begin dialogue
-        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000})
+        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Camp Noir", delayAfterEnd: 2000});
         var a1 = new Dialogue({actor: "Ursula", text: "Shane, get up. Incoming message from Command...",
           picture: 'NewMessage.png', pictureWordTrigger: 'Incoming'});
         var a2 = new Dialogue({pauseAtPeriods: false, actor: "Shane", text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor--", delayAfterEnd: 0,
@@ -182,8 +174,8 @@ var game = {
                     this.postInit();
                     $('body').off('keydown.uskeydown');
                 }
-            }.bind(this))
-        })
+            }.bind(this));
+        });
     },
 
     preGameExtension: function() {
@@ -199,9 +191,8 @@ var game = {
 
     initNextMap: function() {
         this.currentWorld = this.worlds[this.currentWorldIndex++];
-        this.currentCamp = this.currentWorld.campConstructor;
-        this.map = this.currentWorld.map.initializeMap();
-        this.currentWorld.map.phaseOne();
+        this.map = this.currentWorld.initializeMap();
+        this.currentWorld.phaseOne();
     },
 
     initShane: function() {
@@ -229,25 +220,16 @@ var game = {
     },
 
     gotoCamp: function() {
-        var camp = new this.currentCamp();
-        var campScene = camp.initializeCamp();
+        var campScene = this.currentCamp.initializeCampScene();
         this.currentScene.transitionToScene(campScene);
         Matter.Events.on(campScene, 'afterSnapshotRender', () => {
             //we could have come to camp from the map, so make sure it's closed
             this.closeMap();
-        })
+        });
 
         Matter.Events.on(campScene, 'initialize', function() {
             //set camp active and trigger event
-            this.campLikeActive = true;
             Matter.Events.trigger(this, 'enteringCamp');
-
-            //remove enemy units
-            // gameUtils.applyToUnitsByTeam(function(team) {
-            //     return (team != globals.currentGame.playerTeam);
-            // }, null, function(unit) {
-            //     globals.currentGame.removeUnit(unit);
-            // })
 
             //reset shane and urs
             this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 40})});
@@ -257,7 +239,13 @@ var game = {
             if(this.currentSpawner) {
                 this.currentSpawner.cleanUp();
             }
-        }.bind(this))
+        }.bind(this));
+    },
+
+    transitionToBlankScene: function() {
+        var blankScene = new Scene();
+        this.currentScene.transitionToScene({newScene: blankScene, fadeIn: true});
+        return blankScene;
     },
 
     gotoEndLevelScreen: function(collectors, defeat) {
@@ -272,7 +260,7 @@ var game = {
             this.map.show();
             this.map.allowMouseEvents(false);
             this.currentScene.transitionToScene({newScene: blankScene, fadeIn: true});
-        }.bind(this)
+        }.bind(this);
 
         var handler = gameUtils.matterOnce(globals.currentGame, "TravelReset", function(event) {
             if(event.resetToNode.type == 'camp') {
@@ -289,12 +277,12 @@ var game = {
                     escapeBehavior();
                 }
                 handler.removeHandler();
-            }.bind(this))
-        })
+            }.bind(this));
+        });
 
         gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
             this.map.allowMouseEvents(true);
-        })
+        });
 
         return vScene;
     },
@@ -314,6 +302,10 @@ var game = {
         }
     },
 
+    isCurrentLevelConfigurable: function() {
+        return this.currentLevel.campLikeActive;
+    },
+
     initCurrentLevel: function() {
         //create new scene
         var scene = new Scene();
@@ -321,7 +313,7 @@ var game = {
         this.currentScene.transitionToScene(scene);
         Matter.Events.on(scene, 'afterSnapshotRender', function() {
             this.closeMap();
-        }.bind(this))
+        }.bind(this));
         Matter.Events.on(scene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
             this.unitSystem.pause();
@@ -331,7 +323,7 @@ var game = {
             this.setUnit(this.shane, {position: mathArrayUtils.clonePosition(shaneStart, this.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
             this.setUnit(this.ursula, {position: mathArrayUtils.clonePosition(ursulaStart, this.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
             this.startEnemySpawn();
-        }.bind(this))
+        }.bind(this));
         this.level += 1;
     },
 
@@ -369,26 +361,26 @@ var game = {
         var removeCurrentConditions = function() {
             this.removeTickCallback(winCondition);
             this.removeTickCallback(lossCondition);
-        }
+        };
 
         var commonWinLossTasks = function() {
             removeCurrentConditions.call(this);
-            this.unitsToAffect.forEach((unit) => {
+            this.unitsInPlay.forEach((unit) => {
                 unit.canAttack = false;
                 unit.canMove = false;
                 unit.isTargetable = false;
-            })
+            });
             this.shaneCollector.stopCurrentCollector();
             this.ursulaCollector.stopCurrentCollector();
             this.currentSpawner.cleanUp();
             Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
-        }
+        };
 
         this.endDelayInProgress = false;
         var winCondition = this.addTickCallback(function() {
             var fulfilled = this.currentLevel.enemySets.every((eset) => {
                 return eset.fulfilled;
-            })
+            });
             if(!fulfilled) return;
 
             var unitsOfOpposingTeamExist = false;
@@ -403,32 +395,36 @@ var game = {
                         removeCurrentConditions.call(this);
                         this.currentLevel.customWinBehavior();
                     } else if(this.currentLevel.gotoMapOnWin) {
-                        Matter.Events.trigger(this.currentLevel, 'endLevelActions', {endLevelScene: sc});
-                        this.map.show();
-                        this.removeAllLevelLocalEntities();
-                        this.unitsToAffect.forEach((unit) => {
-                            gameUtils.moveUnitOffScreen(unit);
-                        })
+                        Matter.Events.trigger(this.currentLevel, 'endLevelActions');
+                        var sc = this.transitionToBlankScene();
+                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
+                            this.removeAllLevelLocalEntities();
+                            this.map.show();
+                            this.unitsInPlay.forEach((unit) => {
+                                gameUtils.moveUnitOffScreen(unit);
+                            });
+                            this.removeAllLevelLocalEntities();
+                        }.bind(this));
                     } else {
                         commonWinLossTasks.call(this);
                         var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()});
                         Matter.Events.trigger(this.currentLevel, 'endLevelActions', {endLevelScene: sc});
                         gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            this.unitsToAffect.forEach((unit) => {
+                            this.unitsInPlay.forEach((unit) => {
                                 gameUtils.moveUnitOffScreen(unit);
-                            })
+                            });
                             this.removeAllLevelLocalEntities();
-                        }.bind(this))
+                        }.bind(this));
                     }
                 }, 400);
             }
-        }.bind(this))
+        }.bind(this));
 
         var lossCondition = this.addTickCallback(function() {
             if(!this.endDelayInProgress) {
-                var stillAlive = this.unitsToAffect.some((unit) => {
+                var stillAlive = this.unitsInPlay.some((unit) => {
                     return !unit.isDead;
-                })
+                });
                 if(stillAlive) return;
                 this.endDelayInProgress = true;
                 gameUtils.doSomethingAfterDuration(() => {
@@ -440,7 +436,7 @@ var game = {
                         var enemies = gameUtils.getUnitEnemies(this.shane);
                         enemies.forEach((enemy) => {
                             this.removeUnit(enemy);
-                        })
+                        });
                         this.map.revertHeadToPreviousLocationDueToDefeat();
                         this.map.show();
                     } else {
@@ -449,14 +445,14 @@ var game = {
                             var enemies = gameUtils.getUnitEnemies(this.shane);
                             enemies.forEach((enemy) => {
                                 this.removeUnit(enemy);
-                            })
+                            });
                             this.map.revertHeadToPreviousLocationDueToDefeat();
-                        }.bind(this))
+                        }.bind(this));
                         var sc = this.gotoEndLevelScreen({shane: this.shaneCollector.getLastCollector(), ursula: this.ursulaCollector.getLastCollector()}, true);
                     }
                 }, 600);
             }
-        }.bind(this))
+        }.bind(this));
     },
 
     initCustomLevel: function(level) {
@@ -466,7 +462,7 @@ var game = {
         level.mapNode.complete();
         gameUtils.matterOnce(this.map, 'showMap', () => {
             level.mapNode.playCompleteAnimation();
-        })
+        });
 
         var scene = new Scene();
 
@@ -476,11 +472,11 @@ var game = {
 
         Matter.Events.on(scene, 'afterSnapshotRender', function() {
             this.closeMap();
-        }.bind(this))
+        }.bind(this));
         Matter.Events.on(scene, 'initialize', function() {
             Matter.Events.trigger(this, 'enteringLevel');
             level.onEnterLevel(scene);
-        }.bind(this))
+        }.bind(this));
     },
 
     removeAllEnemyUnits: function() {
@@ -488,7 +484,7 @@ var game = {
             return team != this.playerTeam;
         }.bind(this), null, function(unit) {
             this.removeUnit(unit);
-        }.bind(this))
+        }.bind(this));
     },
 
     removeAllLevelLocalEntities: function() {
@@ -498,7 +494,7 @@ var game = {
             } else if(entity.type == 'body') {
                 this.removeBody(entity);
             }
-        })
+        });
         this.levelLocalEntities = [];
     },
 
@@ -546,7 +542,7 @@ var game = {
     setUnit: function(unit, options) {
         if(!unit) return;
 
-        var options = options || {};
+        options = options || {};
         var position = options.position;
         var moveToCenter = options.moveToCenter;
 
@@ -612,7 +608,7 @@ var game = {
         }
         this.heartbeat.unload();
     }
-}
+};
 
 game.assets = [
     {name: "BaseUnitAnimations1", target: "Textures/Us/BaseUnitAnimations1.json"},
@@ -681,6 +677,6 @@ game.assets = [
     {name: "spearmanW", target: "SpineAssets/Spearman Exports/W/W.json"},
 
     {name: "apparitionAll", target: "SpineAssets/Apparition_Export/skeleton.json"},
-]
+];
 
 export default $.extend({}, CommonGameMixin, game);

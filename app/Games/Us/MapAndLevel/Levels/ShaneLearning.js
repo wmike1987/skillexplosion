@@ -1,32 +1,31 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals, mousePosition} from '@core/Fundamental/GlobalState.js'
-import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js'
-import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js'
-import Tooltip from '@core/Tooltip.js'
-import TileMapper from '@core/TileMapper.js'
-import ItemUtils from '@core/Unit/ItemUtils.js'
-import Doodad from '@utils/Doodad.js'
-import {Dialogue, DialogueChain} from '@core/Dialogue.js'
-import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js'
-import UnitMenu from '@games/Us/UnitMenu.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals, mousePosition} from '@core/Fundamental/GlobalState.js';
+import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js';
+import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
+import Tooltip from '@core/Tooltip.js';
+import TileMapper from '@core/TileMapper.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
+import Doodad from '@utils/Doodad.js';
+import {Dialogue, DialogueChain} from '@core/Dialogue.js';
+import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
+import UnitMenu from '@games/Us/UnitMenu.js';
 
-//Create the air drop base
 var shaneLearning = function(options) {
-    var enter = gameUtils.getSound('entershanelearn.wav', {volume: .14, rate: 1.0});
-    var achieve = gameUtils.getSound('fullheal.wav', {volume: .045, rate: .75});
+    var enter = gameUtils.getSound('entershanelearn.wav', {volume: 0.14, rate: 1.0});
+    var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
     this.initExtension = function() {
-        this.campLikeActive = true;
-    }
+        this.mode = this.possibleModes.CUSTOM;
+    };
 
     this.fillLevelSceneExtension = function(scene) {
         var podDoodad = new Doodad({drawWire: false, autoAdd: false, radius: 130, texture: ['LandingPod'], stage: 'stage',
-        scale: {x: .6, y: .6}, bodyScale: {y: .65}, offset: {x: 0, y: 30}, sortYOffset: 10,
+        scale: {x: 0.6, y: 0.6}, bodyScale: {y: 0.65}, offset: {x: 0, y: 30}, sortYOffset: 10,
         shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
-        position: {x: gameUtils.getCanvasCenter().x-200, y: gameUtils.getPlayableHeight()-500}})
+        position: {x: gameUtils.getCanvasCenter().x-200, y: gameUtils.getPlayableHeight()-500}});
         scene.add(podDoodad);
 
         this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false});
@@ -35,11 +34,7 @@ var shaneLearning = function(options) {
         this.box.position = {x: 750, y: 300};
 
         this.createMapTable(scene, {position: mathArrayUtils.clonePosition(podDoodad.body.position, {x: -80, y: 100})});
-    }
-
-    this.enterLevel = function() {
-        Matter.Events.trigger(globals.currentGame, 'InitCustomLevel', {level: this});
-    }
+    };
 
     this.onEnterLevel = function(scene) {
         var pauseAfterCompleteTime = 750;
@@ -47,7 +42,7 @@ var shaneLearning = function(options) {
         globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});
         enter.play();
         //begin dialogue
-        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750})
+        var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750});
         var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Shane.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var a2 = new Dialogue({actor: "Task", text: "Right click to move shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
         var a3 = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
@@ -73,7 +68,7 @@ var shaneLearning = function(options) {
                     gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
                         achieve.play();
                         b2.withholdResolve = false;
-                    })
+                    });
                 }, pauseAfterCompleteTime);
             });
             bchain.play();
@@ -92,7 +87,7 @@ var shaneLearning = function(options) {
                     gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
                         var destination = event.destination;
                         if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
-                        graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500)}});
+                        graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
                         achieve.play();
                         this.box.isTargetable = true;
                         gameUtils.doSomethingAfterDuration(() => {
@@ -113,8 +108,8 @@ var shaneLearning = function(options) {
                                             globals.currentGame.addUnit(critter2);
                                             critter1.position = {x: 1600, y: 200};
                                             critter2.position = {x: 1600, y: 600};
-                                            critter1.move({x: 1300, y: 200})
-                                            critter2.move({x: 1300, y: 600})
+                                            critter1.move({x: 1300, y: 200});
+                                            critter2.move({x: 1300, y: 600});
                                             critter1.honeRange = 200;
                                             critter2.honeRange = 200;
 
@@ -133,22 +128,22 @@ var shaneLearning = function(options) {
                                                                     var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
                                                                     globals.currentGame.addUnit(critter1);
                                                                     critter1.position = {x: -50, y: 500};
-                                                                    critter1.move({x: 200, y: 500})
+                                                                    critter1.move({x: 200, y: 500});
                                                                     critter1.honeRange = 200;
                                                                     gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
                                                                         achieve.play();
                                                                         gameUtils.doSomethingAfterDuration(() => {
                                                                             a8.withholdResolve = false;
                                                                         }, pauseAfterCompleteTime);
-                                                                    })
-                                                                }, pauseAfterCompleteTime)
+                                                                    });
+                                                                }, pauseAfterCompleteTime);
                                                                 return true;
-                                                            })
-                                                        }, pauseAfterCompleteTime)
+                                                            });
+                                                        }, pauseAfterCompleteTime);
                                                         return true;
-                                                    })
+                                                    });
                                                 }, pauseAfterCompleteTime);
-                                            }
+                                            };
 
                                             var crittersKilled = 0;
                                             gameUtils.matterConditionalOnce(critter1, 'death', (event) => {
@@ -157,7 +152,7 @@ var shaneLearning = function(options) {
                                                     done();
                                                 }
                                                 return true;
-                                            })
+                                            });
 
                                             gameUtils.matterConditionalOnce(critter2, 'death', (event) => {
                                                 crittersKilled++;
@@ -165,7 +160,7 @@ var shaneLearning = function(options) {
                                                     done();
                                                 }
                                                 return true;
-                                            })
+                                            });
                                         });
                                         return true;
                                     });
@@ -182,10 +177,10 @@ var shaneLearning = function(options) {
         scene.add(chain);
         scene.addCleanUpTask(() => {
             enter.unload();
-        })
+        });
         gameUtils.doSomethingAfterDuration(chain.play.bind(chain), 2000);
-    }
-}
+    };
+};
 shaneLearning.prototype = levelBase;
 
 export {shaneLearning};

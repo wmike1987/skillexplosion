@@ -1,10 +1,10 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
-import dissolveShader from '@shaders/DissolveShader.js'
-import circleDissolveShader from '@shaders/CircleDissolveShader.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
+import dissolveShader from '@shaders/DissolveShader.js';
+import circleDissolveShader from '@shaders/CircleDissolveShader.js';
 
 /*
  * This module represents a scene.
@@ -27,7 +27,7 @@ Scene.prototype.initializeScene = function(objOrArray) {
         } else {
             graphicsUtils.addSomethingToRenderer(obj);
         }
-    })
+    });
     Matter.Events.trigger(this, 'initialize');
 };
 
@@ -36,8 +36,8 @@ Scene.prototype.hide = function() {
         if(!obj.hideImmune) {
             obj.visible = false;
         }
-    })
-}
+    });
+};
 
 Scene.prototype.addBlackBackground = function(where) {
     var background = graphicsUtils.createDisplayObject('TintableSquare', {where: where || 'hudTwo', anchor: {x: 0, y: 0}});
@@ -45,7 +45,7 @@ Scene.prototype.addBlackBackground = function(where) {
     graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
     background.hideImmune = true;
     this.add(background);
-}
+};
 
 Scene.prototype.add = function(objOrArray) {
     if(!$.isArray(objOrArray)) {
@@ -65,11 +65,11 @@ Scene.prototype.clear = function() {
         } else {
             graphicsUtils.removeSomethingFromRenderer(obj);
         }
-    })
+    });
 
     $.each(this.cleanUpTasks, function(i, obj) {
         obj();
-    })
+    });
 
     if(this._clearExtension) {
         this._clearExtension();
@@ -84,7 +84,7 @@ Scene.prototype.clear = function() {
 var SceneModes = {
     BLACK: 'BLACK',
     FADE_AWAY: 'FADE_AWAY',
-}
+};
 
 /*
  * options: {
@@ -139,21 +139,12 @@ Scene.prototype.transitionToScene = function(options) {
             const transitionSprite = new PIXI.Sprite(renderTexture);
             var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
             var renderer = globals.currentGame.renderer.pixiApp.renderer;
-            renderer.render(rStage, renderTexture)
+            renderer.render(rStage, renderTexture);
             graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
 
             inRuns = 1;
-            iterTime = 32
+            iterTime = 32;
             runs = transitionLength/iterTime;
-            // var dShader = new PIXI.Filter(null, dissolveShader, {
-                //     a: Math.random()*10 + 10,
-                //     b: 10,
-                //     c: 555555,
-                //     progress: 1.0,
-                //     screenSize: gameUtils.getPlayableWH(),
-                //     gridSize: 8,
-                // });
-                // globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
             var dShader = new PIXI.Filter(null, circleDissolveShader, {
                 a: Math.random()*10 + 10,
@@ -170,12 +161,12 @@ Scene.prototype.transitionToScene = function(options) {
             fadeIn = function() {};
             fadeOut = function() {
                 dShader.uniforms.progress -= 1/(transitionLength/iterTime);
-            }
+            };
 
             cleanUp = function() {
                 graphicsUtils.removeSomethingFromRenderer(transitionSprite);
                 globals.currentGame.renderer.layers.transitionLayer.filters = [];
-            }
+            };
         }
 
         Matter.Events.trigger(this, 'sceneFadeOutBegin');
@@ -192,7 +183,7 @@ Scene.prototype.transitionToScene = function(options) {
                 Matter.Events.trigger(this, 'sceneFadeOutDone');
                 Matter.Events.trigger(newScene, 'sceneFadeInDone');
                 cleanUp();
-            }.bind(this)})
+            }.bind(this)});
         }.bind(this)});
         Matter.Events.trigger(newScene, 'afterSnapshotRender', {});
         Matter.Events.off(globals.currentGame.gameLoop, 'afterRenderWorld', handler);

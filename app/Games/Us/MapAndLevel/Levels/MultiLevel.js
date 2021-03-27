@@ -92,7 +92,7 @@ var multiLevel = function(options) {
     }
 
     var spacing = 20;
-    this.manualSetPosition = function(position) {
+    this.manualNodePosition = function(position) {
 
         var i = -spacing;
         this.mapNodes.forEach((node, index) => {

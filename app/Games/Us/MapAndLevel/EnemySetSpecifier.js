@@ -1,8 +1,8 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import unitMenu from '@games/Us/UnitMenu.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import unitMenu from '@games/Us/UnitMenu.js';
 
 var easyMode = false;
 var innerMultiplier = 1.0;
@@ -33,11 +33,11 @@ var enemySetSpecifier = {
                     spawn: {total: enemySpec.amount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
                         atATime: enemySpec.atATime || 1, maxOnField: 1}
                 });
-            })
+            });
         }
 
         return enemySets;
     }
-}
+};
 
 export default enemySetSpecifier;

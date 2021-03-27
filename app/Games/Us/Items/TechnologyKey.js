@@ -12,14 +12,14 @@ export default function(options) {
         dropCallback: function(position) {
             this.owningUnit.removeUnlockerKey();
             this.unlockHandler.removeHandler();
-            if(globals.currentGame.campLikeActive) {
+            if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hideAugmentsAndPassivesForUnit()
             }
             return true;
         },
         grabCallback: function() {
             this.owningUnit.giveUnlockerKey();
-            if(globals.currentGame.campLikeActive) {
+            if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.showAugmentsAndPassivesForUnit(this.owningUnit);
             }
             this.unlockHandler = gameUtils.matterOnce(this.owningUnit, 'unlockedSomething', function() {
@@ -29,7 +29,7 @@ export default function(options) {
         placeCallback: function() {
             this.owningUnit.removeUnlockerKey();
             this.unlockHandler.removeHandler();
-            if(globals.currentGame.campLikeActive) {
+            if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hideAugmentsAndPassivesForUnit()
             }
         },

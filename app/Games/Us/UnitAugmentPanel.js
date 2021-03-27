@@ -30,7 +30,7 @@ ConfigPanel.prototype.initialize = function() {
 
     //close config windows when we click the canvas
     globals.currentGame.addListener("mousedown", function() {
-        if(globals.currentGame.campLikeActive) {
+        if(globals.currentGame.isCurrentLevelConfigurable()) {
             this.hideForCurrentUnit();
         }
     }.bind(this), false, true);
@@ -222,7 +222,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
 };
 
 ConfigPanel.prototype.lowerOpenButton = function() {
-    if(this.unitPanelRef.prevailingUnit && globals.currentGame.campLikeActive) {
+    if(this.unitPanelRef.prevailingUnit && globals.currentGame.isCurrentLevelConfigurable()) {
         graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
         graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
         graphicsUtils.addOrShowDisplayObject(this.showButton);

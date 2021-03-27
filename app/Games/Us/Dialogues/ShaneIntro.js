@@ -1,12 +1,12 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {Dialogue, DialogueChain} from '@core/Dialogue.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
-import Scene from '@core/Scene.js'
-import styles from '@utils/Styles.js'
-import {DialogueScene} from '@games/Us/Dialogues/DialogueScene.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {Dialogue, DialogueChain} from '@core/Dialogue.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
+import Scene from '@core/Scene.js';
+import styles from '@utils/Styles.js';
+import {DialogueScene} from '@games/Us/Dialogues/DialogueScene.js';
 
 var ShaneIntro = function(options) {
     this.escape = options.done;
@@ -62,10 +62,10 @@ var ShaneIntro = function(options) {
         var chain = new DialogueChain(ds, {startDelay: 2000});
 
         return chain;
-    }
+    };
 
     this.initialize();
 };
 
 ShaneIntro.prototype = DialogueScene;
-export {ShaneIntro}
+export {ShaneIntro};

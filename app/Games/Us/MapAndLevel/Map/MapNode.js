@@ -30,6 +30,7 @@ var MapLevelNode = function(options) {
 
     var myNode = this;
     gameUtils.matterOnce(this.levelDetails, 'endLevelActions', function(event) {
+        event = event || {};
         myNode.complete();
 
         if(event.endLevelScene) {
