@@ -1,15 +1,30 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import Tooltip from '@core/Tooltip.js'
-import tokenMappings from '@games/Us/MapAndLevel/Map/TokenMappings.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
-import styles from '@utils/Styles.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
+import Tooltip from '@core/Tooltip.js';
+import tokenMappings from '@games/Us/MapAndLevel/Map/TokenMappings.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
+import styles from '@utils/Styles.js';
 
-var hoverTick = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
-var clickTokenSound = gameUtils.getSound('clickbattletoken1.wav', {volume: .05, rate: 1});
-var clickTokenSound2 = gameUtils.getSound('clickbattletoken2.wav', {volume: .04, rate: .9});
+var hoverTick = gameUtils.getSound('augmenthover.wav', {
+    volume: 0.03,
+    rate: 1
+});
+var clickTokenSound = gameUtils.getSound('clickbattletoken1.wav', {
+    volume: 0.05,
+    rate: 1
+});
+var clickTokenSound2 = gameUtils.getSound('clickbattletoken2.wav', {
+    volume: 0.04,
+    rate: 0.9
+});
 
 var defaultTokenSize = 40;
 var enlargedTokenSize = 50;
@@ -25,7 +40,7 @@ var MapLevelNode = function(options) {
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
 
     //Call init() if specified
-    if(options.init) {
+    if (options.init) {
         options.init.call(this);
     }
 
@@ -34,28 +49,40 @@ var MapLevelNode = function(options) {
         event = event || {};
         myNode.complete();
 
-        if(event.endLevelScene) {
+        if (event.endLevelScene) {
             gameUtils.matterOnce(event.endLevelScene, 'sceneFadeOutBegin', function() {
                 myNode.playCompleteAnimation();
-            })
+            });
         } else {
             myNode.playCompleteAnimation();
         }
         globals.currentGame.map.lastNode = myNode;
-    })
+    });
 
-    if(options.manualTokens) {
+    if (options.manualTokens) {
         //custom map token
-        this.displayObject = graphicsUtils.createDisplayObject('TransparentSquare', {where: 'hudNOne', scale: {x: this.defaultTokenSize, y: this.defaultTokenSize}});
+        this.displayObject = graphicsUtils.createDisplayObject('TransparentSquare', {
+            where: 'hudNOne',
+            scale: {
+                x: this.defaultTokenSize,
+                y: this.defaultTokenSize
+            }
+        });
         this.displayObject.interactive = true;
         this.manualTokens = options.manualTokens.call(this);
         this.manualTokens.forEach((token) => {
             token.interactive = true;
-        })
+        });
     } else {
         //default behavior
         var tokenMapping = tokenMappings[this.levelDetails.type] || tokenMappings['default'];
-        this.displayObject = graphicsUtils.createDisplayObject(tokenMapping, {where: 'hudNTwo', scale: {x: 1, y: 1}});
+        this.displayObject = graphicsUtils.createDisplayObject(tokenMapping, {
+            where: 'hudNTwo',
+            scale: {
+                x: 1,
+                y: 1
+            }
+        });
         graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
         this.displayObject.interactive = true;
     }
@@ -64,7 +91,7 @@ var MapLevelNode = function(options) {
     var enemyDescriptions = [];
     var enemyIcons = [];
     var self = this;
-    if(this.levelDetails.enemySets.length > 0) {
+    if (this.levelDetails.enemySets.length > 0) {
         this.isBattleNode = true;
     }
     this.levelDetails.enemySets.forEach(set => {
@@ -82,15 +109,15 @@ var MapLevelNode = function(options) {
 
     //Establish event handlers
     this.displayObject.on('mouseover', function(event) {
-        if(!this.mapRef.mouseEventsAllowed) return;
+        if (!this.mapRef.mouseEventsAllowed) return;
 
-        if(!this.isCompleted && !this.mapRef.travelInProgress) {
+        if (!this.isCompleted && !this.mapRef.travelInProgress) {
             var doDefault = true;
-            if(options.hoverCallback) {
+            if (options.hoverCallback) {
                 doDefault = options.hoverCallback.call(self);
             }
 
-            if(doDefault) {
+            if (doDefault) {
                 hoverTick.play();
                 this.sizeNode(this.enlargedTokenSize);
                 this.tintNode();
@@ -98,103 +125,114 @@ var MapLevelNode = function(options) {
         }
 
         //if we're a prerequisite to something, highlight the master
-        if(this.chosenAsPrereq && !this.master.isCompleted) {
+        if (this.chosenAsPrereq && !this.master.isCompleted) {
             this.master.focusNode();
         }
     }.bind(this));
 
     this.displayObject.on('mouseout', function(event) {
-        if(!this.mapRef.mouseEventsAllowed) return;
+        if (!this.mapRef.mouseEventsAllowed) return;
 
-        if(!this.isCompleted && !this.mapRef.travelInProgress) {
+        if (!this.isCompleted && !this.mapRef.travelInProgress) {
             var doDefault = true;
-            if(options.unhoverCallback) {
+            if (options.unhoverCallback) {
                 doDefault = options.unhoverCallback.call(self);
             }
-            if(doDefault) {
+            if (doDefault) {
                 this.sizeNode();
                 this.untintNode();
             }
         }
         //if we're a prerequisite to something, unhighlight the master
-        if(this.chosenAsPrereq && !this.master.isCompleted) {
+        if (this.chosenAsPrereq && !this.master.isCompleted) {
             this.master.unfocusNode();
         }
     }.bind(this));
 
     this.displayObject.on('mousedown', function(event) {
-        if(!this.mapRef.mouseEventsAllowed) return;
+        if (!this.mapRef.mouseEventsAllowed) return;
 
         //for debugging
         // this.playCompleteAnimation();
         // return;
 
-        if(!self.isCompleted && !this.mapRef.travelInProgress) {
+        if (!self.isCompleted && !this.mapRef.travelInProgress) {
             var canTravel = true;
-            if(options.travelPredicate) {
+            if (options.travelPredicate) {
                 canTravel = this.travelPredicate();
             }
 
-            if(canTravel) {
+            if (canTravel) {
                 //defaults
-                var behavior = {flash: true, sound: true, nodeToEnter: this};
-                if(options.mouseDownCallback) {
-                    var ret =  options.mouseDownCallback.call(self);
-                    if(ret) {
+                var behavior = {
+                    flash: true,
+                    sound: true,
+                    nodeToEnter: this
+                };
+                if (options.mouseDownCallback) {
+                    var ret = options.mouseDownCallback.call(self);
+                    if (ret) {
                         Object.assign(behavior, options.mouseDownCallback.call(self));
                     } else {
-                        Object.assign(behavior, {flash: false, sound: false});
+                        Object.assign(behavior, {
+                            flash: false,
+                            sound: false
+                        });
                     }
                 }
 
-                if(behavior.flash) {
+                if (behavior.flash) {
                     this.flashNode();
                     this.displayObject.tooltipObj.disable();
                     this.displayObject.tooltipObj.hide();
                 }
 
-                if(behavior.sound) {
+                if (behavior.sound) {
                     clickTokenSound2.play();
                 }
 
-                if(behavior.nodeToEnter == globals.currentGame.currentLevel.mapNode && this.enterSelfBehavior) {
+                if (behavior.nodeToEnter == globals.currentGame.currentLevel.mapNode && this.enterSelfBehavior) {
                     this.enterSelfBehavior();
                 } else {
                     this.mapRef.travelToNode(behavior.nodeToEnter, function() {
-                        Matter.Events.trigger(globals.currentGame, "travelFinished", {node: behavior.nodeToEnter});
+                        Matter.Events.trigger(globals.currentGame, "travelFinished", {
+                            node: behavior.nodeToEnter
+                        });
                         this.levelDetails.enterLevel(self);
                         behavior.nodeToEnter.untintNode();
                         this.displayObject.tooltipObj.enable();
                     }.bind(this));
-                    Matter.Events.trigger(globals.currentGame, "travelStarted", {node: behavior.nodeToEnter});
+                    Matter.Events.trigger(globals.currentGame, "travelStarted", {
+                        node: behavior.nodeToEnter
+                    });
                 }
             }
         }
     }.bind(this));
 
-    if(options.deactivateToken) {
+    if (options.deactivateToken) {
         this.deactivateToken = options.deactivateToken;
-    };
-}
+    }
+};
 
 MapLevelNode.prototype.deactivateToken = function() {
     this.displayObject.tint = 0x002404;
-    this.displayObject.alpha = .5;
-}
+    this.displayObject.alpha = 0.5;
+};
 
 MapLevelNode.prototype.complete = function() {
     this.isCompleted = true;
     this.justCompleted = true;
     this.displayObject.tooltipObj.destroy();
-    if(this._nodeCompleteExtension) {
+    if (this._nodeCompleteExtension) {
         this._nodeCompleteExtension();
     }
-}
+};
 
 MapLevelNode.prototype.completeAndPlayAnimation = function() {
     this.complete();
     this.playCompleteAnimation();
-}
+};
 
 MapLevelNode.prototype.playCompleteAnimation = function() {
     var node = this;
@@ -206,96 +244,102 @@ MapLevelNode.prototype.playCompleteAnimation = function() {
         node.isSpinning = false;
     });
 
-    if(this._playCompleteAnimationExtension) {
+    if (this._playCompleteAnimationExtension) {
         this._playCompleteAnimationExtension();
     }
-}
+};
 
 MapLevelNode.prototype.canBePrereq = function() {
     return true;
-}
+};
 
 MapLevelNode.prototype.setPosition = function(position) {
     this.displayObject.position = position;
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             token.position = position;
-        })
+        });
     }
     this.position = position;
-}
+};
 
 MapLevelNode.prototype.cleanUp = function() {
     graphicsUtils.removeSomethingFromRenderer(this.displayObject);
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.removeSomethingFromRenderer(token);
-        })
+        });
     }
-    if(this.cleanUpExtension) {
+    if (this.cleanUpExtension) {
         this.cleanUpExtension();
     }
-}
+};
 
 MapLevelNode.prototype.focusNode = function() {
-    if(!this.isSpinning) {
+    if (!this.isSpinning) {
         this.isFocused = true;
-        this.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {where: 'hudNTwo', alpha: .8, position: this.position});
+        this.focusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {
+            where: 'hudNTwo',
+            alpha: 0.8,
+            position: this.position
+        });
         graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
         graphicsUtils.makeSpriteSize(this.focusCircle, this.enlargedTokenSize);
-        graphicsUtils.rotateSprite(this.focusCircle, {speed: 20});
+        graphicsUtils.rotateSprite(this.focusCircle, {
+            speed: 20
+        });
 
-        if(this.manualTokens) {
+        if (this.manualTokens) {
             this.manualTokens.forEach((token) => {
                 graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
-            })
+            });
         }
     }
-}
+};
 
 MapLevelNode.prototype.tintNode = function(value) {
     var tintValue = 0x20cd2c;
     this.displayObject.tint = value || tintValue;
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             token.tint = value || tintValue;
-        })
+        });
     }
-}
+};
 
 MapLevelNode.prototype.untintNode = function() {
     this.displayObject.tint = 0xFFFFFF;
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             token.tint = 0xFFFFFF;
-        })
+        });
     }
 };
 
 MapLevelNode.prototype.flashNode = function(position) {
     graphicsUtils.graduallyTint(this.displayObject, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.graduallyTint(token, 0xFFFFFF, 0xc72efb, 65, null, false, 3);
-        })
+        });
     }
 };
 
 MapLevelNode.prototype.sizeNode = function(size) {
     graphicsUtils.makeSpriteSize(this.displayObject, size || this.defaultTokenSize);
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.makeSpriteSize(token, size || this.defaultTokenSize);
-        })
+        });
     }
 };
 
 MapLevelNode.prototype.setNodeZ = function(z) {
     this.displayObject.sortYOffset = z;
-    if(this.manualTokens) {
+    if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             token.sortYOffset = z;
-        })
+        });
     }
 };
 
@@ -305,17 +349,17 @@ MapLevelNode.prototype.setToDefaultState = function() {
 };
 
 MapLevelNode.prototype.unfocusNode = function() {
-    if(!this.focusCircle) return;
-    if(!this.isSpinning) {
+    if (!this.focusCircle) return;
+    if (!this.isSpinning) {
         this.isFocused = false;
         graphicsUtils.removeSomethingFromRenderer(this.focusCircle);
         this.focusCircle = null;
         graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
 
-        if(this.manualTokens) {
+        if (this.manualTokens) {
             this.manualTokens.forEach((token) => {
                 graphicsUtils.makeSpriteSize(token, this.defaultTokenSize);
-            })
+            });
         }
     }
 };

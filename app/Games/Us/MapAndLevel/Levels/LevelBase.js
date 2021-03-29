@@ -20,6 +20,11 @@ var levelBase = {
     // },
 
     enterLevel: function(node) {
+        if(this.hijackEntry) {
+            var res = this.hijackEntry();
+            if(res) return;
+        }
+
         var scene = new Scene();
         this.fillLevelScene(scene);
 

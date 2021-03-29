@@ -221,6 +221,6 @@ var map = function(specs) {
         } else {
             Matter.Body.setPosition(this.headTokenBody, options);
         }
-    }
+    };
 };
 export default map;
