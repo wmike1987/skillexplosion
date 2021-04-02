@@ -16,6 +16,11 @@ var DialogueScene = {
 
         var skipText;
         //indicate skipping behavior
+
+        Matter.Events.on(dialogueScene, 'afterSnapshotRender', () => {
+            globals.currentGame.closeMap();
+        });
+
         Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
             skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to skip", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
             dialogueScene.add(skipText);

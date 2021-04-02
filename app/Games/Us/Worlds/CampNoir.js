@@ -21,6 +21,9 @@ import Map from '@games/Us/MapAndLevel/Map/Map.js';
 import {
     CampNoirIntro
 } from '@games/Us/Dialogues/CampNoirIntro.js';
+import {
+    UrsulaTasks
+} from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
 
 var tileSize = 225;
 var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];
@@ -53,6 +56,12 @@ var camp = {
     getBackgroundTiles: levelTiles,
     tileMapExtension: tileExtension,
     intro: CampNoirIntro,
+
+    initExtension: function() {
+        if(!globals.currentGame.ursula) {
+            globals.currentGame.initUrsula();
+        }
+    },
 
     initSounds: function() {
         this.entercamp = gameUtils.getSound('entercamp.wav', {
@@ -169,6 +178,16 @@ var camp = {
 
         return objs;
     },
+
+    onLevelPlayable: function(scene) {
+        if(!this.completedUrsulaTasks) {
+            this.completedUrsulaTasks = true;
+            var ursTasks = new UrsulaTasks(scene);
+            ursTasks.play();
+            globals.currentGame.shane.currentHealth = 20;
+            globals.currentGame.shane.position = {x: 300, y: 500};
+        }
+    }
 };
 
 var noirEnemySets = {

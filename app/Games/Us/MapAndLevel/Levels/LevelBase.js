@@ -15,10 +15,6 @@ var levelBase = {
         });
     },
 
-    // enterLevel: function(node) {
-    //     Matter.Events.trigger(globals.currentGame, 'InitCurrentLevel', {node: node});
-    // },
-
     enterLevel: function(node) {
         if(this.hijackEntry) {
             var res = this.hijackEntry();
@@ -53,6 +49,10 @@ var levelBase = {
         if(this.initExtension) {
             this.initExtension(type, worldSpecs, options);
         }
+    },
+
+    isLevelConfigurable: function() {
+        return this.campLikeActive;
     },
 
     fillLevelScene: function(scene) {
@@ -234,7 +234,7 @@ var modes = {
                 game.closeMap();
             });
             Matter.Events.on(scene, 'initialize', function() {
-                Matter.Events.trigger(game, 'enteringLevel');
+                Matter.Events.trigger(game, 'enteringLevel', {level: level});
                 game.unitSystem.pause();
                 gameUtils.setCursorStyle('None');
                 var shaneStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -20});
@@ -282,8 +282,8 @@ var modes = {
                 game.closeMap();
             });
             Matter.Events.on(scene, 'initialize', function() {
-                Matter.Events.trigger(game, 'enteringLevel');
-                level.onEnterLevel(scene);
+                Matter.Events.trigger(game, 'enteringLevel', {level: level});
+                level.onLevelPlayable(scene);
             });
         }
     },

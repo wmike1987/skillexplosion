@@ -40,6 +40,10 @@ var campLevel = function() {
         this.camp = options.camp;
         this.position = gameUtils.getPlayableCenter();
         this.mode = this.possibleModes.CUSTOM;
+
+        if(this.camp.initExtension) {
+            this.camp.initExtension();
+        }
     };
 
     this.fillLevelSceneExtension = function(scene) {
@@ -268,7 +272,8 @@ var campLevel = function() {
         }
     };
 
-    this.onEnterLevel = function(scene) {
+    this.onLevelPlayable = function(scene) {
+
         var game = globals.currentGame;
         game.setUnit(game.shane, {
             position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
@@ -280,6 +285,10 @@ var campLevel = function() {
                 y: 40
             })
         });
+
+        if(this.camp.onLevelPlayable) {
+            this.camp.onLevelPlayable.call(this, scene);
+        }
     };
 
     this.manualNodePosition = function() {

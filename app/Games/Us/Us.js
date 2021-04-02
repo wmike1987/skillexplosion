@@ -164,10 +164,10 @@ var game = {
 
     play: function(options) {
 
+        this.initNextMap();
         var shaneIntro = new ShaneIntro({
             done: () => {
                 // this.postInit();
-                this.initNextMap();
                 this.initShane();
             }
         });
@@ -299,6 +299,11 @@ var game = {
         this.createShane();
         this.addUnit(this.shane);
         this.gotoLevelById('shaneLearning');
+    },
+
+    initUrsula: function() {
+        this.createUrsula();
+        this.addUnit(this.ursula);
     },
 
     postInit: function() {

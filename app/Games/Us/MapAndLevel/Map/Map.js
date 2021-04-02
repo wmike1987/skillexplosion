@@ -1,19 +1,36 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
 import Tooltip from '@core/Tooltip.js';
-import {levelFactory} from '@games/Us/MapAndLevel/Levels/LevelFactory.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    levelFactory
+} from '@games/Us/MapAndLevel/Levels/LevelFactory.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 import styles from '@utils/Styles.js';
 
 /*
  * Main Map object
  */
 //Map sounds
-var openmapSound = gameUtils.getSound('openmap.wav', {volume: 0.15, rate: 1.0});
-var openmapSound2 = gameUtils.getSound('openmap2.wav', {volume: 0.06, rate: 0.8});
-var openmapSound3 = gameUtils.getSound('openmap3.wav', {volume: 0.04, rate: 0.8});
+var openmapSound = gameUtils.getSound('openmap.wav', {
+    volume: 0.15,
+    rate: 1.0
+});
+var openmapSound2 = gameUtils.getSound('openmap2.wav', {
+    volume: 0.06,
+    rate: 0.8
+});
+var openmapSound3 = gameUtils.getSound('openmap3.wav', {
+    volume: 0.04,
+    rate: 0.8
+});
 
 //Creates the map, the map head, the map nodes and their tooltips, as well as initializes the level obj which the player will enter upon clicking the node
 var map = function(specs) {
@@ -44,20 +61,36 @@ var map = function(specs) {
 
     //setup fatigue functionality
     this.startingFatigue = 0;
-    this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {position: {x: 100, y: 100}, style: styles.fatigueText, where: "hudNOne"});
+    this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {
+        position: {
+            x: 100,
+            y: 100
+        },
+        style: styles.fatigueText,
+        where: "hudNOne"
+    });
     Matter.Events.on(this, "SetFatigue", function(event) {
         this.fatigueText.alpha = 0.9;
         var amount = event.amount;
         this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
     }.bind(this));
-    gameUtils.attachSomethingToBody({something: this.fatigueText, body: this.headTokenBody, offset: {x: 0, y: 20}});
+    gameUtils.attachSomethingToBody({
+        something: this.fatigueText,
+        body: this.headTokenBody,
+        offset: {
+            x: 0,
+            y: 20
+        }
+    });
 
     //Create main map sprite
-    this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {where: 'foreground', position: gameUtils.getPlayableCenter()});
+    this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {
+        where: 'foreground',
+        position: gameUtils.getPlayableCenter()
+    });
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);
 
     this.worldSpecs = specs;
-    this.travelInProgress = false;
     this.graph = [];
 
     //setup other properties
@@ -71,33 +104,37 @@ var map = function(specs) {
         var position = options.position;
         var collision;
         var nodeBuffer = 100;
-        if(!position) {
+        if (!position) {
             do {
                 collision = false;
                 position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
-                for(let node of this.graph) {
-                    if(mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
+                for (let node of this.graph) {
+                    if (mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                         collision = true;
                         break;
                     }
                 }
-            } while(collision);
+            } while (collision);
         }
 
         //air drop station needs the position upon init to determine its prerequisites
-        var mapNode = level.createMapNode({levelDetails: level, mapRef: this, position: position});
+        var mapNode = level.createMapNode({
+            levelDetails: level,
+            mapRef: this,
+            position: position
+        });
         level.mapNode = mapNode; //add back reference
 
-        if(level.manualNodePosition) {
+        if (level.manualNodePosition) {
             var returnedPosition = level.manualNodePosition(position);
-            if(returnedPosition) {
+            if (returnedPosition) {
                 mapNode.setPosition(returnedPosition);
             }
         } else {
             mapNode.setPosition(position);
         }
 
-        if(level.manualAddToGraph) {
+        if (level.manualAddToGraph) {
             level.manualAddToGraph(this.graph);
         } else {
             this.graph.push(mapNode);
@@ -109,13 +146,13 @@ var map = function(specs) {
     this.show = function() {
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = 0.3;
-        // openmapSound.play();
+        this.allowMouseEvents(true);
         openmapSound2.play();
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
-            if(node.isCompleted) {
-                if(node.justCompleted) { //just completed allows the node to signal it deactivation with an animation the first time
+            if (node.isCompleted) {
+                if (node.justCompleted) { //just completed allows the node to signal it deactivation with an animation the first time
                     node.justCompleted = false;
                 } else {
                     node.deactivateToken();
@@ -124,7 +161,7 @@ var map = function(specs) {
                 node.setToDefaultState();
             }
             graphicsUtils.addOrShowDisplayObject(node.displayObject);
-            if(node.manualTokens) {
+            if (node.manualTokens) {
                 node.manualTokens.forEach((token) => {
                     graphicsUtils.addOrShowDisplayObject(token);
                 });
@@ -139,88 +176,98 @@ var map = function(specs) {
     };
 
     this.hide = function() {
-        Matter.Events.trigger(this, 'hideMap', {});
-        this.mapSprite.visible = false;
-        this.graph.forEach(node => {
-            node.displayObject.visible = this.mapSprite.visible;
-            if(node.displayObject.tooltipObj) {
-                node.displayObject.tooltipObj.hide();
-            }
-            if(node.manualTokens) {
-                node.manualTokens.forEach((token) => {
-                    token.visible = this.mapSprite.visible;
-                });
-            }
-            if(node.isFocused) {
-                node.unfocusNode();
-                graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
-            }
-        });
-
-        this.headTokenSprite.visible = false;
-        this.fatigueText.visible = false;
-    },
-
-    this.allowMouseEvents = function(value) {
-        this.mouseEventsAllowed = value;
-    },
-
-    this.travelToNode = function(node, destinationCallback) {
-        this.travelInProgress = true;
-        this.lastNode = this.currentNode;
-        this.currentNode = node;
-        this.startingFatigue += 5;
-        var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {y: 20});
-        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
-            Matter.Body.setVelocity(this.headTokenBody, {
-                x: 0.0,
-                y: 0.0
+            Matter.Events.trigger(this, 'hideMap', {});
+            this.mapSprite.visible = false;
+            this.graph.forEach(node => {
+                node.displayObject.visible = this.mapSprite.visible;
+                if (node.displayObject.tooltipObj) {
+                    node.displayObject.tooltipObj.hide();
+                }
+                if (node.manualTokens) {
+                    node.manualTokens.forEach((token) => {
+                        token.visible = this.mapSprite.visible;
+                    });
+                }
+                if (node.isFocused) {
+                    node.unfocusNode();
+                    graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
+                }
             });
-            this.travelInProgress = false;
-            Matter.Events.trigger(node, "ArrivedAtNode", {});
-            destinationCallback();
-        }.bind(this));
-        console.info(this.headTokenBody.velocity);
-        Matter.Events.trigger(globals.currentGame, "TravelStarted", {node: node, headVelocity: this.headTokenBody.velocity, startingFatigue: this.startingFatigue});
-    },
 
-    this.revertHeadToPreviousLocationDueToDefeat = function() {
-        Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {y: 20}));
-        this.currentNode = this.lastNode;
-        this.startingFatigue -= 5;
-        Matter.Events.trigger(globals.currentGame, "TravelReset", {resetToNode: this.lastNode});
-    },
+            this.headTokenSprite.visible = false;
+            this.fatigueText.visible = false;
+        },
 
-    this.findLevelById = function(id) {
-        if(!this.graph) return null;
-        var levelNode = this.graph.find(node => {
-            return id == node.levelDetails.levelId;
-        });
-        return levelNode.levelDetails;
-    },
+        this.allowMouseEvents = function(value) {
+            this.mouseEventsAllowed = value;
+        },
 
-    this.setHeadToken = function(renderlingId) {
-        var self = this;
-        mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {
-            if(key == renderlingId) {
-                rl.visible = true;
-                self.headTokenSprite = rl;
-            } else {
-                rl.visible = false;
-            }
-        });
-    },
-
-    //this takes either a raw position or a map node
-    this.setHeadTokenPosition = function(options) {
-        if(options.node) {
-            var node = options.node;
-            var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {y: 20});
-            Matter.Body.setPosition(this.headTokenBody, position);
+        this.travelToNode = function(node, destinationCallback) {
+            this.allowMouseEvents(false);
+            this.lastNode = this.currentNode;
             this.currentNode = node;
-        } else {
-            Matter.Body.setPosition(this.headTokenBody, options);
-        }
-    };
+            this.startingFatigue += 5;
+            var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
+                y: 20
+            });
+            gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
+                Matter.Body.setVelocity(this.headTokenBody, {
+                    x: 0.0,
+                    y: 0.0
+                });
+                Matter.Events.trigger(node, "ArrivedAtNode", {});
+                destinationCallback();
+            }.bind(this));
+            Matter.Events.trigger(globals.currentGame, "TravelStarted", {
+                node: node,
+                headVelocity: this.headTokenBody.velocity,
+                startingFatigue: this.startingFatigue
+            });
+        },
+
+        this.revertHeadToPreviousLocationDueToDefeat = function() {
+            Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {
+                y: 20
+            }));
+            this.currentNode = this.lastNode;
+            this.startingFatigue -= 5;
+            Matter.Events.trigger(globals.currentGame, "TravelReset", {
+                resetToNode: this.lastNode
+            });
+        },
+
+        this.findLevelById = function(id) {
+            if (!this.graph) return null;
+            var levelNode = this.graph.find(node => {
+                return id == node.levelDetails.levelId;
+            });
+            return levelNode.levelDetails;
+        },
+
+        this.setHeadToken = function(renderlingId) {
+            var self = this;
+            mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {
+                if (key == renderlingId) {
+                    rl.visible = true;
+                    self.headTokenSprite = rl;
+                } else {
+                    rl.visible = false;
+                }
+            });
+        },
+
+        //this takes either a raw position or a map node
+        this.setHeadTokenPosition = function(options) {
+            if (options.node) {
+                var node = options.node;
+                var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
+                    y: 20
+                });
+                Matter.Body.setPosition(this.headTokenBody, position);
+                this.currentNode = node;
+            } else {
+                Matter.Body.setPosition(this.headTokenBody, options);
+            }
+        };
 };
 export default map;

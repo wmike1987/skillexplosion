@@ -111,7 +111,7 @@ var MapLevelNode = function(options) {
     this.displayObject.on('mouseover', function(event) {
         if (!this.mapRef.mouseEventsAllowed) return;
 
-        if (!this.isCompleted && !this.mapRef.travelInProgress) {
+        if (!this.isCompleted) {
             var doDefault = true;
             if (options.hoverCallback) {
                 doDefault = options.hoverCallback.call(self);
@@ -133,7 +133,7 @@ var MapLevelNode = function(options) {
     this.displayObject.on('mouseout', function(event) {
         if (!this.mapRef.mouseEventsAllowed) return;
 
-        if (!this.isCompleted && !this.mapRef.travelInProgress) {
+        if (!this.isCompleted) {
             var doDefault = true;
             if (options.unhoverCallback) {
                 doDefault = options.unhoverCallback.call(self);
@@ -156,7 +156,7 @@ var MapLevelNode = function(options) {
         // this.playCompleteAnimation();
         // return;
 
-        if (!self.isCompleted && !this.mapRef.travelInProgress) {
+        if (!self.isCompleted) {
             var canTravel = true;
             if (options.travelPredicate) {
                 canTravel = this.travelPredicate();

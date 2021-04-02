@@ -119,7 +119,7 @@ var airDropStation = function(options) {
     options.entrySound = entrySound;
     this.tileSize = 225.0;
 
-    this.onEnterLevel = function(scene) {
+    this.onLevelPlayable = function(scene) {
         var game = globals.currentGame;
         game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
         game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
@@ -149,7 +149,7 @@ var airDropSpecialStation = function(options) {
     options.entrySound = entrySound;
     this.tileSize = 225;
 
-    this.onEnterLevel = function(scene) {
+    this.onLevelPlayable = function(scene) {
         this.entrySound.play();
         var selection = Object.create(selectionMechanism);
         //begin dialogue
