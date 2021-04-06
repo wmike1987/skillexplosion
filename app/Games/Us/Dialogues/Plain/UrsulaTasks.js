@@ -40,15 +40,25 @@ var UrsulaTasks = function(scene) {
             gameUtils.doSomethingAfterDuration(() => {
                 a1.withholdResolve = false;
 
-                gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
-                    if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Ursula') {
-                        achieve.play();
-                        gameUtils.doSomethingAfterDuration(() => {
-                            a1.withholdResolve = false;
-                        });
-                    }
+                var moveBeaconLocation = {x: 1000, y: 450};
+                var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
+                gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'destinationReached', (event) => {
+                    var destination = event.destination;
+                    if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
+                    achieve.play();
+                    graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+                    gameUtils.doSomethingAfterDuration(() => {
+                        a2.withholdResolve = false;
+
+                        gameUtils.matterOnce(globals.currentGame.ursula, 'performHeal', (event) => {
+                            achieve.play();
+                            a3.withholdResolve = false;
+                        })
+                    });
+                    return true;
                 });
             });
+            return true;
         }
     });
 

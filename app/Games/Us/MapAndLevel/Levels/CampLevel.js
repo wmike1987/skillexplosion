@@ -254,7 +254,7 @@ var campLevel = function() {
 
     this.hijackEntry = function() {
         var self = this;
-        if(!this.alreadyIntrod) {
+        if(!this.alreadyIntrod && this.camp.intro) {
             var campIntro = new this.camp.intro({
                 done: () => {
                     // this.postInit();

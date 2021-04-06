@@ -120,7 +120,7 @@ var game = {
             //figure out starting offset from which the chars will move into the center
             var headX = Math.abs(event.headVelocity.x);
             var headY = Math.abs(event.headVelocity.y);
-            var buffer = 80;
+            var buffer = 60;
             var xSteps = (gameUtils.getPlayableWidth() / 2 + buffer) / headX;
             var ySteps = (gameUtils.getPlayableHeight() / 2 + buffer) / headY;
             var xPos = 0;
@@ -515,12 +515,13 @@ var game = {
             unit.showEnergyBar();
             gameUtils.doSomethingAfterDuration(() => {
                 unit.body.collisionFilter.mask += 0x0004;
+                console.info("wow")
                 unit.showLifeBar(false);
                 unit.showEnergyBar(false);
                 unit.ignoreEnergyRegeneration = false;
                 unit.ignoreHealthRegeneration = false;
             }, 2400);
-            unit.move(mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+            unit.move(options.moveTo || mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
                 x: centerX,
                 y: 0
             }));
@@ -553,7 +554,10 @@ var game = {
         if (this.currentScene) {
             this.currentScene.clear();
         }
-        this.heartbeat.unload();
+
+        if(this.heartbeat) {
+            this.heartbeat.unload();
+        }
     }
 };
 

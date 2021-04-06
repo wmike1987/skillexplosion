@@ -40,7 +40,7 @@ var CampNoirIntro = function(options) {
         }));
         ds.push(new Dialogue({
             actor: "Shane",
-            text: "A cursed man.",
+            text: "A dead man.",
         }));
         ds.push(new Dialogue({
             actor: "Ursula",
