@@ -34,6 +34,7 @@ var UrsulaTasks = function(scene) {
         startDelay: 2000
     });
 
+    var pauseAfterCompleteTime = 750;
     gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
         if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Ursula') {
             achieve.play();
@@ -49,15 +50,31 @@ var UrsulaTasks = function(scene) {
                     graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
                     gameUtils.doSomethingAfterDuration(() => {
                         a2.withholdResolve = false;
-
                         gameUtils.matterOnce(globals.currentGame.ursula, 'performHeal', (event) => {
                             achieve.play();
-                            a3.withholdResolve = false;
-                        })
-                    });
+                            gameUtils.doSomethingAfterDuration(() => {
+                                a3.withholdResolve = false;
+                                var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
+                                gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'secretStepLand', (event) => {
+                                    var destination = event.destination;
+                                    if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
+                                    graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+                                    achieve.play();
+                                    gameUtils.doSomethingAfterDuration(() => {
+                                        a4.withholdResolve = false;
+
+                                        gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'performHeal', (event) => {
+                                            achieve.play();
+                                        })
+                                    }, pauseAfterCompleteTime);
+                                    return true;
+                                })
+                            }, pauseAfterCompleteTime*2.0);
+                        });
+                    }, pauseAfterCompleteTime);
                     return true;
                 });
-            });
+            }, pauseAfterCompleteTime);
             return true;
         }
     });

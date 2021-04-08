@@ -360,6 +360,7 @@ export default function Medic(options) {
               this.shadow = null;
               globals.currentGame.removeBody(shadow);
               globals.currentGame.invalidateTimer(footprintTimer);
+              Matter.Events.trigger(this, 'secretStepLand', {destination: destination});
               commandObj.command.done();
 
               var self = this;
