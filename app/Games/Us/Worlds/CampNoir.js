@@ -58,9 +58,7 @@ var camp = {
     intro: CampNoirIntro,
 
     initExtension: function() {
-        if(!globals.currentGame.ursula) {
-            globals.currentGame.initUrsula();
-        }
+
     },
 
     initSounds: function() {
@@ -181,6 +179,10 @@ var camp = {
 
     onLevelPlayable: function(scene) {
         if(!this.completedUrsulaTasks) {
+            if(!globals.currentGame.ursula) {
+                globals.currentGame.initUrsula();
+                globals.currentGame.ursula.position = {x: 800, y: 350};
+            }
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
             ursTasks.play();
