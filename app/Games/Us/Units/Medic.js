@@ -1,24 +1,24 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Unlocker.js'
-import Ability from '@core/Unit/UnitAbility.js'
-import styles from '@utils/Styles.js'
-import Passive from '@core/Unit/UnitPassive.js'
-import rv from '@core/Unit/_Revivable.js'
-import Projectile from '@core/Unit/UnitProjectile.js'
-import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import UC from '@core/Unit/UnitConstructor.js';
+import aug from '@core/Unit/_Unlocker.js';
+import Ability from '@core/Unit/UnitAbility.js';
+import styles from '@utils/Styles.js';
+import Passive from '@core/Unit/UnitPassive.js';
+import rv from '@core/Unit/_Revivable.js';
+import Projectile from '@core/Unit/UnitProjectile.js';
+import {globals} from '@core/Fundamental/GlobalState';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function Medic(options) {
     var medic = {};
 
-    var options = options || {};
+    options = options || {};
 
     //animation settings
-    var walkSpeed = .9;
-    var walkSpeedBonus = .25;
+    var walkSpeed = 0.9;
+    var walkSpeedBonus = 0.25;
     var shootSpeed = 1;
 
     var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicN'].spineData);
@@ -438,6 +438,7 @@ export default function Medic(options) {
         globals.currentGame.addBody(mine);
         mineSound.play();
         Matter.Events.trigger(globals.currentGame, 'layMine', {performingUnit: this});
+        Matter.Events.trigger(this, 'layMine');
 
         //play spine animation
         // this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
@@ -530,6 +531,7 @@ export default function Medic(options) {
                         mineState.state += 1;
                     } else if(mineState.state == 3) {
                         mine.explode();
+                        Matter.Events.trigger(medic, 'mineExplode');
                     }
                 }
             })

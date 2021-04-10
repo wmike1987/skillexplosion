@@ -62,9 +62,9 @@ var campLevel = function() {
             x: 0,
             y: 0
         };
-        treeOptions.width = 300;
+        treeOptions.width = 150;
         treeOptions.height = gameUtils.getPlayableHeight() + 50;
-        treeOptions.density = 0.05;
+        treeOptions.density = 0.15;
         treeOptions.possibleTrees = possibleTrees;
         scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
 

@@ -184,9 +184,9 @@ var camp = {
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
             ursTasks.play();
-            globals.currentGame.shane.currentHealth = 40;
-            globals.currentGame.shane.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -200, y: 25});
-            globals.currentGame.ursula.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 100, y: -100});
+            globals.currentGame.shane.currentHealth = 20;
+            globals.currentGame.shane.ignoreHealthRegeneration = true;
+            globals.currentGame.shane.position = {x: 400, y: 400};
         }
     }
 };

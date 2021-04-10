@@ -27,12 +27,11 @@ var UrsulaTasks = function(scene) {
     var a3 = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
     var a4 = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to silent-step to that point.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
     var a5 = new Dialogue({actor: "Task", text: "Press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-    var a6 = new Dialogue({actor: "Task", text: "Blow up the box with a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
-    var a7 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
+    var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, withholdResolve: true});
 
-    var chain = new DialogueChain([a1, a2, a3, a4, a5, a6, a7], {
-        startDelay: 2000
-    });
+    var chain = new DialogueChain([a1, a2, a3, a4, a5, a6], {startDelay: 200, done: function() {
+        chain.cleanUp();
+    }});
 
     var pauseAfterCompleteTime = 750;
     gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
@@ -51,8 +50,9 @@ var UrsulaTasks = function(scene) {
                     gameUtils.doSomethingAfterDuration(() => {
                         a2.withholdResolve = false;
                         gameUtils.matterOnce(globals.currentGame.ursula, 'performHeal', (event) => {
-                            achieve.play();
-                            gameUtils.doSomethingAfterDuration(() => {
+                            globals.currentGame.shane.ignoreHealthRegeneration = false;
+                            gameUtils.matterOnce(globals.currentGame.shane, 'healedFully', (event) => {
+                                achieve.play();
                                 a3.withholdResolve = false;
                                 var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
                                 gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'secretStepLand', (event) => {
@@ -62,14 +62,22 @@ var UrsulaTasks = function(scene) {
                                     achieve.play();
                                     gameUtils.doSomethingAfterDuration(() => {
                                         a4.withholdResolve = false;
-
-                                        gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'performHeal', (event) => {
+                                        gameUtils.matterOnce(globals.currentGame.ursula, 'layMine', (event) => {
                                             achieve.play();
-                                        })
+                                            gameUtils.matterOnce(globals.currentGame.ursula, 'mineExplode', (event) => {
+                                                gameUtils.doSomethingAfterDuration(() => {
+                                                    a5.withholdResolve = false;
+                                                    gameUtils.matterOnce(globals.currentGame.shane, 'knifeMine', (event) => {
+                                                        achieve.play();
+                                                        chain.cleanUp();
+                                                    });
+                                                });
+                                            }, pauseAfterCompleteTime);
+                                        });
                                     }, pauseAfterCompleteTime);
                                     return true;
-                                })
-                            }, pauseAfterCompleteTime*2.0);
+                                });
+                            });
                         });
                     }, pauseAfterCompleteTime);
                     return true;

@@ -562,6 +562,7 @@ export default function Marine(options) {
             }
 
             if(otherBody.isMine) {
+                Matter.Events.trigger(this, 'knifeMine');
                 otherBody.explode();
             }
         }.bind(this))
