@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js'
 
 var manipulations = {
-    energyRegenerationRate: .3,
+    energyRegenerationRate: 0.3,
 }
 
 export default function(options) {

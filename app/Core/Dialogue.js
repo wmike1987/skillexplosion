@@ -1,12 +1,12 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import styles from '@utils/Styles.js'
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import styles from '@utils/Styles.js';
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
 
 var pictureStyles = {
     FADE_IN: "FADE_IN"
-}
+};
 
 /*
  * options {
@@ -45,7 +45,7 @@ var Dialogue = function Dialogue(options) {
         picturePosition: {x: gameUtils.getPlayableWidth()*4/5, y: gameUtils.getCanvasHeight()/2},
         pictureFadeSpeed: 5, //this is measured in letters since we approach opache per callback of the text timer
         picutreOffset: {x: 0, y: 0},
-    }
+    };
     $.extend(this, defaults, options);
 
     if(this.interrupt) {
@@ -56,23 +56,23 @@ var Dialogue = function Dialogue(options) {
         this.pauseAfterWord = [this.pauseAfterWord];
     }
 
-    this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: .25, rate: 1});
+    this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: 0.25, rate: 1});
 
     //Establish actor text at creation time since it's used in continuations
     this.actorText = this.actor ? this.actor + ": " : "";
 
     this.play = function(options) {
-        if(this.killed) return;
+        if(this.killed || this.manualBlock) return;
         options = options || {};
 
         //Create the left space buffer (either explicitly defined or the actor text width)
         var spaceBuffer = "";
         if(this.leftSpaceBuffer) {
-            for(var c = 0; c < this.leftSpaceBuffer; c++) {
+            for(let c = 0; c < this.leftSpaceBuffer; c++) {
                 spaceBuffer += " ";
             }
         } else {
-            for(var c = 0; c < this.actorText.length; c++) {
+            for(let c = 0; c < this.actorText.length; c++) {
                 spaceBuffer += " ";
             }
         }
@@ -187,14 +187,14 @@ var Dialogue = function Dialogue(options) {
                         if(d.actionText.fadeOutOnly) {
                             d.realizedActionText.alpha = 1.0;
                             runs = 1;
-                            duration = d.actionText.actionDuration
+                            duration = d.actionText.actionDuration;
                             fadingIn = false;
                             top = 1.0;
                         }
 
                         var minAlpha = 0;
                         if(d.actionText.leaveTrace) {
-                            minAlpha = .2;
+                            minAlpha = 0.2;
                         }
                         d.actionTextTimer = globals.currentGame.addTimer({name: 'dialogueActionFade:' + mathArrayUtils.getId(), runs: runs, killsSelf: true, timeLimit: duration,
                             tickCallback: function(delta) {
@@ -211,7 +211,7 @@ var Dialogue = function Dialogue(options) {
                                 d.realizedActionText.alpha = minAlpha;
                                 d.actionTextState.done = true;
                             }
-                        })
+                        });
                         graphicsUtils.addOrShowDisplayObject(d.realizedActionText);
                     }
                     return;
@@ -258,7 +258,7 @@ var Dialogue = function Dialogue(options) {
                             timer.timeLimit = pauseWord.duration;
                             pauseWord.done = true;
                         }
-                    })
+                    });
                 }
 
                 if(currentLetter == d.text.length) {
@@ -268,17 +268,17 @@ var Dialogue = function Dialogue(options) {
                     }
                 }
             } else if(this.totalElapsedTime >= d.resolveTime){
-                if(d.withholdResolve) {
+                if(d.next && d.next.manualBlock) {
                     return;
                 }
                 if(d.fadeOutAfterDone) {
-                    d.realizedText.alpha = .2;
-                    d.realizedActorText.alpha = .2;
-                    d.backgroundBox.alpha = .5;
+                    d.realizedText.alpha = 0.2;
+                    d.realizedActorText.alpha = 0.2;
+                    d.backgroundBox.alpha = 0.5;
                 }
                 d.deferred.resolve();
             }
-        }})
+        }});
     };
 
     this.cleanUp = function() {
@@ -303,7 +303,7 @@ var Dialogue = function Dialogue(options) {
     //this stops the text increment timer
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
-    }
+  };
 
     this.speedUp = function() {
         this.skipped = true;
@@ -313,8 +313,8 @@ var Dialogue = function Dialogue(options) {
             this.actionTextTimer.skipToEnd = true;
         }
         this.skipSound = true;
-    }
-}
+    };
+};
 
 var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
     var defaults = {
@@ -336,8 +336,10 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
 
         //setup chain
         for(var j = 0; j < len; j++) {
-            let currentDia = arrayOfDialogues[j]
-            let nextDia = arrayOfDialogues[j+1]
+            let currentDia = arrayOfDialogues[j];
+            let nextDia = arrayOfDialogues[j+1];
+
+            currentDia.next = nextDia;
 
             //lookback to comprehend continuations
             if(nextDia && nextDia.continuation) {
@@ -347,11 +349,11 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
             if(j + 1 < len) {
                 currentDia.deferred.done(() => {
                   currentDia.leaveText();
-                })
-                currentDia.deferred.done(nextDia.play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}))
+              });
+                currentDia.deferred.done(nextDia.play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}));
                 currentDia.deferred.done(function() {
                     this.currentDia = nextDia;
-                }.bind(this))
+                }.bind(this));
             } else {
                 if(this.done) {
                     currentDia.deferred.done(this.done);
@@ -361,7 +363,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
 
         //start the chain
         gameUtils.doSomethingAfterDuration(() => {
-            arrayOfDialogues[0].play()
+            arrayOfDialogues[0].play();
             this.currentDia = arrayOfDialogues[0];
         }, this.startDelay);
 
@@ -373,7 +375,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                     this.currentDia.speedUp();
                 }
             }
-        }.bind(this))
+        }.bind(this));
     },
 
     this.cleanUp = function() {
@@ -392,6 +394,6 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
     this.initialize = function() {
 
     };
-}
+};
 
-export {Dialogue, DialogueChain}
+export {Dialogue, DialogueChain};

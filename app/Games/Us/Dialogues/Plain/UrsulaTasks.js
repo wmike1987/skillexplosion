@@ -42,6 +42,7 @@ var UrsulaTasks = function(scene) {
 
                 var moveBeaconLocation = {x: 1000, y: 450};
                 var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
+                graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 8});
                 gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'destinationReached', (event) => {
                     var destination = event.destination;
                     if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;

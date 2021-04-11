@@ -1,23 +1,23 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Unlocker.js'
-import Ability from '@core/Unit/UnitAbility.js'
-import Passive from '@core/Unit/UnitPassive.js'
-import rv from '@core/Unit/_Revivable.js'
-import styles from '@utils/Styles.js'
-import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import UC from '@core/Unit/UnitConstructor.js';
+import aug from '@core/Unit/_Unlocker.js';
+import Ability from '@core/Unit/UnitAbility.js';
+import Passive from '@core/Unit/UnitPassive.js';
+import rv from '@core/Unit/_Revivable.js';
+import styles from '@utils/Styles.js';
+import {globals} from '@core/Fundamental/GlobalState';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function Marine(options) {
     var marine = {};
 
-    var options = options || {};
+    options = options || {};
 
     //animation settings
-    var walkSpeed = .9;
-    var walkSpeedBonus = .25;
+    var walkSpeed = 0.9;
+    var walkSpeedBonus = 0.25;
     var shootSpeed = 1;
 
     var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
@@ -137,7 +137,7 @@ export default function Marine(options) {
             speed: 2,
             times: 3,
         }),
-    }
+    };
 
     var throwAnimations = {
         up: gameUtils.getSpineAnimation({
@@ -163,48 +163,48 @@ export default function Marine(options) {
         downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'throw',
-            speed: .5,
+            speed: 0.5,
             mixedAnimation: true
         }),
         down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'throw',
-            speed: .5,
+            speed: 0.5,
             mixedAnimation: true
         }),
         downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'throw',
-            speed: .5,
+            speed: 0.5,
             mixedAnimation: true
         }),
         left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'throw',
-            speed: .5,
+            speed: 0.5,
             mixedAnimation: true
         }),
         upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'throw',
-            speed: .5,
+            speed: 0.5,
             mixedAnimation: true
         }),
-    }
+    };
 
     var otherAnimations = {
 
-    }
+    };
 
-    var sc = {x: .35, y: .35};
-    var adjustedUpDownsc = {x: .38, y: .38};
+    var sc = {x: 0.35, y: 0.35};
+    var adjustedUpDownsc = {x: 0.38, y: 0.38};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
     var rc = [
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .8, y: .8},
+        scale: {x: 0.8, y: 0.8},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -284,31 +284,31 @@ export default function Marine(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: .75, y: .75},
+        scale: {x: 0.75, y: 0.75},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var fireSound = gameUtils.getSound('machinegun.wav', {volume: .002, rate: 3});
-    var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: .01, rate: .6});
+    var fireSound = gameUtils.getSound('machinegun.wav', {volume: 0.002, rate: 3});
+    var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: 0.01, rate: 0.6});
 
     //crit
-    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: .03, rate: 1.0});
-    var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: .00, rate: .5});
+    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.03, rate: 1.0});
+    var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: 0.00, rate: 0.5});
 
     //death
-    var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: .2, rate: 1.0});
-    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
+    var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: 0.2, rate: 1.0});
+    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: 0.06, rate: 1.2});
 
     //other
-    var healsound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
-    var yeahsound = gameUtils.getSound('shaneyeah.wav', {volume: .1, rate: 1.0});
+    var healsound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
+    var yeahsound = gameUtils.getSound('shaneyeah.wav', {volume: 0.1, rate: 1.0});
 
     //Dash
-    var dashVelocity = .8;
-    var dashSound = gameUtils.getSound('dashsound2.wav', {volume: .04, rate: 1.2});
+    var dashVelocity = 0.8;
+    var dashSound = gameUtils.getSound('dashsound2.wav', {volume: 0.04, rate: 1.2});
     var dash = function(destination, commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Dash');
@@ -317,7 +317,7 @@ export default function Marine(options) {
         this.stop(); //stop any movement
         this._becomePeaceful(); //prevent us from honing/attacking
         this.moveSpeedAugment = this.moveSpeed;
-        this.body.frictionAir = .2;
+        this.body.frictionAir = 0.2;
         var velocityVector = Matter.Vector.sub(destination, this.position);
         var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
         Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
@@ -329,12 +329,12 @@ export default function Marine(options) {
         var dashAnimation = gameUtils.getAnimation({
             spritesheetName: 'MarineAnimations1',
             animationName: 'dash',
-            speed: .3,
+            speed: 0.3,
             transform: [this.position.x, this.position.y, 3.5, 2.5]
         });
 
         dashAnimation.play();
-        dashAnimation.alpha = .8;
+        dashAnimation.alpha = 0.8;
         dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'north');
         graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
@@ -355,7 +355,7 @@ export default function Marine(options) {
 
                 commandObj.command.done();
             }
-        })
+        });
 
         var defensivePostureGain = 4;
         if(currentAugment.name == 'defensive posture') {
@@ -363,16 +363,16 @@ export default function Marine(options) {
                 self.addDefenseAddition(defensivePostureGain);
             }, removeChanges: function() {
                 self.removeDefenseAddition(defensivePostureGain);
-            }})
+            }});
         } else if(currentAugment.name == 'death wish') {
             marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
                 self.damage += 10;
             }, removeChanges: function() {
                 self.damage -= 10;
-            }})
+            }});
         }
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
-    }
+    };
 
     var vrHpCost = 3;
     var vrECost = 1.5;
@@ -400,10 +400,10 @@ export default function Marine(options) {
                     this.ability.energyCost = vrECost;
                     this.ability.hpEnable = this.ability.enablers.push(function() {
                         return unit.currentHealth > vrHpCost;
-                    })
+                    });
                     this.ability.hpCost = this.ability.costs.push(function() {
                         return unit.currentHealth -= vrHpCost;
-                    })
+                    });
                     this.ability.customCostText = 'HP: ' + vrHpCost + ' and E: ' + vrECost;
                 },
                 unequip: function(unit) {
@@ -426,11 +426,11 @@ export default function Marine(options) {
                 description: 'Increase damage by 10 upon dashing for 2 seconds.'
             },
         ],
-    })
+    });
 
     //Knife
-    var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {volume: .03, rate: 1.5});
-    var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {volume: .05, rate: 1});
+    var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {volume: 0.03, rate: 1.5});
+    var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {volume: 0.05, rate: 1});
     var knifeSpeed = 22;
     var knifeDamage = 20;
     var throwKnife = function(destination, commandObj, childKnife) {
@@ -450,7 +450,7 @@ export default function Marine(options) {
 
         //create knife body
         var knife = Matter.Bodies.circle(0, 0, 4, {
-            restitution: .95,
+            restitution: 0.95,
             frictionAir: 0,
             mass: options.mass || 5,
             isSensor: true
@@ -470,13 +470,13 @@ export default function Marine(options) {
         knife.renderChildren = [{
             id: 'knife',
             data: 'ThrowingDaggerBase',
-            scale: {x: .7, y: .7},
+            scale: {x: 0.7, y: 0.7},
             rotate: mathArrayUtils.pointInDirection(knife.position, destination),
         },
         {
             id: 'knifeblade',
             data: 'ThrowingDaggerBlade',
-            scale: {x: .7, y: .7},
+            scale: {x: 0.7, y: 0.7},
             rotate: mathArrayUtils.pointInDirection(knife.position, destination),
             tint: knifeTint,
         },
@@ -487,7 +487,7 @@ export default function Marine(options) {
             offset: {x: 15, y: 20},
             rotate: mathArrayUtils.pointInDirection(knife.position, destination),
             stage: "stageNTwo",
-        }]
+        }];
         globals.currentGame.addBody(knife);
 
         //send knife
@@ -499,7 +499,7 @@ export default function Marine(options) {
             if(gameUtils.bodyRanOffStage(knife)) {
                 globals.currentGame.removeBody(knife);
             }
-        })
+        });
         gameUtils.deathPact(knife, removeSelf);
 
         //play spine animation
@@ -526,14 +526,14 @@ export default function Marine(options) {
                                 spritesheetName: 'UtilityAnimations2',
                                 animationName: 'poisonhit1',
                                 speed: 2.1,
-                                transform: [otherUnit.position.x, otherUnit.position.y, .4, .4]
+                                transform: [otherUnit.position.x, otherUnit.position.y, 0.4, 0.4]
                             });
                             poisonAnimation.rotation = Math.random() * Math.PI*2;
                             graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
                             otherUnit.sufferAttack(currentAugment.damage/(currentAugment.seconds*2), self);
                         }
-                    })
+                    });
                 }
 
                 otherUnit.sufferAttack(knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
@@ -544,8 +544,8 @@ export default function Marine(options) {
                 var bloodPierceAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
                     animationName: 'pierce',
-                    speed: .95,
-                    transform: [knife.position.x, knife.position.y, .25, .25]
+                    speed: 0.95,
+                    transform: [knife.position.x, knife.position.y, 0.25, 0.25]
                 });
                 knifeImpactSound.play();
                 bloodPierceAnimation.play();
@@ -565,7 +565,7 @@ export default function Marine(options) {
                 Matter.Events.trigger(this, 'knifeMine');
                 otherBody.explode();
             }
-        }.bind(this))
+        }.bind(this));
 
         if(commandObj) {
             globals.currentGame.addTimer({
@@ -576,7 +576,7 @@ export default function Marine(options) {
                 callback: function() {
                     commandObj.command.done();
                 }
-            })
+            });
         }
 
         Matter.Events.trigger(globals.currentGame, 'knifeThrow', {performingUnit: this});
@@ -621,7 +621,7 @@ export default function Marine(options) {
                 description: 'Throw multiple knives in a fan.'
             },
         ],
-    })
+    });
 
     //Main Attack
     var gunAbility = new Ability({
@@ -651,7 +651,7 @@ export default function Marine(options) {
             },
             {
                 name: 'hooded peep',
-                chance: .2,
+                chance: 0.2,
                 multiplier: 2,
                 icon: graphicsUtils.createDisplayObject('HoodedPeepIcon'),
                 title: 'Hooded Peep',
@@ -699,7 +699,7 @@ export default function Marine(options) {
                 healsound.play();
                 gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: ally.body});
                 graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
-            })
+            });
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
@@ -710,10 +710,10 @@ export default function Marine(options) {
                     ally.addDefenseAddition(2);
                 }, removeChanges: function() {
                     ally.removeDefenseAddition(2);
-                }})
-            })
+                }});
+            });
         },
-    })
+    });
 
     var robDDuration = 3000;
     var robADuration = 3000;
@@ -734,19 +734,19 @@ export default function Marine(options) {
             marine.applyBuff({name: "rushofbloodabsorb", textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
                 f.handler = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
                     event.healingObj.amount *= 2;
-                })
+                });
             }, removeChanges: function() {
                 Matter.Events.off(marine, 'preReceiveHeal', f.handler);
-            }})
+            }});
         },
         aggressionAction: function(event) {
             marine.applyBuff({name: "rushofbloodspeed", textureName: 'SpeedBuff', duration: robADuration,  applyChanges: function() {
-                marine.moveSpeed += .5;
+                marine.moveSpeed += 0.5;
             }, removeChanges: function() {
-                marine.moveSpeed -= .5;
-            }})
+                marine.moveSpeed -= 0.5;
+            }});
         },
-    })
+    });
 
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
@@ -761,7 +761,7 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             attackingUnit.defense -= 1;
-            var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414})
+            var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414});
             graphicsUtils.floatSprite(defenseDown, {direction: -1});
             gameUtils.attachSomethingToBody({something: defenseDown, body: attackingUnit.body});
         },
@@ -769,7 +769,7 @@ export default function Marine(options) {
             var targetUnit = event.targetUnit;
             targetUnit.maim();
         },
-    })
+    });
 
     var cpADuration = 4000;
     var clearPerspective  = new Passive({
@@ -793,9 +793,9 @@ export default function Marine(options) {
             }, removeChanges: function() {
                 marine.honeRange = marine.honeRange/2;
                 marine.range = marine.range/2;
-            }})
+            }});
         },
-    })
+    });
 
     var ssDDuration = 4000;
     var ssADuration = 4000;
@@ -815,23 +815,23 @@ export default function Marine(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({name: "spiritualStateGain", textureName: 'SpiritualStateEnergyGainBuff', duration: ssDDuration, applyChanges: function() {
-                    unit.energyRegenerationMultiplier *= 2
+                    unit.energyRegenerationMultiplier *= 2;
                 }, removeChanges: function() {
-                    unit.energyRegenerationMultiplier /= 2
-                }})
-            })
+                    unit.energyRegenerationMultiplier /= 2;
+                }});
+            });
         },
         aggressionAction: function(event) {
             var f = {};
             marine.applyBuff({name: "spiritualStateMatch", duration: ssADuration, textureName: 'SpiritualStateBuff', applyChanges: function() {
                 f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
                     marine.currentEnergy += event.amountDone;
-                })
+                });
             }, removeChanges: function() {
                 Matter.Events.off(marine, 'receiveHeal', f.handler);
-            }})
+            }});
         },
-    })
+    });
 
     var trueGrit  = new Passive({
         title: 'True Grit',
@@ -846,32 +846,32 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position})
+                var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position});
                 gameUtils.attachSomethingToBody({something: gritUp, body: unit.body});
                 graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
                 unit.addGritAddition(3);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                    unit.removeGritAddition(3)
-                })
-            })
+                    unit.removeGritAddition(3);
+                });
+            });
         },
         aggressionAction: function(event) {
-            var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: marine.position})
+            var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: marine.position});
             gameUtils.attachSomethingToBody({something: gritUp, body: marine.body});
             graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
             marine.addGritAddition(5);
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                marine.removeGritAddition(5)
-            })
+                marine.removeGritAddition(5);
+            });
         },
-    })
+    });
 
     var unitProperties = $.extend({
         unitType: 'Marine',
         health: 75,
         defense: 1,
         energy: 20,
-        energyRegenerationRate: .25,
+        energyRegenerationRate: 0.25,
         healthRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
@@ -884,7 +884,7 @@ export default function Marine(options) {
         itemsEnabled: true,
         name: options.name,
         heightAnimation: 'up',
-        // skinTweak: {r: .5, g: 3.0, b: .5, a: 1.0},
+        // skinTweak: {r: 0.5, g: 3.0, b: 0.5, a: 1.0},
         throwAnimations: throwAnimations,
         abilities: [gunAbility, dashAbility, knifeAbility],
         passiveAbilities: [givingSpirit, rushOfBlood, spiritualState, killerInstinct, clearPerspective, trueGrit],
@@ -893,7 +893,7 @@ export default function Marine(options) {
             var anim = gameUtils.getAnimation({
                 spritesheetName: 'MarineAnimations1',
                 animationName: 'MarineDeath',
-                speed: .25,
+                speed: 0.25,
                 fadeAway: true,
                 fadeTime: 3200,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]
@@ -901,7 +901,7 @@ export default function Marine(options) {
             graphicsUtils.addSomethingToRenderer(anim);
             this.corpse = anim;
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
 
             anim.play();
@@ -942,7 +942,7 @@ export default function Marine(options) {
                     var currentAugment = rifleAbility.currentAugment || {name: ""};
 
                     var crit = 1;
-                    var critActive = false
+                    var critActive = false;
                     if(currentAugment.name == 'hooded peep') {
                         if(Math.random() < currentAugment.chance) {
                             crit = currentAugment.multiplier;
@@ -960,7 +960,7 @@ export default function Marine(options) {
                             graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
                             healsound.play();
                             unit.giveHealth(currentAugment.healAmount, unit);
-                        })
+                        });
                     }
 
                     var dTotal = this.damage + this.getDamageAdditionSum();
@@ -982,8 +982,8 @@ export default function Marine(options) {
                         		"end": 1
                         	},
                         	"scale": {
-                        		"start": .3,
-                        		"end": .2,
+                        		"start": 0.3,
+                        		"end": 0.2,
                         		"minimumScaleMultiplier": 1
                         	},
                         	"color": {
@@ -1014,8 +1014,8 @@ export default function Marine(options) {
                         		"max": 0.02
                         	},
                         	"blendMode": "normal",
-                        	"frequency": .3/3,
-                        	"emitterLifetime": .3,
+                        	"frequency": 0.3/3,
+                        	"emitterLifetime": 0.3,
                         	"maxParticles": 3,
                         	"pos": {
                         		"x": 0,
@@ -1028,7 +1028,7 @@ export default function Marine(options) {
                         		"y": 0,
                         		"r": 8
                         	}
-                    }, texture: PIXI.Texture.from('Textures/bulletParticle.png')})
+                    }, texture: PIXI.Texture.from('Textures/bulletParticle.png')});
                     emitter.updateSpawnPos(target.position.x, target.position.y);
                     emitter.playOnceAndDestroy();
 
@@ -1091,5 +1091,5 @@ export default function Marine(options) {
                     bloodEmitter.playOnceAndDestroy();
                 },
             },
-    });
+   });
 }

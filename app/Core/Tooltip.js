@@ -1,8 +1,8 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import styles from '@utils/Styles.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import styles from '@utils/Styles.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 // options {
 //     title
@@ -25,7 +25,7 @@ var Tooltip = function(options) {
     this.descriptions = [];
     if(options.description) { //handle if they passed in a singular 'description' (we'll convert it to an array)
         if(!$.isArray(options.description)) {
-            options.description = [options.description]
+            options.description = [options.description];
         }
     }
     options.descriptions = options.descriptions || options.description;
@@ -37,7 +37,7 @@ var Tooltip = function(options) {
             style = options.descriptionStyle[i];
         }
         this.descriptions.push(graphicsUtils.createDisplayObject('TEX+:' + descr, {style: style, anchor: textAnchor}));
-    }.bind(this))
+    }.bind(this));
 
     //always provide a blank description
     if(this.descriptions.length == 0) {
@@ -52,14 +52,14 @@ var Tooltip = function(options) {
     this.iconSize = 32;
     if($.isArray(options.descriptionIcons)) {
         $.each(options.descriptionIcons, function(i, icon) {
-            var sizedIcon = graphicsUtils.createDisplayObject(icon, {where: 'hudText', anchor: {x: 0, y: .5}});
-            this.descriptions[i].anchor = {x: 0, y: .5}
+            var sizedIcon = graphicsUtils.createDisplayObject(icon, {where: 'hudText', anchor: {x: 0, y: 0.5}});
+            this.descriptions[i].anchor = {x: 0, y: 0.5};
             graphicsUtils.makeSpriteSize(sizedIcon, this.iconSize);
             this.descriptionIcons.push(sizedIcon);
-        }.bind(this))
+        }.bind(this));
     } else if(options.descriptionIcons){
-        var sizedIcon = graphicsUtils.createDisplayObject(options.descriptionIcons, {where: 'hudText', anchor: {x: 0, y: .5}});
-        this.descriptions[0].anchor = {x: 0, y: .5}
+        var sizedIcon = graphicsUtils.createDisplayObject(options.descriptionIcons, {where: 'hudText', anchor: {x: 0, y: 0.5}});
+        this.descriptions[0].anchor = {x: 0, y: 0.5};
         graphicsUtils.makeSpriteSize(sizedIcon, this.iconSize);
         this.descriptionIcons.push(sizedIcon);
     }
@@ -75,7 +75,7 @@ var Tooltip = function(options) {
     if($.isArray(options.systemMessage)) {
         $.each(options.systemMessage, function(i, sysMessage) {
             this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
-        }.bind(this))
+        }.bind(this));
     } else if(options.systemMessage){
         this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
     }
@@ -103,20 +103,20 @@ var Tooltip = function(options) {
                     tt[key].text = result;
                     self.sizeBase();
                 }
-            })
-        }.bind(this))
+            });
+        }.bind(this));
     }
 
     //create base and size it
     var baseTint = 0x00042D;
-    this.base = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
+    this.base = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: 0.85});
     this.sizeBase();
 };
 
 Tooltip.prototype.setMainDescription = function(text) {
     this.descriptions[0].text = text;
     this.sizeBase();
-}
+};
 
 Tooltip.prototype.sizeBase = function() {
     var descriptionWidth = 0;
@@ -136,11 +136,11 @@ Tooltip.prototype.sizeBase = function() {
     $.each(this.systemMessages, function(i, sysMessage) {
         systemMessageWidth = Math.max(systemMessageWidth, sysMessage.width);
         systemMessageHeight += sysMessage.height;
-    })
+    });
     $.each(this.descriptions, function(i, descr) {
         descriptionWidth = Math.max(descriptionWidth, descr.width);
         descriptionHeight += this.descrHeight;
-    }.bind(this))
+    }.bind(this));
 
     var iconWidthAdjustment = 0;
     if(this.descriptionIcons.length > 0) {
@@ -150,30 +150,30 @@ Tooltip.prototype.sizeBase = function() {
     var width = Math.max(titleWidth, descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
     var height = this.title.height + buffer/2 + descriptionHeight + buffer + systemMessageHeight + (this.systemMessages.length ? buffer : 0) + buffer;
     graphicsUtils.makeSpriteSize(this.base, {w: width, h: height});
-}
+};
 
 Tooltip.prototype.destroy = function(options) {
     graphicsUtils.removeSomethingFromRenderer(this.title);
     $.each(this.descriptions, function(i, descr) {
         graphicsUtils.removeSomethingFromRenderer(descr);
-    })
+    });
     this.descriptions = null;
 
     $.each(this.descriptionIcons, function(i, icon) {
         graphicsUtils.removeSomethingFromRenderer(icon);
-    })
+    });
     this.descriptionIcons = null;
 
     $.each(this.systemMessages, function(i, sysMessage) {
         graphicsUtils.removeSomethingFromRenderer(sysMessage);
-    })
+    });
     this.systemMessages = null;
 
     graphicsUtils.removeSomethingFromRenderer(this.base);
 
     $.each(this.updaters, function(key, updater) {
         globals.currentGame.removeTickCallback(updater);
-    }.bind(this))
+    }.bind(this));
     this.updaters = null;
 
     if(this.cleanUpEvent) {
@@ -190,7 +190,7 @@ Tooltip.prototype.display = function(position) {
     var xOffset = 0;
     if(position.x + this.base.width >= gameUtils.getPlayableWidth() - 15) {
         this.base.anchor = {x: 1, y: 1};
-        xOffset = this.base.width
+        xOffset = this.base.width;
         //lean left
     } else {
         this.base.anchor = {x: 0, y: 1};
@@ -212,13 +212,13 @@ Tooltip.prototype.display = function(position) {
         graphicsUtils.addDisplayObjectToRenderer(this.title, 'hudText');
         $.each(this.descriptions, function(i, descr) {
             graphicsUtils.addDisplayObjectToRenderer(descr, 'hudText');
-        })
+        });
         $.each(this.descriptionIcons, function(i, icon) {
             graphicsUtils.addDisplayObjectToRenderer(icon, 'hudText');
-        })
+        });
         $.each(this.systemMessages, function(i, sysMessage) {
             graphicsUtils.addDisplayObjectToRenderer(sysMessage, 'hudText');
-        })
+        });
         graphicsUtils.addDisplayObjectToRenderer(this.base, 'hudThree');
     }
 
@@ -234,51 +234,53 @@ Tooltip.prototype.display = function(position) {
             this.descriptionIcons[i].position = descr.position;
             descr.position.x += this.iconSize;
         }
-    }.bind(this))
+    }.bind(this));
 
     //place system messages
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.descriptions.length)*this.descrHeight + this.systemMessageBuffer + (i * sysMessage.height)};
-    }.bind(this))
+    }.bind(this));
 
     this.base.position = position;
 
     this.title.visible = true;
     $.each(this.descriptions, function(i, descr) {
         descr.visible = true;
-    })
+    });
 
     $.each(this.descriptionIcons, function(i, icon) {
         icon.visible = true;
-    })
+    });
 
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.visible = true;
-    })
+    });
     this.sizeBase();
     this.base.visible = true;
+
+    Matter.Events.trigger(this.dobj, 'tooltipShown');
 };
 
 Tooltip.prototype.disable = function() {
     this.disabled = true;
-}
+};
 
 Tooltip.prototype.enable = function() {
     this.disabled = false;
-}
+};
 
 Tooltip.prototype.hide = function() {
     this.visible = false;
     this.title.visible = false;
     $.each(this.descriptions, function(i, descr) {
         descr.visible = false;
-    })
+    });
     $.each(this.descriptionIcons, function(i, icon) {
         icon.visible = false;
-    })
+    });
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.visible = false;
-    })
+    });
     this.base.visible = false;
 };
 
@@ -290,6 +292,7 @@ Tooltip.makeTooltippable = function(displayObject, options) {
     displayObject.interactive = true;
     options.position = displayObject.position;
     displayObject.tooltipObj = new Tooltip(options);
+    displayObject.tooltipObj.dobj = displayObject;
 
     var stopTimeout = null;
     displayObject.on('mousemove', function(event) {
@@ -310,26 +313,26 @@ Tooltip.makeTooltippable = function(displayObject, options) {
                 if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
-            }.bind(this), 100)
+            }.bind(this), 100);
         }
-    }.bind(this))
+    }.bind(this));
 
     displayObject.on('mouseout', function(event) {
         displayObject.tooltipObj.hide();
         if(stopTimeout) {
             clearTimeout(stopTimeout);
         }
-    }.bind(this))
+    }.bind(this));
 
     var f = Matter.Events.on(displayObject, 'destroy', function() {
         displayObject.tooltipObj.destroy();
-    })
+    });
 
     this.cleanUpEvent = function() {
         Matter.Events.off(displayObject, 'destroy', f);
-    }
+    };
 
     return displayObject.tooltipObj;
-}
+};
 
 export default Tooltip;

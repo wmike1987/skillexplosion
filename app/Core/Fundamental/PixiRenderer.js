@@ -59,6 +59,7 @@ var renderer = function(engine, options) {
 		hudTwo: new PIXI.Container(),
 		hudThree: new PIXI.Container(),
 		hudText: new PIXI.Container(),
+		hudTextOne: new PIXI.Container(),
 		transitionLayer: new PIXI.Container()
 	};
 

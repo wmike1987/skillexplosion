@@ -866,6 +866,14 @@ var UnitBase = {
         return items;
     },
 
+    getAllItemsByName: function(name) {
+        var items = this.getAllItems();
+        var filteredItems = items.filter(item => {
+            return name == item.name;
+        });
+        return filteredItems;
+    },
+
     //This returns all item objects a unit possesses, including hidden empty slots
     getCompleteSetOfItemObjects: function() {
         var completeSet = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems).filter(item => {

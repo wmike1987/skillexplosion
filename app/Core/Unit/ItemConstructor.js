@@ -1,15 +1,15 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import styles from '@utils/Styles.js'
-import Tooltip from '@core/Tooltip.js'
-import ItemUtils from '@core/Unit/ItemUtils.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import styles from '@utils/Styles.js';
+import Tooltip from '@core/Tooltip.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 var capitalizeFirstLetter = function(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
-}
+};
 
 var baseItem = {
     equip: function(unit) {
@@ -24,10 +24,10 @@ var baseItem = {
                             } else {
                                 unit[kk] += vv;
                             }
-                        })
-                    }
+                        });
+                    };
                     Matter.Events.on(unit, k, this.eventFunctions[k]);
-                }.bind(this))
+                }.bind(this));
             } else if(value instanceof Function){
                 value.call(unit, true);
             } else {
@@ -37,7 +37,7 @@ var baseItem = {
                     unit[key] += value;
                 }
             }
-        }.bind(this))
+        }.bind(this));
     },
     unequip: function(unit) {
         if(!this.manipulations) return;
@@ -45,17 +45,17 @@ var baseItem = {
             if(key == "events") {
                 $.each(value, function(k, v) {
                     Matter.Events.off(unit, k, this.eventFunctions[k]);
-                }.bind(this))
+                }.bind(this));
             }  else if(value instanceof Function){
                 value.call(unit, false);
             } else {
                 if(unit['remove' + capitalizeFirstLetter(key)] instanceof Function) {
                     unit['remove' + capitalizeFirstLetter(key)](value);
                 } else {
-                    unit[key] -= value
+                    unit[key] -= value;
                 }
             }
-        }.bind(this))
+        }.bind(this));
     },
     name: 'generic item name',
     description: 'generic item description',
@@ -68,10 +68,10 @@ var baseItem = {
             return true;
         return false;
     }
-}
+};
 
-var itemDropSound = gameUtils.getSound('itemdrop.wav', {volume: .04, rate: 1});
-var itemSwoosh = gameUtils.getSound('itemSwoosh.wav', {volume: .04, rate: 1.1});
+var itemDropSound = gameUtils.getSound('itemdrop.wav', {volume: 0.04, rate: 1});
+var itemSwoosh = gameUtils.getSound('itemSwoosh.wav', {volume: 0.04, rate: 1.1});
 
 var ic = function(options) {
     var newItem = $.extend({}, baseItem, options);
@@ -97,12 +97,12 @@ var ic = function(options) {
         if(newItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
             newItem.icon.tint = 0x669900;
             if(newItem.isEmptySlot) {
-                newItem.icon.alpha = .2;
+                newItem.icon.alpha = 0.2;
                 newItem.icon.tint = 0xFFFFFF;
                 return;
             }
         }
-    })
+    });
 
     //setup for non-empty items
     if(!newItem.isEmptySlot) {
@@ -110,28 +110,28 @@ var ic = function(options) {
         newItem.icon.on('mousedown', function(event) {
             if(globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
             newItem.owningUnit.unequipItem(newItem);
-            Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem, unit: newItem.owningUnit})
+            Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem, unit: newItem.owningUnit});
             newItem.mouseInside = false;
             gameUtils.setCursorStyle('server:MainCursor.png');
-        }.bind(this))
+        }.bind(this));
 
         var sysMessage = '(Click to grab item)';
         if(newItem.systemMessage) {
-            var sysMessage = [newItem.systemMessage, sysMessage]
+            sysMessage = [newItem.systemMessage, sysMessage];
         }
-        newItem.originalTooltipObj = {title: newItem.name, description: newItem.description, systemMessage: sysMessage}
+        newItem.originalTooltipObj = {title: newItem.name, description: newItem.description, systemMessage: sysMessage};
         Tooltip.makeTooltippable(newItem.icon, newItem.originalTooltipObj);
 
         var baseTint = 0x00042D;
-        newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: .85});
-        newItem.nameDisplay = graphicsUtils.createDisplayObject('TEX+:' + newItem.name, {style: styles.regularItemName})
+        newItem.nameDisplayBase = graphicsUtils.createDisplayObject('TintableSquare', {tint: baseTint, scale: {x: 1, y: 1}, alpha: 0.85});
+        newItem.nameDisplay = graphicsUtils.createDisplayObject('TEX+:' + newItem.name, {style: styles.regularItemName});
         graphicsUtils.makeSpriteSize(newItem.nameDisplayBase, {w: newItem.nameDisplay.width + 15, h: 25});
 
         newItem.showName = function(bool) {
             if(!this.body) return; //if we've been collected, don't display the name
             if(!newItem.nameDisplay.parent) {
                 graphicsUtils.addDisplayObjectToRenderer(newItem.nameDisplay, 'hudText');
-                graphicsUtils.addDisplayObjectToRenderer(newItem.nameDisplayBase, 'hud')
+                graphicsUtils.addDisplayObjectToRenderer(newItem.nameDisplayBase, 'hud');
             }
 
             newItem.nameDisplayBase.visible = bool;
@@ -141,7 +141,7 @@ var ic = function(options) {
                 newItem.nameDisplayBase.position = {x: newItem.body.position.x, y: newItem.body.position.y - 30};
                 newItem.nameDisplay.position = {x: newItem.body.position.x, y: newItem.body.position.y - 30};
             }
-        }
+        };
 
         newItem.removePhysicalForm = function() {
             this.showName(false);
@@ -155,11 +155,22 @@ var ic = function(options) {
 
         newItem.drop = function(position, options) {
             if(!options) options = {};
-            options = $.extend({}, {fleeting: true}, options)
+            options = $.extend({}, {fleeting: true}, options);
 
             //create item body
             this.body = Matter.Bodies.circle(position.x, position.y, 20, {
                 isSensor: true
+            });
+
+            Object.defineProperty(this, 'position', {
+                get: function() {
+                    if(this.body) {
+                        return this.body.position;
+                    } else {
+                        return this.icon.position;
+                    }
+                },
+                configurable: true
             });
 
             var item = this;
@@ -168,7 +179,7 @@ var ic = function(options) {
             this.itemDrop = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
                 animationName: 'ItemDropFroll',
-                speed: .6,
+                speed: 0.6,
                 playThisManyTimes: 1,
                 transform: [position.x, position.y],
                 onComplete: function() {
@@ -189,7 +200,7 @@ var ic = function(options) {
 
             // graphicsUtils.makeSpriteSize(this.itemDrop, {w: 48, h: 80});
             this.itemDrop.play();
-            this.itemDrop.anchor.set(.5, .75);
+            this.itemDrop.anchor.set(0.5, 0.75);
             graphicsUtils.addSomethingToRenderer(this.itemDrop, 'stage');
 
             //Make renderlings accessible from wherever
@@ -211,7 +222,7 @@ var ic = function(options) {
             var itemAnim = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
                 animationName: 'ItemGleamFroll',
-                speed: .05,
+                speed: 0.05,
                 loop: true,
                 transform: [position.x, position.y],
             });
@@ -227,7 +238,7 @@ var ic = function(options) {
             {
                 id: 'shadow',
                 data: 'IsoShadowBlurred',
-                scale: {x: .6, y: .6},
+                scale: {x: 0.6, y: 0.6},
                 visible: true,
                 rotate: 'none',
                 stage: "stageNTwo",
@@ -235,7 +246,7 @@ var ic = function(options) {
             }];
 
             newItem.body.item = newItem;
-        }
+        };
     } else {
         Tooltip.makeTooltippable(newItem.icon, {title: newItem.title, description: newItem.description});
     }
@@ -256,7 +267,7 @@ var ic = function(options) {
         globals.currentGame.removeTickCallback(newItem.hoverListener);
         if(this.itemDrop)
             graphicsUtils.removeSomethingFromRenderer(this.itemDrop);
-    }
+    };
 
     if(!options.dontAddToItemSystem) {
         globals.currentGame.addItem(newItem);
@@ -264,6 +275,6 @@ var ic = function(options) {
         newItem.manuallyManaged = true;
     }
     return newItem;
-}
+};
 
 export default ic;

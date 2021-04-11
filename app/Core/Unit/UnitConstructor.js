@@ -1,12 +1,12 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import Moveable from '@core/Unit/_Moveable.js'
-import Attacker from '@core/Unit/_Attacker.js'
-import Iso from '@core/Unit/IsoSpriteManager.js'
-import UnitBase from '@core/Unit/UnitBase.js'
-import EmptySlot from '@core/Unit/EmptySlot.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import Moveable from '@core/Unit/_Moveable.js';
+import Attacker from '@core/Unit/_Attacker.js';
+import Iso from '@core/Unit/IsoSpriteManager.js';
+import UnitBase from '@core/Unit/UnitBase.js';
+import EmptySlot from '@core/Unit/EmptySlot.js';
 
 /*
  *  This module aims to assemble all the fundamental pieces of a unit. It creates a new object, mixes the specific unit-options with the UnitBase, then:
@@ -22,7 +22,7 @@ function UnitConstructor(options) {
 
     //use the given object as our base -- "unitObj"
     var unitObj = options.givenUnitObj || {};
-    Object.assign(unitObj, {unitId: mathArrayUtils.uuidv4()}) //add in a unit id
+    Object.assign(unitObj, {unitId: mathArrayUtils.uuidv4()}); //add in a unit id
 
     //mixin the unit options into the unit base then into the unit object
     var unitBase = $.extend(true, {}, UnitBase);
@@ -41,7 +41,7 @@ function UnitConstructor(options) {
     if(options.slaves) {
         $.each(options.slaves, function(i, sound) {
             gameUtils.deathPact(newUnit, sound);
-        })
+        });
     }
 
     //add default enabler to abilities
@@ -50,8 +50,8 @@ function UnitConstructor(options) {
             ability.enablers = ability.enablers || [];
             ability.enablers.push(function() {
                 return (!ability.energyCost || newUnit.currentEnergy >= ability.energyCost);
-            })
-        }.bind(this))
+            });
+        }.bind(this));
     }
 
     //extrapolate unit ability to key mappings
@@ -69,7 +69,7 @@ function UnitConstructor(options) {
                             $.each(ability.enablers, function(i, enabler) {
                                 enabled = enabler();
                                 return enabled;
-                            })
+                            });
                         }
                         if(ability.manuallyEnabled) {
                             return true;
@@ -87,11 +87,11 @@ function UnitConstructor(options) {
                             });
                         }
                     }]
-                }
+                };
                 if(ability.predicates) {
                     $.each(ability.predicates, function(i, predicate) {
                         newUnit.eventKeyMappings[ability.key].predicates.push(predicate);
-                    })
+                    });
                 }
             } else if(ability.type == 'click') {
                 newUnit.eventClickMappings[ability.key] = {
@@ -102,7 +102,7 @@ function UnitConstructor(options) {
                             $.each(ability.enablers, function(i, enabler) {
                                 enabled = enabler();
                                 return enabled;
-                            })
+                            });
                         }
                         if(ability.manuallyEnabled) {
                             return true;
@@ -119,11 +119,11 @@ function UnitConstructor(options) {
                             });
                         }
                     }]
-                }
+                };
                 if(ability.predicates) {
                     $.each(ability.predicates, function(i, predicate) {
                         newUnit.eventClickMappings[ability.key].predicates.push(predicate);
-                    })
+                    });
                 }
             }
         });
@@ -133,8 +133,8 @@ function UnitConstructor(options) {
     // create collision body
     //**********************
     var body = Matter.Bodies.circle(0, 0, options.radius, {
-        restitution: .95,
-        frictionAir: .9,
+        restitution: 0.95,
+        frictionAir: 0.9,
         mass: options.mass || 5,
         originalMass: options.mass || 5
     });
@@ -209,7 +209,7 @@ function UnitConstructor(options) {
             return this.unit.renderlings;
         },
         set: function(v) {
-            this.unit.renderlings = v
+            this.unit.renderlings = v;
         }
     });
     Object.defineProperty(body, 'renderChildren', {
@@ -243,7 +243,7 @@ function UnitConstructor(options) {
         $.extend(newUnit, options.moveable);
         Matter.Events.on(newUnit, 'addUnit', function() {
             newUnit.moveableInit();
-        })
+        });
     }
 
     // mixin attacker and its given properties
@@ -252,7 +252,7 @@ function UnitConstructor(options) {
         $.extend(newUnit, options.attacker);
         Matter.Events.on(newUnit, 'addUnit', function() {
             newUnit.initAttacker();
-        })
+        });
     }
 
     // associate an iso manager if desired
@@ -266,26 +266,26 @@ function UnitConstructor(options) {
     if(newUnit.itemsEnabled) {
         newUnit.emptyRegularSlots = [];
         for(var i = 0; i < newUnit.currentItems.length; i++) {
-            var item = EmptySlot('Item Slot', 'Holds a regular item.');
-            item.currentSlot = {location: newUnit.currentItems, index: i, active: true, slotDef: item, type: 'common'}
+            let item = EmptySlot('Item Slot', 'Holds a regular item.');
+            item.currentSlot = {location: newUnit.currentItems, index: i, active: true, slotDef: item, type: 'common'};
             newUnit.emptyRegularSlots.push(item);
             newUnit.currentItems[i] = item;
         }
 
         //start with blank items
         newUnit.emptySpecialtySlots = [];
-        for(var i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
-            var item = EmptySlot('Specialty Slot', 'Holds a specialty item.');
-            item.currentSlot = {location: newUnit.currentSpecialtyItems, index: i, active: true, slotDef: item, type: newUnit.unitType}
+        for(i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
+            let item = EmptySlot('Specialty Slot', 'Holds a specialty item.');
+            item.currentSlot = {location: newUnit.currentSpecialtyItems, index: i, active: true, slotDef: item, type: newUnit.unitType};
             newUnit.emptySpecialtySlots.push(item);
             newUnit.currentSpecialtyItems[i] = item;
         }
 
         //start with blank items
         newUnit.emptyBackpackSlots = [];
-        for(var i = 0; i < newUnit.currentBackpack.length; i++) {
-            var item = EmptySlot('Backpack Slot', 'Holds any item. Item is not active.');
-            item.currentSlot = {location: newUnit.currentBackpack, index: i, active: false, slotDef: item, type: 'universal'}
+        for(i = 0; i < newUnit.currentBackpack.length; i++) {
+            let item = EmptySlot('Backpack Slot', 'Holds any item. Item is not active.');
+            item.currentSlot = {location: newUnit.currentBackpack, index: i, active: false, slotDef: item, type: 'universal'};
             newUnit.emptyBackpackSlots.push(item);
             newUnit.currentBackpack[i] = item;
         }

@@ -1,14 +1,14 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import hs from  '@utils/HS.js'
-import * as h from  'howler'
-import styles from '@utils/Styles.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js'
-import ItemSystem from '@core/Unit/ItemSystem.js'
-import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js'
-import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import hs from  '@utils/HS.js';
+import * as h from  'howler';
+import styles from '@utils/Styles.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js';
+import ItemSystem from '@core/Unit/ItemSystem.js';
+import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js';
+import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
 
 /*
 * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -71,7 +71,7 @@ var common = {
         this.canvas = {width: gameUtils.getPlayableWidth(), height: gameUtils.getPlayableHeight()};
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
-        this.endGameSound = gameUtils.getSound('bells.wav', {volume: .05});
+        this.endGameSound = gameUtils.getSound('bells.wav', {volume: 0.05});
         this.loseLifeSound = gameUtils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
         this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
         this.unitsByTeam = {};
@@ -82,17 +82,17 @@ var common = {
         $('body').on('mousedown.priority', function(event) {
             $.each(this.priorityMouseDownEvents, function(index, f) {
                 f(event);
-            })
-        }.bind(this))
+            });
+        }.bind(this));
         this.addPriorityMouseDownEvent = function(f) {
             this.priorityMouseDownEvents.push(f);
             return f;
-        }
+        };
         this.removePriorityMouseDownEvent = function(f) {
             var index = this.priorityMouseDownEvents.indexOf(f);
             if(index > -1)
                 this.priorityMouseDownEvents.splice(index, 1);
-        }
+        };
 
         /*
          * Incorporate UnitSystem if specified
@@ -115,7 +115,7 @@ var common = {
             $.each(this.vertexHistories, function(index, body) {
                 body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
             }
-        )}.bind(this), true, 'beforeTick');
+        );}.bind(this), true, 'beforeTick');
 
         var maxLagToAccountFor = this.lagCompensation;
         this.addTickCallback(function() {
@@ -148,7 +148,7 @@ var common = {
                 if(body.partsCopy.length > maxLagToAccountFor) {
                     body.partsCopy.shift();
                 }
-            }.bind(this))
+            }.bind(this));
         }.bind(this), true, 'beforeTick');
 
         this['incr' + 'ement' + 'Sco' + 're'] = function(value) {
@@ -199,7 +199,7 @@ var common = {
             bodies: [],
             remove: function(body) {
                 if(body.unit) {
-                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: body.unit})
+                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: body.unit});
                 }
                 body.softRemove = true;
                 body.collisionFilter =
@@ -216,12 +216,12 @@ var common = {
                     if(body) {
                         Matter.World.remove(myGame.world, [body]);
                     }
-                }.bind(this))
+                }.bind(this));
             },
             cleanUp: function() {
                 this.bodies = [];
             }
-        }
+        };
         this.softRemover.init();
 
         //keydown listener for ctrl shift f and ctrl shift x
@@ -272,7 +272,7 @@ var common = {
                 }
 
                 if(value.skipToEnd) {
-                    value.timeLimitOverride = .01;
+                    value.timeLimitOverride = 0.01;
                 }
 
                 var activeTimeLimit = value.timeLimitOverride || value.timeLimit;
@@ -348,7 +348,7 @@ var common = {
             var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
             onClick = function() {
                 graphicsUtils.removeSomethingFromRenderer(startGameText);
-            }
+            };
         }
 
         //pregame deferred (proceed to startGame when clicked)
@@ -411,7 +411,7 @@ var common = {
 
             border.forEach(function(el, index) {
                 el.collisionFilter.category = 0x0004;
-            })
+            });
             this.addBodies(border);
         }
 
@@ -433,9 +433,9 @@ var common = {
         //timer overlay, if necessary
         if(!this.hideEndCondition) {
             if(this.victoryCondition.type == 'timed') {
-                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: 0.5, y: 0}, style: styles.scoreStyle});
             } else if (this.victoryCondition.type == 'lives') {
-                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: .5, y: 0}, style: styles.scoreStyle});
+                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: 0.5, y: 0}, style: styles.scoreStyle});
             }
         }
 
@@ -446,8 +446,8 @@ var common = {
         //create click indication listener
         if(!this.noClickIndicator) {
             var clickPointSprite = graphicsUtils.addSomethingToRenderer('MouseX', 'foreground', {x: -50, y: -50});
-            clickPointSprite.scale.x = .25;
-            clickPointSprite.scale.y = .25;
+            clickPointSprite.scale.x = 0.25;
+            clickPointSprite.scale.y = 0.25;
             this.addEventListener('mousedown', function(event) {
                 clickPointSprite.position = {x: event.data.global.x, y: event.data.global.y};
             }.bind(this), false, true);
@@ -488,7 +488,7 @@ var common = {
                 scoreSubmission.resolve();
             }.bind(this));
 
-            $(this.scoreContainer).css('position', 'absolute')
+            $(this.scoreContainer).css('position', 'absolute');
             $(this.scoreContainer).css('left', this.canvasRect.width/2-$(this.scoreContainer).width()/2);
             $(this.scoreContainer).css('top', this.canvasRect.height/2 - $(this.scoreContainer).height()/2);
         }.bind(this), 500);
@@ -538,7 +538,7 @@ var common = {
             if(bbtindex > -1)
                 this.unitsByTeam[unit.team] = $.grep(this.unitsByTeam[unit.team], function(obj, index) {
                         return index != bbtindex;
-                })
+                });
         }
         this.removeBody(unit.body);
         Matter.Events.off(unit);
@@ -619,7 +619,7 @@ var common = {
         var copy = bodies.slice();
         $.each(copy, function(index, body) {
             this.removeBody(body, hardRemove);
-        }.bind(this))
+        }.bind(this));
     },
 
     //This method has the heart but is poorly designed
@@ -652,7 +652,7 @@ var common = {
                 slave();
             } else if(slave.unload) {
                 // let's unload the sound, but it might be playing upon death, so let's wait then unload it
-                gameUtils.doSomethingAfterDuration(() => {slave.unload()}, 1500, {executeOnNuke: true});
+                gameUtils.doSomethingAfterDuration(() => {slave.unload();}, 1500, {executeOnNuke: true});
             } else if(slave.constructor.name == 'Sprite' || slave.constructor.name == 'Text' || slave.constructor.name == 'AnimatedSprite') {
                 graphicsUtils.removeSomethingFromRenderer(slave);
             }
@@ -709,7 +709,7 @@ var common = {
 
         $.each(unitsToRemove, function(i, unit) {
             this.removeUnit(unit, true);
-        }.bind(this))
+        }.bind(this));
 
         //Remove bodies safely (removeBodies())
         this.removeBodies(this.world.bodies, true);
@@ -778,7 +778,7 @@ var common = {
 
         //add a reset method to the timer
         if(!timer.reset) timer.reset = timer.execute = function(options) {
-            var options = options || {};
+            options = options || {};
             this.timeElapsed = 0;
             this.percentDone = 0;
             this.totalPercentOfRunsDone = 0;
@@ -792,11 +792,11 @@ var common = {
             this.started = false;
             this.paused = false;
             this.invalidated = false;
-        }
+        };
 
         timer.invalidate = () => {
             this.invalidateTimer(timer);
-        }
+        };
 
         return timer;
     },
@@ -806,7 +806,7 @@ var common = {
             $.each(timer, function(i, timer) {
                 timer.invalidated = true;
                 delete this.timers[timer.name];
-            }.bind(this))
+            }.bind(this));
         } else {
             timer.invalidated = true;
             delete this.timers[timer.name];
@@ -836,7 +836,7 @@ var common = {
                 } else {
                     self.hudLives.style = styles.scoreStyle;
                 }
-            }})
+            }});
         }
 
         this.lives = this.lives + numberOfLives;
@@ -907,13 +907,13 @@ var common = {
                 deltaTime = event.timestamp - lastTimestamp;
             }
             else {
-                deltaTime = .1666;
+                deltaTime = 0.1666;
             }
             lastTimestamp = event.timestamp;
             event.deltaTime = deltaTime;
             if(invincible || (self.gameState == 'playing'))
                 callback(event);
-        }
+        };
         tickDeltaWrapper.isTickCallback = true;
 
         if(invincible)
@@ -945,10 +945,10 @@ var common = {
 
         //remove from our internal lists here
         if(this.invincibleTickCallbacks.indexOf(callback) > -1) {
-            this.invincibleTickCallbacks.splice(this.invincibleTickCallbacks.indexOf(callback), 1)
+            this.invincibleTickCallbacks.splice(this.invincibleTickCallbacks.indexOf(callback), 1);
         }
         if(this.tickCallbacks.indexOf(callback) > -1) {
-            this.tickCallbacks.splice(this.tickCallbacks.indexOf(callback), 1)
+            this.tickCallbacks.splice(this.tickCallbacks.indexOf(callback), 1);
         }
 
         //invalidate per the comment above, preventing a confusing phenomenom
