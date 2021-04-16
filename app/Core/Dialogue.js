@@ -128,7 +128,7 @@ var Dialogue = function Dialogue(options) {
         var currentLetter = 0;
         var picRealized = false;
         var d = this;
-        this.textTimer = globals.currentGame.addTimer({name: 'dialogTap', gogogo: true, timeLimit: this.actorLetterSpeed,
+        this.textTimer = globals.currentGame.addTimer({name: 'dialogTap'+mathArrayUtils.getId(), gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
             if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
                 d.pictureTriggeredFromWord = true;
@@ -303,7 +303,7 @@ var Dialogue = function Dialogue(options) {
     //this stops the text increment timer
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
-  };
+    };
 
     this.speedUp = function() {
         this.skipped = true;

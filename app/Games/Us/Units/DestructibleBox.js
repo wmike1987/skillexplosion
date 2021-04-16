@@ -11,11 +11,11 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 export default function DestructibleBox(options) {
     var box = {};
 
-    var options = options || {};
+    options = options || {};
     $.extend(options, {radius: 25}, options)
 
-    var sc = {x: .1, y: .1};
-    var adjustedUpDownsc = {x: .1, y: .1};
+    var sc = {x: 0.1, y: 0.1};
+    var adjustedUpDownsc = {x: 0.1, y: 0.1};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
     var rc = [
@@ -63,8 +63,8 @@ export default function DestructibleBox(options) {
         this.renderlings.main.tint = 0xFFFFFF;
     }
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = gameUtils.getSound('boxexplode.wav', {volume: .025, rate: 1.75});
+    var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
+    var deathSound = gameUtils.getSound('boxexplode.wav', {volume: 0.025, rate: 1.75});
 
     var unitProperties = $.extend({
         unitType: 'Box',
@@ -85,7 +85,7 @@ export default function DestructibleBox(options) {
         team: options.team || 49,
         priority: 50,
         name: options.name,
-        heightAnimation: 'main',
+        // heightAnimation: 'main',
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
@@ -93,7 +93,7 @@ export default function DestructibleBox(options) {
             var anim = gameUtils.getAnimation({
                 spritesheetName: 'UtilityAnimations3',
                 animationName: 'BoxExplode',
-                speed: .3,
+                speed: 0.3,
                 fadeAway: true,
                 fadeTime: 8000,
                 transform: [self.deathPosition.x+3, self.deathPosition.y-20, 1.0, 1.0]
@@ -102,7 +102,7 @@ export default function DestructibleBox(options) {
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);

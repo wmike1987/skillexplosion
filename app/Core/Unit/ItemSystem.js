@@ -269,7 +269,7 @@ var itemSystem = function(properties) {
                             return item.body;
                         })
 
-                        var itemBodiesUnderMouse = Matter.Query.point(itemBodies, moveEvent.destination);
+                        var itemBodiesUnderMouse = Matter.Query.point(itemBodies, moveEvent.rawDestination);
                         event.unit.targetedItem = null;
                         $.each(itemBodiesUnderMouse, function(i, body) {
                             event.unit.targetedItem = body.item;

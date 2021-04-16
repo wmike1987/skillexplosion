@@ -289,7 +289,7 @@ var common = {
                     value.immediateStart = false;
                 }
 
-                while(activeTimeLimit <= value.timeElapsed && value.runs > 0) {
+                while(activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
                     if(value.runs > 0) {
                         value.percentDone = 0;
                         value.timeElapsed -= activeTimeLimit;

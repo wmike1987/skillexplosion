@@ -1,9 +1,9 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import Command from '@core/Unit/Command.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import Command from '@core/Unit/Command.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 var moveable = {
     //private
@@ -30,7 +30,7 @@ var moveable = {
     moveableInit: function() {
 
         //create setter for moveSpeed
-        var baseMoveSpeed = .1;
+        var baseMoveSpeed = 0.1;
         this._moveSpeed = this.moveSpeed;
         Object.defineProperty(this, 'moveSpeed', {
             get: function() {
@@ -80,8 +80,10 @@ var moveable = {
     },
 
     move: function(destination, commandObj) {
+        var rawDestination = destination;
+        destination = mathArrayUtils.clonePosition(destination, {y: -this.footOffset || -20});
 
-        Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
+        Matter.Events.trigger(this, 'unitMove', {unit: this, rawDestination: rawDestination, destination: destination});
 
         //if command is given, we're being executed as part of a command queue, else, fake the command object
         if(!commandObj) {
@@ -223,7 +225,7 @@ var moveable = {
     },
 
     constantlySetVelocityTowardsDestination: function(event, options) {
-        var options = options || {};
+        options = options || {};
 
         if (!this.isMoving || this.isAttacking) {
             return;

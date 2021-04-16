@@ -62,8 +62,9 @@ var shaneLearning = function(options) {
             chain.cleanUp();
             this.mapTableActive = true;
             var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it, make your way to camp.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-            var bchain = new DialogueChain([b1, b2], {startDelay: 1000, done: function() {
+            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it.", isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true, delayAfterEnd: 250});
+            var b3 = new Dialogue({continuation: true, text: "Make your way to camp.", isTask: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 2000});
+            var bchain = new DialogueChain([b1, b2, b3], {startDelay: 1000, done: function() {
                 bchain.cleanUp();
             }});
             gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
@@ -73,9 +74,10 @@ var shaneLearning = function(options) {
                     gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
                         achieve.play();
                     });
-                }, pauseAfterCompleteTime);
+                });
             });
             bchain.play();
+            scene.add(bchain);
         }.bind(this)});
 
         //First dialogue chain
@@ -158,9 +160,10 @@ var shaneLearning = function(options) {
                                                                                                 gameUtils.doSomethingAfterDuration(() => {
                                                                                                     a8.manualBlock = false;
                                                                                                     var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                                                    critter1.currentHealth = 15;
                                                                                                     globals.currentGame.addUnit(critter1);
-                                                                                                    critter1.position = {x: -50, y: 500};
-                                                                                                    critter1.move({x: 200, y: 500});
+                                                                                                    critter1.position = {x: -50, y: 550};
+                                                                                                    critter1.move({x: 200, y: 550});
                                                                                                     critter1.honeRange = 200;
                                                                                                     gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
                                                                                                         achieve.play();
@@ -218,7 +221,7 @@ var shaneLearning = function(options) {
             enter.unload();
             achieve.unload();
         });
-        gameUtils.doSomethingAfterDuration(chain.play.bind(chain), 2000);
+        gameUtils.doSomethingAfterDuration(chain.play.bind(chain), 1500);
     };
 };
 shaneLearning.prototype = levelBase;
