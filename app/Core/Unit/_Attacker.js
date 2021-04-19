@@ -1,8 +1,8 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 export default {
     //private
@@ -31,7 +31,7 @@ export default {
                 var damageAmount = this.damage + this.getDamageAdditionSum();
                 target.sufferAttack(damageAmount, this);
             }
-        }.bind(this), attackManipulations.delay)
+        }.bind(this), attackManipulations.delay);
     },
 
     //user defined
@@ -65,7 +65,7 @@ export default {
             if(!moveInfo.moveCancelled) {
                 this._becomePeaceful();
             }
-        }
+        };
 
         //extend stop
         this.rawStop = this.stop;
@@ -74,7 +74,7 @@ export default {
             if (this.specifiedAttackTarget) {
                 Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
                 this.specifiedAttackTarget = null;
-            };
+            }
             originalStop.call(this);
             Matter.Sleeping.set(this.body, false);
             this.isAttacking = false;
@@ -86,7 +86,7 @@ export default {
             if(commandObj) {
                 commandObj.command.done();
             }
-        }
+        };
 
         Matter.Events.on(this, 'death', function() {
             if(this.specifiedAttackTarget) {
@@ -158,7 +158,7 @@ export default {
         if (this.specifiedAttackTarget) {
             Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
             this.specifiedAttackTarget = null;
-        };
+        }
 
         //set state
         this.attackMoveDestination = destination;
@@ -180,7 +180,7 @@ export default {
         if(!this.canTargetUnit(target)) {
             this.attackMove({x: target.position.x, y: target.position.y}); //I think we need to pass the unit's position object
             return;
-        };
+        }
 
         //set the specified target
         this.specifiedAttackTarget = target;
@@ -219,7 +219,7 @@ export default {
     _becomeOnAlert: function(commandObj) {
 
         //setup target sensing
-        this.setupHoneAndTargetSensing(commandObj)
+        this.setupHoneAndTargetSensing(commandObj);
 
         //reset last hone since this is a new alert
         this.lastHone = null;
@@ -237,11 +237,11 @@ export default {
             //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move (note the commented out part, not sure why i had that here, but we should want to hone a specified target)
             if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
                 this.lastHone = this.currentHone;
-                this.rawMove(this.currentHone.position);
                 this.isHoning = true;
+                this.rawMove(this.currentHone.position);
             }
         }.bind(this));
-        gameUtils.deathPact(this, this.attackHoneTick, 'attackHoneTick')
+        gameUtils.deathPact(this, this.attackHoneTick, 'attackHoneTick');
 
         /*
          * Attacking callbacks
@@ -257,8 +257,8 @@ export default {
                 this.lastHone = null; //if we're attacking something, reset the lastHoned unit
                 this._attack(this.currentTarget);
             }
-        }.bind(this))
-        gameUtils.deathPact(this, this.attackTick, 'attackTick')
+        }.bind(this));
+        gameUtils.deathPact(this, this.attackTick, 'attackTick');
     },
 
     setupHoneAndTargetSensing: function(commandObj) {
@@ -328,7 +328,7 @@ export default {
                         }
                     }
                 }
-            }.bind(this))
+            }.bind(this));
 
             //If we were attacking but no longer have a target
             if(!this.currentTarget && this.attackReady && this.isAttacking) {
@@ -340,7 +340,7 @@ export default {
             //Either we were given an attack move command, "still" and on-alert, or were given a specific target
             //If we were given an "attack move" command and no longer have a target or a hone, let's issue an identical attackMove command
             //If we are "still" and no longer have a target or a hone, let's stop.
-            //If we were given a "specific target" to attack, we we only want to naturally stop if we can no longer attack it
+            //If we were given a "specific target" to attack, we only want to naturally stop if we can no longer attack it
             if (!this.currentHone && !this.currentTarget) {
                 //given attack move, reissue the attack move
                 if(this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
@@ -358,7 +358,7 @@ export default {
                     }
                 }
             }
-        }.bind(this)
+        }.bind(this);
         this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction);
         gameUtils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
     },
@@ -370,7 +370,7 @@ export default {
         if (this.specifiedAttackTarget) {
             Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
             this.specifiedAttackTarget = null;
-        };
+        }
 
         this.attackMoving = false;
 
@@ -384,4 +384,4 @@ export default {
             globals.currentGame.removeTickCallback(this.attackHoneTick);
         }
     },
-}
+};

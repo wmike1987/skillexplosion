@@ -80,10 +80,7 @@ var moveable = {
     },
 
     move: function(destination, commandObj) {
-        var rawDestination = destination;
-        destination = mathArrayUtils.clonePosition(destination, {y: -this.footOffset || -20});
-
-        Matter.Events.trigger(this, 'unitMove', {unit: this, rawDestination: rawDestination, destination: destination});
+        Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
 
         //if command is given, we're being executed as part of a command queue, else, fake the command object
         if(!commandObj) {
@@ -105,6 +102,12 @@ var moveable = {
 
         //set state
         this.destination = destination;
+        if(this.isHoning) {
+            this.footDestination = this.destination;
+        } else {
+            this.footDestination = mathArrayUtils.clonePosition(this.destination, {y: -this.footOffset || -20}); //offset for moving to the "foot location"
+        }
+
         this.isMoving = true;
         this.body.frictionAir = 0;
         this.lastPosition = { //nullify "lastPosition"
@@ -204,7 +207,7 @@ var moveable = {
         Matter.Events.trigger(this, 'stop', {});
 
         //set state
-        this.body.frictionAir = .9;
+        this.body.frictionAir = 0.9;
         this.isMoving = false;
         this.isSoloMover = false;
     },
@@ -215,9 +218,10 @@ var moveable = {
         //stop condition: This executes after an engine update, but before a render. It detects when a body has overshot its destination
         //and will stop the body. Group movements are more forgiving in terms of reaching one's destination; this is reflected in a larger
         //overshoot buffer
-        if (this.destination.x + alteredOvershootBuffer > this.body.position.x && this.destination.x - alteredOvershootBuffer < this.body.position.x) {
-            if (this.destination.y + alteredOvershootBuffer > this.body.position.y && this.destination.y - alteredOvershootBuffer < this.body.position.y) {
-                Matter.Events.trigger(this, 'destinationReached', {destination: this.destination});
+        var stopDestination = this.footDestination;
+        if (stopDestination.x + alteredOvershootBuffer > this.body.position.x && stopDestination.x - alteredOvershootBuffer < this.body.position.x) {
+            if (stopDestination.y + alteredOvershootBuffer > this.body.position.y && stopDestination.y - alteredOvershootBuffer < this.body.position.y) {
+                Matter.Events.trigger(this, 'destinationReached', {destination: stopDestination});
                 this.stop();
                 commandObj.command.done();
             }
@@ -235,11 +239,11 @@ var moveable = {
         Matter.Sleeping.set(this.body, false);
 
         //send body
-        gameUtils.sendBodyToDestinationAtSpeed(this.body, this.destination, this.moveSpeed, false);
+        gameUtils.sendBodyToDestinationAtSpeed(this.body, this.footDestination, this.moveSpeed, false);
 
         //trigger movement event (for direction)
         Matter.Events.trigger(this, 'move', {
-            direction: gameUtils.isoDirectionBetweenPositions(this.position, this.destination)
+            direction: gameUtils.isoDirectionBetweenPositions(this.position, this.footDestination)
         });
     },
 

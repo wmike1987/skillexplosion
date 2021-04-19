@@ -1,7 +1,7 @@
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
-var failedPredicate = gameUtils.getSound('cantpickup.wav', {volume: .02, rate: 1.3});
+var failedPredicate = gameUtils.getSound('cantpickup.wav', {volume: 0.02, rate: 1.3});
 
 //Defines a Command queue
 var CommandQueue = function() {
@@ -29,7 +29,7 @@ var CommandQueue = function() {
             var commandObj = {
                 command: this.queue[0],
                 queueContext: queueContext
-            }
+            };
             this.executeCommand(commandObj);
         }
     },
@@ -41,12 +41,12 @@ var CommandQueue = function() {
         $.each(commandObj.command.predicates, function(i, predicate) {
             goForthAndExecute = predicate(commandObj);
             return goForthAndExecute;
-        })
+        });
 
         if(goForthAndExecute) {
             $.each(commandObj.command.preExecuteInterceptors, function(i, pre) {
                 pre();
-            })
+            });
 
             if(commandObj.command.type == 'click') {
                 commandObj.command.method.call(commandObj.command.context, commandObj.command.target, commandObj);
@@ -56,7 +56,7 @@ var CommandQueue = function() {
 
             $.each(commandObj.command.postExecuteInterceptors, function(i, post) {
                 post();
-            })
+            });
         } else {
             failedPredicate.play();
             commandObj.command.done();
@@ -65,13 +65,13 @@ var CommandQueue = function() {
     },
     queue.clear = function() {
         this.queue = [];
-    }
+    };
 
     queue.getCurrentCommand = function() {
         return this.queue[0] || {id: 'empty'};
-    }
+    };
 
     return queue;
-}
+};
 
 export default CommandQueue;

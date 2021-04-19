@@ -231,12 +231,6 @@ function UnitConstructor(options) {
         },
         configurable: true
     });
-    Object.defineProperty(newUnit, 'footPosition', {
-        get: function() {
-            return this.body.position + (this.footOffset || 20);
-        },
-        configurable: true
-    });
     Object.defineProperty(body, 'visible', {
         get: function() {
             return this.unit.visible;

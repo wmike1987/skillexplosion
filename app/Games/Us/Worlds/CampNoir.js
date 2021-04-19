@@ -29,8 +29,12 @@ var tileSize = 225;
 var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];
 var levelTiles = function() {
     var backgroundTiles = [];
-    for (var i = 1; i <= 6; i++) {
-        backgroundTiles.push('FrollGround/Dirt' + i);
+    for (var i = 1; i <= 12; i++) {
+        var j = i;
+        if(i > 7) {
+            j = 7;
+        }
+        backgroundTiles.push('FrollGround/Ice' + j);
     }
     return backgroundTiles;
 };
@@ -46,7 +50,7 @@ var tileExtension = function(scene, tint) {
         hz: 0.5,
         tileTint: tint
     });
-    scene.add(ornamentMap);
+    // scene.add(ornamentMap);
 };
 
 var possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'];

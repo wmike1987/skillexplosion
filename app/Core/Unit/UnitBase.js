@@ -1,24 +1,24 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import Moveable from '@core/Unit/_Moveable.js'
-import Attacker from '@core/Unit/_Attacker.js'
-import Iso from '@core/Unit/IsoSpriteManager.js'
-import EmptySlot from '@core/Unit/EmptySlot.js'
-import ItemUtils from '@core/Unit/ItemUtils.js'
-import Command from '@core/Unit/Command.js'
-import styles from '@utils/Styles.js'
-import CommandQueue from '@core/Unit/CommandQueue.js'
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import Moveable from '@core/Unit/_Moveable.js';
+import Attacker from '@core/Unit/_Attacker.js';
+import Iso from '@core/Unit/IsoSpriteManager.js';
+import EmptySlot from '@core/Unit/EmptySlot.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
+import Command from '@core/Unit/Command.js';
+import styles from '@utils/Styles.js';
+import CommandQueue from '@core/Unit/CommandQueue.js';
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
 
-var levelUpSound = gameUtils.getSound('levelup.wav', {volume: .45, rate: .8});
-var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: .06, rate: 1});
-var petrifySound = gameUtils.getSound('petrify.wav', {volume: .07, rate: 1});
-var maimSound = gameUtils.getSound('maimsound.wav', {volume: .5, rate: 1.6});
-var condemnSound = gameUtils.getSound('condemn.wav', {volume: .15, rate: .9});
-var buffSound = gameUtils.getSound('buffcreate.wav', {volume: .015, rate: 1.0});
-var healSound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
+var levelUpSound = gameUtils.getSound('levelup.wav', {volume: 0.45, rate: 0.8});
+var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: 0.06, rate: 1});
+var petrifySound = gameUtils.getSound('petrify.wav', {volume: 0.07, rate: 1});
+var maimSound = gameUtils.getSound('maimsound.wav', {volume: 0.5, rate: 1.6});
+var condemnSound = gameUtils.getSound('condemn.wav', {volume: 0.15, rate: 0.9});
+var buffSound = gameUtils.getSound('buffcreate.wav', {volume: 0.015, rate: 1.0});
+var healSound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
 
 //default unit attributes
 var UnitBase = {
@@ -131,7 +131,7 @@ var UnitBase = {
                 this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {
                     if(!this.showingBarsWithAlt)
                     this.showLifeBar(false);
-                }.bind(this)})
+                }.bind(this)});
                 gameUtils.deathPact(this, this.barTimer);
             } else {
                 this.barTimer.reset();
@@ -177,7 +177,7 @@ var UnitBase = {
         if(levelLocalEntities) {
             levelLocalEntities.forEach((ent) => {
                 Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: ent});
-            })
+            });
         }
     },
 
@@ -186,7 +186,7 @@ var UnitBase = {
     },
 
     canTargetUnit: function(unit) {
-        return unit.isTargetable;
+        return unit.isTargetable && unit != this;
         // return unit.isTargetable && this.team != unit.team;
     },
 
@@ -233,9 +233,9 @@ var UnitBase = {
             if(this.forcedItemDropOffset) {
                 spawnPosition = mathArrayUtils.clonePosition(this.position, this.forcedItemDropOffset);
             } else {
-                spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)}
+                spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)};
             }
-        } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition))
+        } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition));
 
         item.drop(spawnPosition, {fleeting: !item.immortal});
 
@@ -248,27 +248,27 @@ var UnitBase = {
             if(item) {
                 this._dropItem(item);
             }
-        }.bind(this))
+        }.bind(this));
         $.each(this.currentSpecialtyItems, function(i, item) {
             if(item) {
                 this._dropItem(item);
             }
-        }.bind(this))
+        }.bind(this));
         $.each(this.currentBackpack, function(i, item) {
             if(item) {
                 this._dropItem(item);
             }
-        }.bind(this))
+        }.bind(this));
     },
 
     findItemSlot: function(itemToPlace) {
         var finalSlot = null;
-        var workableSlots = []
+        var workableSlots = [];
         $.each(this.getAllItems(), function(i, item) {
             if(item.isEmptySlot && itemToPlace.worksWithSlot(item.currentSlot)) {
                 workableSlots.push(item.currentSlot);
             }
-        })
+        });
 
         //default to the first found workable slot, but search to see
         //if there's an active available slot too, and prefer that slot if it exists
@@ -279,14 +279,14 @@ var UnitBase = {
                     finalSlot = slot;
                     return false;
                 }
-            })
+            });
         }
         return finalSlot;
     },
 
     equipItem: function(item) {
         item.equip(this);
-        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, power: .1, leanAmount: 12, duration: 500});
+        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, power: 0.1, leanAmount: 12, duration: 500});
     },
 
     unequipItem: function(item) {
@@ -307,7 +307,7 @@ var UnitBase = {
                     ret = ability;
                 }
                 return ret == null;
-            })
+            });
         }
         return ret;
     },
@@ -315,7 +315,7 @@ var UnitBase = {
     equipPassive: function(passive, type) {
         //equip the new passive
         this[type] = passive;
-        Matter.Events.trigger(this, type + 'Equipped', {type: type, passive: passive})
+        Matter.Events.trigger(this, type + 'Equipped', {type: type, passive: passive});
         passive[type] = true;
         passive.isEquipped = true;
         passive.start(type);
@@ -326,7 +326,7 @@ var UnitBase = {
         if(passive.defensePassive) {
             type = 'defensePassive';
         }
-        Matter.Events.trigger(this, type + 'Unequipped', {type: type, passive: passive})
+        Matter.Events.trigger(this, type + 'Unequipped', {type: type, passive: passive});
         passive.isEquipped = false;
         if(passive.attackPassive) {
             passive.attackPassive = false;
@@ -428,7 +428,7 @@ var UnitBase = {
                             target: event.target,
                             state: eventState,
                             unit: this,
-                        })
+                        });
                     } else //we have a more complex object
                     {
                         newCommand = Command({
@@ -438,12 +438,12 @@ var UnitBase = {
                             target: event.target,
                             state: eventState,
                             unit: this,
-                        })
+                        });
 
                         $.extend(newCommand, this.eventClickMappings[event.id]);
                     }
 
-                    if(keyStates['Shift']) {
+                    if(keyStates.Shift) {
                         this.commandQueue.enqueue(newCommand);
                     }
                     else {
@@ -471,7 +471,7 @@ var UnitBase = {
                             target: event.target,
                             state: eventState,
                             unit: this,
-                        })
+                        });
                     } else //we have a more complex object
                     {
                         newCommand = Command({
@@ -481,12 +481,12 @@ var UnitBase = {
                             target: event.target,
                             state: eventState,
                             unit: this,
-                        })
+                        });
 
                         $.extend(newCommand, this.eventKeyMappings[event.id]);
                     }
 
-                    if(keyStates['Shift']) {
+                    if(keyStates.Shift) {
                         this.commandQueue.enqueue(newCommand);
                     }
                     else {
@@ -506,13 +506,13 @@ var UnitBase = {
 
         Matter.Events.on(this, "onremove", function() {
             this.unitRemoved = true;
-            Matter.Events.off(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent)
+            Matter.Events.off(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
             if(!this.itemsEnabled) return;
             $.each(this.getCompleteSetOfItemObjects(), function(i, item) {
                 if(item) {
                     globals.currentGame.removeItem(item);
                 }
-            })
+            });
         }.bind(this));
 
         Matter.Events.on(this, "consume", function() {
@@ -556,9 +556,9 @@ var UnitBase = {
             if(this.hideLifeBar) return;
             if(value !== false)
                 value = true;
-            if(this.renderlings['healthbarbackground']) {
-                this.renderlings['healthbarbackground'].visible = value;
-                this.renderlings['healthbar'].visible = value;
+            if(this.renderlings.healthbarbackground) {
+                this.renderlings.healthbarbackground.visible = value;
+                this.renderlings.healthbar.visible = value;
             }
         };
 
@@ -566,9 +566,9 @@ var UnitBase = {
             if(this.hideEnergyBar) return;
             if(value !== false)
                 value = true;
-            if(this.renderlings['energybarbackground']) {
-                this.renderlings['energybarbackground'].visible = value;
-                this.renderlings['energybar'].visible = value;
+            if(this.renderlings.energybarbackground) {
+                this.renderlings.energybarbackground.visible = value;
+                this.renderlings.energybar.visible = value;
             }
         };
 
@@ -613,9 +613,9 @@ var UnitBase = {
 
             //create health bar
             var backgroundScaleX = 1.8;
-            var barScaleXMultiplier = .96;
-            var healthBorderScale = .16;
-            var healthBarScale = .1;
+            var barScaleXMultiplier = 0.96;
+            var healthBorderScale = 0.16;
+            var healthBarScale = 0.1;
             var healthBarYOffset = this.energy ? -20 : -13;
             if (this.health) {
                 this.renderChildren.push({
@@ -631,7 +631,7 @@ var UnitBase = {
                     },
                     anchor: {
                         x: 0,
-                        y: .5
+                        y: 0.5
                     },
                     stage: 'foreground',
                     rotate: 'none',
@@ -651,7 +651,7 @@ var UnitBase = {
                     },
                     anchor: {
                         x: 0,
-                        y: .5
+                        y: 0.5
                     },
                     stage: 'foreground',
                     rotate: 'none',
@@ -662,14 +662,14 @@ var UnitBase = {
 
                 var updateHealthTick = globals.currentGame.addTickCallback(function() {
                     var percentage = this.currentHealth / this.maxHealth;
-                    if (this.renderlings['healthbar']) {
-                        this.renderlings['healthbar'].scale = {
+                    if (this.renderlings.healthbar) {
+                        this.renderlings.healthbar.scale = {
                             x: backgroundScaleX * barScaleXMultiplier * percentage,
                             y: healthBarScale
                         };
-                        this.renderlings['healthbar'].tint = graphicsUtils.rgbToHex(percentage >= .5 ? ((1-percentage) * 2 * 255) : 255, percentage <= .5 ? (percentage * 2 * 255) : 255, 0);
+                        this.renderlings.healthbar.tint = graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1-percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
                     }
-                }.bind(this))
+                }.bind(this));
 
                 gameUtils.deathPact(this, updateHealthTick);
             }
@@ -689,7 +689,7 @@ var UnitBase = {
                     },
                     anchor: {
                         x: 0,
-                        y: .5
+                        y: 0.5
                     },
                     stage: 'foreground',
                     rotate: 'none',
@@ -709,7 +709,7 @@ var UnitBase = {
                     },
                     anchor: {
                         x: 0,
-                        y: .5
+                        y: 0.5
                     },
                     stage: 'foreground',
                     rotate: 'none',
@@ -720,13 +720,13 @@ var UnitBase = {
 
                 var updateEnergyTick = globals.currentGame.addTickCallback(function() {
                     var percentage = this.currentEnergy / this.maxEnergy;
-                    if (this.renderlings['energybar']) {
-                        this.renderlings['energybar'].scale = {
+                    if (this.renderlings.energybar) {
+                        this.renderlings.energybar.scale = {
                             x: backgroundScaleX * barScaleXMultiplier * percentage,
                             y: healthBarScale
                         };
                     }
-                }.bind(this))
+                }.bind(this));
 
                 gameUtils.deathPact(this, updateEnergyTick);
             }
@@ -738,7 +738,7 @@ var UnitBase = {
                 if(!this.isDead) {
                     this.giveExperience(event.killedUnit.experienceWorth || 0);
                 }
-            }.bind(this))
+            }.bind(this));
         }
 
         //grit handling
@@ -749,7 +749,7 @@ var UnitBase = {
             } else {
                 this.gritMult = 1;
             }
-        }.bind(this))
+        }.bind(this));
         gameUtils.deathPact(this, this.gritHandler);
 
         //regen energy
@@ -803,15 +803,15 @@ var UnitBase = {
                                 child.filters = filter;
                             }
                             else {
-                                (child.filters.push(filter))
+                                (child.filters.push(filter));
                             }
 
                             if(filterArea) {
                                 child.filterArea = filterArea;
                             }
                         }
-                    }.bind(this))
-                }.bind(this))
+                    }.bind(this));
+                }.bind(this));
             } else {
                 $.each(this.renderlings, function(id, child) {
                     if(id == this.mainRenderSprite) {
@@ -819,16 +819,16 @@ var UnitBase = {
                             child.filters = filter;
                         }
                         else {
-                            (child.filters.push(filter))
+                            (child.filters.push(filter));
                         }
 
                         if(filterArea) {
                             child.filterArea = filterArea;
                         }
                     }
-                }.bind(this))
+                }.bind(this));
             }
-        };
+        }
     },
 
     levelUp: function() {
@@ -840,7 +840,7 @@ var UnitBase = {
             spritesheetName: 'BaseUnitAnimations1',
             animationName: 'levelup',
             speed: 2.5,
-            transform: [this.position.x, this.position.y, .8, 1]
+            transform: [this.position.x, this.position.y, 0.8, 1]
         });
         levelUpAnimation.play();
         graphicsUtils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
@@ -878,7 +878,7 @@ var UnitBase = {
     getCompleteSetOfItemObjects: function() {
         var completeSet = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems).filter(item => {
             return !item.isEmptySlot;
-        })
+        });
 
         return completeSet.concat(this.emptySlots);
     },
@@ -895,7 +895,7 @@ var UnitBase = {
             this.canMove = false;
             this.canAttack = false;
             this.isTargetable = false;
-            this.isoManagedAlpha = .6;
+            this.isoManagedAlpha = 0.6;
             this.idleCancel = true;
             Matter.Sleeping.set(this.body, true);
             if(this.petrifyTintTimer) {
@@ -915,11 +915,11 @@ var UnitBase = {
             globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
             unit.isoManagedTint = null;
             unit.isoManagedAlpha = null;
-        }})
+        }});
     },
 
     maim: function(duration) {
-        var movePenalty = -.5;
+        var movePenalty = -0.5;
         var defensePenalty = -1;
 
         var unit = this;
@@ -931,7 +931,7 @@ var UnitBase = {
         }, removeChanges: function() {
             unit.moveSpeed -= movePenalty.toString();
             unit.removeDefenseAddition(defensePenalty);
-        }})
+        }});
     },
 
     condemn: function(duration, condemningUnit) {
@@ -946,9 +946,9 @@ var UnitBase = {
                 var position1 = condemningUnit.position;
                 var offset2 = {x: Math.random()*40-20, y: Math.random()*40-20};
                 var offset3 = {x: Math.random()*40-20, y: Math.random()*40-20};
-                var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: .8, y: .8}})
-                var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: .8, y: .8}})
-                var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: .8, y: .8}})
+                var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: 0.8, y: 0.8}});
+                var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: 0.8, y: 0.8}});
+                var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: 0.8, y: 0.8}});
                 gameUtils.attachSomethingToBody({something: condemnNote1, body: condemningUnit.body});
                 gameUtils.attachSomethingToBody({something: condemnNote2, body: condemningUnit.body, offset: offset2});
                 gameUtils.attachSomethingToBody({something: condemnNote3, body: condemningUnit.body, offset: offset3});
@@ -957,22 +957,22 @@ var UnitBase = {
                 graphicsUtils.floatSprite(condemnNote3, {runs: 65});
                 condemningUnit.giveHealth(15);
                 healSound.play();
-            })
+            });
         }, removeChanges: function() {
             this.removeDefenseAddition(defensePenalty);
             handler.removeHandler();
-        }.bind(this)})
+        }.bind(this)});
     },
 
     becomeHidden: function(duration) {
         this.applyBuff({name: 'hidden', textureName: 'HiddenBuff', playSound: true, duration: duration || 2000, applyChanges: function() {
             this.isTargetable = false;
-            this.isoManager.visibleIsoSprite.alpha = .4;
-            this.isoManagedAlpha = .4;
+            this.isoManager.visibleIsoSprite.alpha = 0.4;
+            this.isoManagedAlpha = 0.4;
         }, removeChanges: function() {
             this.isoManagedAlpha = null;
             this.isTargetable = true;
-        }.bind(this)})
+        }.bind(this)});
     },
 
     //simulates a dead unit without moving it or removing it
@@ -995,7 +995,7 @@ var UnitBase = {
         var sum = 0;
         this.defenseAdditions.forEach((addition) => {
             sum += addition;
-        })
+        });
         return Math.max(-this.defense, sum);
     },
 
@@ -1003,7 +1003,7 @@ var UnitBase = {
         var sum = 0;
         this.dodgeAdditions.forEach((addition) => {
             sum += addition;
-        })
+        });
         return Math.max(-this.dodge, sum);
     },
 
@@ -1011,7 +1011,7 @@ var UnitBase = {
         var sum = 0;
         this.gritAdditions.forEach((addition) => {
             sum += addition;
-        })
+        });
         return Math.max(-this.grit, sum);
     },
 
@@ -1019,7 +1019,7 @@ var UnitBase = {
         var sum = 0;
         this.damageAdditions.forEach((addition) => {
             sum += addition;
-        })
+        });
 
         var baseDamageAmount = this.damage;
         if(this.damageMember && this.damageMember instanceof Function) {
@@ -1071,7 +1071,7 @@ var UnitBase = {
      * }
      */
     applyBuff: function(options) {
-        options = Object.assign({playSound: true}, options)
+        options = Object.assign({playSound: true}, options);
         var name = options.name;
         var unit = this;
         var textureName = options.textureName;
@@ -1085,8 +1085,8 @@ var UnitBase = {
             unit.removeAllBuffs = function() {
                 unit.buffs.forEach((buff) => {
                     buff.removeBuffImage();
-                })
-            }
+                });
+            };
         }
 
         if(unit.buffs[name]) {
@@ -1103,25 +1103,25 @@ var UnitBase = {
                         spritesheetName: 'UtilityAnimations2',
                         animationName: 'buffdestroy',
                         speed: 4,
-                        transform: [unit.position.x, unit.position.y, .8, .8],
+                        transform: [unit.position.x, unit.position.y, 0.8, 0.8],
                         onCompleteExtension: function() {
                             unit.reorderBuffs();
                         }
                     });
                     graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
-                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
+                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true});
                     debuffAnim.play();
                     gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
                     unit.buffs[name] = null;
                     delete unit.buffs[name];
                 }
-            }
+            };
 
             if(!textureName) {
                 textureName = 'TransparentSquare';
             }
             var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageTwo', scale: {x: scale.x, y: scale.y}});
-            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true})
+            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true});
             buffObj.dobj = dobj;
             unit.buffs[name] = buffObj;
             unit.orderedBuffs.push(buffObj);
@@ -1137,7 +1137,7 @@ var UnitBase = {
                 unit.orderedBuffs.forEach((buff, i) => {
                     var attachmentTick = buff.dobj.bodyAttachmentTick;
                     var row = Math.floor(i/3);
-                    var yOffset = row * -ySpacing
+                    var yOffset = row * -ySpacing;
                     var col = i%3;
                     var xOffset = 0;
                     if(col == 0) {
@@ -1156,12 +1156,12 @@ var UnitBase = {
                     buff.offset = {x: xOffset, y: originalyOffset + yOffset};
                     attachmentTick.offset = buff.offset;
                 });
-            }
+            };
 
             //also create method to remove all buffs
             unit.removeAllBuffs = function() {
 
-            }
+            };
         }
         unit.reorderBuffs();
 
@@ -1175,7 +1175,7 @@ var UnitBase = {
         });
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
         graphicsUtils.addGleamToSprite({sprite: unit.buffs[name].dobj, duration: 650, gleamWidth: 10});
-        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true})
+        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true});
         buffAnim.play();
 
         //play sound
@@ -1198,8 +1198,8 @@ var UnitBase = {
         var removeAllHandlers = function() {
             eventRemoveHandlers.forEach((handler) => {
                 handler();
-            })
-        }
+            });
+        };
         var mainCleanUp = function(preserveImage) {
             //remove image (we'll preserve if it an incoming buff of the same type overrides it)
             if(!preserveImage) {
@@ -1209,7 +1209,7 @@ var UnitBase = {
             removeAllHandlers();
             //remove changes
             options.removeChanges();
-        }
+        };
         if(buffDuration) {
             var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {executeOnNuke: true, timerName: this.unitId + name + 'buffRemove'});
         }
@@ -1219,16 +1219,16 @@ var UnitBase = {
                 mainCleanUp(preserveImage);
                 //invalidate running timer
                 globals.currentGame.invalidateTimer(timer);
-            }
+            };
         }
-        var removeEvents = options.removeEvents || [{obj: globals.currentGame, eventName: 'VictoryOrDefeat'}, {obj: this, eventName: 'death'}]
+        var removeEvents = options.removeEvents || [{obj: globals.currentGame, eventName: 'VictoryOrDefeat'}, {obj: this, eventName: 'death'}];
         removeEvents.forEach((re) => {
             var ret = gameUtils.matterOnce(re.obj, re.eventName, function() {
                 realizedBuff.removeBuff();
-            })
+            });
             eventRemoveHandlers.push(ret.removeHandler);
-        })
+        });
     }
-}
+};
 
 export default UnitBase;
