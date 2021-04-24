@@ -1,44 +1,19 @@
 /*
  * Customer pixi renderer, coupled to matter.js - Author: wmike1987
  */
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils'
-import {PIXIHooks, StatsJSAdapter} from 'gstats'
-import Stats from 'stats.js'
-
-//pixi object frequency destroyer
-// var PixiObjDestroyer = function(renderer) {
-// 	this.objs = [];
-// 	this.init = function() {
-// 		//update sprites after Matter.Runner tick
-// 		Matter.Events.on(renderer.engine.runner, 'tick', function(event) {
-// 			var pixiObj = this.objs.shift();
-// 			if(pixiObj && !pixiObj._destroyed) {
-// 				pixiObj.destroy();
-// 			}
-// 		}.bind(this));
-// 	}
-//
-// 	this.destroy = function(pixiObj) {
-// 		this.objs.push(pixiObj);
-// 	}
-//
-// 	this.cleanUp = function() {
-// 		this.objs = [];
-// 	}
-// }
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
+import {PIXIHooks, StatsJSAdapter} from 'gstats';
+import Stats from 'stats.js';
 
 //main renderer module
 var renderer = function(engine, options) {
-	var options = options || {};
+	options = options || {};
 	var appendToElement = options.appendToElement || document.body;
 
 	this.engine = engine;
-
-	// this.frequencyDestroyer = new PixiObjDestroyer(this);
-	// this.frequencyDestroyer.init();
 
 	//create stages (these don't handle sorting, see the laying group below)
 	this.stages = {

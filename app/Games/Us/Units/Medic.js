@@ -269,7 +269,7 @@ export default function Medic(options) {
         shadow.renderChildren = [{
           id: 'shadow',
           data: 'IsoShadowBlurred',
-          scale: {x: .75, y: .75},
+          scale: {x: 0.75, y: 0.75},
           stage: "stageNTwo",
           offset: {x: 0, y: 22},
           alpha: 0.5
@@ -290,13 +290,16 @@ export default function Medic(options) {
         var dashAnimation = gameUtils.getAnimation({
             spritesheetName: 'MedicAnimations2',
             animationName: 'medicdash',
-            speed: .5,
+            speed: 0.5,
             transform: [this.position.x, this.position.y, 2, 5]
         });
 
         dashAnimation.play();
-        dashAnimation.alpha = .35;
-        dashAnimation.tint = 0xa2a2a2;
+        dashAnimation.alpha = 0.35;
+        var dashTint = currentAugment.name == 'fleet feet' ? 0xdec127 : 0xa2a2a2;
+        dashTint = currentAugment.name == 'ghost' ? 0x51e023 : dashTint;
+        dashTint = currentAugment.name == 'soft landing' ? 0x0004be : dashTint;
+        dashAnimation.tint = dashTint;
         dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'north');
         graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
@@ -311,10 +314,10 @@ export default function Medic(options) {
             gogogo: true,
             timeLimit: footprintFrequency,
             callback: function() {
-                var footprint = graphicsUtils.createDisplayObject('Footprint', {where: 'stageNOne', position: mathArrayUtils.clonePosition(shadow.position, {x: 0, y: 22}), alpha: .7, scale: {x:.7, y:.7}});
+                var footprint = graphicsUtils.createDisplayObject('Footprint', {where: 'stageNOne', position: mathArrayUtils.clonePosition(shadow.position, {x: 0, y: 22}), alpha: 0.7, scale: {x:0.7, y:0.7}});
                 footprint.rotation = footprintDirection;
                 graphicsUtils.addSomethingToRenderer(footprint);
-                graphicsUtils.fadeSprite(footprint, .006);
+                graphicsUtils.fadeSprite(footprint, 0.006);
                 footprint.visible = false;
                 if(everyOther)
                     footstepSound.play();
@@ -323,7 +326,7 @@ export default function Medic(options) {
                     lastFootprint.visible = true;
                 lastFootprint = footprint;
             }
-        })
+        });
 
         if(currentAugment.name == 'ghost') {
             Matter.Events.on(shadow, 'onCollide', function(pair) {
@@ -332,7 +335,7 @@ export default function Medic(options) {
                 if(otherUnit && otherUnit != medic) {
                     otherUnit.petrify(currentAugment.duration);
                 }
-            })
+            });
         }
 
         var originalOrigin = {x: this.position.x, y: this.position.y};
@@ -374,9 +377,9 @@ export default function Medic(options) {
                   medic.buffs['freeSecretStep' + medic.freeSteps].removeBuff();
               }
           }
-        }.bind(this))
+      }.bind(this));
         gameUtils.deathPact(shadow, removeSelf);
-    }
+    };
 
     var secretStepAbility = new Ability({
         name: 'Secret Step',

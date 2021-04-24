@@ -56,11 +56,15 @@ var levelBase = {
     },
 
     fillLevelScene: function(scene) {
-        var tileMap = TileMapper.produceTileMap({possibleTextures: this.worldSpecs.getLevelTiles(), tileWidth: this.worldSpecs.tileSize, tileTint: this.tileTint});
+        var tileMap = TileMapper.produceTileMap({
+            possibleTextures: this.worldSpecs.getLevelTiles(),
+            tileWidth: this.worldSpecs.tileSize,
+            tileTint: this.tileTint,
+        });
         scene.add(tileMap);
 
         if(this.worldSpecs.levelTileExtension) {
-            this.worldSpecs.levelTileExtension(scene, this.tileTint);
+            this.worldSpecs.levelTileExtension.call(this, scene, this.tileTint);
         }
 
         if(this.fillLevelSceneExtension) {
@@ -75,8 +79,8 @@ var levelBase = {
     createMapTable: function(scene, options) {
         options = options || {};
 
-        var mapTableSprite = graphicsUtils.createDisplayObject('mapbox');
-        var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [mapTableSprite], stage: 'stage',
+        this.mapTableSprite = graphicsUtils.createDisplayObject('mapbox');
+        var mapTable = new Doodad({drawWire: false, collides: true, autoAdd: false, radius: 30, texture: [this.mapTableSprite], stage: 'stage',
         scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
         shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
         position: options.position || {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}});
@@ -85,9 +89,9 @@ var levelBase = {
         var mapHoverTick = globals.currentGame.addTickCallback(function(event) {
             if(!this.mapTableActive) return;
             if(Matter.Vertices.contains(mapTable.body.vertices, mousePosition)) {
-                mapTableSprite.tint = 0xff33cc;
+                this.mapTableSprite.tint = 0xff33cc;
             } else {
-                mapTableSprite.tint = 0xFFFFFF;
+                this.mapTableSprite.tint = 0xFFFFFF;
             }
         }.bind(this));
 

@@ -200,6 +200,7 @@ export default function Marine(options) {
     var adjustedUpDownsc = {x: 0.38, y: 0.38};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
+    var sortYOffset = 0;
     var rc = [
     {
         id: 'selected',
@@ -227,13 +228,15 @@ export default function Marine(options) {
         rotate: 'none',
         visible: false,
         offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },{
         id: 'right',
         data: spineEast,
         scale: flipsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },
     {
         id: 'up',
@@ -241,7 +244,8 @@ export default function Marine(options) {
         scale: adjustedUpDownsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },
     {
         id: 'down',
@@ -249,7 +253,8 @@ export default function Marine(options) {
         scale: adjustedUpDownsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },
     {
         id: 'upLeft',
@@ -257,7 +262,8 @@ export default function Marine(options) {
         scale: sc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },
     {
         id: 'upRight',
@@ -265,7 +271,8 @@ export default function Marine(options) {
         scale: flipsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },
     {
         id: 'downRight',
@@ -273,14 +280,16 @@ export default function Marine(options) {
         scale: flipsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     }, {
         id: 'downLeft',
         data: spineSouthWest,
         scale: sc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset}
+        offset: {x: 0, y: yOffset},
+        sortYOffset: sortYOffset,
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',

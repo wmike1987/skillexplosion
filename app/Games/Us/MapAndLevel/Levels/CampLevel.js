@@ -42,7 +42,7 @@ var campLevel = function() {
         this.mode = this.possibleModes.CUSTOM;
 
         if(this.camp.initExtension) {
-            this.camp.initExtension();
+            this.camp.initExtension.call(this);
         }
     };
 
@@ -203,6 +203,7 @@ var campLevel = function() {
         if (true) {
             var initLight = function() {
                 globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
+                globals.currentGame.renderer.layers.backgroundOne.filters = [this.backgroundLightShader];
                 globals.currentGame.renderer.layers.stage.filters = [this.stageLightShader];
                 globals.currentGame.renderer.layers.stageTrees.filters = [this.treeShader];
                 flameTimer = globals.currentGame.addTimer({
@@ -241,6 +242,7 @@ var campLevel = function() {
             var game = globals.currentGame;
             game.invalidateTimer(flameTimer);
             game.renderer.layers.background.filters = [];
+            game.renderer.layers.backgroundOne.filters = [];
             game.renderer.layers.stage.filters = [];
             game.renderer.layers.stageTrees.filters = [];
             game.map.hide();

@@ -1,18 +1,18 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Unlocker.js'
-import Ability from '@core/Unit/UnitAbility.js'
-import style from '@utils/Styles.js'
-import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import UC from '@core/Unit/UnitConstructor.js';
+import aug from '@core/Unit/_Unlocker.js';
+import Ability from '@core/Unit/UnitAbility.js';
+import style from '@utils/Styles.js';
+import {globals} from '@core/Fundamental/GlobalState';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function DestructibleBox(options) {
     var box = {};
 
     options = options || {};
-    $.extend(options, {radius: 25}, options)
+    $.extend(options, {radius: 25}, options);
 
     var sc = {x: 0.1, y: 0.1};
     var adjustedUpDownsc = {x: 0.1, y: 0.1};
@@ -44,6 +44,7 @@ export default function DestructibleBox(options) {
         rotate: 'none',
         visible: true,
         offset: {x: 3, y: -20},
+        sortYOffset: 45,
     }, {
         id: 'shadow',
         data: 'IsoShadowBlurred',
@@ -57,11 +58,11 @@ export default function DestructibleBox(options) {
 
     box.tintMe = function(tint) {
         this.renderlings.main.tint = tint;
-    }
+    };
 
     box.untintMe = function() {
         this.renderlings.main.tint = 0xFFFFFF;
-    }
+    };
 
     var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
     var deathSound = gameUtils.getSound('boxexplode.wav', {volume: 0.025, rate: 1.75});

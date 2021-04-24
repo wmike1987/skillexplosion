@@ -27,42 +27,22 @@ import {
 
 var tileSize = 225;
 var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];
-var levelTiles = function() {
+var getLevelTiles = function() {
     var backgroundTiles = [];
-    for (var i = 1; i <= 12; i++) {
+    for (var i = 1; i <= 6; i++) {
         var j = i;
-        if(i > 7) {
-            j = 7;
-        }
-        backgroundTiles.push('FrollGround/Ice' + j);
+        backgroundTiles.push('FrollGround/Dirt' + j);
     }
     return backgroundTiles;
-};
-
-var tileExtension = function(scene, tint) {
-    var ornamentTiles = [];
-    for (var i = 1; i <= 4; i++) {
-        ornamentTiles.push('FrollGround/Ornament' + i);
-    }
-    var ornamentMap = TileMapper.produceTileMap({
-        possibleTextures: ornamentTiles,
-        tileWidth: tileSize,
-        hz: 0.5,
-        tileTint: tint
-    });
-    // scene.add(ornamentMap);
 };
 
 var possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'];
 
 var camp = {
-    tileSize: tileSize,
-    getBackgroundTiles: levelTiles,
-    tileMapExtension: tileExtension,
     intro: CampNoirIntro,
 
     initExtension: function() {
-
+        this.ornamentNoZones = {center: gameUtils.getPlayableCenter(), radius: 300};
     },
 
     initSounds: function() {
@@ -268,10 +248,24 @@ var campNoir = {
         enemySets: noirEnemySets,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
-        getLevelTiles: levelTiles,
+        getLevelTiles: getLevelTiles,
         possibleTrees: possibleTrees,
         levelTileExtension: function(scene, tint) {
-            tileExtension(scene, tint);
+            var ornamentTiles = [];
+            for (var i = 0; i <= 7; i++) {
+                ornamentTiles.push('FrollGround/DesertFlower' + i);
+            }
+            var ornamentMap = TileMapper.produceTileMap({
+                possibleTextures: ornamentTiles,
+                tileWidth: tileSize,
+                noScale: true,
+                hz: 1,
+                where: 'stage',
+                r: 1,
+                tileTint: tint,
+                noZones: this.ornamentNoZones
+            });
+            scene.add(ornamentMap);
             var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', 0.2);
             scene.add(l1);
         }
@@ -298,7 +292,7 @@ var campNoir = {
             position: firstLevelPosition,
             levelOptions: {
                 levelId: 'shaneLearning',
-                tileTint: 0x7848ee
+                tileTint: 0xffffff
             }
         });
         this.map.setHeadToken('shaneOnly');

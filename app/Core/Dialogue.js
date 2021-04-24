@@ -62,7 +62,7 @@ var Dialogue = function Dialogue(options) {
     this.actorText = this.actor ? this.actor + ": " : "";
 
     this.play = function(options) {
-        if(this.killed || this.manualBlock) return;
+        if(this.killed || this.preventAutoStart) return;
         options = options || {};
 
         //Create the left space buffer (either explicitly defined or the actor text width)
@@ -268,7 +268,10 @@ var Dialogue = function Dialogue(options) {
                     }
                 }
             } else if(this.totalElapsedTime >= d.resolveTime){
-                if(d.next && d.next.manualBlock) {
+                if(d.next && d.next.preventAutoStart) {
+                    return;
+                }
+                if(d.preventAutoEnd) {
                     return;
                 }
                 if(d.fadeOutAfterDone) {

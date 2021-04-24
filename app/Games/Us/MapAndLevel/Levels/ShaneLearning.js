@@ -20,6 +20,7 @@ var shaneLearning = function(options) {
     this.initExtension = function() {
         this.completeUponEntry = true;
         this.mode = this.possibleModes.CUSTOM;
+        this.ornamentNoZones = {center: {x: gameUtils.getCanvasCenter().x-200, y: gameUtils.getPlayableHeight()-500}, radius: 250};
     };
 
     this.fillLevelSceneExtension = function(scene) {
@@ -45,32 +46,35 @@ var shaneLearning = function(options) {
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750});
         var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Shane.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-        var a2 = new Dialogue({actor: "Task", text: "Right click to move Shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a3 = new Dialogue({actor: "Task", text: "Hover over your attack ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a3a = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a4a = new Dialogue({actor: "Task", text: "Hover over your item to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a6 = new Dialogue({actor: "Task", text: "Hover over your dash ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a6a = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a7 = new Dialogue({actor: "Task", text: "Hover over your knife ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a7a = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true});
-        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, manualBlock: true});
+        var a2 = new Dialogue({actor: "Task", text: "Right click to move Shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a3 = new Dialogue({actor: "Task", text: "Hover over your attack ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a3a = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a4a = new Dialogue({actor: "Task", text: "Hover over your item to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a6 = new Dialogue({actor: "Task", text: "Hover over your dash ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a6a = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a7 = new Dialogue({actor: "Task", text: "Hover over your knife ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a7a = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
+        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, preventAutoStart: true, preventAutoEnd: true});
         var self = this;
         this.mapTableActive = true;
         var chain = new DialogueChain([title, a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
             var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it.", isTask: true, backgroundBox: true, letterSpeed: 30, manualBlock: true, delayAfterEnd: 250});
-            var b3 = new Dialogue({continuation: true, text: "Make your way to camp.", isTask: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 2000});
+            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it.", isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true, delayAfterEnd: 250});
+            var b3 = new Dialogue({continuation: true, text: "Make your way to camp.", isTask: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 4500});
             var bchain = new DialogueChain([b1, b2, b3], {startDelay: 1000, done: function() {
                 bchain.cleanUp();
             }});
+
+            var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTableSprite, 20, 0.5);
             gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
                 achieve.play();
                 gameUtils.doSomethingAfterDuration(() => {
-                    b2.manualBlock = false;
+                    graphicsUtils.removeSomethingFromRenderer(arrow);
+                    b2.preventAutoStart = false;
                     gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
                         achieve.play();
                     });
@@ -86,7 +90,7 @@ var shaneLearning = function(options) {
             if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Shane') {
                 achieve.play();
                 gameUtils.doSomethingAfterDuration(() => {
-                    a2.manualBlock = false;
+                    a2.preventAutoStart = false;
 
                     var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
                     graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 8});
@@ -98,30 +102,30 @@ var shaneLearning = function(options) {
                         var boxItem = this.box.getAllItemsByName('Ring Of Thought')[0];
                         this.box.isTargetable = true;
                         gameUtils.doSomethingAfterDuration(() => {
-                            a3.manualBlock = false;
+                            a3.preventAutoStart = false;
                             var attackAbility = globals.currentGame.shane.getAbilityByName('Rifle');
                             var arrow = graphicsUtils.pointToSomethingWithArrow(attackAbility.icon, 30, 0.75);
                             gameUtils.matterOnce(attackAbility.icon, 'tooltipShown', () => {
                                 achieve.play();
                                 graphicsUtils.removeSomethingFromRenderer(arrow);
                                 gameUtils.doSomethingAfterDuration(() => {
-                                    a3a.manualBlock = false;
+                                    a3a.preventAutoStart = false;
                                     gameUtils.matterConditionalOnce(this.box, 'death',(event) => {
                                         achieve.play();
                                         gameUtils.doSomethingAfterDuration(() => {
-                                            a4.manualBlock = false;
+                                            a4.preventAutoStart = false;
                                             var arrow = graphicsUtils.pointToSomethingWithArrow(boxItem, 20, 0.5);
                                             gameUtils.matterConditionalOnce(globals.currentGame.shane, 'pickupItem', (event) => {
                                                 graphicsUtils.removeSomethingFromRenderer(arrow);
                                                 gameUtils.doSomethingAfterDuration(() => {
                                                     var myItem = globals.currentGame.shane.getAllItemsByName('Ring Of Thought')[0];
                                                     var arrow = graphicsUtils.pointToSomethingWithArrow(myItem, 5, 0.5);
-                                                    a4a.manualBlock = false;
+                                                    a4a.preventAutoStart = false;
                                                     gameUtils.matterOnce(myItem.icon, 'tooltipShown', () => {
                                                         achieve.play();
                                                         graphicsUtils.removeSomethingFromRenderer(arrow);
                                                         gameUtils.doSomethingAfterDuration(() => {
-                                                            a5.manualBlock = false;
+                                                            a5.preventAutoStart = false;
                                                             var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
                                                             var critter2 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
                                                             globals.currentGame.addUnit(critter1);
@@ -136,29 +140,29 @@ var shaneLearning = function(options) {
                                                             var done = function() {
                                                                 achieve.play();
                                                                 gameUtils.doSomethingAfterDuration(() => {
-                                                                    a6.manualBlock = false;
+                                                                    a6.preventAutoStart = false;
                                                                     var dashAbility = globals.currentGame.shane.getAbilityByName('Dash');
                                                                     var arrow = graphicsUtils.pointToSomethingWithArrow(dashAbility.icon, 30, 0.75);
                                                                     gameUtils.matterOnce(dashAbility.icon, 'tooltipShown', () => {
                                                                         graphicsUtils.removeSomethingFromRenderer(arrow);
                                                                         achieve.play();
                                                                         gameUtils.doSomethingAfterDuration(() => {
-                                                                            a6a.manualBlock = false;
+                                                                            a6a.preventAutoStart = false;
                                                                             gameUtils.matterConditionalOnce(globals.currentGame.shane, 'dash', (event) => {
                                                                                 achieve.play();
                                                                                 gameUtils.doSomethingAfterDuration(() => {
-                                                                                    a7.manualBlock = false;
+                                                                                    a7.preventAutoStart = false;
                                                                                     var knifeAbility = globals.currentGame.shane.getAbilityByName('Throw Knife');
                                                                                     var arrow = graphicsUtils.pointToSomethingWithArrow(knifeAbility.icon, 30, 0.75);
                                                                                     gameUtils.matterOnce(knifeAbility.icon, 'tooltipShown', () => {
                                                                                         achieve.play();
                                                                                         graphicsUtils.removeSomethingFromRenderer(arrow);
                                                                                         gameUtils.doSomethingAfterDuration(() => {
-                                                                                            a7a.manualBlock = false;
+                                                                                            a7a.preventAutoStart = false;
                                                                                             gameUtils.matterConditionalOnce(globals.currentGame.shane, 'knifeThrow',(event) => {
                                                                                                 achieve.play();
                                                                                                 gameUtils.doSomethingAfterDuration(() => {
-                                                                                                    a8.manualBlock = false;
+                                                                                                    a8.preventAutoStart = false;
                                                                                                     var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
                                                                                                     critter1.currentHealth = 15;
                                                                                                     globals.currentGame.addUnit(critter1);
@@ -167,6 +171,7 @@ var shaneLearning = function(options) {
                                                                                                     critter1.honeRange = 200;
                                                                                                     gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
                                                                                                         achieve.play();
+                                                                                                        a8.preventAutoEnd = false;
                                                                                                     });
                                                                                                 }, pauseAfterCompleteTime);
                                                                                                 return true;
