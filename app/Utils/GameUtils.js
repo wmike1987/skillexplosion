@@ -877,7 +877,7 @@ var graphicsUtils = {
         arrowScale = arrowScale || 1.0;
         yOffset = yOffset || 0.0;
         var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudTextOne', {scale: {x: 1.00 * arrowScale, y: 1.00 * arrowScale}});
-        downArrow.position = mathArrayUtils.clonePosition(something.position, {y: -yOffset-2.0-downArrow.height/2.0});
+        downArrow.position = mathArrayUtils.clonePosition(something.position, {y: yOffset-2.0-downArrow.height/2.0});
         graphicsUtils.flashSprite({sprite: downArrow, duration: 200, pauseDurationAtEnds: 250, times: 999});
         return downArrow;
     },
@@ -885,22 +885,24 @@ var graphicsUtils = {
     removeSomethingFromRenderer: function(something, where) {
         if(!something) return;
 
-        //harmless detach, just in case
+        //harmless detach, just in case... "harmless"
         gameUtils.detachSomethingFromBody(something);
 
-        //if we just have a display object that has not been added to the renderer, destroy this mf'er
+        // Two cases
+        // 1) we don't have a parent
+        //   a) either we were created but not added
+        //   b) or we were previously removed, but are being removed again (should be noop -- this is caught by the _destroyed flag)
         if(!something.parent) {
             if(something.destroy && !something._destroyed) {
                 something.destroy();
+                Matter.Events.trigger(something, 'destroy');
             }
         } else {
-            //otherwise remove from stage and destroy
+            // 2) we are alive and well and want to be destroyed
             where = where || something.myLayer || 'stage';
             globals.currentGame.renderer.removeFromPixiStage(something, where);
+            Matter.Events.trigger(something, 'destroy');
         }
-
-        //always trigger a destroy
-        Matter.Events.trigger(something, 'destroy');
     },
 
     //https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors - with some modifications
@@ -973,7 +975,7 @@ var graphicsUtils = {
         }
         var runs = time/16;
         var rate = (finalAlpha-startingAlpha)/runs;
-        globals.currentGame.addTimer({name: 'fadeSpriteOverTime:' + mathArrayUtils.getId(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
+        var timer = globals.currentGame.addTimer({name: 'fadeSpriteOverTime:' + mathArrayUtils.getId(), timeLimit: 16, runs: runs, killsSelf: true, callback: function() {
             sprite.alpha += rate;
         }, totallyDoneCallback: function() {
             if(!fadeIn) {
@@ -983,6 +985,10 @@ var graphicsUtils = {
                 }
             }
         }.bind(this)});
+
+        Matter.Events.on(sprite, 'destroy', () => {
+            timer.invalidate();
+        });
     },
 
     //if bottonPause is null, both sides pause according to pauseDuration
@@ -1049,13 +1055,17 @@ var graphicsUtils = {
             sprite.floatYOffset = 0;
         }
         sprite.alpha = 1.4;
-        globals.currentGame.addTimer({name: 'floatSprite:' + mathArrayUtils.getId(), timeLimit: 16, runs: options.runs, executeOnNuke: true, killsSelf: true, callback: function() {
+        var timer = globals.currentGame.addTimer({name: 'floatSprite:' + mathArrayUtils.getId(), timeLimit: 16, runs: options.runs, executeOnNuke: true, killsSelf: true, callback: function() {
             sprite.position.y -= 1 * options.direction;
             sprite.floatYOffset -= 1;
             sprite.alpha -= 1.4/(options.runs);
         }, totallyDoneCallback: function() {
             graphicsUtils.removeSomethingFromRenderer(sprite, 'foreground');
         }.bind(this)});
+
+        Matter.Events.on(sprite, 'destroy', () => {
+            timer.invalidate();
+        });
     },
 
     rotateSprite: function(sprite, options) {

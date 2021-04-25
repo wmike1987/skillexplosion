@@ -57,14 +57,14 @@ var levelBase = {
 
     fillLevelScene: function(scene) {
         var tileMap = TileMapper.produceTileMap({
-            possibleTextures: this.worldSpecs.getLevelTiles(),
+            possibleTextures: this.worldSpecs.levelTiles,
             tileWidth: this.worldSpecs.tileSize,
             tileTint: this.tileTint,
         });
         scene.add(tileMap);
 
-        if(this.worldSpecs.levelTileExtension) {
-            this.worldSpecs.levelTileExtension.call(this, scene, this.tileTint);
+        if(this.worldSpecs.decorateTerrain) {
+            this.worldSpecs.decorateTerrain.call(this, scene, this.tileTint);
         }
 
         if(this.fillLevelSceneExtension) {

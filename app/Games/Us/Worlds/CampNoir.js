@@ -248,9 +248,9 @@ var campNoir = {
         enemySets: noirEnemySets,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
-        getLevelTiles: getLevelTiles,
+        levelTiles: getLevelTiles(),
         possibleTrees: possibleTrees,
-        levelTileExtension: function(scene, tint) {
+        decorateTerrain: function(scene, tint) {
             var ornamentTiles = [];
             for (var i = 0; i <= 7; i++) {
                 ornamentTiles.push('FrollGround/DesertFlower' + i);

@@ -2,31 +2,31 @@
 
 "BoxExplode-1.png":
 {
-	"frame": {"x":357,"y":315,"w":50,"h":58},
-	"rotated": true,
+	"frame": {"x":991,"y":425,"w":50,"h":58},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":52,"y":75,"w":50,"h":58},
 	"sourceSize": {"w":160,"h":160}
 },
 "BoxExplode-2.png":
 {
-	"frame": {"x":294,"y":315,"w":53,"h":61},
-	"rotated": true,
+	"frame": {"x":1073,"y":194,"w":53,"h":61},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":50,"y":72,"w":53,"h":61},
 	"sourceSize": {"w":160,"h":160}
 },
 "BoxExplode-3.png":
 {
-	"frame": {"x":163,"y":264,"w":129,"h":96},
-	"rotated": false,
+	"frame": {"x":360,"y":352,"w":129,"h":96},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":11,"y":36,"w":129,"h":96},
 	"sourceSize": {"w":160,"h":160}
 },
 "BoxExplode-4.png":
 {
-	"frame": {"x":163,"y":1,"w":160,"h":131},
+	"frame": {"x":198,"y":352,"w":160,"h":131},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":8,"w":160,"h":131},
@@ -34,15 +34,15 @@
 },
 "BoxExplode-5.png":
 {
-	"frame": {"x":1,"y":152,"w":160,"h":145},
-	"rotated": false,
+	"frame": {"x":598,"y":181,"w":160,"h":145},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":160,"h":145},
 	"sourceSize": {"w":160,"h":160}
 },
 "BoxExplode-6.png":
 {
-	"frame": {"x":1,"y":1,"w":160,"h":149},
+	"frame": {"x":1286,"y":329,"w":160,"h":149},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":4,"w":160,"h":149},
@@ -50,7 +50,7 @@
 },
 "BoxExplode-7.png":
 {
-	"frame": {"x":163,"y":134,"w":160,"h":128},
+	"frame": {"x":458,"y":352,"w":160,"h":128},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":26,"w":160,"h":128},
@@ -58,7 +58,7 @@
 },
 "BoxExplode-8.png":
 {
-	"frame": {"x":325,"y":1,"w":160,"h":119},
+	"frame": {"x":991,"y":263,"w":160,"h":119},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":35,"w":160,"h":119},
@@ -66,7 +66,7 @@
 },
 "BoxExplode-9.png":
 {
-	"frame": {"x":325,"y":163,"w":150,"h":119},
+	"frame": {"x":1448,"y":329,"w":150,"h":119},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":35,"w":150,"h":119},
@@ -74,7 +74,7 @@
 },
 "BoxExplode-10.png":
 {
-	"frame": {"x":1,"y":299,"w":153,"h":67},
+	"frame": {"x":918,"y":194,"w":153,"h":67},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":86,"w":153,"h":67},
@@ -82,7 +82,7 @@
 },
 "BoxExplode-11.png":
 {
-	"frame": {"x":1,"y":299,"w":153,"h":67},
+	"frame": {"x":918,"y":194,"w":153,"h":67},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":86,"w":153,"h":67},
@@ -90,22 +90,154 @@
 },
 "BoxExplode-12.png":
 {
-	"frame": {"x":1,"y":299,"w":153,"h":67},
+	"frame": {"x":918,"y":194,"w":153,"h":67},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":86,"w":153,"h":67},
 	"sourceSize": {"w":160,"h":160}
+},
+"flames_and_smokes_1-0.png":
+{
+	"frame": {"x":431,"y":189,"w":161,"h":165},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":81,"w":161,"h":165},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_1-1.png":
+{
+	"frame": {"x":808,"y":311,"w":172,"h":181},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":65,"w":172,"h":181},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_1-2.png":
+{
+	"frame": {"x":918,"y":1,"w":191,"h":218},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":28,"w":191,"h":218},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_1-3.png":
+{
+	"frame": {"x":1,"y":234,"w":195,"h":230},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":16,"w":195,"h":230},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_2-0.png":
+{
+	"frame": {"x":1,"y":1,"w":208,"h":231},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":15,"w":208,"h":231},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_2-1.png":
+{
+	"frame": {"x":1112,"y":324,"w":152,"h":172},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":74,"w":152,"h":172},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_2-2.png":
+{
+	"frame": {"x":1338,"y":173,"w":154,"h":183},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":63,"w":154,"h":183},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_2-3.png":
+{
+	"frame": {"x":1358,"y":1,"w":170,"h":205},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":41,"w":170,"h":205},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_3-0.png":
+{
+	"frame": {"x":745,"y":177,"w":132,"h":171},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":69,"w":132,"h":171},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_3-1.png":
+{
+	"frame": {"x":620,"y":343,"w":140,"h":186},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":54,"w":140,"h":186},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_3-2.png":
+{
+	"frame": {"x":211,"y":189,"w":161,"h":218},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":22,"w":161,"h":218},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_3-3.png":
+{
+	"frame": {"x":685,"y":1,"w":174,"h":231},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":9,"w":174,"h":231},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_4-0.png":
+{
+	"frame": {"x":1138,"y":171,"w":151,"h":198},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":41,"w":151,"h":198},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_4-1.png":
+{
+	"frame": {"x":1138,"y":1,"w":168,"h":218},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":21,"w":168,"h":218},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_4-2.png":
+{
+	"frame": {"x":211,"y":1,"w":186,"h":233},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":6,"w":186,"h":233},
+	"sourceSize": {"w":256,"h":256}
+},
+"flames_and_smokes_4-3.png":
+{
+	"frame": {"x":446,"y":1,"w":178,"h":237},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":2,"w":178,"h":237},
+	"sourceSize": {"w":256,"h":256}
 }},
 "animations": {
-	"BoxExplode": ["BoxExplode-1.png","BoxExplode-2.png","BoxExplode-3.png","BoxExplode-4.png","BoxExplode-5.png","BoxExplode-6.png","BoxExplode-7.png","BoxExplode-8.png","BoxExplode-9.png","BoxExplode-10.png","BoxExplode-11.png","BoxExplode-12.png"]
+	"BoxExplode": ["BoxExplode-1.png","BoxExplode-2.png","BoxExplode-3.png","BoxExplode-4.png","BoxExplode-5.png","BoxExplode-6.png","BoxExplode-7.png","BoxExplode-8.png","BoxExplode-9.png","BoxExplode-10.png","BoxExplode-11.png","BoxExplode-12.png"],
+	"flames_and_smokes_1": ["flames_and_smokes_1-0.png","flames_and_smokes_1-1.png","flames_and_smokes_1-2.png","flames_and_smokes_1-3.png"],
+	"flames_and_smokes_2": ["flames_and_smokes_2-0.png","flames_and_smokes_2-1.png","flames_and_smokes_2-2.png","flames_and_smokes_2-3.png"],
+	"flames_and_smokes_3": ["flames_and_smokes_3-0.png","flames_and_smokes_3-1.png","flames_and_smokes_3-2.png","flames_and_smokes_3-3.png"],
+	"flames_and_smokes_4": ["flames_and_smokes_4-0.png","flames_and_smokes_4-1.png","flames_and_smokes_4-2.png","flames_and_smokes_4-3.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "UtilityAnimations3.png",
 	"format": "RGBA8888",
-	"size": {"w":445,"h":369},
+	"size": {"w":1568,"h":484},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:86027bdb4a48be758e24006892e027c2:5b612a8490dd7fd513b85589f3ddcbfd:0b89bf9f70ecf8dedc59f6eec1f61adb$"
+	"smartupdate": "$TexturePacker:SmartUpdate:4e37a0ef413e8e622158b52bc2663f4b:6fba0013c81c84f25bea80decf30b07b:0b89bf9f70ecf8dedc59f6eec1f61adb$"
 }
 }

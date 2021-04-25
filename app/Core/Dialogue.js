@@ -128,8 +128,15 @@ var Dialogue = function Dialogue(options) {
         var currentLetter = 0;
         var picRealized = false;
         var d = this;
+        d.dialogueStarted = false;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap'+mathArrayUtils.getId(), gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
+            if(!d.dialogueStarted) {
+                d.dialogueStarted = true;
+                if(d.onStart) {
+                    d.onStart();
+                }
+            }
             if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
                 d.pictureTriggeredFromWord = true;
             }
@@ -140,9 +147,10 @@ var Dialogue = function Dialogue(options) {
             }
 
             //fade in picture
-            if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger)
-             || d.pictureTriggeredFromWord
-             || (d.realizedPicture && d.skipped)) {
+            if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger) ||
+                d.pictureTriggeredFromWord ||
+               (d.realizedPicture && d.skipped))
+            {
                 graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
                 graphicsUtils.addOrShowDisplayObject(d.realizedPictureBorder);
                 if(d.realizedPicture.alpha < 1.0) {
