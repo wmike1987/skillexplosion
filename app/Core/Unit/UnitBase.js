@@ -160,6 +160,17 @@ var UnitBase = {
             Matter.Events.trigger(this, 'healedFully', {performingUnit: performingUnit});
         }
 
+        this.showLifeBar(true);
+        if(!this.barTimer) {
+            this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {
+                if(!this.showingBarsWithAlt)
+                this.showLifeBar(false);
+            }.bind(this)});
+            gameUtils.deathPact(this, this.barTimer);
+        } else {
+            this.barTimer.reset();
+        }
+
         Matter.Events.trigger(globals.currentGame, 'performHeal', {performingUnit: performingUnit, amountDone: healingDone});
         Matter.Events.trigger(performingUnit, 'performHeal', {healedUnit: this, performingUnit: performingUnit, amountDone: healingDone});
         Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});

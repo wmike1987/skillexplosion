@@ -145,20 +145,20 @@ export default function Medic(options) {
 
     }
 
-    var sc = {x: .33, y: .33};
-    var updiagsc = {x: .345, y: .345};
+    var sc = {x: 0.33, y: 0.33};
+    var updiagsc = {x: 0.345, y: 0.345};
     var flipupdiagsc = {x: -1 * updiagsc.x, y: updiagsc.y};
-    var downdiagsc = {x: .325, y: .325};
+    var downdiagsc = {x: 0.325, y: 0.325};
     var flipdowndiagsc = {x: -1 * downdiagsc.x, y: downdiagsc.y};
-    var adjustedDownsc = {x: .35, y: .35};
-    var adjustedUpsc = {x: .36, y: .37};
+    var adjustedDownsc = {x: 0.35, y: 0.35};
+    var adjustedUpsc = {x: 0.36, y: 0.37};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
     var rc = [
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .8, y: .8},
+        scale: {x: 0.8, y: 0.8},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -238,28 +238,31 @@ export default function Medic(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: .75, y: .75},
+        scale: {x: 0.75, y: 0.75},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var healsound = gameUtils.getSound('healsound.wav', {volume: .006, rate: 1.3});
-    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: .06, rate: 1.2});
-    var deathSound = gameUtils.getSound('medicdeathsound.wav', {volume: .2, rate: 1.05});
+    var healsound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
+    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: 0.06, rate: 1.2});
+    var deathSound = gameUtils.getSound('medicdeathsound.wav', {volume: 0.2, rate: 1.05});
 
-    var combospiritinit = gameUtils.getSound('combospiritinit.wav', {volume: .03, rate: 1.0});
-    var fullheal = gameUtils.getSound('fullheal.wav', {volume: .05, rate: 1.0});
-    var footstepSound = gameUtils.getSound('secretstep.wav', {volume: .02, rate: 1.1});
-    var shroudSound = gameUtils.getSound('cloakshroud.wav', {volume: .1, rate: 1.5});
+    var combospiritinit = gameUtils.getSound('combospiritinit.wav', {volume: 0.03, rate: 1.0});
+    var fullheal = gameUtils.getSound('fullheal.wav', {volume: 0.05, rate: 1.0});
+    var footstepSound = gameUtils.getSound('secretstep.wav', {volume: 0.02, rate: 1.1});
+    var shroudSound = gameUtils.getSound('cloakshroud.wav', {volume: 0.1, rate: 1.5});
     var secretStep = function(destination, commandObj) {
+        //alter destination for foot destination
+        destination = mathArrayUtils.clonePosition(destination, {y: -this.footOffset || -20});
+
         //get current augment
         var thisAbility = this.getAbilityByName('Secret Step');
         var currentAugment = thisAbility.currentAugment || {name: 'null'};
 
         var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
-          restitution: .95,
+          restitution: 0.95,
           frictionAir: 0,
           mass: options.mass || 5,
           isSensor: true
@@ -422,11 +425,11 @@ export default function Medic(options) {
             duration: 3000,
             description: 'Become hidden for 3 seconds after stepping.'
         }]
-    })
+    });
 
-    var mineSound = gameUtils.getSound('laymine.mp3', {volume: .06, rate: .8});
-    var mineBeep = gameUtils.getSound('minebeep.wav', {volume: .03, rate: 7});
-    var mineExplosion = gameUtils.getSound('mineexplosion2.wav', {volume: .35, rate: 1.7});
+    var mineSound = gameUtils.getSound('laymine.mp3', {volume: 0.06, rate: 0.8});
+    var mineBeep = gameUtils.getSound('minebeep.wav', {volume: 0.03, rate: 7});
+    var mineExplosion = gameUtils.getSound('mineexplosion2.wav', {volume: 0.35, rate: 1.7});
     var layMine = function(commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Mine');
@@ -446,11 +449,11 @@ export default function Medic(options) {
         //play spine animation
         // this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
 
-        var mineCracks = graphicsUtils.createDisplayObject('MineCracks', {scale: {x: .75, y: .75}, alpha: 1});
-        var stateZero = graphicsUtils.createDisplayObject('MineZero', {scale: {x: .75, y: .75}, alpha: .8});
-        var stateOne = graphicsUtils.createDisplayObject('MineOne', {scale: {x: .75, y: .75}, alpha: .8});
-        var stateTwo = graphicsUtils.createDisplayObject('MineTwo', {scale: {x: .75, y: .75}, alpha: 1});
-        var stateThree = graphicsUtils.createDisplayObject('MineThree', {scale: {x: .75, y: .75}, alpha: .8});
+        var mineCracks = graphicsUtils.createDisplayObject('MineCracks', {scale: {x: 0.75, y: 0.75}, alpha: 1});
+        var stateZero = graphicsUtils.createDisplayObject('MineZero', {scale: {x: 0.75, y: 0.75}, alpha: 0.8});
+        var stateOne = graphicsUtils.createDisplayObject('MineOne', {scale: {x: 0.75, y: 0.75}, alpha: 0.8});
+        var stateTwo = graphicsUtils.createDisplayObject('MineTwo', {scale: {x: 0.75, y: 0.75}, alpha: 1});
+        var stateThree = graphicsUtils.createDisplayObject('MineThree', {scale: {x: 0.75, y: 0.75}, alpha: 0.8});
 
         var medic = this;
         var blastRadius = currentAugment.name == 'shrapnel' ? 160 : 120;
@@ -471,10 +474,10 @@ export default function Medic(options) {
         var smokeExplosionAnimation = gameUtils.getAnimation({
             spritesheetName: 'MedicAnimations1',
             animationName: 'explosion-c',
-            speed: .4,
+            speed: 0.4,
             transform: [mineState.position.x, mineState.position.y-30, 3, 3]
         });
-        smokeExplosionAnimation.alpha = .6;
+        smokeExplosionAnimation.alpha = 0.6;
         if(currentAugment.name == 'shrapnel') {
             mineExplosionAnimation.tint = 0xD7FFFA;
         } else if(currentAugment.name == 'maim') {
@@ -566,7 +569,7 @@ export default function Medic(options) {
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
-                    speed: .4+variation,
+                    speed: 0.4+variation,
                     transform: [unit.position.x, unit.position.y, 1+variation, 1+variation]
                 });
                 maimBlast.rotation = Math.random() * Math.PI;
@@ -656,7 +659,7 @@ export default function Medic(options) {
         }.bind(medic),
         augments: [{
             name: 'pure priorities',
-            hpThreshold: .75,
+            hpThreshold: 0.75,
             icon: graphicsUtils.createDisplayObject('PurePriorities'),
             title: 'Pure Priorities',
             description: 'Reduce healing cost to 0 when target\'s life is below 75%.',
@@ -681,7 +684,7 @@ export default function Medic(options) {
             name: 'Sacrifice',
             icon: graphicsUtils.createDisplayObject('Sacrifice'),
             title: 'Sacrifice',
-            reviveMultiplier: .5,
+            reviveMultiplier: 0.5,
             description: ['Fire replenishment missile upon death.', 'Halve time to revive.'],
             equip: function(unit) {
                 unit.sacrificeFunction = function(event) {
@@ -717,7 +720,7 @@ export default function Medic(options) {
                                 var replenAnimation = gameUtils.getAnimation({
                                     spritesheetName: 'UtilityAnimations1',
                                     animationName: 'lifegain1',
-                                    speed: .8,
+                                    speed: 0.8,
                                     transform: [target.position.x, target.position.y+10, 1.2, 1.2]
                                 });
                                 replenAnimation.play();
@@ -855,9 +858,9 @@ export default function Medic(options) {
         },
         defenseAction: function(event) {
             medic.applyBuff({name: 'familiarFaceSpeed', textureName: 'SpeedBuff', duration: slADuration, applyChanges: function() {
-                medic.moveSpeed += .5;
+                medic.moveSpeed += 0.5;
             }, removeChanges: function() {
-                medic.moveSpeed -= .5;
+                medic.moveSpeed -= 0.5;
             }})
         },
         aggressionAction: function(event) {
@@ -958,7 +961,7 @@ export default function Medic(options) {
                 spritesheetName: 'UtilityAnimations1',
                 animationName: 'starflurry',
                 speed: 1.5,
-                transform: [medic.position.x, medic.position.y-10, .8, 1.0]
+                transform: [medic.position.x, medic.position.y-10, 0.8, 1.0]
             });
             energyUpAnimation.tint = 0xf629a8;
             energyUpAnimation.play();
@@ -985,7 +988,7 @@ export default function Medic(options) {
             return this.getAbilityByName('Heal').healAmount;
         },
         energyRegenerationRate: 1.5,
-        healthRegenerationRate: .25,
+        healthRegenerationRate: 0.25,
         portrait: graphicsUtils.createDisplayObject('MedicPortrait'),
         wireframe: graphicsUtils.createDisplayObject('MedicGroupPortrait'),
         graveSpriteName: 'MedicGrave',
@@ -1000,7 +1003,7 @@ export default function Medic(options) {
             var anim = gameUtils.getAnimation({
                 spritesheetName: 'MedicAnimations2',
                 animationName: 'MedicDeath',
-                speed: .2,
+                speed: 0.2,
                 fadeAway: true,
                 fadeTime: 3200,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1, 1]
@@ -1008,7 +1011,7 @@ export default function Medic(options) {
             graphicsUtils.addSomethingToRenderer(anim);
             this.corpse = anim;
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
 
             anim.play();

@@ -40,8 +40,8 @@ var shaneLearning = function(options) {
 
         var flameSpeed = 0.20;
         var flameVariation = 0.05;
-        var fadeTime = 30000;
-        var fadeTimeVariation = 60000;
+        var fadeTime = 20000;
+        var fadeTimeVariation = 80000;
         var flpos = mathArrayUtils.clonePosition(podPosition, {x: 300, y: 0});
         //play animation
         var flameAnim1 = gameUtils.getAnimation({
@@ -195,7 +195,7 @@ var shaneLearning = function(options) {
                     gameUtils.doSomethingAfterDuration(() => {
                         a2.preventAutoStart = false;
 
-                        var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.5, y: 1.5}, position: moveBeaconLocation});
+                        var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
                         graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 15});
                         gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
                             var destination = event.destination;
