@@ -40,7 +40,7 @@ var UrsulaTasks = function(scene) {
     var moveBeaconLocation = {x: 1000, y: 550};
 
     a1.onStart = function() {
-        var arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.ursula, -20, 0.5);
+        var arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.ursula, -35, 0.5);
         gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
             if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Ursula') {
                 achieve.play();
@@ -49,6 +49,7 @@ var UrsulaTasks = function(scene) {
                 gameUtils.doSomethingAfterDuration(() => {
                     a1.preventAutoEnd = false;
                 }, pauseAfterCompleteTime);
+                return true;
             }
         });
     };
@@ -65,6 +66,7 @@ var UrsulaTasks = function(scene) {
             gameUtils.doSomethingAfterDuration(() => {
                 a2.preventAutoEnd = false;
             }, pauseAfterCompleteTime);
+            return true;
         });
     };
 

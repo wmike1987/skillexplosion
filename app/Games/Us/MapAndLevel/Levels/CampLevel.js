@@ -304,8 +304,8 @@ var campLevel = function() {
                 tokenSize: 50,
                 largeTokenSize: 55,
                 travelPredicate: function() {
-                    return true;
-                    // return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+                    return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+                    // return true;
                 },
                 hoverCallback: function() {
                     return this.travelPredicate();

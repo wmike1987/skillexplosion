@@ -178,6 +178,12 @@ var camp = {
 };
 
 var noirEnemySets = {
+    learning: [{
+        type: 'Critter',
+        amount: 3,
+        atATime: 1,
+        hz: 3500
+    }],
     basic: [{
         type: 'Critter',
         amount: 2,
@@ -292,17 +298,17 @@ var campNoir = {
             position: firstLevelPosition,
             levelOptions: {
                 levelId: 'shaneLearning',
-                tileTint: 0xffffff
+                tileTint: 0xd45605
             }
         });
         this.map.setHeadToken('shaneOnly');
         this.map.setHeadTokenPosition({
             node: learningNode
         });
-        this.map.addMapNode('basic', {
+        this.map.addMapNode('learning', {
             position: mathArrayUtils.clonePosition(firstLevelPosition, {
-                x: 100,
-                y: 150
+                x: 145,
+                y: 50
             }),
             levelOptions: {
                 gotoMapOnWin: true
@@ -310,8 +316,8 @@ var campNoir = {
         });
         this.map.addMapNode('basic', {
             position: mathArrayUtils.clonePosition(firstLevelPosition, {
-                x: 200,
-                y: 180
+                x: 82,
+                y: 165
             }),
             levelOptions: {
                 gotoMapOnWin: true
@@ -321,7 +327,10 @@ var campNoir = {
             position: mathArrayUtils.clonePosition(firstLevelPosition, {
                 x: 280,
                 y: 150
-            })
+            }),
+            levelOptions: {
+                prereqCount: 2
+            }
         });
     },
 

@@ -38,100 +38,190 @@ var shaneLearning = function(options) {
 
         this.createMapTable(scene, {position: mathArrayUtils.clonePosition(podDoodad.body.position, {x: -80, y: 100})});
 
-        var flameSpeed = 0.20;
-        var flameVariation = 0.05;
+        var flameSpeed = 0.15;
+        var flameVariation = 0.1;
         var fadeTime = 20000;
         var fadeTimeVariation = 80000;
         var flpos = mathArrayUtils.clonePosition(podPosition, {x: 300, y: 0});
         //play animation
-        var flameAnim1 = gameUtils.getAnimation({
+        var flameAnim = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'flames_and_smokes_1',
             speed: flameSpeed + Math.random() * flameVariation,
             loop: true,
             transform: [0, 0, 1, 1]
         });
-        flameAnim1.sortYOffset = 100;
-        flameAnim1.position = flpos;
-        flameAnim1.play();
-        flameAnim1.myName = 'mike';
-        graphicsUtils.fadeSpriteOverTime(flameAnim1, fadeTime + Math.random() * fadeTimeVariation);
-        scene.add(flameAnim1);
+        flameAnim.sortYOffset = 100;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        flameAnim.myName = 'mike';
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 100, y: 50});
         //play animation
-        var flameAnim2 = gameUtils.getAnimation({
+        flameAnim = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'flames_and_smokes_2',
             speed: flameSpeed + Math.random() * flameVariation,
             loop: true,
             transform: [0, 0, 0.75, 0.75]
         });
-        flameAnim2.sortYOffset = 75;
-        flameAnim2.position = flpos;
-        flameAnim2.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim2, fadeTime + Math.random() * fadeTimeVariation);
-        scene.add(flameAnim2);
+        flameAnim.sortYOffset = 75;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 200, y: -30});
         //play animation
-        var flameAnim3 = gameUtils.getAnimation({
+        flameAnim = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'flames_and_smokes_3',
             speed: flameSpeed + Math.random() * flameVariation,
             loop: true,
             transform: [0, 0, 0.5, 0.5]
         });
-        flameAnim3.sortYOffset = 50;
-        flameAnim3.position = flpos;
-        flameAnim3.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim3, fadeTime + Math.random() * fadeTimeVariation);
-        scene.add(flameAnim3);
+        flameAnim.sortYOffset = 50;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -50, y: 0});
         //play animation
-        var flameAnim4 = gameUtils.getAnimation({
+        flameAnim = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'flames_and_smokes_4',
             speed: flameSpeed + Math.random() * flameVariation,
             loop: true,
             transform: [0, 0, 1, 1]
         });
-        flameAnim4.sortYOffset = 100;
-        flameAnim4.position = flpos;
-        flameAnim4.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim4, fadeTime + Math.random() * fadeTimeVariation);
-        scene.add(flameAnim4);
+        flameAnim.sortYOffset = 100;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -90, y: -75});
         //play animation
-        var flameAnim5 = gameUtils.getAnimation({
+        flameAnim = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'flames_and_smokes_1',
             speed: flameSpeed + Math.random() * flameVariation,
             loop: true,
             transform: [0, 0, 1, 1]
         });
-        flameAnim5.sortYOffset = 100;
-        flameAnim5.position = flpos;
-        flameAnim5.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim5, fadeTime + Math.random() * fadeTimeVariation);
-        scene.add(flameAnim5);
+        flameAnim.sortYOffset = 100;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -10, y: 150});
         //play animation
-        var flameAnim6 = gameUtils.getAnimation({
+        flameAnim = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'flames_and_smokes_2',
             speed: flameSpeed + Math.random() * flameVariation,
             loop: true,
             transform: [0, 0, 0.5, 0.5]
         });
-        flameAnim6.sortYOffset = 50;
-        flameAnim6.position = flpos;
-        flameAnim6.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim6, fadeTime + Math.random() * fadeTimeVariation);
-        scene.add(flameAnim6);
+        flameAnim.sortYOffset = 50;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
+
+        flpos = mathArrayUtils.clonePosition(podPosition, {x: 0, y: 150});
+        //play animation
+        flameAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'flames_and_smokes_3',
+            speed: flameSpeed + Math.random() * flameVariation,
+            loop: true,
+            transform: [0, 0, 0.25, 0.25]
+        });
+        flameAnim.sortYOffset = 25;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
+
+        flpos = mathArrayUtils.clonePosition(podPosition, {x: -85, y: 120});
+        //play animation
+        flameAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'flames_and_smokes_3',
+            speed: flameSpeed + Math.random() * flameVariation,
+            loop: true,
+            transform: [0, 0, 0.25, 0.25]
+        });
+        flameAnim.sortYOffset = 25;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
+
+        flpos = mathArrayUtils.clonePosition(podPosition, {x: 300, y: 0});
+        //play animation
+        flameAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'flames_and_smokes_2',
+            speed: flameSpeed + Math.random() * flameVariation,
+            loop: true,
+            transform: [0, 0, 0.25, 0.25]
+        });
+        flameAnim.sortYOffset = 25;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
+
+        flpos = mathArrayUtils.clonePosition(podPosition, {x: 350, y: 150});
+        //play animation
+        flameAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'flames_and_smokes_1',
+            speed: flameSpeed + Math.random() * flameVariation,
+            loop: true,
+            transform: [0, 0, 0.25, 0.25]
+        });
+        flameAnim.sortYOffset = 25;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
+
+        flpos = mathArrayUtils.clonePosition(podPosition, {x: 60, y: 185});
+        //play animation
+        flameAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'flames_and_smokes_1',
+            speed: flameSpeed + Math.random() * flameVariation,
+            loop: true,
+            transform: [0, 0, 0.25, 0.25]
+        });
+        flameAnim.sortYOffset = 25;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
+
+        flpos = mathArrayUtils.clonePosition(podPosition, {x: 250, y: -350});
+        //play animation
+        flameAnim = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'flames_and_smokes_3',
+            speed: flameSpeed + Math.random() * flameVariation,
+            loop: true,
+            transform: [0, 0, 3.0, 3.0]
+        });
+        flameAnim.sortYOffset = 300;
+        flameAnim.position = flpos;
+        flameAnim.play();
+        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        scene.add(flameAnim);
     };
 
     this.onLevelPlayable = function(scene) {
@@ -154,13 +244,13 @@ var shaneLearning = function(options) {
         var a7a = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
         var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, preventAutoStart: true, preventAutoEnd: true});
         var self = this;
-        this.mapTableActive = true;
+        this.mapTableActive = false;
         var chain = new DialogueChain([title, a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
             var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-            var b2 = new Dialogue({actor: "Task", text: "Click on a token to travel to it.", isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true, delayAfterEnd: 250});
-            var b3 = new Dialogue({continuation: true, text: "Make your way to camp.", isTask: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 4500});
+            var b2 = new Dialogue({actor: "Task", text: "Click on a node to travel to it.", isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true, delayAfterEnd: 250});
+            var b3 = new Dialogue({continuation: true, text: "Clear all nodes then head to camp.", isTask: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 4500});
             var bchain = new DialogueChain([b1, b2, b3], {startDelay: 1000, done: function() {
                 bchain.cleanUp();
             }});
@@ -187,143 +277,143 @@ var shaneLearning = function(options) {
             var arrow = null;
             a1.onStart = function() {
                 arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.shane, -35, 0.5);
-            }
-            gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
-                if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Shane') {
-                    graphicsUtils.removeSomethingFromRenderer(arrow);
-                    achieve.play();
-                    gameUtils.doSomethingAfterDuration(() => {
-                        a2.preventAutoStart = false;
+                gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
+                    if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Shane') {
+                        graphicsUtils.removeSomethingFromRenderer(arrow);
+                        achieve.play();
+                        gameUtils.doSomethingAfterDuration(() => {
+                            a2.preventAutoStart = false;
 
-                        var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
-                        graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 15});
-                        gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
-                            var destination = event.destination;
-                            if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
-                            graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
-                            achieve.play();
-                            var boxItem = this.box.getAllItemsByName('Ring Of Thought')[0];
-                            this.box.isTargetable = true;
-                            gameUtils.doSomethingAfterDuration(() => {
-                                a3.preventAutoStart = false;
-                                var attackAbility = globals.currentGame.shane.getAbilityByName('Rifle');
-                                arrow = graphicsUtils.pointToSomethingWithArrow(attackAbility.icon, -30, 0.75);
-                                gameUtils.matterOnce(attackAbility.icon, 'tooltipShown', () => {
-                                    achieve.play();
-                                    graphicsUtils.removeSomethingFromRenderer(arrow);
-                                    gameUtils.doSomethingAfterDuration(() => {
-                                        a3a.preventAutoStart = false;
-                                        gameUtils.matterConditionalOnce(this.box, 'death',(event) => {
-                                            achieve.play();
-                                            gameUtils.doSomethingAfterDuration(() => {
-                                                a4.preventAutoStart = false;
-                                                arrow = graphicsUtils.pointToSomethingWithArrow(boxItem, -20, 0.5);
-                                                gameUtils.matterConditionalOnce(globals.currentGame.shane, 'pickupItem', (event) => {
-                                                    graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                    gameUtils.doSomethingAfterDuration(() => {
-                                                        var myItem = globals.currentGame.shane.getAllItemsByName('Ring Of Thought')[0];
-                                                        arrow = graphicsUtils.pointToSomethingWithArrow(myItem, -5, 0.5);
-                                                        a4a.preventAutoStart = false;
-                                                        gameUtils.matterOnce(myItem.icon, 'tooltipShown', () => {
-                                                            achieve.play();
-                                                            graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                            gameUtils.doSomethingAfterDuration(() => {
-                                                                a5.preventAutoStart = false;
-                                                                var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                var critter2 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                globals.currentGame.addUnit(critter1);
-                                                                globals.currentGame.addUnit(critter2);
-                                                                critter1.position = {x: 1600, y: 200};
-                                                                critter2.position = {x: 1600, y: 600};
-                                                                critter1.move({x: 1300, y: 200});
-                                                                critter2.move({x: 1300, y: 600});
-                                                                critter1.honeRange = 200;
-                                                                critter2.honeRange = 200;
+                            var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
+                            graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 15});
+                            gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
+                                var destination = event.destination;
+                                if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
+                                graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+                                achieve.play();
+                                var boxItem = this.box.getAllItemsByName('Ring Of Thought')[0];
+                                this.box.isTargetable = true;
+                                gameUtils.doSomethingAfterDuration(() => {
+                                    a3.preventAutoStart = false;
+                                    var attackAbility = globals.currentGame.shane.getAbilityByName('Rifle');
+                                    arrow = graphicsUtils.pointToSomethingWithArrow(attackAbility.icon, -30, 0.75);
+                                    gameUtils.matterOnce(attackAbility.icon, 'tooltipShown', () => {
+                                        achieve.play();
+                                        graphicsUtils.removeSomethingFromRenderer(arrow);
+                                        gameUtils.doSomethingAfterDuration(() => {
+                                            a3a.preventAutoStart = false;
+                                            gameUtils.matterConditionalOnce(this.box, 'death',(event) => {
+                                                achieve.play();
+                                                gameUtils.doSomethingAfterDuration(() => {
+                                                    a4.preventAutoStart = false;
+                                                    arrow = graphicsUtils.pointToSomethingWithArrow(boxItem, -20, 0.5);
+                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'pickupItem', (event) => {
+                                                        graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                            var myItem = globals.currentGame.shane.getAllItemsByName('Ring Of Thought')[0];
+                                                            arrow = graphicsUtils.pointToSomethingWithArrow(myItem, -5, 0.5);
+                                                            a4a.preventAutoStart = false;
+                                                            gameUtils.matterOnce(myItem.icon, 'tooltipShown', () => {
+                                                                achieve.play();
+                                                                graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                                gameUtils.doSomethingAfterDuration(() => {
+                                                                    a5.preventAutoStart = false;
+                                                                    var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                    var critter2 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                    globals.currentGame.addUnit(critter1);
+                                                                    globals.currentGame.addUnit(critter2);
+                                                                    critter1.position = {x: 1600, y: 200};
+                                                                    critter2.position = {x: 1600, y: 600};
+                                                                    critter1.move({x: 1300, y: 200});
+                                                                    critter2.move({x: 1300, y: 600});
+                                                                    critter1.honeRange = 200;
+                                                                    critter2.honeRange = 200;
 
-                                                                var done = function() {
-                                                                    achieve.play();
-                                                                    gameUtils.doSomethingAfterDuration(() => {
-                                                                        a6.preventAutoStart = false;
-                                                                        var dashAbility = globals.currentGame.shane.getAbilityByName('Dash');
-                                                                        arrow = graphicsUtils.pointToSomethingWithArrow(dashAbility.icon, -30, 0.75);
-                                                                        gameUtils.matterOnce(dashAbility.icon, 'tooltipShown', () => {
-                                                                            graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                                            achieve.play();
-                                                                            gameUtils.doSomethingAfterDuration(() => {
-                                                                                a6a.preventAutoStart = false;
-                                                                                gameUtils.matterConditionalOnce(globals.currentGame.shane, 'dash', (event) => {
-                                                                                    achieve.play();
-                                                                                    gameUtils.doSomethingAfterDuration(() => {
-                                                                                        a7.preventAutoStart = false;
-                                                                                        var knifeAbility = globals.currentGame.shane.getAbilityByName('Throw Knife');
-                                                                                        arrow = graphicsUtils.pointToSomethingWithArrow(knifeAbility.icon, -30, 0.75);
-                                                                                        gameUtils.matterOnce(knifeAbility.icon, 'tooltipShown', () => {
-                                                                                            achieve.play();
-                                                                                            graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                                                            gameUtils.doSomethingAfterDuration(() => {
-                                                                                                a7a.preventAutoStart = false;
-                                                                                                gameUtils.matterConditionalOnce(globals.currentGame.shane, 'knifeThrow',(event) => {
-                                                                                                    achieve.play();
-                                                                                                    gameUtils.doSomethingAfterDuration(() => {
-                                                                                                        a8.preventAutoStart = false;
-                                                                                                        var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                                                        critter1.currentHealth = 15;
-                                                                                                        globals.currentGame.addUnit(critter1);
-                                                                                                        critter1.position = {x: -50, y: 550};
-                                                                                                        critter1.move({x: 200, y: 550});
-                                                                                                        critter1.honeRange = 200;
-                                                                                                        gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
-                                                                                                            achieve.play();
-                                                                                                            a8.preventAutoEnd = false;
-                                                                                                        });
-                                                                                                    }, pauseAfterCompleteTime);
-                                                                                                    return true;
-                                                                                                });
-                                                                                            }, pauseAfterCompleteTime);
-                                                                                        });
-                                                                                    }, pauseAfterCompleteTime);
-                                                                                    return true;
-                                                                                });
-                                                                            }, pauseAfterCompleteTime);
-                                                                        });
-                                                                    }, pauseAfterCompleteTime);
-                                                                };
+                                                                    var done = function() {
+                                                                        achieve.play();
+                                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                                            a6.preventAutoStart = false;
+                                                                            var dashAbility = globals.currentGame.shane.getAbilityByName('Dash');
+                                                                            arrow = graphicsUtils.pointToSomethingWithArrow(dashAbility.icon, -30, 0.75);
+                                                                            gameUtils.matterOnce(dashAbility.icon, 'tooltipShown', () => {
+                                                                                graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                                                achieve.play();
+                                                                                gameUtils.doSomethingAfterDuration(() => {
+                                                                                    a6a.preventAutoStart = false;
+                                                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'dash', (event) => {
+                                                                                        achieve.play();
+                                                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                                                            a7.preventAutoStart = false;
+                                                                                            var knifeAbility = globals.currentGame.shane.getAbilityByName('Throw Knife');
+                                                                                            arrow = graphicsUtils.pointToSomethingWithArrow(knifeAbility.icon, -30, 0.75);
+                                                                                            gameUtils.matterOnce(knifeAbility.icon, 'tooltipShown', () => {
+                                                                                                achieve.play();
+                                                                                                graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                                                                gameUtils.doSomethingAfterDuration(() => {
+                                                                                                    a7a.preventAutoStart = false;
+                                                                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'knifeThrow',(event) => {
+                                                                                                        achieve.play();
+                                                                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                                                                            a8.preventAutoStart = false;
+                                                                                                            var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                                                            critter1.currentHealth = 15;
+                                                                                                            globals.currentGame.addUnit(critter1);
+                                                                                                            critter1.position = {x: -50, y: 550};
+                                                                                                            critter1.move({x: 200, y: 550});
+                                                                                                            critter1.honeRange = 200;
+                                                                                                            gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
+                                                                                                                achieve.play();
+                                                                                                                a8.preventAutoEnd = false;
+                                                                                                            });
+                                                                                                        }, pauseAfterCompleteTime);
+                                                                                                        return true;
+                                                                                                    });
+                                                                                                }, pauseAfterCompleteTime);
+                                                                                            });
+                                                                                        }, pauseAfterCompleteTime);
+                                                                                        return true;
+                                                                                    });
+                                                                                }, pauseAfterCompleteTime);
+                                                                            });
+                                                                        }, pauseAfterCompleteTime);
+                                                                    };
 
-                                                                var crittersKilled = 0;
-                                                                gameUtils.matterConditionalOnce(critter1, 'death', (event) => {
-                                                                    crittersKilled++;
-                                                                    if(crittersKilled == 2) {
-                                                                        done();
-                                                                    }
-                                                                    return true;
-                                                                });
+                                                                    var crittersKilled = 0;
+                                                                    gameUtils.matterConditionalOnce(critter1, 'death', (event) => {
+                                                                        crittersKilled++;
+                                                                        if(crittersKilled == 2) {
+                                                                            done();
+                                                                        }
+                                                                        return true;
+                                                                    });
 
-                                                                gameUtils.matterConditionalOnce(critter2, 'death', (event) => {
-                                                                    crittersKilled++;
-                                                                    if(crittersKilled == 2) {
-                                                                        done();
-                                                                    }
-                                                                    return true;
+                                                                    gameUtils.matterConditionalOnce(critter2, 'death', (event) => {
+                                                                        crittersKilled++;
+                                                                        if(crittersKilled == 2) {
+                                                                            done();
+                                                                        }
+                                                                        return true;
+                                                                    });
                                                                 });
                                                             });
-                                                        });
-                                                    }, pauseAfterCompleteTime);
-                                                    achieve.play();
-                                                    return true;
-                                                });
-                                            }, pauseAfterCompleteTime);
-                                            return true;
-                                        });
-                                    }, pauseAfterCompleteTime);
-                                });
+                                                        }, pauseAfterCompleteTime);
+                                                        achieve.play();
+                                                        return true;
+                                                    });
+                                                }, pauseAfterCompleteTime);
+                                                return true;
+                                            });
+                                        }, pauseAfterCompleteTime);
+                                    });
 
-                            }, pauseAfterCompleteTime);
-                            return true;
-                        });
-                    }, pauseAfterCompleteTime);
-                    return true;
-                }
-            });
+                                }, pauseAfterCompleteTime);
+                                return true;
+                            });
+                        }, pauseAfterCompleteTime);
+                        return true;
+                    }
+                });
+            }.bind(this);
         };
         scene.add(chain);
         scene.addCleanUpTask(() => {

@@ -98,6 +98,7 @@ var levelBase = {
         var self = this;
         //Establish map click listeners
         var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
+            if(event.which == 3) return; //don't allow right clicks
             if(!self.mapTableActive) return;
             var canvasPoint = {x: 0, y: 0};
             gameUtils.pixiPositionToPoint(canvasPoint, event);
