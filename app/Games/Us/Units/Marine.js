@@ -20,14 +20,14 @@ export default function Marine(options) {
     var walkSpeedBonus = 0.25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineN'].spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineS'].spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineW'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineW'].spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineSW'].spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineSW'].spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['marineNW'].spineData);
+    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineN.spineData);
+    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineS.spineData);
+    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineW.spineData);
+    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineW.spineData);
+    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineSW.spineData);
+    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineSW.spineData);
+    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineNW.spineData);
+    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineNW.spineData);
 
     var walkAnimations = {
         up: gameUtils.getSpineAnimation({
@@ -304,8 +304,8 @@ export default function Marine(options) {
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: 0.01, rate: 0.6});
 
     //crit
-    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.03, rate: 1.0});
-    var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: 0.00, rate: 0.5});
+    // var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.00, rate: 1.0});
+    // var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: 0.01, rate: 1.0});
 
     //death
     var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: 0.2, rate: 1.0});
@@ -321,7 +321,8 @@ export default function Marine(options) {
     var dash = function(destination, commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Dash');
-        var currentAugment = thisAbility.currentAugment || {name: 'null'};
+        var defensivePostureAugment = thisAbility.isAugmentEnabled('defensive posture');
+        var deathWishAugment = thisAbility.isAugmentEnabled('death wish');
 
         this.stop(); //stop any movement
         this._becomePeaceful(); //prevent us from honing/attacking
@@ -367,13 +368,15 @@ export default function Marine(options) {
         });
 
         var defensivePostureGain = 4;
-        if(currentAugment.name == 'defensive posture') {
+        if(defensivePostureAugment) {
             marine.applyBuff({name: "defpostbuff", textureName: 'DefensiveBuff', duration: 3000, applyChanges: function() {
                 self.addDefenseAddition(defensivePostureGain);
             }, removeChanges: function() {
                 self.removeDefenseAddition(defensivePostureGain);
             }});
-        } else if(currentAugment.name == 'death wish') {
+        }
+
+        if(deathWishAugment) {
             marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
                 self.damage += 10;
             }, removeChanges: function() {
@@ -443,15 +446,17 @@ export default function Marine(options) {
     var knifeSpeed = 22;
     var knifeDamage = 20;
     var throwKnife = function(destination, commandObj, childKnife) {
-        //get current augment
+        //get augments
         var thisAbility = this.getAbilityByName('Throw Knife');
-        var currentAugment = thisAbility.currentAugment || {name: 'null'};
+        var multiThrowAugment = thisAbility.isAugmentEnabled('multi throw');
+        var pierceAugment = thisAbility.isAugmentEnabled('pierce');
+        var poisonTipAugment = thisAbility.isAugmentEnabled('poison tip');
 
-        if(!childKnife && currentAugment.name == 'multi throw') {
+        if(!childKnife && multiThrowAugment) {
             var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(destination, this.position)));
-            var start = (currentAugment.knives-1)/-2;
+            var start = (multiThrowAugment.knives-1)/-2;
             var spacing = 25;
-            for(var n = start; n < start+currentAugment.knives; n++) {
+            for(var n = start; n < start + multiThrowAugment.knives; n++) {
                 if(n == 0) continue;
                 thisAbility.method.call(this, Matter.Vector.add(destination, Matter.Vector.mult(perpVector, n*spacing)), null, true);
             }
@@ -465,16 +470,20 @@ export default function Marine(options) {
             isSensor: true
         });
 
-        if(currentAugment.name == 'pierce') {
-            knife.lives = currentAugment.lives;
+        if(pierceAugment) {
+            knife.lives = pierceAugment.lives;
         }
 
         Matter.Body.setPosition(knife, this.position);
         var knifeTint = 0xFFFFFF;
-        if(currentAugment.name == 'poison tip') {
+        if(poisonTipAugment) {
             knifeTint = 0x009933;
-        } else if(currentAugment.name == 'pierce') {
+        }
+        if(pierceAugment) {
             knifeTint = 0x6666ff;
+        }
+        if(pierceAugment && poisonTipAugment) {
+            knifeTint = 0xe88a1b;
         }
         knife.renderChildren = [{
             id: 'knife',
@@ -519,10 +528,10 @@ export default function Marine(options) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
             if(otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
-                if(currentAugment.name == 'poison tip') {
+                if(poisonTipAugment) {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
-                        runs: currentAugment.seconds*2,
+                        runs: poisonTipAugment.seconds*2,
                         killsSelf: true,
                         timeLimit: 500,
                         callback: function() {
@@ -540,7 +549,7 @@ export default function Marine(options) {
                             poisonAnimation.rotation = Math.random() * Math.PI*2;
                             graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
-                            otherUnit.sufferAttack(currentAugment.damage/(currentAugment.seconds*2), self);
+                            otherUnit.sufferAttack(poisonTipAugment.damage/(poisonTipAugment.seconds*2), self);
                         }
                     });
                 }
@@ -560,7 +569,7 @@ export default function Marine(options) {
                 bloodPierceAnimation.play();
                 bloodPierceAnimation.rotation = mathArrayUtils.pointInDirection(knife.position, knife.destination, 'east');
                 graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
-                if(currentAugment && currentAugment.name == 'pierce') {
+                if(pierceAugment) {
                     knife.lives -= 1;
                     if(knife.lives == 0) {
                         globals.currentGame.removeBody(knife);
@@ -935,7 +944,7 @@ export default function Marine(options) {
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
             slaves: [dashSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
-                     poisonSound, criticalHitSound, criticalHitSound2, yeahsound, unitProperties.wireframe, unitProperties.portrait],
+                     poisonSound, /*criticalHitSound, criticalHitSound2,*/ yeahsound, unitProperties.wireframe, unitProperties.portrait],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 2.35,
@@ -947,20 +956,22 @@ export default function Marine(options) {
                 range: 180,
                 damage: 10,
                 attack: function(target) {
-                    var rifleAbility = this.getAbilityByName('Rifle');
-                    var currentAugment = rifleAbility.currentAugment || {name: ""};
+                    //get current augment
+                    var thisAbility = this.getAbilityByName('Rifle');
+                    var hoodedPeepAugment = thisAbility.isAugmentEnabled('hooded peep');
+                    var firstAidPouchAugment = thisAbility.isAugmentEnabled('first aid pouch');
 
                     var crit = 1;
                     var critActive = false;
-                    if(currentAugment.name == 'hooded peep') {
-                        if(Math.random() < currentAugment.chance) {
-                            crit = currentAugment.multiplier;
+                    if(hoodedPeepAugment) {
+                        if(Math.random() < hoodedPeepAugment.chance) {
+                            crit = hoodedPeepAugment.multiplier;
                             critActive = true;
                         }
                     }
 
                     var self = this;
-                    if(currentAugment.name == 'first aid pouch') {
+                    if(firstAidPouchAugment) {
                         gameUtils.applyToUnitsByTeam(function(team) {
                             return self.team == team;
                         }, function(unit) {
@@ -968,16 +979,14 @@ export default function Marine(options) {
                         }, function(unit) {
                             graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
                             healsound.play();
-                            unit.giveHealth(currentAugment.healAmount, unit);
+                            unit.giveHealth(firstAidPouchAugment.healAmount, unit);
                         });
                     }
 
                     var dTotal = this.damage + this.getDamageAdditionSum();
                     target.sufferAttack(dTotal*crit, this);
                     if(critActive) {
-                        criticalHitSound.play();
-                        criticalHitSound2.play();
-                        graphicsUtils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText});
+                        var chText = graphicsUtils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText, speed: 1.5});
                     }
                     fireSound.play();
                     var abilityTint = 0x80ba80;

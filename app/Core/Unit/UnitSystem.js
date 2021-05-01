@@ -4,9 +4,9 @@ import * as $ from 'jquery';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
 import {PathingSystem} from '@core/Unit/_Pathing.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
 
 var UnitSystemAssets = [{name: "BaseUnit", target: "Textures/Us/BaseUnit.json"}];
-
 var UnitSystem = function(properties) {
 
     //Share given properties
@@ -793,6 +793,14 @@ var UnitSystem = function(properties) {
                      if(this.selectedUnit) {
                          this.selectedUnit.sufferAttack(10);
                          Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+                     }
+                 }
+             }
+
+             if(event.key == 'V' || event.key == 'v') {
+                 if(keyStates.Control) {
+                     if(this.selectedUnit) {
+                         ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.selectedUnit});
                      }
                  }
              }

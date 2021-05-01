@@ -85,7 +85,7 @@ var map = function(specs) {
 
     //Create main map sprite
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {
-        where: 'foreground',
+        where: 'foregroundOne',
         position: gameUtils.getPlayableCenter()
     });
     graphicsUtils.graduallyTint(this.mapSprite, 0x878787, 0x5565fc, 5000, null, 1800);

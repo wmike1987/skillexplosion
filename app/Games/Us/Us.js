@@ -165,16 +165,19 @@ var game = {
     play: function(options) {
 
         this.initNextMap();
-        var shaneIntro = new ShaneIntro({
-            done: () => {
-                // this.postInit();
-                this.initShane();
-            }
-        });
-        this.currentScene.transitionToScene(shaneIntro.scene);
-        shaneIntro.play();
+        this.initShane();
+        // var shaneIntro = new ShaneIntro({
+        //     done: () => {
+        //         // this.postInit();
+        //         this.initShane();
+        //     }
+        // });
+        // this.currentScene.transitionToScene(shaneIntro.scene);
+        // shaneIntro.play();
 
         // this.postInit();
+
+        this.gotoLevelById('camp');
         return;
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
@@ -298,7 +301,6 @@ var game = {
     initShane: function() {
         this.createShane();
         this.addUnit(this.shane);
-        this.gotoLevelById('shaneLearning');
     },
 
     initUrsula: function() {
@@ -445,8 +447,14 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+
         gameUtils.moveUnitOffScreen(this.shane);
         s.position = gameUtils.getPlayableCenter();
         // this.shane.damage = 10000;
@@ -515,7 +523,6 @@ var game = {
             unit.showEnergyBar();
             gameUtils.doSomethingAfterDuration(() => {
                 unit.body.collisionFilter.mask += 0x0004;
-                console.info("wow")
                 unit.showLifeBar(false);
                 unit.showEnergyBar(false);
                 unit.ignoreEnergyRegeneration = false;

@@ -106,13 +106,10 @@ var ic = function(options) {
 
     //setup for non-empty items
     if(!newItem.isEmptySlot) {
-        //drop item
         newItem.icon.on('mousedown', function(event) {
             if(globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
             newItem.owningUnit.unequipItem(newItem);
-            Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: newItem, unit: newItem.owningUnit});
-            newItem.mouseInside = false;
-            gameUtils.setCursorStyle('server:MainCursor.png');
+            newItem.grasp(newItem.owningUnit);
         }.bind(this));
 
         var sysMessage = '(Click to grab item)';
@@ -267,6 +264,11 @@ var ic = function(options) {
         globals.currentGame.removeTickCallback(newItem.hoverListener);
         if(this.itemDrop)
             graphicsUtils.removeSomethingFromRenderer(this.itemDrop);
+    };
+
+    newItem.grasp = function(unit, autoGrab) {
+        Matter.Events.trigger(globals.currentGame.itemSystem, "usergrab", {item: this, unit: unit, autoGrab: autoGrab});
+        gameUtils.setCursorStyle('server:MainCursor.png');
     };
 
     if(!options.dontAddToItemSystem) {

@@ -14,13 +14,13 @@ var DialogueScene = {
         var dialogueScene = new Scene();
         dialogueScene.addBlackBackground();
 
-        var skipText;
-        //indicate skipping behavior
-
         Matter.Events.on(dialogueScene, 'afterSnapshotRender', () => {
             globals.currentGame.closeMap();
+            globals.currentGame.unitSystem.pause();
         });
 
+        var skipText;
+        //indicate skipping behavior
         Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
             skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to skip", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
             dialogueScene.add(skipText);
@@ -36,6 +36,7 @@ var DialogueScene = {
                 var key = event.key.toLowerCase();
                 if(key == ' ') {
                     //clear dialogue and start initial level
+                    globals.currentGame.unitSystem.unpause();
                     this.escape();
                     $('body').off('keydown.' + 'DScene:' + this.id);
                 }

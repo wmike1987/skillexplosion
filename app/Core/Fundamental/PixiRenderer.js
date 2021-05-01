@@ -27,6 +27,7 @@ var renderer = function(engine, options) {
 		stageThree: new PIXI.Container(),
 		stageTrees: new PIXI.Container(),
 		foreground: new PIXI.Container(),
+		foregroundOne: new PIXI.Container(),
 		hudNTwo: new PIXI.Container(),
 		hudNOne: new PIXI.Container(),
 		hud: new PIXI.Container(),

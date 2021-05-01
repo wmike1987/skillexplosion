@@ -1,8 +1,8 @@
-import ic from '@core/Unit/ItemConstructor.js'
+import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    moveSpeed: .2,
-}
+    moveSpeed: 0.2,
+};
 
 export default function(options) {
     var item = Object.assign({
@@ -12,4 +12,4 @@ export default function(options) {
         icon: 'BootsOfHaste'
     }, options);
     return new ic(item);
-};
+}

@@ -119,7 +119,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
             // passive.unlocked = true; //for debugging
             passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
 
-            Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Locked"}));
+            Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Inactive"}));
             graphicsUtils.makeSpriteSize(passive.actionBox, {x: 50, y: 50});
             passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
             passive.border.sortYOffset = -10;

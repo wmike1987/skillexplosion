@@ -64,6 +64,7 @@ var camp = {
         var objs = [];
         var tent = new Doodad({
             drawWire: false,
+            bodyScale: {y: 0.35},
             collides: true,
             autoAdd: false,
             radius: 120,
@@ -75,7 +76,7 @@ var camp = {
             },
             offset: {
                 x: 0,
-                y: 30
+                y: 0
             },
             sortYOffset: 0,
             shadowIcon: 'IsoShadowBlurred',
@@ -318,6 +319,15 @@ var campNoir = {
             position: mathArrayUtils.clonePosition(firstLevelPosition, {
                 x: 82,
                 y: 165
+            }),
+            levelOptions: {
+                gotoMapOnWin: true
+            }
+        });
+        this.map.addMapNode('mobs', {
+            position: mathArrayUtils.clonePosition(firstLevelPosition, {
+                x: 25,
+                y: 250
             }),
             levelOptions: {
                 gotoMapOnWin: true

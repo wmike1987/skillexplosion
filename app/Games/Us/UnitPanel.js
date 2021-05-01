@@ -1081,8 +1081,8 @@ unitPanel.prototype.displayUnitAbilities = function() {
         if (ability.augments) {
             $.each(ability.augments, function(i, augment) {
                 var bottomRightOfAbility = {
-                    x: ability.position.x + this.abililtyWithBorderWidth / 2,
-                    y: ability.position.y + this.abililtyWithBorderWidth / 2
+                    x: ability.icon.position.x + this.abililtyWithBorderWidth / 2,
+                    y: ability.icon.position.y + this.abililtyWithBorderWidth / 2
                 };
                 var agumentPosition = mathArrayUtils.addScalarToPosition(bottomRightOfAbility, -augmentBorderSize / 2);
                 if (!augment.smallerIcon) {
@@ -1124,13 +1124,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
         this.abilityAvailableTick = globals.currentGame.addTickCallback(function() {
             if (this.prevailingUnit) {
                 $.each(this.currentAbilities, function(i, ability) {
-                    var enabled = true;
-                    if (ability.enablers) {
-                        $.each(ability.enablers, function(i, enabler) {
-                            enabled = enabler();
-                            return enabled;
-                        });
-                    }
+                    var enabled = ability.isEnabled();
                     if (!enabled) {
                         ability.icon.tint = unavailableTint;
                         if (ability.currentAugment) {

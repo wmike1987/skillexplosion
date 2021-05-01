@@ -1,7 +1,7 @@
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import styles from '@utils/Styles.js'
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
-import * as Matter from 'matter-js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import styles from '@utils/Styles.js';
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import * as Matter from 'matter-js';
 
 var attackPassive = 'attackPassive';
 var defensePassive = 'defensePassive';

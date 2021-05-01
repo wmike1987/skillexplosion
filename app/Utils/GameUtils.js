@@ -1093,13 +1093,15 @@ var graphicsUtils = {
         floatedText.alpha = 1.4;
         globals.currentGame.addTimer({name: 'floatText:' + mathArrayUtils.getId(), timeLimit: 32, killsSelf: true, runs: options.runs || 30, callback: function() {
             if(!options.stationary) {
-                floatedText.position.y -= 1;
+                floatedText.position.y -= (1 * (options.speed || 1));
             }
-            floatedText.alpha -= 1.4/(options.runs || 34);
+            floatedText.alpha -= (1.4 * (options.speed || 1))/(options.runs || 34);
         }, totallyDoneCallback: function() {
             graphicsUtils.removeSomethingFromRenderer(floatedText, 'hud');
             if(options.deferred) options.deferred.resolve();
         }.bind(this)});
+
+        return floatedText;
     },
 
     //https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
@@ -1403,6 +1405,10 @@ var graphicsUtils = {
             mathArrayUtils.removeObjectFromArray(gShader, sprite.filters);
             sprite.gleamTimer.invalidate();
         };
+
+        Matter.Events.on(sprite, 'destroy', () => {
+            sprite.gleamTimer.invalidate();
+        });
     },
 };
 
@@ -1489,6 +1495,11 @@ var mathArrayUtils = {
     addScalarToPosition: function(position, scalar, reverseY) {
         reverseY = reverseY ? -1 : 1;
         return {x: position.x + scalar, y: position.y + scalar*reverseY};
+    },
+
+    multiplyPositionAndScalar: function(position, scalar) {
+        position = $.extend({x: 0, y: 0}, position);
+        return {x: position.x * scalar, y: position.y * scalar};
     },
 
     flipCoin: function() {

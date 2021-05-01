@@ -19,7 +19,6 @@ import {
     DialogueScene
 } from '@games/Us/Dialogues/DialogueScene.js';
 
-//Create the air drop base
 var CampNoirIntro = function(options) {
     this.escape = options.done;
     this.createChain = function() {

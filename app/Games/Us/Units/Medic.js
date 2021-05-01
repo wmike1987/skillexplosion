@@ -21,14 +21,14 @@ export default function Medic(options) {
     var walkSpeedBonus = 0.25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicN'].spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicS'].spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicW'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicW'].spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicSW'].spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicSW'].spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicNW'].spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['medicNW'].spineData);
+    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicN.spineData);
+    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicS.spineData);
+    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicW.spineData);
+    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicW.spineData);
+    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicSW.spineData);
+    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicSW.spineData);
+    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicNW.spineData);
+    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicNW.spineData);
 
     var walkAnimations = {
         up: gameUtils.getSpineAnimation({
@@ -139,11 +139,11 @@ export default function Medic(options) {
             speed: attackAnimSpeed,
             times: 1,
         }),
-    }
+    };
 
     var otherAnimations = {
 
-    }
+    };
 
     var sc = {x: 0.33, y: 0.33};
     var updiagsc = {x: 0.345, y: 0.345};
@@ -259,7 +259,9 @@ export default function Medic(options) {
 
         //get current augment
         var thisAbility = this.getAbilityByName('Secret Step');
-        var currentAugment = thisAbility.currentAugment || {name: 'null'};
+        var ghostAugment = thisAbility.isAugmentEnabled('ghost');
+        var fleetFeetAugment = thisAbility.isAugmentEnabled('fleet feet');
+        var softLandingAugment = thisAbility.isAugmentEnabled('soft landing');
 
         var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
           restitution: 0.95,
@@ -284,7 +286,7 @@ export default function Medic(options) {
         globals.currentGame.addBody(shadow);
         shadow.oneFrameOverrideInterpolation = true;
 
-        var secretStepSpeed = currentAugment.name == 'fleet feet' ? 22 : 10;
+        var secretStepSpeed = fleetFeetAugment ? 22 : 10;
         gameUtils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
         Matter.Events.trigger(globals.currentGame, 'secretStep', {performingUnit: this});
 
@@ -299,15 +301,19 @@ export default function Medic(options) {
 
         dashAnimation.play();
         dashAnimation.alpha = 0.35;
-        var dashTint = currentAugment.name == 'fleet feet' ? 0xdec127 : 0xa2a2a2;
-        dashTint = currentAugment.name == 'ghost' ? 0x51e023 : dashTint;
-        dashTint = currentAugment.name == 'soft landing' ? 0x0004be : dashTint;
+        var dashTint = fleetFeetAugment ? 0xff0067 : 0x636362;
+        dashTint = ghostAugment ? 0xf9f9f5 : dashTint;
+        dashTint = softLandingAugment ? 0x9954f6 : dashTint;
+        dashTint = softLandingAugment && ghostAugment ? 0x1fc3b4 : dashTint;
+        dashTint = softLandingAugment && fleetFeetAugment ? 0xffe600 : dashTint;
+        dashTint = ghostAugment && fleetFeetAugment ? 0x29904c : dashTint;
+        dashTint = ghostAugment && fleetFeetAugment && softLandingAugment ? 0xf6372b : dashTint;
         dashAnimation.tint = dashTint;
         dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'north');
         graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
 
         //create footprints
-        var footprintFrequency = currentAugment.name == 'fleet feet' ? 30 : 60;
+        var footprintFrequency = fleetFeetAugment ? 30 : 60;
         var footprintDirection = mathArrayUtils.pointInDirection(this.position, destination);
         var lastFootprint = null;
         var everyOther = true;
@@ -331,12 +337,12 @@ export default function Medic(options) {
             }
         });
 
-        if(currentAugment.name == 'ghost') {
+        if(ghostAugment) {
             Matter.Events.on(shadow, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
                 if(otherUnit && otherUnit != medic) {
-                    otherUnit.petrify(currentAugment.duration);
+                    otherUnit.petrify(ghostAugment.duration);
                 }
             });
         }
@@ -370,8 +376,8 @@ export default function Medic(options) {
               commandObj.command.done();
 
               var self = this;
-              if(currentAugment.name == 'soft landing') {
-                  var duration = currentAugment.duration;
+              if(softLandingAugment) {
+                  var duration = softLandingAugment.duration;
                   this.becomeHidden(duration);
               }
 
@@ -433,7 +439,9 @@ export default function Medic(options) {
     var layMine = function(commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Mine');
-        var currentAugment = thisAbility.currentAugment || {name: 'null'};
+        var pressurePlateAugment = thisAbility.isAugmentEnabled('pressure plate');
+        var shrapnelAugment = thisAbility.isAugmentEnabled('shrapnel');
+        var maimAugment = thisAbility.isAugmentEnabled('maim');
 
         var mine = Matter.Bodies.circle(this.position.x, this.position.y+20, 15, {
             isSensor: true,
@@ -456,11 +464,11 @@ export default function Medic(options) {
         var stateThree = graphicsUtils.createDisplayObject('MineThree', {scale: {x: 0.75, y: 0.75}, alpha: 0.8});
 
         var medic = this;
-        var blastRadius = currentAugment.name == 'shrapnel' ? 160 : 120;
-        var primaryExplosionRadius = currentAugment.name == 'shrapnel' ? 85 : 60;
+        var blastRadius = shrapnelAugment ? 160 : 120;
+        var primaryExplosionRadius = shrapnelAugment ? 85 : 60;
         var mineState = {state: 0, id: mathArrayUtils.uuidv4(), position: mine.position, blastRadius: blastRadius, damage: 25, primaryExplosionRadius: primaryExplosionRadius};
         graphicsUtils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
-        graphicsUtils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position})
+        graphicsUtils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position});
 
         //explode animation
         var mineExplosionAnimation = gameUtils.getAnimation({
@@ -478,25 +486,30 @@ export default function Medic(options) {
             transform: [mineState.position.x, mineState.position.y-30, 3, 3]
         });
         smokeExplosionAnimation.alpha = 0.6;
-        if(currentAugment.name == 'shrapnel') {
+        if(shrapnelAugment) {
             mineExplosionAnimation.tint = 0xD7FFFA;
-        } else if(currentAugment.name == 'maim') {
+        }
+        if(maimAugment) {
             mineExplosionAnimation.tint = 0x670d0d;
         }
-        graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2})
-        graphicsUtils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*3.0, y: blastRadius*3.0})
+        if(maimAugment && shrapnelAugment) {
+            mineExplosionAnimation.tint = 0xcf013c;
+        }
+        graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2});
+        graphicsUtils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*3.0, y: blastRadius*3.0});
 
-        if(currentAugment.name == 'pressure plate') {
+        var mineTimer;
+        if(pressurePlateAugment) {
             Matter.Events.on(mine, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == mine ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
                 if(otherUnit && otherUnit.team != this.team) {
                     mine.explode();
                 }
-            }.bind(this))
-            graphicsUtils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
-            graphicsUtils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
-            var mineTimer = globals.currentGame.addTimer({
+            }.bind(this));
+            graphicsUtils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position});
+            graphicsUtils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position});
+            mineTimer = globals.currentGame.addTimer({
                 name: mineState.id,
                 gogogo: true,
                 timeLimit: 1000,
@@ -512,9 +525,9 @@ export default function Medic(options) {
                         mineState.state = 0;
                     }
                 }
-            })
+            });
         } else {
-            var mineTimer = globals.currentGame.addTimer({
+            mineTimer = globals.currentGame.addTimer({
                 name: mineState.id,
                 runs: 4,
                 timeLimit: 650,
@@ -522,17 +535,17 @@ export default function Medic(options) {
                 callback: function() {
                     if(mineState.state === 0) {
                         mineBeep.play();
-                        graphicsUtils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position})
+                        graphicsUtils.addSomethingToRenderer(stateOne, 'stage', {position: mineState.position});
                         graphicsUtils.removeSomethingFromRenderer(stateZero);
                         mineState.state += 1;
                     } else if(mineState.state == 1) {
                         mineBeep.play();
-                        graphicsUtils.addSomethingToRenderer(stateTwo, 'stage', {position: mineState.position})
+                        graphicsUtils.addSomethingToRenderer(stateTwo, 'stage', {position: mineState.position});
                         graphicsUtils.removeSomethingFromRenderer(stateOne);
                         mineState.state += 1;
                     } else if(mineState.state == 2) {
                         mineBeep.play();
-                        graphicsUtils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position})
+                        graphicsUtils.addSomethingToRenderer(stateThree, 'stage', {position: mineState.position});
                         graphicsUtils.removeSomethingFromRenderer(stateTwo);
                         mineState.state += 1;
                     } else if(mineState.state == 3) {
@@ -540,7 +553,7 @@ export default function Medic(options) {
                         Matter.Events.trigger(medic, 'mineExplode');
                     }
                 }
-            })
+            });
         }
         gameUtils.deathPact(mine, mineTimer);
         gameUtils.deathPact(mine, mineCracks);
@@ -552,7 +565,7 @@ export default function Medic(options) {
 
         mine.explode = function() {
             mineExplosion.play();
-            gameUtils.applyToUnitsByTeam(function(team) {return medic.team != team}, function(unit) {
+            gameUtils.applyToUnitsByTeam(function(team) {return medic.team != team;}, function(unit) {
                 return (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.canTakeAbilityDamage);
             }.bind(this), function(unit) {
                 var dmg = mineState.damage;
@@ -560,12 +573,12 @@ export default function Medic(options) {
                     dmg = dmg*2;
                 }
                 unit.sufferAttack(dmg, medic);
-                if(currentAugment.name == 'maim') {
+                if(maimAugment) {
                     if(!unit.isDead) {
                         unit.maim();
                     }
                 }
-                var variation = Math.random()*.3;
+                var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
@@ -577,10 +590,10 @@ export default function Medic(options) {
                 graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
             });
 
-            if(currentAugment.name == 'maim' || currentAugment.name == 'shrapnel') {
+            if(maimAugment || shrapnelAugment) {
                 //extra mine explosion graphic
-                var scale = currentAugment.name == 'maim' ? 2.5 : 3.5;
-                var tint = currentAugment.name == 'maim' ? 0xf200ff : 0xffffff;
+                var scale = maimAugment ? 2.5 : 3.5;
+                var tint = maimAugment ? 0xf200ff : 0xffffff;
                 var mineMaimExplosionAnimation = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations2',
                     animationName: 'additionalexplosion',
@@ -602,12 +615,12 @@ export default function Medic(options) {
             graphicsUtils.removeSomethingFromRenderer(stateThree);
             graphicsUtils.removeSomethingFromRenderer(mineCracks);
             globals.currentGame.removeBody(mine);
-        }
+        };
 
         if(commandObj) {
             commandObj.command.done();
         }
-    }
+    };
 
     var mineAbility = new Ability({
         name: 'Mine',
@@ -639,7 +652,7 @@ export default function Medic(options) {
             title: 'Shrapnel',
             description: 'Increase blast radius.'
         }]
-    })
+    });
 
     var healAbility = new Ability({
         name: 'Heal',
@@ -730,19 +743,19 @@ export default function Medic(options) {
                                 livingAlliedUnit.currentHealth = livingAlliedUnit.maxHealth;
                                 livingAlliedUnit.currentEnergy = livingAlliedUnit.maxEnergy;
                             }
-                        }
+                        };
                         var projectile = new Projectile(projectileOptions);
-                    })
-                }
+                    });
+                };
                 Matter.Events.on(unit, 'death', unit.sacrificeFunction);
                 unit.reviveTime *= this.reviveMultiplier;
             },
             unequip: function(unit) {
-                Matter.Events.off(unit, 'death', unit.sacrificeFunction)
+                Matter.Events.off(unit, 'death', unit.sacrificeFunction);
                 unit.reviveTime *= 1/this.reviveMultiplier;
             }
         }]
-    })
+    });
 
     var rsDDuration = 10000;
     var rsADuration = 3000;
@@ -761,7 +774,7 @@ export default function Medic(options) {
                 medic.addGritAddition(12);
             }, removeChanges: function() {
                 medic.removeGritAddition(12);
-            }})
+            }});
         },
         aggressionAction: function(event) {
             medic.applyBuff({name: "stakesHealBuff" + mathArrayUtils.getId(), duration: rsADuration, textureName: 'RaisedStakesBuff', applyChanges: function() {
@@ -772,9 +785,9 @@ export default function Medic(options) {
                 var healAbility = medic.getAbilityByName('Heal');
                 healAbility.energyCost /= 2;
                 healAbility.healAmount /= 2;
-            }})
+            }});
         },
-    })
+    });
 
     var wwDDuration = 3000;
     var wwADuration = 3000;
@@ -797,13 +810,13 @@ export default function Medic(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({name: "wwHealthGain", textureName: 'WickedWaysHealingBuff', duration: wwADuration, applyChanges: function() {
-                    unit.healthRegenerationMultiplier *= 2
+                    unit.healthRegenerationMultiplier *= 2;
                 }, removeChanges: function() {
-                    unit.healthRegenerationMultiplier /= 2
-                }})
-            })
+                    unit.healthRegenerationMultiplier /= 2;
+                }});
+            });
         },
-    })
+    });
 
     var slADuration = 3000;
     var slyLogic  = new Passive({
@@ -819,12 +832,12 @@ export default function Medic(options) {
         defenseAction: function(event) {
             event.damageObj.manualDodge = true;
             medic.addDodgeAddition(5);
-            var dodgeUp = graphicsUtils.addSomethingToRenderer("DodgeBuff", {where: 'stageTwo', position: medic.position})
+            var dodgeUp = graphicsUtils.addSomethingToRenderer("DodgeBuff", {where: 'stageTwo', position: medic.position});
             gameUtils.attachSomethingToBody({something: dodgeUp, body: medic.body});
             graphicsUtils.floatSprite(dodgeUp, {runs: 50});
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                medic.removeDodgeAddition(5)
-            })
+                medic.removeDodgeAddition(5);
+            });
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(medic);
@@ -833,10 +846,10 @@ export default function Medic(options) {
                     ally.addDodgeAddition(30);
                 }, removeChanges: function() {
                     ally.removeDodgeAddition(30);
-                }})
-            })
+                }});
+            });
         },
-    })
+    });
 
     var ffDDuration = 3000;
     var ffADuration = 3000;
@@ -861,7 +874,7 @@ export default function Medic(options) {
                 medic.moveSpeed += 0.5;
             }, removeChanges: function() {
                 medic.moveSpeed -= 0.5;
-            }})
+            }});
         },
         aggressionAction: function(event) {
             medic.applyBuff({name: 'freeSecretStep' + (medic.freeSteps+1), textureName: 'SecretStepBuff', duration: null, applyChanges: function() {
@@ -883,9 +896,9 @@ export default function Medic(options) {
                     ss.manuallyEnabled = false;
                     ss.byPassEnergyCost = false;
                 }
-            }})
+            }});
         },
-    })
+    });
 
     var dtDDuration = 3000;
     var dtADuration = 3000;
@@ -922,14 +935,14 @@ export default function Medic(options) {
                     deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
                     deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
                     passive.start('attackPassive');
-                })
+                });
                 var fu = Matter.Events.on(medic, 'defensePassiveUnequipped', function(event) {
                     Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fe);
                     Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
                     deepThought.aggressionAction = null;
                     deepThought.aggressionDescription = deepThought.originalAggressionDescription;
                     passive.start('attackPassive');
-                })
+                });
                 dtHandler.fe = fe;
                 dtHandler.fu = fu;
             }
@@ -940,7 +953,7 @@ export default function Medic(options) {
                 Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
             }
         }
-    })
+    });
 
     var efDDuration = 3000;
     var elegantForm  = new Passive({
@@ -973,7 +986,7 @@ export default function Medic(options) {
         aggressionAction: function(event) {
             medic.becomeHidden(efDDuration);
         }
-    })
+    });
 
     var rad = options.radius || 25;
     var unitProperties = $.extend({
@@ -1011,7 +1024,7 @@ export default function Medic(options) {
             graphicsUtils.addSomethingToRenderer(anim);
             this.corpse = anim;
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
 
             anim.play();
@@ -1056,15 +1069,15 @@ export default function Medic(options) {
                 canAttackAndMove: false,
                 canAttackPredicate: function(target) {
                     var thisAbility = this.getAbilityByName('Heal');
-                    var currentAugment = thisAbility.currentAugment || {name: 'null'};
-                    var ppBypass = (currentAugment.name == 'pure priorities' && (target.currentHealth < (target.maxHealth * currentAugment.hpThreshold)));
+                    var ppAugment = thisAbility.isAugmentEnabled('pure priorities');
+                    var ppBypass = (ppAugment && (target.currentHealth < (target.maxHealth * ppAugment.hpThreshold)));
                     return (this.currentEnergy >= thisAbility.energyCost || ppBypass);
                 }.bind(medic),
                 attack: function(target) {
                     //get current augment
                     var thisAbility = this.getAbilityByName('Heal');
-                    var currentAugment = thisAbility.currentAugment || {name: 'null'};
-                    var ppBypass = (currentAugment.name == 'pure priorities' && (target.currentHealth < (target.maxHealth * currentAugment.hpThreshold)));
+                    var ppAugment = thisAbility.isAugmentEnabled('pure priorities');
+                    var ppBypass = (ppAugment && (target.currentHealth < (target.maxHealth * ppAugment.hpThreshold)));
 
                     var abilityTint = 0x80ba80;
                     graphicsUtils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Heal').icon, tint: abilityTint, speed: 100});
@@ -1077,7 +1090,7 @@ export default function Medic(options) {
                         transform: [target.position.x + ((Math.random() * 20) - 10), target.position.y + ((Math.random() * 30) - 20), 1, 1]
                     });
 
-                    healAnimation.alpha = Math.max(.7, Math.random());
+                    healAnimation.alpha = Math.max(0.7, Math.random());
                     healAnimation.play();
                     graphicsUtils.addSomethingToRenderer(healAnimation, 'stageOne');
 

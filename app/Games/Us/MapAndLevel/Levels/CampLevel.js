@@ -120,12 +120,13 @@ var campLevel = function() {
             loop: true,
             transform: [0, 0, 1.2, 1.3]
         });
-        fireAnimation.where = 'stageOne';
+        fireAnimation.where = 'stage';
         fireAnimation.play();
         var campfire = new Doodad({
             collides: true,
             autoAdd: false,
             radius: 40,
+            bodyScale: {y: 0.5},
             texture: [fireAnimation, {
                 doodadData: 'Logs',
                 offset: {
@@ -133,7 +134,7 @@ var campLevel = function() {
                     y: 0
                 }
             }],
-            stage: 'stageNOne',
+            stage: 'stage',
             scale: {
                 x: 1.4,
                 y: 1.4

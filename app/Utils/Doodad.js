@@ -1,12 +1,13 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 //This module represents a doodad (a physical, non-unit body, which can have properties)
 /*
 *   options = {
 *       collides: boolean (default false)
+*       bodyScale: {x, y}
 *       pathingBlocker: boolean (default true)
 *       radius: float
 *       sightBlocker: boolean (default false)
@@ -19,7 +20,7 @@ import {globals} from '@core/Fundamental/GlobalState.js'
 *   }
 */
 var doodad = function(options) {
-    var options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true}, options);
+    options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true}, options);
 
     // create body
     this.body = Matter.Bodies.circle(-5000, -5000, options.radius, {
@@ -27,7 +28,7 @@ var doodad = function(options) {
     });
 
     if(options.bodyScale) {
-        Matter.Body.scale(this.body, options.bodyScale.x || 1, options.bodyScale.y || 1)
+        Matter.Body.scale(this.body, options.bodyScale.x || 1, options.bodyScale.y || 1);
     }
 
     //default position
@@ -64,7 +65,7 @@ var doodad = function(options) {
             scale: scale,
             stage: stage,
             sortYOffset: options.sortYOffset || 0,
-        })
+        });
     });
 
     if(!options.noShadow) {
@@ -77,7 +78,7 @@ var doodad = function(options) {
             rotate: 'none',
             stage: "stageNTwo",
             offset: options.shadowOffset || {x: 0, y: 0}
-        })
+        });
     }
 
     this.body.renderChildren = rchildren;
@@ -89,7 +90,7 @@ var doodad = function(options) {
     this.initialize = function() {
         globals.currentGame.addBody(this.body);
         this.initialized = true;
-    }
+    };
 
     //automatically add if specified
     if(options.autoAdd) {
@@ -98,7 +99,7 @@ var doodad = function(options) {
 
     this.cleanUp = function() {
         globals.currentGame.removeBody(this.body);
-    }
-}
+    };
+};
 
 export default doodad;
