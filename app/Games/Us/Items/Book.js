@@ -5,27 +5,29 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function(options) {
     var item = Object.assign({
-        name: "Gen-1 Microchip",
-        creationName: "BasicMicrochip",
-        description: "Enables an augment.",
-        poweredByMessage: {text: 'Gen-1 Microchip', style: 'basicPoweredByStyle'},
-        systemMessage: "Drop on ability to enable.",
-        icon: 'BasicMicrochip',
+        name: "Book",
+        description: ['Learns a state of mind.'],
+        additionCondition: function(augment) {
+            return augment.name == 'first aid pouch';
+        },
+
+        systemMessage: "Drop on a state of mind to learn.",
+        icon: 'BlueBook',
 
         dropCallback: function(position) {
-            this.owningUnit.removeUnlockerKey('augment');
+            this.owningUnit.removeUnlockerKey('mind');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hideAugmentsForUnit();
+                globals.currentGame.unitSystem.unitPanel.hidePassivesForUnit();
             }
             return true;
         },
 
         grabCallback: function() {
-            this.owningUnit.giveUnlockerKey('augment');
-            this.owningUnit.setUnlockContext('augment', this);
+            this.owningUnit.giveUnlockerKey('mind');
+            this.owningUnit.setUnlockContext('mind', this);
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.showAugmentsForUnit(this.owningUnit);
+                globals.currentGame.unitSystem.unitPanel.showPassivesForUnit(this.owningUnit);
             }
             this.unlockHandler = gameUtils.matterOnce(this.owningUnit, 'unlockedSomething', function() {
                 globals.currentGame.itemSystem.removeItem(this);
@@ -33,10 +35,10 @@ export default function(options) {
         },
 
         placeCallback: function() {
-            this.owningUnit.removeUnlockerKey('augment');
+            this.owningUnit.removeUnlockerKey('mind');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hideAugmentsForUnit();
+                globals.currentGame.unitSystem.unitPanel.hidePassivesForUnit();
             }
         },
         dropPredicate: function(dropPosition) {

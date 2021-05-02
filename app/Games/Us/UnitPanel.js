@@ -1385,50 +1385,66 @@ unitPanel.prototype.displayCommands = function() {
     }
 };
 
+unitPanel.prototype.showAugmentsForUnit = function(unit) {
+    this.unitAugmentPanel.showForUnit(unit);
+};
+
+unitPanel.prototype.showPassivesForUnit = function(unit) {
+    this.unitPassivePanel.showForUnit(unit);
+};
+
+unitPanel.prototype.hideAugmentsForUnit = function() {
+    this.unitAugmentPanel.hideForCurrentUnit();
+};
+
+unitPanel.prototype.hidePassivesForUnit = function() {
+    this.unitPassivePanel.hideForCurrentUnit();
+};
+
 unitPanel.prototype.showAugmentsAndPassivesForUnit = function(unit) {
-        this.unitAugmentPanel.showForUnit(unit);
-        this.unitPassivePanel.showForUnit(unit);
-    },
+    this.unitAugmentPanel.showForUnit(unit);
+    this.unitPassivePanel.showForUnit(unit);
+},
 
-    unitPanel.prototype.hideAugmentsAndPassivesForUnit = function() {
-        this.unitAugmentPanel.hideForCurrentUnit();
-        this.unitPassivePanel.hideForCurrentUnit();
-    },
+unitPanel.prototype.hideAugmentsAndPassivesForUnit = function() {
+    this.unitAugmentPanel.hideForCurrentUnit();
+    this.unitPassivePanel.hideForCurrentUnit();
+},
 
-    unitPanel.prototype.enterCamp = function() {
-        this.unitAugmentPanel.lowerOpenButton();
-        this.unitPassivePanel.lowerOpenButton();
-    },
+unitPanel.prototype.enterCamp = function() {
+    this.unitAugmentPanel.lowerOpenButton();
+    this.unitPassivePanel.lowerOpenButton();
+},
 
-    unitPanel.prototype.leaveCamp = function() {
-        this.unitAugmentPanel.hideForCurrentUnit();
-        this.unitAugmentPanel.hideOpenButton();
+unitPanel.prototype.leaveCamp = function() {
+    this.unitAugmentPanel.hideForCurrentUnit();
+    this.unitAugmentPanel.hideOpenButton();
 
-        this.unitPassivePanel.hideForCurrentUnit();
-        this.unitPassivePanel.hideOpenButton();
-    },
+    this.unitPassivePanel.hideForCurrentUnit();
+    this.unitPassivePanel.hideOpenButton();
+},
 
-    unitPanel.prototype.cleanUp = function() {
-        globals.currentGame.removeTickCallback(this.updateUnitStatTick);
-        globals.currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
-        globals.currentGame.removeTickCallback(this.abilityAvailableTick);
-        globals.currentGame.removeTickCallback(this.meterUpdater);
+unitPanel.prototype.cleanUp = function() {
+    globals.currentGame.removeTickCallback(this.updateUnitStatTick);
+    globals.currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
+    globals.currentGame.removeTickCallback(this.abilityAvailableTick);
+    globals.currentGame.removeTickCallback(this.meterUpdater);
 
-        //unit configuration panel
-        if (this.unitAugmentPanel)
-            this.unitAugmentPanel.cleanUp();
+    //unit configuration panel
+    if (this.unitAugmentPanel)
+        this.unitAugmentPanel.cleanUp();
 
-        //unit passive panel
-        if (this.unitPassivePanel)
-            this.unitPassivePanel.cleanUp();
+    //unit passive panel
+    if (this.unitPassivePanel)
+        this.unitPassivePanel.cleanUp();
 
-        this.autoCastSound.unload();
+    this.autoCastSound.unload();
 
-        if (this.eventsSet) {
-            Matter.Events.off(this, "attackPassiveActivated");
-            Matter.Events.off(this, "defensePassiveActivated");
-        }
-    };
+    if (this.eventsSet) {
+        Matter.Events.off(this, "attackPassiveActivated");
+        Matter.Events.off(this, "defensePassiveActivated");
+    }
+};
 
 unitPanel.prototype.updateUnitAbilities = unitPanel.prototype.displayUnitAbilities;
 unitPanel.prototype.updateUnitPassives = unitPanel.prototype.displayUnitPassives;

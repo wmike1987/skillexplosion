@@ -1,18 +1,22 @@
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import Tooltip from '@core/Tooltip.js'
-import * as Matter from 'matter-js'
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js'
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import Tooltip from '@core/Tooltip.js';
+import * as Matter from 'matter-js';
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
 
-var equipShow = gameUtils.getSound('menuopen1.wav', {volume: .08, rate: 1.0});
-var equipHide = gameUtils.getSound('menuopen1.wav', {volume: .05, rate: 1.25});
-var equip = gameUtils.getSound('augmentEquip.wav', {volume: .05, rate: 1.2});
-var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: .03, rate: 1});
-var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: .16, rate: 1});
+var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
+var equipHide = gameUtils.getSound('menuopen1.wav', {volume: 0.05, rate: 1.25});
+var equip = gameUtils.getSound('augmentEquip.wav', {volume: 0.05, rate: 1.2});
+var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: 0.03, rate: 1});
+var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: 0.16, rate: 1});
+var cantdo = gameUtils.getSound('cantpickup.wav', {
+    volume: 0.03,
+    rate: 1.3
+});
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
-}
+};
 
 ConfigPanel.prototype.initialize = function() {
     this.id = mathArrayUtils.uuidv4();
@@ -53,15 +57,15 @@ ConfigPanel.prototype.initialize = function() {
             if(this.showButton.state == 'lowered') {
                 //(enlarge)
                 this.showButtonSkinny.scale = {x: 1.05, y: 1.05};
-                this.showButtonGlass.scale = {x: .32, y: 1.15};
+                this.showButtonGlass.scale = {x: 0.32, y: 1.15};
             }
         } else {
             if(this.showButton.state == 'lowered') {
                 this.showButtonSkinny.scale = {x: 1.00, y: 1.00};
-                this.showButtonGlass.scale = {x: .3, y: 1.08};
+                this.showButtonGlass.scale = {x: 0.3, y: 1.08};
             }
         }
-    }.bind(this))
+    }.bind(this));
 
     $('body').on('mouseup.unitPassivePanel', function(event) {
         var mousePoint = {x: 0, y: 0};
@@ -71,8 +75,8 @@ ConfigPanel.prototype.initialize = function() {
                 this.showForUnit(this.unitPanelRef.prevailingUnit);
             }
         }
-    }.bind(this))
-}
+    }.bind(this));
+};
 
 ConfigPanel.prototype.showForUnit = function(unit) {
     //hide showbutton and text
@@ -93,7 +97,7 @@ ConfigPanel.prototype.showForUnit = function(unit) {
 
 ConfigPanel.prototype.showPassives = function(unit) {
     var passiveCenterX = this.unitPanelRef.passiveCenterX;
-    var alphaPassive = .8;
+    var alphaPassive = 0.8;
 
     if(!this.currentAttackPassiveBorder) {
         this.currentAttackPassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0xff1414});
@@ -108,9 +112,9 @@ ConfigPanel.prototype.showPassives = function(unit) {
         var xpos;
         var yOffsetI = j % 3;
         if(j < 3) {
-            xpos = passiveCenterX - 35
+            xpos = passiveCenterX - 35;
         } else {
-            xpos = passiveCenterX + 35
+            xpos = passiveCenterX + 35;
         }
         if(!passive.icon) {
             passive.icon = graphicsUtils.addSomethingToRenderer(passive.textureName, {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
@@ -119,7 +123,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
             // passive.unlocked = true; //for debugging
             passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
 
-            Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Inactive"}));
+            Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Unlearned"}));
             graphicsUtils.makeSpriteSize(passive.actionBox, {x: 50, y: 50});
             passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
             passive.border.sortYOffset = -10;
@@ -127,8 +131,10 @@ ConfigPanel.prototype.showPassives = function(unit) {
 
             passive.addSlave(passive.icon, passive.lock, passive.actionBox, passive.border);
 
+            var lastPassive = null;
+            var mindType = 'mind';
             passive.actionBox.on('mousedown', function(event) {
-                if(keyStates['Control'] && passive.unlocked) {
+                if(keyStates.Control && passive.unlocked) {
                     if(!passive.defensePassive) {
                         if(passive.attackPassive) {
                             unit.unequipPassive(passive);
@@ -172,26 +178,30 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     //trigger event and trigger ability panel update
                     Matter.Events.trigger(this, 'passiveEquip', {passive: passive, unit: this.prevailingUnit})
                     this.unitPanelRef.updateUnitPassives();
-                } else if(!passive.unlocked && unit.canUnlockSomething(passive)) {
+                } else if(!passive.unlocked) {
+                    if(!unit.canUnlockSomething(mindType)) {
+                        cantdo.play();
+                        return;
+                    }
                     Tooltip.makeTooltippable(passive.actionBox, passive);
-                    unit.unlockSomething(passive);
+                    unit.unlockSomething(mindType, passive);
                     unlockAugmentSound.play();
                     passive.lock.visible = false;
                 }
-            }.bind(this))
+            }.bind(this));
             passive.actionBox.on('mouseover', function(event) {
                 if(!passive.isEquipped) {
                     passive.border.alpha = 1;
                     passive.border.scale = {x: 1.1, y: 1.1};
                     hoverAugmentSound.play();
                 }
-            })
+            });
             passive.actionBox.on('mouseout', function(event) {
                 if(!passive.isEquipped) {
                     passive.border.scale = {x: 1, y: 1};
                     passive.border.alpha = alphaPassive;
                 }
-            })
+            });
         }
         if(passive.isEquipped) {
             passive.icon.alpha = 1;
@@ -214,8 +224,8 @@ ConfigPanel.prototype.showPassives = function(unit) {
         }
         passive.icon.visible = true;
         passive.actionBox.visible = true;
-    }.bind(this))
-}
+    }.bind(this));
+};
 
 ConfigPanel.prototype.hideForCurrentUnit = function() {
     if(!this.prevailingUnit) {
@@ -235,7 +245,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
         passive.lock.visible = false;
         this.currentDefensePassiveBorder.visible = false;
         this.currentAttackPassiveBorder.visible = false;
-    }.bind(this))
+    }.bind(this));
 
     equipHide.play();
 
@@ -250,12 +260,12 @@ ConfigPanel.prototype.lowerOpenButton = function() {
         graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
         graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNTwo');
         graphicsUtils.addOrShowDisplayObject(this.showButtonSkinny);
-        this.showButtonSkinny.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonHeight/2.75}
+        this.showButtonSkinny.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonHeight/2.75};
         this.showButton.state = "lowered";
         this.showButton.visible = false;
-        this.showButtonGlass.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonGlassHeight/2.75}
+        this.showButtonGlass.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonGlassHeight/2.75};
         this.showButtonSkinny.scale = {x: 1.00, y: 1.00};
-        this.showButtonGlass.scale = {x: .3, y: 1.1};
+        this.showButtonGlass.scale = {x: 0.3, y: 1.1};
         this.showButtonSkinny.visible = true;
     }
 };
@@ -272,14 +282,14 @@ ConfigPanel.prototype.hideOpenButton = function() {
 ConfigPanel.prototype.liftOpenButton = function() {
     graphicsUtils.changeDisplayObjectStage(this.showButton, 'hud');
     graphicsUtils.addOrShowDisplayObject(this.showButton);
-    this.showButton.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()-this.configButtonHeight/2}
+    this.showButton.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()-this.configButtonHeight/2};
     this.showButton.scale = {x: 1.00, y: 1.00};
     this.showButton.state = "lifted";
     this.showButton.visible = true;
 
     graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hud');
     graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
-    this.showButtonGlass.position = {x: this.showButtonGlass.position.x, y: gameUtils.getPlayableHeight()-this.configButtonGlassHeight/2}
+    this.showButtonGlass.position = {x: this.showButtonGlass.position.x, y: gameUtils.getPlayableHeight()-this.configButtonGlassHeight/2};
     this.showButtonGlass.scale = {x: 1.00, y: 1.00};
 
     this.showButtonSkinny.visible = false;

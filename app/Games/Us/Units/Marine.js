@@ -928,6 +928,7 @@ export default function Marine(options) {
             return [shadow, anim];
         },
         _init: function() {
+            this.firstAidPouchAdditions = [];
             if(!this.bypassRevival) {
                 $.extend(this, rv);
                 this.revivableInit();
@@ -979,7 +980,11 @@ export default function Marine(options) {
                         }, function(unit) {
                             graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
                             healsound.play();
-                            unit.giveHealth(firstAidPouchAugment.healAmount, unit);
+                            var sum = 0;
+                            self.firstAidPouchAdditions.forEach((addition) => {
+                                sum += addition;
+                            });
+                            unit.giveHealth(firstAidPouchAugment.healAmount + sum, unit);
                         });
                     }
 

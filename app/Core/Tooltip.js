@@ -14,7 +14,8 @@ import {globals} from '@core/Fundamental/GlobalState.js';
 var Tooltip = function(options) {
     var textAnchor = {x: 0, y: 0};
     this.titleOnly = options.titleOnly;
-    this.systemMessageBuffer = 5;
+    this.descriptionSystemMessageBuffer = 5;
+    this.systemMessagesBuffer = 0;
     this.buffer = 5;
     this.iconBuffer = 0;
 
@@ -71,14 +72,24 @@ var Tooltip = function(options) {
     }
 
     //build system messages
+    //system message could be {text: 'tttt', style: 'sss'} or just a string
     this.systemMessages = [];
-    if($.isArray(options.systemMessage)) {
-        $.each(options.systemMessage, function(i, sysMessage) {
-            this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + sysMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
-        }.bind(this));
-    } else if(options.systemMessage){
-        this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + options.systemMessage, {style: options.systemMessageText || styles.systemMessageText, anchor: textAnchor}));
-    }
+    var arrayMessages = mathArrayUtils.convertToArray(options.systemMessage);
+    $.each(arrayMessages, function(i, sysMessage) {
+        if(!sysMessage) return;
+
+        //determine style
+        var style = options.systemMessageText || styles.systemMessageText;
+        if(sysMessage.style) {
+            style = styles[sysMessage.style];
+        }
+
+        //determine message
+        sysMessage = sysMessage.text || sysMessage;
+
+        //create message
+        this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + sysMessage, {style: style, anchor: textAnchor}));
+    }.bind(this));
     this.mainSystemMessage = this.systemMessages[0];
 
     this.noDelay = options.noDelay;
@@ -136,7 +147,10 @@ Tooltip.prototype.sizeBase = function() {
     $.each(this.systemMessages, function(i, sysMessage) {
         systemMessageWidth = Math.max(systemMessageWidth, sysMessage.width);
         systemMessageHeight += sysMessage.height;
-    });
+        if(i > 0) {
+            systemMessageHeight += this.systemMessagesBuffer;
+        }
+    }.bind(this));
     $.each(this.descriptions, function(i, descr) {
         descriptionWidth = Math.max(descriptionWidth, descr.width);
         descriptionHeight += this.descrHeight;
@@ -227,7 +241,7 @@ Tooltip.prototype.display = function(position) {
 
     //place descriptions and description icons
     $.each(this.descriptions, function(i, descr) {
-        descr.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height + this.title.height + this.buffer/2 + (this.iconBuffer || this.buffer) + (i * this.descrHeight)};
+        descr.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height + this.title.height + this.buffer/2 + (this.iconBuffer || this.buffer) + (i * (this.descrHeight))};
 
         //if we're using description icons, need to make some alterations
         if(this.descriptionIcons.length > 0) {
@@ -238,7 +252,7 @@ Tooltip.prototype.display = function(position) {
 
     //place system messages
     $.each(this.systemMessages, function(i, sysMessage) {
-        sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.descriptions.length)*this.descrHeight + this.systemMessageBuffer + (i * sysMessage.height)};
+        sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.descriptions.length)*this.descrHeight + this.descriptionSystemMessageBuffer + ((i * sysMessage.height) + (i * this.systemMessagesBuffer))};
     }.bind(this));
 
     this.base.position = position;

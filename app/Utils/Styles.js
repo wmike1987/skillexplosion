@@ -330,6 +330,24 @@ export default {
 		strokeThickness: 1
 	}),
 
+	augmentInactiveText: new PIXI.TextStyle({
+		name: 'augmentInactiveText',
+		fill: "#b0afae",
+		fillGradientType: 1,
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 12,
+		strokeThickness: 1
+	}),
+
+	basicPoweredByStyle: new PIXI.TextStyle({
+		name: 'basicPoweredByStyle',
+		fill: "#d68431",
+		fillGradientType: 1,
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 12,
+		strokeThickness: 1
+	}),
+
 	fatigueText:  new PIXI.TextStyle({
 		name: 'fatigueText',
 	    fill: "#888888",

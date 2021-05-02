@@ -422,7 +422,7 @@ export default function Medic(options) {
             icon: graphicsUtils.createDisplayObject('Petrify'),
             title: 'Ghost',
             description: ['Petrify units for 3 seconds by stepping through them.'],
-            systemMessage: 'Petrified units cannot move, attack, nor be targeted by normal attacks.'
+            // systemMessage: 'Petrified units cannot move, attack, nor be targeted by normal attacks.'
         },
         {
             name: 'soft landing',
@@ -638,7 +638,7 @@ export default function Medic(options) {
             icon: graphicsUtils.createDisplayObject('Maim'),
             title: 'Maim',
             description: 'Maim enemies hit by blast for 5 seconds.',
-            systemMessage: 'Maimed enemies are slowed and suffer -1 armor.'
+            // systemMessage: 'Maimed enemies are slowed and suffer -1 armor.'
         },
         {
             name: 'pressure plate',

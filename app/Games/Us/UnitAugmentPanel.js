@@ -9,8 +9,12 @@ var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: 0.05, rate: 1.25});
 var equip = gameUtils.getSound('augmentEquip.wav', {volume: 0.05, rate: 1.15});
 var unequip = gameUtils.getSound('augmentEquip.wav', {volume: 0.02, rate: 0.85});
-var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: 0.03, rate: 1});
+var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: 0.015, rate: 1});
 var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: 0.16, rate: 1});
+var cantdo = gameUtils.getSound('cantpickup.wav', {
+    volume: 0.03,
+    rate: 1.3
+});
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
@@ -91,12 +95,14 @@ ConfigPanel.prototype.showForUnit = function(unit) {
 var augmentInactiveTint = 0x535353;
 var augmentId = 'augment';
 ConfigPanel.prototype.showAugments = function(unit) {
+    var inactiveSysMessage = {text: 'Inactive', style: 'augmentInactiveText'};
+
     $.each(unit.abilities, function(i, ability) {
         if(ability.augments) {
             var alphaAugment = 0.8;
             $.each(ability.augments, function(j, augment) {
                 if(!augment.currentAugmentBorder) {
-                    augment.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderGold', "hudOne");
+                    augment.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', "hudOne");
                     augment.currentAugmentBorder.id = augment.name;
                     augment.currentAugmentBorder.visible = false;
                     augment.currentAugmentBorder.sortYOffset = 1000;
@@ -117,36 +123,77 @@ ConfigPanel.prototype.showAugments = function(unit) {
                     ability.addSlave(b);
 
                     augment.actionBox.on('mousedown', function(event) {
-                        if(!ability.isAugmentEnabled(augment)) {
-                            if(!this.prevailingUnit.canUnlockSomething(augmentId)) return;
+                        var microchipContext = this.prevailingUnit.unlockContext.augment ? this.prevailingUnit.unlockContext.augment : {};
+                        if(globals.currentGame.itemSystem.isGrabbing()) {
+
+                            //if we're holding a non-augment unlocker
+                            if(!this.prevailingUnit.canUnlockSomething(augmentId)) {
+                                cantdo.play();
+                                return;
+                            }
+
+                            //or if we are... but the equip condition isn't met
+                            if(microchipContext && microchipContext.equipCondition) {
+                                if(!microchipContext.equipCondition(ability, augment)) {
+                                    cantdo.play();
+                                    return;
+                                }
+                            }
 
                             //equip augment
                             augment.currentAugmentBorder.position = augment.icon.position;
                             augment.currentAugmentBorder.visible = true;
+                            augment.currentAugmentBorder.tint = microchipContext.equipTint || 0xFFFFFF;
                             augment.icon.tint = 0xFFFFFF;
                             ability.enableAugment(augment);
-                            // ability.currentAugment = augment;
                             if(augment.equip) {
                                 augment.equip(this.prevailingUnit);
                             }
                             this.prevailingUnit.unlockSomething(augmentId);
-                            Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: augment.systemMessage});
+                            let additionConditionMet = microchipContext.additionCondition && microchipContext.additionCondition(augment);
+
+                            //if we're here and our augment is currently powered, we want to unequip the existing one
+                            if(augment.currentMicrochip) {
+                                ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: [augment.currentMicrochip], unit: this.prevailingUnit});
+                                if(augment.currentMicrochip.unequip) {
+                                    augment.currentMicrochip.unequip();
+                                }
+                            }
+                            augment.currentMicrochip = microchipContext.creationName || microchipContext.name.replace(/ /g,'');
+                            let ar1 = mathArrayUtils.convertToArray(augment.systemMessage);
+                            let ar2 = mathArrayUtils.convertToArray(microchipContext.poweredByMessage);
+                            var ar3 = [];
+                            if(additionConditionMet && microchipContext.conditionalPoweredByMessage) {
+                                if(microchipContext.equip) {
+                                    microchipContext.equip();
+                                }
+                                if(microchipContext.conditionalPoweredByMessage) {
+                                    ar3 = mathArrayUtils.convertToArray(microchipContext.conditionalPoweredByMessage);
+                                }
+                            }
+                            let finalSysMessage = ar1.concat(ar2).concat(ar3);
+                            Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: finalSysMessage});
                             graphicsUtils.addGleamToSprite({sprite: augment.icon, gleamWidth: 10, duration: 350});
                             equip.play();
 
                             //trigger event and trigger ability panel update
                             Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.prevailingUnit});
                             this.unitPanelRef.updateUnitAbilities();
-                        } else {
-                            //unequip augment
+                        } else if(augment.currentMicrochip) {
+                            //unequip augment and pickup
                             if(augment.unequip) {
                                 augment.unequip(this.prevailingUnit);
                             }
 
-                            ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.prevailingUnit});
-                            Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: "Inactive"});
+                            if(augment.currentMicrochip.unequip) {
+                                augment.currentMicrochip.unequip();
+                            }
+                            ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: [augment.currentMicrochip], unit: this.prevailingUnit});
+                            let systemMessage = augment.systemMessage ? [augment.systemMessage, inactiveSysMessage] : inactiveSysMessage;
+                            Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: systemMessage});
                             augment.currentAugmentBorder.visible = false;
                             augment.icon.tint = augmentInactiveTint;
+                            augment.currentMicrochip = null;
                             ability.disableAugment(augment);
                             unequip.play();
                         }
@@ -166,8 +213,9 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             augment.icon.tint = augmentInactiveTint;
                         }
                     });
-                    Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: "Inactive"});
 
+                    let systemMessage = augment.systemMessage ? [augment.systemMessage, inactiveSysMessage] : inactiveSysMessage;
+                    Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: systemMessage});
                 }
                 if(ability.isAugmentEnabled(augment)) {
                     augment.icon.alpha = 1;

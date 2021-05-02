@@ -13,9 +13,9 @@ export default function(options) {
         options.augments.forEach(augment => {
             augment.ability = this;
             if(augment.systemMessage) {
-                augment.systemMessage = [augment.systemMessage, 'Click to equip'];
+                // augment.systemMessage = [augment.systemMessage, 'Click to equip'];
             } else {
-                augment.systemMessage = 'Click to equip';
+                // augment.systemMessage = 'Click to equip';
             }
         });
     }

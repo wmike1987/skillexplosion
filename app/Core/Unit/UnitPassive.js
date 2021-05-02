@@ -11,11 +11,9 @@ export default function(options) {
 
     //Automate some of the panel tooltip text
     this.decoratedAggressionDescription = [].concat(this.aggressionDescription);
-    var len = this.decoratedAggressionDescription.length;
     var aggCooldown = this.aggressionCooldown/1000 + ' second cooldown';
 
     this.decoratedDefenseDescription = [].concat(this.defenseDescription);
-    var len = this.decoratedDefenseDescription.length;
     var defCooldown = this.defenseCooldown/1000 + ' second cooldown';
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
@@ -40,7 +38,7 @@ export default function(options) {
         if(mode == attackPassive) {
             if(!this.aggressionAction) return;
             cooldown = this.aggressionCooldown;
-            var f = Matter.Events.on(this.unit, this.aggressionEventName, function(event) {
+            let f = Matter.Events.on(this.unit, this.aggressionEventName, function(event) {
                 if(!this.active || this.inProcess) return;
                 if(this.aggressionPredicate && !this.aggressionPredicate(event)) {
                     return;
@@ -56,11 +54,11 @@ export default function(options) {
             }.bind(this));
             this.clearListener = function() {
                 Matter.Events.off(this.unit, this.aggressionEventName, f);
-            }
+            };
         } else if(mode == defensePassive) {
             if(!this.defenseAction) return;
             cooldown = this.defenseCooldown;
-            var f = Matter.Events.on(this.unit, this.defenseEventName, function(event) {
+            let f = Matter.Events.on(this.unit, this.defenseEventName, function(event) {
                 if(!this.active || this.inProcess) return;
                 if(this.defensePredicate && !this.defensePredicate(event)) {
                     return;
@@ -70,13 +68,13 @@ export default function(options) {
                 this.defenseAction(event);
                 Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'defensePassiveActivated', {duration: this.defenseDuration || 32});
                 gameUtils.doSomethingAfterDuration(function() {
-                    this.active = false
+                    this.active = false;
                     this.inProcess = false;
                 }.bind(this), this.defenseDuration);
             }.bind(this));
             this.clearListener = function() {
                 Matter.Events.off(this.unit, this.defenseEventName, f);
-            }
+            };
         }
         var progress = 0;
         var timerIncrement = 32;
@@ -95,10 +93,10 @@ export default function(options) {
                     progress = 0;
                 }
             }.bind(this)
-        })
+        });
 
         gameUtils.deathPact(this, this.cooldownTimer, 'cooldownTimer');
-    }
+    };
 
     this.stop = function() {
         if(this.preStop) {
@@ -110,11 +108,11 @@ export default function(options) {
             this.clearListener();
         }
         globals.currentGame.invalidateTimer(this.cooldownTimer);
-    }
+    };
 
     this.addSlave = function(...slaves) {
         slaves.forEach((sl) => {
             gameUtils.deathPact(this, sl);
-        })
-    }
+        });
+    };
 }
