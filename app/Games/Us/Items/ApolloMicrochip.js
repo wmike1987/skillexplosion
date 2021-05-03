@@ -5,9 +5,9 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function(options) {
     var item = Object.assign({
-        name: "Aja Microchip",
+        name: "Apollo Microchip",
         description: ["Enable a Rifle augment.", 'Add +1 hp to first aid pouch.'],
-        poweredByMessage: {text: 'Aja Microchip', style: 'basicPoweredByStyle'},
+        poweredByMessage: {text: 'Apollo Microchip', style: 'basicPoweredByStyle'},
         conditionalPoweredByMessage: {text: '+1 hp per attack.', style: 'basicPoweredByStyle'},
         additionCondition: function(augment) {
             return augment.name == 'first aid pouch';

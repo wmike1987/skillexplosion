@@ -446,7 +446,7 @@ export default function Marine(options) {
     var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {volume: 0.03, rate: 1.5});
     var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {volume: 0.05, rate: 1});
     var knifeSpeed = 22;
-    var knifeDamage = 20;
+    marine.knifeDamage = 20;
     var throwKnife = function(destination, commandObj, childKnife) {
         //get augments
         var thisAbility = this.getAbilityByName('Throw Knife');
@@ -556,7 +556,7 @@ export default function Marine(options) {
                     });
                 }
 
-                otherUnit.sufferAttack(knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
+                otherUnit.sufferAttack(marine.knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
                 if(otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
                     Matter.Events.trigger(globals.currentGame, 'knifeKill', {performingUnit: this});
@@ -609,7 +609,10 @@ export default function Marine(options) {
         icon: graphicsUtils.createDisplayObject('KnifeIcon'),
         method: throwKnife,
         title: 'Throwing Knife',
-        description: 'Throw a knife, dealing ' + knifeDamage + ' damage.',
+        description: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.',
+        updaters: {descriptions: function() {
+            return {index: 0, value: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.'};
+        }},
         hotkey: 'F',
         energyCost: 6,
         activeAugment: null,
@@ -635,7 +638,6 @@ export default function Marine(options) {
             {
                 name: 'multi throw',
                 knives: 3,
-                damage: 20,
                 icon: graphicsUtils.createDisplayObject('MultiShot'),
                 title: 'Multi-throw',
                 description: 'Throw multiple knives in a fan.'

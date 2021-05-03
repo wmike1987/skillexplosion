@@ -5,6 +5,7 @@ export default function(options) {
     this.defaultDisablers = {};
     this.enablers = [];
     this.enabledAugments = {};
+    this.updaters = {};
 
     Object.assign(this, options);
 
@@ -23,12 +24,12 @@ export default function(options) {
     //Manage tooltip options
     if(this.energyCost) {
       this.systemMessage = ["E: " + this.energyCost];
-      this.updaters = {systemMessages: function() {
+      this.updaters.systemMessages = function() {
           if(this.customCostTextUpdater) {
               return {index: 0, value: this.customCostTextUpdater()};
           }
           return {index: 0, value: "E: " + this.energyCost};
-      }.bind(this)};
+      }.bind(this);
     }
 
     //convenience method for enabling and disabling an ability

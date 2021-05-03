@@ -29,6 +29,6 @@ unitMenu.createUnit = function(constructor, options) {
 
     gameUtils.moveUnitOffScreen(unit);
     return unit;
-}
+};
 
 export default unitMenu;

@@ -26,6 +26,7 @@ var UnitBase = {
     isTargetable: true,
     isoManaged: true,
     maxHealth: 20,
+    canTakeAbilityDamage: true,
     currentHealth: 20,
     damageAdditions: [],
     defense: 0,
