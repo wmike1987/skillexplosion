@@ -1,9 +1,8 @@
-import ic from '@core/Unit/ItemConstructor.js'
+import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
     damageAddition: 5,
-}
-
+};
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
@@ -12,4 +11,4 @@ export default function(options) {
         icon: 'MaskOfRage'
     }, options);
     return new ic(item);
-};
+}

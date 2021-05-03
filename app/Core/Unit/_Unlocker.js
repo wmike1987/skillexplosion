@@ -37,6 +37,7 @@ export default {
             something.unlocked = true;
         }
         Matter.Events.trigger(this, 'unlockedSomething', {something: something});
+        Matter.Events.trigger(something, 'unlockedSomething');
         this.keyPoints[id] -= 1;
         this.unlockContext[id] = null;
     },

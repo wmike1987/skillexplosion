@@ -1,10 +1,10 @@
-import ic from '@core/Unit/ItemConstructor.js'
+import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
     defenseAddition: 1,
     gritAddition: 8,
     maxHealth: 5,
-}
+};
 
 export default function(options) {
     var item = Object.assign({
@@ -14,4 +14,4 @@ export default function(options) {
         icon: 'MedalOfGrit'
     }, options);
     return new ic(item);
-};
+}

@@ -183,8 +183,8 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         cantdo.play();
                         return;
                     }
-                    Tooltip.makeTooltippable(passive.actionBox, passive);
                     unit.unlockSomething(mindType, passive);
+                    Tooltip.makeTooltippable(passive.actionBox, passive);
                     unlockAugmentSound.play();
                     passive.lock.visible = false;
                 }

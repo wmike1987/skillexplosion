@@ -6,7 +6,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 export default function(options) {
     var item = Object.assign({
         name: "Book",
-        description: ['Learns a state of mind.'],
+        description: ['Learn a state of mind.'],
         additionCondition: function(augment) {
             return augment.name == 'first aid pouch';
         },

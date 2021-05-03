@@ -1,8 +1,8 @@
-import ic from '@core/Unit/ItemConstructor.js'
+import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
     maxEnergy: 10,
-}
+};
 
 export default function(options) {
     var item = Object.assign({
@@ -12,4 +12,4 @@ export default function(options) {
         icon: 'RichPepPill'
     }, options);
     return new ic(item);
-};
+}

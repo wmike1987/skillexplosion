@@ -1,7 +1,7 @@
-import ic from '@core/Unit/ItemConstructor.js'
-import * as Matter from 'matter-js'
-import {globals} from '@core/Fundamental/GlobalState.js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import ic from '@core/Unit/ItemConstructor.js';
+import * as Matter from 'matter-js';
+import {globals} from '@core/Fundamental/GlobalState.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function(options) {
     var item = Object.assign({
@@ -13,7 +13,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey();
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hideAugmentsAndPassivesForUnit()
+                globals.currentGame.unitSystem.unitPanel.hideAugmentsAndPassivesForUnit();
             }
             return true;
         },
@@ -24,13 +24,13 @@ export default function(options) {
             }
             this.unlockHandler = gameUtils.matterOnce(this.owningUnit, 'unlockedSomething', function() {
                 globals.currentGame.itemSystem.removeItem(this);
-            }.bind(this))
+            }.bind(this));
         },
         placeCallback: function() {
             this.owningUnit.removeUnlockerKey();
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hideAugmentsAndPassivesForUnit()
+                globals.currentGame.unitSystem.unitPanel.hideAugmentsAndPassivesForUnit();
             }
         },
         dropPredicate: function(dropPosition) {
@@ -46,4 +46,4 @@ export default function(options) {
         }
     }, options);
     return new ic(item);
-};
+}

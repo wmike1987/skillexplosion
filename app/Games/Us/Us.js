@@ -445,6 +445,7 @@ var game = {
         });
         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AjaMicrochip"], unit: this.shane});
         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
@@ -478,11 +479,11 @@ var game = {
             name: 'Ursula',
             dropItemsOnDeath: false
         });
-        ItemUtils.giveUnitItem({
-            gamePrefix: "Us",
-            itemName: ["TechnologyKey"],
-            unit: this.ursula
-        });
+        // ItemUtils.giveUnitItem({
+        //     gamePrefix: "Us",
+        //     itemName: ["TechnologyKey"],
+        //     unit: this.ursula
+        // });
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
         // this.ursula.idleCancel = true;

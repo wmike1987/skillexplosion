@@ -17,12 +17,21 @@ export default function(options) {
     var defCooldown = this.defenseCooldown/1000 + ' second cooldown';
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
-    this.description = this.decoratedAggressionDescription.concat([aggCooldown]).concat(['Click to activate'])
-                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat(['Ctrl+Click to activate']);
-    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
+    this.description = this.decoratedAggressionDescription.concat([aggCooldown])
+                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]));
+    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText];
+    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText];
     this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText].concat(this.defensiveDescrStyle));
     this.systemMessage = options.passiveSystemMessage;
+
+    Matter.Events.on(this, 'unlockedSomething', function() {
+        this.description = this.decoratedAggressionDescription.concat([aggCooldown]).concat(['Click to activate'])
+                            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat(['Ctrl+Click to activate']);
+        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
+        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
+        this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText].concat(this.defensiveDescrStyle));
+        this.systemMessage = options.passiveSystemMessage;
+    }.bind(this));
 
     this.cooldownTimer = null;
     this.start = function(mode) {

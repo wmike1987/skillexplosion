@@ -595,6 +595,8 @@ var UnitBase = {
 			configurable: true
         });
 
+
+        this._canTakeAbilityDamage = this.canTakeAbilityDamage;
         Object.defineProperty(this, 'canTakeAbilityDamage', {
             get: function() {
                 return this._canTakeAbilityDamage && gameUtils.isPositionWithinPlayableBounds(this.position);
@@ -605,7 +607,6 @@ var UnitBase = {
             },
 			configurable: true
         });
-        this.canTakeAbilityDamage = true;
 
         Matter.Events.on(this, 'addUnit', function() {
             if(this._afterAddInit) {

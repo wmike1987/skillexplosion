@@ -18,18 +18,26 @@ import styles from '@utils/Styles.js';
 import {
     DialogueScene
 } from '@games/Us/Dialogues/DialogueScene.js';
+import UnitMenu from '@games/Us/UnitMenu.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
 
 var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
 var UrsulaTasks = function(scene) {
+
+    this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
+    ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SturdyCanteen"], unit: this.box, immortal: true});
+    globals.currentGame.addUnit(this.box);
+    this.box.position = {x: 750, y: 300};
+
     var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a3a = new Dialogue({actor: "Task", text: "Hover over your heal ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a4a = new Dialogue({actor: "Task", text: "Hover over your secret-step ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var a4a = new Dialogue({actor: "Task", text: "Hover over your Secret Step ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a5a = new Dialogue({actor: "Task", text: "Hover over your mine ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a5b = new Dialogue({actor: "Task", text: "Press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
 
     var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a6], {startDelay: 200, done: function() {
@@ -150,14 +158,15 @@ var UrsulaTasks = function(scene) {
         });
     };
 
+    var box = this.box;
     a5b.onStart = function() {
-        gameUtils.matterOnce(globals.currentGame.ursula, 'layMine', (event) => {
+        box.isTargetable = true;
+        box.canTakeAbilityDamage = true;
+        gameUtils.matterOnce(box, 'death', (event) => {
             achieve.play();
-            gameUtils.matterOnce(globals.currentGame.ursula, 'mineExplode', (event) => {
-                gameUtils.doSomethingAfterDuration(() => {
-                    a5b.preventAutoEnd = false;
-                }, pauseAfterCompleteTime);
-            });
+            gameUtils.doSomethingAfterDuration(() => {
+                a5b.preventAutoEnd = false;
+            }, pauseAfterCompleteTime);
         });
     };
 

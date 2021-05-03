@@ -1,9 +1,9 @@
-import ic from '@core/Unit/ItemConstructor.js'
+import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
     defense: 1,
     maxEnergy: 5,
-}
+};
 
 export default function(options) {
     var item = Object.assign({
@@ -13,4 +13,4 @@ export default function(options) {
         icon: 'MedalOfMerit'
     }, options);
     return new ic(item);
-};
+}

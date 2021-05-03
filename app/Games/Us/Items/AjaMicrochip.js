@@ -6,22 +6,22 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 export default function(options) {
     var item = Object.assign({
         name: "Aja Microchip",
-        description: ["Enables a rifle augment.", 'Adds +1 hp to first aid pouch.'],
+        description: ["Enable a Rifle augment.", 'Add +1 hp to first aid pouch.'],
         poweredByMessage: {text: 'Aja Microchip', style: 'basicPoweredByStyle'},
         conditionalPoweredByMessage: {text: '+1 hp per attack.', style: 'basicPoweredByStyle'},
         additionCondition: function(augment) {
             return augment.name == 'first aid pouch';
         },
-        equipCondition: function(ability, augment) {
+        plugCondition: function(ability, augment) {
             return ability.name == 'Rifle';
         },
-        equip: function() {
+        plug: function() {
             this.owningUnit.firstAidPouchAdditions.push(1);
         },
-        unequip: function() {
+        unplug: function() {
             mathArrayUtils.removeObjectFromArray(1, this.owningUnit.firstAidPouchAdditions);
         },
-        equipTint: 0xffab08,
+        plugTint: 0xffab08,
         systemMessage: "Drop on augment to enable.",
         icon: 'AriesMicrochip',
 

@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import * as Matter from 'matter-js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 
 var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
@@ -65,6 +65,7 @@ ConfigPanel.prototype.initialize = function() {
     }.bind(this));
 
     $('body').on('mousedown.unitConfigurationPanel', function(event) {
+        if(keyStates.Control) return;
         var mousePoint = {x: 0, y: 0};
         gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= abilityMax.x && mousePoint.x >= abilityMin.x && mousePoint.y <= abilityMax.y && mousePoint.y >= abilityMin.y) {
@@ -123,7 +124,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                     ability.addSlave(b);
 
                     augment.actionBox.on('mousedown', function(event) {
-                        var microchipContext = this.prevailingUnit.unlockContext.augment ? this.prevailingUnit.unlockContext.augment : {};
+                        var microchipContext = this.prevailingUnit.unlockContext.augment || {};
                         if(globals.currentGame.itemSystem.isGrabbing()) {
 
                             //if we're holding a non-augment unlocker
@@ -132,40 +133,49 @@ ConfigPanel.prototype.showAugments = function(unit) {
                                 return;
                             }
 
-                            //or if we are... but the equip condition isn't met
-                            if(microchipContext && microchipContext.equipCondition) {
-                                if(!microchipContext.equipCondition(ability, augment)) {
+                            //or if we are... but the plug condition isn't met
+                            if(microchipContext && microchipContext.plugCondition) {
+                                if(!microchipContext.plugCondition(ability, augment)) {
                                     cantdo.play();
                                     return;
                                 }
                             }
 
-                            //equip augment
+                            //our microchip works! So let's...
+
+                            //indicate we're plugged in
                             augment.currentAugmentBorder.position = augment.icon.position;
                             augment.currentAugmentBorder.visible = true;
-                            augment.currentAugmentBorder.tint = microchipContext.equipTint || 0xFFFFFF;
+                            augment.currentAugmentBorder.tint = microchipContext.plugTint || 0xFFFFFF;
                             augment.icon.tint = 0xFFFFFF;
                             ability.enableAugment(augment);
-                            if(augment.equip) {
+
+                            //equip the augment itself if we're not currently equipped
+                            if(augment.equip && !augment.currentMicrochip) {
                                 augment.equip(this.prevailingUnit);
                             }
-                            this.prevailingUnit.unlockSomething(augmentId);
-                            let additionConditionMet = microchipContext.additionCondition && microchipContext.additionCondition(augment);
 
-                            //if we're here and our augment is currently powered, we want to unequip the existing one
+                            //signal that we've unlocked something
+                            this.prevailingUnit.unlockSomething(augmentId, augment);
+
+                            //unplug any previous microchip and give to player
                             if(augment.currentMicrochip) {
-                                ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: [augment.currentMicrochip], unit: this.prevailingUnit});
-                                if(augment.currentMicrochip.unequip) {
-                                    augment.currentMicrochip.unequip();
+                                ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: [augment.currentMicrochipName], unit: this.prevailingUnit});
+                                if(augment.currentMicrochip.unplug) {
+                                    augment.currentMicrochip.unplug(ability);
                                 }
                             }
-                            augment.currentMicrochip = microchipContext.creationName || microchipContext.name.replace(/ /g,'');
+
+                            //determine if addition condition is met and, if so, grant to unit and build the tooltip
+                            let additionConditionMet = microchipContext.additionCondition && microchipContext.additionCondition(augment);
+                            augment.currentMicrochip = microchipContext;
+                            augment.currentMicrochipName = microchipContext.creationName || microchipContext.name.replace(/ /g,'');
                             let ar1 = mathArrayUtils.convertToArray(augment.systemMessage);
                             let ar2 = mathArrayUtils.convertToArray(microchipContext.poweredByMessage);
                             var ar3 = [];
                             if(additionConditionMet && microchipContext.conditionalPoweredByMessage) {
-                                if(microchipContext.equip) {
-                                    microchipContext.equip();
+                                if(microchipContext.plug) {
+                                    microchipContext.plug(ability);
                                 }
                                 if(microchipContext.conditionalPoweredByMessage) {
                                     ar3 = mathArrayUtils.convertToArray(microchipContext.conditionalPoweredByMessage);
@@ -180,20 +190,21 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.prevailingUnit});
                             this.unitPanelRef.updateUnitAbilities();
                         } else if(augment.currentMicrochip) {
-                            //unequip augment and pickup
+                            //if we're not grabbing, and our augment has a current microchip
                             if(augment.unequip) {
                                 augment.unequip(this.prevailingUnit);
                             }
 
-                            if(augment.currentMicrochip.unequip) {
-                                augment.currentMicrochip.unequip();
+                            if(augment.currentMicrochip.unplug) {
+                                augment.currentMicrochip.unplug(ability);
                             }
-                            ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: [augment.currentMicrochip], unit: this.prevailingUnit});
+                            ItemUtils.createItemAndGrasp({gamePrefix: "Us", itemName: [augment.currentMicrochipName], unit: this.prevailingUnit});
                             let systemMessage = augment.systemMessage ? [augment.systemMessage, inactiveSysMessage] : inactiveSysMessage;
                             Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: systemMessage});
                             augment.currentAugmentBorder.visible = false;
                             augment.icon.tint = augmentInactiveTint;
                             augment.currentMicrochip = null;
+                            augment.currentMicrochipName = null;
                             ability.disableAugment(augment);
                             unequip.play();
                         }

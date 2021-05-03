@@ -487,13 +487,13 @@ export default function Medic(options) {
         });
         smokeExplosionAnimation.alpha = 0.6;
         if(shrapnelAugment) {
-            mineExplosionAnimation.tint = 0xD7FFFA;
+            mineExplosionAnimation.tint = 0x6bafaf;
         }
         if(maimAugment) {
-            mineExplosionAnimation.tint = 0x670d0d;
+            mineExplosionAnimation.tint = 0xd2cb1b;
         }
         if(maimAugment && shrapnelAugment) {
-            mineExplosionAnimation.tint = 0xcf013c;
+            mineExplosionAnimation.tint = 0xf0df00;
         }
         graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {x: blastRadius*2, y: blastRadius*2});
         graphicsUtils.makeSpriteSize(mineExplosionAnimation, {x: blastRadius*3.0, y: blastRadius*3.0});
@@ -593,7 +593,7 @@ export default function Medic(options) {
             if(maimAugment || shrapnelAugment) {
                 //extra mine explosion graphic
                 var scale = maimAugment ? 2.5 : 3.5;
-                var tint = maimAugment ? 0xf200ff : 0xffffff;
+                var tint = maimAugment ? 0xf00000 : 0xffffff;
                 var mineMaimExplosionAnimation = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations2',
                     animationName: 'additionalexplosion',

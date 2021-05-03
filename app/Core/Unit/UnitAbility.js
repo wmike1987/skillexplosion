@@ -24,8 +24,8 @@ export default function(options) {
     if(this.energyCost) {
       this.systemMessage = ["E: " + this.energyCost];
       this.updaters = {systemMessages: function() {
-          if(this.customCostText) {
-              return {index: 0, value: this.customCostText};
+          if(this.customCostTextUpdater) {
+              return {index: 0, value: this.customCostTextUpdater()};
           }
           return {index: 0, value: "E: " + this.energyCost};
       }.bind(this)};

@@ -5,16 +5,25 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function(options) {
     var item = Object.assign({
-        name: "Gen-1 Microchip",
-        creationName: "BasicMicrochip",
-        description: "Enable an augment.",
-        poweredByMessage: {text: 'Gen-1 Microchip', style: 'basicPoweredByStyle'},
-        systemMessage: "Drop on ability to enable.",
-        icon: 'BasicMicrochip',
-
-        plugCondition: function() {
+        name: "Green Microchip",
+        description: ["Enable a Dash augment or Secret Step augment.", 'Decrease energy cost by 1.'],
+        poweredByMessage: {text: 'Green Microchip', style: 'basicPoweredByStyle'},
+        conditionalPoweredByMessage: {text: '-1 to energy cost.', style: 'basicPoweredByStyle'},
+        additionCondition: function(augment) {
             return true;
         },
+        plugCondition: function(ability, augment) {
+            return ability.name == 'Dash' || ability.name == 'Secret Step';
+        },
+        plug: function(ability) {
+            ability.energyCost -= 1;
+        },
+        unplug: function(ability) {
+            ability.energyCost += 1;
+        },
+        plugTint: 0x22ec5b,
+        systemMessage: "Drop on augment to enable.",
+        icon: 'GreenMicrochip',
 
         dropCallback: function(position) {
             this.owningUnit.removeUnlockerKey('augment');

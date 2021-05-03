@@ -386,8 +386,8 @@ export default function Marine(options) {
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
     };
 
-    var vrHpCost = 3;
-    var vrECost = 1.5;
+    var vrHpCost = 2.5;
+    var vrECost = 1;
     var dashAbility = new Ability({
         name: 'Dash',
         key: 'd',
@@ -406,23 +406,25 @@ export default function Marine(options) {
                 name: 'vital reserves',
                 icon: graphicsUtils.createDisplayObject('VitalReserves'),
                 title: 'Vital Reserves',
-                description: 'Alter dash cost to ' + vrHpCost + ' hp, ' + vrECost + ' energy.',
+                description: ['Decrease energy cost by ' + vrECost,  'Add ' + vrHpCost + ' hp to cost.'],
                 equip: function(unit) {
-                    this.oldEnergyCost = this.ability.energyCost;
-                    this.ability.energyCost = vrECost;
+                    this.ability.energyCost -= vrECost;
                     this.ability.hpEnable = this.ability.enablers.push(function() {
                         return unit.currentHealth > vrHpCost;
                     });
                     this.ability.hpCost = this.ability.costs.push(function() {
                         return unit.currentHealth -= vrHpCost;
                     });
-                    this.ability.customCostText = 'HP: ' + vrHpCost + ' and E: ' + vrECost;
+                    this.ability.customCostTextUpdater = function() {
+                        var thisAbilityCost = marine.getAbilityByName('Dash').energyCost;
+                        return 'HP: ' + vrHpCost + ' and E: ' + thisAbilityCost;
+                    };
                 },
                 unequip: function(unit) {
-                    this.ability.energyCost = this.oldEnergyCost;
+                    this.ability.energyCost += vrECost;
                     this.ability.enablers.splice(this.ability.enablers.indexOf(this.ability.hpEnable), 1);
                     this.ability.costs.splice(this.ability.costs.indexOf(this.ability.hpCost), 1);
-                    this.ability.customCostText = null;
+                    this.ability.customCostTextUpdater = null;
                 }
             },
             {
