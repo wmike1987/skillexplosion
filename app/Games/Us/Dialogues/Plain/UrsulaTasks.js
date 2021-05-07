@@ -21,9 +21,9 @@ import {
 import UnitMenu from '@games/Us/UnitMenu.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 
-var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
-
 var UrsulaTasks = function(scene) {
+
+    var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
     this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
     ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SturdyCanteen"], unit: this.box, immortal: true});
@@ -40,8 +40,11 @@ var UrsulaTasks = function(scene) {
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
 
-    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a6], {startDelay: 200, done: function() {
+    var chain = new DialogueChain([a1/*, a2, a3a, a3b, a4a, a4b, a5a, a5b, a6*/], {startDelay: 200, done: function() {
         chain.cleanUp();
+        gameUtils.doSomethingAfterDuration(() => {
+            augmentChain.play();
+        });
     }});
 
     var pauseAfterCompleteTime = 750;
@@ -180,6 +183,29 @@ var UrsulaTasks = function(scene) {
     scene.addCleanUpTask(() => {
         achieve.unload();
     });
+
+    var b1 = new Dialogue({actor: "MacMurray", text: "You learn quick.", fadeOutAfterDone: true, isTask: false, backgroundBox: true, letterSpeed: 30});
+    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip. Use it to activate an ability augment.", fadeOutAfterDone: true, isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var b3 = new Dialogue({actor: "MacMurray", text: "Collect the microchip.", fadeOutAfterDone: true, isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+
+    // var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a4a = new Dialogue({actor: "Task", text: "Hover over your Secret Step ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    // var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+
+    var augmentChain = new DialogueChain([b1, b2, b3], {startDelay: 200, done: function() {
+        augmentChain.cleanUp();
+    }});
+
+    b2.fullyShownCallback = function() {
+        globals.currentGame.flyover(() => {
+            b2.preventAutoEnd = false;
+        });
+    };
 
     return chain;
 };

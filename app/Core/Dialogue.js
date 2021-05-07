@@ -276,6 +276,10 @@ var Dialogue = function Dialogue(options) {
                     }
                 }
             } else if(this.totalElapsedTime >= d.resolveTime){
+                if(d.fullyShownCallback && !d.alreadyTriggeredFullyShown) {
+                    d.alreadyTriggeredFullyShown = true;
+                    d.fullyShownCallback();
+                }
                 if(d.next && d.next.preventAutoStart) {
                     return;
                 }

@@ -80,6 +80,8 @@ var game = {
             volume: 0.12,
             rate: 0.9
         });
+        this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 4.0, rate: 1.0});
+
         this.shaneCollector = new StatCollector({
             predicate: function(event) {
                 if (event.performingUnit.name == 'Shane')
@@ -553,6 +555,31 @@ var game = {
             unit.hideGrave();
     },
 
+    flyover: function(done) {
+        var shadow = Matter.Bodies.circle(-2500, gameUtils.getCanvasHeight()/2.0, 1, {
+          restitution: 0.95,
+          frictionAir: 0,
+          mass: 1,
+          isSensor: true
+        });
+
+        shadow.renderChildren = [{
+          id: 'planeShadow',
+          data: 'AirplaneShadow',
+          scale: {x: 7, y: 7},
+          anchor: {x: 0, y: 0.5},
+          stage: "foreground",
+        }];
+        this.addBody(shadow);
+        this.flyoverSound.play();
+        gameUtils.sendBodyToDestinationAtSpeed(shadow, {x: gameUtils.getCanvasWidth() + 100, y: shadow.position.y}, 24, false, false, () => {
+            this.removeBody(shadow);
+            if(done) {
+                done();
+            }
+        });
+    },
+
     resetGameExtension: function() {
         this.level = 0;
     },
@@ -566,6 +593,7 @@ var game = {
 
         if(this.heartbeat) {
             this.heartbeat.unload();
+            this.flyoverSound.unload();
         }
     }
 };
