@@ -142,7 +142,7 @@ var renderer = function(engine, options) {
 
 				//handle rotation
 				if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'continuous') {
-				    sprite.rotation += .00075 * tickEvent.delta;
+				    sprite.rotation += 0.00075 * tickEvent.delta;
 				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'none') {
 				    //do nothing
 				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'random') {
@@ -529,6 +529,6 @@ var renderer = function(engine, options) {
 		graphics.endFill();
 		this.addToPixiStage(graphics, 'hud');
 	};
-}
+};
 
 export default renderer;

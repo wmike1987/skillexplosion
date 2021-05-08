@@ -84,7 +84,8 @@ var gameUtils = {
         anim.persists = true;
         anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
         anim.animationSpeed = options.speed;
-        anim.loop = (options.playThisManyTimes == 'loop') || options.loop;
+        anim.loop = (options.playThisManyTimes == 'loop') || (options.loop && !options.loopPause);
+        anim.loopPause = options.loopPause;
         anim.playThisManyTimes = options.playThisManyTimes || options.times;
         anim.currentPlayCount = anim.playThisManyTimes;
         anim.anchor = options.anchor || {x: 0.5, y: 0.5};
@@ -103,6 +104,16 @@ var gameUtils = {
                     anim.onManyComplete.call(anim);
                     this.currentPlayCount = this.playThisManyTimes;
                 }
+            };
+        }
+
+        //functionality for loop pause
+        if(anim.loopPause) {
+            anim.onManyComplete = anim.onComplete; //default to remove the animation
+            anim.onComplete = function() { //override onComplete to countdown the specified number of times
+                gameUtils.doSomethingAfterDuration(() => {
+                    anim.gotoAndPlay(0);
+                }, anim.loopPause);
             };
         }
 

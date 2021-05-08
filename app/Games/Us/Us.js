@@ -490,6 +490,8 @@ var game = {
         // });
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;
@@ -587,11 +589,11 @@ var game = {
         var smokeAnimation = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'smokeimpact',
-            speed: 0.35,
+            speed: 0.375,
             transform: [location.x, location.y, -2, 2]
         });
-        smokeAnimation.tint = smokeTint || 0x999999;
-        smokeAnimation.alpha = 0.75;
+        smokeAnimation.tint = smokeTint || 0x435a73;
+        smokeAnimation.alpha = 0.6;
         smokeAnimation.sortYOffset = 50;
         graphicsUtils.addSomethingToRenderer(smokeAnimation, 'stage');
         smokeAnimation.play();
@@ -599,7 +601,7 @@ var game = {
         var smokeAnimation2 = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'smokeimpact',
-            speed: 0.5,
+            speed: 0.85,
             transform: [location.x, location.y, 3, 3]
         });
         smokeAnimation2.tint = smokeTint || 0x8e8e8e;
@@ -611,7 +613,7 @@ var game = {
         var smokeAnimation3 = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'smokeimpact',
-            speed: 0.45,
+            speed: 0.8,
             transform: [location.x, location.y-50, 2.5, 2]
         });
         smokeAnimation3.tint = 0x251f1e;

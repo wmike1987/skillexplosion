@@ -71,6 +71,8 @@ var baseItem = {
 };
 
 var itemDropSound = gameUtils.getSound('itemdrop.wav', {volume: 0.04, rate: 1});
+var microchipDropSound = gameUtils.getSound('itemdrop.wav', {volume: 0.04, rate: 1.75});
+var bookDropSound = gameUtils.getSound('criticalhit.wav', {volume: 0.05, rate: 1.5});
 var itemSwoosh = gameUtils.getSound('itemSwoosh.wav', {volume: 0.04, rate: 1.1});
 
 var ic = function(options) {
@@ -175,7 +177,7 @@ var ic = function(options) {
             //play animation
             this.itemDrop = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
-                animationName: 'ItemDropFroll',
+                animationName: item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll',
                 speed: 0.6,
                 playThisManyTimes: 1,
                 transform: [position.x, position.y],
@@ -188,7 +190,11 @@ var ic = function(options) {
                     item.manuallyManaged = false;
                     if(options.fleeting)
                         ItemUtils.initiateBlinkDeath({item: item});
-                    itemDropSound.play();
+                    var dropSound = item.classInformation.itemType == 'microchip' ? microchipDropSound : itemDropSound;
+                    if(item.classInformation.itemClass == 'book') {
+                        dropSound = bookDropSound;
+                    }
+                    dropSound.play();
                 }
             });
 
@@ -197,6 +203,7 @@ var ic = function(options) {
 
             // graphicsUtils.makeSpriteSize(this.itemDrop, {w: 48, h: 80});
             this.itemDrop.play();
+            this.itemDrop.tint = item.classInformation.typeInfo.tint;
             this.itemDrop.anchor.set(0.5, 0.75);
             graphicsUtils.addSomethingToRenderer(this.itemDrop, 'stage');
 
@@ -218,13 +225,13 @@ var ic = function(options) {
             //play animation
             var itemAnim = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
-                animationName: 'ItemGleamFroll',
-                speed: 0.05,
-                loop: true,
+                animationName: (item.classInformation.typeInfo.gleamAnimation) || (item.classInformation.itemType == 'microchip' ? 'MicrochipGleam' : 'ItemGleamFroll'),
+                speed: 0.25,
+                loopPause: 2000,
                 transform: [position.x, position.y],
             });
             itemAnim.play();
-            itemAnim.tint = 0xbbecfb;
+            itemAnim.tint = item.classInformation.typeInfo.tint;
 
             newItem.renderChildren = [{
                 id: 'itemFootprint',

@@ -201,7 +201,7 @@ var campLevel = function() {
         this.backgroundLightShader.myName = 'campfire';
         this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
         var flameTimer = null;
-        if (true) {
+        if (false) {
             var initLight = function() {
                 globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
                 globals.currentGame.renderer.layers.backgroundOne.filters = [this.backgroundLightShader];
@@ -232,8 +232,8 @@ var campLevel = function() {
                 this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
                 this.stageLightShader.uniforms.lightRadius = this.lightRadius;
             }.bind(this);
+            scene.add(initLight);
         }
-        scene.add(initLight);
 
         Matter.Events.on(scene, 'initialize', function() {
             this.camp.entercamp.play();
