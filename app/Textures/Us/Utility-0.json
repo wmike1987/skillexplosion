@@ -424,6 +424,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":34,"h":32},
 	"sourceSize": {"w":34,"h":32}
 },
+"MicrochipFootprint.png":
+{
+	"frame": {"x":1787,"y":1713,"w":32,"h":29},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":29},
+	"sourceSize": {"w":32,"h":32}
+},
 "MobBattleToken.png":
 {
 	"frame": {"x":1787,"y":1661,"w":50,"h":50},
@@ -466,7 +474,7 @@
 },
 "ShaneHeadToken.png":
 {
-	"frame": {"x":1821,"y":1137,"w":20,"h":22},
+	"frame": {"x":1821,"y":1713,"w":20,"h":22},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":1,"w":20,"h":22},
@@ -586,6 +594,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1844,"h":2020},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:2b8a8488ab0aa215bb130f0dd4ee2ad5:67c273906c860a293f7bc821f341927b:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:07f12dfebc0bf4f559b525bf8a76378e:0ef7932d5d94a4f78c26533038fd0e9c:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

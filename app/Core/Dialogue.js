@@ -286,7 +286,7 @@ var Dialogue = function Dialogue(options) {
                 if(d.preventAutoEnd) {
                     return;
                 }
-                if(d.fadeOutAfterDone) {
+                if(d.fadeOutAfterDone && !d.isContinuing) {
                     d.realizedText.alpha = 0.2;
                     d.realizedActorText.alpha = 0.2;
                     d.backgroundBox.alpha = 0.5;
@@ -358,6 +358,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
 
             //lookback to comprehend continuations
             if(nextDia && nextDia.continuation) {
+                currentDia.isContinuing = true;
                 nextDia.leftSpaceBuffer = currentDia.actorText.length;
             }
 

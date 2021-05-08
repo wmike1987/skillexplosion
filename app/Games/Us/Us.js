@@ -81,6 +81,7 @@ var game = {
             rate: 0.9
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 4.0, rate: 1.0});
+        this.boxSound = gameUtils.getSound('criticalhit.wav', {volume: 0.15, rate: 0.4});
 
         this.shaneCollector = new StatCollector({
             predicate: function(event) {
@@ -556,7 +557,7 @@ var game = {
     },
 
     flyover: function(done) {
-        var shadow = Matter.Bodies.circle(-2500, gameUtils.getCanvasHeight()/2.0, 1, {
+        var shadow = Matter.Bodies.circle(-2800, gameUtils.getCanvasHeight()/2.0, 1, {
           restitution: 0.95,
           frictionAir: 0,
           mass: 1,
@@ -572,12 +573,66 @@ var game = {
         }];
         this.addBody(shadow);
         this.flyoverSound.play();
-        gameUtils.sendBodyToDestinationAtSpeed(shadow, {x: gameUtils.getCanvasWidth() + 100, y: shadow.position.y}, 24, false, false, () => {
+        gameUtils.sendBodyToDestinationAtSpeed(shadow, {x: gameUtils.getCanvasWidth() + 100, y: shadow.position.y}, 35, false, false, () => {
             this.removeBody(shadow);
             if(done) {
                 done();
             }
         });
+    },
+
+    dustAndItemBox: function(location, item, special, smokeTint) {
+        //play animation
+        var center = gameUtils.getPlayableCenter();
+        var smokeAnimation = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'smokeimpact',
+            speed: 0.35,
+            transform: [location.x, location.y, -2, 2]
+        });
+        smokeAnimation.tint = smokeTint || 0x999999;
+        smokeAnimation.alpha = 0.75;
+        smokeAnimation.sortYOffset = 50;
+        graphicsUtils.addSomethingToRenderer(smokeAnimation, 'stage');
+        smokeAnimation.play();
+
+        var smokeAnimation2 = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'smokeimpact',
+            speed: 0.5,
+            transform: [location.x, location.y, 3, 3]
+        });
+        smokeAnimation2.tint = smokeTint || 0x8e8e8e;
+        smokeAnimation2.alpha = 0.25;
+        smokeAnimation2.sortYOffset = 50;
+        graphicsUtils.addSomethingToRenderer(smokeAnimation2, 'stage');
+        smokeAnimation2.play();
+
+        var smokeAnimation3 = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'smokeimpact',
+            speed: 0.45,
+            transform: [location.x, location.y-50, 2.5, 2]
+        });
+        smokeAnimation3.tint = 0x251f1e;
+        smokeAnimation3.alpha = 0.5;
+        smokeAnimation3.sortYOffset = 50;
+        graphicsUtils.addSomethingToRenderer(smokeAnimation3, 'stage');
+        smokeAnimation3.play();
+
+        var items = mathArrayUtils.convertToArray(item);
+        var randomDropLocation = false;
+        if(items.length > 1) {
+            randomDropLocation = true;
+        }
+        var box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, special: special, forcedItemDropOffset: !randomDropLocation});
+
+        items.forEach((item) => {
+            ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: item, unit: box});
+        });
+        globals.currentGame.addUnit(box);
+        this.boxSound.play();
+        box.position = mathArrayUtils.clonePosition(location, {y: -5});
     },
 
     resetGameExtension: function() {
@@ -594,6 +649,7 @@ var game = {
         if(this.heartbeat) {
             this.heartbeat.unload();
             this.flyoverSound.unload();
+            this.boxSound.unload();
         }
     }
 };

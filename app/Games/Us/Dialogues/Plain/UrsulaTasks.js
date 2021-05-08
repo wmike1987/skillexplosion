@@ -40,11 +40,11 @@ var UrsulaTasks = function(scene) {
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
 
-    var chain = new DialogueChain([a1/*, a2, a3a, a3b, a4a, a4b, a5a, a5b, a6*/], {startDelay: 200, done: function() {
+    var chain = new DialogueChain([a1, /*a2, a3a, a3b, a4a, a4b, a5a, a5b, a6*/], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             augmentChain.play();
-        });
+        }, 1000);
     }});
 
     var pauseAfterCompleteTime = 750;
@@ -176,7 +176,7 @@ var UrsulaTasks = function(scene) {
     a6.onStart = function() {
         gameUtils.matterOnce(globals.currentGame.shane, 'knifeMine', (event) => {
             achieve.play();
-            chain.cleanUp();
+            a6.preventAutoEnd = false;
         });
     };
 
@@ -203,6 +203,7 @@ var UrsulaTasks = function(scene) {
 
     b2.fullyShownCallback = function() {
         globals.currentGame.flyover(() => {
+            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 100}), ['BasicMicrochip', 'Book'], true);
             b2.preventAutoEnd = false;
         });
     };

@@ -803,7 +803,7 @@ export default function Marine(options) {
         defenseEventName: 'sufferProjectile',
         defenseCooldown: 9000,
         aggressionEventName: 'kill',
-        aggressionCooldown: 9000,
+        aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);

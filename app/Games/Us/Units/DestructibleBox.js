@@ -40,7 +40,7 @@ export default function DestructibleBox(options) {
         offset: {x: 0, y: 22},
     },{
         id: 'main',
-        data: 'Box',
+        data: options.special ? 'GoldBox' : 'Box',
         rotate: 'none',
         visible: true,
         offset: {x: 3, y: -20},

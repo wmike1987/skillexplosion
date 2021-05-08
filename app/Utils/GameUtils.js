@@ -600,6 +600,10 @@ var gameUtils = {
       return {x: this.getPlayableWidth()/2, y: this.getPlayableHeight()/2};
     },
 
+    getPlayableCenterPlus: function(offset) {
+        return mathArrayUtils.clonePosition(this.getPlayableCenter(), offset);
+    },
+
     getPlayableWH: function() {
       return {x: this.getPlayableWidth(), y: this.getPlayableHeight(), w: this.getPlayableWidth(), h: this.getPlayableHeight()};
     },
