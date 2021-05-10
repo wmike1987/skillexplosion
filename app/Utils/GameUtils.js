@@ -117,6 +117,10 @@ var gameUtils = {
             };
         }
 
+        anim.startFromFrameZero = function() {
+            this.gotoAndPlay(0);
+        };
+
         if(options.onComplete) {
             anim.onComplete = options.onComplete;
         }

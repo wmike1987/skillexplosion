@@ -72,7 +72,7 @@ var baseItem = {
 
 var itemDropSound = gameUtils.getSound('itemdrop.wav', {volume: 0.04, rate: 1});
 var microchipDropSound = gameUtils.getSound('itemdrop.wav', {volume: 0.04, rate: 1.75});
-var bookDropSound = gameUtils.getSound('criticalhit.wav', {volume: 0.05, rate: 1.5});
+var bookDropSound = gameUtils.getSound('criticalhit.wav', {volume: 0.025, rate: 1.15});
 var itemSwoosh = gameUtils.getSound('itemSwoosh.wav', {volume: 0.04, rate: 1.1});
 
 var ic = function(options) {
@@ -174,16 +174,21 @@ var ic = function(options) {
 
             var item = this;
 
-            //play animation
+            //play drop animation
+            var dropAnimationName = item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll';
+            if(item.classInformation.itemClass == 'book') {
+                dropAnimationName = 'BookDrop';
+            }
             this.itemDrop = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
-                animationName: item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll',
+                animationName: dropAnimationName,
                 speed: 0.6,
                 playThisManyTimes: 1,
                 transform: [position.x, position.y],
                 onComplete: function() {
                     graphicsUtils.removeSomethingFromRenderer(this);
                     globals.currentGame.addBody(item.body);
+                    item.body.renderlings.itemFootprint.startFromFrameZero();
                     Matter.Events.trigger(globals.currentGame.itemSystem, 'dropItem', {item: item});
                     item.isDropping = false;
                     item.currentSlot = null;
@@ -222,11 +227,11 @@ var ic = function(options) {
                 }
             });
 
-            //play animation
+            //play gleam animation
             var itemAnim = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
                 animationName: (item.classInformation.typeInfo.gleamAnimation) || (item.classInformation.itemType == 'microchip' ? 'MicrochipGleam' : 'ItemGleamFroll'),
-                speed: 0.25,
+                speed: 0.15,
                 loopPause: 2000,
                 transform: [position.x, position.y],
             });

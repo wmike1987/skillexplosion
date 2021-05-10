@@ -1,38 +1,22 @@
 {"frames": {
 
-"BookGleam0.png":
+"BookDrop0.png":
 {
-	"frame": {"x":1340,"y":1,"w":25,"h":21},
-	"rotated": true,
-	"trimmed": true,
-	"spriteSourceSize": {"x":12,"y":10,"w":25,"h":21},
-	"sourceSize": {"w":48,"h":40}
-},
-"BookGleam1.png":
-{
-	"frame": {"x":1340,"y":1,"w":25,"h":21},
-	"rotated": true,
-	"trimmed": true,
-	"spriteSourceSize": {"x":12,"y":10,"w":25,"h":21},
-	"sourceSize": {"w":48,"h":40}
-},
-"ItemDropFroll0.png":
-{
-	"frame": {"x":679,"y":1,"w":42,"h":60},
+	"frame": {"x":855,"y":1,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
 	"sourceSize": {"w":48,"h":80}
 },
-"ItemDropFroll1.png":
+"BookDrop1.png":
 {
-	"frame": {"x":403,"y":1,"w":42,"h":67},
+	"frame": {"x":510,"y":1,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
 	"sourceSize": {"w":48,"h":80}
 },
-"ItemDropFroll2.png":
+"BookDrop2.png":
 {
 	"frame": {"x":1,"y":1,"w":44,"h":70},
 	"rotated": true,
@@ -40,103 +24,63 @@
 	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":70},
 	"sourceSize": {"w":48,"h":80}
 },
-"ItemDropFroll3.png":
+"BookDrop3.png":
 {
-	"frame": {"x":472,"y":1,"w":42,"h":67},
+	"frame": {"x":1632,"y":1,"w":34,"h":58},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
+	"spriteSourceSize": {"x":4,"y":14,"w":34,"h":58},
 	"sourceSize": {"w":48,"h":80}
 },
-"ItemDropFroll4.png":
+"BookDrop4.png":
 {
-	"frame": {"x":741,"y":1,"w":42,"h":60},
-	"rotated": true,
+	"frame": {"x":475,"y":1,"w":33,"h":44},
+	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
+	"spriteSourceSize": {"x":4,"y":30,"w":33,"h":44},
 	"sourceSize": {"w":48,"h":80}
 },
-"ItemDropFroll5.png":
+"BookDrop5.png":
 {
-	"frame": {"x":1015,"y":1,"w":40,"h":52},
+	"frame": {"x":1253,"y":1,"w":40,"h":52},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":24,"w":40,"h":52},
 	"sourceSize": {"w":48,"h":80}
 },
-"ItemDropFroll6.png":
+"BookGleam0.png":
 {
-	"frame": {"x":927,"y":1,"w":42,"h":42},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":37,"w":42,"h":42},
-	"sourceSize": {"w":48,"h":80}
-},
-"ItemDropFroll7.png":
-{
-	"frame": {"x":145,"y":1,"w":44,"h":44},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":35,"w":44,"h":44},
-	"sourceSize": {"w":48,"h":80}
-},
-"ItemGleamFroll-0.png":
-{
-	"frame": {"x":237,"y":1,"w":44,"h":40},
+	"frame": {"x":1692,"y":1,"w":25,"h":21},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":40},
+	"spriteSourceSize": {"x":12,"y":10,"w":25,"h":21},
 	"sourceSize": {"w":48,"h":40}
 },
-"ItemGleamFroll-1.png":
+"BookGleam1.png":
 {
-	"frame": {"x":279,"y":1,"w":44,"h":40},
+	"frame": {"x":1692,"y":1,"w":25,"h":21},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":40},
+	"spriteSourceSize": {"x":12,"y":10,"w":25,"h":21},
 	"sourceSize": {"w":48,"h":40}
 },
-"ItemGleamFroll-2.png":
+"ItemDropFroll0.png":
 {
-	"frame": {"x":1123,"y":1,"w":47,"h":40},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":40},
-	"sourceSize": {"w":48,"h":40}
-},
-"ItemGleamFroll-3.png":
-{
-	"frame": {"x":321,"y":1,"w":44,"h":39},
-	"rotated": true,
-	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":39},
-	"sourceSize": {"w":48,"h":40}
-},
-"ItemGleamFroll-4.png":
-{
-	"frame": {"x":362,"y":1,"w":44,"h":39},
-	"rotated": true,
-	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":39},
-	"sourceSize": {"w":48,"h":40}
-},
-"MicrochipDrop0.png":
-{
-	"frame": {"x":803,"y":1,"w":42,"h":60},
+	"frame": {"x":917,"y":1,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
 	"sourceSize": {"w":48,"h":80}
 },
-"MicrochipDrop1.png":
+"ItemDropFroll1.png":
 {
-	"frame": {"x":541,"y":1,"w":42,"h":67},
+	"frame": {"x":579,"y":1,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
 	"sourceSize": {"w":48,"h":80}
 },
-"MicrochipDrop2.png":
+"ItemDropFroll2.png":
 {
 	"frame": {"x":73,"y":1,"w":44,"h":70},
 	"rotated": true,
@@ -144,9 +88,113 @@
 	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":70},
 	"sourceSize": {"w":48,"h":80}
 },
+"ItemDropFroll3.png":
+{
+	"frame": {"x":648,"y":1,"w":42,"h":67},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
+	"sourceSize": {"w":48,"h":80}
+},
+"ItemDropFroll4.png":
+{
+	"frame": {"x":979,"y":1,"w":42,"h":60},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
+	"sourceSize": {"w":48,"h":80}
+},
+"ItemDropFroll5.png":
+{
+	"frame": {"x":1307,"y":1,"w":40,"h":52},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":24,"w":40,"h":52},
+	"sourceSize": {"w":48,"h":80}
+},
+"ItemDropFroll6.png":
+{
+	"frame": {"x":1165,"y":1,"w":42,"h":42},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":37,"w":42,"h":42},
+	"sourceSize": {"w":48,"h":80}
+},
+"ItemDropFroll7.png":
+{
+	"frame": {"x":217,"y":1,"w":44,"h":44},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":35,"w":44,"h":44},
+	"sourceSize": {"w":48,"h":80}
+},
+"ItemGleamFroll-0.png":
+{
+	"frame": {"x":309,"y":1,"w":44,"h":40},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":40},
+	"sourceSize": {"w":48,"h":40}
+},
+"ItemGleamFroll-1.png":
+{
+	"frame": {"x":351,"y":1,"w":44,"h":40},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":40},
+	"sourceSize": {"w":48,"h":40}
+},
+"ItemGleamFroll-2.png":
+{
+	"frame": {"x":1415,"y":1,"w":47,"h":40},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":40},
+	"sourceSize": {"w":48,"h":40}
+},
+"ItemGleamFroll-3.png":
+{
+	"frame": {"x":393,"y":1,"w":44,"h":39},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":39},
+	"sourceSize": {"w":48,"h":40}
+},
+"ItemGleamFroll-4.png":
+{
+	"frame": {"x":434,"y":1,"w":44,"h":39},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":39},
+	"sourceSize": {"w":48,"h":40}
+},
+"MicrochipDrop0.png":
+{
+	"frame": {"x":1041,"y":1,"w":42,"h":60},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
+	"sourceSize": {"w":48,"h":80}
+},
+"MicrochipDrop1.png":
+{
+	"frame": {"x":717,"y":1,"w":42,"h":67},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
+	"sourceSize": {"w":48,"h":80}
+},
+"MicrochipDrop2.png":
+{
+	"frame": {"x":145,"y":1,"w":44,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":70},
+	"sourceSize": {"w":48,"h":80}
+},
 "MicrochipDrop3.png":
 {
-	"frame": {"x":610,"y":1,"w":42,"h":67},
+	"frame": {"x":786,"y":1,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
@@ -154,7 +202,7 @@
 },
 "MicrochipDrop4.png":
 {
-	"frame": {"x":865,"y":1,"w":42,"h":60},
+	"frame": {"x":1103,"y":1,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
@@ -162,7 +210,7 @@
 },
 "MicrochipDrop5.png":
 {
-	"frame": {"x":1069,"y":1,"w":40,"h":52},
+	"frame": {"x":1361,"y":1,"w":40,"h":52},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":24,"w":40,"h":52},
@@ -170,7 +218,7 @@
 },
 "MicrochipDrop6.png":
 {
-	"frame": {"x":971,"y":1,"w":42,"h":42},
+	"frame": {"x":1209,"y":1,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":37,"w":42,"h":42},
@@ -178,7 +226,7 @@
 },
 "MicrochipDrop7.png":
 {
-	"frame": {"x":191,"y":1,"w":44,"h":44},
+	"frame": {"x":263,"y":1,"w":44,"h":44},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":35,"w":44,"h":44},
@@ -186,7 +234,7 @@
 },
 "MicrochipGleam0.png":
 {
-	"frame": {"x":1172,"y":1,"w":40,"h":40},
+	"frame": {"x":1464,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -194,7 +242,7 @@
 },
 "MicrochipGleam1.png":
 {
-	"frame": {"x":1214,"y":1,"w":40,"h":40},
+	"frame": {"x":1506,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -202,7 +250,7 @@
 },
 "MicrochipGleam2.png":
 {
-	"frame": {"x":1256,"y":1,"w":40,"h":40},
+	"frame": {"x":1548,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -210,7 +258,7 @@
 },
 "MicrochipGleam3.png":
 {
-	"frame": {"x":1298,"y":1,"w":40,"h":40},
+	"frame": {"x":1590,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -218,7 +266,7 @@
 },
 "MicrochipGleam4.png":
 {
-	"frame": {"x":1256,"y":1,"w":40,"h":40},
+	"frame": {"x":1548,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -226,7 +274,7 @@
 },
 "MicrochipGleam5.png":
 {
-	"frame": {"x":1214,"y":1,"w":40,"h":40},
+	"frame": {"x":1506,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -234,13 +282,14 @@
 },
 "MicrochipGleam6.png":
 {
-	"frame": {"x":1172,"y":1,"w":40,"h":40},
+	"frame": {"x":1464,"y":1,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
 	"sourceSize": {"w":48,"h":40}
 }},
 "animations": {
+	"BookDrop": ["BookDrop0.png","BookDrop1.png","BookDrop2.png","BookDrop3.png","BookDrop4.png","BookDrop5.png"],
 	"BookGleam": ["BookGleam0.png","BookGleam1.png"],
 	"ItemDropFroll": ["ItemDropFroll0.png","ItemDropFroll1.png","ItemDropFroll2.png","ItemDropFroll3.png","ItemDropFroll4.png","ItemDropFroll5.png","ItemDropFroll6.png","ItemDropFroll7.png"],
 	"ItemGleamFroll": ["ItemGleamFroll-0.png","ItemGleamFroll-1.png","ItemGleamFroll-2.png","ItemGleamFroll-3.png","ItemGleamFroll-4.png"],
@@ -252,8 +301,8 @@
 	"version": "1.0",
 	"image": "ItemAnimations1.png",
 	"format": "RGBA8888",
-	"size": {"w":1362,"h":46},
+	"size": {"w":1714,"h":46},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:0690076db99a921277b9f5d5f03378d6:dee44f05fa572e2b691b0a79c4604ec1:4867c4f7974ae99ac7db6afe492be53a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:36b4f44f282723ab9b256758c261b842:3f4fd0f316b26ed3cc3fd1215f7ac277:4867c4f7974ae99ac7db6afe492be53a$"
 }
 }

@@ -759,21 +759,22 @@ export default function Medic(options) {
 
     var rsDDuration = 10000;
     var rsADuration = 3000;
+    var rsDAmount = 25;
     var raisedStakes  = new Passive({
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Double healing cost and healing amount for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Gain 12 grit for 10 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Gain ' + rsDAmount + ' grit for 10 seconds.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 3000,
+        defenseCooldown: 2000,
         aggressionEventName: 'performHeal',
-        aggressionCooldown: 8000,
+        aggressionCooldown: 5000,
         defenseAction: function(event) {
             medic.applyBuff({name: "stakesGritBuff" + mathArrayUtils.getId(), duration: rsDDuration, textureName: 'GritBuff', applyChanges: function() {
-                medic.addGritAddition(12);
+                medic.addGritAddition(rsDAmount);
             }, removeChanges: function() {
-                medic.removeGritAddition(12);
+                medic.removeGritAddition(rsDAmount);
             }});
         },
         aggressionAction: function(event) {

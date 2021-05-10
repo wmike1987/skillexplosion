@@ -184,20 +184,10 @@ var UrsulaTasks = function(scene) {
         achieve.unload();
     });
 
-    var b1 = new Dialogue({actor: "MacMurray", text: "You learn quick.", fadeOutAfterDone: true, isTask: false, backgroundBox: true, letterSpeed: 30});
-    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip. Use it to activate an ability augment.", fadeOutAfterDone: true, isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
-    var b3 = new Dialogue({actor: "MacMurray", text: "Collect the microchip.", fadeOutAfterDone: true, isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var b1 = new Dialogue({actor: "MacMurray", text: "One more thing, you live and die by your wits out here.", pauseAfterWord: {word: 'thing,', duration: 300}, backgroundBox: true, letterSpeed: 30});
+    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Collect them and learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
 
-    // var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a4a = new Dialogue({actor: "Task", text: "Hover over your Secret Step ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    // var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-
-    var augmentChain = new DialogueChain([b1, b2, b3], {startDelay: 200, done: function() {
+    var augmentChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
         augmentChain.cleanUp();
     }});
 
@@ -206,6 +196,23 @@ var UrsulaTasks = function(scene) {
             globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 100}), ['BasicMicrochip', 'Book'], true);
             b2.preventAutoEnd = false;
         });
+    };
+
+    var c1 = new Dialogue({text: "Collect the microchip.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
+    var c2 = new Dialogue({text: "Hover over your microchip to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c4 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c5 = new Dialogue({text: "Collect the book.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c6 = new Dialogue({text: "Hover over the book to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c7 = new Dialogue({text: "Grab the book and drop it on an unlearned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c8 = new Dialogue({text: "Activate the desired mode of your learned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+
+    var finalLearningChain = new DialogueChain([c1, c2], {startDelay: 200, done: function() {
+        finalLearningChain.cleanUp();
+    }});
+
+    c1.onStart = function() {
+
     };
 
     return chain;
