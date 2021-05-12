@@ -43,7 +43,8 @@ var UrsulaTasks = function(scene) {
     var chain = new DialogueChain([a1, /*a2, a3a, a3b, a4a, a4b, a5a, a5b, a6*/], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
-            augmentChain.play();
+            finalLearningChain.play();
+            // augmentChain.play();
         }, 1000);
     }});
 
@@ -189,6 +190,9 @@ var UrsulaTasks = function(scene) {
 
     var augmentChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
         augmentChain.cleanUp();
+        gameUtils.doSomethingAfterDuration(() => {
+            finalLearningChain.play();
+        }, 1000);
     }});
 
     b2.fullyShownCallback = function() {
@@ -198,22 +202,72 @@ var UrsulaTasks = function(scene) {
         });
     };
 
-    var c1 = new Dialogue({text: "Collect the microchip.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-    var c2 = new Dialogue({text: "Hover over your microchip to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
-    var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
-    var c4 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c1 = new Dialogue({text: "Collect both the microchip and the book.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var c2 = new Dialogue({text: "Hover over the microchip to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var c4 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
     var c5 = new Dialogue({text: "Collect the book.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
-    var c6 = new Dialogue({text: "Hover over the book to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
-    var c7 = new Dialogue({text: "Grab the book and drop it on an unlearned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
-    var c8 = new Dialogue({text: "Activate the desired mode of your learned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var c6 = new Dialogue({text: "Hover over the book to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var c7 = new Dialogue({text: "Grab the book and drop it on an unlearned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var c8 = new Dialogue({text: "Activate the desired mode of your learned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
 
-    var finalLearningChain = new DialogueChain([c1, c2], {startDelay: 200, done: function() {
+    var microchip = null;
+    var book = null;
+    c1.onStart = function() {
+        globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 100}), ['BasicMicrochip', 'Book'], true);
+        gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, 'pickupItem', (event) => {
+            if(event.unit.name != 'Ursula' && event.unit.name != 'Shane') return;
+            var item = event.item;
+            if(item.name == "Gen-1 Microchip") {
+                microchip = item;
+                if(book && microchip) {
+                    achieve.play();
+                    c1.preventAutoEnd = false;
+                }
+                return true;
+            }
+        });
+
+        gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, 'pickupItem', (event) => {
+            if(event.unit.name != 'Ursula' && event.unit.name != 'Shane') return;
+            var item = event.item;
+            if(item.name == "Book") {
+                book = item;
+                if(book && microchip) {
+                    achieve.play();
+                    c1.preventAutoEnd = false;
+                }
+                return true;
+            }
+        });
+    };
+
+    var arrow;
+    c2.onStart = function() {
+        arrow = graphicsUtils.pointToSomethingWithArrow(microchip, -5, 0.5);
+        gameUtils.matterOnce(microchip.icon, 'tooltipShown', () => {
+            graphicsUtils.removeSomethingFromRenderer(arrow);
+            achieve.play();
+            gameUtils.doSomethingAfterDuration(() => {
+                c2.preventAutoEnd = false;
+            }, 2250);
+        });
+    };
+
+    c3.onStart = function() {
+        gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, "usergrab", function(event) {
+            var item = event.item;
+            var unit = event.unit;
+            if(item == microchip) {
+                c3.preventAutoEnd = false;
+                return true;
+            }
+        });
+    };
+
+    var finalLearningChain = new DialogueChain([c1, c2, c3, c4], {startDelay: 200, done: function() {
         finalLearningChain.cleanUp();
     }});
-
-    c1.onStart = function() {
-
-    };
 
     return chain;
 };

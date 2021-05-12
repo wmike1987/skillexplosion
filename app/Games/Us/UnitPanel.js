@@ -932,102 +932,107 @@ unitPanel.prototype.clearUnitItems = function() {
     }
 };
 
+var _displayUnitStats = function() {
+    var sign;
+    if (this.prevailingUnit) {
+        //name
+        this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
+
+        //damage (or heal)
+        var functionText = "";
+        if (this.prevailingUnit.damageMember && this.prevailingUnit.damageMember instanceof Function) {
+            functionText = this.prevailingUnit.damageMember();
+        }
+        this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
+        if (this.prevailingUnit.damageAdditions.length > 0) {
+            sign = '+';
+            if (this.prevailingUnit.getDamageAdditionSum() < 0) {
+                sign = '';
+            }
+            this.unitDamageAdditionsText.text = sign + this.prevailingUnit.getDamageAdditionSum();
+            this.unitDamageAdditionsText.position = mathArrayUtils.clonePosition(this.unitDamageText.position, {
+                x: this.unitDamageText.width
+            });
+        } else {
+            this.unitDamageAdditionsText.text = '';
+        }
+
+        //armor
+        this.unitDefenseText.text = "Arm: " + this.prevailingUnit.defense;
+        if (this.prevailingUnit.defenseAdditions.length > 0) {
+            sign = '+';
+            if (this.prevailingUnit.getDefenseAdditionSum() < 0) {
+                sign = '';
+            }
+            this.unitDefenseAdditionsText.text = sign + this.prevailingUnit.getDefenseAdditionSum();
+            this.unitDefenseAdditionsText.position = mathArrayUtils.clonePosition(this.unitDefenseText.position, {
+                x: this.unitDefenseText.width
+            });
+        } else {
+            this.unitDefenseAdditionsText.text = '';
+        }
+
+        //health
+        this.unitHealthText.text = "HP: " + Math.floor(this.prevailingUnit.currentHealth);
+
+        //grit
+        this.unitGritText.text = "Grt: " + this.prevailingUnit.grit;
+        if (this.prevailingUnit.gritAdditions.length > 0) {
+            sign = '+';
+            if (this.prevailingUnit.getGritAdditionSum() < 0) {
+                sign = '';
+            }
+            this.unitGritAdditionsText.text = sign + this.prevailingUnit.getGritAdditionSum();
+            this.unitGritAdditionsText.position = mathArrayUtils.clonePosition(this.unitGritText.position, {
+                x: this.unitGritText.width
+            });
+        } else {
+            this.unitGritAdditionsText.text = '';
+        }
+
+        //dodge
+        this.unitDodgeText.text = "Ddg: " + this.prevailingUnit.dodge;
+        if (this.prevailingUnit.dodgeAdditions.length > 0) {
+            sign = '+';
+            if (this.prevailingUnit.getDodgeAdditionSum() < 0) {
+                sign = '';
+            }
+            this.unitDodgeAdditionsText.text = sign + this.prevailingUnit.getDodgeAdditionSum();
+            this.unitDodgeAdditionsText.position = mathArrayUtils.clonePosition(this.unitDodgeText.position, {
+                x: this.unitDodgeText.width
+            });
+        } else {
+            this.unitDodgeAdditionsText.text = '';
+        }
+
+        //energy
+        this.unitEnergyText.text = "E: " + Math.floor(this.prevailingUnit.currentEnergy);
+    }
+};
+
 unitPanel.prototype.displayUnitStats = function() {
     //Unit Stats Ticker
     if (!this.updateUnitStatTick) {
-        this.updateUnitStatTick = globals.currentGame.addTickCallback(function() {
-            if (this.prevailingUnit) {
-                //name
-                this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
-
-                //damage (or heal)
-                var functionText = "";
-                if (this.prevailingUnit.damageMember && this.prevailingUnit.damageMember instanceof Function) {
-                    functionText = this.prevailingUnit.damageMember();
-                }
-                this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
-                if (this.prevailingUnit.damageAdditions.length > 0) {
-                    var sign = '+';
-                    if (this.prevailingUnit.getDamageAdditionSum() < 0) {
-                        sign = '';
-                    }
-                    this.unitDamageAdditionsText.text = sign + this.prevailingUnit.getDamageAdditionSum();
-                    this.unitDamageAdditionsText.position = mathArrayUtils.clonePosition(this.unitDamageText.position, {
-                        x: this.unitDamageText.width
-                    });
-                } else {
-                    this.unitDamageAdditionsText.text = '';
-                }
-
-                //armor
-                this.unitDefenseText.text = "Arm: " + this.prevailingUnit.defense;
-                if (this.prevailingUnit.defenseAdditions.length > 0) {
-                    var sign = '+';
-                    if (this.prevailingUnit.getDefenseAdditionSum() < 0) {
-                        sign = '';
-                    }
-                    this.unitDefenseAdditionsText.text = sign + this.prevailingUnit.getDefenseAdditionSum();
-                    this.unitDefenseAdditionsText.position = mathArrayUtils.clonePosition(this.unitDefenseText.position, {
-                        x: this.unitDefenseText.width
-                    });
-                } else {
-                    this.unitDefenseAdditionsText.text = '';
-                }
-
-                //health
-                this.unitHealthText.text = "HP: " + Math.floor(this.prevailingUnit.currentHealth);
-
-                //grit
-                this.unitGritText.text = "Grt: " + this.prevailingUnit.grit;
-                if (this.prevailingUnit.gritAdditions.length > 0) {
-                    var sign = '+';
-                    if (this.prevailingUnit.getGritAdditionSum() < 0) {
-                        sign = '';
-                    }
-                    this.unitGritAdditionsText.text = sign + this.prevailingUnit.getGritAdditionSum();
-                    this.unitGritAdditionsText.position = mathArrayUtils.clonePosition(this.unitGritText.position, {
-                        x: this.unitGritText.width
-                    });
-                } else {
-                    this.unitGritAdditionsText.text = '';
-                }
-
-                //dodge
-                this.unitDodgeText.text = "Ddg: " + this.prevailingUnit.dodge;
-                if (this.prevailingUnit.dodgeAdditions.length > 0) {
-                    var sign = '+';
-                    if (this.prevailingUnit.getDodgeAdditionSum() < 0) {
-                        sign = '';
-                    }
-                    this.unitDodgeAdditionsText.text = sign + this.prevailingUnit.getDodgeAdditionSum();
-                    this.unitDodgeAdditionsText.position = mathArrayUtils.clonePosition(this.unitDodgeText.position, {
-                        x: this.unitDodgeText.width
-                    });
-                } else {
-                    this.unitDodgeAdditionsText.text = '';
-                }
-
-                //energy
-                this.unitEnergyText.text = "E: " + Math.floor(this.prevailingUnit.currentEnergy);
-            }
-        }.bind(this));
+        this.updateUnitStatTick = globals.currentGame.addTickCallback(_displayUnitStats.bind(this));
+    } else {
+        _displayUnitStats.call(this);
     }
 
     //experience meter
-    if (!this.updateExperienceMeterTick) {
-        this.updateExperienceMeterTick = globals.currentGame.addTickCallback(function() {
-            if (this.prevailingUnit) {
-                this.experienceMeter.visible = true;
-                var expPercent = (this.prevailingUnit.currentExperience - this.prevailingUnit.lastLevelExp) / (this.prevailingUnit.nextLevelExp - this.prevailingUnit.lastLevelExp);
-                graphicsUtils.makeSpriteSize(this.experienceMeter, {
-                    x: gameUtils.getPlayableWidth() * expPercent,
-                    y: this.barOffset - 1
-                });
-            } else {
-                this.experienceMeter.visible = false;
-            }
-        }.bind(this));
-    }
+    // if (!this.updateExperienceMeterTick) {
+    //     this.updateExperienceMeterTick = globals.currentGame.addTickCallback(function() {
+    //         if (this.prevailingUnit) {
+    //             this.experienceMeter.visible = true;
+    //             var expPercent = (this.prevailingUnit.currentExperience - this.prevailingUnit.lastLevelExp) / (this.prevailingUnit.nextLevelExp - this.prevailingUnit.lastLevelExp);
+    //             graphicsUtils.makeSpriteSize(this.experienceMeter, {
+    //                 x: gameUtils.getPlayableWidth() * expPercent,
+    //                 y: this.barOffset - 1
+    //             });
+    //         } else {
+    //             this.experienceMeter.visible = false;
+    //         }
+    //     }.bind(this));
+    // }
 };
 
 unitPanel.prototype.displayUnitAbilities = function() {

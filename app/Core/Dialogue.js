@@ -59,6 +59,9 @@ var Dialogue = function Dialogue(options) {
     this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: 0.25, rate: 1});
 
     //Establish actor text at creation time since it's used in continuations
+    if(this.isTask) {
+        this.actor = "Task";
+    }
     this.actorText = this.actor ? this.actor + ": " : "";
 
     this.play = function(options) {

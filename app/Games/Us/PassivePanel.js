@@ -18,6 +18,10 @@ var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
 };
 
+ConfigPanel.prototype.flashPanel = function(unit) {
+    graphicsUtils.flashSprite({sprite: this.showButton, duration: 200, pauseDurationAtEnds: 150, times: 2, toColor: 0xe96e6e});
+};
+
 ConfigPanel.prototype.initialize = function() {
     this.id = mathArrayUtils.uuidv4();
 
@@ -93,6 +97,9 @@ ConfigPanel.prototype.showForUnit = function(unit) {
 
     //show augments
     this.showPassives(unit);
+
+    //flash panel
+    this.flashPanel();
 };
 
 ConfigPanel.prototype.showPassives = function(unit) {

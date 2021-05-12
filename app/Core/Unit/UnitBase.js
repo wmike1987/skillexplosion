@@ -898,7 +898,7 @@ var UnitBase = {
 
     petrify: function(duration) {
         var unit = this;
-        if(unit.isDead) {
+        if(unit.isDead || !unit.isMoveable) {
             return;
         }
         var buffName = 'petrify';

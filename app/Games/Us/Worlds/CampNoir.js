@@ -221,8 +221,8 @@ var noirEnemySets = {
     }],
     mobs: [{
         type: 'Eruptlet',
-        amount: 25,
-        atATime: 5,
+        amount: 75,
+        atATime: 15,
         hz: 5000
     }],
     outerMobs: [{

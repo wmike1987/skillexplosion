@@ -201,7 +201,7 @@ var campLevel = function() {
         this.backgroundLightShader.myName = 'campfire';
         this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
         var flameTimer = null;
-        if (false) {
+        if (true) {
             var initLight = function() {
                 globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
                 globals.currentGame.renderer.layers.backgroundOne.filters = [this.backgroundLightShader];

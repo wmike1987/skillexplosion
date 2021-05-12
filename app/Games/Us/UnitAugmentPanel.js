@@ -76,6 +76,10 @@ ConfigPanel.prototype.initialize = function() {
     }.bind(this));
 };
 
+ConfigPanel.prototype.flashPanel = function(unit) {
+    graphicsUtils.flashSprite({sprite: this.showButton, duration: 200, pauseDurationAtEnds: 150, times: 2, toColor: 0xe96e6e});
+};
+
 ConfigPanel.prototype.showForUnit = function(unit) {
     //hide showbutton and text
     this.liftOpenButton();
@@ -91,6 +95,9 @@ ConfigPanel.prototype.showForUnit = function(unit) {
 
     //show augments
     this.showAugments(unit);
+
+    //flash panel
+    this.flashPanel();
 };
 
 var augmentInactiveTint = 0x535353;
