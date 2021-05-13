@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import * as Matter from 'matter-js';
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
 
 var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: 0.05, rate: 1.25});
@@ -19,7 +19,10 @@ var ConfigPanel = function(unitPanel) {
 };
 
 ConfigPanel.prototype.flashPanel = function(unit) {
-    graphicsUtils.flashSprite({sprite: this.showButton, duration: 200, pauseDurationAtEnds: 150, times: 2, toColor: 0xe96e6e});
+    if(this.flashTimer) {
+        this.flashTimer.invalidate();
+    }
+    this.flashTimer = graphicsUtils.flashSprite({sprite: this.showButton, duration: 150, pauseDurationAtEnds: 150, times: 2, toColor: 0xe62f2f});
 };
 
 ConfigPanel.prototype.initialize = function() {
@@ -152,6 +155,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'defensePassive');
+                        Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive});
                         graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
@@ -169,6 +173,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'attackPassive');
+                        Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive});
                         graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
@@ -183,7 +188,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     lastPassive.border.visible = true;
 
                     //trigger event and trigger ability panel update
-                    Matter.Events.trigger(this, 'passiveEquip', {passive: passive, unit: this.prevailingUnit})
+                    // Matter.Events.trigger(globals.currentGame.unitSystem, 'passiveEquip', {passive: passive, unit: this.prevailingUnit})
                     this.unitPanelRef.updateUnitPassives();
                 } else if(!passive.unlocked) {
                     if(!unit.canUnlockSomething(mindType)) {
@@ -191,7 +196,9 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         return;
                     }
                     unit.unlockSomething(mindType, passive);
+                    Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindLearned', {unit: this.prevailingUnit, passive: passive});
                     Tooltip.makeTooltippable(passive.actionBox, passive);
+                    passive.actionBox.tooltipObj.display(mousePosition);
                     unlockAugmentSound.play();
                     passive.lock.visible = false;
                 }

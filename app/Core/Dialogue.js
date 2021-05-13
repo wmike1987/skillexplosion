@@ -36,7 +36,7 @@ var Dialogue = function Dialogue(options) {
         pauseAtCommas: true,
         leftSpaceBuffer: 0,
         actorIdleTime: 0,
-        style: options.isTask ? styles.taskDialogue : styles.dialogueStyle,
+        style: options.isTask ? styles.taskDialogue : (options.isInfo ? styles.infoDialogue : styles.dialogueStyle),
         actionStyle: styles.actionStyle,
         actorStyle: styles.dialogueActorStyle,
         titleStyle: styles.dialogueTitleStyle,
@@ -61,6 +61,8 @@ var Dialogue = function Dialogue(options) {
     //Establish actor text at creation time since it's used in continuations
     if(this.isTask) {
         this.actor = "Task";
+    } else if(this.isInfo) {
+        this.actor = "Info";
     }
     this.actorText = this.actor ? this.actor + ": " : "";
 

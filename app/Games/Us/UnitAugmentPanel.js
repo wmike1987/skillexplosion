@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import * as Matter from 'matter-js';
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 
 var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
@@ -77,7 +77,10 @@ ConfigPanel.prototype.initialize = function() {
 };
 
 ConfigPanel.prototype.flashPanel = function(unit) {
-    graphicsUtils.flashSprite({sprite: this.showButton, duration: 200, pauseDurationAtEnds: 150, times: 2, toColor: 0xe96e6e});
+    if(this.flashTimer) {
+        this.flashTimer.invalidate();
+    }
+    this.flashTimer = graphicsUtils.flashSprite({sprite: this.showButton, duration: 150, pauseDurationAtEnds: 150, times: 2, toColor: 0xe62f2f});
 };
 
 ConfigPanel.prototype.showForUnit = function(unit) {
@@ -190,11 +193,12 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             }
                             let finalSysMessage = ar1.concat(ar2).concat(ar3);
                             Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: finalSysMessage});
+                            augment.actionBox.tooltipObj.display(mousePosition);
                             graphicsUtils.addGleamToSprite({sprite: augment.icon, gleamWidth: 10, duration: 350});
                             equip.play();
 
                             //trigger event and trigger ability panel update
-                            Matter.Events.trigger(this, 'augmentEquip', {augment: augment, unit: this.prevailingUnit});
+                            Matter.Events.trigger(globals.currentGame.unitSystem, 'augmentEquip', {augment: augment, unit: this.prevailingUnit});
                             this.unitPanelRef.updateUnitAbilities();
                         } else if(augment.currentMicrochip) {
                             //if we're not grabbing, and our augment has a current microchip

@@ -470,6 +470,14 @@ export default {
 		miterLimit: 0
 	}),
 
+	infoDialogue: new PIXI.TextStyle({
+		name: 'infoDialogue',
+		fill: "#9fbe06",
+		fontFamily: "\"Lucida Console\", Monaco, monospace",
+		fontSize: 18,
+		miterLimit: 0
+	}),
+
 	dialogueStyle: new PIXI.TextStyle({
 		name: 'dialogueStyle',
 	    fill: "#00b3ff",
