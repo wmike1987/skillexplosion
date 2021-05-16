@@ -58,12 +58,34 @@ var Dialogue = function Dialogue(options) {
 
     this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: 0.25, rate: 1});
 
-    //Establish actor text at creation time since it's used in continuations
+    //pre-configure task settings
     if(this.isTask) {
         this.actor = "Task";
+        this.actorTint = 0x159500;
+        this.preventAutoEnd = !this.isContinuing;
+        this.delayAfterEnd = 0;
+        this.letterSpeed = 30;
+        this.fadeOutAfterDone = true;
+        this.completeTask = function() {
+            if(!this.isContinuing) {
+                this.speedUp();
+                this.fullyShownCallback = () => {
+                    this.realizedActorText.text = "";
+                    this.realizedText.text = "Excellent";
+                    graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.realizedText.width, y: this.realizedText.height});
+                    graphicsUtils.flashSprite({sprite: this.realizedText, duration: 40, pauseDurationAtEnds: 40, times: 4, toColor: 0x23afeb, onEnd: () => {
+                        this.realizedText.tint = 0x23afeb;
+                    }});
+                };
+            }
+        };
     } else if(this.isInfo) {
         this.actor = "Info";
+        this.actorTint = 0xffffff;
+        this.letterSpeed = 30;
     }
+
+    //Establish actor text at creation time since it's used in continuations
     this.actorText = this.actor ? this.actor + ": " : "";
 
     this.play = function(options) {
@@ -97,6 +119,9 @@ var Dialogue = function Dialogue(options) {
             this.fullTextHeight = this.realizedText.height;
             this.realizedActorText = graphicsUtils.createDisplayObject("TEX+:", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
             this.realizedActorText.position.y += (options.yOffset || 0);
+            if(this.actorTint) {
+                this.realizedActorText.tint = this.actorTint;
+            }
         }
 
         //create action text if specified
@@ -292,8 +317,8 @@ var Dialogue = function Dialogue(options) {
                     return;
                 }
                 if(d.fadeOutAfterDone && !d.isContinuing) {
-                    d.realizedText.alpha = 0.2;
-                    d.realizedActorText.alpha = 0.2;
+                    d.realizedText.alpha = 0.5;
+                    d.realizedActorText.alpha = 0.5;
                     d.backgroundBox.alpha = 0.5;
                 }
                 d.deferred.resolve();
@@ -325,9 +350,9 @@ var Dialogue = function Dialogue(options) {
       globals.currentGame.invalidateTimer(this.textTimer);
     };
 
-    this.speedUp = function() {
+    this.speedUp = function(doneCallback) {
         this.skipped = true;
-        this.resolveTime = 0;
+        // this.resolveTime = 0;
         this.textTimer.skipToEnd = true;
         if(this.actionTextTimer) {
             this.actionTextTimer.skipToEnd = true;
@@ -355,9 +380,12 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         }
 
         //setup chain
+        var currentBreak = 0;
         for(var j = 0; j < len; j++) {
+            let currentIndex = j;
+            let nextIndex = j+1;
             let currentDia = arrayOfDialogues[j];
-            let nextDia = arrayOfDialogues[j+1];
+            let nextDia = arrayOfDialogues[nextIndex];
 
             currentDia.next = nextDia;
 
@@ -369,9 +397,31 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
 
             if(j + 1 < len) {
                 currentDia.deferred.done(() => {
-                  currentDia.leaveText();
-              });
-                currentDia.deferred.done(nextDia.play.bind(nextDia, {yOffset: this.dialogSpacing * (j+1)}));
+                currentDia.leaveText();
+                });
+
+                //if our current dialogue is a break, set current break
+                if(currentDia.newBreak) {
+                    currentBreak = currentIndex;
+                }
+
+                //determine the location of the next dialogue
+                let yOffset = this.dialogSpacing * (j - currentBreak + 1);
+
+                currentDia.deferred.done(() => {
+                    if(nextDia.newBreak) {
+                        //if the next dialogue is breaking, determine the location
+                        yOffset = this.dialogSpacing * (0);
+
+                        //when we play a next, breaking dialogue, cleanup previous dialogues
+                        this.arrayOfDialogues.forEach((dialogue, index) => {
+                            if(index < nextIndex) {
+                                dialogue.cleanUp();
+                            }
+                        });
+                    }
+                    nextDia.play({yOffset: yOffset});
+                });
                 currentDia.deferred.done(function() {
                     this.currentDia = nextDia;
                 }.bind(this));

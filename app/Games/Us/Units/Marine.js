@@ -446,7 +446,7 @@ export default function Marine(options) {
     var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {volume: 0.03, rate: 1.5});
     var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {volume: 0.05, rate: 1});
     var knifeSpeed = 22;
-    marine.knifeDamage = 20;
+    marine.knifeDamage = 15;
     var throwKnife = function(destination, commandObj, childKnife) {
         //get augments
         var thisAbility = this.getAbilityByName('Throw Knife');

@@ -761,6 +761,7 @@ var UnitSystem = function(properties) {
                 this.hoveredUnit = null;
             }
             if(frontMostUnit) {
+                if(!frontMostUnit.isSelectable) return;
                 pastHoveredUnits = [frontMostUnit];
                 frontMostUnit.hover();
                 this.hoveredUnit = frontMostUnit;

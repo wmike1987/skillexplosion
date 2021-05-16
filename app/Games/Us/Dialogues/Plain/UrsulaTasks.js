@@ -21,6 +21,17 @@ import {
 import UnitMenu from '@games/Us/UnitMenu.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 
+
+var pauseAfterCompleteTime = 750;
+var completeTaskAndRelease = function(dialogue) {
+    if(dialogue.isTask) {
+        dialogue.completeTask();
+        gameUtils.doSomethingAfterDuration(() => {
+            dialogue.preventAutoEnd = false;
+        }, pauseAfterCompleteTime);
+    }
+};
+
 var UrsulaTasks = function(scene) {
 
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
@@ -30,25 +41,25 @@ var UrsulaTasks = function(scene) {
     globals.currentGame.addUnit(this.box);
     this.box.position = {x: 750, y: 300};
 
-    var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a4a = new Dialogue({actor: "Task", text: "Hover over your Secret Step ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", isTask: true, backgroundBox: true});
+    var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", isTask: true, backgroundBox: true });
+    var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", isTask: true, backgroundBox: true});
+    var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", isTask: true, backgroundBox: true});
+    var a4a = new Dialogue({actor: "Task", text: "Hover over your Secret Step ability to read its description.", isTask: true, backgroundBox: true});
+    var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", isTask: true, backgroundBox: true});
+    var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", newBreak: true, isTask: true, backgroundBox: true});
+    var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
+    var a5c = new Dialogue({actor: "Task", text: "Pick up your item.", isTask: true, backgroundBox: true});
+    var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
 
-    var chain = new DialogueChain([a1, /*a2, a3a, a3b, a4a, a4b, a5a, a5b, a6*/], {startDelay: 200, done: function() {
+    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a6], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
-            microchipChain.play();
-            // augmentChain.play();
-        }, 1000);
+            // microchipChain.play();
+            transitionChain.play();
+        }, 250);
     }});
 
-    var pauseAfterCompleteTime = 750;
     var moveBeaconLocation = {x: 1000, y: 550};
 
     a1.onStart = function() {
@@ -57,10 +68,7 @@ var UrsulaTasks = function(scene) {
             if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Ursula') {
                 achieve.play();
                 graphicsUtils.removeSomethingFromRenderer(arrow);
-
-                gameUtils.doSomethingAfterDuration(() => {
-                    a1.preventAutoEnd = false;
-                }, pauseAfterCompleteTime);
+                completeTaskAndRelease(a1);
                 return true;
             }
         });
@@ -75,9 +83,7 @@ var UrsulaTasks = function(scene) {
             achieve.play();
             graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
 
-            gameUtils.doSomethingAfterDuration(() => {
-                a2.preventAutoEnd = false;
-            }, pauseAfterCompleteTime);
+            completeTaskAndRelease(a2);
             return true;
         });
     };
@@ -89,9 +95,7 @@ var UrsulaTasks = function(scene) {
             achieve.play();
             graphicsUtils.removeSomethingFromRenderer(arrow);
 
-            gameUtils.doSomethingAfterDuration(() => {
-                a3a.preventAutoEnd = false;
-            }, pauseAfterCompleteTime);
+            completeTaskAndRelease(a3a);
         });
     };
 
@@ -103,9 +107,7 @@ var UrsulaTasks = function(scene) {
                 if(!allHealed) {
                     achieve.play();
                     allHealed = true;
-                    gameUtils.doSomethingAfterDuration(() => {
-                        a3b.preventAutoEnd = false;
-                    }, pauseAfterCompleteTime);
+                    completeTaskAndRelease(a3b);
                 }
             });
 
@@ -115,7 +117,7 @@ var UrsulaTasks = function(scene) {
                     achieve.play();
                     allHealed = true;
                     healme.removeHandler();
-                    a3b.preventAutoEnd = false;
+                    completeTaskAndRelease(a3b);
                 }
             }, 15000);
         });
@@ -128,9 +130,7 @@ var UrsulaTasks = function(scene) {
             achieve.play();
             graphicsUtils.removeSomethingFromRenderer(arrow);
 
-            gameUtils.doSomethingAfterDuration(() => {
-                a4a.preventAutoEnd = false;
-            }, pauseAfterCompleteTime);
+            completeTaskAndRelease(a4a);
         });
     };
 
@@ -142,9 +142,7 @@ var UrsulaTasks = function(scene) {
             if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
             graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
             achieve.play();
-            gameUtils.doSomethingAfterDuration(() => {
-                a4b.preventAutoEnd = false;
-            }, pauseAfterCompleteTime);
+            completeTaskAndRelease(a4b);
             return true;
         });
     };
@@ -155,10 +153,7 @@ var UrsulaTasks = function(scene) {
         gameUtils.matterOnce(mineAbility.icon, 'tooltipShown', () => {
             achieve.play();
             graphicsUtils.removeSomethingFromRenderer(arrow);
-
-            gameUtils.doSomethingAfterDuration(() => {
-                a5a.preventAutoEnd = false;
-            }, pauseAfterCompleteTime);
+            completeTaskAndRelease(a5a);
         });
     };
 
@@ -168,16 +163,22 @@ var UrsulaTasks = function(scene) {
         box.canTakeAbilityDamage = true;
         gameUtils.matterOnce(box, 'death', (event) => {
             achieve.play();
-            gameUtils.doSomethingAfterDuration(() => {
-                a5b.preventAutoEnd = false;
-            }, pauseAfterCompleteTime);
+            completeTaskAndRelease(a5b);
+        });
+    };
+
+    a5c.onStart = function() {
+        gameUtils.matterOnce(globals.currentGame.ursula, 'pickupItem', (event) => {
+            achieve.play();
+            completeTaskAndRelease(a5c);
         });
     };
 
     a6.onStart = function() {
+        globals.currentGame.shane.isSelectable = true;
         gameUtils.matterOnce(globals.currentGame.shane, 'knifeMine', (event) => {
             achieve.play();
-            a6.preventAutoEnd = false;
+            completeTaskAndRelease(a6);
         });
     };
 
@@ -188,10 +189,10 @@ var UrsulaTasks = function(scene) {
     var b1 = new Dialogue({actor: "MacMurray", text: "One more thing, you live and die by your wits out here.", pauseAfterWord: {word: 'thing,', duration: 300}, backgroundBox: true, letterSpeed: 30});
     var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
 
-    var augmentChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
-        augmentChain.cleanUp();
+    var transitionChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
+        transitionChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
-            finalLearningChain.play();
+            microchipChain.play();
         }, 1000);
     }});
 
@@ -202,24 +203,24 @@ var UrsulaTasks = function(scene) {
         });
     };
 
-    var c1 = new Dialogue({text: "Collect both the microchip and the book.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var c2 = new Dialogue({text: "Hover over the microchip to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var c4 = new Dialogue({text: "Microchips can be reconfigured.", fadeOutAfterDone: true, isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 1500});
-    var c5 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var c1 = new Dialogue({text: "Destroy the box and collect the microchip and the book.", isTask: true, backgroundBox: true});
+    var c2 = new Dialogue({text: "Hover over the microchip to read its description.", isTask: true, backgroundBox: true});
+    var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", isTask: true, backgroundBox: true});
+    var c4 = new Dialogue({text: "Microchips can be reused.", isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 1500});
+    var c5 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", isTask: true, backgroundBox: true});
 
     var microchip = null;
     var book = null;
     c1.onStart = function() {
-        globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 100}), ['BasicMicrochip', 'Book'], true);
         gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, 'pickupItem', (event) => {
             if(event.unit.name != 'Ursula' && event.unit.name != 'Shane') return;
             var item = event.item;
             if(item.name == 'Gen-1 Microchip') {
                 microchip = item;
+                microchip.notGrabbable = true;
                 if(book && microchip) {
                     achieve.play();
-                    c1.preventAutoEnd = false;
+                    completeTaskAndRelease(c1);
                 }
                 return true;
             }
@@ -230,9 +231,10 @@ var UrsulaTasks = function(scene) {
             var item = event.item;
             if(item.name == "Book") {
                 book = item;
+                book.notGrabbable = true;
                 if(book && microchip) {
                     achieve.play();
-                    c1.preventAutoEnd = false;
+                    completeTaskAndRelease(c1);
                 }
                 return true;
             }
@@ -245,13 +247,12 @@ var UrsulaTasks = function(scene) {
         gameUtils.matterOnce(microchip.icon, 'tooltipShown', () => {
             graphicsUtils.removeSomethingFromRenderer(arrow);
             achieve.play();
-            gameUtils.doSomethingAfterDuration(() => {
-                c2.preventAutoEnd = false;
-            }, 2250);
+            completeTaskAndRelease(c2);
         });
     };
 
     c3.onStart = function() {
+        microchip.notGrabbable = false;
         gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, "usergrab", function(event) {
             var item = event.item;
             var unit = event.unit;
@@ -259,7 +260,7 @@ var UrsulaTasks = function(scene) {
                 // arrow = graphicsUtils.pointToSomethingWithArrow(microchip, -5, 0.5);
                 gameUtils.matterOnce(globals.currentGame.unitSystem, 'augmentEquip', function() {
                     achieve.play();
-                    c3.preventAutoEnd = false;
+                    completeTaskAndRelease(c3);
                 });
                 return true;
             }
@@ -274,7 +275,7 @@ var UrsulaTasks = function(scene) {
                 // arrow = graphicsUtils.pointToSomethingWithArrow(microchip, -5, 0.5);
                 gameUtils.matterOnce(globals.currentGame.unitSystem, 'augmentEquip', function() {
                     achieve.play();
-                    c5.preventAutoEnd = false;
+                    completeTaskAndRelease(c5);
                 });
                 return true;
             }
@@ -283,50 +284,79 @@ var UrsulaTasks = function(scene) {
 
     var microchipChain = new DialogueChain([c1, c2, c3, c4, c5], {startDelay: 200, done: function() {
         microchipChain.cleanUp();
-        bookChain.play();
+        gameUtils.doSomethingAfterDuration(() => {
+            bookChain.play();
+        }, 250);
     }});
 
-    var d1 = new Dialogue({text: "Hover over the book to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var d2 = new Dialogue({text: "Books cannot be reused like microchips can.", fadeOutAfterDone: true, isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 1500});
-    var d3 = new Dialogue({text: "Grab the book and drop it on an unlearned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-    var d4 = new Dialogue({text: "Each state of mind has two modes to choose from.", fadeOutAfterDone: true, isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 1000});
-    var d5 = new Dialogue({text: "Activate the desired mode of your learned state of mind.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+    var d1 = new Dialogue({text: "Hover over the book to read its description.", isTask: true, backgroundBox: true});
+    var d2 = new Dialogue({text: "Books cannot be reused like microchips can.", isInfo: true, backgroundBox: true, delayAfterEnd: 1500});
+    var d3 = new Dialogue({text: "Grab the book and drop it on a state of mind.", isTask: true, backgroundBox: true});
+    var d4 = new Dialogue({text: "This state of mind is now available to equip.", isInfo: true, backgroundBox: true, delayAfterEnd: 2750});
+    var d5 = new Dialogue({text: "Each state of mind has two modes to choose from.", isInfo: true, backgroundBox: true, delayAfterEnd: 1000});
+    var d6 = new Dialogue({text: "Activate the aggression mode of your learned state of mind. (Click)", isTask: true, backgroundBox: true});
+    var d7 = new Dialogue({text: "Now switch to the defensive mode. (Ctrl+Click)", isTask: true, backgroundBox: true});
 
     d1.onStart = function() {
         arrow = graphicsUtils.pointToSomethingWithArrow(book, -5, 0.5);
         gameUtils.matterOnce(book.icon, 'tooltipShown', () => {
             graphicsUtils.removeSomethingFromRenderer(arrow);
             achieve.play();
-            gameUtils.doSomethingAfterDuration(() => {
-                d1.preventAutoEnd = false;
-            }, 2250);
+            completeTaskAndRelease(d1);
         });
     };
 
     d3.onStart = function() {
+        book.notGrabbable = false;
         gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, "usergrab", function(event) {
             var item = event.item;
             var unit = event.unit;
             if(item == book) {
+                globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();
                 // arrow = graphicsUtils.pointToSomethingWithArrow(microchip, -5, 0.5);
                 gameUtils.matterOnce(globals.currentGame.unitSystem, 'stateOfMindLearned', function() {
                     achieve.play();
-                    d3.preventAutoEnd = false;
+                    completeTaskAndRelease(d3);
                 });
                 return true;
             }
         });
     };
 
-    d5.onStart = function() {
-        gameUtils.matterOnce(globals.currentGame.unitSystem, 'stateOfMindEquipped', function() {
-            achieve.play();
-            d5.preventAutoEnd = false;
+    d6.onStart = function() {
+        gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'stateOfMindEquipped', function(event) {
+            var mode = event.mode;
+            if(mode == 'aggression') {
+                achieve.play();
+                completeTaskAndRelease(d6);
+                return true;
+            }
         });
     };
 
-    var bookChain = new DialogueChain([d1, d2, d3, d4, d5], {startDelay: 200, done: function() {
+    d7.onStart = function() {
+        gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'stateOfMindEquipped', function(event) {
+            var mode = event.mode;
+            if(mode == 'defensive') {
+                achieve.play();
+                completeTaskAndRelease(d7);
+                return true;
+            }
+        });
+    };
+
+    var bookChain = new DialogueChain([d1, d2, d3, d4, d5, d6, d7], {startDelay: 200, done: function() {
         bookChain.cleanUp();
+        gameUtils.doSomethingAfterDuration(() => {
+            finalMacMurrayChain.play();
+        }, 1000);
+    }});
+
+    var e1 = new Dialogue({actor: "MacMurray", text: "Well done.", backgroundBox: true});
+    var e2 = new Dialogue({actor: "MacMurray", text: "When you're out traveling you won't be able to configure your abilities, so plan ahead.", continuation: true, backgroundBox: true});
+    var e3 = new Dialogue({actor: "MacMurray", text: "Get some rest, I'll be in touch...", continuation: true, backgroundBox: true});
+    var finalMacMurrayChain = new DialogueChain([e1, e2, e3], {startDelay: 200, done: function() {
+        finalMacMurrayChain.cleanUp();
     }});
 
     return chain;

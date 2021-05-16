@@ -168,7 +168,7 @@ var game = {
     play: function(options) {
 
         this.initNextMap();
-        // this.initShane();
+        
         // var shaneIntro = new ShaneIntro({
         //     done: () => {
         //         // this.postInit();
@@ -178,7 +178,6 @@ var game = {
         // });
         // this.currentScene.transitionToScene(shaneIntro.scene);
         // shaneIntro.play();
-
 
         this.postInit();
         this.gotoLevelById('camp');

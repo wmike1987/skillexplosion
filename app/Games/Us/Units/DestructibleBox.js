@@ -12,7 +12,7 @@ export default function DestructibleBox(options) {
     var box = {};
 
     options = options || {};
-    $.extend(options, {radius: 25}, options);
+    $.extend(options, {radius: 22}, options);
 
     var sc = {x: 0.1, y: 0.1};
     var adjustedUpDownsc = {x: 0.1, y: 0.1};
@@ -69,7 +69,7 @@ export default function DestructibleBox(options) {
 
     var unitProperties = $.extend({
         unitType: 'Box',
-        health: 30,
+        health: 25,
         isoManaged: false,
         damage: 0,
         defense: 1,

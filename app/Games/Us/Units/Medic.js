@@ -436,6 +436,7 @@ export default function Medic(options) {
     var mineSound = gameUtils.getSound('laymine.mp3', {volume: 0.06, rate: 0.8});
     var mineBeep = gameUtils.getSound('minebeep.wav', {volume: 0.03, rate: 7});
     var mineExplosion = gameUtils.getSound('mineexplosion2.wav', {volume: 0.35, rate: 1.7});
+    var mineDamage = 25;
     var layMine = function(commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Mine');
@@ -466,7 +467,7 @@ export default function Medic(options) {
         var medic = this;
         var blastRadius = shrapnelAugment ? 160 : 120;
         var primaryExplosionRadius = shrapnelAugment ? 85 : 60;
-        var mineState = {state: 0, id: mathArrayUtils.uuidv4(), position: mine.position, blastRadius: blastRadius, damage: 25, primaryExplosionRadius: primaryExplosionRadius};
+        var mineState = {state: 0, id: mathArrayUtils.uuidv4(), position: mine.position, blastRadius: blastRadius, damage: mineDamage, primaryExplosionRadius: primaryExplosionRadius};
         graphicsUtils.addSomethingToRenderer(stateZero, 'stage', {position: mineState.position});
         graphicsUtils.addSomethingToRenderer(mineCracks, 'stage', {position: mineState.position});
 

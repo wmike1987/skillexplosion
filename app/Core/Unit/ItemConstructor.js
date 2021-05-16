@@ -109,6 +109,7 @@ var ic = function(options) {
     //setup for non-empty items
     if(!newItem.isEmptySlot) {
         newItem.icon.on('mousedown', function(event) {
+            if(newItem.notGrabbable) return;
             if(globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
             newItem.owningUnit.unequipItem(newItem);
             newItem.grasp(newItem.owningUnit);

@@ -80,7 +80,7 @@ ConfigPanel.prototype.flashPanel = function(unit) {
     if(this.flashTimer) {
         this.flashTimer.invalidate();
     }
-    this.flashTimer = graphicsUtils.flashSprite({sprite: this.showButton, duration: 150, pauseDurationAtEnds: 150, times: 2, toColor: 0xe62f2f});
+    this.flashTimer = graphicsUtils.flashSprite({sprite: this.showButton, duration: 150, pauseDurationAtEnds: 80, times: 2, toColor: 0xe62f2f});
 };
 
 ConfigPanel.prototype.showForUnit = function(unit) {

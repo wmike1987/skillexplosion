@@ -1398,11 +1398,11 @@ unitPanel.prototype.showPassivesForUnit = function(unit) {
     this.unitPassivePanel.showForUnit(unit);
 };
 
-unitPanel.prototype.hideAugmentsForUnit = function() {
+unitPanel.prototype.hideAugmentsForCurrentUnit = function() {
     this.unitAugmentPanel.hideForCurrentUnit();
 };
 
-unitPanel.prototype.hidePassivesForUnit = function() {
+unitPanel.prototype.hidePassivesForCurrentUnit = function() {
     this.unitPassivePanel.hideForCurrentUnit();
 };
 

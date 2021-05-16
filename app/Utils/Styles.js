@@ -464,7 +464,7 @@ export default {
 
 	taskDialogue: new PIXI.TextStyle({
 		name: 'taskDialogue',
-		fill: "#00962a",
+		fill: "#ffffff",
 		fontFamily: "\"Lucida Console\", Monaco, monospace",
 		fontSize: 18,
 		miterLimit: 0

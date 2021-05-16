@@ -164,6 +164,7 @@ var camp = {
 
     onLevelPlayable: function(scene) {
         if(!this.completedUrsulaTasks) {
+            globals.currentGame.shane.isSelectable = false;
             if(!globals.currentGame.ursula) {
                 globals.currentGame.initUrsula();
                 globals.currentGame.ursula.position = {x: 800, y: 350};

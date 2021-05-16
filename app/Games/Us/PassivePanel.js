@@ -22,7 +22,7 @@ ConfigPanel.prototype.flashPanel = function(unit) {
     if(this.flashTimer) {
         this.flashTimer.invalidate();
     }
-    this.flashTimer = graphicsUtils.flashSprite({sprite: this.showButton, duration: 150, pauseDurationAtEnds: 150, times: 2, toColor: 0xe62f2f});
+    this.flashTimer = graphicsUtils.flashSprite({sprite: this.showButton, duration: 150, pauseDurationAtEnds: 80, times: 2, toColor: 0xe62f2f});
 };
 
 ConfigPanel.prototype.initialize = function() {
@@ -155,7 +155,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'defensePassive');
-                        Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive});
+                        Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive, mode: 'defensive'});
                         graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
@@ -173,7 +173,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'attackPassive');
-                        Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive});
+                        Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive, mode: 'aggression'});
                         graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();

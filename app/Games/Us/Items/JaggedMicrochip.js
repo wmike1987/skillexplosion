@@ -29,7 +29,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey('augment');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hideAugmentsForUnit();
+                globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();
             }
             return true;
         },
@@ -49,7 +49,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey('augment');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hideAugmentsForUnit();
+                globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();
             }
         },
         dropPredicate: function(dropPosition) {

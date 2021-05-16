@@ -13,6 +13,16 @@ import {Dialogue, DialogueChain} from '@core/Dialogue.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import UnitMenu from '@games/Us/UnitMenu.js';
 
+var pauseAfterCompletionTime = 750;
+var completeTaskAndRelease = function(dialogue) {
+    if(dialogue.isTask) {
+        dialogue.completeTask();
+        gameUtils.doSomethingAfterDuration(() => {
+            dialogue.preventAutoEnd = false;
+        }, pauseAfterCompletionTime);
+    }
+};
+
 var shaneLearning = function(options) {
     var enter = gameUtils.getSound('entershanelearn.wav', {volume: 0.14, rate: 1.0});
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
@@ -225,47 +235,51 @@ var shaneLearning = function(options) {
     };
 
     this.onLevelPlayable = function(scene) {
-        var pauseAfterCompleteTime = 750;
+        var pauseAfterCompleteTime = 0;
 
         globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});
         enter.play();
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750});
         var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Shane.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-        var a2 = new Dialogue({actor: "Task", text: "Right click to move Shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a3 = new Dialogue({actor: "Task", text: "Hover over your attack ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a3a = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a4a = new Dialogue({actor: "Task", text: "Hover over your item to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a6 = new Dialogue({actor: "Task", text: "Hover over your dash ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a6a = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a7 = new Dialogue({actor: "Task", text: "Hover over your knife ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a7a = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true});
-        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, preventAutoStart: true, preventAutoEnd: true});
+        var a2 = new Dialogue({actor: "Task", text: "Right click to move Shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a3 = new Dialogue({actor: "Task", text: "Hover over your attack ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a3a = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a4 = new Dialogue({actor: "Task", text: "Right click on the item to pick it up.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a4a = new Dialogue({actor: "Task", text: "Hover over your item to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a5 = new Dialogue({actor: "Task", text: "Press 'A' then left click near the enemies to attack-move to them.", newBreak: true, fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a6 = new Dialogue({actor: "Task", text: "Hover over your dash ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a6a = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a7 = new Dialogue({actor: "Task", text: "Hover over your knife ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a7a = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
+        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, preventAutoEnd: true, preventAutoEnd: true});
         var self = this;
+        var firstBox = this.box;
         this.mapTableActive = false;
         var chain = new DialogueChain([title, a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
-            var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
-            var b2 = new Dialogue({actor: "Task", text: "Click on a node to travel to it.", isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoStart: true, delayAfterEnd: 250});
-            var b3 = new Dialogue({continuation: true, text: "Clear all nodes then head to camp.", isTask: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 4500});
+            var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });
+            var b2 = new Dialogue({actor: "Task", text: "Click on a node to travel to it.", isTask: true, backgroundBox: true, });
+            var b3 = new Dialogue({continuation: true, text: "Clear all nodes then head to camp.", isTask: true, backgroundBox: true});
             var bchain = new DialogueChain([b1, b2, b3], {startDelay: 1000, done: function() {
                 bchain.cleanUp();
             }});
 
             var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTableSprite, -20, 0.5);
-            gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
-                achieve.play();
-                gameUtils.doSomethingAfterDuration(() => {
+            b1.onStart = function() {
+                gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
                     graphicsUtils.removeSomethingFromRenderer(arrow);
-                    b2.preventAutoStart = false;
-                    gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
-                        achieve.play();
-                    });
+                    achieve.play();
+                    completeTaskAndRelease(b1);
+                    b2.onStart = function() {
+                        gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
+                            achieve.play();
+                            completeTaskAndRelease(b2);
+                        });
+                    };
                 });
-            });
+            };
             bchain.play();
             scene.add(bchain);
         }.bind(this)});
@@ -282,133 +296,154 @@ var shaneLearning = function(options) {
                         graphicsUtils.removeSomethingFromRenderer(arrow);
                         achieve.play();
                         gameUtils.doSomethingAfterDuration(() => {
-                            a2.preventAutoStart = false;
+                            completeTaskAndRelease(a1);
 
-                            var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
-                            graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 15});
-                            gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
-                                var destination = event.destination;
-                                if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
-                                graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
-                                achieve.play();
-                                var boxItem = this.box.getAllItemsByName('Ring Of Thought')[0];
-                                this.box.isTargetable = true;
-                                gameUtils.doSomethingAfterDuration(() => {
-                                    a3.preventAutoStart = false;
-                                    var attackAbility = globals.currentGame.shane.getAbilityByName('Rifle');
-                                    arrow = graphicsUtils.pointToSomethingWithArrow(attackAbility.icon, -30, 0.75);
-                                    gameUtils.matterOnce(attackAbility.icon, 'tooltipShown', () => {
-                                        achieve.play();
-                                        graphicsUtils.removeSomethingFromRenderer(arrow);
-                                        gameUtils.doSomethingAfterDuration(() => {
-                                            a3a.preventAutoStart = false;
-                                            gameUtils.matterConditionalOnce(this.box, 'death',(event) => {
+                            a2.onStart = function() {
+                                var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
+                                graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 15});
+                                gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
+                                    var destination = event.destination;
+                                    if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
+                                    graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+                                    achieve.play();
+                                    var boxItem = firstBox.getAllItemsByName('Ring Of Thought')[0];
+                                    gameUtils.doSomethingAfterDuration(() => {
+                                        completeTaskAndRelease(a2);
+                                        a3.onStart = function() {
+                                            var attackAbility = globals.currentGame.shane.getAbilityByName('Rifle');
+                                            arrow = graphicsUtils.pointToSomethingWithArrow(attackAbility.icon, -30, 0.75);
+                                            gameUtils.matterOnce(attackAbility.icon, 'tooltipShown', () => {
+                                                firstBox.isTargetable = true;
                                                 achieve.play();
+                                                graphicsUtils.removeSomethingFromRenderer(arrow);
                                                 gameUtils.doSomethingAfterDuration(() => {
-                                                    a4.preventAutoStart = false;
-                                                    arrow = graphicsUtils.pointToSomethingWithArrow(boxItem, -20, 0.5);
-                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'pickupItem', (event) => {
-                                                        graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                        gameUtils.doSomethingAfterDuration(() => {
-                                                            var myItem = globals.currentGame.shane.getAllItemsByName('Ring Of Thought')[0];
-                                                            arrow = graphicsUtils.pointToSomethingWithArrow(myItem, -5, 0.5);
-                                                            a4a.preventAutoStart = false;
-                                                            gameUtils.matterOnce(myItem.icon, 'tooltipShown', () => {
-                                                                achieve.play();
-                                                                graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                                gameUtils.doSomethingAfterDuration(() => {
-                                                                    a5.preventAutoStart = false;
-                                                                    var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                    var critter2 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                    globals.currentGame.addUnit(critter1);
-                                                                    globals.currentGame.addUnit(critter2);
-                                                                    critter1.position = {x: 1600, y: 200};
-                                                                    critter2.position = {x: 1600, y: 600};
-                                                                    critter1.move({x: 1300, y: 200});
-                                                                    critter2.move({x: 1300, y: 600});
-                                                                    critter1.honeRange = 200;
-                                                                    critter2.honeRange = 200;
-
-                                                                    var done = function() {
-                                                                        achieve.play();
+                                                    completeTaskAndRelease(a3);
+                                                    a3a.onStart = function() {
+                                                        gameUtils.matterConditionalOnce(firstBox, 'death',(event) => {
+                                                            achieve.play();
+                                                            gameUtils.doSomethingAfterDuration(() => {
+                                                                completeTaskAndRelease(a3a);
+                                                                a4.onStart = function() {
+                                                                    arrow = graphicsUtils.pointToSomethingWithArrow(boxItem, -20, 0.5);
+                                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'pickupItem', (event) => {
+                                                                        graphicsUtils.removeSomethingFromRenderer(arrow);
                                                                         gameUtils.doSomethingAfterDuration(() => {
-                                                                            a6.preventAutoStart = false;
-                                                                            var dashAbility = globals.currentGame.shane.getAbilityByName('Dash');
-                                                                            arrow = graphicsUtils.pointToSomethingWithArrow(dashAbility.icon, -30, 0.75);
-                                                                            gameUtils.matterOnce(dashAbility.icon, 'tooltipShown', () => {
-                                                                                graphicsUtils.removeSomethingFromRenderer(arrow);
-                                                                                achieve.play();
-                                                                                gameUtils.doSomethingAfterDuration(() => {
-                                                                                    a6a.preventAutoStart = false;
-                                                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'dash', (event) => {
-                                                                                        achieve.play();
-                                                                                        gameUtils.doSomethingAfterDuration(() => {
-                                                                                            a7.preventAutoStart = false;
-                                                                                            var knifeAbility = globals.currentGame.shane.getAbilityByName('Throw Knife');
-                                                                                            arrow = graphicsUtils.pointToSomethingWithArrow(knifeAbility.icon, -30, 0.75);
-                                                                                            gameUtils.matterOnce(knifeAbility.icon, 'tooltipShown', () => {
+                                                                            var myItem = globals.currentGame.shane.getAllItemsByName('Ring Of Thought')[0];
+                                                                            completeTaskAndRelease(a4);
+                                                                            a4a.onStart = function() {
+                                                                                arrow = graphicsUtils.pointToSomethingWithArrow(myItem, -5, 0.5);
+                                                                                gameUtils.matterOnce(myItem.icon, 'tooltipShown', () => {
+                                                                                    achieve.play();
+                                                                                    graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                                                    gameUtils.doSomethingAfterDuration(() => {
+                                                                                        completeTaskAndRelease(a4a);
+                                                                                        a5.onStart = function() {
+                                                                                            var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                                            var critter2 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                                            globals.currentGame.addUnit(critter1);
+                                                                                            globals.currentGame.addUnit(critter2);
+                                                                                            critter1.position = {x: 1600, y: 200};
+                                                                                            critter2.position = {x: 1600, y: 600};
+                                                                                            critter1.move({x: 1300, y: 200});
+                                                                                            critter2.move({x: 1300, y: 600});
+                                                                                            critter1.honeRange = 200;
+                                                                                            critter2.honeRange = 200;
+
+                                                                                            var done = function() {
                                                                                                 achieve.play();
-                                                                                                graphicsUtils.removeSomethingFromRenderer(arrow);
                                                                                                 gameUtils.doSomethingAfterDuration(() => {
-                                                                                                    a7a.preventAutoStart = false;
-                                                                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'knifeThrow',(event) => {
-                                                                                                        achieve.play();
-                                                                                                        gameUtils.doSomethingAfterDuration(() => {
-                                                                                                            a8.preventAutoStart = false;
-                                                                                                            var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                                                            critter1.currentHealth = 15;
-                                                                                                            globals.currentGame.addUnit(critter1);
-                                                                                                            critter1.position = {x: -50, y: 550};
-                                                                                                            critter1.move({x: 200, y: 550});
-                                                                                                            critter1.honeRange = 200;
-                                                                                                            gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
-                                                                                                                achieve.play();
-                                                                                                                a8.preventAutoEnd = false;
-                                                                                                            });
-                                                                                                        }, pauseAfterCompleteTime);
-                                                                                                        return true;
-                                                                                                    });
+                                                                                                    completeTaskAndRelease(a5);
+                                                                                                    a6.onStart = function() {
+                                                                                                        var dashAbility = globals.currentGame.shane.getAbilityByName('Dash');
+                                                                                                        arrow = graphicsUtils.pointToSomethingWithArrow(dashAbility.icon, -30, 0.75);
+                                                                                                        gameUtils.matterOnce(dashAbility.icon, 'tooltipShown', () => {
+                                                                                                            graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                                                                            achieve.play();
+                                                                                                            gameUtils.doSomethingAfterDuration(() => {
+                                                                                                                completeTaskAndRelease(a6);
+                                                                                                                a6a.onStart = function() {
+                                                                                                                    gameUtils.matterConditionalOnce(globals.currentGame.shane, 'dash', (event) => {
+                                                                                                                        achieve.play();
+                                                                                                                        gameUtils.doSomethingAfterDuration(() => {
+                                                                                                                            completeTaskAndRelease(a6a);
+                                                                                                                            a7.onStart = function() {
+                                                                                                                                var knifeAbility = globals.currentGame.shane.getAbilityByName('Throw Knife');
+                                                                                                                                arrow = graphicsUtils.pointToSomethingWithArrow(knifeAbility.icon, -30, 0.75);
+                                                                                                                                gameUtils.matterOnce(knifeAbility.icon, 'tooltipShown', () => {
+                                                                                                                                    achieve.play();
+                                                                                                                                    graphicsUtils.removeSomethingFromRenderer(arrow);
+                                                                                                                                    gameUtils.doSomethingAfterDuration(() => {
+                                                                                                                                        completeTaskAndRelease(a7);
+                                                                                                                                        a7a.onStart = function() {
+                                                                                                                                            gameUtils.matterConditionalOnce(globals.currentGame.shane, 'knifeThrow',(event) => {
+                                                                                                                                                achieve.play();
+                                                                                                                                                gameUtils.doSomethingAfterDuration(() => {
+                                                                                                                                                    completeTaskAndRelease(a7a);
+                                                                                                                                                    a8.onStart = function() {
+                                                                                                                                                        var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
+                                                                                                                                                        critter1.currentHealth = 12;
+                                                                                                                                                        globals.currentGame.addUnit(critter1);
+                                                                                                                                                        critter1.position = {x: -50, y: 550};
+                                                                                                                                                        critter1.move({x: 200, y: 550});
+                                                                                                                                                        critter1.honeRange = 200;
+                                                                                                                                                        gameUtils.matterOnce(globals.currentGame.shane, 'knifeKill', (event) => {
+                                                                                                                                                            achieve.play();
+                                                                                                                                                            completeTaskAndRelease(a8);
+                                                                                                                                                        });
+                                                                                                                                                    }
+                                                                                                                                                }, pauseAfterCompleteTime);
+                                                                                                                                                return true;
+                                                                                                                                            });
+                                                                                                                                        }
+                                                                                                                                    }, pauseAfterCompleteTime);
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        }, pauseAfterCompleteTime);
+                                                                                                                        return true;
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }, pauseAfterCompleteTime);
+                                                                                                        });
+                                                                                                    };
                                                                                                 }, pauseAfterCompleteTime);
+                                                                                            };
+
+                                                                                            var crittersKilled = 0;
+                                                                                            gameUtils.matterConditionalOnce(critter1, 'death', (event) => {
+                                                                                                crittersKilled++;
+                                                                                                if(crittersKilled == 2) {
+                                                                                                    done();
+                                                                                                }
+                                                                                                return true;
                                                                                             });
-                                                                                        }, pauseAfterCompleteTime);
-                                                                                        return true;
+
+                                                                                            gameUtils.matterConditionalOnce(critter2, 'death', (event) => {
+                                                                                                crittersKilled++;
+                                                                                                if(crittersKilled == 2) {
+                                                                                                    done();
+                                                                                                }
+                                                                                                return true;
+                                                                                            });
+                                                                                        };
                                                                                     });
-                                                                                }, pauseAfterCompleteTime);
-                                                                            });
+                                                                                });
+                                                                            };
                                                                         }, pauseAfterCompleteTime);
-                                                                    };
-
-                                                                    var crittersKilled = 0;
-                                                                    gameUtils.matterConditionalOnce(critter1, 'death', (event) => {
-                                                                        crittersKilled++;
-                                                                        if(crittersKilled == 2) {
-                                                                            done();
-                                                                        }
+                                                                        achieve.play();
                                                                         return true;
                                                                     });
-
-                                                                    gameUtils.matterConditionalOnce(critter2, 'death', (event) => {
-                                                                        crittersKilled++;
-                                                                        if(crittersKilled == 2) {
-                                                                            done();
-                                                                        }
-                                                                        return true;
-                                                                    });
-                                                                });
-                                                            });
-                                                        }, pauseAfterCompleteTime);
-                                                        achieve.play();
-                                                        return true;
-                                                    });
+                                                                };
+                                                            }, pauseAfterCompleteTime);
+                                                            return true;
+                                                        });
+                                                    };
                                                 }, pauseAfterCompleteTime);
-                                                return true;
                                             });
-                                        }, pauseAfterCompleteTime);
-                                    });
-
-                                }, pauseAfterCompleteTime);
-                                return true;
-                            });
+                                        };
+                                    }, pauseAfterCompleteTime);
+                                    return true;
+                                });
+                            };
                         }, pauseAfterCompleteTime);
                         return true;
                     }

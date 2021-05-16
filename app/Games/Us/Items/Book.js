@@ -18,7 +18,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey('mind');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hidePassivesForUnit();
+                globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
             }
             return true;
         },
@@ -38,7 +38,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey('mind');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hidePassivesForUnit();
+                globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
             }
         },
         dropPredicate: function(dropPosition) {
