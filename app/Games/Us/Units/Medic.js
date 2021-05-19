@@ -1012,7 +1012,7 @@ export default function Medic(options) {
         name: options.name,
         heightAnimation: 'up',
         abilities: [healAbility, secretStepAbility, mineAbility],
-        passiveAbilities: [elegantForm, raisedStakes, wickedWays, slyLogic, familiarFace, deepThought],
+        passiveAbilities: [elegantForm, raisedStakes, wickedWays, deepThought, slyLogic, familiarFace],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

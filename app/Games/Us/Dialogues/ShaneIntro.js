@@ -11,7 +11,7 @@ import {
     DialogueChain
 } from '@core/Dialogue.js';
 import {
-    globals
+    globals, keyStates
 } from '@core/Fundamental/GlobalState.js';
 import Scene from '@core/Scene.js';
 import styles from '@utils/Styles.js';
@@ -27,7 +27,7 @@ var ShaneIntro = function(options) {
         ds.push(new Dialogue({
             blinkLastLetter: false,
             title: true,
-            text: "Somewhere on planet Mega...",
+            text: "Radio Transmission...",
             delayAfterEnd: 2000
         }));
         ds.push(new Dialogue({
@@ -148,6 +148,24 @@ var ShaneIntro = function(options) {
         });
 
         return chain;
+    };
+
+    this.initExtension = function(scene) {
+        //indicate skipping behavior
+        Matter.Events.on(scene, 'sceneFadeInDone', () => {
+            var skipText = graphicsUtils.addSomethingToRenderer("TEX+:Ctrl+C to skip tutorial", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.05, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
+            scene.add(skipText);
+        });
+        this.dontShowEscText = true;
+
+        //escape to skip tutorial
+        $('body').on('keydown.skipTutorial', function( event ) {
+            console.info(keyStates);
+            if(keyStates.Control && (keyStates.c || keyStates.C)) {
+                $('body').off('keydown.' + 'skipTutorial');
+                globals.currentGame.skipTutorial();
+            }
+        }.bind(this));
     };
 
     this.initialize();

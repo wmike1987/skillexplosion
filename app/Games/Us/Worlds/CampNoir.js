@@ -222,9 +222,9 @@ var noirEnemySets = {
     }],
     mobs: [{
         type: 'Eruptlet',
-        amount: 75,
-        atATime: 15,
-        hz: 5000
+        amount: 20,
+        atATime: 3,
+        hz: 4000
     }],
     outerMobs: [{
         type: 'Eruptlet',
@@ -320,15 +320,6 @@ var campNoir = {
             position: mathArrayUtils.clonePosition(firstLevelPosition, {
                 x: 82,
                 y: 165
-            }),
-            levelOptions: {
-                gotoMapOnWin: true
-            }
-        });
-        this.map.addMapNode('mobs', {
-            position: mathArrayUtils.clonePosition(firstLevelPosition, {
-                x: 25,
-                y: 250
             }),
             levelOptions: {
                 gotoMapOnWin: true

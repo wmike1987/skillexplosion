@@ -168,19 +168,19 @@ var game = {
     play: function(options) {
 
         this.initNextMap();
-        
-        // var shaneIntro = new ShaneIntro({
-        //     done: () => {
-        //         // this.postInit();
-        //         this.initShane();
-        //         this.gotoLevelById('shaneLearning');
-        //     }
-        // });
-        // this.currentScene.transitionToScene(shaneIntro.scene);
-        // shaneIntro.play();
 
-        this.postInit();
-        this.gotoLevelById('camp');
+        var shaneIntro = new ShaneIntro({
+            done: () => {
+                // this.postInit();
+                this.initShane();
+                this.gotoLevelById('shaneLearning');
+            }
+        });
+        this.currentScene.transitionToScene(shaneIntro.scene);
+        shaneIntro.play();
+
+        // this.postInit();
+        // this.gotoLevelById('camp');
 
         return;
         var dialogueScene = new Scene();
@@ -324,9 +324,22 @@ var game = {
         this.addUnit(this.ursula);
     },
 
+    getLevelById: function(id) {
+        return this.map.findLevelById(id);
+    },
+
     gotoLevelById: function(id) {
         var level = this.map.findLevelById(id);
         level.enterLevel();
+    },
+
+    skipTutorial: function() {
+        this.initShane();
+        this.initUrsula();
+        var camp = this.getLevelById('camp');
+        camp.alreadyIntrod = true;
+        camp.completedUrsulaTasks = true;
+        camp.enterLevel();
     },
 
     transitionToBlankScene: function() {

@@ -19,9 +19,11 @@ import {
     DialogueScene
 } from '@games/Us/Dialogues/DialogueScene.js';
 
+var blackBox = null;
+var me = null;
 var CampNoirIntro = function(options) {
     this.escape = options.done;
-    this.createChain = function() {
+    this.createChain = function(scene) {
         var ds = [];
         ds.push(new Dialogue({
             blinkLastLetter: false,
@@ -36,14 +38,31 @@ var CampNoirIntro = function(options) {
         ds.push(new Dialogue({
             actor: "Ursula",
             text: "Who's there?",
+            // picture: "UrsShaneNoir",
+            pictureOffset: {x: -500, y: 75},
+            pictureSize: {x: 374, y: 400},
+            onStart: function() {
+                // blackBox = graphicsUtils.addSomethingToRenderer('TintableSquare', {where: 'hudText', sortYOffset: 500, position: mathArrayUtils.clonePosition(this.realizedPicture.position), anchor: {x: 0, y: 0.5}});
+                // graphicsUtils.makeSpriteSize(blackBox, {x: this.realizedPicture.width+2, y: this.realizedPicture.height+2});
+                // this.realizedPictureBorder.position.x -= 187.5;
+                // blackBox.tint = 0x000000;
+                // me = this;
+            },
+            pictureFadeSpeed: 25
         }));
         ds.push(new Dialogue({
             actor: "Shane",
             text: "A dead man.",
+            onStart: function() {
+                // graphicsUtils.fadeSpriteOverTime(blackBox, 1000);
+                // me.realizedPictureBorder.position.x += 187.5;
+                // graphicsUtils.makeSpriteSize(me.realizedPictureBorder, {x: me.realizedPicture.width, y: me.realizedPicture.height});
+            }
         }));
         ds.push(new Dialogue({
             actor: "Ursula",
             text: "Don't be so dramatic, Mac said you were coming.",
+            delayAfterEnd: 750
         }));
         ds.push(new Dialogue({
             actor: "Ursula",
@@ -53,6 +72,10 @@ var CampNoirIntro = function(options) {
 
         var chain = new DialogueChain(ds, {
             startDelay: 2000
+        });
+
+        scene.addCleanUpTask(() => {
+            graphicsUtils.removeSomethingFromRenderer(blackBox);
         });
 
         return chain;

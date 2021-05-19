@@ -256,12 +256,12 @@ var shaneLearning = function(options) {
         var self = this;
         var firstBox = this.box;
         this.mapTableActive = false;
-        var chain = new DialogueChain([title, a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
+        var chain = new DialogueChain([title, /*a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8*/], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
-            var b1 = new Dialogue({actor: "Task", text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });
-            var b2 = new Dialogue({actor: "Task", text: "Click on a node to travel to it.", isTask: true, backgroundBox: true, });
-            var b3 = new Dialogue({continuation: true, text: "Clear all nodes then head to camp.", isTask: true, backgroundBox: true});
+            var b1 = new Dialogue({text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });
+            var b2 = new Dialogue({text: "Click on a node to travel to it.", isTask: true, backgroundBox: true, });
+            var b3 = new Dialogue({text: "Clear all nodes then head to camp.", continuation: true, isTask: true, backgroundBox: true});
             var bchain = new DialogueChain([b1, b2, b3], {startDelay: 1000, done: function() {
                 bchain.cleanUp();
             }});

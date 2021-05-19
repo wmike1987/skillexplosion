@@ -358,8 +358,13 @@ var common = {
                 setTimeout(function() {
                     proceedPastPregame.resolve();
                     onClick();
-                }, 10); //dissociate this mouseup event from any listeners setup during startgame, it appears that listeners setup during an event get called during that event.
+                }, 10); //dissociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
             }, this));
+        }
+
+        //used for other ways to enter a game
+        if(this.alternatePregameSetup) {
+            this.alternatePregameSetup(proceedPastPregame);
         }
 
         proceedPastPregame.done(this.startGame.bind(this));

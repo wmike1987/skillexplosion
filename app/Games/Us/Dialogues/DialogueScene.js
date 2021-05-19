@@ -9,9 +9,10 @@ import styles from '@utils/Styles.js';
 
 var DialogueScene = {
     initialize: function(options) {
+        options = options || {};
         this.id = mathArrayUtils.getId();
-        var dialogChain = this.createChain(options);
         var dialogueScene = new Scene();
+        var dialogChain = this.createChain(dialogueScene);
         dialogueScene.addBlackBackground();
 
         Matter.Events.on(dialogueScene, 'afterSnapshotRender', () => {
@@ -20,11 +21,18 @@ var DialogueScene = {
         });
 
         var skipText;
+
+        if(this.initExtension) {
+            this.initExtension(dialogueScene);
+        }
+
         //indicate skipping behavior
-        Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
-            skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to skip", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
-            dialogueScene.add(skipText);
-        });
+        if(!this.dontShowEscText) {
+            Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
+                skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to fast-forward", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
+                dialogueScene.add(skipText);
+            });
+        }
 
         //init the escape-to-continue functionality
         dialogChain.done = function() {

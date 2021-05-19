@@ -2,13 +2,13 @@
  * This module runs a CommonGame implementation, taking care of the business of setting up the Matter.js world and
  * setting up the pixi renderer. It also ensures assets have been loaded before initiating the game lifecycle
  */
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import PixiRenderer from '@core/Fundamental/PixiRenderer.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
-import GameLoop from '@core/Fundamental/GameLoop.js'
-import AssetLoader from '@core/Fundamental/AssetLoader.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import PixiRenderer from '@core/Fundamental/PixiRenderer.js';
+import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import GameLoop from '@core/Fundamental/GameLoop.js';
+import AssetLoader from '@core/Fundamental/AssetLoader.js';
 
 var pixiRenderer;
 var engine;
@@ -38,6 +38,7 @@ var CommonGameStarter = function(game) {
 
 	// set the global current game
 	globals.currentGame = game;
+	keyStates.initializeListeners();
 	window.currentGame = globals.currentGame;
 
 	//update the "loading..." text as assets are loaded

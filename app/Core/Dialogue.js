@@ -62,23 +62,9 @@ var Dialogue = function Dialogue(options) {
     if(this.isTask) {
         this.actor = "Task";
         this.actorTint = 0x159500;
-        this.preventAutoEnd = !this.isContinuing;
         this.delayAfterEnd = 0;
         this.letterSpeed = 30;
         this.fadeOutAfterDone = true;
-        this.completeTask = function() {
-            if(!this.isContinuing) {
-                this.speedUp();
-                this.fullyShownCallback = () => {
-                    this.realizedActorText.text = "";
-                    this.realizedText.text = "Excellent";
-                    graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.realizedText.width, y: this.realizedText.height});
-                    graphicsUtils.flashSprite({sprite: this.realizedText, duration: 40, pauseDurationAtEnds: 40, times: 4, toColor: 0x23afeb, onEnd: () => {
-                        this.realizedText.tint = 0x23afeb;
-                    }});
-                };
-            }
-        };
     } else if(this.isInfo) {
         this.actor = "Info";
         this.actorTint = 0xffffff;
@@ -88,8 +74,27 @@ var Dialogue = function Dialogue(options) {
     //Establish actor text at creation time since it's used in continuations
     this.actorText = this.actor ? this.actor + ": " : "";
 
+    //Upon play, we'll have a bit more info from having built the chain, so we need to setup things in here too
     this.play = function(options) {
         if(this.killed || this.preventAutoStart) return;
+
+        if(this.isTask) {
+            this.preventAutoEnd = !this.isContinuing;
+            this.completeTask = function() {
+                if(!this.isContinuing) {
+                    this.speedUp();
+                    this.fullyShownCallback = () => {
+                        this.realizedActorText.text = "";
+                        this.realizedText.text = "Excellent";
+                        graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.realizedText.width, y: this.realizedText.height});
+                        graphicsUtils.flashSprite({sprite: this.realizedText, duration: 40, pauseDurationAtEnds: 40, times: 4, toColor: 0x23afeb, onEnd: () => {
+                            this.realizedText.tint = 0x23afeb;
+                        }});
+                    };
+                }
+            };
+        }
+
         options = options || {};
 
         //Create the left space buffer (either explicitly defined or the actor text width)
@@ -143,6 +148,7 @@ var Dialogue = function Dialogue(options) {
             var picPosition = mathArrayUtils.clonePosition(this.picturePosition, this.pictureOffset);
             this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {alpha: 0, position: picPosition, where: "hudText"});
             this.realizedPictureBorder = graphicsUtils.createDisplayObject("CinemaBorder", {alpha: 0, position: picPosition, where: "hudText"});
+            graphicsUtils.makeSpriteSize(this.realizedPictureBorder, {x: this.realizedPicture.width, y: this.realizedPicture.height});
             if(this.pictureSize) {
                 graphicsUtils.makeSpriteSize(this.realizedPictureBorder, this.pictureSize);
             }
@@ -158,6 +164,7 @@ var Dialogue = function Dialogue(options) {
         var currentLetter = 0;
         var picRealized = false;
         var d = this;
+        var generalTriggering = false;
         d.dialogueStarted = false;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap'+mathArrayUtils.getId(), gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
@@ -169,6 +176,18 @@ var Dialogue = function Dialogue(options) {
             }
             if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
                 d.pictureTriggeredFromWord = true;
+            }
+
+            if(!generalTriggering && d.generalWordTriggerCallback) {
+                if(d.generalWordTrigger) {
+                    if(d.text.substring(currentLetter, currentLetter+d.generalWordTrigger.length) == d.generalWordTrigger) {
+                        generalTriggering = true;
+                        d.generalWordTriggerCallback();
+                    }
+                } else {
+                    generalTriggering = true;
+                    d.generalWordTriggerCallback();
+                }
             }
 
             //speed change
@@ -186,6 +205,10 @@ var Dialogue = function Dialogue(options) {
                 if(d.realizedPicture.alpha < 1.0) {
                   d.realizedPicture.alpha += 1/d.pictureFadeSpeed;
                   d.realizedPictureBorder.alpha += 1/d.pictureFadeSpeed;
+                  if(d.skipped) {
+                      d.realizedPicture.alpha = 1;
+                      d.realizedPictureBorder.alpha = 1;
+                  }
                 }
             }
 
@@ -352,7 +375,7 @@ var Dialogue = function Dialogue(options) {
 
     this.speedUp = function(doneCallback) {
         this.skipped = true;
-        // this.resolveTime = 0;
+        this.resolveTime = 0;
         this.textTimer.skipToEnd = true;
         if(this.actionTextTimer) {
             this.actionTextTimer.skipToEnd = true;

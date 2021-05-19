@@ -358,10 +358,8 @@ var campLevel = function() {
                     globals.currentGame.closeMap();
                 },
                 init: function() {
+                    this.campAvailableCount = 0;
                     Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
-                        if (!this.campAvailableCount) {
-                            this.campAvailableCount = 0;
-                        }
                         this.campAvailableCount++;
 
                         if (event.node == this) {

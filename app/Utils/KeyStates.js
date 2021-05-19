@@ -3,6 +3,7 @@ window.mouseStates = {};
 keyStates.pressed = {};
 
 window.addEventListener("keydown", function(event) {
+    debugger;
     window.keyStates[event.key] = true;
 });
 
