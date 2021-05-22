@@ -115,12 +115,12 @@ var createItemAndGrasp = function(options) {
 var resolveItemInformation = function(options) {
     var chosenItem = null;
     var chosenClassKey = 'noClass';
-    var chosenTypeKey = 'item'
+    var chosenTypeKey = 'item';
     if(options.className) {
         //if we've specified the item class name, choose a random item from within
-        chosenClassKey = options.className;
-        chosenTypeKey = options.typeName;
-        chosenItem = mathArrayUtils.getRandomElementOfArray(ItemClasses[chosenClassKey][chosenTypeKey]);
+        chosenClassKey = options.className || chosenClassKey;
+        chosenTypeKey = options.typeName || chosenTypeKey;
+        chosenItem = mathArrayUtils.getRandomElementOfArray(ItemClasses[chosenClassKey][chosenTypeKey].items);
     } else {
         //if we've provided a list, randomly choose one
         var itemNames = mathArrayUtils.convertToArray(options.itemName);

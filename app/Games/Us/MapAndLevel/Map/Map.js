@@ -102,19 +102,23 @@ var map = function(specs) {
 
         //Determine position
         var position = options.position;
-        var collision;
+        var collision, outOfBounds = false;
         var nodeBuffer = 100;
+        var radius = options.outer ? 750 : 200;
         if (!position) {
             do {
                 collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), 200, level.nodeBuffer || 20);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, level.nodeBuffer || 20);
+                if(!gameUtils.isPositionWithinPlayableBounds(position)) {
+                    outOfBounds = true;
+                }
                 for (let node of this.graph) {
                     if (mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                         collision = true;
                         break;
                     }
                 }
-            } while (collision);
+            } while (collision || outOfBounds);
         }
 
         //the level creates the map node

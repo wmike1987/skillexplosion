@@ -371,7 +371,7 @@ var Dialogue = function Dialogue(options) {
     //this stops the text increment timer
     this.leaveText = function() {
       globals.currentGame.invalidateTimer(this.textTimer);
-    };
+  };
 
     this.speedUp = function(doneCallback) {
         this.skipped = true;
@@ -450,6 +450,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 }.bind(this));
             } else {
                 if(this.done) {
+                    this.isDone = true;
                     currentDia.deferred.done(this.done);
                 }
             }
@@ -480,6 +481,10 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         this.arrayOfDialogues.forEach((dialogue) => {
             dialogue.cleanUp();
         });
+
+        if(!this.isDone && this.done) {
+            this.done();
+        }
 
         $('body').off('keydown.' + 'speedUpChain:' + this.id);
         $('body').off('keydown.' + 'escapeChain:' + this.id);

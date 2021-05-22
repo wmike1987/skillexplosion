@@ -20,13 +20,13 @@ var DialogueScene = {
             globals.currentGame.unitSystem.pause();
         });
 
-        var skipText;
 
         if(this.initExtension) {
             this.initExtension(dialogueScene);
         }
 
         //indicate skipping behavior
+        var skipText;
         if(!this.dontShowEscText) {
             Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
                 skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to fast-forward", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
@@ -36,6 +36,9 @@ var DialogueScene = {
 
         //init the escape-to-continue functionality
         dialogChain.done = function() {
+            if(this.chainDoneExtension) {
+                this.chainDoneExtension(dialogueScene);
+            }
             graphicsUtils.removeSomethingFromRenderer(skipText);
             var spacetoContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', alpha: 0.5, style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
             dialogueScene.add(spacetoContinue);
@@ -45,11 +48,15 @@ var DialogueScene = {
                 if(key == ' ') {
                     //clear dialogue and start initial level
                     globals.currentGame.unitSystem.unpause();
-                    this.escape();
                     $('body').off('keydown.' + 'DScene:' + this.id);
+                    this.escape();
                 }
             }.bind(this));
         }.bind(this);
+
+        dialogueScene.addCleanUpTask(() => {
+            $('body').off('keydown.' + 'DScene:' + this.id);
+        });
 
         this.scene = dialogueScene;
 

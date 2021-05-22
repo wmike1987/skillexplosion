@@ -39,8 +39,7 @@ var UrsulaTasks = function(scene) {
     this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
     ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SturdyCanteen"], unit: this.box, immortal: true});
     globals.currentGame.addUnit(this.box);
-    this.box.position = {x: 750, y: 300};
-    // globals.currentGame.nextPhase();
+    this.box.position = {x: 850, y: 300};
 
     var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", isTask: true, backgroundBox: true});
     var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", isTask: true, backgroundBox: true });
@@ -185,6 +184,11 @@ var UrsulaTasks = function(scene) {
 
     scene.addCleanUpTask(() => {
         achieve.unload();
+        chain.cleanUp();
+        transitionChain.cleanUp();
+        microchipChain.cleanUp();
+        bookChain.cleanUp();
+        finalMacMurrayChain.cleanUp();
     });
 
     var b1 = new Dialogue({actor: "MacMurray", text: "One more thing, you live and die by your wits out here.", pauseAfterWord: {word: 'thing,', duration: 300}, backgroundBox: true, letterSpeed: 30});
@@ -358,6 +362,9 @@ var UrsulaTasks = function(scene) {
     var e3 = new Dialogue({actor: "MacMurray", text: "Get some rest, I'll be in touch...", continuation: true, backgroundBox: true});
     var finalMacMurrayChain = new DialogueChain([e1, e2, e3], {startDelay: 200, done: function() {
         finalMacMurrayChain.cleanUp();
+        gameUtils.doSomethingAfterDuration(() => {
+            globals.currentGame.nextPhase();
+        }, 1500);
     }});
 
     return chain;

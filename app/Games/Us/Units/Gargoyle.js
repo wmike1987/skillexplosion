@@ -1,22 +1,22 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Unlocker.js'
-import Ability from '@core/Unit/UnitAbility.js'
-import style from '@utils/Styles.js'
-import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import UC from '@core/Unit/UnitConstructor.js';
+import aug from '@core/Unit/_Unlocker.js';
+import Ability from '@core/Unit/UnitAbility.js';
+import style from '@utils/Styles.js';
+import {globals} from '@core/Fundamental/GlobalState';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function Gargoyle(options) {
     var gargoyle = {};
 
-    var options = options || {};
-    $.extend(options, {radius: 25}, options)
+    options = options || {};
+    $.extend(options, {radius: 25}, options);
 
     //animation settings
-    var runSpeed = .6;
-    var runSpeedBonus = .25;
+    var runSpeed = 0.6;
+    var runSpeedBonus = 0.25;
     var shootSpeed = 1;
 
     var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['critterN'].spineData);
@@ -136,13 +136,9 @@ export default function Gargoyle(options) {
             speed: 2,
             times: 3,
         }),
-    }
+    };
 
-    var otherAnimations = {
-
-    }
-
-    var scale = .1;
+    var scale = 0.1;
     var sc = {x: scale, y: scale};
     var adjustedUpDownsc = {x: scale, y: scale};
     var flipsc = {x: -1 * sc.x, y: sc.y};
@@ -151,7 +147,7 @@ export default function Gargoyle(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .8, y: .8},
+        scale: {x: 0.8, y: 0.8},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -231,16 +227,16 @@ export default function Gargoyle(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: .6, y: .6},
+        scale: {x: 0.6, y: 0.6},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: .15, rate: 1});
-    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: .08, rate: 1.5});
-    var transform = gameUtils.getSound('gargoyletransform.wav', {volume: .35, rate: 1});
+    var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
+    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: 0.08, rate: 1.5});
+    var transform = gameUtils.getSound('gargoyletransform.wav', {volume: 0.35, rate: 1});
 
     var unitProperties = $.extend({
         unitType: 'Gargoyle',
@@ -268,7 +264,7 @@ export default function Gargoyle(options) {
             var anim = gameUtils.getAnimation({
                 spritesheetName: 'CritterAnimations1',
                 animationName: 'critterdeath',
-                speed: .25,
+                speed: 0.25,
                 fadeAway: true,
                 fadeTime: 8000,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
@@ -277,7 +273,7 @@ export default function Gargoyle(options) {
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
@@ -295,10 +291,10 @@ export default function Gargoyle(options) {
                               slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
                               slot.currentSpriteName.includes('North_0003_Layer-1---5'))
                             {
-                                slot.customColor = {r: .2, g: .4, b: 1.0, a: 1.0};
+                                slot.customColor = {r: 0.2, g: 0.4, b: 1.0, a: 1.0};
                             }
                         }
-                    })
+                    });
                 }
             });
 
@@ -322,7 +318,7 @@ export default function Gargoyle(options) {
                         this.isoManagedAlpha = 0;
                         this.healthRegenerationMultiplier = 8;
                         Matter.Sleeping.set(this.body, true);
-                        this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', position: this.position})
+                        this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', position: this.position});
                         this.defense += 10;
                     }.bind(this), removeChanges: function() {
                         this.healthRegenerationMultiplier = 1;
@@ -333,11 +329,11 @@ export default function Gargoyle(options) {
                         this.isoManagedAlpha = 1;
                         Matter.Sleeping.set(this.body, false);
                         graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
-                    }.bind(this)})
+                    }.bind(this)});
                 }
-            }.bind(this))
+            }.bind(this));
         },
-    }, options)
+    }, options);
 
     return UC({
         givenUnitObj: gargoyle,
@@ -362,7 +358,7 @@ export default function Gargoyle(options) {
                     spritesheetName: 'UtilityAnimations1',
                     animationName: 'GenericHit',
                     speed: 1.0,
-                    transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .25, .25]
+                    transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.25, 0.25]
                 });
                 graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                 bloodAnimation.play();

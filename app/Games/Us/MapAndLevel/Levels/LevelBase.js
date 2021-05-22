@@ -214,6 +214,7 @@ var levelBase = {
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.map.show();
                     } else {
+                        var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()}, true);
                         gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
                             game.removeAllLevelLocalEntities();
                             var enemies = gameUtils.getUnitEnemies(game.shane);
@@ -222,7 +223,6 @@ var levelBase = {
                             });
                             game.map.revertHeadToPreviousLocationDueToDefeat();
                         });
-                        var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()}, true);
                     }
                 }, 600);
             }

@@ -22,6 +22,9 @@ import {
     CampNoirIntro
 } from '@games/Us/Dialogues/CampNoirIntro.js';
 import {
+    CampNoirPhaseTwo
+} from '@games/Us/Dialogues/CampNoirPhaseTwo.js';
+import {
     UrsulaTasks
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
 
@@ -186,14 +189,25 @@ var noirEnemySets = {
         atATime: 1,
         hz: 3500
     }],
+    learningSentinel: [{
+        type: 'Critter',
+        amount: 1,
+        atATime: 1,
+        hz: 3500
+    }, {
+        type: 'Sentinel',
+        amount: 1,
+        atATime: 1,
+        hz: 4500
+    }],
     basic: [{
         type: 'Critter',
-        amount: 2,
+        amount: [2, 3, 4],
         atATime: 2,
         hz: 4000
     }, {
         type: 'Sentinel',
-        amount: 1,
+        amount: [1, 2],
         atATime: 1,
         hz: 4500
     }],
@@ -210,15 +224,15 @@ var noirEnemySets = {
     }],
     hardened: [{
         type: 'Gargoyle',
-        amount: 4,
+        amount: [4, 5],
         atATime: 1,
         hz: 2500
     }],
     outerHardened: [{
         type: 'Gargoyle',
         amount: 8,
-        atATime: 2,
-        hz: 4500
+        atATime: 1,
+        hz: 2500
     }],
     mobs: [{
         type: 'Eruptlet',
@@ -239,9 +253,9 @@ var noirEnemySets = {
     }],
     sentinels: [{
         type: 'Sentinel',
-        amount: 6,
-        atATime: 3,
-        hz: 4500
+        amount: [4, 5],
+        atATime: 2,
+        hz: 6000
     }],
     outerSentinels: [{
         type: 'Sentinel',
@@ -284,7 +298,7 @@ var phaseOne = function() {
             gotoMapOnWin: true
         }
     });
-    this.map.addMapNode('basic', {
+    this.map.addMapNode('learning', {
         position: mathArrayUtils.clonePosition(firstLevelPosition, {
             x: 82,
             y: 165
@@ -294,20 +308,52 @@ var phaseOne = function() {
             gotoMapOnWin: true
         }
     });
-    this.map.addMapNode('airDropStations', {
+    this.map.addMapNode('learningSentinel', {
         position: mathArrayUtils.clonePosition(firstLevelPosition, {
             x: 280,
             y: 150
         }),
         levelOptions: {
-            levelId: 'learning3',
-            prereqCount: 2
+            gotoMapOnWin: true
         }
     });
 };
 
-var phaseTwo = function() {
+var phaseTwo = function(options) {
+    var world = this;
+    var phaseOneDialogue = new CampNoirPhaseTwo({
+        done: () => {
+            world.gotoLevelById('camp');
+            world.map.clearAllNodesExcept('camp');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('sentinels');
+            world.map.addMapNode('hardened');
+            world.map.addMapNode('airDropStation');
+            world.map.addMapNode('airDropStation');
+            world.map.addMapNode('airDropSpecialStation');
+            if(options.skippedTutorial) {
+                globals.currentGame.flyover(() => {
+                    globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 120}), ['BasicMicrochip', 'Book'], true);
+                    globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 50}), [{className: 'worn'}, {className: 'worn'}]);
+                });
+            }
+        }
+    });
+    globals.currentGame.currentScene.transitionToScene(phaseOneDialogue.scene);
+    phaseOneDialogue.play();
+};
+
+var phaseThree = function() {
     this.map.clearAllNodesExcept('camp');
+    this.map.addMapNode('basic');
+    this.map.addMapNode('basic');
+    this.map.addMapNode('basic');
+    this.map.addMapNode('basic');
+    this.map.addMapNode('sentinels');
+    this.map.addMapNode('hardened');
 };
 
 var campNoir = {
@@ -337,7 +383,21 @@ var campNoir = {
             scene.add(l1);
         }
     },
-    phases: [phaseOne, phaseTwo],
+
+    phases: [],
+    initWorld: function(options) {
+        this.phases.push(phaseOne.bind(this));
+        this.phases.push(phaseTwo.bind(this));
+    },
+
+    getLevelById: function(id) {
+        return this.map.findLevelById(id);
+    },
+
+    gotoLevelById: function(id) {
+        var level = this.map.findLevelById(id);
+        level.enterLevel();
+    },
 
     initializeMap: function() {
         this.map = new Map(this.worldSpecs);

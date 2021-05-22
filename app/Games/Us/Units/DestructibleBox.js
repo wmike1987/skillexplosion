@@ -89,6 +89,9 @@ export default function DestructibleBox(options) {
         // heightAnimation: 'main',
         idleSpecificAnimation: true,
         abilities: [],
+        _init: function() {
+            Matter.Sleeping.set(this.body, true);
+        },
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({

@@ -170,109 +170,18 @@ var game = {
 
         this.initNextMap();
 
-        // var shaneIntro = new ShaneIntro({
-        //     done: () => {
-        //         // this.postInit();
-        //         this.initShane();
-        //         this.gotoLevelById('shaneLearning');
-        //     }
-        // });
-        // this.currentScene.transitionToScene(shaneIntro.scene);
-        // shaneIntro.play();
-
-        this.postInit();
-        this.gotoLevelById('camp');
-
-        return;
-        var dialogueScene = new Scene();
-        dialogueScene.addBlackBackground();
-
-        //begin dialogue
-        var title = new Dialogue({
-            blinkLastLetter: false,
-            title: true,
-            text: "Camp Noir",
-            delayAfterEnd: 2000
-        });
-        var a1 = new Dialogue({
-            actor: "Ursula",
-            text: "Shane, get up. Incoming message from Command...",
-            picture: 'NewMessage.png',
-            pictureWordTrigger: 'Incoming'
-        });
-        var a2 = new Dialogue({
-            pauseAtPeriods: false,
-            actor: "Shane",
-            text: "Urs, it's... 3:00am. Those pencil pushers can wait until mor--",
-            delayAfterEnd: 0,
-            picture: '302.png',
-            pictureWordTrigger: '3:00'
-        });
-        var a3 = new Dialogue({
-            interrupt: true,
-            actor: "Ursula",
-            text: "It's from MacMurray...",
-            picture: 'MacMurray.png',
-            pictureWordTrigger: 'from'
-        });
-        var a4 = new Dialogue({
-            actor: "Shane",
-            text: "Christ... That can only mean--",
-            delayAfterEnd: 0
-        });
-        var a5 = new Dialogue({
-            interrupt: true,
-            actor: "Ursula",
-            text: "Beasts."
-        });
-        var a6 = new Dialogue({
-            actor: "Shane",
-            text: "Location?",
-            delayAfterEnd: 500
-        });
-        var a7 = new Dialogue({
-            actor: "Ursula",
-            text: "Intel is being relayed. Get up, get your rifle.",
-            picture: 'GrabRifleLighter.png',
-            pictureWordTrigger: 'Get up',
-            delayAfterEnd: 1200
-        });
-        var a8 = new Dialogue({
-            actor: "Shane",
-            text: "Is the coffee ready?",
-            delayAfterEnd: 1500
-        });
-
-        var chain = new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {
-            startDelay: 2000,
-            done: function() {
-                dialogueScene.add(graphicsUtils.addSomethingToRenderer("TEX+:ESC to continue", {
-                    where: 'hudText',
-                    style: styles.titleOneStyle,
-                    anchor: {
-                        x: 1,
-                        y: 1
-                    },
-                    position: {
-                        x: gameUtils.getPlayableWidth() - 20,
-                        y: gameUtils.getCanvasHeight() - 20
-                    }
-                }));
+        var shaneIntro = new ShaneIntro({
+            done: () => {
+                // this.postInit();
+                this.initShane();
+                this.currentWorld.gotoLevelById('shaneLearning');
             }
         });
-        dialogueScene.add(chain);
-        chain.play();
-        this.currentScene.transitionToScene(dialogueScene);
-        Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
-            $('body').on('keydown.uskeydown', function(event) {
-                var key = event.key.toLowerCase();
-                if (key == ' ') {
-                    //clear dialogue and start initial level
-                    this.postInit();
-                    $('body').off('keydown.uskeydown');
-                }
-            }.bind(this));
-        });
+        this.currentScene.transitionToScene(shaneIntro.scene);
+        shaneIntro.play();
+
+        // this.postInit();
+        // this.currentWorld.gotoLevelById('camp');
     },
 
     preGameExtension: function() {
@@ -299,12 +208,13 @@ var game = {
 
     initNextMap: function() {
         this.currentWorld = this.worlds[this.currentWorldIndex++];
+        this.currentWorld.initWorld();
         this.map = this.currentWorld.initializeMap();
         this.nextPhase();
     },
 
-    nextPhase: function() {
-        this.currentWorld.phases[this.currentPhase].bind(this.currentWorld)();
+    nextPhase: function(options) {
+        this.currentWorld.phases[this.currentPhase](options);
         this.currentPhase++;
     },
 
@@ -330,22 +240,15 @@ var game = {
         this.addUnit(this.ursula);
     },
 
-    getLevelById: function(id) {
-        return this.map.findLevelById(id);
-    },
-
-    gotoLevelById: function(id) {
-        var level = this.map.findLevelById(id);
-        level.enterLevel();
-    },
-
     skipTutorial: function() {
         this.initShane();
         this.initUrsula();
-        var camp = this.getLevelById('camp');
+        var camp = this.currentWorld.getLevelById('camp');
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
-        camp.enterLevel();
+        this.nextPhase({skippedTutorial: true});
+        this.map.setHeadToken('headtoken');
+        this.map.setHeadTokenPosition({node: this.map.findNodeById('camp')});
     },
 
     transitionToBlankScene: function() {
@@ -381,7 +284,7 @@ var game = {
 
         var handler = gameUtils.matterOnce(globals.currentGame, "TravelReset", function(event) {
             if (event.resetToNode.type == 'camp') {
-                escapeBehavior = this.gotoLevelById.bind(this, 'camp');
+                escapeBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
             }
         }.bind(this));
 
@@ -451,25 +354,25 @@ var game = {
         });
         this.shane = s;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
-        ItemUtils.giveUnitItem({
-            gamePrefix: "Us",
-            itemName: ["AwarenessTonic"],
-            unit: this.shane
-        });
-        ItemUtils.giveUnitItem({
-            gamePrefix: "Us",
-            itemName: ["SereneStar"],
-            unit: this.shane
-        });
-        ItemUtils.giveUnitItem({
-            gamePrefix: "Us",
-            itemName: ["TechnologyKey"],
-            unit: this.shane
-        });
+        // ItemUtils.giveUnitItem({
+        //     gamePrefix: "Us",
+        //     itemName: ["AwarenessTonic"],
+        //     unit: this.shane
+        // });
+        // ItemUtils.giveUnitItem({
+        //     gamePrefix: "Us",
+        //     itemName: ["SereneStar"],
+        //     unit: this.shane
+        // });
+        // ItemUtils.giveUnitItem({
+        //     gamePrefix: "Us",
+        //     itemName: ["TechnologyKey"],
+        //     unit: this.shane
+        // });
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AjaMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JaggedMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JaggedMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
@@ -650,7 +553,11 @@ var game = {
         var box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, special: special, forcedItemDropOffset: !randomDropLocation});
 
         items.forEach((item) => {
-            ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: item, unit: box});
+            if(item.className) {
+                ItemUtils.giveUnitItem({gamePrefix: "Us", className: item.className, unit: box, immortal: true});
+            } else {
+                ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: item, unit: box, immortal: true});
+            }
         });
         globals.currentGame.addUnit(box);
         this.boxSound.play();

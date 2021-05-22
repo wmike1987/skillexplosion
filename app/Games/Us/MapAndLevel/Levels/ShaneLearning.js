@@ -41,7 +41,7 @@ var shaneLearning = function(options) {
         position: podPosition});
         scene.add(podDoodad);
 
-        this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false});
+        this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.box, immortal: true});
         globals.currentGame.addUnit(this.box);
         this.box.position = {x: 750, y: 300};
@@ -256,7 +256,7 @@ var shaneLearning = function(options) {
         var self = this;
         var firstBox = this.box;
         this.mapTableActive = false;
-        var chain = new DialogueChain([title, /*a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8*/], {startDelay: 200, done: function() {
+        var chain = new DialogueChain([title, a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
             var b1 = new Dialogue({text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });

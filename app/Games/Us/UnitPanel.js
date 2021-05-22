@@ -1098,14 +1098,14 @@ unitPanel.prototype.displayUnitAbilities = function() {
                 var augmentPosition = mathArrayUtils.clonePosition(pos, {x: borderAddition/2, y: - (augmentSize+borderAddition) / 2});
                 if (!augment.smallerIcon) {
                     augment.smallerIcon = graphicsUtils.addSomethingToRenderer(augment.icon.texture, {
-                        where: 'hudTwo'
+                        where: 'hudOne'
                     });
                     Tooltip.makeTooltippable(augment.smallerIcon, {
                         title: augment.title,
                         description: augment.description
                     });
                     augment.smallerBorder = graphicsUtils.addSomethingToRenderer('AugmentBorder', {
-                        where: 'hudTwo'
+                        where: 'hudOne'
                     });
                     graphicsUtils.makeSpriteSize(augment.smallerIcon, augmentSize);
                     graphicsUtils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);

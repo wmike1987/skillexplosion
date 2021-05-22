@@ -33,8 +33,8 @@ var levelFactory = {
 
 var predefinedTypes = {
     camp: campLevel,
-    airDropStations: airDropStation,
-    airDropSpecialStations: airDropSpecialStation,
+    airDropStation: airDropStation,
+    airDropSpecialStation: airDropSpecialStation,
     multiLevel: multiLevel,
     shaneLearning: shaneLearning,
 };

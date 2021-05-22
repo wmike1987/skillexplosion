@@ -25,12 +25,14 @@ var enemySetSpecifier = {
         var enemySetSpecs = worldSpecs.enemySets[type];
         if(enemySetSpecs) {
             enemySetSpecs.forEach((enemySpec) => {
+                var enemyCount = mathArrayUtils.convertToArray(enemySpec.amount);
+                enemyCount = mathArrayUtils.getRandomElementOfArray(enemyCount);
                 var constructor = unitMenu[enemySpec.type];
                 enemySets.push({
                     constructor: constructor.c,
                     wave: 1,
                     icon: constructor.p,
-                    spawn: {total: enemySpec.amount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
+                    spawn: {total: enemyCount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
                         atATime: enemySpec.atATime || 1, maxOnField: 1}
                 });
             });

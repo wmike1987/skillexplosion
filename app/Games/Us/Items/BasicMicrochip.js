@@ -9,7 +9,7 @@ export default function(options) {
         creationName: "BasicMicrochip",
         description: "Enable an augment.",
         poweredByMessage: {text: 'Gen-1 Microchip', style: 'basicPoweredByStyle'},
-        systemMessage: "Drop on ability to enable.",
+        systemMessage: "Drop on agument to enable.",
         icon: 'BasicMicrochip',
 
         plugCondition: function() {
