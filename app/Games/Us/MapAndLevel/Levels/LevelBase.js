@@ -73,6 +73,7 @@ var levelBase = {
     },
 
     createMapNode: function(options) {
+        options.levelDetails = this;
         return new MapNode(options);
     },
 

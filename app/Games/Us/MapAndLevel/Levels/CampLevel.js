@@ -298,103 +298,103 @@ var campLevel = function() {
             return this.position;
         },
 
-        this.createMapNode = function(options) {
-            var node = new MapNode({
-                levelDetails: options.levelDetails,
-                mapRef: options.mapRef,
-                tokenSize: 50,
-                largeTokenSize: 55,
-                travelPredicate: function() {
-                    return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
-                    // return true;
-                },
-                hoverCallback: function() {
-                    return this.travelPredicate();
-                },
-                unhoverCallback: function() {
-                    // this.availabilityText.visible = false;
-                    return this.travelPredicate();
-                },
-                manualTokens: function() {
-                    var regularToken = graphicsUtils.createDisplayObject('CampfireToken', {
-                        where: 'hudNTwo'
-                    });
-                    var specialToken = graphicsUtils.createDisplayObject('CampfireTokenGleam', {
-                        where: 'hudNTwo'
-                    });
-                    Matter.Events.on(this.mapRef, 'showMap', function() {
-                        if (this.travelPredicate()) {
-                            regularToken.visible = true;
-                            specialToken.visible = true;
-                            if (!this.gleamTimer) {
-                                this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
-                                Matter.Events.on(regularToken, 'destroy', () => {
-                                    this.gleamTimer.invalidate();
-                                });
-                            }
+    this.createMapNode = function(options) {
+        var node = new MapNode({
+            levelDetails: this,
+            mapRef: options.mapRef,
+            tokenSize: 50,
+            largeTokenSize: 55,
+            travelPredicate: function() {
+                return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+                // return true;
+            },
+            hoverCallback: function() {
+                return this.travelPredicate();
+            },
+            unhoverCallback: function() {
+                // this.availabilityText.visible = false;
+                return this.travelPredicate();
+            },
+            manualTokens: function() {
+                var regularToken = graphicsUtils.createDisplayObject('CampfireToken', {
+                    where: 'hudNTwo'
+                });
+                var specialToken = graphicsUtils.createDisplayObject('CampfireTokenGleam', {
+                    where: 'hudNTwo'
+                });
+                Matter.Events.on(this.mapRef, 'showMap', function() {
+                    if (this.travelPredicate()) {
+                        regularToken.visible = true;
+                        specialToken.visible = true;
+                        if (!this.gleamTimer) {
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                            Matter.Events.on(regularToken, 'destroy', () => {
+                                this.gleamTimer.invalidate();
+                            });
+                        }
+                        regularToken.tint = 0xFFFFFF;
+                        specialToken.tint = 0xFFFFFF;
+                        regularToken.visible = true;
+                        specialToken.visible = true;
+                        this.gleamTimer.reset();
+                    } else {
+                        if (this.mapRef.currentNode == this) {
+                            regularToken.alpha = 1;
                             regularToken.tint = 0xFFFFFF;
-                            specialToken.tint = 0xFFFFFF;
-                            regularToken.visible = true;
-                            specialToken.visible = true;
-                            this.gleamTimer.reset();
                         } else {
-                            if (this.mapRef.currentNode == this) {
-                                regularToken.alpha = 1;
-                                regularToken.tint = 0xFFFFFF;
-                            } else {
-                                regularToken.alpha = 1;
-                                regularToken.tint = 0x7c7c7c;
-                            }
-                            regularToken.visible = true;
-                            specialToken.visible = false;
-                            if (this.gleamTimer) {
-                                this.gleamTimer.paused = true;
-                            }
+                            regularToken.alpha = 1;
+                            regularToken.tint = 0x7c7c7c;
                         }
-                    }.bind(this));
-                    return [regularToken, specialToken];
-                },
-                enterSelfBehavior: function() {
-                    globals.currentGame.closeMap();
-                },
-                init: function() {
-                    this.campAvailableCount = 0;
-                    Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
-                        this.campAvailableCount++;
-
-                        if (event.node == this) {
-                            this.campAvailableCount = 0;
+                        regularToken.visible = true;
+                        specialToken.visible = false;
+                        if (this.gleamTimer) {
+                            this.gleamTimer.paused = true;
                         }
-                    }.bind(this));
+                    }
+                }.bind(this));
+                return [regularToken, specialToken];
+            },
+            enterSelfBehavior: function() {
+                globals.currentGame.closeMap();
+            },
+            init: function() {
+                this.campAvailableCount = 0;
+                Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
+                    this.campAvailableCount++;
 
-                    Matter.Events.on(globals.currentGame, 'TravelReset', function() {
-                        this.campAvailableCount--;
-                    }.bind(this));
+                    if (event.node == this) {
+                        this.campAvailableCount = 0;
+                    }
+                }.bind(this));
 
-                    Matter.Events.on(this, 'ArrivedAtNode', function() {
-                        this.mapRef.startingFatigue = 0;
-                    }.bind(this));
+                Matter.Events.on(globals.currentGame, 'TravelReset', function() {
+                    this.campAvailableCount--;
+                }.bind(this));
 
-                    Matter.Events.on(this.mapRef, 'showMap', function() {
-                        var availabilityText = 'Available now.';
-                        if (this.mapRef.currentNode != this && !this.travelPredicate()) {
-                            var nodesLeft = 3 - this.campAvailableCount % 3;
-                            var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
-                            availabilityText = 'Available in ' + nodesLeft + roundS;
-                        } else if (this.mapRef.currentNode == this) {
-                            availabilityText = 'Currently in camp.';
-                        }
-                        this.displayObject.tooltipObj.setMainDescription(availabilityText);
-                    }.bind(this));
-                },
-                cleanUpExtension: function() {
+                Matter.Events.on(this, 'ArrivedAtNode', function() {
+                    this.mapRef.startingFatigue = 0;
+                }.bind(this));
 
-                },
-                tooltipTitle: 'Camp Noir',
-                tooltipDescription: '',
-            });
-            return node;
-        };
+                Matter.Events.on(this.mapRef, 'showMap', function() {
+                    var availabilityText = 'Available now.';
+                    if (this.mapRef.currentNode != this && !this.travelPredicate()) {
+                        var nodesLeft = 3 - this.campAvailableCount % 3;
+                        var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
+                        availabilityText = 'Available in ' + nodesLeft + roundS;
+                    } else if (this.mapRef.currentNode == this) {
+                        availabilityText = 'Currently in camp.';
+                    }
+                    this.displayObject.tooltipObj.setMainDescription(availabilityText);
+                }.bind(this));
+            },
+            cleanUpExtension: function() {
+
+            },
+            tooltipTitle: 'Camp Noir',
+            tooltipDescription: '',
+        });
+        return node;
+    };
 };
 
 campLevel.prototype = levelBase;

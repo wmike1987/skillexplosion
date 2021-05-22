@@ -27,7 +27,7 @@ commonAirDropStation.fillLevelSceneExtension = function(scene) {
 };
 
 commonAirDropStation.createMapNode = function(options) {
-    var mapNode = new MapNode({levelDetails: options.levelDetails, mapRef: options.mapRef, tokenSize: 50, largeTokenSize: 60,
+    var mapNode = new MapNode({levelDetails: this, mapRef: options.mapRef, tokenSize: 50, largeTokenSize: 60,
         init: function() {
             this.prereqs = [];
 

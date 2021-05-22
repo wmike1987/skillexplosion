@@ -63,6 +63,7 @@ var game = {
     noClickIndicator: true,
     hideScore: true,
     currentWorldIndex: 0,
+    currentPhase: 0,
     worlds: [campNoir],
     levelLocalEntities: [],
     currentCamp: null,
@@ -299,7 +300,12 @@ var game = {
     initNextMap: function() {
         this.currentWorld = this.worlds[this.currentWorldIndex++];
         this.map = this.currentWorld.initializeMap();
-        this.currentWorld.phaseOne();
+        this.nextPhase();
+    },
+
+    nextPhase: function() {
+        this.currentWorld.phases[this.currentPhase].bind(this.currentWorld)();
+        this.currentPhase++;
     },
 
     initShane: function() {

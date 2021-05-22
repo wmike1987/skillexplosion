@@ -251,6 +251,65 @@ var noirEnemySets = {
     }],
 };
 
+var phaseOne = function() {
+    var firstLevelPosition = {
+        x: 200,
+        y: 180
+    };
+    this.map.addMapNode('camp', {
+        levelOptions: {
+            levelId: 'camp',
+            camp: camp,
+            tileTint: 0xFFFFFF
+        }
+    });
+    var learningNode = this.map.addMapNode('shaneLearning', {
+        position: firstLevelPosition,
+        levelOptions: {
+            levelId: 'shaneLearning',
+            tileTint: 0xd45605
+        }
+    });
+    this.map.setHeadToken('shaneOnly');
+    this.map.setHeadTokenPosition({
+        node: learningNode
+    });
+    this.map.addMapNode('learning', {
+        position: mathArrayUtils.clonePosition(firstLevelPosition, {
+            x: 145,
+            y: 50
+        }),
+        levelOptions: {
+            levelId: 'learning1',
+            gotoMapOnWin: true
+        }
+    });
+    this.map.addMapNode('basic', {
+        position: mathArrayUtils.clonePosition(firstLevelPosition, {
+            x: 82,
+            y: 165
+        }),
+        levelOptions: {
+            levelId: 'learning2',
+            gotoMapOnWin: true
+        }
+    });
+    this.map.addMapNode('airDropStations', {
+        position: mathArrayUtils.clonePosition(firstLevelPosition, {
+            x: 280,
+            y: 150
+        }),
+        levelOptions: {
+            levelId: 'learning3',
+            prereqCount: 2
+        }
+    });
+};
+
+var phaseTwo = function() {
+    this.map.clearAllNodesExcept('camp');
+};
+
 var campNoir = {
     worldSpecs: {
         enemySets: noirEnemySets,
@@ -278,67 +337,12 @@ var campNoir = {
             scene.add(l1);
         }
     },
+    phases: [phaseOne, phaseTwo],
 
     initializeMap: function() {
         this.map = new Map(this.worldSpecs);
         return this.map;
     },
-
-    phaseOne: function() {
-        var firstLevelPosition = {
-            x: 200,
-            y: 180
-        };
-        this.map.addMapNode('camp', {
-            levelOptions: {
-                levelId: 'camp',
-                camp: camp,
-                tileTint: 0xFFFFFF
-            }
-        });
-        var learningNode = this.map.addMapNode('shaneLearning', {
-            position: firstLevelPosition,
-            levelOptions: {
-                levelId: 'shaneLearning',
-                tileTint: 0xd45605
-            }
-        });
-        this.map.setHeadToken('shaneOnly');
-        this.map.setHeadTokenPosition({
-            node: learningNode
-        });
-        this.map.addMapNode('learning', {
-            position: mathArrayUtils.clonePosition(firstLevelPosition, {
-                x: 145,
-                y: 50
-            }),
-            levelOptions: {
-                gotoMapOnWin: true
-            }
-        });
-        this.map.addMapNode('basic', {
-            position: mathArrayUtils.clonePosition(firstLevelPosition, {
-                x: 82,
-                y: 165
-            }),
-            levelOptions: {
-                gotoMapOnWin: true
-            }
-        });
-        this.map.addMapNode('airDropStations', {
-            position: mathArrayUtils.clonePosition(firstLevelPosition, {
-                x: 280,
-                y: 150
-            }),
-            levelOptions: {
-                prereqCount: 2
-            }
-        });
-    },
-
-    phaseTwo: function() {
-
-    }
 };
 
 

@@ -117,9 +117,8 @@ var map = function(specs) {
             } while (collision);
         }
 
-        //air drop station needs the position upon init to determine its prerequisites
+        //the level creates the map node
         var mapNode = level.createMapNode({
-            levelDetails: level,
             mapRef: this,
             position: position
         });
@@ -142,6 +141,38 @@ var map = function(specs) {
 
         return mapNode;
     };
+
+    this.removeMapNode = function(node) {
+        if (node.levelDetails.manualRemoveFromGraph) {
+            node.levelDetails.manualRemoveFromGraph(this.graph);
+        } else {
+            mathArrayUtils.removeObjectFromArray(node, this.graph);
+        }
+        node.cleanUp();
+    },
+
+    this.removeMapNodeByName = function(name) {
+        var node = this.findNodeById(name);
+        if (node.levelDetails.manualRemoveFromGraph) {
+            node.levelDetails.manualRemoveFromGraph(this.graph);
+        } else {
+            mathArrayUtils.removeObjectFromArray(node, this.graph);
+        }
+        node.cleanUp();
+    },
+
+    this.clearAllNodesExcept = function(name) {
+        var graphClone = this.graph.slice(0);
+        graphClone.forEach((node) => {
+            if(node.levelDetails.levelId == name) return;
+            if (node.levelDetails.manualRemoveFromGraph) {
+                node.levelDetails.manualRemoveFromGraph(this.graph);
+            } else {
+                mathArrayUtils.removeObjectFromArray(node, this.graph);
+            }
+            node.cleanUp();
+        });
+    },
 
     this.show = function() {
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
@@ -242,6 +273,14 @@ var map = function(specs) {
                 return id == node.levelDetails.levelId;
             });
             return levelNode.levelDetails;
+        },
+
+        this.findNodeById = function(id) {
+            if (!this.graph) return null;
+            var levelNode = this.graph.find(node => {
+                return id == node.levelDetails.levelId;
+            });
+            return levelNode;
         },
 
         this.setHeadToken = function(renderlingId) {

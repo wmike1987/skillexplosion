@@ -40,6 +40,7 @@ var UrsulaTasks = function(scene) {
     ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SturdyCanteen"], unit: this.box, immortal: true});
     globals.currentGame.addUnit(this.box);
     this.box.position = {x: 750, y: 300};
+    // globals.currentGame.nextPhase();
 
     var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", isTask: true, backgroundBox: true});
     var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", isTask: true, backgroundBox: true });
