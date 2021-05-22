@@ -764,11 +764,13 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
         $.each(this.currentAbilities, function(i, ability) {
             ability.icon.visible = false;
             ability.icon.tooltipObj.hide();
-            if (ability.currentAugmentIcon) {
-                ability.currentAugmentIcon.tooltipObj.hide();
-                ability.currentAugmentIcon.visible = false;
-                ability.currentAugmentBorderIcon.visible = false;
-            }
+            ability.augments.forEach((augment) => {
+                if(augment.smallerIcon) {
+                    augment.smallerIcon.visible = false;
+                    augment.smallerBorder.visible = false;
+                    augment.smallerIcon.tooltipObj.hide();
+                }
+            });
             if (ability.abilityBorder) {
                 ability.abilityBorder.visible = false;
             }
@@ -1081,18 +1083,21 @@ unitPanel.prototype.displayUnitAbilities = function() {
             ability.abilityBorder.visible = ability.getAutoCastVariable();
         }
 
-        var augmentSize = 20;
-        var augmentBorderSize = augmentSize + 4;
+        var borderAddition = 2;
+        var augmentSpacing = 10;
+        var augmentSize = (ability.icon.width-(borderAddition*2))/(3);
+        var startingX = augmentSize;
+        var augmentBorderSize = augmentSize + borderAddition;
+        var augmentCount = 0; //init this to 1
         if (ability.augments) {
             $.each(ability.augments, function(i, augment) {
-                var bottomRightOfAbility = {
-                    x: ability.icon.position.x + this.abililtyWithBorderWidth / 2,
-                    y: ability.icon.position.y + this.abililtyWithBorderWidth / 2
+                let pos = {
+                    x: (ability.icon.position.x-(ability.icon.width / 2)) + startingX-(augmentSize/2) + augmentCount*(augmentSize+borderAddition/2),
+                    y: (ability.icon.position.y) + (ability.icon.height / 2),
                 };
-                var agumentPosition = mathArrayUtils.addScalarToPosition(bottomRightOfAbility, -augmentBorderSize / 2);
+                var augmentPosition = mathArrayUtils.clonePosition(pos, {x: borderAddition/2, y: - (augmentSize+borderAddition) / 2});
                 if (!augment.smallerIcon) {
                     augment.smallerIcon = graphicsUtils.addSomethingToRenderer(augment.icon.texture, {
-                        position: agumentPosition,
                         where: 'hudTwo'
                     });
                     Tooltip.makeTooltippable(augment.smallerIcon, {
@@ -1100,18 +1105,18 @@ unitPanel.prototype.displayUnitAbilities = function() {
                         description: augment.description
                     });
                     augment.smallerBorder = graphicsUtils.addSomethingToRenderer('AugmentBorder', {
-                        position: agumentPosition,
                         where: 'hudTwo'
                     });
                     graphicsUtils.makeSpriteSize(augment.smallerIcon, augmentSize);
                     graphicsUtils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);
                     ability.addSlave(augment.smallerIcon, augment.smallerBorder);
                 }
-                if (ability.currentAugment == augment) {
+                if (ability.isAugmentEnabled(augment)) {
+                    augment.smallerIcon.position = augmentPosition;
+                    augment.smallerBorder.position = augmentPosition;
+                    augmentCount++;
                     augment.smallerIcon.visible = true;
                     augment.smallerBorder.visible = true;
-                    ability.currentAugmentIcon = augment.smallerIcon;
-                    ability.currentAugmentBorderIcon = augment.smallerBorder;
 
                     //don't forget to match current ability tint
                     augment.smallerIcon.tint = ability.tint || 0xFFFFFF;
@@ -1132,16 +1137,20 @@ unitPanel.prototype.displayUnitAbilities = function() {
                     var enabled = ability.isEnabled();
                     if (!enabled) {
                         ability.icon.tint = unavailableTint;
-                        if (ability.currentAugment) {
-                            ability.currentAugmentIcon.tint = unavailableTint;
-                            ability.currentAugmentBorderIcon.tint = unavailableTint;
-                        }
+                        ability.augments.forEach((augment) => {
+                            if(augment.smallerIcon) {
+                                augment.smallerIcon.tint = unavailableTint;
+                                augment.smallerBorder.tint = unavailableTint;
+                            }
+                        });
                     } else if (ability.icon.tint == unavailableTint) {
                         ability.icon.tint = 0xFFFFFF;
-                        if (ability.currentAugment) {
-                            ability.currentAugmentIcon.tint = 0xFFFFFF;
-                            ability.currentAugmentBorderIcon.tint = 0xFFFFFF;
-                        }
+                        ability.augments.forEach((augment) => {
+                            if(augment.smallerIcon) {
+                                augment.smallerIcon.tint = 0xFFFFFF;
+                                augment.smallerBorder.tint = 0xFFFFFF;
+                            }
+                        });
                     }
                 });
             }

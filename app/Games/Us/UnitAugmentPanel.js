@@ -218,6 +218,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             augment.currentMicrochipName = null;
                             ability.disableAugment(augment);
                             unequip.play();
+                            this.unitPanelRef.updateUnitAbilities();
                         }
                     }.bind(this));
                     augment.actionBox.on('mouseover', function(event) {

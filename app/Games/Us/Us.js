@@ -169,18 +169,18 @@ var game = {
 
         this.initNextMap();
 
-        var shaneIntro = new ShaneIntro({
-            done: () => {
-                // this.postInit();
-                this.initShane();
-                this.gotoLevelById('shaneLearning');
-            }
-        });
-        this.currentScene.transitionToScene(shaneIntro.scene);
-        shaneIntro.play();
+        // var shaneIntro = new ShaneIntro({
+        //     done: () => {
+        //         // this.postInit();
+        //         this.initShane();
+        //         this.gotoLevelById('shaneLearning');
+        //     }
+        // });
+        // this.currentScene.transitionToScene(shaneIntro.scene);
+        // shaneIntro.play();
 
-        // this.postInit();
-        // this.gotoLevelById('camp');
+        this.postInit();
+        this.gotoLevelById('camp');
 
         return;
         var dialogueScene = new Scene();
