@@ -275,41 +275,23 @@ var common = {
                     value.timeLimitOverride = 0.01;
                 }
 
-                var activeTimeLimit = value.timeLimitOverride || value.timeLimit;
+                value.activeTimeLimit = value.timeLimitOverride || value.timeLimit;
 
                 value.started = true;
                 value.timeElapsed += event.deltaTime;
                 value.totalElapsedTime += event.deltaTime;
-                value.percentDone = Math.min(value.timeElapsed/activeTimeLimit, 1);
+                value.percentDone = Math.min(value.timeElapsed/value.activeTimeLimit, 1);
                 value.totalPercentOfRunsDone = Math.min(value.currentRun/value.originalRuns, 1);
 
                 if(value.tickCallback) value.tickCallback(event.deltaTime);
                 if(value.immediateStart) {
-                    value.timeElapsed = activeTimeLimit;
+                    var immediateDelay = value.immediateDelay || 0;
+                    value.timeElapsed = value.activeTimeLimit - immediateDelay;
                     value.immediateStart = false;
                 }
 
-                while(activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
-                    if(value.runs > 0) {
-                        value.percentDone = 0;
-                        value.timeElapsed -= activeTimeLimit;
-                        value.currentRun = value.originalRuns - value.runs;
-                        if(value.callback) value.callback();
-                        if(!value.gogogo) {
-                            value.runs--;
-                        }
-
-                        if(value.runs > 0) {
-                            var callBackPaused = value.paused;
-                            if(callBackPaused)
-                                value.paused = true;
-                        }
-                        if(value.runs <= 0 || value.manualEndLife) {
-                            value.done = true;
-                            if(value.totallyDoneCallback) value.totallyDoneCallback.call(value);
-                            if(value.killsSelf) this.invalidateTimer(value);
-                        }
-                    }
+                while(value.activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
+                    value.executeCallbacks();
                 }
             }.bind(this));
 
@@ -797,6 +779,30 @@ var common = {
             this.started = false;
             this.paused = false;
             this.invalidated = false;
+        };
+
+        var game = this;
+        timer.executeCallbacks = function() {
+            if(this.runs > 0) {
+                this.percentDone = 0;
+                this.timeElapsed -= this.activeTimeLimit;
+                this.currentRun = this.originalRuns - this.runs;
+                if(this.callback) this.callback();
+                if(!this.gogogo) {
+                    this.runs--;
+                }
+
+                if(this.runs > 0) {
+                    var callBackPaused = this.paused;
+                    if(callBackPaused)
+                        this.paused = true;
+                }
+                if(this.runs <= 0 || this.manualEndLife) {
+                    this.done = true;
+                    if(this.totallyDoneCallback) this.totallyDoneCallback.call(this);
+                    if(this.killsSelf) game.invalidateTimer(this);
+                }
+            }
         };
 
         timer.invalidate = () => {

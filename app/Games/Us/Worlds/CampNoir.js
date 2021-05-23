@@ -12,6 +12,10 @@ import {
     graphicsUtils,
     mathArrayUtils
 } from '@utils/GameUtils.js';
+import {
+    Dialogue,
+    DialogueChain
+} from '@core/Dialogue.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
@@ -329,16 +333,32 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
+            world.map.addMapNode('multiLevel', {
+                levelOptions: {
+                    levelTypes: ['basic', 'sentinels', 'basic']
+                }
+            });
             world.map.addMapNode('sentinels');
             world.map.addMapNode('hardened');
-            world.map.addMapNode('airDropStation');
-            world.map.addMapNode('airDropStation');
+            // world.map.addMapNode('airDropStation');
+            world.map.addMapNode('airDropStation', {
+                levelOptions: {
+                    prereqCount: 0
+                }
+            });
             world.map.addMapNode('airDropSpecialStation');
             if(options.skippedTutorial) {
-                globals.currentGame.flyover(() => {
-                    globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 120}), ['BasicMicrochip', 'Book'], true);
-                    globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 50}), [{className: 'worn'}, {className: 'worn'}]);
-                });
+                var a1 = new Dialogue({actor: "MacMurray", text: "Air drop incoming, I take it you know what to do...", backgroundBox: true, delayAfterEnd: 1500});
+                var chain = new DialogueChain([a1], {startDelay: 1500, done: function() {
+                    chain.cleanUp();
+                    gameUtils.doSomethingAfterDuration(() => {
+                        globals.currentGame.flyover(() => {
+                            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 120}), ['BasicMicrochip', 'Book'], true);
+                            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 50}), [{className: 'worn'}, {className: 'worn'}]);
+                        });
+                    }, 250);
+                }});
+                chain.play();
             }
         }
     });

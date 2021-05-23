@@ -20,6 +20,7 @@ var commonAirDropStation = Object.create(levelBase);
 commonAirDropStation.initExtension = function() {
     this.campLikeActive = true;
     this.completeUponEntry = true;
+    this.lesserSpin = true;
     this.mode = this.possibleModes.CUSTOM;
 };
 commonAirDropStation.fillLevelSceneExtension = function(scene) {
@@ -80,7 +81,7 @@ commonAirDropStation.createMapNode = function(options) {
             this.specialToken = specialToken;
             Matter.Events.on(this.mapRef, 'showMap', function() {
                 if(this.isCompleted) {
-                    this.deactivateToken();
+                    // this.deactivateToken();
                 } else {
                     if(this.travelPredicate()) {
                         regularToken.visible = true;
@@ -126,6 +127,7 @@ var airDropStation = function(options) {
 
         this.entrySound.play();
         var selection = Object.create(selectionMechanism);
+        selection.level = this;
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000});
         var a1 = new Dialogue({actor: "MacMurray", text: "Stimulant drop is en route. What do you need?", backgroundBox: true, letterSpeed: 50});
@@ -133,7 +135,6 @@ var airDropStation = function(options) {
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
             selection.presentChoices({numberOfChoices: 3, possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']});
             chain.cleanUp();
-            self.mapTableActive = true;
         }});
         scene.add(chain);
         chain.play();
@@ -150,6 +151,10 @@ var airDropSpecialStation = function(options) {
     this.tileSize = 225;
 
     this.onLevelPlayable = function(scene) {
+        var game = globals.currentGame;
+        game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
+        game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation), moveToCenter: true});
+
         this.entrySound.play();
         var selection = Object.create(selectionMechanism);
         //begin dialogue
@@ -157,9 +162,8 @@ var airDropSpecialStation = function(options) {
         var a1 = new Dialogue({actor: "MacMurray", text: "Technology is en route. What do you need?", backgroundBox: true, letterSpeed: 50});
         var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
-            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['TechnologyKey', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
+            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['Microchip', 'Book', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
             chain.cleanUp();
-            self.mapTableActive = true;
         }});
         scene.add(chain);
         chain.play();
@@ -225,6 +229,7 @@ var selectionMechanism = {
                 i.destroy();
             }
         });
+        this.level.mapTableActive = true;
     },
 
     presentChoices: function(options) {

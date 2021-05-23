@@ -313,12 +313,11 @@ var game = {
         this.map.hide();
     },
 
-    setCurrentLevel: function(level) {
+    setCurrentLevel: function(level, poolingOptions) {
         this.currentLevel = level;
         //if this level has enemies, start the pool as we travel
         if (this.currentLevel.enemySets.length > 0) {
-            this.currentSpawner = new UnitSpawner(this.currentLevel.enemySets);
-            this.currentSpawner.startPooling();
+            this.currentLevel.startPooling(poolingOptions);
         }
     },
 

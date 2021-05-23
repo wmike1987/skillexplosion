@@ -234,15 +234,26 @@ MapLevelNode.prototype.completeAndPlayAnimation = function() {
     this.playCompleteAnimation();
 };
 
-MapLevelNode.prototype.playCompleteAnimation = function() {
+MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     var node = this;
     node.isSpinning = true;
     node.sizeNode();
-    graphicsUtils.spinSprite(this.displayObject, 10, 150, 2, () => {
-        node.deactivateToken();
-    }, () => {
-        node.isSpinning = false;
-    });
+    var times = lesser ? 6 : 10;
+    if (this.manualTokens) {
+        this.manualTokens.forEach((token) => {
+            graphicsUtils.spinSprite(token, times, 150, 2, () => {
+                node.deactivateToken();
+            }, () => {
+                node.isSpinning = false;
+            });
+        });
+    } else {
+        graphicsUtils.spinSprite(this.displayObject, times, 150, 2, () => {
+            node.deactivateToken();
+        }, () => {
+            node.isSpinning = false;
+        });
+    }
 
     if (this._playCompleteAnimationExtension) {
         this._playCompleteAnimationExtension();

@@ -18,11 +18,36 @@ var multiLevel = function(options) {
     var multiRef = this;
     var backgroundNodeTint = 0x3c002f;
     this.chain = [];
-    this.levelTypes = options.levelTypes || ['basic', 'hardened', 'mobs'];
 
-    this.levelTypes.forEach((type) => {
-        this.chain.push(levelFactory.create(type, options));
-    });
+    //default
+    this.levelTypes = ['basic', 'basic', 'basic'];
+
+    this.initExtension = function() {
+        this.levelTypes.forEach((type) => {
+            this.chain.push(levelFactory.create(type, options));
+        });
+
+        //modify the each level to comprehend that it's part of a chain
+        this.chain.forEach((level, index) => {
+            //upon reset, reset all nodes in the chain
+            level.originalResetLevel = level.resetLevel;
+            level.resetLevel = function() {
+                multiRef.chain.forEach(level => {
+                    level.originalResetLevel();
+                });
+            };
+
+            //if we not the last node, have the win behavior start the next level
+            if(index < this.chain.length-1) {
+                var nextLevel = this.chain[index + 1];
+                level.customWinBehavior = function() {
+                    this.spawner.cleanUp();
+                    globals.currentGame.setCurrentLevel(nextLevel, {immediatePool: true});
+                    nextLevel.startLevelSpawn();
+                };
+            }
+        });
+    };
 
     //process the chain on the first node
     this.tokenSize = 40;
@@ -116,24 +141,6 @@ var multiLevel = function(options) {
             mathArrayUtils.removeObjectFromArray(node, graph);
         });
     };
-
-    //modify the each level to comprehend that it's part of a chain
-    this.chain.forEach((level, index) => {
-        //upon reset, reset all nodes in the chain
-        level.originalResetLevel = level.resetLevel;
-        level.resetLevel = function() {
-            multiRef.chain.forEach(level => {
-                level.originalResetLevel();
-            });
-        };
-
-        //if we not the last node, have the win behavior start the next level
-        if(index < this.chain.length-1) {
-            level.customWinBehavior = function() {
-                globals.currentGame.startEnemySpawn(multiRef.chain[index+1]);
-            };
-        }
-    });
 };
 multiLevel.prototype = levelBase;
 

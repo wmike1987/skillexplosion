@@ -7,6 +7,7 @@ import Doodad from '@utils/Doodad.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
 import Scene from '@core/Scene.js';
+import UnitSpawner from '@games/Us/UnitSpawner.js';
 
 var levelBase = {
     resetLevel: function() {
@@ -15,7 +16,7 @@ var levelBase = {
         });
     },
 
-    enterLevel: function(node) {
+    enterLevel: function(node, options) {
         if(this.hijackEntry) {
             var res = this.hijackEntry();
             if(res) return;
@@ -26,6 +27,35 @@ var levelBase = {
 
         globals.currentGame.currentScene.transitionToScene(scene);
         this.mode.enter.call(this, scene);
+    },
+
+    startLevelSpawn: function() {
+        var level = this;
+        var game = globals.currentGame;
+        //start enemy spawn
+        gameUtils.doSomethingAfterDuration(() => {
+            graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+            game.heartbeat.play();
+        }, 800);
+        gameUtils.doSomethingAfterDuration(() => {
+            graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+            game.unitSystem.unpause();
+            game.heartbeat.play();
+        }, 1600);
+        gameUtils.doSomethingAfterDuration(() => {
+            level.spawner.start();
+            gameUtils.setCursorStyle('Main');
+            graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
+            game.heartbeat.play();
+            game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
+            game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+            level.initializeWinLossCondition();
+        }, 2400);
+    },
+
+    startPooling: function() {
+        this.spawner = new UnitSpawner(this.enemySets);
+        this.spawner.startPooling();
     },
 
     getEntrySound: function() {
@@ -144,9 +174,9 @@ var levelBase = {
             });
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
-            game.currentSpawner.cleanUp();
+            this.spawner.cleanUp();
             Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
-        };
+        }.bind(this);
 
         this.endDelayInProgress = false;
         var winCondition = game.addTickCallback(function() {
@@ -247,26 +277,7 @@ var modes = {
                 var ursulaStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: 20});
                 game.setUnit(game.shane, {position: mathArrayUtils.clonePosition(shaneStart, game.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
                 game.setUnit(game.ursula, {position: mathArrayUtils.clonePosition(ursulaStart, game.offscreenStartLocation), moveToCenter: true, applyFatigue: true});
-
-                //start enemy spawn
-                gameUtils.doSomethingAfterDuration(() => {
-                    graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
-                    game.heartbeat.play();
-                }, 800);
-                gameUtils.doSomethingAfterDuration(() => {
-                    graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
-                    game.unitSystem.unpause();
-                    game.heartbeat.play();
-                }, 1600);
-                gameUtils.doSomethingAfterDuration(() => {
-                    game.currentSpawner.start();
-                    gameUtils.setCursorStyle('Main');
-                    graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {runs: 15, style: styles.titleOneStyle});
-                    game.heartbeat.play();
-                    game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
-                    game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
-                    level.initializeWinLossCondition();
-                }, 2400);
+                level.startLevelSpawn();
             });
             game.level += 1;
         }
@@ -280,7 +291,7 @@ var modes = {
             if(this.completeUponEntry) {
                 level.mapNode.complete();
                 gameUtils.matterOnce(game.map, 'showMap', () => {
-                    level.mapNode.playCompleteAnimation();
+                    level.mapNode.playCompleteAnimation(level.lesserSpin);
                 });
             }
 
