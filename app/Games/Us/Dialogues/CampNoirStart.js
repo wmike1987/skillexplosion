@@ -19,14 +19,15 @@ import {
     DialogueScene
 } from '@games/Us/Dialogues/DialogueScene.js';
 
-var CampNoirPhaseTwo = function(options) {
+var CampNoirStart = function(options) {
     this.escape = options.done;
     this.createChain = function() {
         //begin dialogue
         var title = new Dialogue({
             blinkLastLetter: false,
             title: true,
-            text: "...",
+            text: "Late at night...",
+            letterSpeed: 60,
             delayAfterEnd: 2000
         });
         var a1 = new Dialogue({
@@ -83,13 +84,13 @@ var CampNoirPhaseTwo = function(options) {
             delayAfterEnd: 1500
         });
 
-        return new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 2000});
+        return new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 750});
     };
 
     this.initialize();
 };
 
-CampNoirPhaseTwo.prototype = DialogueScene;
+CampNoirStart.prototype = DialogueScene;
 export {
-    CampNoirPhaseTwo
+    CampNoirStart
 };

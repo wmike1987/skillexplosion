@@ -168,6 +168,8 @@ var Dialogue = function Dialogue(options) {
         d.dialogueStarted = false;
         this.textTimer = globals.currentGame.addTimer({name: 'dialogTap'+mathArrayUtils.getId(), gogogo: true, timeLimit: this.actorLetterSpeed,
         callback: function() {
+            if(d.paused) return;
+
             if(!d.dialogueStarted) {
                 d.dialogueStarted = true;
                 if(d.onStart) {
@@ -374,6 +376,7 @@ var Dialogue = function Dialogue(options) {
   };
 
     this.speedUp = function(doneCallback) {
+        if(!this.dialogueStarted) return;
         this.skipped = true;
         this.resolveTime = 0;
         this.textTimer.skipToEnd = true;
@@ -457,20 +460,27 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         }
 
         //start the chain
+        this.currentDia = arrayOfDialogues[0];
         gameUtils.doSomethingAfterDuration(() => {
             arrayOfDialogues[0].play();
-            this.currentDia = arrayOfDialogues[0];
         }, this.startDelay);
 
         //escape to speed up current line
-        $('body').on('keydown.' + 'speedUpChain:' + this.id, function( event ) {
+        $('body').on('keydown.' + 'speedUpChain:' + this.id, function(event) {
             var key = event.key.toLowerCase();
             if(key == 'escape') {
                 if(this.currentDia) {
+                    if(this.escapeExtension) {
+                        this.escapeExtension();
+                    }
                     this.currentDia.speedUp();
                 }
             }
         }.bind(this));
+    },
+
+    this.pause = function() {
+        this.currentDia.paused = true;
     },
 
     this.cleanUp = function() {

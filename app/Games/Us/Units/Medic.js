@@ -1002,6 +1002,7 @@ export default function Medic(options) {
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
         },
+        damageAdditionType: 'heal',
         energyRegenerationRate: 1.5,
         healthRegenerationRate: 0.25,
         portrait: graphicsUtils.createDisplayObject('MedicPortrait'),
@@ -1099,7 +1100,7 @@ export default function Medic(options) {
                     if(!ppBypass)
                         this.currentEnergy -= thisAbility.energyCost;
 
-                    var healAmount = thisAbility.healAmount + this.getDamageAdditionSum();
+                    var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
                     target.giveHealth(healAmount, this);
                 },
                 attackHoneTeamPredicate: function(team) {

@@ -12,7 +12,7 @@ var DialogueScene = {
         options = options || {};
         this.id = mathArrayUtils.getId();
         var dialogueScene = new Scene();
-        var dialogChain = this.createChain(dialogueScene);
+        var dialogueChain = this.createChain(dialogueScene);
         dialogueScene.addBlackBackground();
 
         Matter.Events.on(dialogueScene, 'afterSnapshotRender', () => {
@@ -22,7 +22,7 @@ var DialogueScene = {
 
 
         if(this.initExtension) {
-            this.initExtension(dialogueScene);
+            this.initExtension(dialogueScene, dialogueChain);
         }
 
         //indicate skipping behavior
@@ -31,11 +31,14 @@ var DialogueScene = {
             Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
                 skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to fast-forward", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
                 dialogueScene.add(skipText);
+                dialogueChain.escapeExtension = function() {
+                    graphicsUtils.graduallyTint(skipText, 0xFFFFFF, 0x6175ff, 60, null, false, 1);
+                };
             });
         }
 
         //init the escape-to-continue functionality
-        dialogChain.done = function() {
+        dialogueChain.done = function() {
             if(this.chainDoneExtension) {
                 this.chainDoneExtension(dialogueScene);
             }
@@ -61,8 +64,8 @@ var DialogueScene = {
         this.scene = dialogueScene;
 
         this.play = function() {
-            dialogueScene.add(dialogChain);
-            dialogChain.play();
+            dialogueScene.add(dialogueChain);
+            dialogueChain.play();
         };
     }
 };

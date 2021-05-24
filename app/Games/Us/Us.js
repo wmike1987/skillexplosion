@@ -373,7 +373,8 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JaggedMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MaskOfRage"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});

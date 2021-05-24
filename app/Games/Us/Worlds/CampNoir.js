@@ -21,13 +21,14 @@ import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
 import Doodad from '@utils/Doodad.js';
 import Scene from '@core/Scene.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
 import Map from '@games/Us/MapAndLevel/Map/Map.js';
 import {
     CampNoirIntro
 } from '@games/Us/Dialogues/CampNoirIntro.js';
 import {
-    CampNoirPhaseTwo
-} from '@games/Us/Dialogues/CampNoirPhaseTwo.js';
+    CampNoirStart
+} from '@games/Us/Dialogues/CampNoirStart.js';
 import {
     UrsulaTasks
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
@@ -325,7 +326,7 @@ var phaseOne = function() {
 
 var phaseTwo = function(options) {
     var world = this;
-    var phaseOneDialogue = new CampNoirPhaseTwo({
+    var startDialogue = new CampNoirStart({
         done: () => {
             world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
@@ -339,14 +340,27 @@ var phaseTwo = function(options) {
                 }
             });
             world.map.addMapNode('sentinels');
-            world.map.addMapNode('hardened');
-            // world.map.addMapNode('airDropStation');
-            world.map.addMapNode('airDropStation', {
+            world.map.addMapNode('hardened', {
                 levelOptions: {
-                    prereqCount: 0
+                    item: {
+                        total: 1,
+                        className: 'worn',
+                        classType: 'item'
+                    }
                 }
             });
-            world.map.addMapNode('airDropSpecialStation');
+            // world.map.addMapNode('airDropStation');
+            world.map.addMapNode('airDropStation', {
+                // levelOptions: {
+                //     prereqCount: 0
+                // }
+            });
+            world.map.addMapNode('airDropSpecialStation', {
+                levelOptions: {
+                    // prereqCount: 0,
+                    selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'item', 3)
+                }
+            });
             if(options.skippedTutorial) {
                 var a1 = new Dialogue({actor: "MacMurray", text: "Air drop incoming, I take it you know what to do...", backgroundBox: true, delayAfterEnd: 1500});
                 var chain = new DialogueChain([a1], {startDelay: 1500, done: function() {
@@ -362,8 +376,8 @@ var phaseTwo = function(options) {
             }
         }
     });
-    globals.currentGame.currentScene.transitionToScene(phaseOneDialogue.scene);
-    phaseOneDialogue.play();
+    globals.currentGame.currentScene.transitionToScene(startDialogue.scene);
+    startDialogue.play();
 };
 
 var phaseThree = function() {

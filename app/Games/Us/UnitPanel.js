@@ -946,12 +946,14 @@ var _displayUnitStats = function() {
             functionText = this.prevailingUnit.damageMember();
         }
         this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember] : this.prevailingUnit.damage));
-        if (this.prevailingUnit.damageAdditions.length > 0) {
+        var damageAdditionLen = this.prevailingUnit.damageAdditionType ? this.prevailingUnit.getAdditions(this.prevailingUnit.damageAdditionType).length : this.prevailingUnit.damageAdditions.length;
+        if (damageAdditionLen > 0) {
             sign = '+';
             if (this.prevailingUnit.getDamageAdditionSum() < 0) {
                 sign = '';
             }
-            this.unitDamageAdditionsText.text = sign + this.prevailingUnit.getDamageAdditionSum();
+            var damageAdditionType = this.prevailingUnit.damageAdditionType ? this.prevailingUnit.getAdditionSum(this.prevailingUnit.damageAdditionType) : this.prevailingUnit.getDamageAdditionSum();
+            this.unitDamageAdditionsText.text = sign + damageAdditionType
             this.unitDamageAdditionsText.position = mathArrayUtils.clonePosition(this.unitDamageText.position, {
                 x: this.unitDamageText.width
             });

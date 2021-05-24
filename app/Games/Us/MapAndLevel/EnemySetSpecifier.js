@@ -31,6 +31,7 @@ var enemySetSpecifier = {
                 enemySets.push({
                     constructor: constructor.c,
                     wave: 1,
+                    item: options.item,
                     icon: constructor.p,
                     spawn: {total: enemyCount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
                         atATime: enemySpec.atATime || 1, maxOnField: 1}

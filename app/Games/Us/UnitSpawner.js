@@ -79,7 +79,8 @@ var unitSpawner = function(enemySets) {
                             if (giveItem) {
                                 ItemUtils.giveUnitItem({
                                     gamePrefix: 'Us',
-                                    itemName: mathArrayUtils.getRandomElementOfArray(globals.currentGame.itemClasses[enemy.item.type]),
+                                    className: enemy.item.className,
+                                    typeName: enemy.item.typeName,
                                     unit: newUnit
                                 });
                                 itemsToGive--;

@@ -104,6 +104,7 @@ commonAirDropStation.createMapNode = function(options) {
             this.regularToken.visible = true;
             this.specialToken.visible = false;
             this.regularToken.alpha = 0.5;
+            this.specialToken.alpha = 0.0;
             this.regularToken.tint = 0x002404;
             this.gleamTimer.invalidate();
         }
@@ -157,14 +158,15 @@ var airDropSpecialStation = function(options) {
 
         this.entrySound.play();
         var selection = Object.create(selectionMechanism);
+        selection.level = this;
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000});
         var a1 = new Dialogue({actor: "MacMurray", text: "Technology is en route. What do you need?", backgroundBox: true, letterSpeed: 50});
         var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
-            selection.presentChoices({numberOfChoices: 3, possibleChoices: ['Microchip', 'Book', 'SereneStar', 'SteadySyringe', 'GleamingCanteen']});
+            selection.presentChoices({numberOfChoices: 3, possibleChoices: this.selectionOptions});
             chain.cleanUp();
-        }});
+        }.bind(this)});
         scene.add(chain);
         chain.play();
     };

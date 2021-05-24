@@ -30,7 +30,7 @@ var ItemClasses = {
     },
 
     stimulant: {
-        item: {tint: 0x2a2a2a, items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']},
+        item: {tint: 0x80ffbb, items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']},
     },
 
     book: {

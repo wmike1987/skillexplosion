@@ -150,17 +150,22 @@ var ShaneIntro = function(options) {
         return chain;
     };
 
-    this.initExtension = function(scene) {
+    this.initExtension = function(scene, chain) {
         //indicate skipping behavior
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
             this.skipText = graphicsUtils.addSomethingToRenderer("TEX+:Ctrl+C to skip tutorial", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.05, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
             scene.add(this.skipText);
-            
+
             //escape to skip tutorial
             $('body').on('keydown.skipTutorial', function( event ) {
                 if(keyStates.Control && (keyStates.c || keyStates.C)) {
+                    this.skipText.alpha = 0.5;
                     $('body').off('keydown.' + 'skipTutorial');
-                    globals.currentGame.skipTutorial();
+                    chain.pause();
+
+                    graphicsUtils.graduallyTint(this.skipText, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                        globals.currentGame.skipTutorial();
+                    });
                 }
             }.bind(this));
         });

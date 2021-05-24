@@ -857,8 +857,8 @@ export default function Marine(options) {
 
     var trueGrit  = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 5 grit for length of round.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 3 grit for length of round.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 8 grit for length of round.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 5 grit for length of round.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',

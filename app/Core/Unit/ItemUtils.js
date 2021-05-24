@@ -5,10 +5,6 @@ import {globals} from '@core/Fundamental/GlobalState';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import {ItemClasses} from '@games/Us/Items/ItemClasses.js';
 
-// options {
-//     item: item
-//     totalLife: number (default 8000 millis)
-// }
 var initiateBlinkDeath = function(options) {
     var time = options.time || 8000;
     var timerTime = time/50;
@@ -27,7 +23,7 @@ var initiateBlinkDeath = function(options) {
                 } else if(this.currentRun % 2 == 0) {
                     $.each(item.renderlings, function(i, rl) {
                         rl.alpha = 0.3;
-                    })
+                    });
                 } else {
                     rl.alpha = 1;
                 }
@@ -49,6 +45,26 @@ var initiateBlinkDeath = function(options) {
         originalCollect.call(item);
     };
     gameUtils.deathPact(item, t);
+};
+
+var getRandomItemFromClass = function(className, typeName) {
+    return mathArrayUtils.getRandomElementOfArray(ItemClasses[className][typeName].items);
+};
+
+var getRandomItemsFromClass = function(className, typeName, amount) {
+    var returnItems = [];
+    var collision = false;
+    var chosenItem = null;
+    do {
+        collision = true;
+        chosenItem = mathArrayUtils.getRandomElementOfArray(ItemClasses[className][typeName].items);
+        if(!returnItems.includes(chosenItem)) {
+            collision = false;
+            returnItems.push(chosenItem);
+        }
+    } while (collision || returnItems.length < amount);
+
+    return returnItems;
 };
 
 var giveUnitItem = function(options) {
@@ -120,7 +136,7 @@ var resolveItemInformation = function(options) {
         //if we've specified the item class name, choose a random item from within
         chosenClassKey = options.className || chosenClassKey;
         chosenTypeKey = options.typeName || chosenTypeKey;
-        chosenItem = mathArrayUtils.getRandomElementOfArray(ItemClasses[chosenClassKey][chosenTypeKey].items);
+        chosenItem = getRandomItemFromClass(chosenClassKey, chosenTypeKey);
     } else {
         //if we've provided a list, randomly choose one
         var itemNames = mathArrayUtils.convertToArray(options.itemName);
@@ -140,4 +156,4 @@ var resolveItemInformation = function(options) {
     return {itemName: chosenItem, classInformation: {itemClassContext: ItemClasses[chosenClassKey], itemType: chosenTypeKey, itemClass: chosenClassKey, typeInfo: ItemClasses[chosenClassKey][chosenTypeKey]}};
 }
 
-export default {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem, dropItemAtPosition: dropItemAtPosition, createItemObj: createItemObj, createItemAndGrasp: createItemAndGrasp};
+export default {initiateBlinkDeath: initiateBlinkDeath, giveUnitItem: giveUnitItem, dropItemAtPosition: dropItemAtPosition, createItemObj: createItemObj, createItemAndGrasp: createItemAndGrasp, getRandomItemsFromClass: getRandomItemsFromClass, getRandomItemFromClass: getRandomItemFromClass};

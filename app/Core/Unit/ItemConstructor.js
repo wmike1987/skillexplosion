@@ -33,6 +33,9 @@ var baseItem = {
             } else {
                 if(unit['add' + capitalizeFirstLetter(key)] instanceof Function) {
                     unit['add' + capitalizeFirstLetter(key)](value);
+                } else if(key.includes('Addition')) {
+                    var idx = key.indexOf('Addition');
+                    unit.addAddition(key.substr(0, idx), value);
                 } else {
                     unit[key] += value;
                 }
@@ -51,6 +54,9 @@ var baseItem = {
             } else {
                 if(unit['remove' + capitalizeFirstLetter(key)] instanceof Function) {
                     unit['remove' + capitalizeFirstLetter(key)](value);
+                } else if(key.includes('Addition')) {
+                    var idx = key.indexOf('Addition');
+                    unit.removeAddition(key.substr(0, idx), value);
                 } else {
                     unit[key] -= value;
                 }

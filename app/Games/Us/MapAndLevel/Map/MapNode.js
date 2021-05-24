@@ -172,7 +172,7 @@ var MapLevelNode = function(options) {
                 if (options.mouseDownCallback) {
                     var ret = options.mouseDownCallback.call(self);
                     if (ret) {
-                        Object.assign(behavior, options.mouseDownCallback.call(self));
+                        Object.assign(behavior, ret);
                     } else {
                         Object.assign(behavior, {
                             flash: false,
@@ -198,7 +198,7 @@ var MapLevelNode = function(options) {
                         Matter.Events.trigger(globals.currentGame, "travelFinished", {
                             node: behavior.nodeToEnter
                         });
-                        this.levelDetails.enterLevel(self);
+                        behavior.nodeToEnter.levelDetails.enterLevel(self);
                         behavior.nodeToEnter.untintNode();
                         this.displayObject.tooltipObj.enable();
                     }.bind(this));

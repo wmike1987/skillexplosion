@@ -36,6 +36,7 @@ var UnitBase = {
     grit: 0,
     gritAdditions: [],
     gritMult: 1,
+    additions: {},
     level: 1,
     currentExperience: 0,
     nextLevelExp: 100,
@@ -1039,6 +1040,31 @@ var UnitBase = {
             baseDamageAmount = this.damageMember();
         }
         return Math.max(-baseDamageAmount, sum);
+    },
+
+    addAddition: function(type, amount) {
+        if(!this.additions[type]) {
+            this.additions[type] = [];
+        }
+        this.additions[type].push(amount);
+    },
+
+    getAdditions: function(type) {
+        return this.additions[type] || [];
+    },
+
+    getAdditionSum: function(type) {
+        if(!this.additions[type]) return 0;
+
+        var sum = 0;
+        this.additions[type].forEach((addition) => {
+            sum += addition;
+        });
+        return sum;
+    },
+
+    removeAddition: function(type, amount) {
+        mathArrayUtils.removeObjectFromArray(amount, this.additions[type]);
     },
 
     addDefenseAddition: function(amount) {
