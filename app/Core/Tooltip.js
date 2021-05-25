@@ -197,7 +197,8 @@ Tooltip.prototype.destroy = function(options) {
     this.isDestroyed = true;
 };
 
-Tooltip.prototype.display = function(position) {
+Tooltip.prototype.display = function(position, options) {
+    options = options || {};
     this.visible = true;
 
     //lean our tooltip left or right so that it doesn't go off the screen
@@ -220,6 +221,12 @@ Tooltip.prototype.display = function(position) {
     } else {
         this.base.anchor.y = 1;
         //favor up (basically do nothing)
+    }
+
+    if(options.middleAnchor) {
+        this.base.anchor = {x: 0.5, y: 0.5};
+        xOffset = this.base.width/2.0;
+        yOffset = this.base.height/2.0;
     }
 
     if(!this.base.parent) {
@@ -299,6 +306,8 @@ Tooltip.prototype.hide = function() {
 };
 
 Tooltip.makeTooltippable = function(displayObject, options) {
+    options = options || {};
+
     //If we have an existing tooltip, just kill it
     if(displayObject.tooltipObj) {
         displayObject.tooltipObj.destroy();
@@ -309,34 +318,38 @@ Tooltip.makeTooltippable = function(displayObject, options) {
     displayObject.tooltipObj.dobj = displayObject;
 
     var stopTimeout = null;
-    displayObject.on('mousemove', function(event) {
-        //escape routes
-        if(displayObject.tooltipObj.visible || displayObject.tooltipObj.disabled) return;
-        if(!gameUtils.isPositionWithinCanvasBounds(event.data.global, {x: 1, y: 1})) return;
+    if(!options.manualHandling) {
+        displayObject.on('mousemove', function(event) {
+            //escape routes
+            if(displayObject.tooltipObj.visible || displayObject.tooltipObj.disabled) return;
+            if(!gameUtils.isPositionWithinCanvasBounds(event.data.global, {x: 1, y: 1})) return;
 
-        if(stopTimeout) {
-            clearTimeout(stopTimeout);
-        }
-
-        if(displayObject.tooltipObj.noDelay) {
-            if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
-                displayObject.tooltipObj.display(event.data.global);
+            if(stopTimeout) {
+                clearTimeout(stopTimeout);
             }
-        } else {
-            stopTimeout = setTimeout(function() {
-                if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
+
+            if(displayObject.tooltipObj.noDelay) {
+                if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
-            }.bind(this), 100);
-        }
-    }.bind(this));
+            } else {
+                stopTimeout = setTimeout(function() {
+                    if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
+                        displayObject.tooltipObj.display(event.data.global);
+                    }
+                }.bind(this), 100);
+            }
+        }.bind(this));
+    }
 
-    displayObject.on('mouseout', function(event) {
-        displayObject.tooltipObj.hide();
-        if(stopTimeout) {
-            clearTimeout(stopTimeout);
-        }
-    }.bind(this));
+    if(!options.manualHandling) {
+        displayObject.on('mouseout', function(event) {
+            displayObject.tooltipObj.hide();
+            if(stopTimeout) {
+                clearTimeout(stopTimeout);
+            }
+        }.bind(this));
+    }
 
     var f = Matter.Events.on(displayObject, 'destroy', function() {
         displayObject.tooltipObj.destroy();

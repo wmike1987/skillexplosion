@@ -51,7 +51,7 @@ var unitSpawner = function(enemySets) {
                 name: 'spawner' + i + this.id + enemy.type,
                 gogogo: true,
                 immediateStart: true,
-                immediateDelay: 1500,
+                immediateDelay: enemy.initialDelay || 3000,
                 timeLimit: enemy.spawn.hz,
                 callback: function() {
                     if (enemy.fulfilled) return;

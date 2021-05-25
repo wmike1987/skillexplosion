@@ -1,10 +1,10 @@
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import ic from '@core/Unit/ItemConstructor.js'
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
 
-}
+};
 
 export default function(title, description) {
     return ic({
@@ -13,5 +13,5 @@ export default function(title, description) {
         name: "EMPTY",
         description: [description],
         isEmptySlot: true,
-    })
+    });
 };

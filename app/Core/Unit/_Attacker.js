@@ -208,6 +208,7 @@ export default {
     holdPosition: function() {
         this.stop();
         this.isHoldingPosition = true;
+        Matter.Events.trigger(this, 'holdPosition');
 
         //remove the attack hone functionality since we don't want to move
         if (this.attackHoneTick) {

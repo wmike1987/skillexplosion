@@ -1166,15 +1166,28 @@ unitPanel.prototype.displayUnitPassives = function(options) {
     //clear last passive
     if (this.currentDefensePassive) {
         this.currentDefensePassive.activeIcon.visible = false;
+        this.currentDefensePassive.activeIcon.tooltipObj.hide();
         this.defensePassiveMeter.visible = false;
     }
 
     if (this.currentActivePassive) {
         this.currentActivePassive.activeIcon.visible = false;
+        this.currentActivePassive.activeIcon.tooltipObj.hide();
         this.attackPassiveMeter.visible = false;
     }
 
-    if ((!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) || options.clear) return;
+    if(this.defensivePassiveTooltippable) {
+        this.defensivePassiveTooltippable.tooltipObj.hide();
+        this.defensivePassiveTooltippable.visible = false;
+    }
+    if(this.aggressionPassiveTooltippable) {
+        this.aggressionPassiveTooltippable.tooltipObj.hide();
+        this.aggressionPassiveTooltippable.visible = false;
+    }
+    // if ((!this.prevailingUnit.defensePassive && !this.prevailingUnit.attackPassive) || options.clear) return;
+    if (options.clear) {
+        return;
+    }
 
     var unit = this.prevailingUnit;
 
@@ -1201,6 +1214,32 @@ unitPanel.prototype.displayUnitPassives = function(options) {
             x: this.passiveCenterX,
             y: this.passiveBottomCenterY
         };
+    } else {
+        if (!this.defensivePassiveTooltippable) {
+            this.defensivePassiveTooltippable = graphicsUtils.createDisplayObject('TintableSquare', {
+                where: 'hudOne',
+                position: {
+                    x: this.passiveCenterX,
+                    y: this.passiveBottomCenterY
+                },
+                alpha: 0.0,
+            });
+            this.defensivePassiveTooltippable.on('mousemove', function(event) {
+                this.defensivePassiveTooltippable.alpha = 0.1;
+            }.bind(this));
+            this.defensivePassiveTooltippable.on('mouseout', function(event) {
+                this.defensivePassiveTooltippable.alpha = 0.0;
+            }.bind(this));
+            graphicsUtils.makeSpriteSize(this.defensivePassiveTooltippable, {
+                x: 32,
+                y: 32
+            });
+            Tooltip.makeTooltippable(this.defensivePassiveTooltippable, {
+                title: 'Defensive State Of Mind',
+                descriptions: ['Inactive']
+            });
+        }
+        graphicsUtils.addOrShowDisplayObject(this.defensivePassiveTooltippable);
     }
 
     if (unit.attackPassive) {
@@ -1226,6 +1265,32 @@ unitPanel.prototype.displayUnitPassives = function(options) {
             x: this.passiveCenterX,
             y: this.passiveTopCenterY
         };
+    } else {
+        if (!this.aggressionPassiveTooltippable) {
+            this.aggressionPassiveTooltippable = graphicsUtils.createDisplayObject('TintableSquare', {
+                where: 'hudOne',
+                position: {
+                    x: this.passiveCenterX,
+                    y: this.passiveTopCenterY
+                },
+                alpha: 0.0,
+            });
+            this.aggressionPassiveTooltippable.on('mousemove', function(event) {
+                this.aggressionPassiveTooltippable.alpha = 0.1;
+            }.bind(this));
+            this.aggressionPassiveTooltippable.on('mouseout', function(event) {
+                this.aggressionPassiveTooltippable.alpha = 0.0;
+            }.bind(this));
+            graphicsUtils.makeSpriteSize(this.aggressionPassiveTooltippable, {
+                x: 32,
+                y: 32
+            });
+            Tooltip.makeTooltippable(this.aggressionPassiveTooltippable, {
+                title: 'Aggressive State Of Mind',
+                descriptions: ['Inactive']
+            });
+        }
+        graphicsUtils.addOrShowDisplayObject(this.aggressionPassiveTooltippable);
     }
 
     //create the timing meters

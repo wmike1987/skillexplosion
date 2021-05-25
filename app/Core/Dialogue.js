@@ -378,6 +378,9 @@ var Dialogue = function Dialogue(options) {
     this.speedUp = function(doneCallback) {
         if(!this.dialogueStarted) return;
         this.skipped = true;
+        if(this.escapable) {
+            this.preventAutoEnd = false;
+        }
         this.resolveTime = 0;
         this.textTimer.skipToEnd = true;
         if(this.actionTextTimer) {

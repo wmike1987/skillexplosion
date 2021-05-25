@@ -242,6 +242,9 @@ var shaneLearning = function(options) {
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750});
         var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Shane.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30});
+        var a1a = new Dialogue({text: "Your unit panel is at the bottom of the screen.", isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 2000});
+        var a1b = new Dialogue({text: "Tooltips are available by hovering over parts of the panel.", continuation: true, isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 2000});
+        var a1c = new Dialogue({text: "Press 'escape' to acknowledge.", continuation: true, isInfo: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true, escapable: true});
         var a2 = new Dialogue({actor: "Task", text: "Right click to move Shane to the beacon.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
         var a3 = new Dialogue({actor: "Task", text: "Hover over your attack ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
         var a3a = new Dialogue({actor: "Task", text: "Press 'A' then left click on the box to attack it.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
@@ -256,7 +259,7 @@ var shaneLearning = function(options) {
         var self = this;
         var firstBox = this.box;
         this.mapTableActive = false;
-        var chain = new DialogueChain([title, a1, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
+        var chain = new DialogueChain([title, a1, a1a, a1b, a1c, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             this.mapTableActive = true;
             var b1 = new Dialogue({text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });
@@ -297,8 +300,32 @@ var shaneLearning = function(options) {
                         achieve.play();
                         gameUtils.doSomethingAfterDuration(() => {
                             completeTaskAndRelease(a1);
+                            var arrow1, arrow2, arrow3;
+                            a1a.onStart = function() {
+                                gameUtils.doSomethingAfterDuration(() => {
+                                    var commonY = globals.currentGame.unitSystem.unitPanel.unitNamePosition.y - 5;
+                                    arrow1 = graphicsUtils.pointToSomethingWithArrow({position: {x: globals.currentGame.unitSystem.unitPanel.unitNamePosition.x, y: commonY}}, -20, 0.75);
+                                    Tooltip.makeTooltippable(arrow1, {title: 'Unit stat panel', descriptions: ['Displays unit attributes.'], manualHandling: true});
+                                    arrow1.tooltipObj.display(mathArrayUtils.clonePosition(globals.currentGame.unitSystem.unitPanel.unitNamePosition, {y: -135}), {middleAnchor: true});
+
+                                    arrow2 = graphicsUtils.pointToSomethingWithArrow({position: {x: globals.currentGame.unitSystem.unitPanel.unitPortraitPosition.x, y: commonY}}, -20, 0.75);
+                                    Tooltip.makeTooltippable(arrow2, {title: 'Unit portrait', descriptions: ['Life bar on the left.', 'Energy bar on the right'], manualHandling: true});
+                                    arrow2.tooltipObj.display(mathArrayUtils.clonePosition({x: globals.currentGame.unitSystem.unitPanel.unitPortraitPosition.x, y: commonY}, {y: -140}), {middleAnchor: true});
+
+                                    var attackMoveIcon = globals.currentGame.unitSystem.unitPanel.attackMoveIcon.position;
+                                    var stopIcon = globals.currentGame.unitSystem.unitPanel.stopIcon.position;
+                                    var myx = (stopIcon.x + attackMoveIcon.x)/2.0;
+                                    var basicFunctionPosition = {x: myx, y: commonY};
+                                    arrow3 = graphicsUtils.pointToSomethingWithArrow({position: basicFunctionPosition}, -20, 0.75);
+                                    Tooltip.makeTooltippable(arrow3, {title: 'Basic unit functions', descriptions: ['Move, attack-move,', 'stop, hold position'], manualHandling: true});
+                                    arrow3.tooltipObj.display(mathArrayUtils.clonePosition(basicFunctionPosition, {y: -140}), {middleAnchor: true});
+                                }, 1500);
+                            };
 
                             a2.onStart = function() {
+                                graphicsUtils.removeSomethingFromRenderer(arrow1);
+                                graphicsUtils.removeSomethingFromRenderer(arrow2);
+                                graphicsUtils.removeSomethingFromRenderer(arrow3);
                                 var moveBeacon = graphicsUtils.addSomethingToRenderer('FocusZone', 'stageNOne', {scale: {x: 1.25, y: 1.25}, position: moveBeaconLocation});
                                 graphicsUtils.flashSprite({sprite: moveBeacon, duration: 300, times: 15});
                                 gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {

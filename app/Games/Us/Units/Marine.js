@@ -691,11 +691,11 @@ export default function Marine(options) {
 
     var gsDDuration = 300;
     var gsADuration = 300;
-    var allyArmorDuration = 10000;
+    var allyArmorDuration = 15000;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
         defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for 4 hp.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 2 def for 10s.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 2 def for 15s.'],
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -741,16 +741,16 @@ export default function Marine(options) {
     var robADuration = 3000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (When hit)', 'Absorb 2x healing for 3s.'],
+        defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3s.'],
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 3s.'],
         textureName: 'RushOfBlood',
         unit: marine,
-        defenseEventName: 'preSufferAttack',
+        defenseEventName: 'holdPosition',
         defenseDuration: robDDuration,
-        defenseCooldown: 9000,
+        defenseCooldown: 6000,
         aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
-        aggressionCooldown: 8000,
+        aggressionCooldown: 6000,
         defenseAction: function(event) {
             var f = {};
             marine.applyBuff({name: "rushofbloodabsorb", textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
@@ -773,19 +773,20 @@ export default function Marine(options) {
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 3s.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Permanently reduce enemy base defense by 1.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 3s.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 5000,
+        defenseCooldown: 4000,
         aggressionEventName: 'dealNonLethalDamage',
-        aggressionCooldown: 8000,
+        aggressionCooldown: 6000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            attackingUnit.defense -= 1;
-            var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414});
-            graphicsUtils.floatSprite(defenseDown, {direction: -1});
-            gameUtils.attachSomethingToBody({something: defenseDown, body: attackingUnit.body});
+            targetUnit.maim();
+            // attackingUnit.defense -= 1;
+            // var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414});
+            // graphicsUtils.floatSprite(defenseDown, {direction: -1});
+            // gameUtils.attachSomethingToBody({something: defenseDown, body: attackingUnit.body});
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
@@ -796,11 +797,11 @@ export default function Marine(options) {
     var cpADuration = 4000;
     var clearPerspective  = new Passive({
         title: 'Clear Perspective',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Double rifle range for 4s.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Double rifle range for 4s.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
         textureName: 'ClearPerspective',
         unit: marine,
-        defenseEventName: 'sufferProjectile',
+        defenseEventName: 'holdPosition',
         defenseCooldown: 9000,
         aggressionEventName: 'kill',
         aggressionCooldown: 4000,
@@ -823,15 +824,15 @@ export default function Marine(options) {
     var ssADuration = 4000;
     var spiritualState  = new Passive({
         title: 'Spiritual State',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 1 energy for every 1 hp recieved from healing for 4s.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Gain 1 energy for every 1 hp recieved from healing for 4s.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4s.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'sufferProjectile',
-        defenseCooldown: 8000,
+        defenseCooldown: 3000,
         defenseDuration: ssDDuration,
-        aggressionEventName: 'kill',
-        aggressionCooldown: 9000,
+        aggressionEventName: 'holdPosition',
+        aggressionCooldown: 6000,
         aggressionDuration: ssADuration,
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
@@ -901,7 +902,7 @@ export default function Marine(options) {
         team: options.team || 4,
         priority: 10,
         consumeSound: yeahsound,
-        hitboxWidth: 35,
+        hitboxWidth: 30,
         hitboxHeight: 60,
         itemsEnabled: true,
         name: options.name,

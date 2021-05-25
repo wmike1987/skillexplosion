@@ -105,7 +105,7 @@ var ic = function(options) {
         if(newItem.icon.containsPoint(globals.currentGame.renderer.interaction.mouse.global)) {
             newItem.icon.tint = 0x669900;
             if(newItem.isEmptySlot) {
-                newItem.icon.alpha = 0.2;
+                newItem.icon.alpha = 0.1;
                 newItem.icon.tint = 0xFFFFFF;
                 return;
             }

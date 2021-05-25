@@ -51,8 +51,9 @@ var UrsulaTasks = function(scene) {
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
     var a5c = new Dialogue({actor: "Task", text: "Pick up your item.", isTask: true, backgroundBox: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
+    var a7 = new Dialogue({text: "You can also lay a mine while secret stepping.", isInfo: true, backgroundBox: true, delayAfterEnd: 2000});
 
-    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a6], {startDelay: 200, done: function() {
+    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a6, a7], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             // microchipChain.play();

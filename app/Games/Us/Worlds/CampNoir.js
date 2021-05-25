@@ -216,6 +216,23 @@ var noirEnemySets = {
         atATime: 1,
         hz: 4500
     }],
+    basicHard: [{
+        type: 'Critter',
+        amount: [2, 3, 4],
+        atATime: 2,
+        hz: 4000
+    }, {
+        type: 'Sentinel',
+        amount: [1, 2],
+        atATime: 1,
+        hz: 4500
+    },{
+        type: 'Gargoyle',
+        amount: [2],
+        initialDelay: 10000,
+        atATime: 1,
+        hz: 5000
+    }],
     outerBasic: [{
         type: 'Critter',
         amount: 12,
@@ -266,7 +283,7 @@ var noirEnemySets = {
         type: 'Sentinel',
         amount: 10,
         atATime: 2,
-        hz: 5000
+        hz: 4000
     }],
 };
 
@@ -334,6 +351,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
+            world.map.addMapNode('basicHard');
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
                     levelTypes: ['basic', 'sentinels', 'basic']
