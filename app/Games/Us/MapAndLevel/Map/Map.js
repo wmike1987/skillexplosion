@@ -105,8 +105,13 @@ var map = function(specs) {
         var collision, outOfBounds = false;
         var nodeBuffer = 100;
         var radius = options.outer ? 750 : 200;
+        var tries = 0;
         if (!position) {
             do {
+                if(tries > 40) {
+                    tries = 0;
+                    radius += 100;
+                }
                 collision = false;
                 position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, level.nodeBuffer || 20);
                 if(!gameUtils.isPositionWithinPlayableBounds(position)) {
@@ -115,6 +120,7 @@ var map = function(specs) {
                 for (let node of this.graph) {
                     if (mathArrayUtils.distanceBetweenPoints(node.position, position) < nodeBuffer) {
                         collision = true;
+                        tries++;
                         break;
                     }
                 }

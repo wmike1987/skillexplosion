@@ -26,9 +26,6 @@ var pauseAfterCompleteTime = 750;
 var completeTaskAndRelease = function(dialogue) {
     if(dialogue.isTask) {
         dialogue.completeTask();
-        gameUtils.doSomethingAfterDuration(() => {
-            dialogue.preventAutoEnd = false;
-        }, pauseAfterCompleteTime);
     }
 };
 
@@ -51,12 +48,11 @@ var UrsulaTasks = function(scene) {
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
     var a5c = new Dialogue({actor: "Task", text: "Pick up your item.", isTask: true, backgroundBox: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
-    var a7 = new Dialogue({text: "You can also lay a mine while secret stepping.", isInfo: true, backgroundBox: true, delayAfterEnd: 2000});
+    var a7 = new Dialogue({text: "You can also lay a mine while secret stepping.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
 
     var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a6, a7], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
-            // microchipChain.play();
             transitionChain.play();
         }, 250);
     }});
@@ -202,7 +198,7 @@ var UrsulaTasks = function(scene) {
         }, 1000);
     }});
 
-    b2.fullyShownCallback = function() {
+    b2.onFullyShown = function() {
         globals.currentGame.flyover(() => {
             globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 100}), ['BasicMicrochip', 'Book'], true);
             b2.preventAutoEnd = false;
@@ -298,7 +294,7 @@ var UrsulaTasks = function(scene) {
     var d1 = new Dialogue({text: "Hover over the book to read its description.", isTask: true, backgroundBox: true});
     var d2 = new Dialogue({text: "Books cannot be reused like microchips can.", isInfo: true, backgroundBox: true, delayAfterEnd: 1500});
     var d3 = new Dialogue({text: "Grab the book and drop it on a state of mind.", isTask: true, backgroundBox: true});
-    var d4 = new Dialogue({text: "This state of mind is now available to equip.", isInfo: true, backgroundBox: true, delayAfterEnd: 2750});
+    var d4 = new Dialogue({text: "This state of mind is now available to equip.", isInfo: true, backgroundBox: true, delayAfterEnd: 1500});
     var d5 = new Dialogue({text: "Each state of mind has two modes to choose from.", isInfo: true, backgroundBox: true, delayAfterEnd: 1000});
     var d6 = new Dialogue({text: "Activate the aggression mode of your learned state of mind. (Click)", isTask: true, backgroundBox: true});
     var d7 = new Dialogue({text: "Now switch to the defensive mode. (Ctrl+Click)", isTask: true, backgroundBox: true});

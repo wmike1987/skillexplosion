@@ -218,7 +218,7 @@ var UnitBase = {
             item.owningUnit = this;
 
             //add benefits (if necessary)
-            if(slot.active)
+            if(slot.active && !this.disregardItemBuffs)
                 this.equipItem(item);
 
             //play Sound
@@ -303,7 +303,7 @@ var UnitBase = {
     },
 
     unequipItem: function(item) {
-        if(item.currentSlot.active)
+        if(item.currentSlot.active && !this.disregardItemBuffs)
             item.unequip(this);
 
         //empty the item's slot
@@ -933,7 +933,7 @@ var UnitBase = {
     },
 
     maim: function(duration) {
-        var movePenalty = -0.5;
+        var movePenalty = -0.75;
         var defensePenalty = -1;
 
         var unit = this;

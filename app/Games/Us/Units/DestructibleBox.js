@@ -81,6 +81,7 @@ export default function DestructibleBox(options) {
         hitboxHeight: 40,
         hitboxYOffset: 5,
         itemsEnabled: true,
+        disregardItemBuffs: true,
         portrait: graphicsUtils.createDisplayObject('BoxPortrait'),
         wireframe: graphicsUtils.createDisplayObject('BoxGroupPortrait'),
         team: options.team || 49,

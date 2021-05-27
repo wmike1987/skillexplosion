@@ -342,11 +342,20 @@ var phaseOne = function() {
 };
 
 var phaseTwo = function(options) {
+    options = options || {};
     var world = this;
     var startDialogue = new CampNoirStart({
         done: () => {
             world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');

@@ -100,11 +100,13 @@ var Loop = function(options) {
             Matter.Events.trigger(this, 'afterUpdate', event);
         }
 
+        Matter.Events.trigger(this, 'preTick', event);
         Matter.Events.trigger(this, 'tick', event);
 
         event.percentOfNextFrame = this.deltaAccumulator/this.desiredFrameTime;
         event.interpolate = this.interpolate;
         event.delta = thisFrameDelta;
+
         Matter.Events.trigger(this, 'renderWorld', event);
 
         //trigger event now that everything is in place

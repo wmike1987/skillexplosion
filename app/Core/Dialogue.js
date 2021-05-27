@@ -82,8 +82,9 @@ var Dialogue = function Dialogue(options) {
             this.preventAutoEnd = !this.isContinuing;
             this.completeTask = function() {
                 if(!this.isContinuing) {
+                    this.preventAutoEnd = false;
                     this.speedUp();
-                    this.fullyShownCallback = () => {
+                    this.onEnd = () => {
                         this.realizedActorText.text = "";
                         this.realizedText.text = "Excellent";
                         graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.realizedText.width, y: this.realizedText.height});
@@ -325,28 +326,37 @@ var Dialogue = function Dialogue(options) {
                 }
 
                 if(currentLetter == d.text.length) {
-                    d.resolveTime = this.totalElapsedTime + d.delayAfterEnd;
+                    d.fullyShown = true;
+                    if(d.onFullyShown && !d.alreadyTriggeredFullyShown) {
+                        d.alreadyTriggeredFullyShown = true;
+                        d.onFullyShown();
+                    }
+                    d.resolveTime = this.totalElapsedTime;
                     if(d.skipped) {
                         d.resolveTime = 0; //this basically voids any delayAfterEnd
                     }
                 }
             } else if(this.totalElapsedTime >= d.resolveTime){
-                if(d.fullyShownCallback && !d.alreadyTriggeredFullyShown) {
-                    d.alreadyTriggeredFullyShown = true;
-                    d.fullyShownCallback();
-                }
                 if(d.next && d.next.preventAutoStart) {
                     return;
                 }
-                if(d.preventAutoEnd) {
+
+                if(d.preventAutoEnd || d.done) {
                     return;
                 }
-                if(d.fadeOutAfterDone && !d.isContinuing) {
-                    d.realizedText.alpha = 0.5;
-                    d.realizedActorText.alpha = 0.5;
-                    d.backgroundBox.alpha = 0.5;
-                }
-                d.deferred.resolve();
+
+                d.done = true;
+                gameUtils.doSomethingAfterDuration(() => {
+                    if(d.fadeOutAfterDone && !d.isContinuing) {
+                        d.realizedText.alpha = 0.5;
+                        d.realizedActorText.alpha = 0.5;
+                        d.backgroundBox.alpha = 0.5;
+                    }
+                    if(d.onEnd) {
+                        d.onEnd();
+                    }
+                    d.deferred.resolve();
+                }, d.delayAfterEnd);
             }
         }});
     };
@@ -377,10 +387,11 @@ var Dialogue = function Dialogue(options) {
 
     this.speedUp = function(doneCallback) {
         if(!this.dialogueStarted) return;
-        this.skipped = true;
-        if(this.escapable) {
+        if(!this.isTask && this.fullyShown) {
             this.preventAutoEnd = false;
         }
+        this.skipped = true;
+        this.delayAfterEnd = 0;
         this.resolveTime = 0;
         this.textTimer.skipToEnd = true;
         if(this.actionTextTimer) {
