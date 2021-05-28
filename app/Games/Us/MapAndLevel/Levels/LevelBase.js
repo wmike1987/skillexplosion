@@ -168,6 +168,7 @@ var levelBase = {
         var commonWinLossTasks = function() {
             removeCurrentConditions.call(this);
             game.unitsInPlay.forEach((unit) => {
+                unit.stop();
                 unit.canAttack = false;
                 unit.canMove = false;
                 unit.isTargetable = false;

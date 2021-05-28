@@ -801,9 +801,9 @@ export default function Marine(options) {
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
         textureName: 'ClearPerspective',
         unit: marine,
-        defenseEventName: 'holdPosition',
+        defenseEventName: 'sufferProjectile',
         defenseCooldown: 9000,
-        aggressionEventName: 'kill',
+        aggressionEventName: 'holdPosition',
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
         defenseAction: function(event) {

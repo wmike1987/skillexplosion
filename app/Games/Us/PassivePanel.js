@@ -74,7 +74,7 @@ ConfigPanel.prototype.initialize = function() {
         }
     }.bind(this));
 
-    $('body').on('mouseup.unitPassivePanel', function(event) {
+    $('body').on('mousedown.unitPassivePanel', function(event) {
         var mousePoint = {x: 0, y: 0};
         gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= passiveMax.x && mousePoint.x >= passiveMin.x && mousePoint.y <= passiveMax.y && mousePoint.y >= passiveMin.y) {
@@ -133,7 +133,10 @@ ConfigPanel.prototype.showPassives = function(unit) {
             // passive.unlocked = true; //for debugging
             passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudTwo'});
 
-            Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Unlearned"}));
+            //delay this for a sec... it takes some time to load the bitmap font and don't want a delay in bringing up the panel
+            gameUtils.executeSomethingNextFrame(() => {
+                Tooltip.makeTooltippable(passive.actionBox, Object.assign({}, passive, {systemMessage: "Unlearned"}));
+            });
             graphicsUtils.makeSpriteSize(passive.actionBox, {x: 50, y: 50});
             passive.border = graphicsUtils.addSomethingToRenderer('AugmentBorder', {position: {x: xpos, y:gameUtils.getPlayableHeight() + this.initialYOffset + this.spacing*(yOffsetI)}, where: 'hudOne'});
             passive.border.sortYOffset = -10;

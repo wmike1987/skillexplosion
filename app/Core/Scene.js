@@ -107,7 +107,7 @@ Scene.prototype.transitionToScene = function(options) {
 
     globals.currentGame.currentScene = newScene;
 
-    var handler = Matter.Events.on(globals.currentGame.gameLoop, 'preTick', () => {
+    var handler = Matter.Events.on(globals.currentGame.gameLoop, 'beforeRenderWorld', () => {
         //define transition vars
         var iterTime;
         var fadeIn = null;
@@ -140,10 +140,10 @@ Scene.prototype.transitionToScene = function(options) {
             var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
             var renderer = globals.currentGame.renderer.pixiApp.renderer;
 
-            var t0 = performance.now();
+            // var t0 = performance.now();
             renderer.render(rStage, renderTexture);
-            var t1 = performance.now();
-            console.log("Call to render took " + (t1 - t0) + " milliseconds.")
+            // var t1 = performance.now();
+            // console.log("Call to render took " + (t1 - t0) + " milliseconds.")
 
             graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
 
@@ -191,7 +191,7 @@ Scene.prototype.transitionToScene = function(options) {
             }.bind(this)});
         }.bind(this)});
         Matter.Events.trigger(newScene, 'afterSnapshotRender', {});
-        Matter.Events.off(globals.currentGame.gameLoop, 'preTick', handler);
+        Matter.Events.off(globals.currentGame.gameLoop, 'beforeRenderWorld', handler);
     });
 };
 

@@ -368,7 +368,10 @@ var renderer = function(engine, options) {
 			if(something.indexOf(bitmapTextId) >= 0) {
 				var name = options.style.name;
 				if(!this.bitmapFontCache[name]) {
+					// var t0 = performance.now();
 					this.bitmapFontCache[name] = PIXI.BitmapFont.from(name, options.style, {resolution: 2, chars: PIXI.BitmapFont.ASCII});
+					// var t1 = performance.now();
+					// console.log("Call to bitmap.from for " + name + "took" + (t1 - t0) + " milliseconds.");
 				}
 
 				return new PIXI.BitmapText(something.substring(something.indexOf(bitmapTextId)+5), {
