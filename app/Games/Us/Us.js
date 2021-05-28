@@ -81,7 +81,7 @@ var game = {
             volume: 0.12,
             rate: 0.9
         });
-        this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 4.0, rate: 1.0});
+        this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 3.0, rate: 1.0});
         this.boxSound = gameUtils.getSound('criticalhit.wav', {volume: 0.15, rate: 0.65});
 
         this.shaneCollector = new StatCollector({
@@ -172,7 +172,6 @@ var game = {
 
         var shaneIntro = new ShaneIntro({
             done: () => {
-                // this.postInit();
                 this.initShane();
                 this.currentWorld.gotoLevelById('shaneLearning');
             }
@@ -180,7 +179,7 @@ var game = {
         this.currentScene.transitionToScene(shaneIntro.scene);
         shaneIntro.play();
 
-        // this.postInit();
+        // this.skipTutorial();
         // this.currentWorld.gotoLevelById('camp');
     },
 
@@ -224,18 +223,6 @@ var game = {
     },
 
     initUrsula: function() {
-        this.createUrsula();
-        this.addUnit(this.ursula);
-    },
-
-    postInit: function() {
-        //create empty scene and transition to camp scene
-
-        //for troubleshooting victory screen
-        // this.gotoEndLevelScreen();
-        // this.initNextMap();
-        this.createShane();
-        this.addUnit(this.shane);
         this.createUrsula();
         this.addUnit(this.ursula);
     },

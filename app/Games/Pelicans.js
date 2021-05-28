@@ -80,7 +80,7 @@ var game = {
 		this.nextWave();
 
 		//ran off stage listener
-		this.addTickListener(function(event) {
+		this.addTickCallback(function(event) {
 		    $.each(this.birds, function(i, bird) {
                 if(bird.correctBird && gameUtils.bodyRanOffStage(bird))
                     this.nextWave();

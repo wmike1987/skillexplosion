@@ -80,7 +80,7 @@ var game = {
 		    game.incrementScore(1);
 		}});
 
-		this.addTickListener(function(event) {
+		this.addTickCallback(function(event) {
 			$.each(this.flakes, function(i, flake) {
 
 				if(flake == null) return;

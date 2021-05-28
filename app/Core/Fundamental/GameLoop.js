@@ -75,7 +75,7 @@ var Loop = function(options) {
 
         var hasUpdated = false;
 
-        var stepCount = 0;
+        // var stepCount = 0;
         var thisFrameDelta = 0;
         if(this.isFixed) {
             this.deltaAccumulator += this.deltaTime;
@@ -84,7 +84,7 @@ var Loop = function(options) {
                 thisFrameDelta =+ this.desiredFrameTime;
                 Matter.Events.trigger(this, 'beforeStep', event);
                 Matter.Engine.update(options.engine, this.desiredFrameTime);
-                stepCount++;
+                // stepCount++;
                 Matter.Events.trigger(this, 'afterStep', event);
                 hasUpdated = true;
             }

@@ -21,6 +21,7 @@ import {
 
 var ShaneIntro = function(options) {
     this.escape = options.done;
+    this.overrideSkipBehavior = true;
     this.createChain = function() {
         //begin dialogue
         var ds = [];

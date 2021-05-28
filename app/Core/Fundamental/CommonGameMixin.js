@@ -910,6 +910,18 @@ var common = {
         }
     },
     addTickCallback: function(callback, invincible, eventName) {
+        //make backwards compatible
+        var options = {};
+        if(mathArrayUtils.isObject(invincible)) {
+            options = invincible;
+        } else {
+            options.invincible = invincible;
+            options.eventName = eventName;
+        }
+
+        if(options.runImmediately) {
+            callback();
+        }
         var deltaTime = 0, lastTimestamp = 0;
         var self = this;
         var tickDeltaWrapper = function(event) {
@@ -922,16 +934,16 @@ var common = {
             }
             lastTimestamp = event.timestamp;
             event.deltaTime = deltaTime;
-            if(invincible || (self.gameState == 'playing'))
+            if(options.invincible || (self.gameState == 'playing'))
                 callback(event);
         };
         tickDeltaWrapper.isTickCallback = true;
 
-        if(invincible)
+        if(options.invincible)
             this.invincibleTickCallbacks.push(tickDeltaWrapper);
         else
             this.tickCallbacks.push(tickDeltaWrapper);
-        Matter.Events.on(this.engine.runner, eventName || 'tick'/*'afterUpdate'*/, tickDeltaWrapper);
+        Matter.Events.on(this.engine.runner, options.eventName || 'tick'/*'afterUpdate'*/, tickDeltaWrapper);
         callback.tickDeltaWrapper = tickDeltaWrapper; //so we can turn this off with the original function
         return tickDeltaWrapper; //return so you can turn this off if needed
     },
@@ -1015,12 +1027,9 @@ var common = {
 
 //aliases
 common.addTime = common.addToGameTimer;
-common.addRunnerCallback = common.addTickCallback;
-common.removeRunnerCallback = common.removeTickCallback;
 common.addBodies = common.addBody;
 common.listeners = common.eventListeners;
 common.addEventListener = common.addListener;
-common.addTickListener = common.addTickCallback;
 common.removeEventListener = common.removeListener;
 common.removeText = common.removeSprite;
 

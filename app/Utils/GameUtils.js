@@ -1448,6 +1448,10 @@ var mathArrayUtils = {
       return (Matter.Vector.magnitude(Matter.Vector.sub(A, B)));
     },
 
+    isObject: function(varr) {
+        return typeof varr === 'object' && varr !== null;
+    },
+
     //1, 4 return an int in (1, 2, 3, 4)
     getRandomIntInclusive: function(low, high) {
         return Math.floor(Math.random() * (high-low+1) + low);

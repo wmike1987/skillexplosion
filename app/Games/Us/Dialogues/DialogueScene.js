@@ -34,14 +34,29 @@ var DialogueScene = {
                 dialogueChain.escapeExtension = function() {
                     graphicsUtils.graduallyTint(skipText, 0xFFFFFF, 0x6175ff, 60, null, false, 1);
                 };
+
+                if(!this.overrideSkipBehavior) {
+                    //escape the chain
+                    $('body').on('keydown.completeScene', function( event ) {
+                        if(keyStates.Control && (keyStates.c || keyStates.C)) {
+                            $('body').off('keydown.' + 'completeScene');
+                            dialogueChain.done(true);
+                        }
+                    }.bind(this));
+                }
             });
         }
 
         //init the escape-to-continue functionality
-        dialogueChain.done = function() {
+        dialogueChain.done = function(immediateEscape) {
             if(this.chainDoneExtension) {
                 this.chainDoneExtension(dialogueScene);
             }
+
+            if(immediateEscape) {
+                this.escape();
+            }
+
             graphicsUtils.removeSomethingFromRenderer(skipText);
             var spacetoContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', alpha: 0.5, style: styles.titleOneStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
             dialogueScene.add(spacetoContinue);
@@ -59,6 +74,7 @@ var DialogueScene = {
 
         dialogueScene.addCleanUpTask(() => {
             $('body').off('keydown.' + 'DScene:' + this.id);
+            $('body').off('keydown.completeScene');
         });
 
         this.scene = dialogueScene;

@@ -116,19 +116,19 @@ var moveable = {
         };
 
         //immediate set the velocity (rather than waiting for the next tick)
-        this.constantlySetVelocityTowardsDestination(null);
+        // this.constantlySetVelocityTowardsDestination(null);
 
         //setup the constant move tick
         if(this.moveTick)
-            globals.currentGame.removeRunnerCallback(this.moveTick);
-        this.moveTick = globals.currentGame.addRunnerCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
+            globals.currentGame.removeTickCallback(this.moveTick);
+        this.moveTick = globals.currentGame.addTickCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
         gameUtils.deathPact(this, this.moveTick, 'moveTick');
 
         //Setup stop conditions
         //general condition
         if(this.stopConditionCheck)
-            globals.currentGame.removeRunnerCallback(this.stopConditionCheck);
-        this.stopConditionCheck = globals.currentGame.addRunnerCallback(this.generalStopCondition.bind(this, commandObj), false, 'afterStep');
+            globals.currentGame.removeTickCallback(this.stopConditionCheck);
+        this.stopConditionCheck = globals.currentGame.addTickCallback(this.generalStopCondition.bind(this, commandObj), false, 'afterStep');
         gameUtils.deathPact(this, this.stopConditionCheck, 'generalStopCondition');
 
         //"no progress" stop condition
@@ -190,11 +190,11 @@ var moveable = {
 
         //remove movement callback
         if(this.moveTick)
-            globals.currentGame.removeRunnerCallback(this.moveTick);
+            globals.currentGame.removeTickCallback(this.moveTick);
 
         //remove stop conditions
         if(this.stopConditionCheck)
-            globals.currentGame.removeRunnerCallback(this.stopConditionCheck);
+            globals.currentGame.removeTickCallback(this.stopConditionCheck);
 
         if(this.tryForDestinationTimer)
             globals.currentGame.invalidateTimer(this.tryForDestinationTimer);

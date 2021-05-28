@@ -81,7 +81,7 @@ var game = {
 		}.bind(this));
 
 		//align displacement sprites and kill drop if out of sight
-		this.addTickListener(function(event) {
+		this.addTickCallback(function(event) {
 			$.each(this.drops, function(i, drop) {
 
 				if(drop == null) return;

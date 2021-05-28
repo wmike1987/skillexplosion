@@ -241,7 +241,7 @@ export default {
                 this.isHoning = true;
                 this.rawMove(this.currentHone.position);
             }
-        }.bind(this));
+        }.bind(this), {runImmediately: true});
         gameUtils.deathPact(this, this.attackHoneTick, 'attackHoneTick');
 
         /*
@@ -258,7 +258,7 @@ export default {
                 this.lastHone = null; //if we're attacking something, reset the lastHoned unit
                 this._attack(this.currentTarget);
             }
-        }.bind(this));
+        }.bind(this), {runImmediately: true});
         gameUtils.deathPact(this, this.attackTick, 'attackTick');
     },
 
@@ -360,12 +360,14 @@ export default {
                 }
             }
         }.bind(this);
-        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction);
+
+        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction, {runImmediately: true});
         gameUtils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
     },
 
     _becomePeaceful: function() {
         this.currentTarget = null;
+        this.currentHone = null;
 
         //nullify specified attack target
         if (this.specifiedAttackTarget) {
