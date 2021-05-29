@@ -490,6 +490,7 @@ var common = {
     addUnit: function(unit) {
         this.addBody(unit.body);
         this.addBody(unit.selectionBody);
+        this.addBody(unit.selectionBodyBig);
 
         //track the team this unit is on
         if(unit.team) {
@@ -561,11 +562,17 @@ var common = {
         // }
 
         //This might have some performance impact... possibly will investigate
+        if(body.idAdded) {
+            console.warn("attempting to add already-added body");
+            console.warn(body);
+        }
+
         if(body.vertices)
             this.vertexHistories.push(body);
 
         //add to matter world
         Matter.World.add(this.world, body);
+        body.isAdded = true;
     },
 
     removeBody: function(body, hardRemove) {
@@ -920,7 +927,7 @@ var common = {
         }
 
         if(options.runImmediately) {
-            callback();
+            callback(options.immediateOptions || {});
         }
         var deltaTime = 0, lastTimestamp = 0;
         var self = this;

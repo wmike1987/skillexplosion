@@ -150,6 +150,7 @@ function UnitConstructor(options) {
     // create selection body, or use the collision body if specified
     //**************************************************************
     var selectionBody = null;
+    var selectionBodyBig = null;
     if(newUnit.useCollisionBodyAsSelectionBody) {
         selectionBody = Matter.Bodies.circle(0, 0, options.radius, {
             isSensor: true
@@ -158,11 +159,24 @@ function UnitConstructor(options) {
         selectionBody.rradius = options.radius;
         selectionBody.unit = newUnit; //reference to parent
     } else {
+        //regular selection body, aka the selection box body
         selectionBody = Matter.Bodies.rectangle(5, 5, newUnit.hitboxWidth || 20, newUnit.hitboxHeight || 20, {
             isSensor: true,
         });
         selectionBody.wwidth = newUnit.hitboxWidth || 20;
         selectionBody.hheight = newUnit.hitboxHeight || 20;
+
+        //big body (for mouse selection)
+        selectionBodyBig = Matter.Bodies.rectangle(5, 5, (newUnit.hitboxWidth || 20) + (newUnit.bigBodyAddition.x || 15),
+            (newUnit.hitboxHeight || 20) + (newUnit.bigBodyAddition.y || 15), {
+            isSensor: true,
+        });
+        selectionBodyBig.collisionFilter.mask = 0;
+        gameUtils.attachSomethingToBody({something: selectionBodyBig, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
+        selectionBodyBig.isSelectionBigBody = true;
+        selectionBodyBig.unit = newUnit;
+        selectionBodyBig.noWire = true;
+        gameUtils.deathPact(newUnit, selectionBodyBig);
     }
 
     selectionBody.collisionFilter.mask = 0x0002;
@@ -175,6 +189,7 @@ function UnitConstructor(options) {
     //back references
     newUnit.body = body;
     newUnit.selectionBody = selectionBody;
+    newUnit.selectionBodyBig = selectionBodyBig || selectionBody;
 
     //Set infrastructure attributes
     if (options.renderChildren)

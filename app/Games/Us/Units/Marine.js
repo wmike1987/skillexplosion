@@ -324,7 +324,7 @@ export default function Marine(options) {
         var defensivePostureAugment = thisAbility.isAugmentEnabled('defensive posture');
         var deathWishAugment = thisAbility.isAugmentEnabled('death wish');
 
-        this.stop(); //stop any movement
+        this.stop(null, {noAlert: true}); //stop any movement
         this._becomePeaceful(); //prevent us from honing/attacking
         this.moveSpeedAugment = this.moveSpeed;
         this.body.frictionAir = 0.2;

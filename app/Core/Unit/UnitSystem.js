@@ -1114,7 +1114,7 @@ var UnitSystem = function(properties) {
     //return units attached to the main selection body
     this.convertBodiesToSelectionEnabledUnits = function(bodies) {
         bodies = $.grep(bodies, function(body) {
-            return body.isSelectionBody && !body.isSmallerBody;
+            return body.isSelectionBigBody && !body.isSmallerBody;
         });
 
         bodies = $.map(bodies, function(body) {

@@ -70,7 +70,8 @@ export default {
         //extend stop
         this.rawStop = this.stop;
         var originalStop = this.stop;
-        this.stop = function(commandObj) {
+        this.stop = function(commandObj, options) {
+            options = options || {};
             if (this.specifiedAttackTarget) {
                 Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
                 this.specifiedAttackTarget = null;
@@ -82,7 +83,11 @@ export default {
             this.attackMoveDestination = null;
             this.attackMoving = false;
             this.isHoldingPosition = false;
-            this._becomeOnAlert();
+            if(options.noAlert) {
+                //nothing
+            } else {
+                this._becomeOnAlert();
+            }
             if(commandObj) {
                 commandObj.command.done();
             }
@@ -266,7 +271,7 @@ export default {
         if(this.honeAndTargetSensorCallback)
             globals.currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
 
-        var sensingFunction = function() {
+        var sensingFunction = function(options) {
             this.currentHone = null; //blitz current hone?
             this.currentTarget = null;
             var currentHoneDistance = null;
@@ -331,6 +336,11 @@ export default {
                 }
             }.bind(this));
 
+            //If we're from the immediate call, stop here
+            if(options.onlySense) {
+                return;
+            }
+
             //If we were attacking but no longer have a target
             if(!this.currentTarget && this.attackReady && this.isAttacking) {
                 Matter.Sleeping.set(this.body, false);
@@ -361,7 +371,7 @@ export default {
             }
         }.bind(this);
 
-        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction, {runImmediately: true});
+        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction, {runImmediately: true, immediateOptions: {onlySense: true}});
         gameUtils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
     },
 

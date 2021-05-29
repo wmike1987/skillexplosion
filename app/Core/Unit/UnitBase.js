@@ -51,6 +51,7 @@ var UnitBase = {
     isSelectable: true,
     smallerBodyWidthChange: false,
     smallerBodyHeightChange: false,
+    bigBodyAddition: {x: 0, y: 0},
     abilities: [],
     abilityAugments: [],
     commands: {
