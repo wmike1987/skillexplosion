@@ -172,11 +172,15 @@ var levelBase = {
                 unit.canAttack = false;
                 unit.canMove = false;
                 unit.isTargetable = false;
+                unit.isSelectable = false;
+                globals.currentGame.unitSystem.deselectUnit(unit);
             });
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
             this.spawner.cleanUp();
-            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+            gameUtils.doSomethingAfterDuration(() => {
+                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+            }, 500);
         }.bind(this);
 
         this.endDelayInProgress = false;

@@ -325,7 +325,6 @@ export default function Marine(options) {
         var deathWishAugment = thisAbility.isAugmentEnabled('death wish');
 
         this.stop(null, {noAlert: true}); //stop any movement
-        this._becomePeaceful(); //prevent us from honing/attacking
         this.moveSpeedAugment = this.moveSpeed;
         this.body.frictionAir = 0.2;
         var velocityVector = Matter.Vector.sub(destination, this.position);

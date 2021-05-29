@@ -432,6 +432,7 @@ var game = {
         unit.isTargetable = true;
         unit.canMove = true;
         unit.canAttack = true;
+        unit.isSelectable = true;
         if (moveToCenter) {
             unit.ignoreEnergyRegeneration = true;
             unit.ignoreHealthRegeneration = true;

@@ -85,6 +85,7 @@ export default {
             this.isHoldingPosition = false;
             if(options.noAlert) {
                 //nothing
+                this._becomePeaceful();
             } else {
                 this._becomeOnAlert();
             }
