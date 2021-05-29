@@ -818,7 +818,14 @@ var graphicsUtils = {
         }
         options = options || {};
 
-        var displayObject = this.createDisplayObject(something, options);
+        var displayObject = null;
+        if(something instanceof PIXI.DisplayObject) {
+            displayObject = something;
+            $.extend(displayObject, options);
+        } else {
+            displayObject = this.createDisplayObject(something, options);
+        }
+
         globals.currentGame.renderer.addToPixiStage(displayObject, where || displayObject.where);
         return displayObject;
     },
@@ -832,7 +839,6 @@ var graphicsUtils = {
         options = options || {};
 
         var displayObject = globals.currentGame.renderer.itsMorphinTime(something, options);
-        var alreadyBorn = something == displayObject;
 
         $.extend(displayObject, options);
 
@@ -840,7 +846,7 @@ var graphicsUtils = {
         //if we're not already a real display object. This is so that adding an already
         //created object via addSomethingToRenderer doesn't override the previously set anchor.
         //This means that it's assumed that an already-created object has a relevant anchor.
-        if(!options.anchor && !alreadyBorn) {
+        if(!options.anchor) {
             displayObject.anchor = {x: 0.5, y: 0.5};
         }
         if(options.filter) {

@@ -194,7 +194,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             let finalSysMessage = ar1.concat(ar2).concat(ar3);
                             Tooltip.makeTooltippable(augment.actionBox, {title: augment.title, description: augment.description, systemMessage: finalSysMessage});
                             augment.actionBox.tooltipObj.display(mousePosition);
-                            graphicsUtils.addGleamToSprite({sprite: augment.icon, gleamWidth: 10, duration: 350});
+                            graphicsUtils.addGleamToSprite({sprite: augment.icon, gleamWidth: 20, duration: 750});
                             equip.play();
 
                             //trigger event and trigger ability panel update

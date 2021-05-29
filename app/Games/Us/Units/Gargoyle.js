@@ -311,7 +311,7 @@ export default function Gargoyle(options) {
 
                     transform.play();
                     this.applyBuff({name: "gargBuff", textureName: 'DefensiveBuff', duration: this.stoneFormLength, applyChanges: function() {
-                        this.stop(null, {noAlert: true}); //stop any movement
+                        this.stop(null, {peaceful: true}); //stop any movement
                         this.canMove = false;
                         this.canAttack = false;
                         this.isoManagedTint = 0x4d4d4d;

@@ -212,6 +212,10 @@ var selectionMechanism = {
                 };
             }.bind(this));
         });
+
+        //show choice border
+        this.panel = graphicsUtils.addSomethingToRenderer("PanelWithBorder", {where: 'hud', scale: {x: 0.8, y: 0.8}, alpha: 0.75, position: mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {y: -100})});
+        graphicsUtils.addGleamToSprite({power: 0.1, sprite: this.panel, leanAmount: 125, gleamWidth: 150, duration: 750, alphaIncluded: true});
     },
 
     _makeSelection: function(item) {
@@ -219,6 +223,8 @@ var selectionMechanism = {
         globals.currentGame.itemSystem.registerItem(item);
         item.drop(item.icon.position);
         item.icon.tooltipObj.hide();
+
+        graphicsUtils.removeSomethingFromRenderer(this.panel);
 
         //restore original tooltip
         Tooltip.makeTooltippable(item.icon, item.originalTooltipObj);

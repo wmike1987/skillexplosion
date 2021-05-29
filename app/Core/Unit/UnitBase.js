@@ -300,7 +300,7 @@ var UnitBase = {
 
     equipItem: function(item) {
         item.equip(this);
-        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, power: 0.1, leanAmount: 12, duration: 500});
+        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, power: 0.75, leanAmount: 12, duration: 500});
     },
 
     unequipItem: function(item) {

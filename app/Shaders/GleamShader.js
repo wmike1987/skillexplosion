@@ -33,19 +33,28 @@ export default `
             inGleam = true;
         }
 
-        //top is never actually reached
-        float top = 1.01;
-        float lightProgress = 1.0 + progress*(top-1.0); //1-top
-        if(lightProgress >= ((top-1.0)/2.0 + 1.0)) {
-            lightProgress = ((top-1.0)/2.0 + 1.0)*2.0 - lightProgress;
+        //light progress goes from 0 --> top --> 0
+        float top = 1.00;
+        float lightProgress = 0.0 + progress*(top); //0-top
+        if(lightProgress >= ((top)/2.0)) {
+            lightProgress = ((top)/2.0)*2.0 - lightProgress;
         }
 
-        float expTop = 60.0;
+        //make the lightProgress start in the negative
+        float negAmount = 0.15;
+        lightProgress *= (1.0 + negAmount);
+        lightProgress -= negAmount;
+        if(lightProgress <= 0.0) {
+            lightProgress = 0.0;
+        }
+
+
+        float expTop = 1.5;
         float expProgress = 1.0 + progress*(expTop-1.0); //1-expTop;
         if(expProgress >= ((expTop-1.0)/2.0 + 1.0)) {
             expProgress = ((expTop-1.0)/2.0 + 1.0)*2.0 - expProgress;
         }
-        float lightMagnifier = pow(lightProgress, expProgress * expProgress);
+        float lightMagnifier = pow(1.0 + lightProgress, pow(expProgress, 10.0 * power));
 
         float alpha = 1.0;
         // if(alphaIncluded && progress < 1.0 && inGleam && fg.a < .3) {
@@ -62,13 +71,14 @@ export default `
         // }
 
         float minValue = .1;
-        if(inGleam && (fg.r + fg.g + fg.b < minValue*3.0)) {
-            fg.r = minValue;
-            fg.g = minValue;
-            fg.b = minValue;
+        if(inGleam) {// && (fg.r + fg.g + fg.b < minValue*3.0)) {
+            fg.r *= (1.0 + lightProgress);
+            fg.g *= (1.0 + lightProgress);
+            fg.b *= (1.0 + lightProgress);
+            fg.a *= (1.0 + lightProgress);
         }
 
-        vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, alpha);
+        vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, fg.a);
 
         if(inGleam) {
             gl_FragColor = gleamColor;

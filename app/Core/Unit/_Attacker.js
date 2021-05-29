@@ -83,7 +83,7 @@ export default {
             this.attackMoveDestination = null;
             this.attackMoving = false;
             this.isHoldingPosition = false;
-            if(options.noAlert) {
+            if(options.peaceful) {
                 //nothing
                 this._becomePeaceful();
             } else {

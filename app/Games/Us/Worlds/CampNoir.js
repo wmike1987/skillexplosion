@@ -354,12 +354,6 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
             world.map.addMapNode('basicHard');
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
@@ -378,13 +372,13 @@ var phaseTwo = function(options) {
             });
             // world.map.addMapNode('airDropStation');
             world.map.addMapNode('airDropStation', {
-                // levelOptions: {
-                //     prereqCount: 0
-                // }
+                levelOptions: {
+                    prereqCount: 0
+                }
             });
             world.map.addMapNode('airDropSpecialStation', {
                 levelOptions: {
-                    // prereqCount: 0,
+                    prereqCount: 0,
                     selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'item', 3)
                 }
             });

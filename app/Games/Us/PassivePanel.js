@@ -153,13 +153,13 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(passive);
                             this.currentAttackPassiveBorder.visible = false;
                         }
-                        var lastPassive = unit.defensePassive;
+                        lastPassive = unit.defensePassive;
                         if(lastPassive) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'defensePassive');
                         Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive, mode: 'defensive'});
-                        graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
+                        graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 20, duration: 750});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
                         this.currentDefensePassiveBorder.position = passive.icon.position;
@@ -171,13 +171,13 @@ ConfigPanel.prototype.showPassives = function(unit) {
                             unit.unequipPassive(passive);
                             this.currentDefensePassiveBorder.visible = false;
                         }
-                        var lastPassive = unit.attackPassive;
+                        lastPassive = unit.attackPassive;
                         if(lastPassive) {
                             unit.unequipPassive(lastPassive);
                         }
                         unit.equipPassive(passive, 'attackPassive');
                         Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindEquipped', {passive: passive, mode: 'aggression'});
-                        graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 10, duration: 350});
+                        graphicsUtils.addGleamToSprite({sprite: passive.icon, gleamWidth: 20, duration: 750});
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
                         this.currentAttackPassiveBorder.position = passive.icon.position;
