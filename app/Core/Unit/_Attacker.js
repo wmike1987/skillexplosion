@@ -124,10 +124,10 @@ export default {
         //Another aspect of "canAttack." If we're offscreen and have gotten here,
         //don't allow the attack to continue, just keep moving until we're within bounds.
         //And if we want to attack but are offscreen and aren't moving, issue an attackMove.
-        if(!gameUtils.isPositionWithinPlayableBounds(this.position, 20)) {
-            if(!this.isMoving) {
-                this.attackMove(target.position);
-            }
+        if(!gameUtils.isPositionWithinPlayableBounds(this.position, 40)) {
+            // if(!this.isMoving) {
+            //     this.attackMove(target.position);
+            // }
             return;
         }
 
@@ -212,7 +212,9 @@ export default {
     },
 
     holdPosition: function() {
-        this.stop();
+        if(this.isMoving) {
+            this.stop();
+        }
         this.isHoldingPosition = true;
         Matter.Events.trigger(this, 'holdPosition');
 
@@ -243,6 +245,12 @@ export default {
 
             //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move (note the commented out part, not sure why i had that here, but we should want to hone a specified target)
             if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
+
+                //if we have an additional attack predicate, make sure this passes before we hone on our target
+                if(this.canAttackPredicate && !this.canAttackPredicate(this.currentHone)) {
+                    return;
+                }
+
                 this.lastHone = this.currentHone;
                 this.isHoning = true;
                 this.rawMove(this.currentHone.position);
@@ -288,7 +296,7 @@ export default {
                 }
             }.bind(this), function(unit) {
                 if(unit) {
-                    return this.canTargetUnit(unit);
+                    return this.canTargetUnit(unit) && gameUtils.isPositionWithinPlayableBounds(unit.position);
                 } else {
                     return false;
                 }
@@ -302,7 +310,6 @@ export default {
                 if (this.specifiedAttackTarget && unit != this.specifiedAttackTarget) {
                     return;
                 }
-
 
                 var dist = mathArrayUtils.distanceBetweenBodies(this.body, unit.body);
                 if (dist > this.honeRange) return; //we're outside the larger distance, don't go further

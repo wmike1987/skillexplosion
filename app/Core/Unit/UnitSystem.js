@@ -830,6 +830,7 @@ var UnitSystem = function(properties) {
                  $.each(this.selectedUnits, function(prop, unit) {
                      if(unit.isAttacker) {
                          if(!this.box.selectionBoxActive) {
+                             this.abilityDispatch = false;
                              this.attackMove = true;
                          }
                      }
