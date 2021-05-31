@@ -321,6 +321,9 @@ Tooltip.makeTooltippable = function(displayObject, options) {
     if(!options.manualHandling) {
         displayObject.on('mousemove', function(event) {
             //escape routes
+            if(options.showInfoCursor) {
+                gameUtils.setCursorStyle('Info');
+            }
             if(displayObject.tooltipObj.visible || displayObject.tooltipObj.disabled) return;
             if(!gameUtils.isPositionWithinCanvasBounds(event.data.global, {x: 1, y: 1})) return;
 
@@ -344,6 +347,9 @@ Tooltip.makeTooltippable = function(displayObject, options) {
 
     if(!options.manualHandling) {
         displayObject.on('mouseout', function(event) {
+            if(options.showInfoCursor) {
+                gameUtils.setCursorStyle('Main');
+            }
             displayObject.tooltipObj.hide();
             if(stopTimeout) {
                 clearTimeout(stopTimeout);

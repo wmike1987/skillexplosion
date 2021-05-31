@@ -668,6 +668,8 @@ var gameUtils = {
             $('*').css('cursor', 'pointer');
         } else if(style.indexOf('None') > -1) {
             $('*').css('cursor', 'none');
+        } else if(style.indexOf('Info') > -1) {
+            $('*').css('cursor', 'help');
         } else {
             $('*').css('cursor', 'crosshair');
         }

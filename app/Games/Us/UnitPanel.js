@@ -108,6 +108,7 @@ var unitPanel = function(options) {
         }
     });
     Tooltip.makeTooltippable(this.unitDefenseText, {
+        showInfoCursor: true,
         title: 'Armor',
         updaters: {
             descriptions: function() {
@@ -151,6 +152,7 @@ var unitPanel = function(options) {
         }
     });
     Tooltip.makeTooltippable(this.unitGritText, {
+        showInfoCursor: true,
         title: 'Grit',
         updaters: {
             descriptions: function() {
@@ -184,6 +186,7 @@ var unitPanel = function(options) {
         }
     });
     Tooltip.makeTooltippable(this.unitDodgeText, {
+        showInfoCursor: true,
         title: 'Dodge',
         updaters: {
             descriptions: function() {
