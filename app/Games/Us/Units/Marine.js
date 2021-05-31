@@ -771,25 +771,21 @@ export default function Marine(options) {
 
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 3s.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6s.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 3s.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 4000,
+        defenseCooldown: 3000,
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 6000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            targetUnit.maim();
-            // attackingUnit.defense -= 1;
-            // var defenseDown = graphicsUtils.addSomethingToRenderer("DefensiveBuff", {where: 'stageTwo', position: attackingUnit.position, tint: 0xc71414});
-            // graphicsUtils.floatSprite(defenseDown, {direction: -1});
-            // gameUtils.attachSomethingToBody({something: defenseDown, body: attackingUnit.body});
+            attackingUnit.maim(3000);
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
-            targetUnit.maim();
+            targetUnit.maim(6000);
         },
     });
 

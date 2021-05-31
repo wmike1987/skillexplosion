@@ -277,13 +277,13 @@ var noirEnemySets = {
         type: 'Sentinel',
         amount: [4, 5],
         atATime: 2,
-        hz: 6000
+        hz: 5200
     }],
     outerSentinels: [{
         type: 'Sentinel',
         amount: 10,
         atATime: 2,
-        hz: 4000
+        hz: 5000
     }],
 };
 
@@ -373,12 +373,12 @@ var phaseTwo = function(options) {
             // world.map.addMapNode('airDropStation');
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
-                    prereqCount: 0
+                    // prereqCount: 0
                 }
             });
             world.map.addMapNode('airDropSpecialStation', {
                 levelOptions: {
-                    prereqCount: 0,
+                    // prereqCount: 0,
                     selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'item', 3)
                 }
             });

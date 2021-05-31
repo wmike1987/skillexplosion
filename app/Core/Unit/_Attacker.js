@@ -112,22 +112,16 @@ export default {
         this._becomeOnAlert();
     },
 
+    canAttackPredicate: function(target) {
+        return this.canAttack && (gameUtils.isPositionWithinPlayableBounds(this.position, 40) || this.team == globals.currentGame.playerTeam);
+    },
+
     _attack: function(target) {
-        if(!this.canAttack) {
+        if(!this.canAttackPredicate(target)) {
             return;
         }
 
-        if(this.canAttackPredicate && !this.canAttackPredicate(target)) {
-            return;
-        }
-
-        //Another aspect of "canAttack." If we're offscreen and have gotten here,
-        //don't allow the attack to continue, just keep moving until we're within bounds.
-        //And if we want to attack but are offscreen and aren't moving, issue an attackMove.
-        if(!gameUtils.isPositionWithinPlayableBounds(this.position, 40)) {
-            // if(!this.isMoving) {
-            //     this.attackMove(target.position);
-            // }
+        if(this.canAttackExtension && !this.canAttackExtension(target)) {
             return;
         }
 
@@ -247,7 +241,7 @@ export default {
             if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
 
                 //if we have an additional attack predicate, make sure this passes before we hone on our target
-                if(this.canAttackPredicate && !this.canAttackPredicate(this.currentHone)) {
+                if(this.canAttackExtension && !this.canAttackExtension(this.currentHone)) {
                     return;
                 }
 
@@ -296,7 +290,7 @@ export default {
                 }
             }.bind(this), function(unit) {
                 if(unit) {
-                    return this.canTargetUnit(unit) && gameUtils.isPositionWithinPlayableBounds(unit.position);
+                    return this.canTargetUnit(unit);
                 } else {
                     return false;
                 }
@@ -330,8 +324,9 @@ export default {
                     this.currentHone = unit;
                 }
 
+                //We've set our hone... now see if we can attack
                 //figure out who (if anyone) is within range to attack and set current target to be the closest one
-                if (dist <= this.range) {
+                if (this.canAttackPredicate() && dist <= this.range) {
                     if (!currentAttackDistance) {
                         currentAttackDistance = dist;
                         this.currentTarget = unit;

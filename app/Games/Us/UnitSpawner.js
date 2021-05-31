@@ -66,7 +66,7 @@ var unitSpawner = function(enemySets) {
                         var newUnit = spawner.getFromPool(enemy.constructor);
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                         newUnit.honeRange = 5000;
-                        gameUtils.placeBodyJustOffscreen(newUnit);
+                        gameUtils.placeBodyJustOffscreen(newUnit, 'random');
 
                         //Give item to unit if chosen
                         if (itemsToGive > 0) {

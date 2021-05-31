@@ -107,6 +107,22 @@ var unitPanel = function(options) {
             y: 0.5
         }
     });
+    Tooltip.makeTooltippable(this.unitDefenseText, {
+        title: 'Armor',
+        updaters: {
+            descriptions: function() {
+                var result = {
+                    index: 0,
+                    value: ''
+                };
+                if (this.prevailingUnit) {
+                    result.value = 'Subtract ' + (this.prevailingUnit.defense + this.prevailingUnit.getDefenseAdditionSum()) + ' damage from incoming attacks.';
+                }
+                return result;
+            }.bind(this)
+        }
+    });
+
     this.unitDefenseAdditionsText = graphicsUtils.addSomethingToRenderer('TEX+:', {
         anchor: {
             x: 0,

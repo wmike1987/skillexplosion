@@ -200,7 +200,7 @@ var UnitBase = {
     },
 
     canTargetUnit: function(unit) {
-        return unit.isTargetable && unit != this;
+        return unit.isTargetable && unit != this && gameUtils.isPositionWithinPlayableBounds(unit.position);
         // return unit.isTargetable && this.team != unit.team;
     },
 
@@ -934,17 +934,17 @@ var UnitBase = {
     },
 
     maim: function(duration) {
-        var movePenalty = -0.75;
-        var defensePenalty = -1;
+        var movePenalty = 1.5;
+        var defensePenalty = -2;
 
         var unit = this;
         var buffName = 'maim';
         maimSound.play();
         this.applyBuff({name: buffName, unit: this, textureName: 'MaimBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
-            unit.moveSpeed += movePenalty;
+            unit.moveSpeed -= movePenalty;
             unit.addDefenseAddition(defensePenalty);
         }, removeChanges: function() {
-            unit.moveSpeed -= movePenalty.toString();
+            unit.moveSpeed += movePenalty;
             unit.removeDefenseAddition(defensePenalty);
         }});
     },
