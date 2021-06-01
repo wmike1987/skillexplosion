@@ -249,6 +249,7 @@ export default function Gargoyle(options) {
         hitboxWidth: 25,
         hitboxHeight: 25,
         hitboxYOffset: 10,
+        buffYOffset: 40,
         itemsEnabled: true,
         // adjustHitbox: true,
         portrait: graphicsUtils.createDisplayObject('GargoylePortrait'),

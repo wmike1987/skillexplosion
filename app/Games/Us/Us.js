@@ -65,7 +65,6 @@ var game = {
     currentWorldIndex: 0,
     currentPhase: 0,
     worlds: [campNoir],
-    levelLocalEntities: [],
     currentCamp: null,
     currentScene: null,
     itemClasses: {
@@ -83,6 +82,8 @@ var game = {
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 3.0, rate: 1.0});
         this.boxSound = gameUtils.getSound('criticalhit.wav', {volume: 0.15, rate: 0.65});
+
+        this.levelLocalEntities = [],
 
         this.shaneCollector = new StatCollector({
             predicate: function(event) {
@@ -339,7 +340,10 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AwarenessTonic"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfHeart"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["OwlMedallion"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BearMedallion"], unit: this.shane});
         // ItemUtils.giveUnitItem({
         //     gamePrefix: "Us",
         //     itemName: ["AwarenessTonic"],

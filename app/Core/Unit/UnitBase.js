@@ -1116,7 +1116,7 @@ var UnitBase = {
         var unit = this;
         var textureName = options.textureName;
         var scale = options.scale || {x: 1, y: 1};
-        var originalyOffset = options.yoffset || -60;
+        var originalyOffset = -this.buffYOffset || -60;
         var playSound = options.playSound;
         var buffDuration = options.duration;
         if(!unit.buffs) {

@@ -167,8 +167,8 @@ function UnitConstructor(options) {
         selectionBody.hheight = newUnit.hitboxHeight || 20;
 
         //big body (for mouse selection)
-        selectionBodyBig = Matter.Bodies.rectangle(5, 5, (newUnit.hitboxWidth || 20) + (newUnit.bigBodyAddition.x || 15),
-            (newUnit.hitboxHeight || 20) + (newUnit.bigBodyAddition.y || 15), {
+        selectionBodyBig = Matter.Bodies.rectangle(5, 5, (newUnit.hitboxWidth || 20) + (newUnit.bigBodyAddition.x || 20),
+            (newUnit.hitboxHeight || 20) + (newUnit.bigBodyAddition.y || 20), {
             isSensor: true,
         });
         selectionBodyBig.collisionFilter.mask = 0;
