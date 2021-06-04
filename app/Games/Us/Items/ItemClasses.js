@@ -6,21 +6,22 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 var ItemClasses = {
     worn: {
-        item: {tint: 0x949494, items: ['JewelOfLife', 'MaskOfRage', 'PepPill', 'SturdyCanteen', 'RingOfRenewal', 'RingOfThought']},
+        item: {tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion',
+                                       'PepPill', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
         microchip: {tint: 0xf59a87, items: ['BasicMicrochip']},
-        specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe']},
+        specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge']},
     },
 
     rugged: {
-        item: {tint: 0xffffff, items: ['BootsOfHaste', 'RuggedCanteen', 'RichPepPill', 'MedalOfGrit', 'MedalOfMerit']},
+        item: {tint: 0xffffff, items: ['LightBoots', 'RuggedCanteen', 'RichPepPill', 'MedalOfGrit', 'MedalOfMerit']},
         microchip: {tint: 0xa77e16, items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip']},
-        specialtyItem: {tint: 0x1e9489, items: ['SereneStar']},
+        specialtyItem: {tint: 0x1e9489, items: ['SereneStar', 'GreenTipCartridge']},
     },
 
     gleaming: {
-        item: {tint: 0xfce558, items: ['GleamingCanteen']},
+        item: {tint: 0xfce558, items: ['GleamingCanteen', 'FruitCake', 'GleamingCoffeeCup']},
         microchip: {tint: 0xa73cc2, items: []},
-        specialtyItem: {tint: 0x810587, items: []},
+        specialtyItem: {tint: 0x810587, items: ['VioletTipCartridge']},
     },
 
     alien: {

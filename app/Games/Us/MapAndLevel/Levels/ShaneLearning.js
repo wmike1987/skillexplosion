@@ -321,6 +321,10 @@ var shaneLearning = function(options) {
                                 arrow3.tooltipObj.display(mathArrayUtils.clonePosition(basicFunctionPosition, {y: -140}), {middleAnchor: true});
                             };
 
+                            a1c.onEnd = () => {
+                                achieve.play();
+                            };
+
                             a2.onStart = function() {
                                 graphicsUtils.removeSomethingFromRenderer(arrow1);
                                 graphicsUtils.removeSomethingFromRenderer(arrow2);

@@ -114,7 +114,7 @@ var UnitBase = {
 
         var defenseAdditionSums = this.getDefenseAdditionSum();
         var alteredDamage = Math.max(1, (damage - (this.defense + defenseAdditionSums)));
-        var damageReducedByArmor = this.defense;
+        var damageReducedByArmor = this.defense + defenseAdditionSums;
         if(damage - this.defense <= 0) {
             damageReducedByArmor = damage - 1;
         }

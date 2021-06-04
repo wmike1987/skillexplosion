@@ -1,7 +1,7 @@
-import * as $ from 'jquery'
-import * as Matter from 'matter-js'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals} from '@core/Fundamental/GlobalState'
+import * as $ from 'jquery';
+import * as Matter from 'matter-js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals} from '@core/Fundamental/GlobalState';
 
 /*
  * This object keeps a history of CollectorManagers and provides an api to start/stop/pause/unpause a "current collector."
@@ -12,25 +12,25 @@ var StatMaster = function(options) {
         this.currentCollectorManager = new CollectorManager(Object.assign({}, options));
         this.statHistory[options.name] = this.currentCollectorManager;
         this.currentCollectorManager.startCollecting();
-    }
+    };
 
     this.stopCurrentCollector = function() {
         this.currentCollectorManager.stopCollecting();
         this.lastCollector = this.currentCollectorManager;
-    }
+    };
 
     this.pauseCurrentCollector = function() {
         this.currentCollectorManager.pause();
-    }
+    };
 
     this.unpauseCurrentCollector = function() {
         this.currentCollectorManager.unpause();
-    }
+    };
 
     this.getLastCollector = function() {
         return this.lastCollector;
-    }
-}
+    };
+};
 
 /*
  * Represent a blob of collectors
@@ -69,35 +69,35 @@ var CollectorManager = function(options) {
     this.startCollecting = function() {
         this.collectors.forEach((collector) => {
             collector.start();
-        })
-    }
+        });
+    };
 
     this.stopCollecting = function() {
         this.collectors.forEach((collector) => {
             collector.stop();
-        })
-    }
+        });
+    };
 
     this.pauseCollecting = function() {
         this.collectors.forEach((collector) => {
             collector.pause();
-        })
-    }
+        });
+    };
 
     this.unpauseCollecting = function() {
         this.collectors.forEach((collector) => {
             collector.unpause();
-        })
-    }
+        });
+    };
 
     this.getStatMap = function() {
         var map = {};
         this.collectors.forEach((collector) => {
             map[collector.name] = collector.value;
-        })
+        });
         return map;
-    }
-}
+    };
+};
 
 var Collector = {
     value: 0,
@@ -121,7 +121,7 @@ var Collector = {
     unpause: function() {
         this.paused = false;
     }
-}
+};
 
 var KillCollector = function(options) {
     this.name = "kills";
@@ -131,7 +131,7 @@ var KillCollector = function(options) {
             this.value += 1;
         }
     }.bind(this);
-}
+};
 KillCollector.prototype = Collector;
 
 var DamageCollector = function(options) {
@@ -144,7 +144,7 @@ var DamageCollector = function(options) {
             this.value += damageDone;
         }
     }.bind(this);
-}
+};
 DamageCollector.prototype = Collector;
 
 var HealCollector = function(options) {
@@ -156,8 +156,8 @@ var HealCollector = function(options) {
         if(options.predicate(event)) {
             this.value += healingDone;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 HealCollector.prototype = Collector;
 
 var DamageTakenCollector = function(options) {
@@ -168,8 +168,8 @@ var DamageTakenCollector = function(options) {
         if(options.sufferingPredicate(event)) {
             this.value += damageTaken;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 DamageTakenCollector.prototype = Collector;
 
 var DamageReducedByArmorCollector = function(options) {
@@ -180,8 +180,8 @@ var DamageReducedByArmorCollector = function(options) {
         if(options.sufferingPredicate(event)) {
             this.value += damageReducedByArmor;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 DamageReducedByArmorCollector.prototype = Collector;
 
 var KnivesThrownCollector = function(options) {
@@ -191,8 +191,8 @@ var KnivesThrownCollector = function(options) {
         if(options.predicate(event)) {
             this.value += 1;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 KnivesThrownCollector.prototype = Collector;
 
 var KnifeKillsCollector = function(options) {
@@ -202,8 +202,8 @@ var KnifeKillsCollector = function(options) {
         if(options.predicate(event)) {
             this.value += 1;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 KnifeKillsCollector.prototype = Collector;
 
 var DashCollector = function(options) {
@@ -213,8 +213,8 @@ var DashCollector = function(options) {
         if(options.predicate(event)) {
             this.value += 1;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 DashCollector.prototype = Collector;
 
 var MineCollector = function(options) {
@@ -224,8 +224,8 @@ var MineCollector = function(options) {
         if(options.predicate(event)) {
             this.value += 1;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 MineCollector.prototype = Collector;
 
 var SecretStepCollector = function(options) {
@@ -235,8 +235,8 @@ var SecretStepCollector = function(options) {
         if(options.predicate(event)) {
             this.value += 1;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 SecretStepCollector.prototype = Collector;
 
 var DodgeCollector = function(options) {
@@ -246,8 +246,8 @@ var DodgeCollector = function(options) {
         if(options.predicate(event)) {
             this.value += 1;
         }
-    }.bind(this)
-}
+    }.bind(this);
+};
 DodgeCollector.prototype = Collector;
 
 export default StatMaster;
