@@ -1429,7 +1429,9 @@ var graphicsUtils = {
         });
 
         sprite.removeGleam = function() {
-            mathArrayUtils.removeObjectFromArray(gShader, sprite.filters);
+            if(sprite.filters) {
+                mathArrayUtils.removeObjectFromArray(gShader, sprite.filters);
+            }
             sprite.gleamTimer.invalidate();
         };
 
@@ -1567,9 +1569,22 @@ var mathArrayUtils = {
     },
 };
 
+var unitUtils = {
+    getPendingAnimation: function() {
+        var pendingAnimation = gameUtils.getAnimation({
+            spritesheetName: 'BaseUnitAnimations1',
+            animationName: 'IsometricSelectedPending',
+            speed: 0.35,
+            loop: true,
+        });
+        pendingAnimation.play();
+        return pendingAnimation;
+    }
+};
+
 //aliases
 mathArrayUtils.getIntBetween = mathArrayUtils.getRandomIntInclusive;
 mathArrayUtils.distanceBetweenUnits = mathArrayUtils.distanceBetweenBodies;
 mathArrayUtils.getId = mathArrayUtils.uuidv4;
 
-export {gameUtils, graphicsUtils, mathArrayUtils};
+export {gameUtils, graphicsUtils, mathArrayUtils, unitUtils};

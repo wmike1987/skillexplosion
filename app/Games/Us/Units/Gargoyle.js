@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
 import style from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
 export default function Gargoyle(options) {
     var gargoyle = {};
@@ -147,7 +147,7 @@ export default function Gargoyle(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.8, y: 0.8},
+        scale: {x: 0.65, y: 0.65},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -156,8 +156,8 @@ export default function Gargoyle(options) {
     },
     {
         id: 'selectionPending',
-        data: 'IsometricSelectedPending',
-        scale: {x: 1, y: 1},
+        data: unitUtils.getPendingAnimation(),
+        scale: {x: 0.4, y: 0.4},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -227,7 +227,7 @@ export default function Gargoyle(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.6, y: 0.6},
+        scale: {x: 0.65, y: 0.65},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',

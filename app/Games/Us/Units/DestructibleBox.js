@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
 import style from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
 export default function DestructibleBox(options) {
     var box = {};
@@ -31,8 +31,8 @@ export default function DestructibleBox(options) {
     },
     {
         id: 'selectionPending',
-        data: 'IsometricSelectedPending',
-        scale: {x: 1.1, y: 1.1},
+        data: unitUtils.getPendingAnimation(),
+        scale: {x: 0.6, y: 0.6},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,

@@ -1,22 +1,22 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Unlocker.js'
-import Ability from '@core/Unit/UnitAbility.js'
-import style from '@utils/Styles.js'
-import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import UC from '@core/Unit/UnitConstructor.js';
+import aug from '@core/Unit/_Unlocker.js';
+import Ability from '@core/Unit/UnitAbility.js';
+import style from '@utils/Styles.js';
+import {globals} from '@core/Fundamental/GlobalState';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
 export default function Eruptlet(options) {
     var eruptlet = {};
 
-    var options = options || {};
-    $.extend(options, {radius: 25}, options)
+    options = options || {};
+    $.extend(options, {radius: 25}, options);
 
     //animation settings
-    var runSpeed = .6;
-    var runSpeedBonus = .25;
+    var runSpeed = 0.6;
+    var runSpeedBonus = 0.25;
     var shootSpeed = 1;
 
     var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['critterN'].spineData);
@@ -137,13 +137,9 @@ export default function Eruptlet(options) {
             speed: 2,
             times: 3,
         }),
-    }
+    };
 
-    var otherAnimations = {
-
-    }
-
-    var scale = .06;
+    var scale = 0.06;
     var sc = {x: scale, y: scale};
     var adjustedUpDownsc = {x: scale, y: scale};
     var flipsc = {x: -1 * sc.x, y: sc.y};
@@ -152,7 +148,7 @@ export default function Eruptlet(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .6, y: .6},
+        scale: {x: 0.6, y: 0.6},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -161,8 +157,8 @@ export default function Eruptlet(options) {
     },
     {
         id: 'selectionPending',
-        data: 'IsometricSelectedPending',
-        scale: {x: .72, y: .72},
+        data: unitUtils.getPendingAnimation(),
+        scale: {x: 0.34, y: 0.34},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -232,14 +228,14 @@ export default function Eruptlet(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: .6, y: .6},
+        scale: {x: 0.6, y: 0.6},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var burstSound = gameUtils.getSound('eruptletburst.wav', {volume: .08, rate: 1});
+    var burstSound = gameUtils.getSound('eruptletburst.wav', {volume: 0.08, rate: 1});
 
     var unitProperties = $.extend({
         unitType: 'Eruptlet',
@@ -279,14 +275,14 @@ export default function Eruptlet(options) {
                               slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
                               slot.currentSpriteName.includes('North_0003_Layer-1---5'))
                             {
-                                slot.customColor = {r: .2, g: 1.0, b: 0.2, a: 1.0};
+                                slot.customColor = {r: 0.2, g: 1.0, b: 0.2, a: 1.0};
                             }
                         }
-                    })
+                    });
                 }
             });
         },
-    }, options)
+    }, options);
 
     return UC({
         givenUnitObj: eruptlet,
@@ -321,7 +317,7 @@ export default function Eruptlet(options) {
 
                 var blastRadius = 70;
                 var bodiesToDamage = [];
-                gameUtils.applyToUnitsByTeam(function(team) {return this.team != team}.bind(this), function(unit) {
+                gameUtils.applyToUnitsByTeam(function(team) {return this.team != team;}.bind(this), function(unit) {
                     return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
                 }.bind(this), function(unit) {
                     unit.sufferAttack(this.damage, this);

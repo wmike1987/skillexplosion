@@ -9,7 +9,7 @@ import Passive from '@core/Unit/UnitPassive.js';
 import rv from '@core/Unit/_Revivable.js';
 import Projectile from '@core/Unit/UnitProjectile.js';
 import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
 export default function Medic(options) {
     var medic = {};
@@ -158,7 +158,7 @@ export default function Medic(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.8, y: 0.8},
+        scale: {x: 0.65, y: 0.65},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -167,8 +167,8 @@ export default function Medic(options) {
     },
     {
         id: 'selectionPending',
-        data: 'IsometricSelectedPending',
-        scale: {x: 1, y: 1},
+        data: unitUtils.getPendingAnimation(),
+        scale: {x: 0.4, y: 0.4},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -238,7 +238,7 @@ export default function Medic(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.75, y: 0.75},
+        scale: {x: 0.65, y: 0.65},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
@@ -996,7 +996,7 @@ export default function Medic(options) {
         health: 40,
         energy: 60,
         hitboxWidth: 28,
-        hitboxHeight: 60,
+        hitboxHeight: 55,
         itemsEnabled: true,
         damageLabel: "Heal: ",
         damageMember: function() {

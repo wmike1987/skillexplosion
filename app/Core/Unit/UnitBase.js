@@ -906,7 +906,7 @@ var UnitBase = {
         var buffName = 'petrify';
         var shakeTimer = null;
         this.applyBuff({name: buffName, unit: this, textureName: 'PetrifyBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
-            this.stop();
+            this.stop({peaceful: true});
             this.canMove = false;
             this.canAttack = false;
             this.isTargetable = false;
@@ -922,6 +922,7 @@ var UnitBase = {
             petrifySound.play();
         }, removeChanges: function() {
             Matter.Sleeping.set(unit.body, false);
+            this.stop();
             unit.canMove = true;
             unit.canAttack = true;
             unit.isTargetable = true;

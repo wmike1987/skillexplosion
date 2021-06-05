@@ -1,22 +1,22 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import * as PIXI from 'pixi.js'
-import UC from '@core/Unit/UnitConstructor.js'
-import aug from '@core/Unit/_Unlocker.js'
-import Ability from '@core/Unit/UnitAbility.js'
-import Projectile from '@core/Unit/UnitProjectile.js'
-import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import * as PIXI from 'pixi.js';
+import UC from '@core/Unit/UnitConstructor.js';
+import aug from '@core/Unit/_Unlocker.js';
+import Ability from '@core/Unit/UnitAbility.js';
+import Projectile from '@core/Unit/UnitProjectile.js';
+import {globals} from '@core/Fundamental/GlobalState';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
 export default function Sentinel(options) {
     var sentinel = {};
 
-    var options = options || {};
-    $.extend(options, {radius: 25}, options)
+    options = options || {};
+    $.extend(options, {radius: 25}, options);
 
     //animation settings
-    var runSpeed = .9;
-    var runSpeedBonus = .25;
+    var runSpeed = 0.9;
+    var runSpeedBonus = 0.25;
     var shootSpeed = 1;
 
     var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienN'].spineData);
@@ -136,21 +136,21 @@ export default function Sentinel(options) {
             speed: 2,
             times: 3,
         }),
-    }
+    };
 
     var otherAnimations = {
 
-    }
+    };
 
-    var sc = {x: .33, y: .33};
-    var adjustedUpsc = {x: .36, y: .36};
+    var sc = {x: 0.33, y: 0.33};
+    var adjustedUpsc = {x: 0.36, y: 0.36};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
     var rc = [
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .8, y: .8},
+        scale: {x: 0.65, y: 0.65},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -159,8 +159,8 @@ export default function Sentinel(options) {
     },
     {
         id: 'selectionPending',
-        data: 'IsometricSelectedPending',
-        scale: {x: 1, y: 1},
+        data: unitUtils.getPendingAnimation(),
+        scale: {x: 0.4, y: 0.4},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -230,16 +230,16 @@ export default function Sentinel(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: .75, y: .75},
+        scale: {x: 0.65, y: 0.65},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var fireSound = gameUtils.getSound('sentinelfire.wav', {volume: .015, rate: 1});
-    var hitSound = gameUtils.getSound('sentinelhit.wav', {volume: .05, rate: 2});
-    var deathSound = gameUtils.getSound('sentineldeath.wav', {volume: .55, rate: 1});
+    var fireSound = gameUtils.getSound('sentinelfire.wav', {volume: 0.015, rate: 1});
+    var hitSound = gameUtils.getSound('sentinelhit.wav', {volume: 0.05, rate: 2});
+    var deathSound = gameUtils.getSound('sentineldeath.wav', {volume: 0.55, rate: 1});
 
     var unitProperties = $.extend({
         unitType: 'Sentinel',
@@ -263,7 +263,7 @@ export default function Sentinel(options) {
             var anim = gameUtils.getAnimation({
                 spritesheetName: 'SentinelAnimations1',
                 animationName: 'sentineldeath',
-                speed: .22,
+                speed: 0.22,
                 fadeAway: true,
                 fadeTime: 8000,
                 transform: [this.deathPosition.x + 25, this.deathPosition.y, 1.3, 1.3]
@@ -272,7 +272,7 @@ export default function Sentinel(options) {
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(this.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(this.deathPosition, {y: 22})});
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
@@ -313,13 +313,13 @@ export default function Sentinel(options) {
                                 spritesheetName: 'UtilityAnimations1',
                                 animationName: 'GenericHit',
                                 speed: 0.8,
-                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .35, .35]
+                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.35, 0.35]
                             });
                             graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                             bloodAnimation.play();
                             hitSound.play();
                         }
-                    }
+                    };
                     var projectile = new Projectile(projectileOptions);
                 },
             },

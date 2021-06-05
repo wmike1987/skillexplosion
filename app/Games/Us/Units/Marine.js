@@ -8,7 +8,7 @@ import Passive from '@core/Unit/UnitPassive.js';
 import rv from '@core/Unit/_Revivable.js';
 import styles from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
 export default function Marine(options) {
     var marine = {};
@@ -197,7 +197,8 @@ export default function Marine(options) {
     };
 
     var sc = {x: 0.35, y: 0.35};
-    var adjustedUpDownsc = {x: 0.38, y: 0.38};
+    var adjustedUpsc = {x: 0.37, y: 0.37};
+    var adjustedDownsc = {x: 0.37, y: 0.37};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
     var sortYOffset = 0;
@@ -205,22 +206,22 @@ export default function Marine(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.8, y: 0.8},
+        scale: {x: 0.65, y: 0.65},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
         rotate: 'none',
-        offset: {x: 0, y: 22},
+        offset: {x: 0, y: 20},
     },
     {
         id: 'selectionPending',
-        data: 'IsometricSelectedPending',
-        scale: {x: 1, y: 1},
+        data: unitUtils.getPendingAnimation(),
+        scale: {x: 0.4, y: 0.4},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
         rotate: 'none',
-        offset: {x: 0, y: 22},
+        offset: {x: 0, y: 20},
     },{
         id: 'left',
         data: spineWest,
@@ -241,16 +242,16 @@ export default function Marine(options) {
     {
         id: 'up',
         data: spineNorth,
-        scale: adjustedUpDownsc,
+        scale: adjustedUpsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset},
+        offset: {x: 0, y: yOffset-2},
         sortYOffset: sortYOffset,
     },
     {
         id: 'down',
         data: spineSouth,
-        scale: adjustedUpDownsc,
+        scale: adjustedDownsc,
         rotate: 'none',
         visible: false,
         offset: {x: 0, y: yOffset},
@@ -293,12 +294,12 @@ export default function Marine(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.75, y: 0.75},
+        scale: {x: 0.65, y: 0.65},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
-        offset: {x: 0, y: 22}}];
+        offset: {x: 0, y: 20}}];
 
     var fireSound = gameUtils.getSound('machinegun.wav', {volume: 0.002, rate: 3});
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: 0.01, rate: 0.6});
@@ -898,7 +899,7 @@ export default function Marine(options) {
         priority: 10,
         consumeSound: yeahsound,
         hitboxWidth: 30,
-        hitboxHeight: 60,
+        hitboxHeight: 55,
         itemsEnabled: true,
         name: options.name,
         heightAnimation: 'up',

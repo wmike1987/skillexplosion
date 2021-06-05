@@ -738,7 +738,7 @@ var UnitSystem = function(properties) {
                 bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), globals.currentGame.mousePosition);
             }
 
-            var units = this.convertBodiesToSelectionEnabledUnits(bodies);
+            var units = this.convertBodiesToSelectionEnabledUnits(bodies, this.box.selectionBoxActive);
 
             //will only dispatch hover to the front-most unit
             var frontMostUnit = null;
@@ -787,7 +787,7 @@ var UnitSystem = function(properties) {
 
          //'A' or 'a' dispatch (reserved for attack/move)
          $('body').on('keydown.unitSystem', function( event ) {
-             if(!this.active) return;
+             if(!this.active || this.box.selectionBoxActive) return;
 
              if(event.key == 'X' || event.key == 'x') {
                  if(keyStates.Control) {
@@ -840,7 +840,7 @@ var UnitSystem = function(properties) {
 
          //dispatch generic key events
          $('body').on('keydown.unitSystem', function( event ) {
-             if(!this.active) return;
+            if(!this.active || this.box.selectionBoxActive) return;
 
              var key = event.key.toLowerCase();
              if(key == 'escape') {
@@ -1113,9 +1113,13 @@ var UnitSystem = function(properties) {
     },
 
     //return units attached to the main selection body
-    this.convertBodiesToSelectionEnabledUnits = function(bodies) {
+    this.convertBodiesToSelectionEnabledUnits = function(bodies, useSelectionBoxBody) {
         bodies = $.grep(bodies, function(body) {
-            return body.isSelectionBigBody && !body.isSmallerBody;
+            if(useSelectionBoxBody) {
+                return body.isSelectionBody && !body.isSmallerBody;
+            } else {
+                return body.isSelectionBigBody && !body.isSmallerBody;
+            }
         });
 
         bodies = $.map(bodies, function(body) {
