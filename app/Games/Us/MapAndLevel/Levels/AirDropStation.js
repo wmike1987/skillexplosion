@@ -220,24 +220,28 @@ var selectionMechanism = {
 
     _makeSelection: function(item) {
         //register item with the system, and drop item
-        globals.currentGame.itemSystem.registerItem(item);
-        item.drop(item.icon.position);
+        // globals.currentGame.itemSystem.registerItem(item);
+        // item.drop(item.icon.position);
         item.icon.tooltipObj.hide();
 
         graphicsUtils.removeSomethingFromRenderer(this.panel);
 
         //restore original tooltip
-        Tooltip.makeTooltippable(item.icon, item.originalTooltipObj);
+        // Tooltip.makeTooltippable(item.icon, item.originalTooltipObj);
 
         //hide all icons, remove the click handlers, then destory the non-chosen items
         this.items.forEach((i) => {
             i.icon.visible = false;
             i.removeAirDrop();
-            if(i != item) {
+            // if(i != item) {
                 i.destroy();
-            }
+            // }
         });
-        this.level.mapTableActive = true;
+
+        globals.currentGame.flyover(() => {
+            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({y: -100}), [item.itemName], true);
+            this.level.mapTableActive = true;
+        });
     },
 
     presentChoices: function(options) {

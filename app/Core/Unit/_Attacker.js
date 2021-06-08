@@ -152,7 +152,8 @@ export default {
     },
 
     //this assumes _moveable is mixed in
-    attackMove: function(destination, commandObj) {
+    attackMove: function(destination, commandObj, options) {
+        options = options || {};
 
         //nullify specified attack target
         if (this.specifiedAttackTarget) {
@@ -167,7 +168,7 @@ export default {
         this.isHoning = false;
 
         //move unit, rawly
-        this.rawMove(this.attackMoveDestination, commandObj);
+        this.rawMove(this.attackMoveDestination, commandObj, options);
         Matter.Events.trigger(this, 'attackMove', {destination: destination});
 
         //become alert to nearby enemies

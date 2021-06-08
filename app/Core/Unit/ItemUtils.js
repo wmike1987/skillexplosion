@@ -69,7 +69,7 @@ var getRandomItemsFromClass = function(className, typeName, amount) {
 
 var giveUnitItem = function(options) {
     var itemInfo = resolveItemInformation(options);
-    options.classInformation = itemInfo.classInformation;
+    Object.assign(options, itemInfo);
 
     var itemName = itemInfo.itemName;
 
@@ -87,7 +87,7 @@ var giveUnitItem = function(options) {
 
 var dropItemAtPosition = function(options) {
     var itemInfo = resolveItemInformation(options);
-    options.classInformation = itemInfo.classInformation;
+    Object.assign(options, itemInfo);
 
     var itemName = itemInfo.itemName;
 
@@ -101,7 +101,7 @@ var dropItemAtPosition = function(options) {
 
 var createItemObj = function(options) {
     var itemInfo = resolveItemInformation(options);
-    options.classInformation = itemInfo.classInformation;
+    Object.assign(options, itemInfo);
 
     var itemName = itemInfo.itemName;
 
@@ -114,7 +114,7 @@ var createItemObj = function(options) {
 
 var createItemAndGrasp = function(options) {
     var itemInfo = resolveItemInformation(options);
-    options.classInformation = itemInfo.classInformation;
+    Object.assign(options, itemInfo);
 
     var itemName = itemInfo.itemName;
 

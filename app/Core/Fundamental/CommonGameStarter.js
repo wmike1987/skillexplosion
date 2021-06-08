@@ -18,7 +18,7 @@ var CommonGameStarter = function(game) {
 	//kick off asset loading...
 	AssetLoader(game.totalAssets);
 
-	var defaults = {interpolate: true, width: 1200, height: 600, unitPanelHeight: 0, gravity: 1, appendToElement: "gameTheater"};
+	var defaults = {interpolate: false, width: 1200, height: 600, unitPanelHeight: 0, gravity: 1, appendToElement: "gameTheater"};
 	window.latestGameOptions = $.extend({}, defaults, game.worldOptions);
 
 	//kill previous engine

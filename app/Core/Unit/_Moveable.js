@@ -79,7 +79,10 @@ var moveable = {
         gameUtils.deathPact(this, this.smallerBody);
     },
 
-    move: function(destination, commandObj) {
+    move: function(destination, commandObj, options) {
+        options = options || {};
+
+        //trigger the move event
         Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
 
         //if command is given, we're being executed as part of a command queue, else, fake the command object
@@ -102,7 +105,7 @@ var moveable = {
 
         //set state
         this.destination = destination;
-        if(this.isHoning) {
+        if(this.isHoning || options.centerMove) {
             this.footDestination = this.destination;
         } else {
             this.footDestination = mathArrayUtils.clonePosition(this.destination, {y: -this.footOffset || -20}); //offset for moving to the "foot location"
@@ -251,7 +254,7 @@ var moveable = {
     avoidCallback: function(pair) {
         //if we're busy with something, don't avoid anything
         var myUnit = this.unit;
-        if (myUnit.isMoving || myUnit.isAttacking || myUnit.isHoning || myUnit.isSleeping || myUnit.isOccupied) return;
+        if (myUnit.isMoving || myUnit.isAttacking || myUnit.isHoning || myUnit.isSleeping) return;
 
         //otherwise, let's avoid the mover
         var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;
@@ -285,16 +288,16 @@ var moveable = {
                 maxScatterDistance = this.circleRadius;
             }
 
-            var movePercentage = Math.PI/2.0 - mathArrayUtils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position))
+            var movePercentage = Math.PI/2.0 - mathArrayUtils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position));
             var newVelocity = Matter.Vector.normalise({x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY});
             newVelocity = Matter.Vector.mult(newVelocity, Math.max(minScatterDistance, movePercentage*maxScatterDistance));
 
             if(!myUnit.isAttacker) {
-                myUnit.move(Matter.Vector.add(this.position, newVelocity));
+                myUnit.move(Matter.Vector.add(this.position, newVelocity), null, {centerMove: true});
                 myUnit.isSoloMover = true;
             }
             else {
-                myUnit.attackMove(Matter.Vector.add(this.position, newVelocity));
+                myUnit.attackMove(Matter.Vector.add(this.position, newVelocity), null, {centerMove: true});
                 myUnit.isSoloMover = true;
             }
         }
@@ -303,6 +306,6 @@ var moveable = {
     groupRightClick: function(destination) {
         this.move(destination);
     },
-}
+};
 
 export default moveable;

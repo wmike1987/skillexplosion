@@ -226,7 +226,7 @@ var UnitSystem = function(properties) {
                 }
                 else {
                     //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
-                    if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
+                    if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.active && !this.box.boxContainsPermaPending) {
                         delete this.box.pendingSelections[this.box.permaPendingUnit.unitId];
 
                         //If one of our units was the perma pending unit, was it out of the box? If so, is there now only one pending unit? If so
@@ -256,7 +256,7 @@ var UnitSystem = function(properties) {
             } else {
                 //Else create a brand new selection (don't add to current selection)
                 //If we have multiple things pending (from drawing a box) this will override the permaPendingUnit, unless permaPendingUnit was also selected in the box
-                if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.selectionBoxActive && !this.box.boxContainsPermaPending) {
+                if(this.box.permaPendingUnit && pendingBodyCount > 1 && this.box.active && !this.box.boxContainsPermaPending) {
                     delete this.box.pendingSelections[this.box.permaPendingUnit.unitId];
                 }
 
@@ -373,7 +373,7 @@ var UnitSystem = function(properties) {
                 }.bind(this));
 
                 //Attacker functionality, dispatch attackMove
-                if(this.attackMove && !this.box.selectionBoxActive) {
+                if(this.attackMove && !this.box.active) {
                     this.box.invalidateNextMouseUp = true;
                     this.box.invalidateNextBox = true;
                     $.each(this.selectedUnits, function(key, unit) {
@@ -437,7 +437,7 @@ var UnitSystem = function(properties) {
                 }
 
                 //handle control+click on mousedown (this is based on the sc2 controls)
-                if(keyStates.Control && !this.box.selectionBoxActive && pendingBodyCount == 1) {//handle control clicking
+                if(keyStates.Control && !this.box.active && pendingBodyCount == 1) {//handle control clicking
                     var likeTypes = $.each(Matter.Composite.allBodies(this.renderer.engine.world), function(index, body) {
                         if(body.unit) {
                             if(body.unit.unitType == loneSoldier.unitType) {
@@ -454,7 +454,7 @@ var UnitSystem = function(properties) {
             }
 
             //Right click - this should be modular in order to easily apply different right-click actions. On second thought, who the hell cares?
-            if(event.which == 3 && !this.box.selectionBoxActive && !this.hasEnemySelected()) {
+            if(event.which == 3 && !this.box.active && !this.hasEnemySelected()) {
                 //if we've pressed 'a' then right click, cancel the attack move and escape this flow
                 if(this.attackMove) {
                     this.attackMove = false;
@@ -522,7 +522,7 @@ var UnitSystem = function(properties) {
                 //If we're just starting a box, clear pastHoveredUnitsHover. This is needed since we don't do hover logic while the
                 //selction box is active and simplicity's sake (and a bug), let's just reset all pending selections and let the
                 //selection box start from scratch.
-                if(!this.box.selectionBoxActive) {
+                if(!this.box.active) {
                     if(this.pastHoveredUnitsHover) {
                         $.each(this.pastHoveredUnitsHover, function(index, unit) {
                             if(unit != this.box.permaPendingUnit) {
@@ -534,7 +534,7 @@ var UnitSystem = function(properties) {
                     this.pastHoveredUnitsHover = [];
                 }
 
-                this.box.selectionBoxActive = true;
+                this.box.active = true;
                 var newPoint = {x: 0, y: 0};
                 gameUtils.pixiPositionToPoint(newPoint, event);
                 this.sizeBox(this.forcedBoxFinalPoint || newPoint);
@@ -558,12 +558,12 @@ var UnitSystem = function(properties) {
                         }
                         this.box.oneFrameOverrideInterpolation = true;
                         Matter.Body.setPosition(this.box, {x: -500, y: -1000});
-                        this.box.selectionBoxActive = false;
+                        this.box.active = false;
                         this.box.boxContainsPermaPending = false;
                         this.mouseUpDelay.active = false;
                         this.forcedBoxFinalPoint = null;
                         gameUtils.executeSomethingNextFrame(function() {
-                            if(!this.box.selectionBoxActive) {
+                            if(!this.box.active) {
                                 this.box.topBorder.visible = false;
                                 this.box.bottomBorder.visible = false;
                                 this.box.leftBorder.visible = false;
@@ -659,7 +659,7 @@ var UnitSystem = function(properties) {
         this.pastHoveredUnitsHover = [];
         globals.currentGame.addTickCallback(function(event) {
             if(!this.active) return;
-            if(!this.box.selectionBoxActive) {
+            if(!this.box.active) {
                 //if we have a perma, we won't act on hovering pending selections, so break here
                 if(this.box.permaPendingUnit) return;
 
@@ -738,7 +738,7 @@ var UnitSystem = function(properties) {
                 bodies = Matter.Query.point(Matter.Composite.allBodies(this.renderer.engine.world), globals.currentGame.mousePosition);
             }
 
-            var units = this.convertBodiesToSelectionEnabledUnits(bodies, this.box.selectionBoxActive);
+            var units = this.convertBodiesToSelectionEnabledUnits(bodies, this.box.active);
 
             //will only dispatch hover to the front-most unit
             var frontMostUnit = null;
@@ -787,7 +787,7 @@ var UnitSystem = function(properties) {
 
          //'A' or 'a' dispatch (reserved for attack/move)
          $('body').on('keydown.unitSystem', function( event ) {
-             if(!this.active || this.box.selectionBoxActive) return;
+             if(!this.active || this.box.active) return;
 
              if(event.key == 'X' || event.key == 'x') {
                  if(keyStates.Control) {
@@ -829,7 +829,7 @@ var UnitSystem = function(properties) {
              if(event.key == 'a' || event.key == 'A') {
                  $.each(this.selectedUnits, function(prop, unit) {
                      if(unit.isAttacker) {
-                         if(!this.box.selectionBoxActive) {
+                         if(!this.box.active) {
                              this.abilityDispatch = false;
                              this.attackMove = true;
                          }
@@ -840,7 +840,7 @@ var UnitSystem = function(properties) {
 
          //dispatch generic key events
          $('body').on('keydown.unitSystem', function( event ) {
-            if(!this.active || this.box.selectionBoxActive) return;
+            if(!this.active || this.box.active) return;
 
              var key = event.key.toLowerCase();
              if(key == 'escape') {
@@ -1046,9 +1046,9 @@ var UnitSystem = function(properties) {
     };
 
     this.pause = function() {
-        //put us at a peaceful state, so to speak.
+        //put us in a peaceful state, so to speak.
         this.active = false;
-        this.selectionBoxActive = false;
+        this.box.active = false;
         Matter.Body.setPosition(this.box, {x: -500, y: -1000});
         this.box.topBorder.visible = false;
         this.box.bottomBorder.visible = false;

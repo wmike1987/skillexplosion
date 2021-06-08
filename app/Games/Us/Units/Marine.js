@@ -206,7 +206,7 @@ export default function Marine(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.65, y: 0.65},
+        scale: {x: 0.6, y: 0.6},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -216,7 +216,7 @@ export default function Marine(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.4, y: 0.4},
+        scale: {x: 0.375, y: 0.375},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -294,7 +294,7 @@ export default function Marine(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.65, y: 0.65},
+        scale: {x: 0.6, y: 0.6},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
@@ -367,7 +367,7 @@ export default function Marine(options) {
             }
         });
 
-        var defensivePostureGain = 4;
+        var defensivePostureGain = 2;
         if(defensivePostureAugment) {
             marine.applyBuff({name: "defpostbuff", textureName: 'DefensiveBuff', duration: 3000, applyChanges: function() {
                 self.addDefenseAddition(defensivePostureGain);
@@ -378,9 +378,9 @@ export default function Marine(options) {
 
         if(deathWishAugment) {
             marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
-                self.damage += 10;
+                self.damage += 4;
             }, removeChanges: function() {
-                self.damage -= 10;
+                self.damage -= 4;
             }});
         }
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
@@ -431,13 +431,13 @@ export default function Marine(options) {
                 name: 'defensive posture',
                 icon: graphicsUtils.createDisplayObject('DefensivePosture'),
                 title: 'Defensive Posture',
-                description: 'Gain 4 defense upon dashing for 3 seconds.'
+                description: 'Gain 2 defense upon dashing for 3 seconds.'
             },
             {
                 name: 'death wish',
                 icon: graphicsUtils.createDisplayObject('DeathWish'),
                 title: 'Death Wish',
-                description: 'Increase damage by 10 upon dashing for 2 seconds.'
+                description: 'Increase damage by 4 upon dashing for 2 seconds.'
             },
         ],
     });

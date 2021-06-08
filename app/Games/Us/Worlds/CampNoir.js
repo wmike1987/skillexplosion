@@ -50,7 +50,10 @@ var camp = {
     intro: CampNoirIntro,
 
     initExtension: function() {
-        this.ornamentNoZones = {center: gameUtils.getPlayableCenter(), radius: 300};
+        this.ornamentNoZones = [
+            {center: gameUtils.getPlayableCenter(), radius: 300},
+            {center: gameUtils.getPlayableCenterPlus({x: -150, y: -150}), radius: 200}
+        ];
     },
 
     initSounds: function() {

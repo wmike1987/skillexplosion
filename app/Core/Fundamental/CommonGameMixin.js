@@ -68,6 +68,7 @@ var common = {
         this.invincibleListeners = [],
         this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
         this.mousePosition = mousePosition,
+        this.debugObj = {},
         this.canvas = {width: gameUtils.getPlayableWidth(), height: gameUtils.getPlayableHeight()};
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
@@ -167,6 +168,7 @@ var common = {
             var rect = this.canvasEl.getBoundingClientRect();
 			this.mousePosition.x = event.clientX - rect.left;
 			this.mousePosition.y = event.clientY - rect.top;
+            this.debugObj.playableCenterOffset = {x: this.mousePosition.x - gameUtils.getPlayableCenter().x, y: this.mousePosition.y - gameUtils.getPlayableCenter().y};
         }.bind(this), true, false);
 
         //fps (ctrl + shift + f to toggle)
@@ -242,6 +244,12 @@ var common = {
                 if(event.key == 'p' || event.key == 'P') {
                     this.gameLoop.paused = !this.gameLoop.paused;
                     pausedGameText.visible = this.gameLoop.paused;
+                }
+            }
+
+            if(keyStates['Control']) {
+                if(event.key == 'b' || event.key == 'B') {
+                    console.info(this.debugObj.playableCenterOffset);
                 }
             }
 

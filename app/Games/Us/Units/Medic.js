@@ -158,7 +158,7 @@ export default function Medic(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.65, y: 0.65},
+        scale: {x: 0.6, y: 0.6},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -168,7 +168,7 @@ export default function Medic(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.4, y: 0.4},
+        scale: {x: 0.375, y: 0.375},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -238,7 +238,7 @@ export default function Medic(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.65, y: 0.65},
+        scale: {x: 0.6, y: 0.6},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
@@ -961,7 +961,7 @@ export default function Medic(options) {
     var elegantForm  = new Passive({
         title: 'Elegant Form',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Become hidden for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 5 and gain 5 energy.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain 10 energy.'],
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'sufferProjectile',
@@ -970,8 +970,8 @@ export default function Medic(options) {
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             var damageObj = event.damageObj;
-            damageObj.damage = 5;
-            medic.currentEnergy += 5;
+            damageObj.damage = 1;
+            medic.currentEnergy += 10;
             var energyUpAnimation = gameUtils.getAnimation({
                 spritesheetName: 'UtilityAnimations1',
                 animationName: 'starflurry',

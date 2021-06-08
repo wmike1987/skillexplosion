@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    defenseAddition: 21,
+    defenseAddition: 1,
 };
 
 export default function(options) {
