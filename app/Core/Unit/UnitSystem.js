@@ -489,7 +489,7 @@ var UnitSystem = function(properties) {
 
                 var attacking = false;
                 $.each(this.selectedUnits, function(key, unit) {
-                    if(unit.isAttacker && singleAttackTarget && singleAttackTarget != unit && singleAttackTarget.team != unit.team) {
+                    if(unit.isAttacker && singleAttackTarget && unit.canTargetUnit(singleAttackTarget, {softTarget: true})) {
                         unit.attackSpecificTarget(canvasPoint, singleAttackTarget);
                         attacking = true;
                     }
@@ -1084,11 +1084,6 @@ var UnitSystem = function(properties) {
             globals.currentGame.removeBody(this.box);
             this.box = null;
         }
-
-        //cleanup tick callback
-        // if(this.movePrevailingUnitCircleTick) {
-        //     globals.currentGame.removeTickCallback(this.movePrevailingUnitCircleTick);
-        // }
 
         //cleanup unit panel
         if(this.unitPanel)

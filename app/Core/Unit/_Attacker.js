@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 
 export default {
@@ -185,6 +185,7 @@ export default {
 
         //set the specified target
         this.specifiedAttackTarget = target;
+        unitUtils.flashSelectionCircleOfUnit(target);
 
         //If the specified unit dies (is removed), stop and reset state.
         this.specifiedCallback = function() {
@@ -307,7 +308,14 @@ export default {
                 }
 
                 var dist = mathArrayUtils.distanceBetweenBodies(this.body, unit.body);
-                if (dist > this.honeRange) return; //we're outside the larger distance, don't go further
+                //we're outside the larger distance, don't go further...
+                if (dist > this.honeRange) {
+                    //unless we have a specific target
+                    if (this.specifiedAttackTarget) {
+                        this.currentHone = unit;
+                    }
+                    return;
+                }
 
                 //determine the closest honable target
                 if (!currentHoneDistance) {
@@ -318,11 +326,6 @@ export default {
                         currentHoneDistance = dist;
                         this.currentHone = unit;
                     }
-                }
-
-                //force currentHone to be the specificAttackTarget
-                if (this.specifiedAttackTarget) {
-                    this.currentHone = unit;
                 }
 
                 //We've set our hone... now see if we can attack

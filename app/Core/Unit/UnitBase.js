@@ -199,9 +199,18 @@ var UnitBase = {
 
     },
 
-    canTargetUnit: function(unit) {
-        return unit.isTargetable && unit != this && gameUtils.isPositionWithinPlayableBounds(unit.position);
-        // return unit.isTargetable && this.team != unit.team;
+    canTargetUnit: function(unit, options) {
+        options = options || {};
+
+        var teamDecision = true;
+        if(options.softTarget) {
+            //a soft target is one that we've right clicked on
+            //in most cases, let's not be able to target a soft target if we're the same team
+            if(this.team == unit.team) {
+                teamDecision = false;
+            }
+        }
+        return unit.isTargetable && unit != this && teamDecision && gameUtils.isPositionWithinPlayableBounds(unit.position);
     },
 
     pickupItem: function(item, explicitSlot, systemGivenItem) {

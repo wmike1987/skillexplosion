@@ -1579,7 +1579,16 @@ var unitUtils = {
         });
         pendingAnimation.play();
         return pendingAnimation;
-    }
+    },
+
+    flashSelectionCircleOfUnit: function(unit) {
+        unit.renderlings.selected.visible = true;
+        graphicsUtils.flashSprite({sprite: unit.renderlings.selected, duration: 75, times: 3, onEnd: () => {
+            if(!unit.isSelected) {
+                unit.renderlings.selected.visible = false;
+            }
+        }});
+    },
 };
 
 //aliases

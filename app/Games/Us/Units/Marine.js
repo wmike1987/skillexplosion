@@ -737,12 +737,12 @@ export default function Marine(options) {
         },
     });
 
-    var robDDuration = 3000;
-    var robADuration = 3000;
+    var robDDuration = 2000;
+    var robADuration = 4000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3s.'],
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 3s.'],
+        defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 2s.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4s.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'holdPosition',
