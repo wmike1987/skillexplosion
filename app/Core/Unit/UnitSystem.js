@@ -147,7 +147,7 @@ var UnitSystem = function(properties) {
 
                     if(body) {
                         this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
-                        gameUtils.attachSomethingToBody({something: this.prevailingUnitCircle, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
+                        gameUtils.attachSomethingToBody({something: this.prevailingUnitCircle, runImmediately: true, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
                     } else {
                         gameUtils.detachSomethingFromBody(this.prevailingUnitCircle);
                         this.prevailingUnitCircle.position = gameUtils.offScreenPosition();

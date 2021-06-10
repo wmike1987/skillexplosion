@@ -243,15 +243,19 @@ var gameUtils = {
         if(something.type && something.type == 'body') {
             callbackLocation = 'afterUpdate';
         }
-        var tick = globals.currentGame.addTickCallback(function() {
+
+        //if we run immediately (which we do), then the first iteration will use the following tick (not the tick callback var)
+        var tick = {offset: offset};
+        tick = globals.currentGame.addTickCallback(function() {
             if(something.type && something.type == 'body') {
                 Matter.Body.setPosition(something, Matter.Vector.add(body.position, tick.offset));
             } else {
                 var floatOffset = {x: 0, y: something.floatYOffset || 0};
                 something.position = Matter.Vector.add(body.lastDrawPosition || body.position, Matter.Vector.add(tick.offset, floatOffset));
             }
-        }, false, callbackLocation);
+        }, {runImmediately: true, eventName: callbackLocation});
         tick.offset = offset; //ability to change the offset via the tick
+
         something.bodyAttachmentTick = tick;
         something.bodyAttachmentBody = body;
         this.deathPact(body, tick, somethingId);

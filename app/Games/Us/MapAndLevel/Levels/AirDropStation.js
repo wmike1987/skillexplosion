@@ -186,7 +186,7 @@ var selectionMechanism = {
     _displayChoices: function() {
         var length = this.presentedChoices.length;
         var spacing = gameUtils.getPlayableWidth()/10;
-        var subtractionAmount = spacing/2 * (length-1);
+        var subtractionAmount = spacing/2 * (length-1) - 0.5;
         var j = 0;
 
         this.items = [];

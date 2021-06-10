@@ -868,9 +868,9 @@ export default function Marine(options) {
                 var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position});
                 gameUtils.attachSomethingToBody({something: gritUp, body: unit.body});
                 graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
-                unit.addGritAddition(3);
+                unit.addGritAddition(5);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                    unit.removeGritAddition(3);
+                    unit.removeGritAddition(5);
                 });
             });
         },
