@@ -1,7 +1,7 @@
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 /*
  * options:
@@ -22,10 +22,10 @@ export default function(options) {
         autoSend: false,
         impactType: 'always',
         collisionFunction: function(otherUnit) {
-            return otherUnit != this.owningUnit && otherUnit && otherUnit.isTargetable && otherUnit.team != this.owningUnit.team
+            return otherUnit != this.owningUnit && otherUnit && otherUnit.isTargetable && otherUnit.team != this.owningUnit.team;
         },
         impactRemoveFunction: function() {
-            globals.currentGame.removeBody(this.body)
+            globals.currentGame.removeBody(this.body);
         },
         impactFunction: function(target) {
             target.sufferAttack(this.damage, this.owningUnit, {isProjectile: true});
@@ -37,7 +37,7 @@ export default function(options) {
 
     var startPosition = mathArrayUtils.clonePosition(this.owningUnit.position);
     if(this.originOffset) {
-        startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset)
+        startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset);
     }
     this.body = Matter.Bodies.circle(startPosition.x, startPosition.y, 4, {
                   frictionAir: 0,
@@ -61,7 +61,7 @@ export default function(options) {
               this.impactFunction(this.target);
           }
 
-        }.bind(this))
+      }.bind(this));
         gameUtils.deathPact(this.body, impactTick);
 
         if(this.impactType == 'collision') {
@@ -74,18 +74,18 @@ export default function(options) {
                         this.impactFunction(otherUnit);
                     }
                 }
-            }.bind(this))
+            }.bind(this));
         }
-    }
+    };
 
     this.body.renderChildren = [{
         id: 'projectile',
         data: this.displayObject,
         rotate: mathArrayUtils.pointInDirection(startPosition, targetPosition)
-    }]
+    }];
 
     globals.currentGame.addBody(this.body);
-    Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: this.body})
+    Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: this.body});
 
     if(this.autoSend) {
         this.send();

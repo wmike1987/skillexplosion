@@ -309,11 +309,12 @@ export default function Sentinel(options) {
                         originOffset: 30,
                         autoSend: true,
                         impactExtension: function(target) {
+                            var position = target.getCurrentOrLastStandingPosition();
                             var bloodAnimation = gameUtils.getAnimation({
                                 spritesheetName: 'UtilityAnimations1',
                                 animationName: 'GenericHit',
                                 speed: 0.8,
-                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.35, 0.35]
+                                transform: [position.x + Math.random()*8, position.y + Math.random()*8, 0.35, 0.35]
                             });
                             graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                             bloodAnimation.play();

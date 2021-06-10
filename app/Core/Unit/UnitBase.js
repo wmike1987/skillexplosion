@@ -195,6 +195,14 @@ var UnitBase = {
         }
     },
 
+    getCurrentOrLastStandingPosition: function() {
+        if(this.isDead) {
+            return this.deathPosition;
+        } else {
+            return this.position;
+        }
+    },
+
     death: function() {
 
     },

@@ -853,12 +853,12 @@ export default function Medic(options) {
         },
     });
 
-    var ffDDuration = 3000;
+    var ffDDuration = 4000;
     var ffADuration = 3000;
     var familiarFace  = new Passive({
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free secret step (up to two).'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 4 seconds.'],
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -872,7 +872,7 @@ export default function Medic(options) {
             return medic.freeSteps < 2;
         },
         defenseAction: function(event) {
-            medic.applyBuff({name: 'familiarFaceSpeed', textureName: 'SpeedBuff', duration: slADuration, applyChanges: function() {
+            medic.applyBuff({name: 'familiarFaceSpeed', textureName: 'SpeedBuff', duration: ffDDuration, applyChanges: function() {
                 medic.moveSpeed += 0.5;
             }, removeChanges: function() {
                 medic.moveSpeed -= 0.5;

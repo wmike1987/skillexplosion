@@ -1587,7 +1587,7 @@ var unitUtils = {
 
     flashSelectionCircleOfUnit: function(unit) {
         unit.renderlings.selected.visible = true;
-        graphicsUtils.flashSprite({sprite: unit.renderlings.selected, duration: 75, times: 3, onEnd: () => {
+        graphicsUtils.flashSprite({sprite: unit.renderlings.selected, duration: 100, times: 3, onEnd: () => {
             if(!unit.isSelected) {
                 unit.renderlings.selected.visible = false;
             }
