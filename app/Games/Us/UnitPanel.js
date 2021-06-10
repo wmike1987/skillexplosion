@@ -154,14 +154,21 @@ var unitPanel = function(options) {
     Tooltip.makeTooltippable(this.unitGritText, {
         showInfoCursor: true,
         title: 'Grit',
+        descriptions: ['', ''],
         updaters: {
             descriptions: function() {
-                var result = {
+                var result = [{
                     index: 0,
                     value: ''
-                };
+                }, {
+                    index: 1,
+                    value: ''
+                }];
                 if (this.prevailingUnit) {
-                    result.value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.';
+                    result[0].value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.';
+                    var dodgeAmt = this.prevailingUnit.getGritDodgesAvailable();
+                    var blowWord = dodgeAmt === 1 ? 'blow' : 'blows';
+                    result[1].value = 'Dodge ' + dodgeAmt + ' killing ' + blowWord + ' per round.';
                 }
                 return result;
             }.bind(this)

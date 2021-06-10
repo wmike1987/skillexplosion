@@ -35,6 +35,7 @@ var UnitBase = {
     dodgeAdditions: [],
     grit: 0,
     gritAdditions: [],
+    gritDodgesDone: 0,
     gritMult: 1,
     additions: {},
     level: 1,
@@ -94,6 +95,8 @@ var UnitBase = {
         options = Object.assign({isProjectile: false}, options);
         attackingUnit = attackingUnit || {name: 'empty'};
         var damageObj = {damage: damage};
+
+        //dodge
         Matter.Events.trigger(this, 'preDodgeSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
         if(this.attackDodged() || damageObj.manualDodge) {
             Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
@@ -112,13 +115,25 @@ var UnitBase = {
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
 
+        //factor in armor
         var defenseAdditionSums = this.getDefenseAdditionSum();
         var alteredDamage = Math.max(1, (damage - (this.defense + defenseAdditionSums)));
         var damageReducedByArmor = this.defense + defenseAdditionSums;
-        if(damage - this.defense <= 0) {
+        if(this.defense > damage) {
             damageReducedByArmor = damage - 1;
         }
         Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: damageReducedByArmor});
+
+        //killing blow dodge
+        if(this.currentHealth - alteredDamage <= 0) {
+            if(this.gritDodgesDone < this.getGritDodgesAvailable()) {
+                this.gritDodgesDone += 1;
+                Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
+                //display a miss graphic
+                graphicsUtils.floatText('Dodge!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
+                return;
+            }
+        }
         this.currentHealth -= alteredDamage;
         if (this.currentHealth <= 0) {
             this._death();
@@ -532,6 +547,10 @@ var UnitBase = {
             if(this == event.unit)
                 this.handleEvent(event);
         }.bind(this);
+
+        Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function() {
+            this.gritDodgesDone = 0;
+        }.bind(this));
 
         Matter.Events.on(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
 
@@ -1046,6 +1065,14 @@ var UnitBase = {
             sum += addition;
         });
         return Math.max(-this.grit, sum);
+    },
+
+    getGritDodgesAvailable: function() {
+        if(this.grit + this.getGritAdditionSum() == 0) {
+            return 0;
+        } else {
+            return Math.floor((this.grit + this.getGritAdditionSum())/10.0) + 1;
+        }
     },
 
     getDamageAdditionSum: function() {

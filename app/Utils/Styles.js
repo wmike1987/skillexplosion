@@ -403,6 +403,28 @@ export default {
 	    wordWrapWidth: 110
 	}),
 
+	dodgeKillingBlowText: new PIXI.TextStyle({
+		name: 'dodgeKillingBlowText',
+		dropShadowAlpha: 0.6,
+		dropShadowAngle: 0,
+		dropShadowColor: "#e644ea",
+		dropShadowDistance: 2,
+		fill: [
+			"#ffd557",
+		],
+		fillGradientStops: [
+			0.7
+		],
+		fontFamily: "Courier New",
+		fontSize: 14,
+		fontStyle: "italic",
+		lineJoin: "bevel",
+		miterLimit: 28,
+		strokeThickness: 4,
+		wordWrap: true,
+		wordWrapWidth: 110
+	}),
+
 	titleOneStyle: new PIXI.TextStyle({
 		name: 'titleOneStyle',
 	    fill: "white",

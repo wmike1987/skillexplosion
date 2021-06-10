@@ -101,19 +101,22 @@ var Tooltip = function(options) {
         $.each(options.updaters, function(key, updater) {
             this.updaters[key] = globals.currentGame.addTickCallback(function() {
                 var result = updater(self);
-                if(result === null || result === undefined) {
-                    return;
-                }
-                if(typeof result === 'object' && (result.value === null || result.value === undefined)) {
-                    return;
-                }
-                if(result.index != null) {
-                    var iKey = result.key || key;
-                    tt[iKey][result.index].text = result.value;
-                } else if(tt[key].text != result) {
-                    tt[key].text = result;
-                    self.sizeBase();
-                }
+                var results = mathArrayUtils.convertToArray(result);
+                results.forEach((result) => {
+                    if(result === null || result === undefined) {
+                        return;
+                    }
+                    if(typeof result === 'object' && (result.value === null || result.value === undefined)) {
+                        return;
+                    }
+                    if(result.index != null) {
+                        var iKey = result.key || key;
+                        tt[iKey][result.index].text = result.value;
+                    } else if(tt[key].text != result) {
+                        tt[key].text = result;
+                        self.sizeBase();
+                    }
+                });
             });
         }.bind(this));
     }

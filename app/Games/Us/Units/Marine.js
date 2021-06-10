@@ -985,7 +985,7 @@ export default function Marine(options) {
                             self.firstAidPouchAdditions.forEach((addition) => {
                                 sum += addition;
                             });
-                            unit.giveHealth(firstAidPouchAugment.healAmount + sum, unit);
+                            unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
                         });
                     }
 

@@ -795,7 +795,7 @@ export default function Medic(options) {
     var wwADuration = 3000;
     var wickedWays  = new Passive({
         title: 'Wicked Ways',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
         passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
         textureName: 'WickedWays',
@@ -813,6 +813,9 @@ export default function Medic(options) {
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({name: "wwHealthGain", textureName: 'WickedWaysHealingBuff', duration: wwADuration, applyChanges: function() {
                     unit.healthRegenerationMultiplier *= 2;
+                    graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
+                    unit.giveHealth(10, medic);
+                    healsound.play();
                 }, removeChanges: function() {
                     unit.healthRegenerationMultiplier /= 2;
                 }});
