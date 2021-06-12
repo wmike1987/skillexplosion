@@ -91,6 +91,15 @@ var renderer = function(engine, options) {
 		this.background = background;
 	}
 
+	this.pause = function() {
+		this.pixiApp.stop();
+	}
+
+	this.resume = function() {
+		this.pixiApp.ticker.lastTime = performance.now();
+		this.pixiApp.start();
+	}
+
 	this.renderWorld = function(engine, tickEvent) {
 		var bodies = Matter.Composite.allBodies(engine.world);
 
@@ -142,7 +151,7 @@ var renderer = function(engine, options) {
 
 				//handle rotation
 				if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'continuous') {
-				    sprite.rotation += 0.00075 * tickEvent.delta;
+				    sprite.rotation += 0.00075 * tickEvent.frameDelta;
 				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'none') {
 				    //do nothing
 				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotate == 'random') {
@@ -182,7 +191,7 @@ var renderer = function(engine, options) {
 	this.start = function() {
 
 		//init pixi and it's game loop, important to note that this loop happens after ours (ensuring renderWorld is called prior to this frame's rendering).
-		this.pixiApp = new PIXI.Application({width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
+		this.pixiApp = new PIXI.Application({sharedTicker: true, width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
 		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;
 

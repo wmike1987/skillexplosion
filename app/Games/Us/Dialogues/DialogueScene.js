@@ -20,7 +20,6 @@ var DialogueScene = {
             globals.currentGame.unitSystem.pause();
         });
 
-
         if(this.initExtension) {
             this.initExtension(dialogueScene, dialogueChain);
         }

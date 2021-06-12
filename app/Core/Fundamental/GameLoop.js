@@ -54,21 +54,21 @@ var Loop = function(options) {
             this.lastTime = time - this.desiredFrameTime;
         }
 
-        if(this.paused) {
-            this.lastTime = time;
-            return;
-        }
-
-        var event = {
-            timestamp: options.engine.timing.timestamp
-        };
-
         this.deltaTime = Math.min(time - this.lastTime, this.maxDelta);
         this.lastTime = time;
 
+        var event = {
+            deltaTime: this.deltaTime
+        };
+
+        if(this.paused) {
+            Matter.Events.trigger(this, 'tick', event);
+            return;
+        }
+
         Matter.Events.trigger(this, 'beforeTick', event);
 
-        var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime)
+        var willUpdate = (this.deltaAccumulator + this.deltaTime >= this.desiredFrameTime);
         if(willUpdate) {
             Matter.Events.trigger(this, 'beforeUpdate', event);
         }
@@ -104,7 +104,7 @@ var Loop = function(options) {
 
         event.percentOfNextFrame = this.deltaAccumulator/this.desiredFrameTime;
         event.interpolate = this.interpolate;
-        event.delta = thisFrameDelta;
+        event.frameDelta = thisFrameDelta;
 
         Matter.Events.trigger(this, 'beforeRenderWorld', event);
         Matter.Events.trigger(this, 'renderWorld', event);

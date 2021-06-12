@@ -73,7 +73,7 @@ export default {
         this.stop = function(commandObj, options) {
             options = options || {};
             if (this.specifiedAttackTarget) {
-                Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
                 this.specifiedAttackTarget = null;
             }
             originalStop.call(this);
@@ -82,7 +82,11 @@ export default {
             this.isHoning = false;
             this.attackMoveDestination = null;
             this.attackMoving = false;
-            this.isHoldingPosition = false;
+            if(options.isHoldingPosition) {
+                this.isHoldingPosition = true;
+            } else {
+                this.isHoldingPosition = false;
+            }
             if(options.peaceful) {
                 //nothing
                 this._becomePeaceful();
@@ -96,7 +100,7 @@ export default {
 
         Matter.Events.on(this, 'death', function() {
             if(this.specifiedAttackTarget) {
-                Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             }
             this.specifiedAttackTarget = null;
         }.bind(this));
@@ -104,7 +108,16 @@ export default {
         this.eventKeyMappings[this.commands.stop.key] = this.stop;
         this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;
 
-        this.eventClickMappings[this.commands.attack.key] = this.attackMove;
+        this.eventClickMappings[this.commands.attack.key] = function(target, commandObj) {
+            if(commandObj.command.targetType == 'unit') {
+                if(target.isDead) {
+                    commandObj.command.done();
+                }
+                this.attackSpecificTarget(target.position, target, commandObj);
+            } else {
+                this.attackMove(target, commandObj);
+            }
+        }
         this.eventClickMappings[this.commands.move.key] = this.move;
 
         this.canAttack = true;
@@ -157,7 +170,7 @@ export default {
 
         //nullify specified attack target
         if (this.specifiedAttackTarget) {
-            Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+            Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             this.specifiedAttackTarget = null;
         }
 
@@ -176,7 +189,7 @@ export default {
     },
 
     //this assumes _moveable is mixed in
-    attackSpecificTarget: function(destination, target) {
+    attackSpecificTarget: function(destination, target, commandObj) {
 
         if(!this.canTargetUnit(target)) {
             this.attackMove({x: target.position.x, y: target.position.y}); //I think we need to pass the unit's position object
@@ -185,19 +198,21 @@ export default {
 
         //set the specified target
         this.specifiedAttackTarget = target;
-        unitUtils.flashSelectionCircleOfUnit(target);
 
         //If the specified unit dies (is removed), stop and reset state.
         this.specifiedCallback = function() {
-            this.stop();
+            if(!commandObj.command.queue.hasNext()) {
+                this.stop();
+            }
             this.specifiedAttackTarget = null;
+            commandObj.command.done();
         }.bind(this);
-        var callback = Matter.Events.on(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+        var callback = Matter.Events.on(this.specifiedAttackTarget, 'death', this.specifiedCallback);
 
         //But if we are removed (from the game) first, remove the onremove listener
         gameUtils.deathPact(this, function() {
             if(this.specifiedAttackTarget)
-                Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+                Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
         }.bind(this), 'removeSpecifiedAttackTarget');
 
         //move unit
@@ -209,15 +224,10 @@ export default {
 
     holdPosition: function() {
         if(this.isMoving) {
-            this.stop();
+            this.stop(null, {isHoldingPosition: true});
         }
-        this.isHoldingPosition = true;
         Matter.Events.trigger(this, 'holdPosition');
 
-        //remove the attack hone functionality since we don't want to move
-        if (this.attackHoneTick) {
-            globals.currentGame.removeTickCallback(this.attackHoneTick);
-        }
         Matter.Sleeping.set(this.body, true);
     },
 
@@ -237,7 +247,7 @@ export default {
         }
         //unless we have a target, move towards currentHone
         this.attackHoneTick = globals.currentGame.addTickCallback(function() {
-            if(this.attackerDisabled) return;
+            if(this.attackerDisabled || this.isHoldingPosition) return;
 
             //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move (note the commented out part, not sure why i had that here, but we should want to hone a specified target)
             if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
@@ -388,7 +398,7 @@ export default {
 
         //nullify specified attack target
         if (this.specifiedAttackTarget) {
-            Matter.Events.off(this.specifiedAttackTarget, 'onremove', this.specifiedCallback);
+            Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             this.specifiedAttackTarget = null;
         }
 

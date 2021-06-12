@@ -55,16 +55,16 @@ var ShaneIntro = function(options) {
         ds.push(new Dialogue({
             actor: "Shane",
             actionText: {
-                word: "Grunts",
+                word: "Grunt",
                 actionDuration: 1500,
                 leaveTrace: true
             }
         }));
         ds.push(new Dialogue({
             actor: "MacMurray",
-            text: "There you are, are you intact?",
+            text: "There you are, are you fully functional?",
             actionText: {
-                word: "Sighs",
+                word: "Sigh",
                 actionDuration: 1200,
                 fadeOutOnly: true
             },
@@ -79,13 +79,13 @@ var ShaneIntro = function(options) {
             actorIdleSpeed: 500,
             actorIdleTime: 3,
             letterSpeed: 90,
-            text: "Mac, I'm here, but I haven't been... intact... since-",
+            text: "Mac, I'm here, but I haven't been... fully functional... since-",
             pauseAfterWord: [{
-                word: 'intact...',
-                duration: 100
+                word: 'been...',
+                duration: 300
             }],
             speedChangeAfterWord: {
-                word: 'intact...',
+                word: 'functional...',
                 speed: 100
             },
             delayAfterEnd: 0

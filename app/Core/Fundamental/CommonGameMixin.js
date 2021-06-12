@@ -38,6 +38,7 @@ var common = {
     enemyTeam: 77,
     neutralTeam: 49,
     lagCompensation: 3,
+    pixiPaused: false,
     commonAssets: [{name: "CommonGameTextures", target: "Textures/CommonGameTextures.json"}],
 
     /*
@@ -240,10 +241,9 @@ var common = {
                 }
             }
 
-            if(keyStates['Shift'] && keyStates['Control']) {
-                if(event.key == 'p' || event.key == 'P') {
-                    this.gameLoop.paused = !this.gameLoop.paused;
-                    pausedGameText.visible = this.gameLoop.paused;
+            if(keyStates['Alt'] && keyStates['Shift']) {
+                if(event.key == 's' || event.key == 'S') {
+                    this.togglePause();
                 }
             }
 
@@ -265,6 +265,12 @@ var common = {
                 if(!value || value.done || value.paused || value.invalidated || value.runs === 0) {
                     return;
                 }
+
+                //if the game is paused and we're not a true timing util, return
+                if(this.gameState == 'paused' && !value.trueTimer) {
+                    return;
+                }
+
                 if(!value.timeElapsed) {
                     value.timeElapsed = 0;
                 }
@@ -456,6 +462,17 @@ var common = {
         //init the start time
         this.timeLeft = (this.victoryCondition.limit+1)*1000;
         this.lives = this.victoryCondition.limit;
+    },
+
+    togglePause: function() {
+        this.gameLoop.paused = !this.gameLoop.paused;
+        this.gameState = this.gameLoop.paused ? 'paused' : 'playing';
+        // pausedGameText.visible = this.gameLoop.paused;
+        if(this.gameLoop.paused) {
+            this.renderer.pause();
+        } else {
+            this.renderer.resume();
+        }
     },
 
     endGame: function(options) {
@@ -937,20 +954,13 @@ var common = {
         if(options.runImmediately) {
             callback(options.immediateOptions || {});
         }
-        var deltaTime = 0, lastTimestamp = 0;
+
         var self = this;
         var tickDeltaWrapper = function(event) {
             if(tickDeltaWrapper.removePending) return;
-            if(lastTimestamp) {
-                deltaTime = event.timestamp - lastTimestamp;
-            }
-            else {
-                deltaTime = 0.1666;
-            }
-            lastTimestamp = event.timestamp;
-            event.deltaTime = deltaTime;
-            if(options.invincible || (self.gameState == 'playing'))
+            if(options.invincible || (self.gameState == 'playing')) {
                 callback(event);
+            }
         };
         tickDeltaWrapper.isTickCallback = true;
 

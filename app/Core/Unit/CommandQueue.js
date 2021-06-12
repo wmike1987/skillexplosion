@@ -34,6 +34,10 @@ var CommandQueue = function() {
         }
     },
 
+    queue.hasNext = function() {
+        return this.queue.length > 1;
+    },
+
     //Execute the command, and pass the command object as a parameter
     queue.executeCommand = function(commandObj) {
         //run predicates

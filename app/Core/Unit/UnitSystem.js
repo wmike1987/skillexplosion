@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
 import {PathingSystem} from '@core/Unit/_Pathing.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
@@ -384,15 +384,17 @@ var UnitSystem = function(properties) {
 
                         if(unit.isAttacker) {
                             if(singleAttackTarget) {
-                                unit.attackSpecificTarget(canvasPoint, singleAttackTarget);
+                                let e = {type: 'click', id: 'a', target: singleAttackTarget, targetType: 'unit', unit: unit};
+                                unitUtils.flashSelectionCircleOfUnit(singleAttackTarget);
+                                Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
                             }
                             else {
-                                var e = {type: 'click', id: 'a', target: canvasPoint, unit: unit};
+                                let e = {type: 'click', id: 'a', target: canvasPoint, unit: unit};
                                 Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
                                 this.box.attackMoveTargetSprite.timer.execute({runs: 1});
                             }
                         } else if(unit.isMoveable) {
-                            var e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};
+                            let e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};
                             Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
                         }
                     }.bind(this));
@@ -490,10 +492,12 @@ var UnitSystem = function(properties) {
                 var attacking = false;
                 $.each(this.selectedUnits, function(key, unit) {
                     if(unit.isAttacker && singleAttackTarget && unit.canTargetUnit(singleAttackTarget, {softTarget: true})) {
-                        unit.attackSpecificTarget(canvasPoint, singleAttackTarget);
+                        let e = {type: 'click', id: 'a', target: singleAttackTarget, targetType: 'unit', unit: unit};
+                        Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
+                        unitUtils.flashSelectionCircleOfUnit(singleAttackTarget);
                         attacking = true;
                     }
-                });
+                }.bind(this));
                 if(attacking) return;
 
                 //Dispatch move event if we're not using right-click as a cancel
@@ -820,8 +824,10 @@ var UnitSystem = function(properties) {
                      this.selectedUnit.damage = 10000;
                      this.selectedUnit.cooldown = 0.1;
                      this.selectedUnit.honeRange = 1500;
-                     this.selectedUnit.range = 1500;
+                     this.selectedUnit.range = 1;
                      this.selectedUnit.moveSpeed = 10;
+                     this.selectedUnit.maxHealth = 10000;
+                     this.selectedUnit.currentHealth = 10000;
                  }
              }
 

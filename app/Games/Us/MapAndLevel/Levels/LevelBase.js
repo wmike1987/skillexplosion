@@ -166,9 +166,10 @@ var levelBase = {
         };
 
         var commonWinLossTasks = function() {
+            globals.currentGame.unitSystem.pause();
+            gameUtils.setCursorStyle('None');
             removeCurrentConditions.call(this);
             game.unitsInPlay.forEach((unit) => {
-                unit.stop();
                 unit.canAttack = false;
                 unit.canMove = false;
                 unit.isTargetable = false;
@@ -180,7 +181,7 @@ var levelBase = {
             this.spawner.cleanUp();
             gameUtils.doSomethingAfterDuration(() => {
                 Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
-            }, 500);
+            }, 1000, {trueTimer: true});
         }.bind(this);
 
         this.endDelayInProgress = false;
@@ -197,34 +198,33 @@ var levelBase = {
 
             if(!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0) {
                 this.endDelayInProgress = true;
-                gameUtils.doSomethingAfterDuration(() => {
-                    if(this.customWinBehavior) {
-                        removeCurrentConditions();
-                        this.customWinBehavior();
-                    } else if(this.gotoMapOnWin) {
-                        commonWinLossTasks();
+                if(this.customWinBehavior) {
+                    removeCurrentConditions();
+                    this.customWinBehavior();
+                } else if(this.gotoMapOnWin) {
+                    commonWinLossTasks();
+                    gameUtils.doSomethingAfterDuration(() => {
                         Matter.Events.trigger(this, 'endLevelActions');
                         var sc = game.transitionToBlankScene();
-                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            game.removeAllLevelLocalEntities();
-                            game.map.show();
-                            game.unitsInPlay.forEach((unit) => {
-                                gameUtils.moveUnitOffScreen(unit);
-                            });
-                            game.removeAllLevelLocalEntities();
+                        game.removeAllLevelLocalEntities();
+                        game.map.show();
+                        game.unitsInPlay.forEach((unit) => {
+                            gameUtils.moveUnitOffScreen(unit);
                         });
-                    } else {
-                        commonWinLossTasks();
+                        game.removeAllLevelLocalEntities();
+                    }, 1000);
+                } else {
+                    commonWinLossTasks();
+                    gameUtils.doSomethingAfterDuration(() => {
                         var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()});
                         Matter.Events.trigger(this, 'endLevelActions', {endLevelScene: sc});
-                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            game.unitsInPlay.forEach((unit) => {
-                                gameUtils.moveUnitOffScreen(unit);
-                            });
-                            game.removeAllLevelLocalEntities();
+                        game.unitsInPlay.forEach((unit) => {
+                            gameUtils.moveUnitOffScreen(unit);
                         });
-                    }
-                }, 400);
+                        game.removeAllLevelLocalEntities();
+                        gameUtils.setCursorStyle('Main');
+                    }, 1000);
+                }
             }
         }.bind(this));
 
@@ -235,14 +235,14 @@ var levelBase = {
                 });
                 if(stillAlive) return;
                 this.endDelayInProgress = true;
+
+                commonWinLossTasks();
+                this.resetLevel();
+                game.itemSystem.removeAllItemsOnGround(true);
                 gameUtils.doSomethingAfterDuration(() => {
-                    commonWinLossTasks();
-                    this.resetLevel();
-                    game.itemSystem.removeAllItemsOnGround(true);
                     if(this.gotoMapOnWin) {
-                        commonWinLossTasks();
                         game.removeAllLevelLocalEntities();
-                        var enemies = gameUtils.getUnitEnemies(game.shane);
+                        let enemies = gameUtils.getUnitEnemies(game.shane);
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });
@@ -250,16 +250,14 @@ var levelBase = {
                         game.map.show();
                     } else {
                         var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()}, true);
-                        gameUtils.matterOnce(sc, 'afterSnapshotRender', function() {
-                            game.removeAllLevelLocalEntities();
-                            var enemies = gameUtils.getUnitEnemies(game.shane);
-                            enemies.forEach((enemy) => {
-                                game.removeUnit(enemy);
-                            });
-                            game.map.revertHeadToPreviousLocationDueToDefeat();
+                        game.removeAllLevelLocalEntities();
+                        let enemies = gameUtils.getUnitEnemies(game.shane);
+                        enemies.forEach((enemy) => {
+                            game.removeUnit(enemy);
                         });
+                        game.map.revertHeadToPreviousLocationDueToDefeat();
                     }
-                }, 600);
+                }, 1000);
             }
         }.bind(this));
     }
@@ -271,9 +269,7 @@ var modes = {
             var game = globals.currentGame;
             var level = this;
             //create new scene
-            Matter.Events.on(scene, 'afterSnapshotRender', function() {
-                game.closeMap();
-            });
+            game.closeMap();
             Matter.Events.on(scene, 'initialize', function() {
                 Matter.Events.trigger(game, 'enteringLevel', {level: level});
                 game.unitSystem.pause();
@@ -299,10 +295,7 @@ var modes = {
                     level.mapNode.playCompleteAnimation(level.lesserSpin);
                 });
             }
-
-            Matter.Events.on(scene, 'afterSnapshotRender', function() {
-                game.closeMap();
-            });
+            game.closeMap();
             Matter.Events.on(scene, 'initialize', function() {
                 Matter.Events.trigger(game, 'enteringLevel', {level: level});
                 level.onLevelPlayable(scene);

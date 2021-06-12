@@ -44,7 +44,7 @@ var moveable = {
         this.eventClickMappings[this.commands.move.key] = this.move;
         this.eventClickStateGathering[this.commands.move.key] = function() {
             return {isSoloMover: Object.keys(globals.currentGame.unitSystem.selectedUnits).length == 1};
-        }
+        };
 
         //**********************
         //Create body sensor - the selection box collides with a slightly smaller body size
@@ -88,7 +88,16 @@ var moveable = {
         //if command is given, we're being executed as part of a command queue, else, fake the command object
         if(!commandObj) {
             commandObj = {
-                command: {done: function() {return;}}
+                command: {
+                    done: function() {
+                        return;
+                    },
+                    queue: {
+                        hasNext: function() {
+                            return false;
+                        }
+                    }
+                },
             };
         }
 
@@ -143,7 +152,9 @@ var moveable = {
                 if (this.lastPosition && this.isMoving && !this.isHoning && !this.isAttacking) {
                     if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                         if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {
-                            this.stop();
+                            if(!commandObj.command.queue.hasNext()) {
+                                this.stop();
+                            }
                             commandObj.command.done();
                         }
                     }
@@ -164,7 +175,9 @@ var moveable = {
             if (this.destination.x + this.stopOnCollisionBuffer > this.position.x && this.destination.x - this.stopOnCollisionBuffer < this.position.x) {
                 if (this.destination.y + this.stopOnCollisionBuffer > this.position.y && this.destination.y - this.stopOnCollisionBuffer < this.position.y) {
                     if (otherBody.isMoveable && !otherBody.isMoving && otherBody.destination && otherBody.destination.x == this.destination.x && otherBody.destination.y == this.destination.y) {
-                        this.stop();
+                        if(!commandObj.command.queue.hasNext()) {
+                            this.stop();
+                        }
                         commandObj.command.done();
                     }
                 }
@@ -225,7 +238,9 @@ var moveable = {
         if (stopDestination.x + alteredOvershootBuffer > this.body.position.x && stopDestination.x - alteredOvershootBuffer < this.body.position.x) {
             if (stopDestination.y + alteredOvershootBuffer > this.body.position.y && stopDestination.y - alteredOvershootBuffer < this.body.position.y) {
                 Matter.Events.trigger(this, 'destinationReached', {destination: stopDestination});
-                this.stop();
+                if(!commandObj.command.queue.hasNext()) {
+                    this.stop();
+                }
                 commandObj.command.done();
             }
         }

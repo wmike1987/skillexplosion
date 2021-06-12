@@ -472,6 +472,7 @@ var UnitBase = {
                             context: this,
                             type: 'click',
                             target: event.target,
+                            targetType: event.targetType,
                             state: eventState,
                             unit: this,
                         });
@@ -482,6 +483,7 @@ var UnitBase = {
                             context: this,
                             type: 'click',
                             target: event.target,
+                            targetType: event.targetType,
                             state: eventState,
                             unit: this,
                         });
@@ -515,6 +517,7 @@ var UnitBase = {
                             context: this,
                             type: 'key',
                             target: event.target,
+                            targetType: event.targetType,
                             state: eventState,
                             unit: this,
                         });
@@ -525,6 +528,7 @@ var UnitBase = {
                             context: this,
                             type: 'key',
                             target: event.target,
+                            targetType: event.targetType,
                             state: eventState,
                             unit: this,
                         });

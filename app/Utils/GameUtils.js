@@ -774,6 +774,7 @@ var gameUtils = {
                 name: options.timerName || ('afterDurationTask:' + mathArrayUtils.getId()),
                 timeLimit: duration,
                 killsSelf: true,
+                trueTimer: options.trueTimer,
                 executeOnNuke: options.executeOnNuke,
                 totallyDoneCallback: function() {
                     callback();

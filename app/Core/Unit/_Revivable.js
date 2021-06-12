@@ -1,8 +1,8 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
-import {globals} from '@core/Fundamental/GlobalState.js'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {globals} from '@core/Fundamental/GlobalState.js';
 
 export default {
     revivableInit: function() {
@@ -11,7 +11,7 @@ export default {
         var originalDeath = this.death;
         var revivableDeath = function() {
             this.reviveAmount = 0;
-            this.grave = graphicsUtils.addSomethingToRenderer(this.graveSpriteName, {where: 'stage', position: mathArrayUtils.clonePosition(this.position, {y: 20}), anchor: {x: .5, y: .5}, scale: {x: .85, y: .85}});
+            this.grave = graphicsUtils.addSomethingToRenderer(this.graveSpriteName, {where: 'stage', position: mathArrayUtils.clonePosition(this.position, {y: 20}), anchor: {x: 0.5, y: 0.5}, scale: {x: 0.85, y: 0.85}});
             //fade in
             graphicsUtils.fadeSpriteOverTime(this.grave, 2000, true);
 
@@ -22,7 +22,7 @@ export default {
             this.canMove = false;
             this.isTargetable = false;
             gameUtils.moveUnitOffScreen(this);
-            Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this})
+            Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: this});
             this.isSelectable = false;
             this.stop();
 
@@ -42,7 +42,7 @@ export default {
                         if(mathArrayUtils.distanceBetweenPoints(this.reviveCenter, unit.position) <= 50) {
                             canRevive = true;
                         }
-                    }.bind(this))
+                    }.bind(this));
 
                     if(canRevive) {
                         this.reviveAmount += reviveTickTime;
@@ -55,7 +55,7 @@ export default {
                 }.bind(this)
             });
             return levelLocalEntities;
-        }
+        };
         this.death = revivableDeath;
     },
 
@@ -82,4 +82,4 @@ export default {
             this.grave = null;
         }
     }
-}
+};
