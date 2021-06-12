@@ -388,7 +388,7 @@ export default {
 	    dropShadowColor: "#e644ea",
 	    dropShadowDistance: 2,
 	    fill: [
-	        "#ff3e3e",
+	        "#00a106",
 	    ],
 	    fillGradientStops: [
 	        0.7

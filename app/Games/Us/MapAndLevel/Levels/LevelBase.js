@@ -172,7 +172,6 @@ var levelBase = {
             game.unitsInPlay.forEach((unit) => {
                 unit.canAttack = false;
                 unit.canMove = false;
-                unit.isTargetable = false;
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
             });
