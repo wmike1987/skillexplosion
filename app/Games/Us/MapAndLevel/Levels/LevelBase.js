@@ -207,6 +207,7 @@ var levelBase = {
                         var sc = game.transitionToBlankScene();
                         game.removeAllLevelLocalEntities();
                         game.map.show();
+                        gameUtils.setCursorStyle('Main');
                         game.unitsInPlay.forEach((unit) => {
                             gameUtils.moveUnitOffScreen(unit);
                         });

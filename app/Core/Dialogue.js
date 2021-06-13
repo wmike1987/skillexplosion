@@ -507,6 +507,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         });
 
         if(!this.isDone && this.done) {
+            this.isDone = true;
             this.done();
         }
 

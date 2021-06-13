@@ -305,7 +305,7 @@ export default function Marine(options) {
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: 0.01, rate: 0.6});
 
     //crit
-    // var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.00, rate: 1.0});
+    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.00, rate: 1.0});
     // var criticalHitSound2 = gameUtils.getSound('criticalhit2.wav', {volume: 0.01, rate: 1.0});
 
     //death
@@ -946,7 +946,7 @@ export default function Marine(options) {
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
             slaves: [dashSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
-                     poisonSound, /*criticalHitSound, criticalHitSound2,*/ yeahsound, unitProperties.wireframe, unitProperties.portrait],
+                     poisonSound, criticalHitSound, /*criticalHitSound2,*/ yeahsound, unitProperties.wireframe, unitProperties.portrait],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 2.35,
@@ -992,9 +992,11 @@ export default function Marine(options) {
                     var dTotal = this.damage + this.getDamageAdditionSum();
                     target.sufferAttack(dTotal*crit, this);
                     if(critActive) {
+                        criticalHitSound.play();
                         var chText = graphicsUtils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText, speed: 1.5});
+                    } else {
+                        fireSound.play();
                     }
-                    fireSound.play();
                     var abilityTint = 0x80ba80;
                     graphicsUtils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
 

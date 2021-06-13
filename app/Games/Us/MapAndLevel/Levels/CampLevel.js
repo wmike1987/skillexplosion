@@ -260,9 +260,6 @@ var campLevel = function() {
         if(!this.alreadyIntrod && this.camp.intro) {
             var campIntro = new this.camp.intro({
                 done: () => {
-                    // this.postInit();
-                    // this.initNextMap();
-                    // this.initShane();
                     self.enterLevel();
                 }
             });

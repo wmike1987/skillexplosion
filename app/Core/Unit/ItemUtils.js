@@ -74,8 +74,8 @@ var giveUnitItem = function(options) {
     var itemName = itemInfo.itemName;
 
     //This is assuming a particular structure of the Item files within the project and game
-    const target = options.gamePrefix+'/Items/'+ itemName +'.js';
-    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
+    const target = 'Items/'+ itemName +'.js';
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/Us/${target}`).then((item) => {
         item = item.default(options);
         if(options.unit.isDead) {
             item.drop(options.unit.position);
@@ -92,8 +92,8 @@ var dropItemAtPosition = function(options) {
     var itemName = itemInfo.itemName;
 
     //This is assuming a particular structure of the Item files within the project and game
-    const target = options.gamePrefix+'/Items/'+ itemName +'.js';
-    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
+    const target = 'Items/'+ itemName +'.js';
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/Us/${target}`).then((item) => {
         item = item.default(options);
         item.drop(options.position);
     });
@@ -106,8 +106,8 @@ var createItemObj = function(options) {
     var itemName = itemInfo.itemName;
 
     //This is assuming a particular structure of the Item files within the project and game
-    const target = options.gamePrefix+'/Items/'+ itemName +'.js';
-    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
+    const target = 'Items/'+ itemName +'.js';
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/Us/${target}`).then((item) => {
         options.itemDeferred.resolve(item.default(options));
     });
 };
@@ -119,8 +119,8 @@ var createItemAndGrasp = function(options) {
     var itemName = itemInfo.itemName;
 
     //This is assuming a particular structure of the Item files within the project and game
-    const target = options.gamePrefix+'/Items/'+ itemName +'.js';
-    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/${target}`).then((item) => {
+    const target = 'Items/'+ itemName +'.js';
+    import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/Us/${target}`).then((item) => {
         item = item.default(options);
         item.owningUnit = options.unit;
         graphicsUtils.addOrShowDisplayObject(item.icon);
@@ -128,6 +128,16 @@ var createItemAndGrasp = function(options) {
     });
 };
 
+/*
+ *
+ * options {
+ *   className: string
+ *   typeName: string
+ *   OR
+ *   itemName: [string]
+ * }
+ *
+ */
 var resolveItemInformation = function(options) {
     var chosenItem = null;
     var chosenClassKey = 'noClass';

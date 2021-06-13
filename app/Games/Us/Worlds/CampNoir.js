@@ -46,6 +46,7 @@ var getLevelTiles = function() {
 
 var possibleTrees = ['avgoldtree1', 'avgoldtree2', 'avgoldtree3', 'avgoldtree4', 'avgoldtree5', 'avgoldtree6'];
 
+//this camp object is used for the camp level type
 var camp = {
     intro: CampNoirIntro,
 
@@ -174,7 +175,13 @@ var camp = {
     },
 
     onLevelPlayable: function(scene) {
+        if(this.mapTableFalseSetting) {
+            this.mapTableActive = false;
+        } else {
+            this.mapTableActive = true;
+        }
         if(!this.completedUrsulaTasks) {
+            this.mapTableActive = false;
             globals.currentGame.shane.isSelectable = false;
             if(!globals.currentGame.ursula) {
                 globals.currentGame.initUrsula();
@@ -290,6 +297,7 @@ var noirEnemySets = {
     }],
 };
 
+//phase one is shane intro
 var phaseOne = function() {
     var firstLevelPosition = {
         x: 200,
@@ -344,12 +352,13 @@ var phaseOne = function() {
     });
 };
 
+//phase two is the "first" phase, it includes the starting dialog
 var phaseTwo = function(options) {
     options = options || {};
     var world = this;
     var startDialogue = new CampNoirStart({
         done: () => {
-            world.gotoLevelById('camp');
+            var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
@@ -386,11 +395,14 @@ var phaseTwo = function(options) {
                 }
             });
             if(options.skippedTutorial) {
+                campLevel.mapTableFalseSetting = true;
                 var a1 = new Dialogue({actor: "MacMurray", text: "Air drop incoming, I take it you know what to do...", backgroundBox: true, delayAfterEnd: 1500});
                 var chain = new DialogueChain([a1], {startDelay: 1500, done: function() {
                     chain.cleanUp();
                     gameUtils.doSomethingAfterDuration(() => {
                         globals.currentGame.flyover(() => {
+                            campLevel.mapTableFalseSetting = false;
+                            campLevel.mapTableActive = true;
                             globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 120}), ['BasicMicrochip', 'Book'], true);
                             globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 50}), [{className: 'worn'}, {className: 'worn'}]);
                         });
@@ -414,6 +426,7 @@ var phaseThree = function() {
     this.map.addMapNode('hardened');
 };
 
+//this defines the camp noir world
 var campNoir = {
     worldSpecs: {
         enemySets: noirEnemySets,
@@ -455,6 +468,7 @@ var campNoir = {
     gotoLevelById: function(id) {
         var level = this.map.findLevelById(id);
         level.enterLevel();
+        return level;
     },
 
     initializeMap: function() {

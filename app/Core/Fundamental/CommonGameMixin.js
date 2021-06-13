@@ -844,7 +844,7 @@ var common = {
         return timer;
     },
     invalidateTimer: function(timer) {
-        if(!timer || timer.invalidted) return;
+        if(!timer || timer.invalidated) return;
         if($.isArray(timer)) {
             $.each(timer, function(i, timer) {
                 timer.invalidated = true;

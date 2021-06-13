@@ -39,7 +39,7 @@ var shaneLearning = function(options) {
         scene.add(podDoodad);
 
         this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.box, immortal: true});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", className: 'worn', itemType: 'item', unit: this.box, immortal: true});
         globals.currentGame.addUnit(this.box);
         this.box.position = {x: 750, y: 300};
 
@@ -252,7 +252,7 @@ var shaneLearning = function(options) {
         var a6a = new Dialogue({actor: "Task", text: "Press 'D' then left click to perform a dash in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
         var a7 = new Dialogue({actor: "Task", text: "Hover over your knife ability to read its description.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
         var a7a = new Dialogue({actor: "Task", text: "Press 'F' then left click to throw a knife in that direction.", fadeOutAfterDone: true, isTask: true, backgroundBox: true, letterSpeed: 30, preventAutoEnd: true});
-        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, preventAutoEnd: true, preventAutoEnd: true});
+        var a8 = new Dialogue({actor: "Task", text: "Kill a critter by throwing a knife at it.", fadeOutAfterDone: true, backgroundBox: true, isTask: true, letterSpeed: 30, preventAutoEnd: true});
         var self = this;
         var firstBox = this.box;
         this.mapTableActive = false;
@@ -336,7 +336,7 @@ var shaneLearning = function(options) {
                                     if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
                                     graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
                                     achieve.play();
-                                    var boxItem = firstBox.getAllItemsByName('Ring Of Thought')[0];
+                                    var boxItem = firstBox.getAllItems()[0];
                                     gameUtils.doSomethingAfterDuration(() => {
                                         completeTaskAndRelease(a2);
                                         a3.onStart = function() {
@@ -358,7 +358,7 @@ var shaneLearning = function(options) {
                                                                     gameUtils.matterConditionalOnce(globals.currentGame.shane, 'pickupItem', (event) => {
                                                                         graphicsUtils.removeSomethingFromRenderer(arrow);
                                                                         gameUtils.doSomethingAfterDuration(() => {
-                                                                            var myItem = globals.currentGame.shane.getAllItemsByName('Ring Of Thought')[0];
+                                                                            var myItem = globals.currentGame.shane.getAllItems()[0];
                                                                             completeTaskAndRelease(a4);
                                                                             a4a.onStart = function() {
                                                                                 arrow = graphicsUtils.pointToSomethingWithArrow(myItem, -5, 0.5);
