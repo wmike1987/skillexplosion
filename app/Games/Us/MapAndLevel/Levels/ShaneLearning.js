@@ -266,8 +266,8 @@ var shaneLearning = function(options) {
                 bchain.cleanUp();
             }});
 
-            var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTableSprite, -20, 0.5);
             b1.onStart = function() {
+                var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTableSprite, -20, 0.5);
                 gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
                     graphicsUtils.removeSomethingFromRenderer(arrow);
                     achieve.play();
@@ -279,7 +279,7 @@ var shaneLearning = function(options) {
                         });
                     };
                 });
-            };
+            }.bind(this);
 
             b3.onStart = function() {
                 globals.currentGame.removeAllLevelLocalEntities();
