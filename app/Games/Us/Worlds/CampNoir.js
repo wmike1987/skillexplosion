@@ -174,12 +174,25 @@ var camp = {
         return objs;
     },
 
+    //This one is a little complicated since there are so many ways to enter camp noir
     onLevelPlayable: function(scene) {
         if(this.mapTableFalseSetting) {
             this.mapTableActive = false;
         } else {
             this.mapTableActive = true;
         }
+
+        //we want to nudge the player to the map if we're entering camp noir proper for the first time
+        //aka not during ursula tasks and not quite during the skipped tutorial since we have a slight delay
+        //before we want to nudge the player when they skip
+        if(this.completedUrsulaTasks && !this.skippedTutorial && !this.mapTableNudge) {
+            this.mapTableNudge = true;
+            var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTable, -20, 0.5);
+            gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+                graphicsUtils.removeSomethingFromRenderer(arrow);
+            });
+        }
+
         if(!this.completedUrsulaTasks) {
             this.mapTableActive = false;
             globals.currentGame.shane.isSelectable = false;
@@ -194,6 +207,7 @@ var camp = {
             globals.currentGame.shane.ignoreHealthRegeneration = true;
             globals.currentGame.shane.position = {x: 400, y: 400};
         }
+
     }
 };
 
@@ -395,16 +409,23 @@ var phaseTwo = function(options) {
                 }
             });
             if(options.skippedTutorial) {
+                campLevel.skippedTutorial = true;
                 campLevel.mapTableFalseSetting = true;
                 var a1 = new Dialogue({actor: "MacMurray", text: "Air drop incoming, I take it you know what to do...", backgroundBox: true, delayAfterEnd: 1500});
                 var chain = new DialogueChain([a1], {startDelay: 1500, done: function() {
                     chain.cleanUp();
                     gameUtils.doSomethingAfterDuration(() => {
                         globals.currentGame.flyover(() => {
-                            campLevel.mapTableFalseSetting = false;
-                            campLevel.mapTableActive = true;
                             globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 120}), ['BasicMicrochip', 'Book'], true);
                             globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 50}), [{className: 'worn'}, {className: 'worn'}]);
+                            gameUtils.doSomethingAfterDuration(() => {
+                                campLevel.mapTableFalseSetting = false;
+                                campLevel.mapTableActive = true;
+                                var arrow = graphicsUtils.pointToSomethingWithArrow(campLevel.mapTableSprite, -20, 0.5);
+                                gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+                                    graphicsUtils.removeSomethingFromRenderer(arrow);
+                                });
+                            }, 3000)
                         });
                     }, 250);
                 }});

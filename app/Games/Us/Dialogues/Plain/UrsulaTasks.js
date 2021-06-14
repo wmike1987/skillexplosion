@@ -36,7 +36,7 @@ var UrsulaTasks = function(scene) {
     this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
     ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SturdyCanteen"], unit: this.box, immortal: true});
     globals.currentGame.addUnit(this.box);
-    this.box.position = {x: 850, y: 300};
+    this.box.position = {x: 900, y: 300};
 
     var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", isTask: true, backgroundBox: true});
     var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", isTask: true, backgroundBox: true });
@@ -66,6 +66,7 @@ var UrsulaTasks = function(scene) {
                 achieve.play();
                 graphicsUtils.removeSomethingFromRenderer(arrow);
                 completeTaskAndRelease(a1);
+
                 return true;
             }
         });
@@ -188,14 +189,14 @@ var UrsulaTasks = function(scene) {
         finalMacMurrayChain.cleanUp();
     });
 
-    var b1 = new Dialogue({actor: "MacMurray", text: "One more thing, you live and die by your wits out here.", pauseAfterWord: {word: 'thing,', duration: 300}, backgroundBox: true, letterSpeed: 30});
-    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 30, continuation: true, preventAutoEnd: true});
+    var b1 = new Dialogue({actor: "MacMurray", text: "One more thing, you live and die by your wits out here.", pauseAfterWord: {word: 'thing,', duration: 300}, backgroundBox: true, letterSpeed: 40});
+    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 40, continuation: true, preventAutoEnd: true});
 
     var transitionChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
         transitionChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             microchipChain.play();
-        }, 1000);
+        }, 250);
     }});
 
     b2.onFullyShown = function() {
@@ -354,9 +355,9 @@ var UrsulaTasks = function(scene) {
         }, 1000);
     }});
 
-    var e1 = new Dialogue({actor: "MacMurray", text: "Well done.", backgroundBox: true});
-    var e2 = new Dialogue({actor: "MacMurray", text: "When you're out traveling you won't be able to configure your abilities, so plan ahead.", continuation: true, backgroundBox: true});
-    var e3 = new Dialogue({actor: "MacMurray", text: "Get some rest, I'll be in touch...", continuation: true, backgroundBox: true});
+    var e1 = new Dialogue({actor: "MacMurray", text: "Well done.", backgroundBox: true, letterSpeed: 40});
+    var e2 = new Dialogue({actor: "MacMurray", text: "When you're out traveling you won't be able to configure your abilities, so plan ahead.", continuation: true, backgroundBox: true, letterSpeed: 40});
+    var e3 = new Dialogue({actor: "MacMurray", text: "Get some rest, I'll be in touch...", continuation: true, backgroundBox: true, letterSpeed: 40});
     var finalMacMurrayChain = new DialogueChain([e1, e2, e3], {startDelay: 200, done: function() {
         finalMacMurrayChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {

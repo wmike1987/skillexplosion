@@ -115,6 +115,7 @@ var levelBase = {
         scale: {x: 1.0, y: 1.0}, offset: {x: 0, y: 0}, sortYOffset: 0,
         shadowIcon: 'IsoShadowBlurred', shadowScale: {x: 1.0, y: 1.0}, shadowOffset: {x: 0, y: 18},
         position: options.position || {x: gameUtils.getCanvasCenter().x-130, y: gameUtils.getPlayableHeight()-190}});
+        this.mapTable = mapTable;
         scene.add(mapTable);
 
         var mapHoverTick = globals.currentGame.addTickCallback(function(event) {

@@ -37,6 +37,7 @@ var doodad = function(options) {
     }
 
     Matter.Body.setPosition(this.body, options.position);
+    this.position = this.body.position;
 
     if(options.drawWire)
         this.body.drawWire = true;
