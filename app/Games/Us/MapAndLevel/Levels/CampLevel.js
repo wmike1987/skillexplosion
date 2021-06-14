@@ -171,7 +171,7 @@ var campLevel = function() {
         this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
             lightOnePosition: {
                 x: gameUtils.getCanvasCenter().x,
-                y: gameUtils.getCanvasHeight() - (gameUtils.getPlayableHeight() / 2 + 30)
+                y: gameUtils.getPlayableHeight() / 2 + 30
             },
             flameVariation: 0.0,
             yOffset: 0.0,
@@ -185,10 +185,10 @@ var campLevel = function() {
         this.stageLightShader = new PIXI.Filter(null, campfireShader, {
             lightOnePosition: {
                 x: gameUtils.getCanvasCenter().x,
-                y: gameUtils.getCanvasHeight() - (gameUtils.getPlayableHeight() / 2 + 30)
+                y: gameUtils.getPlayableHeight() / 2 + 30
             },
             flameVariation: 0.0,
-            yOffset: 30.0,
+            yOffset: 60.0,
             red: stageRed,
             green: 1.5,
             blue: 1.0,

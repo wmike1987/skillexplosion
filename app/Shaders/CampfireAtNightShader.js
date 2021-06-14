@@ -3,6 +3,7 @@ export default `
     varying vec2 vTextureCoord;
     uniform sampler2D uSampler;
     uniform vec2 lightOnePosition;
+    uniform vec4 inputPixel;
     uniform float flameVariation;
     uniform float lightRadius;
     uniform float yOffset;
@@ -14,11 +15,11 @@ export default `
     void main()
     {
         vec4 fg = texture2D(uSampler, vTextureCoord);
+        vec2 myCoord = vTextureCoord * inputPixel.xy;
 
         float yscale = 2.0;
         float alteredLightRadius = lightRadius + flameVariation*80.0;
-
-        float lengthToLightOnePosition = sqrt(pow(abs(gl_FragCoord.x-lightOnePosition.x), 2.0) + pow(abs((gl_FragCoord.y-yOffset-lightOnePosition.y)*yscale), 2.0));
+        float lengthToLightOnePosition = sqrt(pow(abs(myCoord.x-lightOnePosition.x), 2.0) + pow(abs((myCoord.y+yOffset-lightOnePosition.y)*yscale), 2.0));
         float litScale = lengthToLightOnePosition/alteredLightRadius;
 
         //immediately dim the scene
