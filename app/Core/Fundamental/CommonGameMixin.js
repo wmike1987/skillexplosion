@@ -262,6 +262,13 @@ var common = {
             //from within another timer. I actually need to make sure this matters.
             var tempTimers = $.extend({}, this.timers);
             $.each(tempTimers, function(key, value) {
+
+                //tick monitor is called whether or not the timer has stopped
+                if(value.tickMonitor) {
+                    value.tickMonitor(event.deltaTime);
+                }
+
+                //don't continue if we're in any of these states
                 if(!value || value.done || value.paused || value.invalidated || value.runs === 0) {
                     return;
                 }
@@ -271,6 +278,7 @@ var common = {
                     return;
                 }
 
+                //default values
                 if(!value.timeElapsed) {
                     value.timeElapsed = 0;
                 }
@@ -285,25 +293,30 @@ var common = {
                     value.runs = 1;
                 }
 
+                //determine the active time limit
                 if(value.skipToEnd) {
                     value.timeLimitOverride = 0.01;
                 }
-
                 value.activeTimeLimit = value.timeLimitOverride || value.timeLimit;
 
+                //update timer state
                 value.started = true;
                 value.timeElapsed += event.deltaTime;
                 value.totalElapsedTime += event.deltaTime;
                 value.percentDone = Math.min(value.timeElapsed/value.activeTimeLimit, 1);
                 value.totalPercentOfRunsDone = Math.min(value.currentRun/value.originalRuns, 1);
 
+                //call tickback
                 if(value.tickCallback) value.tickCallback(event.deltaTime);
+
+                //call immediately, possibly with a delay
                 if(value.immediateStart) {
                     var immediateDelay = value.immediateDelay || 0;
                     value.timeElapsed = value.activeTimeLimit - immediateDelay;
                     value.immediateStart = false;
                 }
 
+                //if we past our active time limit, execute the callbacks
                 while(value.activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
                     value.executeCallbacks();
                 }

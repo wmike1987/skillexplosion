@@ -35,7 +35,8 @@ var UnitBase = {
     dodgeAdditions: [],
     grit: 0,
     gritAdditions: [],
-    gritDodgesDone: 0,
+    gritDodgeTimer: null,
+    gritCooldown: 14,
     gritMult: 1,
     additions: {},
     level: 1,
@@ -126,8 +127,9 @@ var UnitBase = {
 
         //killing blow dodge
         if(this.currentHealth - alteredDamage <= 0) {
-            if(this.gritDodgesDone < this.getGritDodgesAvailable()) {
-                this.gritDodgesDone += 1;
+            if(this.hasGritDodge) {
+                this.hasGritDodge = false;
+                this.gritDodgeTimer.reset();
                 Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
                 //display a miss graphic
                 graphicsUtils.floatText('Dodge!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
@@ -456,7 +458,7 @@ var UnitBase = {
         this.handleEvent = function(event) {
             if(event.type == 'click') {
                 if(this.eventClickMappings[event.id]) {
-                    var eventState = {};
+                    let eventState = {};
 
                     //determine current state of things and store it in a command object
                     if(this.eventClickStateGathering[event.id]) {
@@ -464,7 +466,7 @@ var UnitBase = {
                     }
 
                     //the mappings can be simply a function, or a more complicated object
-                    var newCommand = null;
+                    let newCommand = null;
                     if(typeof this.eventClickMappings[event.id] === "function") {
                         newCommand = Command({
                             queue: this.commandQueue,
@@ -501,7 +503,7 @@ var UnitBase = {
                 }
             } else if(event.type == 'key') {
                 if(this.eventKeyMappings[event.id]) {
-                    var eventState = {};
+                    let eventState = {};
 
                     //determine current state of things and store it in a command object
                     if(this.eventKeyStateGathering[event.id]) {
@@ -509,7 +511,7 @@ var UnitBase = {
                     }
 
                     //the mappings can be simply a function, or a more complicated object
-                    var newCommand = null;
+                    let newCommand = null;
                     if(typeof this.eventKeyMappings[event.id] === "function") {
                         newCommand = Command({
                             queue: this.commandQueue,
@@ -551,10 +553,6 @@ var UnitBase = {
             if(this == event.unit)
                 this.handleEvent(event);
         }.bind(this);
-
-        Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function() {
-            this.gritDodgesDone = 0;
-        }.bind(this));
 
         Matter.Events.on(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
 
@@ -798,7 +796,7 @@ var UnitBase = {
 
         //grit handling
         this.gritHandler = globals.currentGame.addTickCallback(function() {
-            var gritSum = this.grit + this.getGritAdditionSum();
+            var gritSum = this.getTotalGrit();
             if(this.currentHealth < gritSum/100*this.maxHealth) {
                 this.gritMult = 2;
             } else {
@@ -806,6 +804,32 @@ var UnitBase = {
             }
         }.bind(this));
         gameUtils.deathPact(this, this.gritHandler);
+
+        var self = this;
+        this.gritDodgeTimer = globals.currentGame.addTimer({
+            name: 'gritDodgeTimer' + this.unitId,
+            runs: 1,
+            timeLimit: this.gritCooldown * 1000,
+            callback: function() {
+                if(this.timerActive && self.getTotalGrit() > 0.0) {
+                    self.hasGritDodge = true;
+                }
+            },
+            tickMonitor: function() {
+                if(self.getTotalGrit() > 0.0) {
+                    self.gritCooldown = (-0.1 * self.getTotalGrit() + 14.0);
+                    this.timeLimit = self.gritCooldown * 1000;
+                    if(!this.timerActive) {
+                        this.timerActive = true;
+                        this.reset();
+                    }
+                } else {
+                    self.hasGritDodge = false;
+                    this.timerActive = false;
+                }
+            }
+        });
+        gameUtils.deathPact(this, this.gritDodgeTimer);
 
         //regen energy
         this.energyRegen = globals.currentGame.addTimer({
@@ -1071,12 +1095,8 @@ var UnitBase = {
         return Math.max(-this.grit, sum);
     },
 
-    getGritDodgesAvailable: function() {
-        if(this.grit + this.getGritAdditionSum() == 0) {
-            return 0;
-        } else {
-            return Math.floor((this.grit + this.getGritAdditionSum())/10.0) + 1;
-        }
+    getTotalGrit: function() {
+        return this.grit + this.getGritAdditionSum();
     },
 
     getDamageAdditionSum: function() {

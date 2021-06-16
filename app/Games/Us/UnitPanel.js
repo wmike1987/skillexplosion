@@ -165,10 +165,17 @@ var unitPanel = function(options) {
                     value: ''
                 }];
                 if (this.prevailingUnit) {
-                    result[0].value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) + '% total health.';
-                    var dodgeAmt = this.prevailingUnit.getGritDodgesAvailable();
-                    var blowWord = dodgeAmt === 1 ? 'blow' : 'blows';
-                    result[1].value = 'Dodge ' + dodgeAmt + ' killing ' + blowWord + ' per round.';
+                    if(this.prevailingUnit.getTotalGrit() > 0.0) {
+                        result[0].value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.getTotalGrit()) + '% total health.';
+                    } else {
+                        result[0].value = 'Gain grit to increase hp regeneration rate near death.';
+                    }
+
+                    if(this.prevailingUnit.getTotalGrit() > 0.0) {
+                        result[1].value = 'Dodge 1 killing blow every ' + this.prevailingUnit.gritCooldown + ' seconds';
+                    } else {
+                        result[1].value = 'Gain grit to dodge killing blows.';
+                    }
                 }
                 return result;
             }.bind(this)
@@ -288,7 +295,7 @@ var unitPanel = function(options) {
                         key: 'systemMessages',
                         index: 0
                     };
-                    var gritAmount = Math.floor((this.prevailingUnit.grit + this.prevailingUnit.getGritAdditionSum()) / 100 * this.prevailingUnit.maxHealth);
+                    var gritAmount = Math.floor((this.prevailingUnit.getTotalGrit()) / 100 * this.prevailingUnit.maxHealth);
                     result.value = 'Grit: ' + gritAmount + ' hp';
                     return result;
                 }
@@ -476,6 +483,20 @@ var unitPanel = function(options) {
                     x: this.vialDimensions.w,
                     y: this.vialDimensions.h * gritPercent
                 });
+            }
+
+            //killing blow dodge indicator
+            if(this.prevailingUnit.hasGritDodge) {
+                if(!this.killingBlowIndicator) {
+                    this.killingBlowIndicator = graphicsUtils.createDisplayObject("GritBuff", {where: 'hud', scale: {x: 0.8, y: 0.8}});
+                    this.killingBlowIndicator.position = {
+                        x: this.healthVialPosition.x,
+                        y: gameUtils.getCanvasHeight() - 10
+                    }
+                }
+                graphicsUtils.addOrShowDisplayObject(this.killingBlowIndicator);
+            } else if(this.killingBlowIndicator) {
+                this.killingBlowIndicator.visible = false;
             }
 
             if (this.prevailingUnit.maxEnergy > 0) {
@@ -743,6 +764,13 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
         this.highlightGroupUnit(unit);
         this.updateUnitItems(unit);
 
+        //if the new unit has a grit dodge available, immediate show it instead of waiting for the next tick
+        if(this.prevailingUnit.hasGritDodge) {
+            if(this.killingBlowIndicator) {
+                graphicsUtils.addOrShowDisplayObject(this.killingBlowIndicator);
+            }
+        }
+
         //show augment button
         this.unitAugmentPanel.lowerOpenButton();
         this.unitPassivePanel.lowerOpenButton();
@@ -755,8 +783,13 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
     this.clearUnitItems();
 
     //turn off portrait
-    if (this.currentPortrait)
+    if (this.currentPortrait) {
         this.currentPortrait.visible = false;
+    }
+
+    if(this.killingBlowIndicator) {
+        this.killingBlowIndicator.visible = false;
+    }
 
     //hide augment button
     this.unitAugmentPanel.hideOpenButton();

@@ -797,7 +797,7 @@ var UnitSystem = function(properties) {
                  if(keyStates.Control) {
                      if(this.selectedUnit) {
                          this.selectedUnit.sufferAttack(10);
-                         Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
+                         // Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
                      }
                  }
              }
