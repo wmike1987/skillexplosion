@@ -253,6 +253,8 @@ export default function Medic(options) {
     var fullheal = gameUtils.getSound('fullheal.wav', {volume: 0.05, rate: 1.0});
     var footstepSound = gameUtils.getSound('secretstep.wav', {volume: 0.02, rate: 1.1});
     var shroudSound = gameUtils.getSound('cloakshroud.wav', {volume: 0.1, rate: 1.5});
+    var ahSound = gameUtils.getSound('ursulastim.wav', {volume: 0.1, rate: 1.5});
+
     var secretStep = function(destination, commandObj) {
         //alter destination for foot destination
         destination = mathArrayUtils.clonePosition(destination, {y: -this.footOffset || -20});
@@ -1013,6 +1015,7 @@ export default function Medic(options) {
         graveSpriteName: 'MedicGrave',
         team: options.team || 4,
         priority: 5,
+        consumeSound: ahSound,
         name: options.name,
         heightAnimation: 'up',
         abilities: [healAbility, secretStepAbility, mineAbility],

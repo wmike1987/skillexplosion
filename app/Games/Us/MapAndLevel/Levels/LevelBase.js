@@ -26,6 +26,7 @@ var levelBase = {
         this.fillLevelScene(scene);
 
         globals.currentGame.currentScene.transitionToScene(scene);
+        Matter.Events.trigger(globals.currentGame, 'EnterLevel', {level: this});
         this.mode.enter.call(this, scene);
     },
 

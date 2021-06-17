@@ -10,7 +10,7 @@
 },
 "AttackIcon.png":
 {
-	"frame": {"x":472,"y":1,"w":28,"h":19},
+	"frame": {"x":472,"y":23,"w":28,"h":19},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":19},
@@ -64,6 +64,14 @@
 	"spriteSourceSize": {"x":7,"y":5,"w":50,"h":59},
 	"sourceSize": {"w":64,"h":64}
 },
+"GritBlockActive.png":
+{
+	"frame": {"x":466,"y":78,"w":24,"h":19},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":8,"w":24,"h":19},
+	"sourceSize": {"w":32,"h":32}
+},
 "GritBuff.png":
 {
 	"frame": {"x":403,"y":100,"w":24,"h":27},
@@ -98,7 +106,7 @@
 },
 "HiddenBuff.png":
 {
-	"frame": {"x":460,"y":65,"w":24,"h":23},
+	"frame": {"x":466,"y":53,"w":24,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":24,"h":23},
@@ -106,7 +114,7 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":460,"y":90,"w":23,"h":23},
+	"frame": {"x":460,"y":99,"w":23,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":23},
@@ -162,7 +170,7 @@
 },
 "MoveIcon.png":
 {
-	"frame": {"x":460,"y":35,"w":28,"h":28},
+	"frame": {"x":436,"y":66,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
@@ -210,7 +218,7 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":436,"y":66,"w":20,"h":20},
+	"frame": {"x":472,"y":1,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
@@ -223,8 +231,8 @@
 	"version": "1.0",
 	"image": "BaseUnit.png",
 	"format": "RGBA8888",
-	"size": {"w":492,"h":126},
+	"size": {"w":493,"h":126},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:3ba3f88ef5dd5dbb7da5d0cc0690a2e9:1053c4b2eab52e1c6011e9b9dabab2d9:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:0d942f797de15a58965efe32fe00a065:dd52f303cf956a64790214e982cb3169:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

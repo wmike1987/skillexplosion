@@ -1355,7 +1355,9 @@ var graphicsUtils = {
                     if(!spinningIn) {
                         spins--;
                         if(spins == 0) {
-                            doneCallback();
+                            if(doneCallback) {
+                                doneCallback();
+                            }
                             this.invalidate();
                             sprite.scale.x = originalScaleX;
                             self.isSpinning = false;

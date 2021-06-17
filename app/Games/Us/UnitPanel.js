@@ -174,7 +174,7 @@ var unitPanel = function(options) {
                     if(this.prevailingUnit.getTotalGrit() > 0.0) {
                         result[1].value = 'Dodge 1 killing blow every ' + this.prevailingUnit.gritCooldown + ' seconds';
                     } else {
-                        result[1].value = 'Gain grit to dodge killing blows.';
+                        result[1].value = 'Gain grit to block killing blows.';
                     }
                 }
                 return result;
@@ -491,7 +491,7 @@ var unitPanel = function(options) {
                     this.killingBlowIndicator = graphicsUtils.createDisplayObject("GritBuff", {where: 'hud', scale: {x: 0.8, y: 0.8}});
                     this.killingBlowIndicator.position = {
                         x: this.healthVialPosition.x,
-                        y: gameUtils.getCanvasHeight() - 10
+                        y: gameUtils.getCanvasHeight() - 15
                     }
                 }
                 graphicsUtils.addOrShowDisplayObject(this.killingBlowIndicator);

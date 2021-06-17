@@ -16,9 +16,11 @@ var levelUpSound = gameUtils.getSound('levelup.wav', {volume: 0.45, rate: 0.8});
 var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: 0.06, rate: 1});
 var petrifySound = gameUtils.getSound('petrify.wav', {volume: 0.07, rate: 1});
 var maimSound = gameUtils.getSound('maimsound.wav', {volume: 0.5, rate: 1.6});
-var condemnSound = gameUtils.getSound('condemn.wav', {volume: 0.15, rate: 0.9});
+var condemnSound = gameUtils.getSound('condemn.wav', {volume: 0.2, rate: 0.9});
 var buffSound = gameUtils.getSound('buffcreate.wav', {volume: 0.015, rate: 1.0});
 var healSound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
+var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {volume: 0.02, rate: 1.0});
+var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {volume: 0.03, rate: 2.0});
 
 //default unit attributes
 var UnitBase = {
@@ -128,11 +130,12 @@ var UnitBase = {
         //killing blow dodge
         if(this.currentHealth - alteredDamage <= 0) {
             if(this.hasGritDodge) {
-                this.hasGritDodge = false;
+                this.giveGritDodge(false);
                 this.gritDodgeTimer.reset();
                 Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
                 //display a miss graphic
-                graphicsUtils.floatText('Dodge!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
+                graphicsUtils.floatText('Block!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
+                killingBlowBlock.play();
                 return;
             }
         }
@@ -810,9 +813,12 @@ var UnitBase = {
             name: 'gritDodgeTimer' + this.unitId,
             runs: 1,
             timeLimit: this.gritCooldown * 1000,
+            pauseCondition: function() {
+                return self.isDead || !globals.currentGame.inLevel;
+            },
             callback: function() {
                 if(this.timerActive && self.getTotalGrit() > 0.0) {
-                    self.hasGritDodge = true;
+                    self.giveGritDodge(true);
                 }
             },
             tickMonitor: function() {
@@ -824,7 +830,7 @@ var UnitBase = {
                         this.reset();
                     }
                 } else {
-                    self.hasGritDodge = false;
+                    self.giveGritDodge(false);
                     this.timerActive = false;
                 }
             }
@@ -1097,6 +1103,20 @@ var UnitBase = {
 
     getTotalGrit: function() {
         return this.grit + this.getGritAdditionSum();
+    },
+
+    giveGritDodge: function(value) {
+        if(value) {
+            var gritBlockIndicator = graphicsUtils.addSomethingToRenderer('GritBuff', {where: 'stageOne', scale: {x: 1.1, y: 1.1}});
+            // graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 650, gleamWidth: 10});
+            graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, true);
+            gainKillingBlow.play();
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, false);
+            }, 500);
+            gameUtils.attachSomethingToBody({something: gritBlockIndicator, runImmediately: true, body: this.body, somethingId: 'gritBlockIndicator'});
+        }
+        this.hasGritDodge = value;
     },
 
     getDamageAdditionSum: function() {

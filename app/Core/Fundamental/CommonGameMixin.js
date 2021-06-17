@@ -268,8 +268,14 @@ var common = {
                     value.tickMonitor(event.deltaTime);
                 }
 
+                //check to see if we have a pause condition
+                var pauseFromCondition = false;
+                if(value.pauseCondition) {
+                    pauseFromCondition = value.pauseCondition();
+                }
+
                 //don't continue if we're in any of these states
-                if(!value || value.done || value.paused || value.invalidated || value.runs === 0) {
+                if(!value || value.done || value.paused || pauseFromCondition || value.invalidated || value.runs === 0) {
                     return;
                 }
 

@@ -113,6 +113,14 @@ var game = {
             this.levelLocalEntities.push(event.entity);
         }.bind(this));
 
+        Matter.Events.on(this, 'EnterLevel', function(event) {
+            this.inLevel = true;
+        }.bind(this));
+
+        Matter.Events.on(this, 'VictoryOrDefeat', function(event) {
+            this.inLevel = false;
+        }.bind(this));
+
         Matter.Events.on(this, 'TravelStarted', function(event) {
             this.unitsInPlay = [this.shane, this.ursula].filter((el) => {
                 return el != null;
@@ -340,11 +348,11 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SlipperySoup"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["VioletTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({
