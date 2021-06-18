@@ -247,9 +247,26 @@ var common = {
                 }
             }
 
+
+
             if(keyStates['Control']) {
                 if(event.key == 'b' || event.key == 'B') {
+                    if(this.transitionSprite) {
+                        graphicsUtils.removeSomethingFromRenderer(this.transitionSprite);
+                        this.transitionSprite = null;
+                        return;
+                    }
                     console.info(this.debugObj.playableCenterOffset);
+                    // const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
+                    // this.transitionSprite = new PIXI.Sprite(renderTexture);
+                    // var rStage = this.renderer.pixiApp.stage;
+                    // var renderer = this.renderer.pixiApp.renderer;
+                    //
+                    // renderer.render(rStage, renderTexture, false, null, true);
+                    //
+                    // // this.transitionSprite.alpha = 1;
+                    // graphicsUtils.addSomethingToRenderer(this.transitionSprite, "transitionLayer");
+
                 }
             }
 

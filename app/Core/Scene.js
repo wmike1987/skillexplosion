@@ -141,10 +141,7 @@ Scene.prototype.transitionToScene = function(options) {
         var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
         var renderer = globals.currentGame.renderer.pixiApp.renderer;
 
-        var t0 = performance.now();
-        renderer.render(rStage, renderTexture);
-        var t1 = performance.now();
-        console.log("Call to render took " + (t1 - t0) + " milliseconds.");
+        renderer.render(rStage, renderTexture, false, null, true);
 
         graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
 

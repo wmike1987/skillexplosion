@@ -153,14 +153,14 @@ export default {
             this.cooldownTimer.timeLimit = this.cooldown;
             this.isHoning = false;
 
-            //call attack
-            this.attack(target);
-
             //trigger the attack event
             Matter.Events.trigger(this, 'attack', {
                 direction: gameUtils.isoDirectionBetweenPositions(this.position, target.position),
                 targetUnit: target
             });
+
+            //call attack
+            this.attack(target);
         }
     },
 
@@ -201,11 +201,25 @@ export default {
 
         //If the specified unit dies (is removed), stop and reset state.
         this.specifiedCallback = function() {
-            if(!commandObj.command.queue.hasNext()) {
-                this.stop();
-            }
+            //always do this
             this.specifiedAttackTarget = null;
-            commandObj.command.done();
+            
+            if(!this.isAttacking) {
+                if(!commandObj.command.queue.hasNext()) {
+                    this.stop();
+                }
+                commandObj.command.done();
+            } else {
+                gameUtils.doSomethingAfterDuration(() => {
+                    //if we're still "attacking" but don't have a current target nor current hone, aka we're begging to stop
+                    if(this.isAttacking && !this.currentTarget && !this.currentHone) {
+                        if(!commandObj.command.queue.hasNext()) {
+                            this.stop();
+                        }
+                        commandObj.command.done();
+                    }
+                }, this.cooldown);
+            }
         }.bind(this);
         var callback = Matter.Events.on(this.specifiedAttackTarget, 'death', this.specifiedCallback);
 

@@ -173,7 +173,7 @@ var levelBase = {
             removeCurrentConditions.call(this);
             game.unitsInPlay.forEach((unit) => {
                 unit.canAttack = false;
-                unit.canMove = false;
+                // unit.canMove = false;
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
             });
@@ -182,7 +182,7 @@ var levelBase = {
             this.spawner.cleanUp();
             gameUtils.doSomethingAfterDuration(() => {
                 Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
-            }, 1000, {trueTimer: true});
+            }, 2500, {trueTimer: true});
         }.bind(this);
 
         this.endDelayInProgress = false;
@@ -218,13 +218,17 @@ var levelBase = {
                 } else {
                     commonWinLossTasks();
                     gameUtils.doSomethingAfterDuration(() => {
-                        var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()});
-                        Matter.Events.trigger(this, 'endLevelActions', {endLevelScene: sc});
-                        game.unitsInPlay.forEach((unit) => {
-                            gameUtils.moveUnitOffScreen(unit);
-                        });
-                        game.removeAllLevelLocalEntities();
-                        gameUtils.setCursorStyle('Main');
+                        globals.currentGame.togglePause();
+                        gameUtils.doSomethingAfterDuration(() => {
+                            var sc = game.gotoEndLevelScreen({shane: game.shaneCollector.getLastCollector(), ursula: game.ursulaCollector.getLastCollector()});
+                            Matter.Events.trigger(this, 'endLevelActions', {endLevelScene: sc});
+                            game.unitsInPlay.forEach((unit) => {
+                                gameUtils.moveUnitOffScreen(unit);
+                            });
+                            game.removeAllLevelLocalEntities();
+                            gameUtils.setCursorStyle('Main');
+                            globals.currentGame.togglePause();
+                        }, 100, {trueTimer: true});
                     }, 1000);
                 }
             }

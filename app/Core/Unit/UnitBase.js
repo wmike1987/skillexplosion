@@ -141,7 +141,7 @@ var UnitBase = {
         }
         this.currentHealth -= alteredDamage;
         if (this.currentHealth <= 0) {
-            this._death();
+            this._death({attackingUnit: attackingUnit});
             if(attackingUnit) {
                 Matter.Events.trigger(attackingUnit, 'kill', {killedUnit: this});
                 Matter.Events.trigger(globals.currentGame, 'performKill', {performingUnit: attackingUnit});
@@ -199,14 +199,16 @@ var UnitBase = {
         Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});
     },
 
-    _death: function() {
+    _death: function(options) {
+        options = options || {};
+
         this.deathPosition = mathArrayUtils.clonePosition(this.position);
 
         if(this.dropItemsOnDeath) {
             this.dropAllItems();
         }
         this.isDead = true;
-        Matter.Events.trigger(this, 'death', {});
+        Matter.Events.trigger(this, 'death', {attackingUnit: options.attackingUnit, deathPosition: this.deathPosition});
         var levelLocalEntities = this.death();
         if(levelLocalEntities) {
             levelLocalEntities.forEach((ent) => {
