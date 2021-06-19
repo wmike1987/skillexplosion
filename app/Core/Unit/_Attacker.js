@@ -161,6 +161,16 @@ export default {
 
             //call attack
             this.attack(target);
+        } else if(!this.attackReady && !this.isAttacking) {
+            //if we're on cooldown and not already attacking
+            this.rawStop();
+            //trigger the attack event
+            Matter.Events.trigger(this, 'attackStance', {
+                direction: gameUtils.isoDirectionBetweenPositions(this.position, target.position),
+                targetUnit: target,
+                stop: true
+            });
+            Matter.Sleeping.set(this.body, true);
         }
     },
 
@@ -203,7 +213,7 @@ export default {
         this.specifiedCallback = function() {
             //always do this
             this.specifiedAttackTarget = null;
-            
+
             if(!this.isAttacking) {
                 if(!commandObj.command.queue.hasNext()) {
                     this.stop();

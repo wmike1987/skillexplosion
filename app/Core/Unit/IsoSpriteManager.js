@@ -69,6 +69,12 @@ function IsoSpriteManager(options) {
 			this.switchAnimation(this.unit.attackAnimations[event.direction]);
 			this.currentDirection = event.direction;
 		}.bind(this))
+
+		Matter.Events.on(this.unit, 'attackStance', function(event) {
+			var animation = this.unit.attackAnimations[event.direction];
+			this.switchAnimation(this.unit.attackAnimations[event.direction], {stop: true});
+			this.currentDirection = event.direction;
+		}.bind(this))
 	}
 
 	this.playSpecifiedAnimation = function(animationName, direction, options) {
