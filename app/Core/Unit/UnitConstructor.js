@@ -181,6 +181,31 @@ function UnitConstructor(options) {
         gameUtils.deathPact(newUnit, selectionBodyBig);
     }
 
+    //animation specific hitbox addition
+    if(newUnit.animationSpecificHitboxes) {
+        newUnit.animationSpecificBodies = [];
+        newUnit.animationSpecificHitboxes.forEach((details) => {
+            let newBody = Matter.Bodies.rectangle(5, 5, details.width, details.height, {
+                isSensor: true,
+            });
+            newUnit.animationSpecificBodies.push(newBody);
+            newBody.noWire = true;
+            newBody.isSelectionBody = true;
+            newBody.isMovingAndStationaryBody = true;
+            newBody.unit = newUnit;
+            newBody.collisionFilter.mask = 0x0002;
+            gameUtils.deathPact(newUnit, newBody);
+            Matter.Events.on(newUnit, 'animationVisible', function(event) {
+                if(event.animation == details.animation) {
+                    gameUtils.attachSomethingToBody({something: newBody, body: body, offset: details.offset || {x: 0, y: 0}});
+                } else {
+                    gameUtils.detachSomethingFromBody(newBody);
+                    Matter.Body.setPosition(newBody, {x: 4000, y: 4000});
+                }
+            });
+        });
+    }
+
     selectionBody.collisionFilter.mask = 0x0002;
     selectionBody.isSelectionBody = true;
     selectionBody.unit = newUnit;

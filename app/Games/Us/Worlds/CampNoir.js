@@ -51,7 +51,7 @@ var camp = {
     intro: CampNoirIntro,
 
     initExtension: function() {
-        this.ornamentNoZones = [
+        this.noZones = [
             {center: gameUtils.getPlayableCenter(), radius: 300},
             {center: gameUtils.getPlayableCenterPlus({x: -150, y: -150}), radius: 200}
         ];
@@ -468,7 +468,7 @@ var campNoir = {
                 where: 'stage',
                 r: 1,
                 tileTint: tint,
-                noZones: this.ornamentNoZones
+                noZones: this.noZones
             });
             scene.add(ornamentMap);
             var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', 0.2);

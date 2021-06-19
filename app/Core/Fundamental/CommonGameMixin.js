@@ -37,7 +37,7 @@ var common = {
     playerTeam: 100,
     enemyTeam: 77,
     neutralTeam: 49,
-    lagCompensation: 3,
+    lagCompensation: 2,
     pixiPaused: false,
     commonAssets: [{name: "CommonGameTextures", target: "Textures/CommonGameTextures.json"}],
 
@@ -552,6 +552,12 @@ var common = {
         this.addBody(unit.body);
         this.addBody(unit.selectionBody);
         this.addBody(unit.selectionBodyBig);
+
+        if(unit.animationSpecificBodies) {
+            unit.animationSpecificBodies.forEach((body) => {
+                this.addBody(body);
+            });
+        }
 
         //track the team this unit is on
         if(unit.team) {

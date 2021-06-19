@@ -1,17 +1,17 @@
-import * as PIXI from 'pixi.js'
-import * as Matter from 'matter-js'
-import * as $ from 'jquery'
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import * as $ from 'jquery';
 
 var _requestAnimationFrame;
 var _cancelAnimationFrame;
 
 if (typeof window !== 'undefined') {
-    _requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame
-                                  || window.mozRequestAnimationFrame || window.msRequestAnimationFrame
-                                  || function(callback){ window.setTimeout(function() { callback(Common.now()); }, 1000 / 60); };
+    _requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
+                             window.mozRequestAnimationFrame || window.msRequestAnimationFrame ||
+                             function(callback){ window.setTimeout(function() { callback(Common.now()); }, 1000 / 60); };
 
-    _cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame
-                                  || window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
+    _cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame ||
+                            window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
 }
 
 var debug = false;
@@ -62,6 +62,7 @@ var Loop = function(options) {
         };
 
         if(this.paused) {
+            //paused tick for true timers
             Matter.Events.trigger(this, 'tick', event);
             return;
         }

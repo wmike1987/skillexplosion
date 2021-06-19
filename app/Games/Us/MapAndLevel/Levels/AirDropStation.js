@@ -22,6 +22,7 @@ commonAirDropStation.initExtension = function() {
     this.completeUponEntry = true;
     this.lesserSpin = true;
     this.mode = this.possibleModes.CUSTOM;
+    this.noZones = [{center: {x: -133, y: 176}, radius: 30}];
 };
 commonAirDropStation.fillLevelSceneExtension = function(scene) {
     this.createMapTable(scene);

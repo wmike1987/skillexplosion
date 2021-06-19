@@ -127,6 +127,8 @@ function IsoSpriteManager(options) {
 		animation.isStopped = false;
 		animation.visible = true; //this triggers the spine obj to become visible too
 
+		Matter.Events.trigger(this.unit, 'animationVisible', {animation: animation});
+
 		if(options.stop) {
 			animation.stop();
 		} else {

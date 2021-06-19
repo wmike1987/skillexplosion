@@ -1007,6 +1007,8 @@ export default function Medic(options) {
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
         },
+        animationSpecificHitboxes: [{animation: walkAnimations.up, height: 8, width: 25, offset: {x: 10, y: -8}},
+                                    {animation: walkAnimations.down, height: 8, width: 25, offset: {x: -10, y: -8}}],
         damageAdditionType: 'heal',
         energyRegenerationRate: 1.5,
         healthRegenerationRate: 0.25,

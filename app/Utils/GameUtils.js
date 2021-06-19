@@ -244,6 +244,9 @@ var gameUtils = {
             callbackLocation = 'afterUpdate';
         }
 
+        //first detatch some previous body if possible
+        this.detachSomethingFromBody(something);
+
         //if we run immediately (which we do), then the first iteration will use the following tick (not the tick callback var)
         var tick = {offset: offset};
         tick = globals.currentGame.addTickCallback(function() {
@@ -271,6 +274,7 @@ var gameUtils = {
             this.undeathPact(something.bodyAttachmentBody, something.bodyAttachmentTick);
             this.undeathPact(something.bodyAttachmentBody, something);
             globals.currentGame.removeTickCallback(something.bodyAttachmentTick);
+            something.bodyAttachmentBody = null;
             something.bodyAttachmentTick = null;
         }
     },
