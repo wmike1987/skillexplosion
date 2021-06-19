@@ -627,6 +627,7 @@ var UnitSystem = function(properties) {
             if(!otherUnit.isMoving && (!otherBody.isSmallerBody || otherBody.isMovingAndStationaryBody) && otherUnit.isSelectable) {
                 this.changeSelectionState(otherUnit, 'selectionPending', true);
                 this.box.pendingSelections[otherUnit.unitId] = otherUnit;
+                otherUnit.activeBoxCollisions.add(otherBody);
                 if(otherUnit == this.box.permaPendingUnit) {
                     this.box.boxContainsPermaPending = true;
                 }
@@ -635,6 +636,7 @@ var UnitSystem = function(properties) {
             if((otherBody.isSmallerBody || otherBody.isMovingAndStationaryBody) && otherUnit.isMoving && otherUnit.isSelectable) {
                 this.changeSelectionState(otherUnit, 'selectionPending', true);
                 this.box.pendingSelections[otherUnit.unitId] = otherUnit;
+                otherUnit.activeBoxCollisions.add(otherBody);
                 if(otherUnit == this.box.permaPendingUnit) {
                     this.box.boxContainsPermaPending = true;
                 }
@@ -644,18 +646,19 @@ var UnitSystem = function(properties) {
         Matter.Events.on(this.box, 'onCollideEnd', function(pair) {
             var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit || {};
-            if(!otherUnit.isMoving && otherUnit.isSelectable && otherUnit != this.box.permaPendingUnit && (!otherBody.isSmallerBody || otherBody.isMovingAndStationaryBody)) {
-                this.changeSelectionState(otherUnit, 'selectionPending', false);
-                delete this.box.pendingSelections[otherUnit.unitId];
+            if(otherUnit.isSelectable && (otherBody.isSmallerBody || otherBody.isMovingAndStationaryBody || otherBody.isSelectionBody)) {
+                otherUnit.activeBoxCollisions.delete(otherBody);
+                if(otherUnit.activeBoxCollisions.size == 0 && otherUnit != this.box.permaPendingUnit) {
+                    this.changeSelectionState(otherUnit, 'selectionPending', false);
+                    delete this.box.pendingSelections[otherUnit.unitId];
+                }
             }
-            if((otherBody.isSmallerBody || otherBody.isMovingAndStationaryBody) && otherUnit.isSelectable && otherUnit.isMoving && otherUnit != this.box.permaPendingUnit) {
-                this.changeSelectionState(otherUnit, 'selectionPending', false);
-                delete this.box.pendingSelections[otherUnit.unitId];
-            }
-            if((otherBody.isSmallerBody && otherUnit == this.box.permaPendingUnit && otherUnit.isSelectable) ||
-                otherUnit.isSelectable && otherUnit == this.box.permaPendingUnit)
+            
+            if(otherUnit.isSelectable && otherUnit == this.box.permaPendingUnit)
             {
-                    this.box.boxContainsPermaPending = false;
+                    if(otherUnit.activeBoxCollisions.size == 0) {
+                        this.box.boxContainsPermaPending = false;
+                    }
             }
         }.bind(this));
 

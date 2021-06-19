@@ -213,6 +213,9 @@ function UnitConstructor(options) {
     gameUtils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
     gameUtils.deathPact(newUnit, selectionBody);
 
+    //used by the unit system
+    newUnit.activeBoxCollisions = new Set();
+
     //back references
     newUnit.body = body;
     newUnit.selectionBody = selectionBody;
