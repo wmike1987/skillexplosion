@@ -348,7 +348,7 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SlipperySoup"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SlipperySoup"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});

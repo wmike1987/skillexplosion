@@ -172,7 +172,7 @@ var levelBase = {
             gameUtils.setCursorStyle('None');
             removeCurrentConditions.call(this);
             game.unitsInPlay.forEach((unit) => {
-                unit.canAttack = false;
+                // unit.canAttack = false;
                 // unit.canMove = false;
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
