@@ -41,7 +41,6 @@ export default {
     damage: 6,
 
     initAttacker: function() {
-        this.availableTargets = new Set();
         this.cooldownTimer = globals.currentGame.addTimer({
             name: 'cooldown' + this.body.id,
             runs: 0,
