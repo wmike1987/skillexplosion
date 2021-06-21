@@ -207,7 +207,6 @@ var levelBase = {
                     gameUtils.doSomethingAfterDuration(() => {
                         Matter.Events.trigger(this, 'endLevelActions');
                         var sc = game.transitionToBlankScene();
-                        game.removeAllLevelLocalEntities();
                         game.map.show();
                         gameUtils.setCursorStyle('Main');
                         game.unitsInPlay.forEach((unit) => {

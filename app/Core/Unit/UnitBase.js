@@ -772,7 +772,7 @@ var UnitBase = {
                     stage: 'foreground',
                     rotate: 'none',
                     avoidIsoMgr: true,
-                    tint: 0xDCDBD1,
+                    tint: 0xb866f9,
                     visible: false
                 });
 
@@ -978,7 +978,7 @@ var UnitBase = {
         var buffName = 'petrify';
         var shakeTimer = null;
         this.applyBuff({name: buffName, unit: this, textureName: 'PetrifyBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
-            this.stop({peaceful: true});
+            this.stop(null, {peaceful: true});
             this.canMove = false;
             this.canAttack = false;
             this.isTargetable = false;
@@ -992,9 +992,9 @@ var UnitBase = {
             shakeTimer = graphicsUtils.shakeSprite(this.isoManager.visibleIsoSprite.spine, 400);
             gameUtils.deathPact(unit, shakeTimer);
             petrifySound.play();
-        }, removeChanges: function() {
+        }, removeChanges: function(context) {
             Matter.Sleeping.set(unit.body, false);
-            this.stop();
+            unit.stop();
             unit.canMove = true;
             unit.canAttack = true;
             unit.isTargetable = true;
@@ -1352,7 +1352,9 @@ var UnitBase = {
                 globals.currentGame.invalidateTimer(timer);
             };
         }
-        var removeEvents = options.removeEvents || [{obj: globals.currentGame, eventName: 'VictoryOrDefeat'}, {obj: this, eventName: 'death'}];
+        var removeEvents = options.removeEvents || [{obj: globals.currentGame, eventName: 'VictoryOrDefeat'},
+                                                    {obj: this, eventName: 'death'},
+                                                    {obj: this, eventName: 'onremove'}];
         removeEvents.forEach((re) => {
             var ret = gameUtils.matterOnce(re.obj, re.eventName, function() {
                 realizedBuff.removeBuff();
