@@ -182,6 +182,9 @@ var gameUtils = {
                 return;
             }
 
+            //Clear any mixed animations
+            options.spine.state.clearTrack(1);
+
             //This is hard coded to play something on track 1, if multiple
             if(options.mixedAnimation) {
                 options.spine.state.clearTrack(1);
@@ -190,12 +193,12 @@ var gameUtils = {
                 return;
             }
 
-            //Set the animation name for use in the above test
-            options.spine.currentAnimation = options.animationName;
-
             //Clear track
             options.spine.skeleton.setToSetupPose();
             options.spine.state.clearTrack(0);
+
+            //Set the animation name for use in the above test
+            options.spine.currentAnimation = options.animationName;
 
             //Set animation speed
             options.spine.state.timeScale = options.speed || 1;

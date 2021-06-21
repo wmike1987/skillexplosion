@@ -464,13 +464,40 @@ var campNoir = {
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 1,
+                hz: 0.5,
                 where: 'stage',
                 r: 1,
                 tileTint: tint,
                 noZones: this.noZones
             });
+
+            var animationOrnamentTiles = [];
+            for (var j = 0; j <= 5; j++) {
+                let randomSpeed = 0.05 + Math.random() * 0.07;
+                let r = Math.random() * 3.0;
+                if(r < 1.0) {
+                    r = 'a';
+                } else if(r < 2.0) {
+                    r = 'b';
+                } else if(r < 3.0) {
+                    r = 'c';
+                }
+                animationOrnamentTiles.push({animationName: 'grassanim' + r, spritesheetName: 'TerrainAnimations', speed: randomSpeed});
+                animationOrnamentTiles.push({animationName: 'floweranim' + r, spritesheetName: 'TerrainAnimations', speed: randomSpeed});
+            }
+            var animatedOrnamentMap = TileMapper.produceTileMap({
+                possibleTextures: animationOrnamentTiles,
+                tileWidth: tileSize,
+                noScale: true,
+                hz: 0.2,
+                where: 'stage',
+                r: 1,
+                tileTint: tint,
+                noZones: this.noZones
+            });
+
             scene.add(ornamentMap);
+            scene.add(animatedOrnamentMap);
             var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', 0.2);
             scene.add(l1);
         }

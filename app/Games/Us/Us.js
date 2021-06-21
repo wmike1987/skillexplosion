@@ -691,6 +691,10 @@ game.assets = [{
         name: "Terrain0",
         target: "Textures/Us/Terrain-0.json"
     },
+    {
+        name: "TerrainAnimations",
+        target: "Textures/Us/TerrainAnimations.json"
+    },
 
     //spine assets
     {

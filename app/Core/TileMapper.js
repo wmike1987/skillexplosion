@@ -34,7 +34,7 @@ tileMapper.produceTileMap = function(options) {
     var where = options.where || 'background';
     var alpha = options.alpha || 1;
     var frequency = options.hz || 1;
-    var r = options.r || 0; //r is 0-1
+    var r = options.r || 0; //r is 0-1 (random scale)
     var noScale = options.noScale;
     var noZones = options.noZones || [];
     noZones = mathArrayUtils.convertToArray(noZones);
@@ -70,19 +70,34 @@ tileMapper.produceTileMap = function(options) {
                 var randomnessX = ((Math.random() * 200) - 100) * r;
                 var randomnessY = ((Math.random() * 200) - 100) * r;
 
-                var newDO = graphicsUtils.createDisplayObject(mathArrayUtils.getRandomElementOfArray(textureArray), {
-                    position: {
-                        x: x + randomnessX,
-                        y: y + yOffset + randomnessY
-                    },
-                    alpha: alpha,
-                    where: where,
-                    scale: {
-                        // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
-                        x: noScale ? 1 : tileWidth / (realTileWidth || 1),
-                        y: noScale ? 1 : tileWidth / (realTileWidth || 1)
-                    }
-                });
+                var randomTexture = mathArrayUtils.getRandomElementOfArray(textureArray);
+                var newDO = null;
+                if(randomTexture.animationName) {
+                    randomTexture.scale = randomTexture.scale || {x: 1.0, y: 1.0};
+                    newDO = gameUtils.getAnimation({
+                        spritesheetName: randomTexture.spritesheetName,
+                        animationName: randomTexture.animationName,
+                        speed: randomTexture.speed || 1.0,
+                        loop: true,
+                        transform: [x + randomnessX,y + yOffset + randomnessY, randomTexture.scale.x, randomTexture.scale.y]
+                    });
+                    newDO.play();
+                } else {
+                    newDO = graphicsUtils.createDisplayObject(randomTexture, {
+                        position: {
+                            x: x + randomnessX,
+                            y: y + yOffset + randomnessY
+                        },
+                        alpha: alpha,
+                        where: where,
+                        scale: {
+                            // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
+                            x: noScale ? 1 : tileWidth / (realTileWidth || 1),
+                            y: noScale ? 1 : tileWidth / (realTileWidth || 1)
+                        }
+                    });
+                }
+
                 if (tileTint) {
                     newDO.tint = tileTint;
                 }
