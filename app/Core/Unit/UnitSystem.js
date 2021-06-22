@@ -377,13 +377,15 @@ var UnitSystem = function(properties) {
                     this.box.invalidateNextMouseUp = true;
                     this.box.invalidateNextBox = true;
                     $.each(this.selectedUnits, function(key, unit) {
-                        if(Object.keys(this.selectedUnits).length == 1)
+                        if(Object.keys(this.selectedUnits).length == 1) {
                             unit.isSoloMover = true;
-                        else
+                        }
+                        else {
                             unit.isSoloMover = false;
+                        }
 
                         if(unit.isAttacker) {
-                            if(singleAttackTarget) {
+                            if(singleAttackTarget && unit != singleAttackTarget) {
                                 let e = {type: 'click', id: 'a', target: singleAttackTarget, targetType: 'unit', unit: unit};
                                 unitUtils.flashSelectionCircleOfUnit(singleAttackTarget);
                                 Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
@@ -410,10 +412,12 @@ var UnitSystem = function(properties) {
                             this.box.invalidateNextBox = true;
                             if(this.abilityDispatch == 'm') {
                                 $.each(this.selectedUnits, function(key, unit) {
-                                    if(Object.keys(this.selectedUnits).length == 1)
+                                    if(Object.keys(this.selectedUnits).length == 1) {
                                         unit.isSoloMover = true;
-                                    else
+                                    }
+                                    else {
                                         unit.isSoloMover = false;
+                                    }
 
                                     if(unit.isMoveable) {
                                         var e = {type: 'click', id: 'm', target: canvasPoint, unit: unit};
@@ -653,7 +657,7 @@ var UnitSystem = function(properties) {
                     delete this.box.pendingSelections[otherUnit.unitId];
                 }
             }
-            
+
             if(otherUnit.isSelectable && otherUnit == this.box.permaPendingUnit)
             {
                     if(otherUnit.activeBoxCollisions.size == 0) {

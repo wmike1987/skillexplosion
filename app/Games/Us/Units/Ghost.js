@@ -317,7 +317,7 @@ export default function Ghost(options) {
                                 spritesheetName: 'UtilityAnimations1',
                                 animationName: 'GenericHit',
                                 speed: 1.0,
-                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .5, .5]
+                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.5, 0.5]
                             });
                             graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                             bloodAnimation.play();
