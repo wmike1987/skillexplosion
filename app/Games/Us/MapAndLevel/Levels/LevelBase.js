@@ -248,6 +248,7 @@ var levelBase = {
                     if(this.gotoMapOnWin) {
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
+                        gameUtils.setCursorStyle('Main');
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });

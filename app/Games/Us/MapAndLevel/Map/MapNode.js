@@ -242,14 +242,18 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.spinSprite(token, times, 150, 2, () => {
-                node.deactivateToken();
+                if(node.mapRef.isShown) {
+                    node.deactivateToken();
+                }
             }, () => {
                 node.isSpinning = false;
             });
         });
     } else {
         graphicsUtils.spinSprite(this.displayObject, times, 150, 2, () => {
-            node.deactivateToken();
+            if(node.mapRef.isShown) {
+                node.deactivateToken();
+            }
         }, () => {
             node.isSpinning = false;
         });

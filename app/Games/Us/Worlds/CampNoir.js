@@ -368,6 +368,7 @@ var phaseOne = function() {
 
 //phase two is the "first" phase, it includes the starting dialog
 var phaseTwo = function(options) {
+    globals.currentGame.map.setHeadToken('headtoken');
     options = options || {};
     var world = this;
     var startDialogue = new CampNoirStart({
@@ -425,7 +426,7 @@ var phaseTwo = function(options) {
                                 gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
                                     graphicsUtils.removeSomethingFromRenderer(arrow);
                                 });
-                            }, 3000)
+                            }, 3000);
                         });
                     }, 250);
                 }});

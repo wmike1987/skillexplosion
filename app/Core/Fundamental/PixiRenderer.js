@@ -92,10 +92,12 @@ var renderer = function(engine, options) {
 	}
 
 	this.pause = function() {
+		this.paused = true;
 		this.pixiApp.stop();
 	}
 
 	this.resume = function() {
+		this.paused = false;
 		this.pixiApp.ticker.lastTime = performance.now();
 		this.pixiApp.start();
 	}

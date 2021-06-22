@@ -84,7 +84,7 @@ var CampNoirStart = function(options) {
             delayAfterEnd: 1500
         });
 
-        return new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 750});
+        return new DialogueChain([title, a1, a2, a3, a4, a5, a6, a7, a8], {startDelay: 3000});
     };
 
     this.initialize();

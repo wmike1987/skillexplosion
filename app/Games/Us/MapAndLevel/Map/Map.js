@@ -159,7 +159,7 @@ var map = function(specs) {
             mathArrayUtils.removeObjectFromArray(node, this.graph);
         }
         node.cleanUp();
-    },
+    };
 
     this.removeMapNodeByName = function(name) {
         var node = this.findNodeById(name);
@@ -169,7 +169,7 @@ var map = function(specs) {
             mathArrayUtils.removeObjectFromArray(node, this.graph);
         }
         node.cleanUp();
-    },
+    };
 
     this.clearAllNodesExcept = function(name) {
         var graphClone = this.graph.slice(0);
@@ -182,9 +182,10 @@ var map = function(specs) {
             }
             node.cleanUp();
         });
-    },
+    };
 
     this.show = function() {
+        this.isShown = true;
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = 0.3;
         this.allowMouseEvents(true);
@@ -217,6 +218,7 @@ var map = function(specs) {
     };
 
     this.hide = function() {
+            this.isShown = false;
             Matter.Events.trigger(this, 'hideMap', {});
             this.mapSprite.visible = false;
             this.graph.forEach(node => {
@@ -237,11 +239,11 @@ var map = function(specs) {
 
             this.headTokenSprite.visible = false;
             this.fatigueText.visible = false;
-        },
+        };
 
         this.allowMouseEvents = function(value) {
             this.mouseEventsAllowed = value;
-        },
+        };
 
         this.travelToNode = function(node, destinationCallback) {
             this.allowMouseEvents(false);
@@ -264,7 +266,7 @@ var map = function(specs) {
                 headVelocity: this.headTokenBody.velocity,
                 startingFatigue: this.startingFatigue
             });
-        },
+        };
 
         this.revertHeadToPreviousLocationDueToDefeat = function() {
             Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {
@@ -275,7 +277,7 @@ var map = function(specs) {
             Matter.Events.trigger(globals.currentGame, "TravelReset", {
                 resetToNode: this.lastNode
             });
-        },
+        };
 
         this.findLevelById = function(id) {
             if (!this.graph) return null;
@@ -283,7 +285,7 @@ var map = function(specs) {
                 return id == node.levelDetails.levelId;
             });
             return levelNode.levelDetails;
-        },
+        };
 
         this.findNodeById = function(id) {
             if (!this.graph) return null;
@@ -291,19 +293,18 @@ var map = function(specs) {
                 return id == node.levelDetails.levelId;
             });
             return levelNode;
-        },
+        };
 
         this.setHeadToken = function(renderlingId) {
             var self = this;
             mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {
                 if (key == renderlingId) {
-                    rl.visible = true;
                     self.headTokenSprite = rl;
                 } else {
                     rl.visible = false;
                 }
             });
-        },
+        };
 
         //this takes either a raw position or a map node
         this.setHeadTokenPosition = function(options) {

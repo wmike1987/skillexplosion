@@ -83,7 +83,11 @@ var game = {
         this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 3.0, rate: 1.0});
         this.boxSound = gameUtils.getSound('criticalhit.wav', {volume: 0.15, rate: 0.65});
 
-        this.levelLocalEntities = [],
+        this.levelLocalEntities = [];
+
+        // this.myplane = graphicsUtils.addSomethingToRenderer('AirplaneShadow');
+        // this.myplane.position = gameUtils.getCanvasCenter();
+        // this.myplane.visible = false;
 
         this.shaneCollector = new StatCollector({
             predicate: function(event) {
@@ -243,7 +247,6 @@ var game = {
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
         this.nextPhase({skippedTutorial: true});
-        this.map.setHeadToken('headtoken');
         this.map.setHeadTokenPosition({node: this.map.findNodeById('camp')});
     },
 

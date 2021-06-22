@@ -62,9 +62,16 @@ var Loop = function(options) {
         };
 
         if(this.paused) {
+            if(this.justPaused) {
+                this.onPauseCallback();
+                this.justPaused = false;
+            }
             //paused tick for true timers
             Matter.Events.trigger(this, 'tick', event);
             return;
+        } else if(this.justResumed){
+            this.onResumeCallback();
+            this.justResumed = false;
         }
 
         Matter.Events.trigger(this, 'beforeTick', event);
@@ -116,11 +123,30 @@ var Loop = function(options) {
 
     this.start = function() {
         _requestAnimationFrame(tick);
-    }
+    };
 
     this.stop = function() {
         _cancelAnimationFrame(this.frameRequestId);
-    }
+    };
+
+    //register onpause/onresume listener
+    this.onPause = function(f) {
+        this.onPauseCallback = f;
+    };
+
+    this.onResume = function(f) {
+        this.onResumeCallback = f;
+    };
+
+    this.pause = function() {
+        this.paused = true;
+        this.justPaused = true;
+    };
+
+    this.resume = function() {
+        this.paused = false;
+        this.justResumed = true;
+    };
 };
 
 export default Loop;

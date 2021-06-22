@@ -440,7 +440,7 @@ var unitPanel = function(options) {
             y: 1
         }
     });
-    graphicsUtils.graduallyTint(this.energyVialSquare, 0x5d0b55, 0x6b0090, 1500, null, 1000);
+    graphicsUtils.graduallyTint(this.energyVialSquare, 0x731871, 0x6b0090, 1500, null, 1000);
     this.energyVialSquare.position = {
         x: this.energyVialPosition.x,
         y: gameUtils.getCanvasHeight()
@@ -572,7 +572,7 @@ var unitPanel = function(options) {
     this.frameBacking = graphicsUtils.createDisplayObject('TintableSquare', {
         persists: true,
         position: this.position,
-        tint: 0x5e5e5b
+        tint: 0x111111
     });
     graphicsUtils.makeSpriteSize(this.frameBacking, {
         w: gameUtils.getCanvasWidth(),

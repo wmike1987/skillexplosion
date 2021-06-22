@@ -72,6 +72,15 @@ var CommonGameStarter = function(game) {
     		pixiRenderer = new PixiRenderer(engine, window.latestGameOptions);
     		pixiRenderer.start();
 
+			//pause the renderer when the game loop is paused
+			gameLoop.onPause(function() {
+				pixiRenderer.pause();
+			});
+
+			gameLoop.onResume(function() {
+				pixiRenderer.resume();
+			});
+
     		//Run through the Common Game Lifecycle. init() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()
     		game.init($.extend(window.latestGameOptions, {
 				   world: engine.world,

@@ -501,13 +501,10 @@ var common = {
     },
 
     togglePause: function() {
-        this.gameLoop.paused = !this.gameLoop.paused;
-        this.gameState = this.gameLoop.paused ? 'paused' : 'playing';
-        // pausedGameText.visible = this.gameLoop.paused;
         if(this.gameLoop.paused) {
-            this.renderer.pause();
+            this.gameLoop.resume();
         } else {
-            this.renderer.resume();
+            this.gameLoop.pause();
         }
     },
 
