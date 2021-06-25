@@ -233,6 +233,7 @@ var moveable = {
         this.body.frictionAir = 0.9;
         this.isMoving = false;
         this.isSoloMover = false;
+        this.currentDirection = null;
     },
 
     generalStopCondition: function(commandObj) {
