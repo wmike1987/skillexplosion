@@ -105,19 +105,21 @@ var moveable = {
             this.isSoloMover = true;
         }
 
+        //set state
+        this.destination = destination;
+        var calculatedFootDestination = mathArrayUtils.clonePosition(this.destination, {y: -this.footOffset || -20});
+
         //don't do anything if they're already at their destination
-        if (this.body.position.x == destination.x && this.body.position.y == destination.y)
+        if (this.body.position.x == calculatedFootDestination.x && this.body.position.y == calculatedFootDestination.y)
             return {moveCancelled: true};
 
         if(!this.canMove)
             return {moveCancelled: true};
 
-        //set state
-        this.destination = destination;
         if(this.isHoning || options.centerMove) {
-            this.footDestination = this.destination;
+            this.footDestination = this.destination; //so foot destination becomes the de-facto "destination." Poor use of foot-destination imo
         } else {
-            this.footDestination = mathArrayUtils.clonePosition(this.destination, {y: -this.footOffset || -20}); //offset for moving to the "foot location"
+            this.footDestination = calculatedFootDestination; //offset for moving to the "foot location"
         }
 
         this.isMoving = true;
@@ -127,13 +129,18 @@ var moveable = {
             y: -50
         };
 
-        //immediate set the velocity (rather than waiting for the next tick)
-        // this.constantlySetVelocityTowardsDestination(null);
+        //if we're changing directions, override interpolation for a frame
+        let newDirection = gameUtils.isoDirectionBetweenPositions(this.position, this.footDestination);
+        if(this.currentDirection != newDirection) {
+            this.body.oneFrameOverrideInterpolation = true;
+        }
 
         //setup the constant move tick
-        if(this.moveTick)
+        if(this.moveTick) {
             globals.currentGame.removeTickCallback(this.moveTick);
-        this.moveTick = globals.currentGame.addTickCallback(this.constantlySetVelocityTowardsDestination.bind(this), false);
+        }
+
+        this.moveTick = globals.currentGame.addTickCallback(this.constantlySetVelocityTowardsDestination.bind(this), {runImmediately: true});
         gameUtils.deathPact(this, this.moveTick, 'moveTick');
 
         //Setup stop conditions
@@ -259,9 +266,12 @@ var moveable = {
         //send body
         gameUtils.sendBodyToDestinationAtSpeed(this.body, this.footDestination, this.moveSpeed, false);
 
+        //set direction
+        this.currentDirection = gameUtils.isoDirectionBetweenPositions(this.position, this.footDestination);
+
         //trigger movement event (for direction)
         Matter.Events.trigger(this, 'move', {
-            direction: gameUtils.isoDirectionBetweenPositions(this.position, this.footDestination)
+            direction: this.currentDirection
         });
     },
 

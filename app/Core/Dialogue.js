@@ -84,11 +84,12 @@ var Dialogue = function Dialogue(options) {
                 if(!this.isContinuing) {
                     this.preventAutoEnd = false;
                     this.speedUp();
-                    this.onEnd = () => {
+                    this.onManualEnd = (deferred) => {
                         this.realizedActorText.text = "";
                         this.realizedText.text = "Excellent";
                         graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.realizedText.width, y: this.realizedText.height});
                         graphicsUtils.flashSprite({sprite: this.realizedText, duration: 40, pauseDurationAtEnds: 40, times: 4, toColor: 0x23afeb, onEnd: () => {
+                            deferred.resolve();
                             this.realizedText.tint = 0x23afeb;
                         }});
                     };
@@ -352,10 +353,14 @@ var Dialogue = function Dialogue(options) {
                         d.realizedActorText.alpha = 0.5;
                         d.backgroundBox.alpha = 0.5;
                     }
-                    if(d.onEnd) {
-                        d.onEnd();
+                    if(d.onManualEnd) {
+                        d.onManualEnd(d.deferred);
+                    } else if(d.onEndExtension) {
+                        d.onEndExtension();
+                        d.deferred.resolve();
+                    } else {
+                        d.deferred.resolve();
                     }
-                    d.deferred.resolve();
                 }, d.delayAfterEnd);
             }
         }});
@@ -378,7 +383,7 @@ var Dialogue = function Dialogue(options) {
 
     this.kill = function() {
         this.killed = true;
-    },
+    };
 
     //this stops the text increment timer
     this.leaveText = function() {
@@ -437,7 +442,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
 
             if(j + 1 < len) {
                 currentDia.deferred.done(() => {
-                currentDia.leaveText();
+                    currentDia.leaveText();
                 });
 
                 //if our current dialogue is a break, set current break
@@ -491,11 +496,11 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 }
             }
         }.bind(this));
-    },
+    };
 
     this.pause = function() {
         this.currentDia.paused = true;
-    },
+    };
 
     this.cleanUp = function() {
         //kill all dialogue objects so they won't play

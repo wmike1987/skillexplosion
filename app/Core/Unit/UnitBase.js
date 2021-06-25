@@ -581,6 +581,32 @@ var UnitBase = {
             }
         }.bind(this));
 
+        Matter.Events.on(this, "attackPassiveCharged", function() {
+            let anim = gameUtils.getAnimation({
+                spritesheetName: 'BaseUnitAnimations1',
+                animationName: 'PassiveReady',
+                speed: 0.4,
+            });
+            anim.tint = 0xff3333;
+            anim.scale = {x: 0.4, y: 0.4};
+            graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
+            gameUtils.attachSomethingToBody({something: anim, body: this.body, offset: this.body.renderlings.selected.offset, deathPactSomething: true});
+            anim.play();
+        }.bind(this));
+
+        Matter.Events.on(this, "defensePassiveCharged", function() {
+            let anim = gameUtils.getAnimation({
+                spritesheetName: 'BaseUnitAnimations1',
+                animationName: 'PassiveReady',
+                speed: 0.4,
+            });
+            anim.tint = 0x479cff;
+            anim.scale = {x: 0.4, y: 0.4};
+            graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
+            gameUtils.attachSomethingToBody({something: anim, body: this.body, offset: this.body.renderlings.selected.offset, deathPactSomething: true});
+            anim.play();
+        }.bind(this));
+
         //hover Method
         this.hover = function() {
             if(this.team == globals.currentGame.enemyTeam) {
@@ -659,9 +685,9 @@ var UnitBase = {
                 this._afterAddInit();
             }
 
-            //start unit as idling upon add
-            if (this.isoManaged)
-                this.isoManager.idle();
+            //start unit as idling upon add - do we need this
+            // if (this.isoManaged)
+            //     this.isoManager.idle();
 
             //establish the height of the unit
             if (this.heightAnimation)
@@ -1007,6 +1033,9 @@ var UnitBase = {
     },
 
     maim: function(duration) {
+        if(this.isDead) {
+            return;
+        }
         var movePenalty = 1.5;
         var defensePenalty = -2;
 
@@ -1023,7 +1052,9 @@ var UnitBase = {
     },
 
     condemn: function(duration, condemningUnit) {
-        if(this.isDead) return;
+        if(this.isDead) {
+            return;
+        }
         var defensePenalty = -1;
         var buffName = 'condemn';
         condemnSound.play();

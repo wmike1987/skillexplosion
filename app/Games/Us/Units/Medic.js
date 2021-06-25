@@ -1001,7 +1001,7 @@ export default function Medic(options) {
         health: 40,
         energy: 60,
         hitboxWidth: 28,
-        hitboxHeight: 55,
+        hitboxHeight: 56,
         adjustHitbox: false,
         itemsEnabled: true,
         damageLabel: "Heal: ",

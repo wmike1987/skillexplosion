@@ -254,7 +254,7 @@ export default function Marine(options) {
         scale: adjustedDownsc,
         rotate: 'none',
         visible: false,
-        offset: {x: 0, y: yOffset},
+        offset: {x: 0, y: yOffset-2},
         sortYOffset: sortYOffset,
     },
     {
@@ -898,7 +898,7 @@ export default function Marine(options) {
         priority: 10,
         consumeSound: yeahsound,
         hitboxWidth: 30,
-        hitboxHeight: 55,
+        hitboxHeight: 58,
         // adjustHitbox: true,
         animationSpecificHitboxes: [{animation: walkAnimations.down, height: 8, width: 48, offset: {x: -6, y: -5}},
                                     {animation: walkAnimations.up, height: 8, width: 50, offset: {x: 0, y: -8}},

@@ -116,7 +116,7 @@ export default {
             } else {
                 this.attackMove(target, commandObj);
             }
-        }
+        };
         this.eventClickMappings[this.commands.move.key] = this.move;
 
         this.canAttack = true;

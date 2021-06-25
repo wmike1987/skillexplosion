@@ -258,7 +258,6 @@ var shaneLearning = function(options) {
         this.mapTableActive = false;
         var chain = new DialogueChain([title, a1, a1a, a1b, a1c, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
-            this.mapTableActive = true;
             var b1 = new Dialogue({text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });
             var b2 = new Dialogue({text: "Click on a node to travel to it.", isTask: true, backgroundBox: true, delayAfterEnd: 500});
             var b3 = new Dialogue({text: "Clear all nodes then head to camp.", continuation: true, isTask: true, backgroundBox: true});
@@ -267,6 +266,7 @@ var shaneLearning = function(options) {
             }});
 
             b1.onStart = function() {
+                this.mapTableActive = true;
                 var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTableSprite, -20, 0.5);
                 gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
                     graphicsUtils.removeSomethingFromRenderer(arrow);
@@ -306,7 +306,7 @@ var shaneLearning = function(options) {
                                 var commonY = globals.currentGame.unitSystem.unitPanel.unitNamePosition.y - 5;
                                 arrow1 = graphicsUtils.pointToSomethingWithArrow({position: {x: globals.currentGame.unitSystem.unitPanel.unitNamePosition.x, y: commonY}}, -20, 0.75);
                                 Tooltip.makeTooltippable(arrow1, {title: 'Unit stat panel', descriptions: ['Displays unit attributes.'], manualHandling: true});
-                                arrow1.tooltipObj.display(mathArrayUtils.clonePosition(globals.currentGame.unitSystem.unitPanel.unitNamePosition, {y: -135}), {middleAnchor: true});
+                                arrow1.tooltipObj.display(mathArrayUtils.clonePosition(globals.currentGame.unitSystem.unitPanel.unitNamePosition, {y: -136}), {middleAnchor: true});
 
                                 arrow2 = graphicsUtils.pointToSomethingWithArrow({position: {x: globals.currentGame.unitSystem.unitPanel.unitPortraitPosition.x, y: commonY}}, -20, 0.75);
                                 Tooltip.makeTooltippable(arrow2, {title: 'Unit portrait', descriptions: ['Life bar is on the left.', 'Energy bar is on the right.'], manualHandling: true});
@@ -321,7 +321,7 @@ var shaneLearning = function(options) {
                                 arrow3.tooltipObj.display(mathArrayUtils.clonePosition(basicFunctionPosition, {y: -140}), {middleAnchor: true});
                             };
 
-                            a1c.onEnd = () => {
+                            a1c.onEndExtension = () => {
                                 achieve.play();
                             };
 

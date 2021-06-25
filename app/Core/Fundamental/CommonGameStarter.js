@@ -66,7 +66,6 @@ var CommonGameStarter = function(game) {
 			//create our game loop (default step rate is 60fps) and start the loop
 			var gameLoop = new GameLoop({interpolate: window.latestGameOptions.interpolate, engine: engine, isFixed: true});
 			gameLoop.start();
-			game.gameLoop = gameLoop;
 
     		// Start the renderer: this starts the pixi Application and establishes a callback to update sprites with an associated body (event triggered by the GameLoop)
     		pixiRenderer = new PixiRenderer(engine, window.latestGameOptions);
@@ -85,6 +84,7 @@ var CommonGameStarter = function(game) {
     		game.init($.extend(window.latestGameOptions, {
 				   world: engine.world,
     			   engine: engine,
+				   gameLoop: gameLoop,
     			   canvasEl: pixiRenderer.canvasEl,
     			   renderer: pixiRenderer,
     			   background: pixiRenderer.background}));

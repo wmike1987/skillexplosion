@@ -761,7 +761,7 @@ var gameUtils = {
         });
     },
 
-    oneTimeCallbackAtTick: function(callback, event) {
+    oneTimeCallbackAtEvent: function(callback, event) {
         var fun = function() {
             callback();
             globals.currentGame.removeTickCallback(fun);

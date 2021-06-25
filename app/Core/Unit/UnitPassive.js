@@ -86,18 +86,18 @@ export default function(options) {
             };
         }
         var progress = 0;
-        var timerIncrement = 32;
         this.coolDownMeterPercent = 0;
         this.cooldownTimer = globals.currentGame.addTimer({
             name: 'cooldownMeter-' + this.title,
             gogogo: true,
-            timeLimit: timerIncrement,
-            callback: function() {
+            timeLimit: 1,
+            tickCallback: function(deltaTime) {
                 if(this.active) return;
                 this.newCharge = true;
-                progress += timerIncrement;
+                progress += deltaTime;
                 this.coolDownMeterPercent = Math.min(1, progress/cooldown);
                 if(this.coolDownMeterPercent == 1) {
+                    Matter.Events.trigger(this.unit, mode + 'Charged', {passive: this});
                     this.active = true;
                     progress = 0;
                 }

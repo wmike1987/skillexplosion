@@ -144,7 +144,7 @@ function IsoSpriteManager(options) {
 		if(this.unit.noIdle) return;
 
 		var self = this;
-		var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
+		var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1);
 		var randomAnimation = self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]];
 		self.switchAnimation(randomAnimation, {stop: true});
 

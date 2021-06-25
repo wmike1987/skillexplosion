@@ -294,7 +294,7 @@ var UnitSystem = function(properties) {
             //Update visuals
             var tempPendingSelections = this.box.pendingSelections;
             var tempPermaPendingUnit = this.box.permaPendingUnit;
-            gameUtils.oneTimeCallbackAtTick(function() {
+            gameUtils.oneTimeCallbackAtEvent(function() {
                 this.changeSelectionState(tempPendingSelections, 'selectionPending', false);
                 this.changeSelectionState(tempPermaPendingUnit, 'selectionPending', false);
             }.bind(this), 'beforeTick');
@@ -808,6 +808,19 @@ var UnitSystem = function(properties) {
                      }
                  }
              }
+
+             if(event.key == 'C' || event.key == 'c') {
+                 if(keyStates.Control) {
+                     if(this.selectedUnit) {
+                         gameUtils.executeSomethingNextFrame(() => {
+                             this.selectedUnit.stop();
+                             gameUtils.executeSomethingNextFrame(() => {
+                                 this.selectedUnit.move(gameUtils.getCanvasCenter());
+                             });
+                         });
+                    }
+                }
+            }
 
              if(event.key == 'V' || event.key == 'v') {
                  if(keyStates.Control) {
