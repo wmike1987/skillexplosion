@@ -120,8 +120,6 @@ export default {
         this.eventClickMappings[this.commands.move.key] = this.move;
 
         this.canAttack = true;
-
-        this._becomeOnAlert();
     },
 
     canAttackPredicate: function(target) {

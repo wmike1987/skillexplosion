@@ -686,8 +686,9 @@ var UnitBase = {
             }
 
             //start unit as idling upon add - do we need this
-            // if (this.isoManaged)
-            //     this.isoManager.idle();
+            if (this.stop) {
+                this.stop();
+            }
 
             //establish the height of the unit
             if (this.heightAnimation)
@@ -1143,10 +1144,13 @@ var UnitBase = {
             var gritBlockIndicator = graphicsUtils.addSomethingToRenderer('GritBuff', {where: 'stageOne', scale: {x: 1.1, y: 1.1}});
             // graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 650, gleamWidth: 10});
             graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, true);
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 750, gleamWidth: 20});
+            }, 250);
             gainKillingBlow.play();
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, false);
-            }, 500);
+            }, 850);
             gameUtils.attachSomethingToBody({something: gritBlockIndicator, runImmediately: true, body: this.body, somethingId: 'gritBlockIndicator'});
         }
         this.hasGritDodge = value;
