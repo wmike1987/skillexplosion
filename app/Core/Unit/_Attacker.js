@@ -247,6 +247,9 @@ export default {
         if(this.isMoving) {
             this.stop(null, {isHoldingPosition: true});
         }
+
+        this.isHoldingPosition = true;
+
         Matter.Events.trigger(this, 'holdPosition');
 
         Matter.Sleeping.set(this.body, true);

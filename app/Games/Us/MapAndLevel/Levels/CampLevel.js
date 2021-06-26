@@ -277,11 +277,13 @@ var campLevel = function() {
         var game = globals.currentGame;
         game.setUnit(game.shane, {
             position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                x: -40,
                 y: 40
             })
         });
         game.setUnit(game.ursula, {
             position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                x: 40,
                 y: 40
             })
         });

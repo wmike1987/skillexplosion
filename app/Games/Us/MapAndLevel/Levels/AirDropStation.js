@@ -162,7 +162,7 @@ var airDropSpecialStation = function(options) {
         selection.level = this;
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Radio Transmission", delayAfterEnd: 2000});
-        var a1 = new Dialogue({actor: "MacMurray", text: "Technology is en route. What do you need?", backgroundBox: true, letterSpeed: 50});
+        var a1 = new Dialogue({actor: "MacMurray", text: "Supply drop inbound. What do you need?", backgroundBox: true, letterSpeed: 50});
         var self = this;
         var chain = new DialogueChain([title, a1], {startDelay: 200, done: function() {
             selection.presentChoices({numberOfChoices: 3, possibleChoices: this.selectionOptions});

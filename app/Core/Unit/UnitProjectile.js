@@ -28,7 +28,7 @@ export default function(options) {
             globals.currentGame.removeBody(this.body);
         },
         impactFunction: function(target) {
-            target.sufferAttack(this.damage, this.owningUnit, {isProjectile: true});
+            target.sufferAttack(this.damage, this.owningUnit, {isProjectile: true, projectileData: {startLocation: this.startLocation, location: mathArrayUtils.clonePosition(this.body.position)}});
             if(this.impactExtension) {
                 this.impactExtension(target);
             }
@@ -39,6 +39,7 @@ export default function(options) {
     if(this.originOffset) {
         startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset);
     }
+    this.startLocation = startPosition;
     this.body = Matter.Bodies.circle(startPosition.x, startPosition.y, 4, {
                   frictionAir: 0,
                   mass: options.mass || 5,

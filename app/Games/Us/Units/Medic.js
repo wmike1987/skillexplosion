@@ -245,9 +245,12 @@ export default function Medic(options) {
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var healsound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
+    var healSound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
+    var manaHealSound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 0.9});
     var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: 0.06, rate: 1.2});
     var deathSound = gameUtils.getSound('medicdeathsound.wav', {volume: 0.2, rate: 1.05});
+    var blockSound = gameUtils.getSound('blocksound.wav', {volume: 0.1, rate: 2.2});
+    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.03, rate: 1.0});
 
     var combospiritinit = gameUtils.getSound('combospiritinit.wav', {volume: 0.03, rate: 1.0});
     var fullheal = gameUtils.getSound('fullheal.wav', {volume: 0.05, rate: 1.0});
@@ -817,7 +820,7 @@ export default function Medic(options) {
                     unit.healthRegenerationMultiplier *= 2;
                     graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
                     unit.giveHealth(10, medic);
-                    healsound.play();
+                    healSound.play();
                 }, removeChanges: function() {
                     unit.healthRegenerationMultiplier /= 2;
                 }});
@@ -965,33 +968,50 @@ export default function Medic(options) {
     var efDDuration = 3000;
     var elegantForm  = new Passive({
         title: 'Elegant Form',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Become hidden for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain 10 energy.'],
+        aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain 15 energy.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal 5 damage to attacker.'],
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'sufferProjectile',
         defenseCooldown: 3000,
-        aggressionEventName: 'performHeal',
+        aggressionEventName: 'sufferProjectile',
         aggressionCooldown: 8000,
         defenseAction: function(event) {
+            //delay the attack for a second
+            gameUtils.doSomethingAfterDuration(() => {
+                var attacker = event.performingUnit;
+                if(attacker.isDead) return;
+
+                attacker.sufferAttack(5, medic);
+                var maimBlast = gameUtils.getAnimation({
+                    spritesheetName: 'MedicAnimations1',
+                    animationName: 'maimblast',
+                    speed: 1.0,
+                    transform: [attacker.position.x, attacker.position.y, 0.75, 0.75]
+                });
+                maimBlast.tint = 0xc317df;
+                maimBlast.rotation = Math.random() * Math.PI;
+                maimBlast.play();
+                graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
+                criticalHitSound.play();
+            }, 200);
+
             var damageObj = event.damageObj;
             damageObj.damage = 1;
-            medic.currentEnergy += 10;
-            var energyUpAnimation = gameUtils.getAnimation({
-                spritesheetName: 'UtilityAnimations1',
-                animationName: 'starflurry',
-                speed: 1.5,
-                transform: [medic.position.x, medic.position.y-10, 0.8, 1.0]
-            });
-            energyUpAnimation.tint = 0xf629a8;
-            energyUpAnimation.play();
-            energyUpAnimation.alpha = 1;
-            healsound.play();
-            gameUtils.attachSomethingToBody({something: energyUpAnimation, body: medic.body});
-            graphicsUtils.addSomethingToRenderer(energyUpAnimation, 'foreground');
+
+            //add block graphic
+            let blockLocation = mathArrayUtils.addScalarToVectorTowardDestination(medic.position, event.projectileData.startLocation, 40);
+            let block = graphicsUtils.addSomethingToRenderer('Block', {where: 'stageOne', position: blockLocation, scale: {x: 1.0, y: 1.0}});
+            block.rotation = mathArrayUtils.pointInDirection(medic.position, blockLocation);
+            graphicsUtils.flashSprite({sprite: block, toColor: 0x8d01be, duration: 100, times: 4});
+            graphicsUtils.fadeSpriteOverTime(block, 500);
+
+            blockSound.play();
         },
         aggressionAction: function(event) {
-            medic.becomeHidden(efDDuration);
+            medic.currentEnergy += 10;
+            graphicsUtils.applyGainAnimationToUnit(medic, 0xad12a3);
+            manaHealSound.play();
         }
     });
 
@@ -1074,7 +1094,7 @@ export default function Medic(options) {
             radius: rad,
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [healsound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
+            slaves: [healSound, manaHealSound, blockSound, criticalHitSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 2.15,
@@ -1083,7 +1103,7 @@ export default function Medic(options) {
                 attackAnimations: healAnimations,
                 cooldown: 333,
                 honeRange: 300,
-                range: rad*2 + 10,
+                range: rad*2 + 25,
                 canAttackAndMove: false,
                 canAttackExtension: function(target) {
                     var thisAbility = this.getAbilityByName('Heal');
@@ -1099,7 +1119,7 @@ export default function Medic(options) {
 
                     var abilityTint = 0x80ba80;
                     graphicsUtils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Heal').icon, tint: abilityTint, speed: 100});
-                    healsound.play();
+                    healSound.play();
 
                     var healAnimation = gameUtils.getAnimation({
                         spritesheetName: 'MedicAnimations1',

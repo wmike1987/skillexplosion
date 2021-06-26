@@ -659,7 +659,7 @@ export default function Marine(options) {
         augments: [
             {
                 name: 'fully auto',
-                delta: -190,
+                delta: -100,
                 icon: graphicsUtils.createDisplayObject('FullyAuto'),
                 title: 'Full Auto',
                 description: 'Increase rate of fire.',
@@ -708,18 +708,8 @@ export default function Marine(options) {
             allies.forEach((ally) => {
                 if(ally.isDead) return;
                 ally.giveHealth(6, marine);
-                var lifeUpAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'UtilityAnimations1',
-                    animationName: 'lifegain1',
-                    speed: 1.0,
-                    transform: [ally.position.x, ally.position.y, 1.0, 1.0]
-                });
-                lifeUpAnimation.tint = 0xff1e08;
-                lifeUpAnimation.play();
-                lifeUpAnimation.alpha = 1;
+                graphicsUtils.applyGainAnimationToUnit(ally, 0xc60006);
                 healsound.play();
-                gameUtils.attachSomethingToBody({something: lifeUpAnimation, body: ally.body});
-                graphicsUtils.addSomethingToRenderer(lifeUpAnimation, 'foreground');
             });
         },
         aggressionAction: function(event) {

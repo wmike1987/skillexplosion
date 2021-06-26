@@ -111,7 +111,7 @@ var UnitBase = {
 
         Matter.Events.trigger(this, 'preSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
         if(options.isProjectile) {
-            Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
+            Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj, projectileData: options.projectileData});
         }
         Matter.Events.trigger(attackingUnit, 'dealDamage', {targetUnit: this});
 
@@ -135,6 +135,14 @@ var UnitBase = {
                 Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
                 //display a miss graphic
                 graphicsUtils.floatText('Block!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
+
+                //add block graphic
+                let attackLocation = options.isProjectile ? options.projectileData.startLocation : attackingUnit.position;
+                let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(this.position, attackLocation, 40);
+                let block = graphicsUtils.addSomethingToRenderer('Block', {where: 'stageOne', position: offsetLocation, scale: {x: 1.0, y: 1.0}});
+                block.rotation = mathArrayUtils.pointInDirection(this.position, offsetLocation);
+                graphicsUtils.flashSprite({sprite: block, toColor: 0xd55812, duration: 100, times: 4});
+                graphicsUtils.fadeSpriteOverTime(block, 500);
                 killingBlowBlock.play();
                 return;
             }

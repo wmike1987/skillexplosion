@@ -1306,14 +1306,14 @@ var graphicsUtils = {
 
     applyGainAnimationToUnit: function(unit, tint) {
         var a1 = gameUtils.getAnimation({
-            spritesheetName: 'UtilityAnimations1',
-            animationName: 'starflurry',
-            speed: 1.5,
-            transform: [unit.position.x, unit.position.y-10, 0.8, 1.0]
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'lifegain2',
+            speed: 0.65 + Math.random()*0.40,
+            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
         });
         a1.play();
         a1.alpha = 1;
-        gameUtils.attachSomethingToBody({something: a1, body: unit.body});
+        gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: Math.random()*30-15, y: -50}});
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');
 
         a1.play();
@@ -1563,16 +1563,17 @@ var mathArrayUtils = {
 
     //return angle to rotate something facing an original direction, towards a point
     pointInDirection: function(origin, destination, orientation) {
+        orientation = orientation || 'north';
         if(orientation == 'east')
-        orientation = {x: origin.x + 1, y: origin.y};
+            orientation = {x: origin.x + 1, y: origin.y};
         else if(orientation == 'north')
-        orientation = {x: origin.x, y: origin.y + 1};
+            orientation = {x: origin.x, y: origin.y + 1};
         else if(orientation == 'west')
-        orientation = {x: origin.x - 1, y: origin.y};
+            orientation = {x: origin.x - 1, y: origin.y};
         else if(orientation == 'south')
-        orientation = {x: origin.x, y: origin.y - 1};
+            orientation = {x: origin.x, y: origin.y - 1};
 
-        var originAngle = Matter.Vector.angle(origin, orientation || {x: origin.x, y: origin.y + 1});
+        var originAngle = Matter.Vector.angle(origin, orientation);
         var destAngle = Matter.Vector.angle(origin, {x: destination.x, y: (origin.y + (origin.y-destination.y))});
 
         return originAngle - destAngle;
