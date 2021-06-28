@@ -147,7 +147,7 @@ export default function Gargoyle(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.6, y: 0.6},
+        scale: {x: 0.55, y: 0.55},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -157,7 +157,7 @@ export default function Gargoyle(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.375, y: 0.375},
+        scale: {x: 0.35, y: 0.35},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -227,7 +227,7 @@ export default function Gargoyle(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.6, y: 0.6},
+        scale: {x: 0.55, y: 0.55},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',

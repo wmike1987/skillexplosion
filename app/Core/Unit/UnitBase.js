@@ -119,12 +119,9 @@ var UnitBase = {
         damage = damageObj.damage;
 
         //factor in armor
-        var defenseAdditionSums = this.getDefenseAdditionSum();
-        var alteredDamage = Math.max(1, (damage - (this.defense + defenseAdditionSums)));
-        var damageReducedByArmor = this.defense + defenseAdditionSums;
-        if(this.defense > damage) {
-            damageReducedByArmor = damage - 1;
-        }
+        var alteredDamage = Math.max(1, (damage - this.getTotalDefense()));
+        var damageReducedByArmor = damage - alteredDamage;
+
         Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: damageReducedByArmor});
 
         //killing blow dodge
@@ -846,6 +843,8 @@ var UnitBase = {
         gameUtils.deathPact(this, this.gritHandler);
 
         var self = this;
+        var gritHigh = 16;
+        var gritLow = 5;
         this.gritDodgeTimer = globals.currentGame.addTimer({
             name: 'gritDodgeTimer' + this.unitId,
             runs: 1,
@@ -860,7 +859,7 @@ var UnitBase = {
             },
             tickMonitor: function() {
                 if(self.getTotalGrit() > 0.0) {
-                    self.gritCooldown = (-0.1 * self.getTotalGrit() + 14.0);
+                    self.gritCooldown = (gritHigh - ((self.getTotalGrit() / 100.0) * (gritHigh - gritLow)));
                     this.timeLimit = self.gritCooldown * 1000;
                     if(!this.timerActive) {
                         this.timerActive = true;
@@ -1125,6 +1124,10 @@ var UnitBase = {
             sum += addition;
         });
         return Math.max(-this.defense, sum);
+    },
+
+    getTotalDefense: function() {
+        return this.defense + this.getDefenseAdditionSum();
     },
 
     getDodgeAdditionSum: function() {
