@@ -377,9 +377,9 @@ export default function Marine(options) {
 
         if(deathWishAugment) {
             marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
-                self.damage += 4;
+                self.damage += 3;
             }, removeChanges: function() {
-                self.damage -= 4;
+                self.damage -= 3;
             }});
         }
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
@@ -436,7 +436,7 @@ export default function Marine(options) {
                 name: 'death wish',
                 icon: graphicsUtils.createDisplayObject('DeathWish'),
                 title: 'Death Wish',
-                description: 'Increase damage by 4 upon dashing for 2 seconds.'
+                description: 'Increase damage by 3 upon dashing for 2 seconds.'
             },
         ],
     });

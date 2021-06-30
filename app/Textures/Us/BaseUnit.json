@@ -2,7 +2,7 @@
 
 "AbilityTarget.png":
 {
-	"frame": {"x":424,"y":1,"w":32,"h":26},
+	"frame": {"x":423,"y":1,"w":32,"h":26},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -26,15 +26,15 @@
 },
 "Block.png":
 {
-	"frame": {"x":314,"y":1,"w":64,"h":40},
+	"frame": {"x":314,"y":1,"w":64,"h":39},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":0,"y":24,"w":64,"h":40},
+	"spriteSourceSize": {"x":0,"y":25,"w":64,"h":39},
 	"sourceSize": {"w":64,"h":64}
 },
 "CondemnBuff.png":
 {
-	"frame": {"x":413,"y":35,"w":29,"h":28},
+	"frame": {"x":412,"y":35,"w":29,"h":28},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":29,"h":28},
@@ -42,7 +42,7 @@
 },
 "CondemnBuffHeal.png":
 {
-	"frame": {"x":443,"y":35,"w":29,"h":28},
+	"frame": {"x":442,"y":35,"w":29,"h":28},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":29,"h":28},
@@ -90,7 +90,7 @@
 },
 "HealthEnergyBackground.png":
 {
-	"frame": {"x":390,"y":1,"w":32,"h":32},
+	"frame": {"x":389,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -178,7 +178,7 @@
 },
 "MoveIcon.png":
 {
-	"frame": {"x":452,"y":1,"w":28,"h":28},
+	"frame": {"x":451,"y":1,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
@@ -210,7 +210,7 @@
 },
 "PrevailingUnitIndicator.png":
 {
-	"frame": {"x":356,"y":1,"w":64,"h":32},
+	"frame": {"x":355,"y":1,"w":64,"h":32},
 	"rotated": true,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -218,7 +218,7 @@
 },
 "SpeedBuff.png":
 {
-	"frame": {"x":390,"y":35,"w":30,"h":21},
+	"frame": {"x":389,"y":35,"w":30,"h":21},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":8,"w":30,"h":21},
@@ -241,6 +241,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":127},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:c345cd9aeed8675ca30783c7ecdc0c9d:8defca8ba349384d59283874af10d13b:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:c345cd9aeed8675ca30783c7ecdc0c9d:5296788cc671ccced0c86965bb46ffe9:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

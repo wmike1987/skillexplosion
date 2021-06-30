@@ -965,7 +965,8 @@ export default function Medic(options) {
         }
     });
 
-    var efDDuration = 3000;
+    var efADuration = 5000;
+    var efDDuration = 5000;
     var elegantForm  = new Passive({
         title: 'Elegant Form',
         aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain 15 energy.'],
@@ -973,9 +974,9 @@ export default function Medic(options) {
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'sufferProjectile',
-        defenseCooldown: 3000,
+        defenseCooldown: efDDuration,
         aggressionEventName: 'sufferProjectile',
-        aggressionCooldown: 8000,
+        aggressionCooldown: efADuration,
         defenseAction: function(event) {
             //delay the attack for a second
             gameUtils.doSomethingAfterDuration(() => {
@@ -1000,9 +1001,12 @@ export default function Medic(options) {
             damageObj.damage = 1;
 
             //add block graphic
-            let blockLocation = mathArrayUtils.addScalarToVectorTowardDestination(medic.position, event.projectileData.startLocation, 40);
-            let block = graphicsUtils.addSomethingToRenderer('Block', {where: 'stageOne', position: blockLocation, scale: {x: 1.0, y: 1.0}});
-            block.rotation = mathArrayUtils.pointInDirection(medic.position, blockLocation);
+            let offset = 40;
+            let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(medic.position, event.projectileData.startLocation, offset);
+            let attachmentOffset = Matter.Vector.sub(offsetLocation, medic.position);
+            let block = graphicsUtils.addSomethingToRenderer('Block', {where: 'stageOne', position: medic.position, scale: {x: 1.0, y: 1.0}});
+            gameUtils.attachSomethingToBody({something: block, body: medic.body, offset: attachmentOffset, deathPactSomething: true});
+            block.rotation = mathArrayUtils.pointInDirection(medic.position, offsetLocation);
             graphicsUtils.flashSprite({sprite: block, toColor: 0x8d01be, duration: 100, times: 4});
             graphicsUtils.fadeSpriteOverTime(block, 500);
 

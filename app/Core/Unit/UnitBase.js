@@ -134,9 +134,12 @@ var UnitBase = {
                 graphicsUtils.floatText('Block!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
 
                 //add block graphic
+                let offset = 40;
                 let attackLocation = options.isProjectile ? options.projectileData.startLocation : attackingUnit.position;
-                let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(this.position, attackLocation, 40);
+                let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(this.position, attackLocation, offset);
+                let attachmentOffset = Matter.Vector.sub(offsetLocation, this.position);
                 let block = graphicsUtils.addSomethingToRenderer('Block', {where: 'stageOne', position: offsetLocation, scale: {x: 1.0, y: 1.0}});
+                gameUtils.attachSomethingToBody({something: block, body: this.body, offset: attachmentOffset, deathPactSomething: true});
                 block.rotation = mathArrayUtils.pointInDirection(this.position, offsetLocation);
                 graphicsUtils.flashSprite({sprite: block, toColor: 0xd55812, duration: 100, times: 4});
                 graphicsUtils.fadeSpriteOverTime(block, 500);
