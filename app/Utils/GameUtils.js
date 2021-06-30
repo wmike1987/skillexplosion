@@ -463,6 +463,10 @@ var gameUtils = {
             Matter.Body.setPosition(unit.smallerBody, unit.position);
     },
 
+    moveSpriteOffScreen: function(something) {
+        something.position = {x: 8000, y: 8000};
+    },
+
     calculateRandomPlacementForBodyWithinCanvasBounds: function(body, neatly) {
         var placement = {};
         var bodyWidth = (body.bounds.max.x - body.bounds.min.x);

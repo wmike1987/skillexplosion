@@ -503,8 +503,10 @@ var common = {
     togglePause: function() {
         if(this.gameLoop.paused) {
             this.gameLoop.resume();
+            this.gameState = 'playing';
         } else {
             this.gameLoop.pause();
+            this.gameState = 'paused';
         }
     },
 

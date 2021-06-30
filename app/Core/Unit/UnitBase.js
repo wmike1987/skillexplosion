@@ -597,6 +597,7 @@ var UnitBase = {
             });
             anim.tint = 0xff3333;
             anim.scale = {x: 0.4, y: 0.4};
+            gameUtils.moveSpriteOffScreen(anim);
             graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
             gameUtils.attachSomethingToBody({something: anim, body: this.body, offset: this.body.renderlings.selected.offset, deathPactSomething: true});
             anim.play();
@@ -610,6 +611,7 @@ var UnitBase = {
             });
             anim.tint = 0x479cff;
             anim.scale = {x: 0.4, y: 0.4};
+            gameUtils.moveSpriteOffScreen(anim);
             graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
             gameUtils.attachSomethingToBody({something: anim, body: this.body, offset: this.body.renderlings.selected.offset, deathPactSomething: true});
             anim.play();
