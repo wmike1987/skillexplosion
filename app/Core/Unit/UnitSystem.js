@@ -803,7 +803,7 @@ var UnitSystem = function(properties) {
              if(event.key == 'X' || event.key == 'x') {
                  if(keyStates.Control) {
                      if(this.selectedUnit) {
-                         this.selectedUnit.sufferAttack(10);
+                         this.selectedUnit.sufferAttack(10, {position: {x: 50, y: 50}});
                          // Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat");
                      }
                  }

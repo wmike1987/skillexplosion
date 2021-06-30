@@ -1267,7 +1267,7 @@ var graphicsUtils = {
 
     flashSprite: function(options) {
         var sprite;
-        if(options.constructor.name == 'Sprite') {
+        if(options.isSprite) {
             sprite = options;
         } else {
             sprite = options.sprite;

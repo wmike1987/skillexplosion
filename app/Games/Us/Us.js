@@ -334,10 +334,11 @@ var game = {
 
     removeAllLevelLocalEntities: function() {
         this.levelLocalEntities.forEach((entity) => {
-            if (entity.constructor.name == 'Sprite' || entity.constructor.name == 'Text' || entity.constructor.name == 'AnimatedSprite') {
-                graphicsUtils.removeSomethingFromRenderer(entity);
-            } else if (entity.type == 'body') {
+            if (entity.type == 'body') {
                 this.removeBody(entity);
+            }
+            else {
+                graphicsUtils.removeSomethingFromRenderer(entity);
             }
         });
         this.levelLocalEntities = [];

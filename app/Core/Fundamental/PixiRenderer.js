@@ -491,7 +491,7 @@ var renderer = function(engine, options) {
 	//helper method for removing the child from its parent and calling the destroy method on the object being removed
 	this.removeAndDestroyChild = function(stage, child) {
 		stage.removeChild(child);
-		if(child.constructor.name == 'Particle') {
+		if(child.constructor === PIXI.particles.Emitter) {
 			child.emitter.cleanup();
 		}
 	    else if(child.destroy && !child._destroyed) {

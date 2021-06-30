@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js';
 import UC from '@core/Unit/UnitConstructor.js';
 import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
-import style from '@utils/Styles.js';
+import styles from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState';
 import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
 
@@ -240,6 +240,8 @@ export default function Critter(options) {
     var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
     var deathSound = gameUtils.getSound('critterdeath.wav', {volume: 0.08, rate: 1.5});
 
+    // var meText = graphicsUtils.addSomethingToRenderer('TEX+:IsoShadowBlurred', {where: 'stage', style: styles.unitDamageStyle, position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 22})});
+
     var unitProperties = $.extend({
         unitType: 'Critter',
         health: 20,
@@ -287,7 +289,7 @@ export default function Critter(options) {
             radius: options.radius,
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
+            slaves: [attackSound, /*meText,*/ deathSound, unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
             moveable: {
                 moveSpeed: 3.00,
