@@ -160,8 +160,9 @@ var UnitBase = {
             this.showLifeBar(true);
             if(!this.barTimer) {
                 this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {
-                    if(!this.showingBarsWithAlt)
-                    this.showLifeBar(false);
+                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                        this.showLifeBar(false);
+                    }
                 }.bind(this)});
                 gameUtils.deathPact(this, this.barTimer);
             } else {
@@ -194,8 +195,9 @@ var UnitBase = {
         this.showLifeBar(true);
         if(!this.barTimer) {
             this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 425, runs: 1, callback: function() {
-                if(!this.showingBarsWithAlt)
-                this.showLifeBar(false);
+                if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                    this.showLifeBar(false);
+                }
             }.bind(this)});
             gameUtils.deathPact(this, this.barTimer);
         } else {

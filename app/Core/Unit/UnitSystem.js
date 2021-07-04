@@ -22,14 +22,15 @@ var UnitSystem = function(properties) {
         this.box.collisionFilter.category = 0x0002;
         this.box.permaPendingUnit = null;
         this.box.pendingSelections = {};
-        this.box.tint = 0x47ff9c;
+        // this.box.tint = 0x47ff9c;
+        this.box.tint = 0x21c2d7;
         this.box.isBox = true;
-        this.box.borderAlpha = 0.9;
-        this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: this.box.tint, stage: 'foreground', alpha: 0.4}];
-        this.box.topBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
-        this.box.bottomBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 1}});
-        this.box.leftBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0, y: 0}});
-        this.box.rightBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 1, y: 0}});
+        this.box.borderAlpha = 0.6;
+        this.box.renderChildren = [{id: 'box', data: 'TintableSquare', tint: this.box.tint, stage: 'foreground', alpha: 0.15}];
+        this.box.topBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0.5, y: 1.0}});
+        this.box.bottomBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0.5, y: 0.0}});
+        this.box.leftBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 1.0, y: 0.5}});
+        this.box.rightBorder = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', alpha: this.box.borderAlpha, tint: this.box.tint, anchor: {x: 0.0, y: 0.5}});
 
         //other unit system variables
         this.selectedUnits = {};
@@ -593,8 +594,12 @@ var UnitSystem = function(properties) {
             this.box.renderlings.box.scale.y = newPoint.y - this.box.originalPoint.y;
             var newScaleX = (newPoint.x - this.box.originalPoint.x) || 1;
             var newScaleY = (newPoint.y - this.box.originalPoint.y) || 1;
+
+            var midPointX = newPoint.x - (newPoint.x - this.box.originalPoint.x)/2;
+            var midPointY = newPoint.y - (newPoint.y - this.box.originalPoint.y)/2;
+
             Matter.Body.scale(this.box, newScaleX/lastScaleX, newScaleY/lastScaleY); //scale to new value
-            Matter.Body.setPosition(this.box, {x: newPoint.x - (newPoint.x - this.box.originalPoint.x)/2, y: newPoint.y - (newPoint.y - this.box.originalPoint.y)/2});
+            Matter.Body.setPosition(this.box, {x: midPointX, y: midPointY});
             lastScaleX = newScaleX;
             lastScaleY = newScaleY;
 
@@ -603,16 +608,42 @@ var UnitSystem = function(properties) {
             graphicsUtils.addOrShowDisplayObject(this.box.bottomBorder);
             graphicsUtils.addOrShowDisplayObject(this.box.leftBorder);
             graphicsUtils.addOrShowDisplayObject(this.box.rightBorder);
-            this.box.topBorder.position = {x: this.box.originalPoint.x, y: this.box.originalPoint.y};
-            this.box.topBorder.scale = {x: newPoint.x - this.box.originalPoint.x, y: 1};
 
-            this.box.bottomBorder.position = {x: this.box.originalPoint.x, y: newPoint.y};
-            this.box.bottomBorder.scale = {x: newPoint.x - this.box.originalPoint.x, y: 1};
+            var topBorderAnchor;
+            var bottomBorderAnchor;
+            var leftBorderAnchor;
+            var rightBorderAnchor;
+            var xBuffer = 2;
+            if(newScaleX < 0) {
+                leftBorderAnchor = {x: 0.0, y: 0.5};
+                rightBorderAnchor = {x: 1.0, y: 0.5};
+                xBuffer = -2;
+            } else {
+                leftBorderAnchor = {x: 1.0, y: 0.5};
+                rightBorderAnchor = {x: 0.0, y: 0.5};
+            }
+            if(newScaleY < 0) {
+                topBorderAnchor = {x: 0.5, y: 0.0};
+                bottomBorderAnchor = {x: 0.5, y: 1.0};
+            } else {
+                topBorderAnchor = {x: 0.5, y: 1.0};
+                bottomBorderAnchor = {x: 0.5, y: 0.0};
+            }
 
-            this.box.leftBorder.position = {x: this.box.originalPoint.x, y: this.box.originalPoint.y};
+            this.box.topBorder.anchor = topBorderAnchor;
+            this.box.topBorder.position = {x: midPointX, y: this.box.originalPoint.y};
+            this.box.topBorder.scale = {x: newPoint.x - this.box.originalPoint.x + xBuffer, y: 1};
+
+            this.box.bottomBorder.anchor = bottomBorderAnchor;
+            this.box.bottomBorder.position = {x: midPointX, y: newPoint.y};
+            this.box.bottomBorder.scale = {x: newPoint.x - this.box.originalPoint.x + xBuffer, y: 1};
+
+            this.box.leftBorder.anchor = leftBorderAnchor;
+            this.box.leftBorder.position = {x: this.box.originalPoint.x, y: midPointY};
             this.box.leftBorder.scale = {x: 1, y: newPoint.y - this.box.originalPoint.y};
 
-            this.box.rightBorder.position = {x: newPoint.x, y: this.box.originalPoint.y};
+            this.box.rightBorder.anchor = rightBorderAnchor;
+            this.box.rightBorder.position = {x: newPoint.x, y: midPointY};
             this.box.rightBorder.scale = {x: 1, y: newPoint.y - this.box.originalPoint.y};
         };
 

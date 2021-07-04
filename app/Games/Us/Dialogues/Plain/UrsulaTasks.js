@@ -59,6 +59,8 @@ var UrsulaTasks = function(scene) {
 
     var moveBeaconLocation = {x: 1000, y: 550};
 
+    globals.currentGame.shane.ignoreHealthRegeneration = true;
+
     a1.onStart = function() {
         var arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.ursula, -35, 0.5);
         gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
@@ -105,19 +107,10 @@ var UrsulaTasks = function(scene) {
                 if(!allHealed) {
                     achieve.play();
                     allHealed = true;
+                    globals.currentGame.shane.ignoreHealthRegeneration = false;
                     completeTaskAndRelease(a3b);
                 }
             });
-
-            //safety net
-            gameUtils.doSomethingAfterDuration(() => {
-                if(!allHealed) {
-                    achieve.play();
-                    allHealed = true;
-                    healme.removeHandler();
-                    completeTaskAndRelease(a3b);
-                }
-            }, 15000);
         });
     };
 

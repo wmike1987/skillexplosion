@@ -1101,7 +1101,7 @@ export default function Medic(options) {
             slaves: [healSound, manaHealSound, blockSound, criticalHitSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
             moveable: {
-                moveSpeed: 2.15,
+                moveSpeed: 2.35,
                 walkAnimations: walkAnimations,
             }, attacker: {
                 attackAnimations: healAnimations,

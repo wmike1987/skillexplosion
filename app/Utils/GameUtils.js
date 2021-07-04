@@ -919,7 +919,7 @@ var graphicsUtils = {
     pointToSomethingWithArrow: function(something, yOffset, arrowScale) {
         arrowScale = arrowScale || 1.0;
         yOffset = yOffset || 0.0;
-        var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudTextOne', {scale: {x: 1.00 * arrowScale, y: 1.00 * arrowScale}});
+        var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudOne', {scale: {x: 1.00 * arrowScale, y: 1.00 * arrowScale}});
         downArrow.position = mathArrayUtils.clonePosition(something.position, {y: yOffset-2.0-downArrow.height/2.0});
         graphicsUtils.flashSprite({sprite: downArrow, duration: 200, pauseDurationAtEnds: 250, times: 999});
         return downArrow;
@@ -1317,12 +1317,8 @@ var graphicsUtils = {
         });
         a1.play();
         a1.alpha = 1;
-        gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: Math.random()*30-15, y: -50}});
-        graphicsUtils.addSomethingToRenderer(a1, 'foreground');
-
-        a1.play();
-
         a1.tint = tint;
+        gameUtils.attachSomethingToBody({something: a1, body: unit.body, offset: {x: Math.random()*30-15, y: -50}});
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');
     },
 

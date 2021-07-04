@@ -95,7 +95,7 @@ var SceneModes = {
  */
 Scene.prototype.transitionToScene = function(options) {
     var newScene = null;
-    var transitionLength = 1000;
+    var transitionLength = 1500;
     var mode = SceneModes.FADE_AWAY;
     if(options.isScene) {
         newScene = options;
@@ -155,9 +155,9 @@ Scene.prototype.transitionToScene = function(options) {
             c: 555555,
             progress: 1.0,
             screenSize: gameUtils.getPlayableWH(),
-            screenCenter: gameUtils.getCanvasCenter(),
+            centerPoint: options.centerPoint || gameUtils.getCanvasCenter(),
             gridSize: 2,
-            fadeOut: options.fadeIn,
+            fadeOut: options.fadeIn
         });
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 

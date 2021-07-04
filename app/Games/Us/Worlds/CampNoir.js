@@ -516,7 +516,7 @@ var campNoir = {
 
     gotoLevelById: function(id) {
         var level = this.map.findLevelById(id);
-        level.enterLevel();
+        level.enterLevel(level.mapNode);
         return level;
     },
 

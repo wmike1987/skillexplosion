@@ -435,9 +435,6 @@ var game = {
         var position = options.position;
         var moveToCenter = options.moveToCenter;
 
-        if (unit.isDead) {
-            unit.revive();
-        }
         this.unitSystem.deselectUnit(unit);
 
         var centerX;
@@ -449,6 +446,7 @@ var game = {
             unit.position = position;
         }
 
+        unit.isDead = false;
         unit.isTargetable = true;
         unit.canMove = true;
         unit.canAttack = true;
@@ -457,10 +455,13 @@ var game = {
             unit.ignoreEnergyRegeneration = true;
             unit.ignoreHealthRegeneration = true;
             unit.body.collisionFilter.mask -= 0x0004;
+
             unit.showLifeBar();
             unit.showEnergyBar();
+            unit.barsShowingOverride = true;
             gameUtils.doSomethingAfterDuration(() => {
                 unit.body.collisionFilter.mask += 0x0004;
+                unit.barsShowingOverride = false;
                 unit.showLifeBar(false);
                 unit.showEnergyBar(false);
                 unit.ignoreEnergyRegeneration = false;
