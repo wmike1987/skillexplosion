@@ -16,7 +16,7 @@ var levelBase = {
         });
     },
 
-    enterLevel: function(node, options) {
+    enterLevel: function() {
         if(this.hijackEntry) {
             var res = this.hijackEntry();
             if(res) return;
@@ -25,7 +25,7 @@ var levelBase = {
         var scene = new Scene();
         this.fillLevelScene(scene);
 
-        globals.currentGame.currentScene.transitionToScene({newScene: scene, centerPoint: node.position});
+        globals.currentGame.currentScene.transitionToScene({newScene: scene, centerPoint: this.mapNode.position});
         Matter.Events.trigger(globals.currentGame, 'EnterLevel', {level: this});
         this.mode.enter.call(this, scene);
     },

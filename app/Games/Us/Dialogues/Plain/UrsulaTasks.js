@@ -102,7 +102,6 @@ var UrsulaTasks = function(scene) {
     var allHealed = false;
     a3b.onStart = function() {
         gameUtils.matterOnce(globals.currentGame.ursula, 'performHeal', (event) => {
-            globals.currentGame.shane.ignoreHealthRegeneration = false;
             var healme = gameUtils.matterOnce(globals.currentGame.shane, 'healedFully', (event) => {
                 if(!allHealed) {
                     achieve.play();

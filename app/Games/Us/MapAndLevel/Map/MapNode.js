@@ -198,7 +198,7 @@ var MapLevelNode = function(options) {
                         Matter.Events.trigger(globals.currentGame, "travelFinished", {
                             node: behavior.nodeToEnter
                         });
-                        behavior.nodeToEnter.levelDetails.enterLevel(self);
+                        behavior.nodeToEnter.levelDetails.enterLevel();
                         behavior.nodeToEnter.untintNode();
                         this.displayObject.tooltipObj.enable();
                     }.bind(this));

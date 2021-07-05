@@ -203,7 +203,7 @@ var camp = {
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
             ursTasks.play();
-            globals.currentGame.shane.currentHealth = 20;
+            globals.currentGame.shane.currentHealth = 50;
             globals.currentGame.shane.ignoreHealthRegeneration = true;
             globals.currentGame.shane.position = {x: 400, y: 400};
         }
@@ -516,7 +516,7 @@ var campNoir = {
 
     gotoLevelById: function(id) {
         var level = this.map.findLevelById(id);
-        level.enterLevel(level.mapNode);
+        level.enterLevel();
         return level;
     },
 

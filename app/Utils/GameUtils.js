@@ -920,6 +920,7 @@ var graphicsUtils = {
         arrowScale = arrowScale || 1.0;
         yOffset = yOffset || 0.0;
         var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudOne', {scale: {x: 1.00 * arrowScale, y: 1.00 * arrowScale}});
+        downArrow.sortYOffset = 5000;
         downArrow.position = mathArrayUtils.clonePosition(something.position, {y: yOffset-2.0-downArrow.height/2.0});
         graphicsUtils.flashSprite({sprite: downArrow, duration: 200, pauseDurationAtEnds: 250, times: 999});
         return downArrow;
