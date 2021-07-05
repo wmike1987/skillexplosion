@@ -82,11 +82,16 @@ var ShaneIntro = function(options) {
             text: "Mac, I'm here, but I haven't been... fully functional... since-",
             pauseAfterWord: [{
                 word: 'been...',
-                duration: 300
-            }],
+                duration: 550
+            },
+            {
+                word: 'functional...',
+                duration: 550
+            },
+            ],
             speedChangeAfterWord: {
                 word: 'functional...',
-                speed: 100
+                speed: 130
             },
             delayAfterEnd: 0
         }));

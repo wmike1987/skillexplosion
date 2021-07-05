@@ -81,10 +81,12 @@ var multiLevel = function(options) {
 
     this.createMapNode = function(options) {
         this.chain.forEach((level) => {
-            this.mapNodes.push(new MapLevelNode({levelDetails: level, mapRef: options.mapRef,
+            let mln = new MapLevelNode({levelDetails: level, mapRef: options.mapRef,
                 hoverCallback: highlightAllNodes,
                 unhoverCallback: unhighlightAllNodes,
-                mouseDownCallback: mouseDown}));
+                mouseDownCallback: mouseDown});
+            this.mapNodes.push(mln);
+            level.mapNode = mln;
         });
 
         //disallow these from being prereqs

@@ -337,7 +337,7 @@ var Dialogue = function Dialogue(options) {
                         d.resolveTime = 0; //this basically voids any delayAfterEnd
                     }
                 }
-            } else if(this.totalElapsedTime >= d.resolveTime){
+            } else if(this.totalElapsedTime >= d.resolveTime && (!d.realizedPicture || (d.realizedPicture && d.realizedPicture.alpha >= 1.0))){
                 if(d.next && d.next.preventAutoStart) {
                     return;
                 }
