@@ -35,13 +35,14 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {
 
 var campLevel = function() {
     this.initExtension = function(type, worldSpecs, options) {
+        this.isCampProper = true;
         this.campLikeActive = true;
         this.mapTableActive = true;
         this.camp = options.camp;
         this.position = gameUtils.getPlayableCenter();
         this.mode = this.possibleModes.CUSTOM;
 
-        if(this.camp.initExtension) {
+        if (this.camp.initExtension) {
             this.camp.initExtension.call(this);
         }
     };
@@ -126,7 +127,9 @@ var campLevel = function() {
             collides: true,
             autoAdd: false,
             radius: 40,
-            bodyScale: {y: 0.5},
+            bodyScale: {
+                y: 0.5
+            },
             texture: [fireAnimation, {
                 doodadData: 'Logs',
                 offset: {
@@ -257,7 +260,7 @@ var campLevel = function() {
 
     this.hijackEntry = function() {
         var self = this;
-        if(!this.alreadyIntrod && this.camp.intro) {
+        if (!this.alreadyIntrod && this.camp.intro) {
             var campIntro = new this.camp.intro({
                 done: () => {
                     self.enterLevel();
@@ -288,14 +291,14 @@ var campLevel = function() {
             })
         });
 
-        if(this.camp.onLevelPlayable) {
+        if (this.camp.onLevelPlayable) {
             this.camp.onLevelPlayable.call(this, scene);
         }
     };
 
     this.manualNodePosition = function() {
-            return this.position;
-        },
+        return this.position;
+    };
 
     this.createMapNode = function(options) {
         var node = new MapNode({
@@ -304,7 +307,8 @@ var campLevel = function() {
             tokenSize: 50,
             largeTokenSize: 55,
             travelPredicate: function() {
-                return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+                // return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+                return this.nightsLeft;
                 // return true;
             },
             hoverCallback: function() {
@@ -358,11 +362,12 @@ var campLevel = function() {
             },
             init: function() {
                 this.campAvailableCount = 0;
+                this.nightsLeft = 3;
                 Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
-                    this.campAvailableCount++;
+                    // this.campAvailableCount++;
 
                     if (event.node == this) {
-                        this.campAvailableCount = 0;
+                        this.nightsLeft -= 1;
                     }
                 }.bind(this));
 
@@ -375,11 +380,11 @@ var campLevel = function() {
                 }.bind(this));
 
                 Matter.Events.on(this.mapRef, 'showMap', function() {
-                    var availabilityText = 'Available now.';
+                    var availabilityText = 'Available now. (' + this.nightsLeft + ' nights available)';
                     if (this.mapRef.currentNode != this && !this.travelPredicate()) {
-                        var nodesLeft = 3 - this.campAvailableCount % 3;
-                        var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
-                        availabilityText = 'Available in ' + nodesLeft + roundS;
+                        // var nodesLeft = 3 - this.campAvailableCount % 3;
+                        // var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
+                        availabilityText = 'Camp unavailable.';
                     } else if (this.mapRef.currentNode == this) {
                         availabilityText = 'Currently in camp.';
                     }

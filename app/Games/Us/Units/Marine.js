@@ -947,7 +947,7 @@ export default function Marine(options) {
                      poisonSound, criticalHitSound, yeahsound, unitProperties.wireframe, unitProperties.portrait],
             unit: unitProperties,
             moveable: {
-                moveSpeed: 2.52,
+                moveSpeed: 2.50,
                 walkAnimations: walkAnimations,
             }, attacker: {
                 attackAnimations: attackAnimations,

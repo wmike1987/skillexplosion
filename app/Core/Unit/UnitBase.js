@@ -857,7 +857,7 @@ var UnitBase = {
             runs: 1,
             timeLimit: this.gritCooldown * 1000,
             pauseCondition: function() {
-                return self.isDead || !globals.currentGame.inLevel;
+                return self.isDead || !globals.currentGame.levelInPlay;
             },
             callback: function() {
                 if(this.timerActive && self.getTotalGrit() > 0.0) {

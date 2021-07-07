@@ -60,6 +60,11 @@ var map = function(specs) {
     // Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(campLocation, {y: 20}));
 
     //setup fatigue functionality
+    this.adrenaline = 0;
+    this.adrenalineStart = 99;
+    this.isAdrenalineOn = function() {
+        return this.adrenaline >= this.adrenalineStart;
+    };
     this.startingFatigue = 0;
     this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {
         position: {
@@ -82,6 +87,22 @@ var map = function(specs) {
             y: 20
         }
     });
+
+    //manage adrenaline count
+    Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
+        if(event.level.isCampProper) {
+            this.adrenaline = 0;
+        }
+    }.bind(this));
+
+    Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function(event) {
+        if(event.result == 'win') {
+            this.startingFatigue += 5;
+            this.adrenaline += 1;
+        } else {
+            this.adrenaline = 0;
+        }
+    }.bind(this));
 
     //Create main map sprite
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {
@@ -108,13 +129,13 @@ var map = function(specs) {
         var tries = 0;
         if (!position) {
             do {
-                if(tries > 40) {
+                if (tries > 40) {
                     tries = 0;
                     radius += 100;
                 }
                 collision = false;
                 position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, level.nodeBuffer || 20);
-                if(!gameUtils.isPositionWithinPlayableBounds(position)) {
+                if (!gameUtils.isPositionWithinPlayableBounds(position)) {
                     outOfBounds = true;
                 }
                 for (let node of this.graph) {
@@ -174,7 +195,7 @@ var map = function(specs) {
     this.clearAllNodesExcept = function(name) {
         var graphClone = this.graph.slice(0);
         graphClone.forEach((node) => {
-            if(node.levelDetails.levelId == name) return;
+            if (node.levelDetails.levelId == name) return;
             if (node.levelDetails.manualRemoveFromGraph) {
                 node.levelDetails.manualRemoveFromGraph(this.graph);
             } else {
@@ -218,106 +239,104 @@ var map = function(specs) {
     };
 
     this.hide = function() {
-            this.isShown = false;
-            Matter.Events.trigger(this, 'hideMap', {});
-            this.mapSprite.visible = false;
-            this.graph.forEach(node => {
-                node.displayObject.visible = this.mapSprite.visible;
-                if (node.displayObject.tooltipObj) {
-                    node.displayObject.tooltipObj.hide();
-                }
-                if (node.manualTokens) {
-                    node.manualTokens.forEach((token) => {
-                        token.visible = this.mapSprite.visible;
-                    });
-                }
-                if (node.isFocused) {
-                    node.unfocusNode();
-                    graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
-                }
+        this.isShown = false;
+        Matter.Events.trigger(this, 'hideMap', {});
+        this.mapSprite.visible = false;
+        this.graph.forEach(node => {
+            node.displayObject.visible = this.mapSprite.visible;
+            if (node.displayObject.tooltipObj) {
+                node.displayObject.tooltipObj.hide();
+            }
+            if (node.manualTokens) {
+                node.manualTokens.forEach((token) => {
+                    token.visible = this.mapSprite.visible;
+                });
+            }
+            if (node.isFocused) {
+                node.unfocusNode();
+                graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
+            }
+        });
+
+        this.headTokenSprite.visible = false;
+        this.fatigueText.visible = false;
+    };
+
+    this.allowMouseEvents = function(value) {
+        this.mouseEventsAllowed = value;
+    };
+
+    this.travelToNode = function(node, destinationCallback) {
+        this.allowMouseEvents(false);
+        this.lastNode = this.currentNode;
+        this.currentNode = node;
+        var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
+            y: 20
+        });
+        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
+            Matter.Body.setVelocity(this.headTokenBody, {
+                x: 0.0,
+                y: 0.0
             });
+            Matter.Events.trigger(node, "ArrivedAtNode", {});
+            destinationCallback();
+        }.bind(this));
+        Matter.Events.trigger(globals.currentGame, "TravelStarted", {
+            node: node,
+            headVelocity: this.headTokenBody.velocity,
+            startingFatigue: this.startingFatigue
+        });
+    };
 
-            this.headTokenSprite.visible = false;
-            this.fatigueText.visible = false;
-        };
+    this.revertHeadToPreviousLocationDueToDefeat = function() {
+        Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {
+            y: 20
+        }));
+        this.currentNode = this.lastNode;
+        Matter.Events.trigger(globals.currentGame, "TravelReset", {
+            resetToNode: this.lastNode
+        });
+    };
 
-        this.allowMouseEvents = function(value) {
-            this.mouseEventsAllowed = value;
-        };
+    this.findLevelById = function(id) {
+        if (!this.graph) return null;
+        var levelNode = this.graph.find(node => {
+            return id == node.levelDetails.levelId;
+        });
+        return levelNode.levelDetails;
+    };
 
-        this.travelToNode = function(node, destinationCallback) {
-            this.allowMouseEvents(false);
-            this.lastNode = this.currentNode;
-            this.currentNode = node;
-            this.startingFatigue += 5;
+    this.findNodeById = function(id) {
+        if (!this.graph) return null;
+        var levelNode = this.graph.find(node => {
+            return id == node.levelDetails.levelId;
+        });
+        return levelNode;
+    };
+
+    this.setHeadToken = function(renderlingId) {
+        var self = this;
+        mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {
+            if (key == renderlingId) {
+                self.headTokenSprite = rl;
+            } else {
+                rl.visible = false;
+            }
+        });
+    };
+
+    //this takes either a raw position or a map node
+    this.setHeadTokenPosition = function(options) {
+        if (options.node) {
+            var node = options.node;
             var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
                 y: 20
             });
-            gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
-                Matter.Body.setVelocity(this.headTokenBody, {
-                    x: 0.0,
-                    y: 0.0
-                });
-                Matter.Events.trigger(node, "ArrivedAtNode", {});
-                destinationCallback();
-            }.bind(this));
-            Matter.Events.trigger(globals.currentGame, "TravelStarted", {
-                node: node,
-                headVelocity: this.headTokenBody.velocity,
-                startingFatigue: this.startingFatigue
-            });
-        };
-
-        this.revertHeadToPreviousLocationDueToDefeat = function() {
-            Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {
-                y: 20
-            }));
-            this.currentNode = this.lastNode;
-            this.startingFatigue -= 5;
-            Matter.Events.trigger(globals.currentGame, "TravelReset", {
-                resetToNode: this.lastNode
-            });
-        };
-
-        this.findLevelById = function(id) {
-            if (!this.graph) return null;
-            var levelNode = this.graph.find(node => {
-                return id == node.levelDetails.levelId;
-            });
-            return levelNode.levelDetails;
-        };
-
-        this.findNodeById = function(id) {
-            if (!this.graph) return null;
-            var levelNode = this.graph.find(node => {
-                return id == node.levelDetails.levelId;
-            });
-            return levelNode;
-        };
-
-        this.setHeadToken = function(renderlingId) {
-            var self = this;
-            mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {
-                if (key == renderlingId) {
-                    self.headTokenSprite = rl;
-                } else {
-                    rl.visible = false;
-                }
-            });
-        };
-
-        //this takes either a raw position or a map node
-        this.setHeadTokenPosition = function(options) {
-            if (options.node) {
-                var node = options.node;
-                var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
-                    y: 20
-                });
-                Matter.Body.setPosition(this.headTokenBody, position);
-                this.currentNode = node;
-            } else {
-                Matter.Body.setPosition(this.headTokenBody, options);
-            }
-        };
+            Matter.Body.setPosition(this.headTokenBody, position);
+            this.currentNode = node;
+        } else {
+            Matter.Body.setPosition(this.headTokenBody, options);
+        }
+    };
 };
 export default map;

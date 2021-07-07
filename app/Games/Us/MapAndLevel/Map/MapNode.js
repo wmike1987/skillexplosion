@@ -183,8 +183,8 @@ var MapLevelNode = function(options) {
 
                 if (behavior.flash) {
                     this.flashNode();
-                    this.displayObject.tooltipObj.disable();
                     this.displayObject.tooltipObj.hide();
+                    this.displayObject.tooltipObj.disable();
                 }
 
                 if (behavior.sound) {
@@ -193,6 +193,7 @@ var MapLevelNode = function(options) {
 
                 if (behavior.nodeToEnter == globals.currentGame.currentLevel.mapNode && this.enterSelfBehavior) {
                     this.enterSelfBehavior();
+                    this.displayObject.tooltipObj.enable();
                 } else {
                     this.mapRef.travelToNode(behavior.nodeToEnter, function() {
                         Matter.Events.trigger(globals.currentGame, "travelFinished", {

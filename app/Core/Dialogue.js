@@ -1,8 +1,15 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
 import styles from '@utils/Styles.js';
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import {
+    globals,
+    keyStates
+} from '@core/Fundamental/GlobalState.js';
 
 var pictureStyles = {
     FADE_IN: "FADE_IN"
@@ -26,8 +33,14 @@ var Dialogue = function Dialogue(options) {
     var defaults = {
         text: '',
         actorText: '',
-        textBeginPosition: {x: 50, y: 75},
-        titleBeginPosition: {x: null, y: 40},
+        textBeginPosition: {
+            x: 50,
+            y: 75
+        },
+        titleBeginPosition: {
+            x: null,
+            y: 40
+        },
         backgroundBox: false,
         actorLetterSpeed: 40,
         letterSpeed: 80,
@@ -42,30 +55,39 @@ var Dialogue = function Dialogue(options) {
         titleStyle: styles.dialogueTitleStyle,
         pictureDelay: 0,
         pictureStyle: pictureStyles.FADE_IN,
-        picturePosition: {x: gameUtils.getPlayableWidth()*4/5, y: gameUtils.getCanvasHeight()/2},
+        picturePosition: {
+            x: gameUtils.getPlayableWidth() * 4 / 5,
+            y: gameUtils.getCanvasHeight() / 2
+        },
         pictureFadeSpeed: 5, //this is measured in letters since we approach opache per callback of the text timer
-        picutreOffset: {x: 0, y: 0},
+        picutreOffset: {
+            x: 0,
+            y: 0
+        },
     };
     $.extend(this, defaults, options);
 
-    if(this.interrupt) {
+    if (this.interrupt) {
         this.letterSpeed = 30;
     }
 
-    if(this.pauseAfterWord && !Array.isArray(this.pauseAfterWord)) {
+    if (this.pauseAfterWord && !Array.isArray(this.pauseAfterWord)) {
         this.pauseAfterWord = [this.pauseAfterWord];
     }
 
-    this.keypressSound = gameUtils.getSound('keypress1.wav', {volume: 0.25, rate: 1});
+    this.keypressSound = gameUtils.getSound('keypress1.wav', {
+        volume: 0.25,
+        rate: 1
+    });
 
     //pre-configure task settings
-    if(this.isTask) {
+    if (this.isTask) {
         this.actor = "Task";
         this.actorTint = 0x159500;
         this.delayAfterEnd = 0;
         this.letterSpeed = 30;
         this.fadeOutAfterDone = true;
-    } else if(this.isInfo) {
+    } else if (this.isInfo) {
         this.actor = "Info";
         this.actorTint = 0xffffff;
         this.letterSpeed = 30;
@@ -76,22 +98,32 @@ var Dialogue = function Dialogue(options) {
 
     //Upon play, we'll have a bit more info from having built the chain, so we need to setup things in here too
     this.play = function(options) {
-        if(this.killed || this.preventAutoStart) return;
+        if (this.killed || this.preventAutoStart) return;
 
-        if(this.isTask) {
+        if (this.isTask) {
             this.preventAutoEnd = !this.isContinuing;
             this.completeTask = function() {
-                if(!this.isContinuing) {
+                if (!this.isContinuing) {
                     this.preventAutoEnd = false;
                     this.speedUp();
                     this.onManualEnd = (deferred) => {
                         this.realizedActorText.text = "";
                         this.realizedText.text = "Excellent";
-                        graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.realizedText.width, y: this.realizedText.height});
-                        graphicsUtils.flashSprite({sprite: this.realizedText, duration: 40, pauseDurationAtEnds: 40, times: 4, toColor: 0x23afeb, onEnd: () => {
-                            deferred.resolve();
-                            this.realizedText.tint = 0x23afeb;
-                        }});
+                        graphicsUtils.makeSpriteSize(this.backgroundBox, {
+                            x: this.realizedText.width,
+                            y: this.realizedText.height
+                        });
+                        graphicsUtils.flashSprite({
+                            sprite: this.realizedText,
+                            duration: 40,
+                            pauseDurationAtEnds: 40,
+                            times: 4,
+                            toColor: 0x23afeb,
+                            onEnd: () => {
+                                deferred.resolve();
+                                this.realizedText.tint = 0x23afeb;
+                            }
+                        });
                     };
                 }
             };
@@ -101,44 +133,79 @@ var Dialogue = function Dialogue(options) {
 
         //Create the left space buffer (either explicitly defined or the actor text width)
         var spaceBuffer = "";
-        if(this.leftSpaceBuffer) {
-            for(let c = 0; c < this.leftSpaceBuffer; c++) {
+        if (this.leftSpaceBuffer) {
+            for (let c = 0; c < this.leftSpaceBuffer; c++) {
                 spaceBuffer += " ";
             }
         } else {
-            for(let c = 0; c < this.actorText.length; c++) {
+            for (let c = 0; c < this.actorText.length; c++) {
                 spaceBuffer += " ";
             }
         }
 
         //Realize text
-        if(this.title) {
-            this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.titleBeginPosition, style: this.titleStyle, where: "hudText", anchor: {x: 0, y: 0}});
+        if (this.title) {
+            this.realizedText = graphicsUtils.createDisplayObject("TEX+:" + this.text, {
+                position: this.titleBeginPosition,
+                style: this.titleStyle,
+                where: "hudText",
+                anchor: {
+                    x: 0,
+                    y: 0
+                }
+            });
             this.realizedText.position.y += (options.yOffset || 0);
-            this.realizedText.position.x = (gameUtils.getPlayableWidth()/2-this.realizedText.width/2);
+            this.realizedText.position.x = (gameUtils.getPlayableWidth() / 2 - this.realizedText.width / 2);
             this.fullTextWidth = this.realizedText.width;
             this.fullTextHeight = this.realizedText.height;
-        } else /*we are a main piece of text*/{
+        } else /*we are a main piece of text*/ {
             this.text = spaceBuffer + this.text;
-            this.realizedText = graphicsUtils.createDisplayObject("TEX+:"+this.text, {position: this.textBeginPosition, style: this.style, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedText = graphicsUtils.createDisplayObject("TEX+:" + this.text, {
+                position: this.textBeginPosition,
+                style: this.style,
+                where: "hudText",
+                anchor: {
+                    x: 0,
+                    y: 0
+                }
+            });
             this.realizedText.position.y += (options.yOffset || 0);
             this.fullTextWidth = this.realizedText.width;
             this.fullTextHeight = this.realizedText.height;
-            this.realizedActorText = graphicsUtils.createDisplayObject("TEX+:", {position: this.textBeginPosition, style: this.actorStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.realizedActorText = graphicsUtils.createDisplayObject("TEX+:", {
+                position: this.textBeginPosition,
+                style: this.actorStyle,
+                where: "hudText",
+                anchor: {
+                    x: 0,
+                    y: 0
+                }
+            });
             this.realizedActorText.position.y += (options.yOffset || 0);
-            if(this.actorTint) {
+            if (this.actorTint) {
                 this.realizedActorText.tint = this.actorTint;
             }
         }
 
         //create action text if specified
-        if(this.actionText) {
-            if(this.text.trim() == '') {
+        if (this.actionText) {
+            if (this.text.trim() == '') {
                 this.delayAfterEnd = 300;
             }
             this.actionText.word = spaceBuffer + this.actionText.word;
-            this.actionTextState = {started: false, done: false};
-            this.realizedActionText = graphicsUtils.createDisplayObject("TEX+:"+this.actionText.word, {position: this.textBeginPosition, style: this.actionStyle, where: "hudText", anchor: {x: 0, y: 0}});
+            this.actionTextState = {
+                started: false,
+                done: false
+            };
+            this.realizedActionText = graphicsUtils.createDisplayObject("TEX+:" + this.actionText.word, {
+                position: this.textBeginPosition,
+                style: this.actionStyle,
+                where: "hudText",
+                anchor: {
+                    x: 0,
+                    y: 0
+                }
+            });
             this.realizedActionText.alpha = 0;
             this.realizedActionText.position.y += (options.yOffset || 0);
             this.fullActionTextWidth = this.realizedActionText.width;
@@ -146,20 +213,41 @@ var Dialogue = function Dialogue(options) {
         }
         this.realizedText.resolution = 2;
 
-        if(this.picture) {
+        if (this.picture) {
             var picPosition = mathArrayUtils.clonePosition(this.picturePosition, this.pictureOffset);
-            this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {alpha: 0, position: picPosition, where: "hudText"});
-            this.realizedPictureBorder = graphicsUtils.createDisplayObject("CinemaBorder", {alpha: 0, position: picPosition, where: "hudText"});
-            graphicsUtils.makeSpriteSize(this.realizedPictureBorder, {x: this.realizedPicture.width, y: this.realizedPicture.height});
-            if(this.pictureSize) {
+            this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {
+                alpha: 0,
+                position: picPosition,
+                where: "hudText"
+            });
+            this.realizedPictureBorder = graphicsUtils.createDisplayObject("CinemaBorder", {
+                alpha: 0,
+                position: picPosition,
+                where: "hudText"
+            });
+            graphicsUtils.makeSpriteSize(this.realizedPictureBorder, {
+                x: this.realizedPicture.width,
+                y: this.realizedPicture.height
+            });
+            if (this.pictureSize) {
                 graphicsUtils.makeSpriteSize(this.realizedPictureBorder, this.pictureSize);
             }
             this.realizedPictureBorder.tint = 0x919191;
         }
 
-        if(this.backgroundBox) {
-            this.backgroundBox = graphicsUtils.addSomethingToRenderer('TintableSquare', {where: 'hudOne', position: this.realizedText.position, anchor: {x: 0, y: 0}});
-            graphicsUtils.makeSpriteSize(this.backgroundBox, {x: this.fullTextWidth, y: this.fullTextHeight});
+        if (this.backgroundBox) {
+            this.backgroundBox = graphicsUtils.addSomethingToRenderer('TintableSquare', {
+                where: 'hudOne',
+                position: this.realizedText.position,
+                anchor: {
+                    x: 0,
+                    y: 0
+                }
+            });
+            graphicsUtils.makeSpriteSize(this.backgroundBox, {
+                x: this.fullTextWidth,
+                y: this.fullTextHeight
+            });
             this.backgroundBox.tint = 0x181618;
         }
 
@@ -168,202 +256,209 @@ var Dialogue = function Dialogue(options) {
         var d = this;
         var generalTriggering = false;
         d.dialogueStarted = false;
-        this.textTimer = globals.currentGame.addTimer({name: 'dialogTap'+mathArrayUtils.getId(), gogogo: true, timeLimit: this.actorLetterSpeed,
-        callback: function() {
-            if(d.paused) return;
+        this.textTimer = globals.currentGame.addTimer({
+            name: 'dialogTap' + mathArrayUtils.getId(),
+            gogogo: true,
+            timeLimit: this.actorLetterSpeed,
+            callback: function() {
+                if (d.paused) return;
 
-            if(!d.dialogueStarted) {
-                d.dialogueStarted = true;
-                if(d.onStart) {
-                    d.onStart();
+                if (!d.dialogueStarted) {
+                    d.dialogueStarted = true;
+                    if (d.onStart) {
+                        d.onStart();
+                    }
                 }
-            }
-            if(d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter+d.pictureWordTrigger.length) == d.pictureWordTrigger) {
-                d.pictureTriggeredFromWord = true;
-            }
+                if (d.pictureWordTrigger && d.text.substring(currentLetter, currentLetter + d.pictureWordTrigger.length) == d.pictureWordTrigger) {
+                    d.pictureTriggeredFromWord = true;
+                }
 
-            if(!generalTriggering && d.generalWordTriggerCallback) {
-                if(d.generalWordTrigger) {
-                    if(d.text.substring(currentLetter, currentLetter+d.generalWordTrigger.length) == d.generalWordTrigger) {
+                if (!generalTriggering && d.generalWordTriggerCallback) {
+                    if (d.generalWordTrigger) {
+                        if (d.text.substring(currentLetter, currentLetter + d.generalWordTrigger.length) == d.generalWordTrigger) {
+                            generalTriggering = true;
+                            d.generalWordTriggerCallback();
+                        }
+                    } else {
                         generalTriggering = true;
                         d.generalWordTriggerCallback();
                     }
-                } else {
-                    generalTriggering = true;
-                    d.generalWordTriggerCallback();
                 }
-            }
 
-            //speed change
-            if(d.speedChangeAfterWord && d.text.substring(currentLetter-d.speedChangeAfterWord.word.length, currentLetter) == d.speedChangeAfterWord.word) {
-                d.letterSpeed = d.speedChangeAfterWord.speed;
-            }
-
-            //fade in picture
-            if((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger) ||
-                d.pictureTriggeredFromWord ||
-               (d.realizedPicture && d.skipped))
-            {
-                graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
-                graphicsUtils.addOrShowDisplayObject(d.realizedPictureBorder);
-                if(d.realizedPicture.alpha < 1.0) {
-                  d.realizedPicture.alpha += 1/d.pictureFadeSpeed;
-                  d.realizedPictureBorder.alpha += 1/d.pictureFadeSpeed;
-                  if(d.skipped) {
-                      d.realizedPicture.alpha = 1;
-                      d.realizedPictureBorder.alpha = 1;
-                  }
+                //speed change
+                if (d.speedChangeAfterWord && d.text.substring(currentLetter - d.speedChangeAfterWord.word.length, currentLetter) == d.speedChangeAfterWord.word) {
+                    d.letterSpeed = d.speedChangeAfterWord.speed;
                 }
-            }
 
-            graphicsUtils.addOrShowDisplayObject(d.realizedText);
-            if(currentLetter < d.text.length) {
-                var actorTextDone = currentLetter == d.actorText.length-1;
-                //if our actor is fulfilled, let's see if our actor needs to idle before continuing to the dialogue
-                if(d.realizedActorText && d.actorIdleTime && actorTextDone) {
-                    if(!d.actorIdlingBegan) {
-                        d.actorIdleBeats = d.actorIdleTime*2;
-                        d.actorIdlingBegan = true;
+                //fade in picture
+                if ((d.pictureDelay <= this.totalElapsedTime && d.realizedPicture && !d.pictureWordTrigger) ||
+                    d.pictureTriggeredFromWord ||
+                    (d.realizedPicture && d.skipped)) {
+                    graphicsUtils.addOrShowDisplayObject(d.realizedPicture);
+                    graphicsUtils.addOrShowDisplayObject(d.realizedPictureBorder);
+                    if (d.realizedPicture.alpha < 1.0) {
+                        d.realizedPicture.alpha += 1 / d.pictureFadeSpeed;
+                        d.realizedPictureBorder.alpha += 1 / d.pictureFadeSpeed;
+                        if (d.skipped) {
+                            d.realizedPicture.alpha = 1;
+                            d.realizedPictureBorder.alpha = 1;
+                        }
                     }
-                    var thinkingText = ' .';
-                    if(d.actorIdleBeats % 2 == 0) {
-                        thinkingText = '';
-                        d.actorIdleTime--;
-                    }
-
-                    d.actorIdleBeats--;
-                    d.realizedText.text = d.text.substring(0, currentLetter) + thinkingText;
-                    this.timeLimit = d.actorIdleSpeed || d.letterSpeed;
-                    return;
                 }
 
-                //let's play our action word if our actor is done
-                //handle action text (action text will occur first and then disappear over time, releasing the dialogue text upon totally fading)
-                if(actorTextDone && d.actionTextState && !d.actionTextState.done) {
-                    if(!d.actionTextState.started) {
-                        d.actionTextState.started = true;
-
-                        //default is to fade in then back out
-                        var fadingIn = true;
-                        var runs = 2;
-                        var duration = d.actionText.actionDuration ? d.actionText.actionDuration/2 : 2000;
-                        var top = 1.5;
-
-                        if(d.actionText.fadeOutOnly) {
-                            d.realizedActionText.alpha = 1.0;
-                            runs = 1;
-                            duration = d.actionText.actionDuration;
-                            fadingIn = false;
-                            top = 1.0;
+                graphicsUtils.addOrShowDisplayObject(d.realizedText);
+                if (currentLetter < d.text.length) {
+                    var actorTextDone = currentLetter == d.actorText.length - 1;
+                    //if our actor is fulfilled, let's see if our actor needs to idle before continuing to the dialogue
+                    if (d.realizedActorText && d.actorIdleTime && actorTextDone) {
+                        if (!d.actorIdlingBegan) {
+                            d.actorIdleBeats = d.actorIdleTime * 2;
+                            d.actorIdlingBegan = true;
+                        }
+                        var thinkingText = ' .';
+                        if (d.actorIdleBeats % 2 == 0) {
+                            thinkingText = '';
+                            d.actorIdleTime--;
                         }
 
-                        var minAlpha = 0;
-                        if(d.actionText.leaveTrace) {
-                            minAlpha = 0.2;
-                        }
-                        d.actionTextTimer = globals.currentGame.addTimer({name: 'dialogueActionFade:' + mathArrayUtils.getId(), runs: runs, killsSelf: true, timeLimit: duration,
-                            tickCallback: function(delta) {
-                                if(fadingIn) {
-                                    d.realizedActionText.alpha = this.percentDone * top;
-                                } else {
-                                    d.realizedActionText.alpha = Math.max(minAlpha, top-(this.percentDone*top));
+                        d.actorIdleBeats--;
+                        d.realizedText.text = d.text.substring(0, currentLetter) + thinkingText;
+                        this.timeLimit = d.actorIdleSpeed || d.letterSpeed;
+                        return;
+                    }
+
+                    //let's play our action word if our actor is done
+                    //handle action text (action text will occur first and then disappear over time, releasing the dialogue text upon totally fading)
+                    if (actorTextDone && d.actionTextState && !d.actionTextState.done) {
+                        if (!d.actionTextState.started) {
+                            d.actionTextState.started = true;
+
+                            //default is to fade in then back out
+                            var fadingIn = true;
+                            var runs = 2;
+                            var duration = d.actionText.actionDuration ? d.actionText.actionDuration / 2 : 2000;
+                            var top = 1.5;
+
+                            if (d.actionText.fadeOutOnly) {
+                                d.realizedActionText.alpha = 1.0;
+                                runs = 1;
+                                duration = d.actionText.actionDuration;
+                                fadingIn = false;
+                                top = 1.0;
+                            }
+
+                            var minAlpha = 0;
+                            if (d.actionText.leaveTrace) {
+                                minAlpha = 0.2;
+                            }
+                            d.actionTextTimer = globals.currentGame.addTimer({
+                                name: 'dialogueActionFade:' + mathArrayUtils.getId(),
+                                runs: runs,
+                                killsSelf: true,
+                                timeLimit: duration,
+                                tickCallback: function(delta) {
+                                    if (fadingIn) {
+                                        d.realizedActionText.alpha = this.percentDone * top;
+                                    } else {
+                                        d.realizedActionText.alpha = Math.max(minAlpha, top - (this.percentDone * top));
+                                    }
+                                },
+                                callback: function() {
+                                    fadingIn = !fadingIn;
+                                },
+                                totallyDoneCallback: function() {
+                                    d.realizedActionText.alpha = minAlpha;
+                                    d.actionTextState.done = true;
                                 }
-                            },
-                            callback: function() {
-                                fadingIn = !fadingIn;
-                            },
-                            totallyDoneCallback: function() {
-                                d.realizedActionText.alpha = minAlpha;
-                                d.actionTextState.done = true;
+                            });
+                            graphicsUtils.addOrShowDisplayObject(d.realizedActionText);
+                        }
+                        return;
+                    }
+
+                    //process text
+                    //first check if we have left space buffer, which we'll immediately satisfy
+                    if (currentLetter < d.leftSpaceBuffer) {
+                        currentLetter = d.leftSpaceBuffer;
+                    }
+                    d.realizedText.text = d.text.substring(0, ++currentLetter);
+                    for (var i = currentLetter; i < d.text.length; i++) {
+                        d.realizedText.text += " ";
+                    }
+
+                    if (d.realizedActorText && currentLetter < d.actorText.length) {
+                        graphicsUtils.addOrShowDisplayObject(d.realizedActorText);
+                        d.realizedActorText.text = d.actorText.substring(0, currentLetter);
+                        d.currentLetterSpeed = d.actorLetterSpeed;
+                    } else {
+                        if (d.text.substring(currentLetter, currentLetter + 1) != '') {
+                            if (!d.skipSound) {
+                                d.keypressSound.play();
+                            }
+                        }
+                        this.timeLimit = d.letterSpeed;
+                        d.currentLetterSpeed = d.letterSpeed;
+                    }
+
+                    //pause at periods/commas, this includes 'end periods' even in ellipses.
+                    if (d.pauseAtPeriods && d.text.substring(currentLetter - 1, currentLetter) == '.' && d.text.substring(currentLetter, currentLetter + 1) == ' ') {
+                        this.timeLimit = d.letterSpeed * 5;
+                    } else if (d.pauseAtCommas && d.text.substring(currentLetter - 1, currentLetter) == ',' && d.text.substring(currentLetter, currentLetter + 1) == ' ') {
+                        this.timeLimit = d.letterSpeed * 3;
+                    } else {
+                        this.timeLimit = d.currentLetterSpeed;
+                    }
+
+                    //custom pause
+                    var timer = this;
+                    if (d.pauseAfterWord) {
+                        d.pauseAfterWord.forEach(function(pauseWord) {
+                            if (!pauseWord.done && d.text.substring(currentLetter - pauseWord.word.length, currentLetter) == pauseWord.word) {
+                                timer.timeLimit = pauseWord.duration;
+                                pauseWord.done = true;
                             }
                         });
-                        graphicsUtils.addOrShowDisplayObject(d.realizedActionText);
                     }
-                    return;
-                }
 
-                //process text
-                //first check if we have left space buffer, which we'll immediately satisfy
-                if(currentLetter < d.leftSpaceBuffer) {
-                    currentLetter = d.leftSpaceBuffer;
-                }
-                d.realizedText.text = d.text.substring(0, ++currentLetter);
-                for(var i = currentLetter; i < d.text.length; i++) {
-                    d.realizedText.text += " ";
-                }
-
-                if(d.realizedActorText && currentLetter < d.actorText.length) {
-                    graphicsUtils.addOrShowDisplayObject(d.realizedActorText);
-                    d.realizedActorText.text = d.actorText.substring(0, currentLetter);
-                    d.currentLetterSpeed = d.actorLetterSpeed;
-                } else {
-                    if(d.text.substring(currentLetter, currentLetter+1) != '') {
-                        if(!d.skipSound) {
-                            d.keypressSound.play();
+                    if (currentLetter == d.text.length) {
+                        d.fullyShown = true;
+                        if (d.onFullyShown && !d.alreadyTriggeredFullyShown) {
+                            d.alreadyTriggeredFullyShown = true;
+                            d.onFullyShown();
+                        }
+                        d.resolveTime = this.totalElapsedTime;
+                        if (d.skipped) {
+                            d.resolveTime = 0; //this basically voids any delayAfterEnd
                         }
                     }
-                    this.timeLimit = d.letterSpeed;
-                    d.currentLetterSpeed = d.letterSpeed;
-                }
+                } else if (this.totalElapsedTime >= d.resolveTime && (!d.realizedPicture || (d.realizedPicture && d.realizedPicture.alpha >= 1.0))) {
+                    if (d.next && d.next.preventAutoStart) {
+                        return;
+                    }
 
-                //pause at periods/commas, this includes 'end periods' even in ellipses.
-                if(d.pauseAtPeriods && d.text.substring(currentLetter-1, currentLetter) == '.' && d.text.substring(currentLetter, currentLetter+1) == ' ') {
-                    this.timeLimit = d.letterSpeed * 5;
-                } else if(d.pauseAtCommas && d.text.substring(currentLetter-1, currentLetter) == ',' && d.text.substring(currentLetter, currentLetter+1) == ' ') {
-                    this.timeLimit = d.letterSpeed * 3;
-                } else {
-                    this.timeLimit = d.currentLetterSpeed;
-                }
+                    if (d.preventAutoEnd || d.done) {
+                        return;
+                    }
 
-                //custom pause
-                var timer = this;
-                if(d.pauseAfterWord) {
-                    d.pauseAfterWord.forEach(function(pauseWord) {
-                        if(!pauseWord.done && d.text.substring(currentLetter-pauseWord.word.length, currentLetter) == pauseWord.word) {
-                            timer.timeLimit = pauseWord.duration;
-                            pauseWord.done = true;
+                    d.done = true;
+                    gameUtils.doSomethingAfterDuration(() => {
+                        if (d.fadeOutAfterDone && !d.isContinuing) {
+                            d.realizedText.alpha = 0.5;
+                            d.realizedActorText.alpha = 0.5;
+                            d.backgroundBox.alpha = 0.5;
                         }
-                    });
+                        if (d.onManualEnd) {
+                            d.onManualEnd(d.deferred);
+                        } else if (d.onEndExtension) {
+                            d.onEndExtension();
+                            d.deferred.resolve();
+                        } else {
+                            d.deferred.resolve();
+                        }
+                    }, d.delayAfterEnd);
                 }
-
-                if(currentLetter == d.text.length) {
-                    d.fullyShown = true;
-                    if(d.onFullyShown && !d.alreadyTriggeredFullyShown) {
-                        d.alreadyTriggeredFullyShown = true;
-                        d.onFullyShown();
-                    }
-                    d.resolveTime = this.totalElapsedTime;
-                    if(d.skipped) {
-                        d.resolveTime = 0; //this basically voids any delayAfterEnd
-                    }
-                }
-            } else if(this.totalElapsedTime >= d.resolveTime && (!d.realizedPicture || (d.realizedPicture && d.realizedPicture.alpha >= 1.0))){
-                if(d.next && d.next.preventAutoStart) {
-                    return;
-                }
-
-                if(d.preventAutoEnd || d.done) {
-                    return;
-                }
-
-                d.done = true;
-                gameUtils.doSomethingAfterDuration(() => {
-                    if(d.fadeOutAfterDone && !d.isContinuing) {
-                        d.realizedText.alpha = 0.5;
-                        d.realizedActorText.alpha = 0.5;
-                        d.backgroundBox.alpha = 0.5;
-                    }
-                    if(d.onManualEnd) {
-                        d.onManualEnd(d.deferred);
-                    } else if(d.onEndExtension) {
-                        d.onEndExtension();
-                        d.deferred.resolve();
-                    } else {
-                        d.deferred.resolve();
-                    }
-                }, d.delayAfterEnd);
             }
-        }});
+        });
     };
 
     this.cleanUp = function() {
@@ -387,19 +482,19 @@ var Dialogue = function Dialogue(options) {
 
     //this stops the text increment timer
     this.leaveText = function() {
-      globals.currentGame.invalidateTimer(this.textTimer);
-  };
+        globals.currentGame.invalidateTimer(this.textTimer);
+    };
 
     this.speedUp = function(doneCallback) {
-        if(!this.dialogueStarted) return;
-        if(!this.isTask && this.fullyShown) {
+        if (!this.dialogueStarted) return;
+        if (!this.isTask && this.fullyShown) {
             this.preventAutoEnd = false;
         }
         this.skipped = true;
         this.delayAfterEnd = 0;
         this.resolveTime = 0;
         this.textTimer.skipToEnd = true;
-        if(this.actionTextTimer) {
+        if (this.actionTextTimer) {
             this.actionTextTimer.skipToEnd = true;
         }
         this.skipSound = true;
@@ -420,33 +515,33 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         var len = arrayOfDialogues.length;
         var deferreds = [];
 
-        for(var i = 0; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             arrayOfDialogues[i].deferred = $.Deferred();
         }
 
         //setup chain
         var currentBreak = 0;
-        for(var j = 0; j < len; j++) {
+        for (var j = 0; j < len; j++) {
             let currentIndex = j;
-            let nextIndex = j+1;
+            let nextIndex = j + 1;
             let currentDia = arrayOfDialogues[j];
             let nextDia = arrayOfDialogues[nextIndex];
 
             currentDia.next = nextDia;
 
             //lookback to comprehend continuations
-            if(nextDia && nextDia.continuation) {
+            if (nextDia && nextDia.continuation) {
                 currentDia.isContinuing = true;
                 nextDia.leftSpaceBuffer = currentDia.actorText.length;
             }
 
-            if(j + 1 < len) {
+            if (j + 1 < len) {
                 currentDia.deferred.done(() => {
                     currentDia.leaveText();
                 });
 
                 //if our current dialogue is a break, set current break
-                if(currentDia.newBreak) {
+                if (currentDia.newBreak) {
                     currentBreak = currentIndex;
                 }
 
@@ -454,24 +549,26 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 let yOffset = this.dialogSpacing * (j - currentBreak + 1);
 
                 currentDia.deferred.done(() => {
-                    if(nextDia.newBreak) {
+                    if (nextDia.newBreak) {
                         //if the next dialogue is breaking, determine the location
                         yOffset = this.dialogSpacing * (0);
 
                         //when we play a next, breaking dialogue, cleanup previous dialogues
                         this.arrayOfDialogues.forEach((dialogue, index) => {
-                            if(index < nextIndex) {
+                            if (index < nextIndex) {
                                 dialogue.cleanUp();
                             }
                         });
                     }
-                    nextDia.play({yOffset: yOffset});
+                    nextDia.play({
+                        yOffset: yOffset
+                    });
                 });
                 currentDia.deferred.done(function() {
                     this.currentDia = nextDia;
                 }.bind(this));
             } else {
-                if(this.done) {
+                if (this.done) {
                     this.isDone = true;
                     currentDia.deferred.done(this.done);
                 }
@@ -487,9 +584,9 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
         //escape to speed up current line
         $('body').on('keydown.' + 'speedUpChain:' + this.id, function(event) {
             var key = event.key.toLowerCase();
-            if(key == 'escape') {
-                if(this.currentDia) {
-                    if(this.escapeExtension) {
+            if (key == 'escape') {
+                if (this.currentDia) {
+                    if (this.escapeExtension) {
                         this.escapeExtension();
                     }
                     this.currentDia.speedUp();
@@ -511,7 +608,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
             dialogue.cleanUp();
         });
 
-        if(!this.isDone && this.done) {
+        if (!this.isDone && this.done) {
             this.isDone = true;
             this.done();
         }
@@ -525,4 +622,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
     };
 };
 
-export {Dialogue, DialogueChain};
+export {
+    Dialogue,
+    DialogueChain
+};

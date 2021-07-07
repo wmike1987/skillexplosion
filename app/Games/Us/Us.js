@@ -67,13 +67,6 @@ var game = {
     worlds: [campNoir],
     currentCamp: null,
     currentScene: null,
-    itemClasses: {
-        worn: ['RingOfThought', 'RingOfRenewal', 'SturdyCanteen', 'BootsOfHaste', 'PepPill'],
-        rugged: ['SteadySyringe', 'MaskOfRage', 'RuggedCanteen', 'RichPepPill', 'MedalOfGrit', 'MedalOfMerit'],
-        burnished: ['SereneStar'],
-        gleaming: ['GleamingCanteen'],
-        other: ['TechnologyKey'],
-    },
 
     initExtension: function() {
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
@@ -118,11 +111,11 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'EnterLevel', function(event) {
-            this.inLevel = true;
+            this.levelInPlay = true;
         }.bind(this));
 
         Matter.Events.on(this, 'VictoryOrDefeat', function(event) {
-            this.inLevel = false;
+            this.levelInPlay = false;
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
@@ -157,10 +150,11 @@ var game = {
             //cleanup and reset the previous unit spawner
             var node = event.node;
             this.setCurrentLevel(node.levelDetails);
+            let timeLimit = this.map.isAdrenalineOn() ? 150 : 75;
             this.fatigueTimer = this.addTimer({
                 name: 'fatigueTimer',
                 gogogo: true,
-                timeLimit: 75,
+                timeLimit: timeLimit,
                 callback: function() {
                     this.unitsInPlay.forEach((unit) => {
                         unit.fatigue += 1;
