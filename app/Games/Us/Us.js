@@ -150,7 +150,7 @@ var game = {
             //cleanup and reset the previous unit spawner
             var node = event.node;
             this.setCurrentLevel(node.levelDetails);
-            let timeLimit = this.map.isAdrenalineOn() ? 150 : 75;
+            let timeLimit = 75 + this.map.adrenaline * 25;
             this.fatigueTimer = this.addTimer({
                 name: 'fatigueTimer',
                 gogogo: true,
@@ -446,7 +446,7 @@ var game = {
         unit.canMove = true;
         unit.canAttack = true;
         unit.isSelectable = true;
-        
+
         if (moveToCenter) {
             unit.ignoreEnergyRegeneration = true;
             unit.ignoreHealthRegeneration = true;

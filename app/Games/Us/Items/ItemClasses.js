@@ -7,13 +7,13 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 var ItemClasses = {
     worn: {
         item: {tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion',
-                                       'PepPill', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
+                                       'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
         microchip: {tint: 0xf59a87, items: ['BasicMicrochip']},
         specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge']},
     },
 
     rugged: {
-        item: {tint: 0xffffff, items: ['LightBoots', 'RuggedCanteen', 'RichPepPill', 'MedalOfGrit', 'MedalOfMerit']},
+        item: {tint: 0xffffff, items: ['LightBoots', 'RuggedCanteen', 'SharpPictureOfEarth', 'MedalOfGrit', 'MedalOfMerit']},
         microchip: {tint: 0xa77e16, items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip']},
         specialtyItem: {tint: 0x1e9489, items: ['SereneStar', 'GreenTipCartridge']},
     },

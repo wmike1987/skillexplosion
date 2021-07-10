@@ -7,9 +7,9 @@ var manipulations = {
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Rich Pep Pill",
+        name: "Sharp Picture Of Earth",
         description: "Add +" + manipulations.maxEnergy + " to maximum energy.",
-        icon: 'RichPepPill'
+        icon: 'SharpPictureOfEarth'
     }, options);
     return new ic(item);
 }

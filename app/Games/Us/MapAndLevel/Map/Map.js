@@ -85,10 +85,7 @@ var map = function(specs) {
 
     //manage adrenaline
     this.adrenaline = 0;
-    this.adrenalineStart = 4;
-    this.isAdrenalineOn = function() {
-        return this.adrenaline >= this.adrenalineStart;
-    };
+    this.adrenalineMax = 4;
     this.adrenalineText = graphicsUtils.createDisplayObject("TEX+:" + 'Adrenaline', {
         position: {
             x: 90,
@@ -97,9 +94,16 @@ var map = function(specs) {
         style: styles.adrenalineText,
         where: "hudNOne"
     });
+    Tooltip.makeTooltippable(this.adrenalineText, {
+        showInfoCursor: true,
+        title: 'Adrenaline',
+        descriptions: ['Adrenaline reduces travel fatigue.'],
+        systemMessage: ['Adrenaline is gained/lost by winning/losing a level.', 'Returning to camp resets adrenaline.']
+    });
     this.adrenalineBlocks = [];
+    this.removedAdrenalineBlocks = [];
     this.addAdrenalineBlock = function() {
-        if(this.adrenaline == this.adrenalineStart) {
+        if (this.adrenaline >= this.adrenalineMax) {
             return;
         }
         this.adrenaline += 1;
@@ -111,28 +115,41 @@ var map = function(specs) {
             },
             where: "hudNOne",
             tint: 0xd72e75,
-            scale: {x: 7, y: 7}
+            scale: {
+                x: 7,
+                y: 7
+            }
         });
         newBlock.justAdded = true;
         this.adrenalineBlocks.push(newBlock);
     };
 
+    this.removeAdrenalineBlock = function() {
+        if (this.adrenaline == 0) {
+            return;
+        }
+        let lastBlock = this.adrenalineBlocks[this.adrenalineBlocks.length - 1];
+        mathArrayUtils.removeObjectFromArray(lastBlock, this.adrenalineBlocks);
+        this.removedAdrenalineBlocks.push(lastBlock);
+        this.adrenaline -= 1;
+    };
+
     Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
-        if(event.level.isCampProper) {
+        if (event.level.isCampProper) {
             this.adrenalineBlocks.forEach((item, i) => {
                 graphicsUtils.removeSomethingFromRenderer(item);
             });
             this.adrenaline = 0;
-            this.adrenalineBlocks = []
+            this.adrenalineBlocks = [];
         }
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function(event) {
-        if(event.result == 'win') {
+        if (event.result == 'win') {
             this.startingFatigue += 5;
             this.addAdrenalineBlock();
         } else {
-            this.adrenaline = 0;
+            this.removeAdrenalineBlock();
         }
     }.bind(this));
 
@@ -267,16 +284,42 @@ var map = function(specs) {
         graphicsUtils.addOrShowDisplayObject(this.fatigueText);
 
         graphicsUtils.addOrShowDisplayObject(this.adrenalineText);
-        if(this.adrenalineBlocks.length > 0) {
-            graphicsUtils.addGleamToSprite({sprite: this.adrenalineText, gleamWidth: 50, duration: 1250});
+        if (this.adrenalineBlocks.length > 0) {
+            graphicsUtils.addGleamToSprite({
+                sprite: this.adrenalineText,
+                gleamWidth: 50,
+                duration: 1250
+            });
         }
+
         this.adrenalineBlocks.forEach((item, i) => {
             graphicsUtils.addOrShowDisplayObject(item);
-            if(item.justAdded) {
-                graphicsUtils.flashSprite({sprite: item, fromColor: item.tint, toColor: 0xFFFFFF, duration: 100, times: 10});
+            if (item.justAdded) {
+                graphicsUtils.flashSprite({
+                    sprite: item,
+                    fromColor: item.tint,
+                    toColor: 0xFFFFFF,
+                    duration: 100,
+                    times: 8
+                });
                 item.justAdded = false;
             }
         });
+
+        this.removedAdrenalineBlocks.forEach((item, i) => {
+            graphicsUtils.addOrShowDisplayObject(item);
+            graphicsUtils.flashSprite({
+                sprite: item,
+                fromColor: item.tint,
+                toColor: 0x464646,
+                duration: 150,
+                times: 8,
+                onEnd: () => {
+                    graphicsUtils.removeSomethingFromRenderer(item);
+                }
+            });
+        });
+        this.removedAdrenalineBlocks = [];
 
         Matter.Events.trigger(this, 'showMap', {});
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
@@ -306,7 +349,7 @@ var map = function(specs) {
         this.fatigueText.visible = false;
         this.adrenalineText.visible = false;
         this.adrenalineBlocks.forEach((item, i) => {
-            item.visible = false
+            item.visible = false;
         });
     };
 
