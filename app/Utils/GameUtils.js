@@ -1278,10 +1278,11 @@ var graphicsUtils = {
             sprite = options.sprite;
         }
         var times = options.times || 4;
+        var fromColor = options.fromColor || 0xFFFFFF;
         var toColor = options.toColor || 0xf20000;
         var duration = options.duration || 100;
         var pauseDurationAtEnds = options.pauseDurationAtEnds || 0;
-        return this.graduallyTint(sprite, 0xFFFFFF, toColor, duration, null, pauseDurationAtEnds, times, options.onEnd);
+        return this.graduallyTint(sprite, fromColor, toColor, duration, null, pauseDurationAtEnds, times, options.onEnd);
     },
 
     shakeSprite: function(sprite, duration) {

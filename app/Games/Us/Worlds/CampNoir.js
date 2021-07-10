@@ -181,6 +181,7 @@ var camp = {
         } else {
             this.mapTableActive = true;
         }
+        this.mapTableActive = true;
 
         //we want to nudge the player to the map if we're entering camp noir proper for the first time
         //aka not during ursula tasks and not quite during the skipped tutorial since we have a slight delay

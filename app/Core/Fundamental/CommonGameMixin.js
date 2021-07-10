@@ -257,6 +257,7 @@ var common = {
                         return;
                     }
                     console.info(this.debugObj.playableCenterOffset);
+                    this.map.addAdrenalineBlock();
                     // const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
                     // this.transitionSprite = new PIXI.Sprite(renderTexture);
                     // var rStage = this.renderer.pixiApp.stage;

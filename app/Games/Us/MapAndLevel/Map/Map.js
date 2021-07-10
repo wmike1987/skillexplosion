@@ -60,11 +60,6 @@ var map = function(specs) {
     // Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(campLocation, {y: 20}));
 
     //setup fatigue functionality
-    this.adrenaline = 0;
-    this.adrenalineStart = 99;
-    this.isAdrenalineOn = function() {
-        return this.adrenaline >= this.adrenalineStart;
-    };
     this.startingFatigue = 0;
     this.fatigueText = graphicsUtils.createDisplayObject("TEX+:" + 'Fatigue: 0%', {
         position: {
@@ -88,17 +83,54 @@ var map = function(specs) {
         }
     });
 
-    //manage adrenaline count
+    //manage adrenaline
+    this.adrenaline = 0;
+    this.adrenalineStart = 4;
+    this.isAdrenalineOn = function() {
+        return this.adrenaline >= this.adrenalineStart;
+    };
+    this.adrenalineText = graphicsUtils.createDisplayObject("TEX+:" + 'Adrenaline', {
+        position: {
+            x: 90,
+            y: 622
+        },
+        style: styles.adrenalineText,
+        where: "hudNOne"
+    });
+    this.adrenalineBlocks = [];
+    this.addAdrenalineBlock = function() {
+        if(this.adrenaline == this.adrenalineStart) {
+            return;
+        }
+        this.adrenaline += 1;
+        let offset = 18;
+        let newBlock = graphicsUtils.createDisplayObject('TintableSquare', {
+            position: {
+                x: 48 + this.adrenaline * offset,
+                y: 645.5
+            },
+            where: "hudNOne",
+            tint: 0xd72e75,
+            scale: {x: 7, y: 7}
+        });
+        newBlock.justAdded = true;
+        this.adrenalineBlocks.push(newBlock);
+    };
+
     Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
         if(event.level.isCampProper) {
+            this.adrenalineBlocks.forEach((item, i) => {
+                graphicsUtils.removeSomethingFromRenderer(item);
+            });
             this.adrenaline = 0;
+            this.adrenalineBlocks = []
         }
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function(event) {
         if(event.result == 'win') {
             this.startingFatigue += 5;
-            this.adrenaline += 1;
+            this.addAdrenalineBlock();
         } else {
             this.adrenaline = 0;
         }
@@ -234,6 +266,18 @@ var map = function(specs) {
         graphicsUtils.addOrShowDisplayObject(this.headTokenSprite);
         graphicsUtils.addOrShowDisplayObject(this.fatigueText);
 
+        graphicsUtils.addOrShowDisplayObject(this.adrenalineText);
+        if(this.adrenalineBlocks.length > 0) {
+            graphicsUtils.addGleamToSprite({sprite: this.adrenalineText, gleamWidth: 50, duration: 1250});
+        }
+        this.adrenalineBlocks.forEach((item, i) => {
+            graphicsUtils.addOrShowDisplayObject(item);
+            if(item.justAdded) {
+                graphicsUtils.flashSprite({sprite: item, fromColor: item.tint, toColor: 0xFFFFFF, duration: 100, times: 10});
+                item.justAdded = false;
+            }
+        });
+
         Matter.Events.trigger(this, 'showMap', {});
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
     };
@@ -260,6 +304,10 @@ var map = function(specs) {
 
         this.headTokenSprite.visible = false;
         this.fatigueText.visible = false;
+        this.adrenalineText.visible = false;
+        this.adrenalineBlocks.forEach((item, i) => {
+            item.visible = false
+        });
     };
 
     this.allowMouseEvents = function(value) {

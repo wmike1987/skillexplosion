@@ -359,6 +359,17 @@ export default {
 	    strokeThickness: 1
 	}),
 
+	adrenalineText:  new PIXI.TextStyle({
+		name: 'adrenalineText',
+		fill: "#d22a7b",
+		fontSize: 15,
+		fontStyle: "italic",
+		fontWeight: "lighter",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 1
+	}),
+
 	critHitText: new PIXI.TextStyle({
 		name: 'critHitText',
 	    dropShadowAlpha: 0.6,

@@ -80,13 +80,28 @@ export default {
         this.death = revivableDeath;
     },
 
+    softRevive: function() {
+        globals.currentGame.invalidateTimer(this.reviveTimer);
+        graphicsUtils.removeSomethingFromRenderer(this.grave);
+        graphicsUtils.removeSomethingFromRenderer(this.gravePercentageText);
+
+        this.gravePercentageText = null;
+        this.graveIsFlashing = false;
+
+        this.isDead = false;
+        this.isTargetable = true;
+        this.isSelectable = true;
+        this.canAttack = true;
+        this.canMove = true;
+    },
+
     revive: function(revivingUnit) {
         globals.currentGame.invalidateTimer(this.reviveTimer);
         graphicsUtils.removeSomethingFromRenderer(this.grave);
         graphicsUtils.removeSomethingFromRenderer(this.gravePercentageText);
 
         this.gravePercentageText = null;
-        this.graveIsFlashing = false
+        this.graveIsFlashing = false;
 
         this.isDead = false;
         this.currentEnergy = this.maxEnergy/2;
