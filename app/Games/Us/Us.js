@@ -106,6 +106,12 @@ var game = {
             }
         });
 
+        Matter.Events.on(this, 'showMap', function(event) {
+            if(this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
+                this.currentPhaseObj.onMapAction();
+            }
+        }.bind(this));
+
         Matter.Events.on(this, 'LevelLocalEntityCreated', function(event) {
             this.levelLocalEntities.push(event.entity);
         }.bind(this));
@@ -220,7 +226,7 @@ var game = {
     },
 
     nextPhase: function(options) {
-        this.currentWorld.phases[this.currentPhase](options);
+        this.currentPhaseObj = this.currentWorld.phases[this.currentPhase](options);
         this.currentPhase++;
     },
 
@@ -257,45 +263,35 @@ var game = {
         this.unitSystem.pause();
         this.unitSystem.deselectUnit(this.shane);
         this.unitSystem.deselectUnit(this.ursula);
-        var vScreen = new EndLevelScreen({
-            shane: this.shane,
-            ursula: this.ursula
-        }, collectors, {
-            type: defeat ? 'defeat' : 'victory'
-        });
-        var vScene = vScreen.createScene({});
-        this.currentScene.transitionToScene(vScene);
 
-        var escapeBehavior = function() {
+        //determine spaceToContinueBehavior
+        var spaceToContinueBehavior = function() {
             this.map.show();
             this.map.allowMouseEvents(false);
+            var blankScene = new Scene();
             this.currentScene.transitionToScene({
                 newScene: blankScene,
                 fadeIn: true
             });
+            gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
+                this.map.allowMouseEvents(true);
+            });
         }.bind(this);
 
-        var handler = gameUtils.matterOnce(globals.currentGame, "TravelReset", function(event) {
-            if (event.resetToNode.type == 'camp') {
-                escapeBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
-            }
-        }.bind(this));
+        if(this.map.currentNode.type == 'camp') {
+            spaceToContinueBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
+        }
 
-        var blankScene = new Scene();
-        Matter.Events.on(this.currentScene, 'sceneFadeInDone', () => {
-            $('body').on('keydown.uskeydown', function(event) {
-                var key = event.key.toLowerCase();
-                if (key == ' ') {
-                    $('body').off('keydown.uskeydown');
-                    escapeBehavior();
-                }
-                handler.removeHandler();
-            }.bind(this));
+        //create end level screen and transition
+        var vScreen = new EndLevelScreen({
+            shane: this.shane,
+            ursula: this.ursula
+        }, collectors, {
+            type: defeat ? 'defeat' : 'victory',
+            done: spaceToContinueBehavior
         });
-
-        gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
-            this.map.allowMouseEvents(true);
-        });
+        var vScene = vScreen.createScene({});
+        this.currentScene.transitionToScene(vScene);
 
         return vScene;
     },

@@ -51,9 +51,17 @@ var camp = {
     intro: CampNoirIntro,
 
     initExtension: function() {
-        this.noZones = [
-            {center: gameUtils.getPlayableCenter(), radius: 300},
-            {center: gameUtils.getPlayableCenterPlus({x: -150, y: -150}), radius: 200}
+        this.noZones = [{
+                center: gameUtils.getPlayableCenter(),
+                radius: 300
+            },
+            {
+                center: gameUtils.getPlayableCenterPlus({
+                    x: -150,
+                    y: -150
+                }),
+                radius: 200
+            }
         ];
     },
 
@@ -76,7 +84,9 @@ var camp = {
         var objs = [];
         var tent = new Doodad({
             drawWire: false,
-            bodyScale: {y: 0.35},
+            bodyScale: {
+                y: 0.35
+            },
             collides: true,
             autoAdd: false,
             radius: 120,
@@ -176,17 +186,16 @@ var camp = {
 
     //This one is a little complicated since there are so many ways to enter camp noir
     onLevelPlayable: function(scene) {
-        if(this.mapTableFalseSetting) {
+        if (this.mapTableFalseSetting) {
             this.mapTableActive = false;
         } else {
             this.mapTableActive = true;
         }
-        this.mapTableActive = true;
 
-        //we want to nudge the player to the map if we're entering camp noir proper for the first time
-        //aka not during ursula tasks and not quite during the skipped tutorial since we have a slight delay
+        //we want to nudge the player to the map if we're entering camp noir proper for the first time.
+        //But not during ursula tasks and not quite during the skipped tutorial since we have a slight delay
         //before we want to nudge the player when they skip
-        if(this.completedUrsulaTasks && !this.skippedTutorial && !this.mapTableNudge) {
+        if (this.completedUrsulaTasks && !this.skippedTutorial && !this.mapTableNudge) {
             this.mapTableNudge = true;
             var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTable, -20, 0.5);
             gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
@@ -194,21 +203,31 @@ var camp = {
             });
         }
 
-        if(!this.completedUrsulaTasks) {
+        if (!this.completedUrsulaTasks) {
             this.mapTableActive = false;
             globals.currentGame.shane.isSelectable = false;
-            if(!globals.currentGame.ursula) {
+            if (!globals.currentGame.ursula) {
                 globals.currentGame.initUrsula();
-                globals.currentGame.ursula.position = {x: 800, y: 350};
+                globals.currentGame.ursula.position = {
+                    x: 800,
+                    y: 350
+                };
             }
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
             ursTasks.play();
             globals.currentGame.shane.currentHealth = 50;
             globals.currentGame.shane.ignoreHealthRegeneration = true;
-            globals.currentGame.shane.position = {x: 400, y: 400};
+            globals.currentGame.shane.position = {
+                x: 400,
+                y: 400
+            };
         }
 
+        if(this.oneTimeLevelPlayableExtension) {
+            this.oneTimeLevelPlayableExtension();
+            this.oneTimeLevelPlayableExtension = null;
+        }
     }
 };
 
@@ -251,7 +270,7 @@ var noirEnemySets = {
         amount: [1, 2],
         atATime: 1,
         hz: 4500
-    },{
+    }, {
         type: 'Gargoyle',
         amount: [2],
         initialDelay: 10000,
@@ -365,6 +384,10 @@ var phaseOne = function() {
             gotoMapOnWin: true
         }
     });
+
+    return {
+        nextPhase: 'manual'
+    };
 };
 
 //phase two is the "first" phase, it includes the starting dialog
@@ -410,33 +433,62 @@ var phaseTwo = function(options) {
                     selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'item', 3)
                 }
             });
-            if(options.skippedTutorial) {
+            if (options.skippedTutorial) {
                 campLevel.skippedTutorial = true;
                 campLevel.mapTableFalseSetting = true;
-                var a1 = new Dialogue({actor: "MacMurray", text: "Air drop incoming, I take it you know what to do...", backgroundBox: true, delayAfterEnd: 1500});
-                var chain = new DialogueChain([a1], {startDelay: 1500, done: function() {
-                    chain.cleanUp();
-                    gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.flyover(() => {
-                            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 120}), ['BasicMicrochip', 'Book'], true);
-                            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 200, y: 50}), [{className: 'worn'}, {className: 'worn'}]);
-                            gameUtils.doSomethingAfterDuration(() => {
-                                campLevel.mapTableFalseSetting = false;
-                                campLevel.mapTableActive = true;
-                                var arrow = graphicsUtils.pointToSomethingWithArrow(campLevel.mapTableSprite, -20, 0.5);
-                                gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
-                                    graphicsUtils.removeSomethingFromRenderer(arrow);
-                                });
-                            }, 3000);
-                        });
-                    }, 250);
-                }});
+                var a1 = new Dialogue({
+                    actor: "MacMurray",
+                    text: "Air drop incoming, I take it you know what to do...",
+                    backgroundBox: true,
+                    delayAfterEnd: 1500
+                });
+                var chain = new DialogueChain([a1], {
+                    startDelay: 1500,
+                    done: function() {
+                        chain.cleanUp();
+                        gameUtils.doSomethingAfterDuration(() => {
+                            globals.currentGame.flyover(() => {
+                                globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
+                                    x: 200,
+                                    y: 120
+                                }), ['BasicMicrochip', 'Book'], true);
+                                globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
+                                    x: 200,
+                                    y: 50
+                                }), [{
+                                    className: 'worn'
+                                }, {
+                                    className: 'worn'
+                                }]);
+                                gameUtils.doSomethingAfterDuration(() => {
+                                    campLevel.mapTableFalseSetting = false;
+                                    campLevel.mapTableActive = true;
+                                    var arrow = graphicsUtils.pointToSomethingWithArrow(campLevel.mapTableSprite, -20, 0.5);
+                                    gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+                                        graphicsUtils.removeSomethingFromRenderer(arrow);
+                                    });
+                                }, 3000);
+                            });
+                        }, 250);
+                    }
+                });
                 chain.play();
             }
         }
     });
     globals.currentGame.currentScene.transitionToScene(startDialogue.scene);
     startDialogue.play();
+
+    return {
+        nextPhase: 'allNodesComplete',
+        onMapAction: function(map) {
+            let campNode = this.map.findNodeById('camp');
+            let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
+            campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
+                graphicsUtils.removeSomethingFromRenderer(arrow);
+            };
+        }.bind(this)
+    };
 };
 
 var phaseThree = function() {
@@ -477,15 +529,23 @@ var campNoir = {
             for (var j = 0; j <= 5; j++) {
                 let randomSpeed = 0.05 + Math.random() * 0.07;
                 let r = Math.random() * 3.0;
-                if(r < 1.0) {
+                if (r < 1.0) {
                     r = 'a';
-                } else if(r < 2.0) {
+                } else if (r < 2.0) {
                     r = 'b';
-                } else if(r < 3.0) {
+                } else if (r < 3.0) {
                     r = 'c';
                 }
-                animationOrnamentTiles.push({animationName: 'grassanim' + r, spritesheetName: 'TerrainAnimations', speed: randomSpeed});
-                animationOrnamentTiles.push({animationName: 'floweranim' + r, spritesheetName: 'TerrainAnimations', speed: randomSpeed});
+                animationOrnamentTiles.push({
+                    animationName: 'grassanim' + r,
+                    spritesheetName: 'TerrainAnimations',
+                    speed: randomSpeed
+                });
+                animationOrnamentTiles.push({
+                    animationName: 'floweranim' + r,
+                    spritesheetName: 'TerrainAnimations',
+                    speed: randomSpeed
+                });
             }
             var animatedOrnamentMap = TileMapper.produceTileMap({
                 possibleTextures: animationOrnamentTiles,
@@ -509,6 +569,7 @@ var campNoir = {
     initWorld: function(options) {
         this.phases.push(phaseOne.bind(this));
         this.phases.push(phaseTwo.bind(this));
+        this.phases.push(phaseThree.bind(this));
     },
 
     getLevelById: function(id) {

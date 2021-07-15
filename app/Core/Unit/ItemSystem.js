@@ -124,8 +124,8 @@ var itemSystem = function(properties) {
             item.icon.sortYOffset = 2000;
             item.iconMoveCallback = globals.currentGame.addTickCallback(function() {
                 item.icon.position = {
-                    x: globals.currentGame.mousePosition.x - 0,
-                    y: globals.currentGame.mousePosition.y - 0
+                    x: globals.currentGame.mousePosition.x - 0.5,
+                    y: globals.currentGame.mousePosition.y - 0.5
                 };
             });
             if (item.grabCallback) {
@@ -291,36 +291,36 @@ var itemSystem = function(properties) {
                 }
             }.bind(this));
         }.bind(this));
-    },
+    };
 
     this.addItemOnGround = function(item) {
         this.itemsOnGround.push(item);
         item.owningUnit = null;
-    },
+    };
 
     this.registerItem = function(item) {
         this.items.add(item);
-    },
+    };
 
     this.itemIsRegistered = function(item) {
         return this.items.has(item);
-    },
+    };
 
     this.pickupItem = function(item) {
         item.pickup();
         this.removeItemFromGround(item);
-    },
+    };
 
     this.isGrabbing = function() {
         return this.grabbedItem;
-    },
+    };
 
     this.removeItemFromGround = function(item) {
         var index = this.itemsOnGround.indexOf(item);
         if (index > -1) {
             this.itemsOnGround.splice(index, 1);
         }
-    },
+    };
 
     this.removeItem = function(item) {
         if (this.grabbedItem == item) {
@@ -334,7 +334,7 @@ var itemSystem = function(properties) {
         this.removeItemFromGround(item);
         this.items.delete(item);
         item.destroy();
-    },
+    };
 
     this.removeAllItemsOnGround = function(includeDroppingItems) {
         $.each(this.itemsOnGround, function(i, item) {
@@ -349,7 +349,7 @@ var itemSystem = function(properties) {
                 item.destroy();
             }.bind(this));
         }
-    },
+    };
 
     this.getDroppingItems = function() {
         var droppingItems = [];
@@ -359,7 +359,7 @@ var itemSystem = function(properties) {
             }
         });
         return droppingItems;
-    },
+    };
 
     this.cleanUp = function() {
         Matter.Events.off(this);

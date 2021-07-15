@@ -405,6 +405,18 @@ var map = function(specs) {
         return levelNode;
     };
 
+    this.areAllNodesExceptCampCompleted = function() {
+        let foundIncomplete = this.graph.find(node => {
+            return node.type != 'camp' && !node.isCompleted;
+        });
+
+        if(foundIncomplete) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
     this.setHeadToken = function(renderlingId) {
         var self = this;
         mathArrayUtils.operateOnObjectByKey(this.headTokenBody.renderlings, function(key, rl) {

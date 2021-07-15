@@ -305,15 +305,16 @@ var levelBase = {
                 game.itemSystem.removeAllItemsOnGround(true);
                 gameUtils.doSomethingAfterDuration(() => {
                     if (this.gotoMapOnWin) {
+                        game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
                         gameUtils.setCursorStyle('Main');
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });
-                        game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.map.show();
                     } else {
+                        game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
                             shane: game.shaneCollector.getLastCollector(),
                             ursula: game.ursulaCollector.getLastCollector()
@@ -323,7 +324,6 @@ var levelBase = {
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });
-                        game.map.revertHeadToPreviousLocationDueToDefeat();
                     }
                 }, 1000);
             }
