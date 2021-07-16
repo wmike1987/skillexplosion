@@ -1,7 +1,7 @@
 //Token Mappings
 var tokenMappings = {
     singles: 'MapGoldBattleToken',
-    hardened: 'MapRedBattleToken',
+    hard: 'MapRedBattleToken',
     boss: 'MapRedBattleToken',
     norevives: 'MapRedBattleToken',
     mobs: 'MobBattleToken',
@@ -9,6 +9,6 @@ var tokenMappings = {
     airDropStations: 'AirDropToken',
     airDropSpecialStations: 'AirDropSpecialToken',
     default: 'MapGoldBattleToken',
-}
+};
 
 export default tokenMappings;

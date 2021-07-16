@@ -25,7 +25,6 @@ var levelFactory = {
             levelObj.type = type;
             levelObj.tileSize = 225;
             levelObj.init(type, worldSpecs, options);
-            levelObj.enemySets = EnemySetSpecifier.create(type, worldSpecs, options);
             return levelObj;
         }
     }

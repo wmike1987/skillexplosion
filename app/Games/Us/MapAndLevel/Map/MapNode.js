@@ -75,7 +75,7 @@ var MapLevelNode = function(options) {
         });
     } else {
         //default behavior
-        var tokenMapping = tokenMappings[this.levelDetails.type] || tokenMappings['default'];
+        var tokenMapping = tokenMappings[this.levelDetails.token] || tokenMappings['default'];
         this.displayObject = graphicsUtils.createDisplayObject(tokenMapping, {
             where: 'hudNTwo',
             scale: {

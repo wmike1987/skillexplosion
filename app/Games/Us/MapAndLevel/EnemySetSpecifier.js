@@ -18,11 +18,13 @@ var rareBottom = 2;
 var rareTop = 3;
 
 var enemySetSpecifier = {
-    create: function(type, worldSpecs, options) {
-        var possibleEnemies = worldSpecs.possibleEnemies;
+    create: function(levelDef) {
         var enemySets = [];
 
-        var enemySetSpecs = worldSpecs.enemySets[type];
+        var enemySetSpecs = levelDef.enemySets;
+        if($.isArray(levelDef)) {
+            enemySetSpecs = levelDef;
+        }
         if(enemySetSpecs) {
             enemySetSpecs.forEach((enemySpec) => {
                 var enemyCount = mathArrayUtils.convertToArray(enemySpec.amount);
@@ -31,7 +33,7 @@ var enemySetSpecifier = {
                 enemySets.push({
                     constructor: constructor.c,
                     wave: 1,
-                    item: options.item,
+                    item: levelDef.item,
                     icon: constructor.p,
                     initialDelay: enemySpec.initialDelay,
                     spawn: {total: enemyCount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,

@@ -224,14 +224,14 @@ var camp = {
             };
         }
 
-        if(this.oneTimeLevelPlayableExtension) {
+        if (this.oneTimeLevelPlayableExtension) {
             this.oneTimeLevelPlayableExtension();
             this.oneTimeLevelPlayableExtension = null;
         }
     }
 };
 
-var noirEnemySets = {
+var noirLevelDefinitions = {
     learning: [{
         type: 'Critter',
         amount: 3,
@@ -249,34 +249,40 @@ var noirEnemySets = {
         atATime: 1,
         hz: 4500
     }],
-    basic: [{
-        type: 'Critter',
-        amount: [2, 3, 4],
-        atATime: 2,
-        hz: 4000
-    }, {
-        type: 'Sentinel',
-        amount: [1, 2],
-        atATime: 1,
-        hz: 4500
-    }],
-    basicHard: [{
-        type: 'Critter',
-        amount: [2, 3, 4],
-        atATime: 2,
-        hz: 4000
-    }, {
-        type: 'Sentinel',
-        amount: [1, 2],
-        atATime: 1,
-        hz: 4500
-    }, {
-        type: 'Gargoyle',
-        amount: [2],
-        initialDelay: 10000,
-        atATime: 1,
-        hz: 5000
-    }],
+    basic: {
+        token: 'default',
+        enemySets: [{
+            type: 'Critter',
+            amount: [2, 3, 4],
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Sentinel',
+            amount: [1, 2],
+            atATime: 1,
+            hz: 4500
+        }]
+    },
+    basicHard: {
+        token: 'hard',
+        enemySets: [{
+            type: 'Critter',
+            amount: [2, 3, 4],
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Sentinel',
+            amount: [1, 2],
+            atATime: 1,
+            hz: 4500
+        }, {
+            type: 'Gargoyle',
+            amount: [2],
+            initialDelay: 10000,
+            atATime: 1,
+            hz: 5000
+        }]
+    },
     outerBasic: [{
         type: 'Critter',
         amount: 12,
@@ -288,12 +294,20 @@ var noirEnemySets = {
         atATime: 1,
         hz: 4000
     }],
-    hardened: [{
-        type: 'Gargoyle',
-        amount: [4, 5],
-        atATime: 1,
-        hz: 2500
-    }],
+    easyGargs: {
+        token: 'hard',
+        item: {
+            total: 1,
+            className: 'worn',
+            classType: 'item'
+        },
+        enemySets: [{
+            type: 'Gargoyle',
+            amount: [4, 5],
+            atATime: 1,
+            hz: 2500
+        }]
+    },
     outerHardened: [{
         type: 'Gargoyle',
         amount: 8,
@@ -317,12 +331,15 @@ var noirEnemySets = {
         atATime: 1,
         hz: 6000
     }],
-    sentinels: [{
-        type: 'Sentinel',
-        amount: [4, 5],
-        atATime: 2,
-        hz: 5200
-    }],
+    easySentinels: {
+        token: 'hard',
+        enemySets: [{
+            type: 'Sentinel',
+            amount: [4, 5],
+            atATime: 2,
+            hz: 5200
+        }]
+    },
     outerSentinels: [{
         type: 'Sentinel',
         amount: 10,
@@ -405,22 +422,22 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
-            world.map.addMapNode('basicHard');
+            world.map.addMapNode('basicHard', {
+                levelOptions: {
+                    token: 'hard'
+                }
+            });
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
-                    levelTypes: ['basic', 'sentinels', 'basic']
+                    levelTypes: ['basic', 'easySentinels', 'basic']
                 }
             });
-            world.map.addMapNode('sentinels');
-            world.map.addMapNode('hardened', {
+            world.map.addMapNode('easySentinels', {
                 levelOptions: {
-                    item: {
-                        total: 1,
-                        className: 'worn',
-                        classType: 'item'
-                    }
+                    token: 'hard'
                 }
             });
+            world.map.addMapNode('easyGargs');
             // world.map.addMapNode('airDropStation');
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
@@ -504,7 +521,7 @@ var phaseThree = function() {
 //this defines the camp noir world
 var campNoir = {
     worldSpecs: {
-        enemySets: noirEnemySets,
+        levelDefinitions: noirLevelDefinitions,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
         levelTiles: getLevelTiles(),

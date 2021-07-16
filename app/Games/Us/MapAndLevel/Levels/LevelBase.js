@@ -15,6 +15,7 @@ import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
 import Scene from '@core/Scene.js';
 import UnitSpawner from '@games/Us/UnitSpawner.js';
+import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 
 var levelBase = {
     resetLevel: function() {
@@ -94,8 +95,20 @@ var levelBase = {
         this.mode = modes.SPAWN;
         this.campLikeActive = false;
         this.worldSpecs = Object.assign({}, worldSpecs);
-        this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
         this.entrySound = worldSpecs.entrySound;
+        this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
+
+        //capture the level def
+        this.levelDef = worldSpecs.levelDefinitions[type];
+
+        //fulfill enemy sets
+        if(this.levelDef) {
+            this.enemySets = EnemySetSpecifier.create(this.levelDef);
+
+            //propagate the token if defined on the enemyDef
+            this.token = this.levelDef.token;
+        }
+
 
         //hook to override defaults
         if (this.initExtension) {
