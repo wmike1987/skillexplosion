@@ -98,21 +98,20 @@ var levelBase = {
         this.entrySound = worldSpecs.entrySound;
         this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
 
-        //capture the level def
-        this.levelDef = worldSpecs.levelDefinitions[type];
-
-        //fulfill enemy sets
-        if(this.levelDef) {
-            this.enemySets = EnemySetSpecifier.create(this.levelDef);
-
-            //propagate the token if defined on the enemyDef
-            this.token = this.levelDef.token;
-        }
-
+        //copy the level def
+        this.enemyDefs = Object.assign({}, worldSpecs.enemyDefinitions[type], this.enemyDefOverrides);
 
         //hook to override defaults
         if (this.initExtension) {
             this.initExtension(type, worldSpecs, options);
+        }
+
+        //fulfill enemy sets
+        if(this.enemyDefs) {
+            this.enemySets = EnemySetSpecifier.create(this.enemyDefs);
+
+            //propagate the token if defined on the enemyDef
+            this.token = this.enemyDefs.token;
         }
     },
 

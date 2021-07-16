@@ -231,7 +231,7 @@ var camp = {
     }
 };
 
-var noirLevelDefinitions = {
+var noirEnemyDefinitions = {
     learning: [{
         type: 'Critter',
         amount: 3,
@@ -265,6 +265,11 @@ var noirLevelDefinitions = {
     },
     basicHard: {
         token: 'hard',
+        item: {
+            total: 1,
+            className: 'worn',
+            classType: 'item'
+        },
         enemySets: [{
             type: 'Critter',
             amount: [2, 3, 4],
@@ -278,7 +283,7 @@ var noirLevelDefinitions = {
         }, {
             type: 'Gargoyle',
             amount: [2],
-            initialDelay: 10000,
+            initialDelay: 8000,
             atATime: 1,
             hz: 5000
         }]
@@ -333,6 +338,11 @@ var noirLevelDefinitions = {
     }],
     easySentinels: {
         token: 'hard',
+        item: {
+            total: 1,
+            className: 'worn',
+            classType: 'item'
+        },
         enemySets: [{
             type: 'Sentinel',
             amount: [4, 5],
@@ -429,7 +439,8 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
-                    levelTypes: ['basic', 'easySentinels', 'basic']
+                    levelTypes: ['basic', 'easySentinels', 'basic'],
+                    multiOverrideDef: {type: 'easySentinels', overrides: {item: null}}
                 }
             });
             world.map.addMapNode('easySentinels', {
@@ -521,7 +532,7 @@ var phaseThree = function() {
 //this defines the camp noir world
 var campNoir = {
     worldSpecs: {
-        levelDefinitions: noirLevelDefinitions,
+        enemyDefinitions: noirEnemyDefinitions,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
         levelTiles: getLevelTiles(),

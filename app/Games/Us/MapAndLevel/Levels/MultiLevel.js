@@ -22,9 +22,14 @@ var multiLevel = function(options) {
     //default
     this.levelTypes = ['basic', 'basic', 'basic'];
 
-    this.initExtension = function() {
+    this.initExtension = function(type, worldSpecs, options) {
         this.levelTypes.forEach((type) => {
-            this.chain.push(levelFactory.create(type, options));
+            let newOptions = Object.assign({}, options);
+            if(this.multiOverrideDef && this.multiOverrideDef.type == type) {
+                Object.assign(newOptions, {enemyDefOverrides: this.multiOverrideDef.overrides});
+            }
+            let newLevel = levelFactory.create(type, worldSpecs, newOptions);
+            this.chain.push(newLevel);
         });
 
         //modify the each level to comprehend that it's part of a chain

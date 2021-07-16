@@ -18,12 +18,12 @@ var rareBottom = 2;
 var rareTop = 3;
 
 var enemySetSpecifier = {
-    create: function(levelDef) {
+    create: function(enemyDef) {
         var enemySets = [];
 
-        var enemySetSpecs = levelDef.enemySets;
-        if($.isArray(levelDef)) {
-            enemySetSpecs = levelDef;
+        var enemySetSpecs = enemyDef.enemySets;
+        if($.isArray(enemyDef)) {
+            enemySetSpecs = enemyDef;
         }
         if(enemySetSpecs) {
             enemySetSpecs.forEach((enemySpec) => {
@@ -33,7 +33,7 @@ var enemySetSpecifier = {
                 enemySets.push({
                     constructor: constructor.c,
                     wave: 1,
-                    item: levelDef.item,
+                    item: enemyDef.item,
                     icon: constructor.p,
                     initialDelay: enemySpec.initialDelay,
                     spawn: {total: enemyCount/(easyMode ? 2 : 1) || mathArrayUtils.getRandomIntInclusive(3, 4), hz: enemySpec.hz || 4500,
