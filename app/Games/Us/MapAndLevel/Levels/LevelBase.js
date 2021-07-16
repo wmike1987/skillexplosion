@@ -277,7 +277,7 @@ var levelBase = {
                             gameUtils.moveUnitOffScreen(unit);
                         });
                         game.removeAllLevelLocalEntities();
-                    }, 1000);
+                    }, 500);
                 } else {
                     commonWinLossTasks({result: 'win'});
                     gameUtils.doSomethingAfterDuration(() => {
@@ -299,7 +299,7 @@ var levelBase = {
                         }, 100, {
                             trueTimer: true
                         });
-                    }, 1000);
+                    }, 500);
                 }
             }
         }.bind(this));
@@ -337,7 +337,7 @@ var levelBase = {
                             game.removeUnit(enemy);
                         });
                     }
-                }, 1000);
+                }, 500);
             }
         }.bind(this));
     }

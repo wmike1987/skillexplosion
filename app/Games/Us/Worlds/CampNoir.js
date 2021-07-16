@@ -34,7 +34,9 @@ import {
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
 
 var tileSize = 225;
-var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065, 0xbb6205, 0xb0376a];
+var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065];
+var acceptableOrnamentTints = [0xad850b, 0x7848ee, 0x990065];
+var acceptableFlowerTints = [0x9f9f9f, 0x5d46f1, 0x710a8b];
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -265,11 +267,6 @@ var noirEnemyDefinitions = {
     },
     basicHard: {
         token: 'hard',
-        item: {
-            total: 1,
-            className: 'worn',
-            classType: 'item'
-        },
         enemySets: [{
             type: 'Critter',
             amount: [2, 3, 4],
@@ -279,7 +276,12 @@ var noirEnemyDefinitions = {
             type: 'Sentinel',
             amount: [1, 2],
             atATime: 1,
-            hz: 4500
+            hz: 4500,
+            item: {
+                total: 1,
+                className: 'worn',
+                classType: 'item'
+            },
         }, {
             type: 'Gargoyle',
             amount: [2],
@@ -301,12 +303,12 @@ var noirEnemyDefinitions = {
     }],
     easyGargs: {
         token: 'hard',
-        item: {
-            total: 1,
-            className: 'worn',
-            classType: 'item'
-        },
         enemySets: [{
+            item: {
+                total: 1,
+                className: 'worn',
+                classType: 'item'
+            },
             type: 'Gargoyle',
             amount: [4, 5],
             atATime: 1,
@@ -338,12 +340,12 @@ var noirEnemyDefinitions = {
     }],
     easySentinels: {
         token: 'hard',
-        item: {
-            total: 1,
-            className: 'worn',
-            classType: 'item'
-        },
         enemySets: [{
+            item: {
+                total: 1,
+                className: 'worn',
+                classType: 'item'
+            },
             type: 'Sentinel',
             amount: [4, 5],
             atATime: 2,
@@ -539,6 +541,7 @@ var campNoir = {
         possibleTrees: possibleTrees,
         decorateTerrain: function(scene, tint) {
             var ornamentTiles = [];
+            var ornamentTint = acceptableOrnamentTints[acceptableTileTints.indexOf(tint)];
             for (var i = 0; i <= 7; i++) {
                 ornamentTiles.push('FrollGround/DesertFlower' + i);
             }
@@ -549,12 +552,13 @@ var campNoir = {
                 hz: 0.5,
                 where: 'stage',
                 r: 1,
-                tileTint: tint,
+                tileTint: ornamentTint,
                 noZones: this.noZones
             });
 
+            var flowerTint = acceptableFlowerTints[acceptableTileTints.indexOf(tint)];
             var animationOrnamentTiles = [];
-            for (var j = 0; j <= 5; j++) {
+            for (var j = 0; j <= 8; j++) {
                 let randomSpeed = 0.05 + Math.random() * 0.07;
                 let r = Math.random() * 3.0;
                 if (r < 1.0) {
@@ -569,11 +573,14 @@ var campNoir = {
                     spritesheetName: 'TerrainAnimations',
                     speed: randomSpeed
                 });
-                animationOrnamentTiles.push({
-                    animationName: 'floweranim' + r,
-                    spritesheetName: 'TerrainAnimations',
-                    speed: randomSpeed
-                });
+
+                if(Math.random() > 0.3) {
+                    animationOrnamentTiles.push({
+                        animationName: 'floweranim' + r,
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed
+                    });
+                }
             }
             var animatedOrnamentMap = TileMapper.produceTileMap({
                 possibleTextures: animationOrnamentTiles,
@@ -582,7 +589,7 @@ var campNoir = {
                 hz: 0.2,
                 where: 'stage',
                 r: 1,
-                tileTint: tint,
+                tileTint: flowerTint,
                 noZones: this.noZones
             });
 
