@@ -17,10 +17,11 @@ var baseItem = {
         $.each(this.manipulations, function(key, value) {
             if(key == 'events') {
                 $.each(value, function(k, v) {
-                    this.eventFunctions[k] = function() {
+                    this.eventFunctions[k] = function(event) {
+                        event.equippedUnit = unit;
                         $.each(v, function(kk, vv) {
                             if(kk == 'callback') {
-                                vv(unit);
+                                vv(event);
                             } else {
                                 unit[kk] += vv;
                             }
@@ -276,13 +277,20 @@ var ic = function(options) {
             graphicsUtils.removeSomethingFromRenderer(this.nameDisplayBase);
             graphicsUtils.removeSomethingFromRenderer(this.nameDisplay);
         }
+
         graphicsUtils.removeSomethingFromRenderer(this.icon);
         if(newItem.body) {
             globals.currentGame.removeBody(newItem.body);
         }
+
         globals.currentGame.removeTickCallback(newItem.hoverListener);
-        if(this.itemDrop)
+        if(this.itemDrop) {
             graphicsUtils.removeSomethingFromRenderer(this.itemDrop);
+        }
+
+        if(this.onDestroy) {
+            this.onDestroy();
+        }
     };
 
     newItem.grasp = function(unit, autoGrab) {

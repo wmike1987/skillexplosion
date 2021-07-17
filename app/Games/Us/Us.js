@@ -183,17 +183,22 @@ var game = {
 
         this.initNextMap();
 
-        var shaneIntro = new ShaneIntro({
-            done: () => {
-                this.initShane();
-                this.currentWorld.gotoLevelById('shaneLearning');
-            }
-        });
-        this.currentScene.transitionToScene(shaneIntro.scene);
-        shaneIntro.play();
+        let skipIntro = false;
 
-        // this.skipTutorial();
-        // this.currentWorld.gotoLevelById('camp');
+        if(!skipIntro) {
+            var shaneIntro = new ShaneIntro({
+                done: () => {
+                    this.initShane();
+                    this.currentWorld.gotoLevelById('shaneLearning');
+                }
+            });
+            this.currentScene.transitionToScene(shaneIntro.scene);
+            shaneIntro.play();
+        } else {
+            this.skipTutorial();
+            this.currentWorld.gotoLevelById('camp');
+        }
+
     },
 
     preGameExtension: function() {
@@ -342,7 +347,7 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SlipperySoup"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});

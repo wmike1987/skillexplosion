@@ -1278,7 +1278,7 @@ var UnitBase = {
         }
         if(!unit.buffs[name]) {
             var buffObj = {
-                removeBuffImage: function() {
+                removeBuffImage: function(options) {
                     unit.buffs[name].dobj.removeGleam();
                     gameUtils.detachSomethingFromBody(unit.buffs[name].dobj);
                     graphicsUtils.removeSomethingFromRenderer(unit.buffs[name].dobj);
@@ -1293,7 +1293,9 @@ var UnitBase = {
                         }
                     });
                     graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
-                    gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true});
+                    if(!options.detached) {
+                        gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true});
+                    }
                     debuffAnim.play();
                     gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
                     unit.buffs[name] = null;
@@ -1370,7 +1372,7 @@ var UnitBase = {
         //if the same buff already exists, destroy previous timers etc
         var realizedBuff = unit.buffs[name];
         if(buffAlreadyExists) {
-            realizedBuff.removeBuff(true);
+            realizedBuff.removeBuff({preserveImage: true});
             realizedBuff.removeBuff = null;
         }
 
@@ -1384,10 +1386,12 @@ var UnitBase = {
                 handler();
             });
         };
-        var mainCleanUp = function(preserveImage) {
+        var mainCleanUp = function(cleanUpOptions) {
+            cleanUpOptions = cleanUpOptions || {};
+            
             //remove image (we'll preserve if it an incoming buff of the same type overrides it)
-            if(!preserveImage) {
-                realizedBuff.removeBuffImage();
+            if(!cleanUpOptions.preserveImage) {
+                realizedBuff.removeBuffImage(cleanUpOptions);
             }
             //remove associated events
             removeAllHandlers();
@@ -1398,9 +1402,9 @@ var UnitBase = {
             var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {executeOnNuke: true, timerName: this.unitId + name + 'buffRemove'});
         }
         if(!realizedBuff.removeBuff) {
-            realizedBuff.removeBuff = function(preserveImage) {
+            realizedBuff.removeBuff = function(cleanUpOptions) {
                 //mainCleanUp
-                mainCleanUp(preserveImage);
+                mainCleanUp(cleanUpOptions);
                 //invalidate running timer
                 globals.currentGame.invalidateTimer(timer);
             };

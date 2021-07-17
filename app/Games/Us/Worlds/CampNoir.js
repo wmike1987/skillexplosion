@@ -34,9 +34,9 @@ import {
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
 
 var tileSize = 225;
-var acceptableTileTints = [0xad850b, 0x7848ee, 0x990065];
-var acceptableOrnamentTints = [0xad850b, 0x7848ee, 0x990065];
-var acceptableFlowerTints = [0x9f9f9f, 0x5d46f1, 0x710a8b];
+var acceptableTileTints = [0xad850b, 0x7848ee, 0xff9e9e];
+var acceptableOrnamentTints = [0xad850b, 0x7848ee, 0xffab7a];
+var acceptableFlowerTints = [0x9f9f9f, 0x5d46f1, 0xf78d8d];
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -460,7 +460,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode('airDropSpecialStation', {
                 levelOptions: {
                     // prereqCount: 0,
-                    selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'item', 3)
+                    selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'specialtyItem', 3)
                 }
             });
             if (options.skippedTutorial) {
@@ -549,7 +549,7 @@ var campNoir = {
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 0.5,
+                hz: 0.4,
                 where: 'stage',
                 r: 1,
                 tileTint: ornamentTint,
@@ -558,14 +558,14 @@ var campNoir = {
 
             var flowerTint = acceptableFlowerTints[acceptableTileTints.indexOf(tint)];
             var animationOrnamentTiles = [];
-            for (var j = 0; j <= 8; j++) {
-                let randomSpeed = 0.05 + Math.random() * 0.07;
-                let r = Math.random() * 3.0;
-                if (r < 1.0) {
-                    r = 'a';
-                } else if (r < 2.0) {
+            for (var j = 0; j < 6; j++) {
+
+                let randomSpeed = 0.02 + Math.random() * 0.07;
+                let r = 'a';
+                if(j > 1) {
                     r = 'b';
-                } else if (r < 3.0) {
+                }
+                if(j > 3) {
                     r = 'c';
                 }
                 animationOrnamentTiles.push({
@@ -586,7 +586,7 @@ var campNoir = {
                 possibleTextures: animationOrnamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 0.2,
+                hz: 0.15,
                 where: 'stage',
                 r: 1,
                 tileTint: flowerTint,
@@ -595,6 +595,7 @@ var campNoir = {
 
             scene.add(ornamentMap);
             scene.add(animatedOrnamentMap);
+            this.flowerTileMap = animatedOrnamentMap;
             var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', 0.2);
             scene.add(l1);
         }

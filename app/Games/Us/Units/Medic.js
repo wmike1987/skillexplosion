@@ -268,11 +268,16 @@ export default function Medic(options) {
         var fleetFeetAugment = thisAbility.isAugmentEnabled('fleet feet');
         var softLandingAugment = thisAbility.isAugmentEnabled('soft landing');
 
-        var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 4, {
+        //remove a free step if we have one
+        if(medic.freeSteps) {
+            medic.buffs['freeSecretStep' + medic.freeSteps].removeBuff({detached: true});
+        }
+
+        var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 20, {
           restitution: 0.95,
           frictionAir: 0,
           mass: options.mass || 5,
-          isSensor: true
+          isSensor: true,
         });
         shadow.isShadow = true;
 
@@ -342,15 +347,16 @@ export default function Medic(options) {
             }
         });
 
-        if(ghostAugment) {
-            Matter.Events.on(shadow, 'onCollide', function(pair) {
-                var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
-                var otherUnit = otherBody.unit;
+        Matter.Events.on(shadow, 'onCollide', function(pair) {
+            var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
+            var otherUnit = otherBody.unit;
+            Matter.Events.trigger(medic, 'secretStepCollision', {otherUnit: otherUnit});
+            if(ghostAugment) {
                 if(otherUnit && otherUnit != medic) {
                     otherUnit.petrify(ghostAugment.duration);
                 }
-            });
-        }
+            }
+        });
 
         var originalOrigin = {x: this.position.x, y: this.position.y};
         var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
@@ -359,11 +365,11 @@ export default function Medic(options) {
         gameUtils.moveUnitOffScreen(this);
         this.stop();
 
-        this.getAbilityByName("Secret Step").disable(1);
+        this.getAbilityByName("Secret Step").manuallyDisabled = true;
 
         var removeSelf = globals.currentGame.addTickCallback(function() {
           if(gameUtils.bodyRanOffStage(shadow) || mathArrayUtils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
-              this.getAbilityByName("Secret Step").enable(1);
+              this.getAbilityByName("Secret Step").manuallyDisabled = false;
               var x = shadow.position.x;
               var y = shadow.position.y;
               if(x < 0) x = 5;
@@ -384,11 +390,6 @@ export default function Medic(options) {
               if(softLandingAugment) {
                   var duration = softLandingAugment.duration;
                   this.becomeHidden(duration);
-              }
-
-              //remove a free step if we have one
-              if(medic.freeSteps) {
-                  medic.buffs['freeSecretStep' + medic.freeSteps].removeBuff();
               }
           }
       }.bind(this));

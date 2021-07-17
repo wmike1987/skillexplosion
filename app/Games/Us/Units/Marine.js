@@ -464,7 +464,7 @@ export default function Marine(options) {
         }
 
         //create knife body
-        var knife = Matter.Bodies.circle(0, 0, 4, {
+        var knife = Matter.Bodies.circle(0, 0, 6, {
             restitution: 0.95,
             frictionAir: 0,
             mass: options.mass || 5,
@@ -992,7 +992,7 @@ export default function Marine(options) {
                     if(critActive) {
                         fireSound.play();
                         criticalHitSound.play();
-                        var chText = graphicsUtils.floatText(this.damage*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText, speed: 1.5});
+                        var chText = graphicsUtils.floatText(dTotal*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText, speed: 1.5});
                     } else {
                         fireSound.play();
                     }

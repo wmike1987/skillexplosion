@@ -9,13 +9,13 @@ var ItemClasses = {
         item: {tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion',
                                        'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
         microchip: {tint: 0xf59a87, items: ['BasicMicrochip']},
-        specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge']},
+        specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar']},
     },
 
     rugged: {
         item: {tint: 0xffffff, items: ['LightBoots', 'RuggedCanteen', 'SharpPictureOfEarth', 'MedalOfGrit', 'MedalOfMerit']},
         microchip: {tint: 0xa77e16, items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip']},
-        specialtyItem: {tint: 0x1e9489, items: ['SereneStar', 'GreenTipCartridge']},
+        specialtyItem: {tint: 0x1e9489, items: ['GreenTipCartridge']},
     },
 
     gleaming: {

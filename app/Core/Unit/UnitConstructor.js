@@ -64,17 +64,7 @@ function UnitConstructor(options) {
                 newUnit.eventKeyMappings[ability.key] = {
                     method: ability.method,
                     predicates: [function() {
-                        var enabled = true;
-                        if(ability.enablers) {
-                            $.each(ability.enablers, function(i, enabler) {
-                                enabled = enabler();
-                                return enabled;
-                            });
-                        }
-                        if(ability.manuallyEnabled) {
-                            return true;
-                        }
-                        return enabled;
+                        return ability.isEnabled();
                     }],
                     //defaults the pre exec interceptor to subtract energy and run any cost function on the ability
                     preExecuteInterceptors: [function() {
@@ -97,17 +87,7 @@ function UnitConstructor(options) {
                 newUnit.eventClickMappings[ability.key] = {
                     method: ability.method,
                     predicates: [function() {
-                        var enabled = true;
-                        if(ability.enablers) {
-                            $.each(ability.enablers, function(i, enabler) {
-                                enabled = enabler();
-                                return enabled;
-                            });
-                        }
-                        if(ability.manuallyEnabled) {
-                            return true;
-                        }
-                        return enabled;
+                        return ability.isEnabled();
                     }],
                     preExecuteInterceptors: [function() {
                         if(!ability.byPassEnergyCost) {

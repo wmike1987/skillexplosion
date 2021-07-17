@@ -51,6 +51,15 @@ export default function(options) {
             return !f();
         });
 
+        if(this.manuallyEnabled) {
+            disabled = false;
+        }
+
+        //this manual setting will take precedence
+        if(this.manuallyDisabled) {
+            disabled = true;
+        }
+
         return !disabled;
     };
 

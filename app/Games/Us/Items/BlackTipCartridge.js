@@ -1,13 +1,15 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
+var damageAmount = 3;
+
 var manipulations = {
-    damageAddition: 2,
+    damageAddition: damageAmount,
 };
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Black Tipped Cartridge",
-        description: "Add +2 to base damage.",
+        description: "Add +" + damageAmount + " to base damage.",
         icon: 'BlackTipCartridge',
         type: 'Marine'
     }, options);
