@@ -25,9 +25,6 @@ var multiLevel = function(options) {
     this.initExtension = function(type, worldSpecs, options) {
         this.levelTypes.forEach((type) => {
             let newOptions = Object.assign({}, options);
-            if(this.multiOverrideDef && this.multiOverrideDef.type == type) {
-                Object.assign(newOptions, {enemyDefOverrides: this.multiOverrideDef.overrides});
-            }
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
             this.chain.push(newLevel);
         });

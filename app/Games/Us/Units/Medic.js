@@ -415,7 +415,7 @@ export default function Medic(options) {
             name: 'fleet feet',
             icon: graphicsUtils.createDisplayObject('FleetFeet'),
             title: 'Fleet Feet',
-            description: 'Secret step very quickly and reduce energy cost by 2.',
+            description: 'Increase stepping speed and reduce energy cost by 2.',
             equip: function(unit) {
                 unit.getAbilityByName('Secret Step').energyCost -= 2;
             },

@@ -1388,7 +1388,7 @@ var UnitBase = {
         };
         var mainCleanUp = function(cleanUpOptions) {
             cleanUpOptions = cleanUpOptions || {};
-            
+
             //remove image (we'll preserve if it an incoming buff of the same type overrides it)
             if(!cleanUpOptions.preserveImage) {
                 realizedBuff.removeBuffImage(cleanUpOptions);

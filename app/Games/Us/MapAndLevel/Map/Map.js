@@ -168,13 +168,16 @@ var map = function(specs) {
 
     this.addMapNode = function(levelType, options) {
         options = options || {};
+        options.levelOptions = options.levelOptions || {};
+
         var level = levelFactory.create(levelType, this.worldSpecs, options.levelOptions);
 
         //Determine position
         var position = options.position;
         var collision, outOfBounds = false;
         var nodeBuffer = 100;
-        var radius = options.outer ? 750 : 200;
+        var radius = options.outer ? 1000 : 200;
+        var minRadius = options.outer ? 400 : 0;
         var tries = 0;
         if (!position) {
             do {
@@ -183,7 +186,7 @@ var map = function(specs) {
                     radius += 100;
                 }
                 collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, level.nodeBuffer || 20);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, level.nodeBuffer || 40, minRadius);
                 if (!gameUtils.isPositionWithinPlayableBounds(position)) {
                     outOfBounds = true;
                 }

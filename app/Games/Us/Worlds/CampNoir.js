@@ -290,17 +290,20 @@ var noirEnemyDefinitions = {
             hz: 5000
         }]
     },
-    outerBasic: [{
-        type: 'Critter',
-        amount: 12,
-        atATime: 2,
-        hz: 4000
-    }, {
-        type: 'Sentinel',
-        amount: 3,
-        atATime: 1,
-        hz: 4000
-    }],
+    outerBasic: {
+        token: 'outerNormal',
+        enemySets: [{
+            type: 'Critter',
+            amount: 12,
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Sentinel',
+            amount: 3,
+            atATime: 1,
+            hz: 4000
+        }]
+    },
     easyGargs: {
         token: 'hard',
         enemySets: [{
@@ -346,6 +349,15 @@ var noirEnemyDefinitions = {
                 className: 'worn',
                 classType: 'item'
             },
+            type: 'Sentinel',
+            amount: [4, 5],
+            atATime: 2,
+            hz: 5200
+        }]
+    },
+    easySentinelsNoItem: {
+        token: 'hard',
+        enemySets: [{
             type: 'Sentinel',
             amount: [4, 5],
             atATime: 2,
@@ -441,15 +453,14 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
-                    levelTypes: ['basic', 'easySentinels', 'basic'],
-                    multiOverrideDef: {type: 'easySentinels', overrides: {item: null}}
+                    levelTypes: ['basic', 'basic', 'basic']
                 }
             });
-            world.map.addMapNode('easySentinels', {
-                levelOptions: {
-                    token: 'hard'
-                }
-            });
+            // world.map.addMapNode('easySentinels', {
+            //     levelOptions: {
+            //         token: 'hard'
+            //     }
+            // });
             world.map.addMapNode('easyGargs');
             // world.map.addMapNode('airDropStation');
             world.map.addMapNode('airDropStation', {
@@ -516,6 +527,7 @@ var phaseTwo = function(options) {
             let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
             campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
                 graphicsUtils.removeSomethingFromRenderer(arrow);
+                globals.currentGame.nextPhase();
             };
         }.bind(this)
     };
@@ -525,10 +537,29 @@ var phaseThree = function() {
     this.map.clearAllNodesExcept('camp');
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            // prereqCount: 0
+        }
+    });
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
     this.map.addMapNode('sentinels');
     this.map.addMapNode('hardened');
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            // prereqCount: 0
+        }
+    });
+
+    //outer
+    let outerParam = {outer: true};
+    this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('outerBasic', outerParam);
 };
 
 //this defines the camp noir world
@@ -562,10 +593,10 @@ var campNoir = {
 
                 let randomSpeed = 0.02 + Math.random() * 0.07;
                 let r = 'a';
-                if(j > 1) {
+                if (j > 1) {
                     r = 'b';
                 }
-                if(j > 3) {
+                if (j > 3) {
                     r = 'c';
                 }
                 animationOrnamentTiles.push({
@@ -574,7 +605,7 @@ var campNoir = {
                     speed: randomSpeed
                 });
 
-                if(Math.random() > 0.3) {
+                if (Math.random() > 0.3) {
                     animationOrnamentTiles.push({
                         animationName: 'floweranim' + r,
                         spritesheetName: 'TerrainAnimations',

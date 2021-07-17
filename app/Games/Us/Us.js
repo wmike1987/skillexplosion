@@ -106,7 +106,9 @@ var game = {
             }
         });
 
+        //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
+            //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
             if(this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
                 this.currentPhaseObj.onMapAction();
             }

@@ -98,8 +98,8 @@ var levelBase = {
         this.entrySound = worldSpecs.entrySound;
         this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
 
-        //copy the level def
-        this.enemyDefs = Object.assign({}, worldSpecs.enemyDefinitions[type], this.enemyDefOverrides);
+        //copy the enemy defs
+        this.enemyDefs = Object.assign({}, worldSpecs.enemyDefinitions[type]);
 
         //hook to override defaults
         if (this.initExtension) {
@@ -110,7 +110,7 @@ var levelBase = {
         if(this.enemyDefs) {
             this.enemySets = EnemySetSpecifier.create(this.enemyDefs);
 
-            //propagate the token if defined on the enemyDef
+            //propagate some attrs if defined on the enemyDef
             this.token = this.enemyDefs.token;
         }
     },
