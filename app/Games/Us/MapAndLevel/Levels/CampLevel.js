@@ -301,13 +301,17 @@ var campLevel = function() {
     };
 
     this.createMapNode = function(options) {
-        var node = new MapNode({
+        var node = new MapNode(Object.assign({}, options, {
             levelDetails: this,
-            mapRef: options.mapRef,
             tokenSize: 50,
             largeTokenSize: 55,
             travelPredicate: function() {
-                // return this.campAvailableCount >= 3 && this.mapRef.currentNode != this;
+                if(this.manualDisable) {
+                    return false;
+                }
+                if(this.manualEnable) {
+                    return true;
+                }
                 return this.nightsLeft;
                 // return true;
             },
@@ -388,15 +392,19 @@ var campLevel = function() {
                     } else if (this.mapRef.currentNode == this) {
                         availabilityText = 'Currently in camp.';
                     }
-                    this.displayObject.tooltipObj.setMainDescription(availabilityText);
+                    availabilityText = (this.activeCampTooltipOverride && this.travelPredicate()) ? this.activeCampTooltipOverride : availabilityText;
+                    this.setCampTooltip(availabilityText);
                 }.bind(this));
+            },
+            setCampTooltip: function(text) {
+                this.displayObject.tooltipObj.setMainDescription(text);
             },
             cleanUpExtension: function() {
 
             },
             tooltipTitle: 'Camp Noir',
             tooltipDescription: '',
-        });
+        }));
         return node;
     };
 };

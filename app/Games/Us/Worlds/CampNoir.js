@@ -234,23 +234,27 @@ var camp = {
 };
 
 var noirEnemyDefinitions = {
-    learning: [{
-        type: 'Critter',
-        amount: 3,
-        atATime: 1,
-        hz: 3500
-    }],
-    learningSentinel: [{
-        type: 'Critter',
-        amount: 1,
-        atATime: 1,
-        hz: 3500
-    }, {
-        type: 'Sentinel',
-        amount: 1,
-        atATime: 1,
-        hz: 4500
-    }],
+    learning: {
+        enemySets: [{
+            type: 'Critter',
+            amount: 3,
+            atATime: 1,
+            hz: 3500
+        }]
+    },
+    learningSentinel: {
+        enemySets: [{
+            type: 'Critter',
+            amount: 1,
+            atATime: 1,
+            hz: 3500
+        }, {
+            type: 'Sentinel',
+            amount: 1,
+            atATime: 1,
+            hz: 4500
+        }]
+    },
     basic: {
         token: 'default',
         enemySets: [{
@@ -318,29 +322,35 @@ var noirEnemyDefinitions = {
             hz: 2500
         }]
     },
-    outerHardened: [{
-        type: 'Gargoyle',
-        amount: 8,
-        atATime: 1,
-        hz: 2500
-    }],
-    mobs: [{
-        type: 'Eruptlet',
-        amount: 20,
-        atATime: 3,
-        hz: 4000
-    }],
-    outerMobs: [{
-        type: 'Eruptlet',
-        amount: 50,
-        atATime: 10,
-        hz: 4000
-    }, {
-        type: 'Sentinel',
-        amount: 3,
-        atATime: 1,
-        hz: 6000
-    }],
+    outerHardened: {
+        enemySets: [{
+            type: 'Gargoyle',
+            amount: 8,
+            atATime: 1,
+            hz: 2500
+        }]
+    },
+    mobs: {
+        enemySets: [{
+            type: 'Eruptlet',
+            amount: 20,
+            atATime: 3,
+            hz: 4000
+        }]
+    },
+    outerMobs: {
+        enemySets: [{
+            type: 'Eruptlet',
+            amount: 50,
+            atATime: 10,
+            hz: 4000
+        }, {
+            type: 'Sentinel',
+            amount: 3,
+            atATime: 1,
+            hz: 6000
+        }]
+    },
     easySentinels: {
         token: 'hard',
         enemySets: [{
@@ -364,12 +374,14 @@ var noirEnemyDefinitions = {
             hz: 5200
         }]
     },
-    outerSentinels: [{
-        type: 'Sentinel',
-        amount: 10,
-        atATime: 2,
-        hz: 5000
-    }],
+    outerSentinels: {
+        enemySets: [{
+            type: 'Sentinel',
+            amount: 10,
+            atATime: 2,
+            hz: 5000
+        }]
+    },
 };
 
 //phase one is shane intro
@@ -383,13 +395,20 @@ var phaseOne = function() {
             levelId: 'camp',
             camp: camp,
             tileTint: 0xFFFFFF
+        },
+        mapNodeOptions: {
+            noSpawnGleam: true,
+            manualDisable: true
         }
     });
     var learningNode = this.map.addMapNode('shaneLearning', {
         position: firstLevelPosition,
         levelOptions: {
             levelId: 'shaneLearning',
-            tileTint: 0xd45605
+            tileTint: 0xad850b
+        },
+        mapNodeOptions: {
+            noSpawnGleam: true
         }
     });
     this.map.setHeadToken('shaneOnly');
@@ -404,6 +423,9 @@ var phaseOne = function() {
         levelOptions: {
             levelId: 'learning1',
             gotoMapOnWin: true
+        },
+        mapNodeOptions: {
+            noSpawnGleam: true
         }
     });
     this.map.addMapNode('learning', {
@@ -414,6 +436,9 @@ var phaseOne = function() {
         levelOptions: {
             levelId: 'learning2',
             gotoMapOnWin: true
+        },
+        mapNodeOptions: {
+            noSpawnGleam: true
         }
     });
     this.map.addMapNode('learningSentinel', {
@@ -423,17 +448,41 @@ var phaseOne = function() {
         }),
         levelOptions: {
             gotoMapOnWin: true
+        },
+        mapNodeOptions: {
+            noSpawnGleam: true
         }
     });
 
+    var winCount = 0;
+    this.counterFunction = function(event) {
+        if (event.result == 'win') {
+            winCount += 1;
+            if (winCount == 3) {
+                let campNode = this.map.findNodeById('camp');
+                campNode.manualDisable = false;
+                campNode.manualEnable = true;
+                campNode.activeCampTooltipOverride = 'Camp available.';
+
+            }
+        }
+    };
+    Matter.Events.on(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
+
     return {
-        nextPhase: 'manual'
+        nextPhase: 'manual',
+        bypassMapPhaseBehavior: true
     };
 };
 
 //phase two is the "first" phase, it includes the starting dialog
 var phaseTwo = function(options) {
     globals.currentGame.map.setHeadToken('headtoken');
+    Matter.Events.off(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
+    let campNode = this.map.findNodeById('camp');
+    campNode.activeCampTooltipOverride = null;
+    campNode.manualDisable = false;
+    campNode.manualEnable = false;
     options = options || {};
     var world = this;
     var startDialogue = new CampNoirStart({
@@ -522,14 +571,9 @@ var phaseTwo = function(options) {
 
     return {
         nextPhase: 'allNodesComplete',
-        onMapAction: function(map) {
-            let campNode = this.map.findNodeById('camp');
-            let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
-            campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
-                graphicsUtils.removeSomethingFromRenderer(arrow);
-                globals.currentGame.nextPhase();
-            };
-        }.bind(this)
+        onEnterBehavior: function() {
+
+        }
     };
 };
 
@@ -544,8 +588,7 @@ var phaseThree = function() {
     });
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
-    this.map.addMapNode('sentinels');
-    this.map.addMapNode('hardened');
+    this.map.addMapNode('easySentinels');
     this.map.addMapNode('airDropStation', {
         levelOptions: {
             // prereqCount: 0
@@ -553,7 +596,9 @@ var phaseThree = function() {
     });
 
     //outer
-    let outerParam = {outer: true};
+    let outerParam = {
+        outer: true
+    };
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);

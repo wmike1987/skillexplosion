@@ -244,7 +244,7 @@ var levelBase = {
             this.spawner.cleanUp();
             gameUtils.doSomethingAfterDuration(() => {
                 Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: options.result});
-            }, 2500, {
+            }, 0, {
                 trueTimer: true
             });
         }.bind(this);

@@ -31,10 +31,7 @@ var enlargedTokenSize = 50;
 
 //Define node object
 var MapLevelNode = function(options) {
-    this.mapRef = options.mapRef;
-    this.levelDetails = options.levelDetails;
-    this.travelPredicate = options.travelPredicate;
-    this.enterSelfBehavior = options.enterSelfBehavior;
+    Object.assign(this, options);
     this.type = this.levelDetails.type;
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
@@ -58,6 +55,10 @@ var MapLevelNode = function(options) {
         }
         globals.currentGame.map.lastNode = myNode;
     });
+
+    if(!options.noSpawnGleam) {
+        this.removeSpawnAnimator = gameUtils.matterOnce(this.mapRef, 'showMap', this.playSpawnAnimation.bind(this));
+    }
 
     if (options.manualTokens) {
         //custom map token
@@ -265,6 +266,30 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     }
 };
 
+MapLevelNode.prototype.playSpawnAnimation = function(lesser) {
+    //find left most node x position
+    var leftMostX = null;
+    this.mapRef.graph.forEach(node => {
+        if(!leftMostX) {
+            leftMostX = node.position.x;
+        } else if(node.position.x < leftMostX) {
+            leftMostX = node.position.x;
+        }
+    });
+
+    var node = this;
+    node.spawned = true;
+    gameUtils.doSomethingAfterDuration(() => {
+        if (this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                graphicsUtils.addGleamToSprite({sprite: token, gleamWidth: 20, duration: 750});
+            });
+        } else {
+            graphicsUtils.addGleamToSprite({sprite: this.displayObject, gleamWidth: 20, duration: 750});
+        }
+    }, this.position.x - leftMostX + 100);
+};
+
 MapLevelNode.prototype.canBePrereq = function() {
     return true;
 };
@@ -281,6 +306,11 @@ MapLevelNode.prototype.setPosition = function(position) {
 
 MapLevelNode.prototype.cleanUp = function() {
     graphicsUtils.removeSomethingFromRenderer(this.displayObject);
+
+    if(this.removeSpawnAnimator) {
+        this.removeSpawnAnimator.removeHandler();
+    }
+
     if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.removeSomethingFromRenderer(token);

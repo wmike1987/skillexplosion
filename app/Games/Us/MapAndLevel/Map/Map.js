@@ -31,6 +31,10 @@ var openmapSound3 = gameUtils.getSound('openmap3.wav', {
     volume: 0.04,
     rate: 0.8
 });
+var openmapNewPhase = gameUtils.getSound('gleamsweep.wav', {
+    volume: 0.06,
+    rate: 1.0
+});
 
 //Creates the map, the map head, the map nodes and their tooltips, as well as initializes the level obj which the player will enter upon clicking the node
 var map = function(specs) {
@@ -201,10 +205,11 @@ var map = function(specs) {
         }
 
         //the level creates the map node
-        var mapNode = level.createMapNode({
+        var mapNodeOptions = Object.assign({}, {
             mapRef: this,
             position: position
-        });
+        }, options.mapNodeOptions);
+        var mapNode = level.createMapNode(mapNodeOptions);
         level.mapNode = mapNode; //add back reference
 
         if (level.manualNodePosition) {
@@ -265,6 +270,10 @@ var map = function(specs) {
         openmapSound2.play();
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
+        if(this.newPhase) {
+            this.newPhase = false;
+            openmapNewPhase.play();
+        }
         this.graph.forEach(node => {
             if (node.isCompleted) {
                 if (node.justCompleted) { //just completed allows the node to signal it deactivation with an animation the first time
@@ -413,7 +422,7 @@ var map = function(specs) {
             return node.type != 'camp' && !node.isCompleted;
         });
 
-        if(foundIncomplete) {
+        if (foundIncomplete) {
             return false;
         } else {
             return true;

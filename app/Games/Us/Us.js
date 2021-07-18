@@ -78,10 +78,6 @@ var game = {
 
         this.levelLocalEntities = [];
 
-        // this.myplane = graphicsUtils.addSomethingToRenderer('AirplaneShadow');
-        // this.myplane.position = gameUtils.getCanvasCenter();
-        // this.myplane.visible = false;
-
         this.shaneCollector = new StatCollector({
             predicate: function(event) {
                 if (event.performingUnit.name == 'Shane')
@@ -110,7 +106,23 @@ var game = {
         Matter.Events.on(this, 'showMap', function(event) {
             //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
             if(this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
-                this.currentPhaseObj.onMapAction();
+                //manually enable the camp
+                let campNode = this.map.findNodeById('camp');
+                campNode.manualEnable = true;
+                campNode.setCampTooltip('Camp available.');
+
+                //show arrow and then setup on-enter resets
+                var currentPhaseObj = this.currentPhaseObj;
+                let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
+                campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
+                    graphicsUtils.removeSomethingFromRenderer(arrow);
+                    campNode.manualEnable = false;
+                    campNode.activeCampTooltipOverride = null;
+                    if(currentPhaseObj.onEnterBehavior) {
+                        currentPhaseObj.onEnterBehavior();
+                    }
+                    globals.currentGame.nextPhase();
+                };
             }
         }.bind(this));
 
@@ -233,8 +245,13 @@ var game = {
     },
 
     nextPhase: function(options) {
-        this.currentPhaseObj = this.currentWorld.phases[this.currentPhase](options);
-        this.currentPhase++;
+        this.currentPhaseObj = this.currentWorld.phases[this.currentPhase++](options);
+        this.currentPhaseObj = this.currentPhaseObj || {};
+        if(!this.currentPhaseObj.bypassMapPhaseBehavior) {
+            this.map.newPhase = true;
+        }
+        let campNode = this.map.findNodeById('camp');
+        campNode.nightsLeft = 3;
     },
 
     initShane: function() {
