@@ -572,7 +572,12 @@ var phaseTwo = function(options) {
     return {
         nextPhase: 'allNodesComplete',
         onEnterBehavior: function() {
-
+            globals.currentGame.flyover(() => {
+                globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
+                    x: 200,
+                    y: 120
+                }), ['BasicMicrochip', 'Book'], true);
+            });
         }
     };
 };
