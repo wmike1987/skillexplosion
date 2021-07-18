@@ -892,6 +892,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             $('body').on('keydown.uskeydownendscreen', function(event) {
                 var key = event.key.toLowerCase();
                 if (key == ' ') {
+                    globals.currentGame.commonSounds.sceneContinue.play();
                     $('body').off('keydown.uskeydownendscreen');
                     graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
                         if(options.done) {

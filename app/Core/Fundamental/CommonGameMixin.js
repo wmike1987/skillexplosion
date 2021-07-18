@@ -210,7 +210,7 @@ var common = {
                     category: 0x0000,
                     mask: 0,
                     group: -1
-                },
+                };
                 this.bodies.push(body);
             },
             init: function() {
@@ -756,7 +756,6 @@ var common = {
         if(this.nukeExtension) {
             this.nukeExtension(options);
         }
-
 
         Matter.Events.off(this);
 

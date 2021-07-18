@@ -39,6 +39,7 @@ var DialogueScene = {
                     $('body').on('keydown.completeScene', function( event ) {
                         if(keyStates.Control && (keyStates.c || keyStates.C)) {
                             $('body').off('keydown.' + 'completeScene');
+                            globals.currentGame.commonSounds.sceneContinue.play();
                             dialogueChain.done(true);
                         }
                     }.bind(this));

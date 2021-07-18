@@ -13,19 +13,17 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 
 var levelFactory = {
     create: function(type, worldSpecs, options) {
-        options = options || {outer: false};
         var TypeMapping = predefinedTypes[type];
         if(TypeMapping) {
-            var level = new TypeMapping(worldSpecs);
+            let level = new TypeMapping(worldSpecs);
             level.init(type, worldSpecs, options);
             return level;
         } else {
             //Base functionality, aka a level with enemies
-            var levelObj = Object.create(levelBase);
-            levelObj.type = type;
-            levelObj.tileSize = 225;
-            levelObj.init(type, worldSpecs, options);
-            return levelObj;
+            let level = Object.create(levelBase);
+            level.tileSize = 225;
+            level.init(type, worldSpecs, options);
+            return level;
         }
     }
 };

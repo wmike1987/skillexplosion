@@ -233,7 +233,7 @@ var camp = {
     }
 };
 
-var noirEnemyDefinitions = {
+var enemyDefs = {
     learning: {
         enemySets: [{
             type: 'Critter',
@@ -502,7 +502,7 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
-                    levelTypes: ['basic', 'basic', 'basic']
+                    enemyDefList: ['basic', 'basic', 'basic']
                 }
             });
             // world.map.addMapNode('easySentinels', {
@@ -610,7 +610,7 @@ var phaseThree = function() {
 //this defines the camp noir world
 var campNoir = {
     worldSpecs: {
-        enemyDefinitions: noirEnemyDefinitions,
+        enemyDefs: enemyDefs,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
         levelTiles: getLevelTiles(),

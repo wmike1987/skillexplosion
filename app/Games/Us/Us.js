@@ -102,6 +102,10 @@ var game = {
             }
         });
 
+        //setup a common sound pool
+        this.commonSounds = {};
+        this.commonSounds.sceneContinue = gameUtils.getSound('fullheal.wav', {volume: 0.025, rate: 1.3});
+
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
             //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
@@ -604,6 +608,9 @@ var game = {
             this.heartbeat.unload();
             this.flyoverSound.unload();
             this.boxSound.unload();
+            mathArrayUtils.operateOnObjectByKey(this.commonSounds, (key, value) => {
+                value.unload();
+            });
         }
     }
 };

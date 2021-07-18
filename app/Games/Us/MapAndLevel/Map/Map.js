@@ -58,7 +58,7 @@ var map = function(specs) {
             visible: false
         },
     ];
-    global.currentGame.addBody(this.headTokenBody);
+    globals.currentGame.addBody(this.headTokenBody);
     this.headTokenSprite = this.headTokenBody.renderlings.headtoken;
     this.headTokenSprite.visible = false;
     // Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(campLocation, {y: 20}));
@@ -171,17 +171,17 @@ var map = function(specs) {
     this.mouseEventsAllowed = true;
 
     this.addMapNode = function(levelType, options) {
-        options = options || {};
-        options.levelOptions = options.levelOptions || {};
+        //default these values
+        var genericOptions = options || {};
+        genericOptions.levelOptions = genericOptions.levelOptions || {};
+        genericOptions.mapNodeOptions = genericOptions.mapNodeOptions || {};
 
-        var level = levelFactory.create(levelType, this.worldSpecs, options.levelOptions);
-
-        //Determine position
-        var position = options.position;
+        //Determine position unless otherwise specified
+        var position = genericOptions.position;
         var collision, outOfBounds = false;
         var nodeBuffer = 100;
-        var radius = options.outer ? 1000 : 200;
-        var minRadius = options.outer ? 400 : 0;
+        var radius = genericOptions.outer ? 1000 : 200;
+        var minRadius = genericOptions.outer ? 400 : 0;
         var tries = 0;
         if (!position) {
             do {
@@ -190,7 +190,7 @@ var map = function(specs) {
                     radius += 100;
                 }
                 collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, level.nodeBuffer || 40, minRadius);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, 40, minRadius);
                 if (!gameUtils.isPositionWithinPlayableBounds(position)) {
                     outOfBounds = true;
                 }
@@ -203,31 +203,18 @@ var map = function(specs) {
                 }
             } while (collision || outOfBounds);
         }
+        genericOptions.mapNodeOptions.position = position;
+        genericOptions.mapNodeOptions.mapRef = this;
 
-        //the level creates the map node
-        var mapNodeOptions = Object.assign({}, {
-            mapRef: this,
-            position: position
-        }, options.mapNodeOptions);
-        var mapNode = level.createMapNode(mapNodeOptions);
-        level.mapNode = mapNode; //add back reference
+        //create the level
+        var level = levelFactory.create(levelType, this.worldSpecs, Object.assign(genericOptions, {mapRef: this}));
 
-        if (level.manualNodePosition) {
-            var returnedPosition = level.manualNodePosition(position);
-            if (returnedPosition) {
-                mapNode.setPosition(returnedPosition);
-            }
-        } else {
-            mapNode.setPosition(position);
+        //add to map graph if not handled manually
+        if(!level.manualAddToGraph) {
+            this.graph.push(level.mapNode);
         }
 
-        if (level.manualAddToGraph) {
-            level.manualAddToGraph(this.graph);
-        } else {
-            this.graph.push(mapNode);
-        }
-
-        return mapNode;
+        return level.mapNode;
     };
 
     this.removeMapNode = function(node) {

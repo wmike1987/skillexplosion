@@ -364,7 +364,7 @@ Tooltip.makeTooltippable = function(displayObject, options) {
         displayObject.tooltipObj.destroy();
     });
 
-    this.cleanUpEvent = function() {
+    displayObject.tooltipObj.cleanUpEvent = function() {
         Matter.Events.off(displayObject, 'destroy', f);
     };
 

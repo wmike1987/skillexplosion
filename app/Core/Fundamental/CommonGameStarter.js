@@ -19,7 +19,7 @@ var CommonGameStarter = function(game) {
 	AssetLoader(game.totalAssets);
 
 	var defaults = {interpolate: true, width: 1200, height: 600, unitPanelHeight: 0, gravity: 1, appendToElement: "gameTheater"};
-	window.latestGameOptions = $.extend({}, defaults, game.worldOptions);
+	var latestGameOptions = $.extend({}, defaults, game.worldOptions);
 
 	//kill previous engine
 	if(engine)
@@ -39,7 +39,7 @@ var CommonGameStarter = function(game) {
 	// set the global current game
 	globals.currentGame = game;
 	keyStates.initializeListeners();
-	window.currentGame = globals.currentGame;
+	// window.currentGame = globals.currentGame;
 
 	//update the "loading..." text as assets are loaded
 	if(PIXI.Loader.shared.loaderDeferred.state() == 'pending') {
@@ -61,14 +61,14 @@ var CommonGameStarter = function(game) {
 
 			//create our Matter engine
 		    engine = Matter.Engine.create({enableSleeping: false});
-    		engine.world.gravity.y = window.latestGameOptions.gravity;
+    		engine.world.gravity.y = latestGameOptions.gravity;
 
 			//create our game loop (default step rate is 60fps) and start the loop
-			var gameLoop = new GameLoop({interpolate: window.latestGameOptions.interpolate, engine: engine, isFixed: true});
+			var gameLoop = new GameLoop({interpolate: latestGameOptions.interpolate, engine: engine, isFixed: true});
 			gameLoop.start();
 
     		// Start the renderer: this starts the pixi Application and establishes a callback to update sprites with an associated body (event triggered by the GameLoop)
-    		pixiRenderer = new PixiRenderer(engine, window.latestGameOptions);
+    		pixiRenderer = new PixiRenderer(engine, latestGameOptions);
     		pixiRenderer.start();
 
 			//pause the renderer when the game loop is paused
@@ -81,7 +81,7 @@ var CommonGameStarter = function(game) {
 			});
 
     		//Run through the Common Game Lifecycle. init() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()
-    		game.init($.extend(window.latestGameOptions, {
+    		game.init($.extend(latestGameOptions, {
 				   world: engine.world,
     			   engine: engine,
 				   gameLoop: gameLoop,

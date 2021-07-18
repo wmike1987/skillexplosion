@@ -166,7 +166,8 @@ var ShaneIntro = function(options) {
             $('body').on('keydown.skipTutorial', function( event ) {
                 if(keyStates.Control && (keyStates.c || keyStates.C)) {
                     this.skipText.alpha = 0.5;
-                    $('body').off('keydown.' + 'skipTutorial');
+                    $('body').off('keydown.skipTutorial');
+                    globals.currentGame.commonSounds.sceneContinue.play();
                     chain.pause();
 
                     graphicsUtils.graduallyTint(this.skipText, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {

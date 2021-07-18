@@ -16,10 +16,6 @@ import Tooltip from '@core/Tooltip.js';
 import TileMapper from '@core/TileMapper.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Doodad from '@utils/Doodad.js';
-import {
-    Dialogue,
-    DialogueChain
-} from '@core/Dialogue.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
@@ -38,7 +34,7 @@ var campLevel = function() {
         this.isCampProper = true;
         this.campLikeActive = true;
         this.mapTableActive = true;
-        this.camp = options.camp;
+        this.camp = options.levelOptions.camp;
         this.position = gameUtils.getPlayableCenter();
         this.mode = this.possibleModes.CUSTOM;
 

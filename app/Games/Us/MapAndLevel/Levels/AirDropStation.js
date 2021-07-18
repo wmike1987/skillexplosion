@@ -37,6 +37,7 @@ commonAirDropStation.initExtension = function() {
     this.campLikeActive = true;
     this.completeUponEntry = true;
     this.lesserSpin = true;
+    this.entrySound = entrySound;
     this.mode = this.possibleModes.CUSTOM;
     this.noZones = [{
         center: {
@@ -149,7 +150,6 @@ var airDropStation = function(options) {
     this.regularTokenName = 'AirDropToken';
     this.specialTokenName = 'AirDropTokenGleam';
     this.prereqCount = 1;
-    options.entrySound = entrySound;
     this.tileSize = 225.0;
 
     this.onLevelPlayable = function(scene) {
@@ -201,7 +201,6 @@ var airDropSpecialStation = function(options) {
     this.regularTokenName = 'AirDropSpecialToken';
     this.specialTokenName = 'AirDropSpecialTokenGleam';
     this.prereqCount = 3;
-    options.entrySound = entrySound;
     this.tileSize = 225;
 
     this.onLevelPlayable = function(scene) {

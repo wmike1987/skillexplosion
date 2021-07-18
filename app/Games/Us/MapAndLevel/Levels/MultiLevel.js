@@ -20,10 +20,10 @@ var multiLevel = function(options) {
     this.chain = [];
 
     //default
-    this.levelTypes = ['basic', 'basic', 'basic'];
+    this.enemyDefList = ['basic', 'basic', 'basic'];
 
     this.initExtension = function(type, worldSpecs, options) {
-        this.levelTypes.forEach((type) => {
+        this.enemyDefList.forEach((type) => {
             let newOptions = Object.assign({}, options);
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
             this.chain.push(newLevel);

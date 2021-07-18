@@ -87,19 +87,21 @@ var levelBase = {
     enemySets: [],
 
     init: function(type, worldSpecs, options) {
-        Object.assign(this, options || {});
+        //combine default options and passed in options
+        Object.assign(this, {
+            type: type,
+            possibleModes: modes,
+            mode: modes.SPAWN,
+            outer: false,
+            mapRef: options.mapRef,
+            campLikeActive: false,
+            entrySound: worldSpecs.entrySound,
+            tileTint: this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints),
+            worldSpecs: Object.assign({}, worldSpecs),
+        }, options.levelOptions || {});
 
-        //defaults
-        this.type = type;
-        this.possibleModes = modes;
-        this.mode = modes.SPAWN;
-        this.campLikeActive = false;
-        this.worldSpecs = Object.assign({}, worldSpecs);
-        this.entrySound = worldSpecs.entrySound;
-        this.tileTint = this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints);
-
-        //copy the enemy defs
-        this.enemyDefs = Object.assign({}, worldSpecs.enemyDefinitions[type]);
+        //set the enemy  def
+        this.enemyDefs = Object.assign({}, worldSpecs.enemyDefs[type]);
 
         //hook to override defaults
         if (this.initExtension) {
@@ -112,6 +114,24 @@ var levelBase = {
 
             //propagate some attrs if defined on the enemyDef
             this.token = this.enemyDefs.token;
+        }
+
+        //create the map node
+        var mapNode = this.createMapNode(options.mapNodeOptions);
+        this.mapNode = mapNode; //add back reference
+
+        var position = options.mapNodeOptions.position;
+        if (this.manualNodePosition) {
+            var returnedPosition = this.manualNodePosition(position);
+            if (returnedPosition) {
+                mapNode.setPosition(returnedPosition);
+            }
+        } else {
+            mapNode.setPosition(position);
+        }
+
+        if (this.manualAddToGraph) {
+            this.manualAddToGraph(this.mapRef.graph);
         }
     },
 
