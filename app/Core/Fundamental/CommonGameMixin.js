@@ -874,8 +874,12 @@ var common = {
                 }
                 if(this.runs <= 0 || this.manualEndLife) {
                     this.done = true;
-                    if(this.totallyDoneCallback) this.totallyDoneCallback.call(this);
-                    if(this.killsSelf) game.invalidateTimer(this);
+                    if(this.totallyDoneCallback) {
+                        this.totallyDoneCallback.call(this);
+                    }
+                    if(this.killsSelf)  {
+                        game.invalidateTimer(this);
+                    }
                 }
             }
         };
@@ -891,10 +895,12 @@ var common = {
         if($.isArray(timer)) {
             $.each(timer, function(i, timer) {
                 timer.invalidated = true;
+                Matter.Events.trigger(timer, 'onInvalidate');
                 delete this.timers[timer.name];
             }.bind(this));
         } else {
             timer.invalidated = true;
+            Matter.Events.trigger(timer, 'onInvalidate');
             delete this.timers[timer.name];
         }
     },

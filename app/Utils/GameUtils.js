@@ -1182,7 +1182,6 @@ var graphicsUtils = {
             totallyDoneCallback: function() {
                 if (!fadeIn) {
                     graphicsUtils.removeSomethingFromRenderer(sprite);
-                    remove.removeHandler();
                     if (callback) {
                         callback();
                     }
@@ -1192,6 +1191,10 @@ var graphicsUtils = {
 
         var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
             timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
     },
 
@@ -1277,12 +1280,15 @@ var graphicsUtils = {
             },
             totallyDoneCallback: function() {
                 graphicsUtils.removeSomethingFromRenderer(sprite, 'foreground');
-                remove.removeHandler();
             }.bind(this)
         });
 
         var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
             timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
     },
 
@@ -1303,6 +1309,10 @@ var graphicsUtils = {
 
         var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
             globals.currentGame.invalidateTimer(rotationTimer);
+        });
+
+        Matter.Events.on(rotationTimer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
     },
 
@@ -1461,7 +1471,6 @@ var graphicsUtils = {
                     totalRuns--;
                     if (!totalRuns) {
                         this.invalidate();
-                        remove.removeHandler();
                         if (onEnd) {
                             onEnd();
                         }
@@ -1472,6 +1481,10 @@ var graphicsUtils = {
 
         var remove = gameUtils.matterOnce(tintable, 'destroy', () => {
             timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
 
         return timer;
@@ -1510,12 +1523,15 @@ var graphicsUtils = {
             totallyDoneCallback: function() {
                 sprite.position = position;
                 sprite.independentRender = false;
-                remove.removeHandler();
             }
         });
 
         var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
             timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
 
         return timer;
@@ -1685,7 +1701,6 @@ var graphicsUtils = {
                     });
                 } else {
                     sprite.removeGleam();
-                    remove.removeHandler();
                 }
             }
         });
@@ -1699,6 +1714,10 @@ var graphicsUtils = {
 
         var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
             sprite.gleamTimer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
     },
 };
