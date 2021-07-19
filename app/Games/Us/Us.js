@@ -104,7 +104,7 @@ var game = {
 
         //setup a common sound pool
         this.commonSounds = {};
-        this.commonSounds.sceneContinue = gameUtils.getSound('fullheal.wav', {volume: 0.025, rate: 1.3});
+        this.commonSounds.sceneContinue = gameUtils.getSound('gunclick1.wav', {volume: 0.1, rate: 1.0});
 
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {

@@ -30,11 +30,7 @@ export default function(options) {
         name: "Box Cutter",
         description: "Deal " + damage + " damage upon secret stepping through an enemy unit.",
         icon: 'BoxCutter',
-        type: 'Medic',
-        onDestroy: function() {
-            console.info('onloading the boxcutter sound');
-            knifeImpactSound.unload();
-        }
+        type: 'Medic'
     }, options);
     return new ic(item);
 }

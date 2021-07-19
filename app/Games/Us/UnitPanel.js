@@ -907,6 +907,7 @@ unitPanel.prototype.updateUnitItems = function() {
                         y: y
                     }
                 });
+                icon.visible = true;
                 graphicsUtils.makeSpriteSize(icon, 27);
             } else {
                 icon.position = {
@@ -936,6 +937,7 @@ unitPanel.prototype.updateUnitItems = function() {
                         y: y
                     }
                 });
+                icon.visible = true;
                 graphicsUtils.makeSpriteSize(icon, 27);
             } else {
                 icon.position = {

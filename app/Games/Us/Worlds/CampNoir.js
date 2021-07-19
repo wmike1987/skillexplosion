@@ -493,8 +493,6 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
             world.map.addMapNode('basicHard', {
                 levelOptions: {
                     token: 'hard'
@@ -510,7 +508,6 @@ var phaseTwo = function(options) {
             //         token: 'hard'
             //     }
             // });
-            world.map.addMapNode('easyGargs');
             // world.map.addMapNode('airDropStation');
             world.map.addMapNode('airDropStation', {
                 levelOptions: {

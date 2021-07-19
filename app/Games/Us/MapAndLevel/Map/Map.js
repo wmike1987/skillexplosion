@@ -33,7 +33,7 @@ var openmapSound3 = gameUtils.getSound('openmap3.wav', {
 });
 var openmapNewPhase = gameUtils.getSound('gleamsweep.wav', {
     volume: 0.06,
-    rate: 1.0
+    rate: 0.8
 });
 
 //Creates the map, the map head, the map nodes and their tooltips, as well as initializes the level obj which the player will enter upon clicking the node
