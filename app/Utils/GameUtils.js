@@ -1716,7 +1716,7 @@ var graphicsUtils = {
             sprite.gleamTimer.invalidate();
         });
 
-        Matter.Events.on(timer, 'onInvalidate', () => {
+        Matter.Events.on(sprite.gleamTimer, 'onInvalidate', () => {
             remove.removeHandler();
         });
     },
