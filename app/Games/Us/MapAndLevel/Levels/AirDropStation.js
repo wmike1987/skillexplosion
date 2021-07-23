@@ -171,17 +171,18 @@ var airDropStation = function(options) {
             blinkLastLetter: false,
             title: true,
             text: "Radio Transmission",
-            delayAfterEnd: 2000
+            delayAfterEnd: 500,
+            letterSpeed: 30
         });
         var a1 = new Dialogue({
             actor: "MacMurray",
             text: "Stimulant drop is en route. What do you need?",
             backgroundBox: true,
-            letterSpeed: 50
+            letterSpeed: 30
         });
         var self = this;
         var chain = new DialogueChain([title, a1], {
-            startDelay: 200,
+            startDelay: 50,
             done: function() {
                 selection.presentChoices({
                     numberOfChoices: 3,
@@ -222,17 +223,18 @@ var airDropSpecialStation = function(options) {
             blinkLastLetter: false,
             title: true,
             text: "Radio Transmission",
-            delayAfterEnd: 2000
+            delayAfterEnd: 500,
+            letterSpeed: 30
         });
         var a1 = new Dialogue({
             actor: "MacMurray",
             text: "Supply drop inbound. What do you need?",
             backgroundBox: true,
-            letterSpeed: 50
+            letterSpeed: 30
         });
         var self = this;
         var chain = new DialogueChain([title, a1], {
-            startDelay: 200,
+            startDelay: 50,
             done: function() {
                 selection.presentChoices({
                     numberOfChoices: 3,

@@ -739,7 +739,7 @@ export default function Marine(options) {
         defenseCooldown: 6000,
         aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
-        aggressionCooldown: 6000,
+        aggressionCooldown: 3000,
         defenseAction: function(event) {
             var f = {};
             marine.applyBuff({name: "rushofbloodabsorb", textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
@@ -752,9 +752,9 @@ export default function Marine(options) {
         },
         aggressionAction: function(event) {
             marine.applyBuff({name: "rushofbloodspeed", textureName: 'SpeedBuff', duration: robADuration,  applyChanges: function() {
-                marine.moveSpeed += 0.5;
+                marine.moveSpeed += 0.6;
             }, removeChanges: function() {
-                marine.moveSpeed -= 0.5;
+                marine.moveSpeed -= 0.6;
             }});
         },
     });
@@ -833,7 +833,7 @@ export default function Marine(options) {
             var f = {};
             marine.applyBuff({name: "spiritualStateMatch", duration: ssADuration, textureName: 'SpiritualStateBuff', applyChanges: function() {
                 f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
-                    marine.currentEnergy += event.amountDone;
+                    marine.giveEnergy(event.amountDone);
                 });
             }, removeChanges: function() {
                 Matter.Events.off(marine, 'receiveHeal', f.handler);

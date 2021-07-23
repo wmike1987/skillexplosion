@@ -502,6 +502,8 @@ var game = {
         if (options.applyFatigue && unit.fatigue) {
             var healthPenalty = unit.fatigue * unit.maxHealth / 100;
             var energyPenalty = unit.fatigue * unit.maxEnergy / 100;
+            unit.fadeLifeAmount(unit.currentHealth);
+            unit.fadeEnergyAmount(unit.currentEnergy);
             unit.currentHealth -= healthPenalty;
             unit.currentEnergy -= energyPenalty;
         }

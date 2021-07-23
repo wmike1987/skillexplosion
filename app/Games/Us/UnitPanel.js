@@ -1038,7 +1038,7 @@ var _displayUnitStats = function() {
         }
 
         //health
-        this.unitHealthText.text = "HP: " + Math.floor(this.prevailingUnit.currentHealth);
+        this.unitHealthText.text = "HP: " + ((this.prevailingUnit.currentHealth < 1.0) ? 1.0 : Math.floor(this.prevailingUnit.currentHealth));
 
         //grit
         this.unitGritText.text = "Grt: " + this.prevailingUnit.grit;

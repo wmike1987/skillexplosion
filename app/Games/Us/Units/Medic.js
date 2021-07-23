@@ -294,6 +294,15 @@ export default function Medic(options) {
         this.shadow = shadow;
 
         globals.currentGame.addBody(shadow);
+
+        //attach the energy bar to the shadow
+        shadow.renderlings.energybarbackground = this.body.renderlings.energybarbackground;
+        shadow.renderlings.energybarbackground.preferredBody = shadow;
+        shadow.renderlings.energybar = this.body.renderlings.energybar;
+        shadow.renderlings.energybar.preferredBody = shadow;
+        shadow.renderlings.energybarfade = this.body.renderlings.energybarfade;
+        shadow.renderlings.energybarfade.preferredBody = shadow;
+
         shadow.oneFrameOverrideInterpolation = true;
 
         var secretStepSpeed = fleetFeetAugment ? 22 : 10;
@@ -381,6 +390,15 @@ export default function Medic(options) {
               Matter.Body.setPosition(this.body, {x: x, y: y});
               this.isTargetable = true;
               this.shadow = null;
+
+              //save the renderlings from being destroyed
+              shadow.renderlings.energybarbackground.preferredBody = null;
+              delete shadow.renderlings.energybarbackground;
+              shadow.renderlings.energybar.preferredBody = null;
+              delete shadow.renderlings.energybar;
+              shadow.renderlings.energybarfade.preferredBody = null;
+              delete shadow.renderlings.energybarfade;
+
               globals.currentGame.removeBody(shadow);
               globals.currentGame.invalidateTimer(footprintTimer);
               Matter.Events.trigger(this, 'secretStepLand', {destination: destination});
@@ -968,9 +986,10 @@ export default function Medic(options) {
 
     var efADuration = 5000;
     var efDDuration = 5000;
+    var energyGain = 15;
     var elegantForm  = new Passive({
         title: 'Elegant Form',
-        aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain 15 energy.'],
+        aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain ' + energyGain + ' energy.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal 5 damage to attacker.'],
         textureName: 'ElegantForm',
         unit: medic,
@@ -1014,7 +1033,7 @@ export default function Medic(options) {
             blockSound.play();
         },
         aggressionAction: function(event) {
-            medic.currentEnergy += 10;
+            medic.giveEnergy(energyGain);
             graphicsUtils.applyGainAnimationToUnit(medic, 0xad12a3);
             manaHealSound.play();
         }
@@ -1137,8 +1156,9 @@ export default function Medic(options) {
                     healAnimation.play();
                     graphicsUtils.addSomethingToRenderer(healAnimation, 'stageOne');
 
-                    if(!ppBypass)
-                        this.currentEnergy -= thisAbility.energyCost;
+                    if(!ppBypass) {
+                        this.spendEnergy(thisAbility.energyCost);
+                    }
 
                     var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
                     target.giveHealth(healAmount, this);

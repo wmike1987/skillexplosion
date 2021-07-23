@@ -1161,7 +1161,7 @@ var graphicsUtils = {
         });
     },
 
-    fadeSpriteOverTime: function(sprite, time, fadeIn, callback) {
+    fadeSpriteOverTime: function(sprite, time, fadeIn, callback, nokill) {
         var startingAlpha = sprite.alpha || 1.0;
         var finalAlpha = 0;
         if (fadeIn) {
@@ -1181,7 +1181,11 @@ var graphicsUtils = {
             },
             totallyDoneCallback: function() {
                 if (!fadeIn) {
-                    graphicsUtils.removeSomethingFromRenderer(sprite);
+                    if(!nokill) {
+                        graphicsUtils.removeSomethingFromRenderer(sprite);
+                    } else {
+                        sprite.visible = false;
+                    }
                     if (callback) {
                         callback();
                     }
@@ -1196,6 +1200,8 @@ var graphicsUtils = {
         Matter.Events.on(timer, 'onInvalidate', () => {
             remove.removeHandler();
         });
+
+        return timer;
     },
 
     //if bottonPause is null, both sides pause according to pauseDuration

@@ -139,6 +139,10 @@ var renderer = function(engine, options) {
 
 			//loop through fully fledged sprites and latch them to the body's coordinates
 			$.each(body.renderlings, function(property, sprite) {
+				if(sprite.preferredBody && body != sprite.preferredBody) {
+					return;
+				}
+
 				if(sprite.independentRender) {
 					return;
 				}
