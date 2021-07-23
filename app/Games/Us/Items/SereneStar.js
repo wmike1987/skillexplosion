@@ -5,8 +5,9 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
 var manipulations = {
     maxEnergy: 5,
     energyRegenerationRate: 0.5,
-    events: {knifeKill: {currentEnergy: 3, callback: function(event) {
+    events: {knifeKill: {callback: function(event) {
             var tint = 0xf629a8;
+            event.equippedUnit.giveEnergy(3);
             graphicsUtils.applyGainAnimationToUnit(event.equippedUnit, tint);
         }
     }}

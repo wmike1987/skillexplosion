@@ -864,7 +864,7 @@ var UnitSystem = function(properties) {
              if(event.key == 'Z' || event.key == 'z') {
                  if(keyStates.Control) {
                      if(this.selectedUnit) {
-                         this.selectedUnit.currentEnergy = 100;
+                         this.selectedUnit.giveEnergy(15);
                          // this.box.invalidateNextMouseUp = true;
                      }
                  }

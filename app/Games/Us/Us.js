@@ -375,7 +375,7 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["VioletTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({
@@ -497,6 +497,8 @@ var game = {
 
         unit.currentHealth = unit.maxHealth;
         unit.currentEnergy = unit.maxEnergy;
+        unit.updateHealthBar();
+        unit.updateEnergyBar();
 
         //apply fatigue
         if (options.applyFatigue && unit.fatigue) {
@@ -506,6 +508,8 @@ var game = {
             unit.fadeEnergyAmount(unit.currentEnergy);
             unit.currentHealth -= healthPenalty;
             unit.currentEnergy -= energyPenalty;
+            unit.updateHealthBar();
+            unit.updateEnergyBar();
         }
 
         if (unit.hideGrave)

@@ -22,6 +22,11 @@ var healSound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
 var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {volume: 0.02, rate: 1.0});
 var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {volume: 0.03, rate: 2.0});
 
+var backgroundScaleX = 1.8;
+var barScaleXMultiplier = 0.96;
+var healthBorderScale = 0.16;
+var healthBarScale = 0.1;
+
 //default unit attributes
 var UnitBase = {
     isUnit: true,
@@ -52,6 +57,8 @@ var UnitBase = {
     healthRegenerationMultiplier: 1,
     maxEnergy: 0,
     currentEnergy: 0,
+    energyFadeBars: [],
+    healthFadeBars: [],
     isSelectable: true,
     smallerBodyWidthChange: false,
     smallerBodyHeightChange: false,
@@ -147,8 +154,11 @@ var UnitBase = {
                 return;
             }
         }
+
         this.fadeLifeAmount(this.currentHealth);
         this.currentHealth -= alteredDamage;
+        this.updateHealthBar();
+
         if (this.currentHealth <= 0) {
             this._death({attackingUnit: attackingUnit});
             if(attackingUnit) {
@@ -179,8 +189,9 @@ var UnitBase = {
         return (r < dodgeSum/100);
     },
 
-    giveHealth: function(amount, performingUnit) {
+    giveHealth: function(amount, performingUnit, options) {
         performingUnit = performingUnit || {name: 'empty'};
+        options = options || {invisible: false};
         var healingObj = {amount: amount};
         Matter.Events.trigger(this, 'preReceiveHeal', {performingUnit: performingUnit, healingObj: healingObj});
         amount = healingObj.amount;
@@ -193,39 +204,56 @@ var UnitBase = {
             Matter.Events.trigger(this, 'healedFully', {performingUnit: performingUnit});
         }
 
-        this.showLifeBar(true);
-        if(!this.barTimer) {
-            this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 500, runs: 1, callback: function() {
-                if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
-                    this.showLifeBar(false);
-                }
-            }.bind(this)});
-            gameUtils.deathPact(this, this.barTimer);
-        } else {
-            this.barTimer.reset();
-        }
+        //show give life fade
+        let healthSnapshot = this.currentHealth;
+        this.fadeLifeAmount(this.currentHealth, true, () => {
+            this.updateHealthBar(healthSnapshot);
+        });
 
-        Matter.Events.trigger(globals.currentGame, 'performHeal', {performingUnit: performingUnit, amountDone: healingDone});
-        Matter.Events.trigger(performingUnit, 'performHeal', {healedUnit: this, performingUnit: performingUnit, amountDone: healingDone});
-        Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});
+        if(!options.invisible) {
+            this.showLifeBar(true);
+            if(!this.barTimer) {
+                this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 1000, runs: 1, callback: function() {
+                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                        this.showLifeBar(false);
+                    }
+                }.bind(this)});
+                gameUtils.deathPact(this, this.barTimer);
+            } else {
+                this.barTimer.reset();
+            }
+            Matter.Events.trigger(globals.currentGame, 'performHeal', {performingUnit: performingUnit, amountDone: healingDone});
+            Matter.Events.trigger(performingUnit, 'performHeal', {healedUnit: this, performingUnit: performingUnit, amountDone: healingDone});
+            Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});
+        }
     },
 
-    giveEnergy: function(amount) {
+    giveEnergy: function(amount, performingUnit, options) {
+        options = options || {invisible: false};
+
         this.currentEnergy += amount;
         if(this.currentEnergy >= this.maxEnergy) {
             this.currentEnergy = this.maxEnergy;
         }
 
-        this.showEnergyBar(true);
-        if(!this.energyTimer) {
-            this.energyTimer = globals.currentGame.addTimer({name: this.unitId + 'energyTimer', timeLimit: 500, runs: 1, callback: function() {
-                if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
-                    this.showEnergyBar(false);
-                }
-            }.bind(this)});
-            gameUtils.deathPact(this, this.energyTimer);
-        } else {
-            this.energyTimer.reset();
+        //show give energy fade
+        let energySnapshot = this.currentEnergy;
+        this.fadeEnergyAmount(this.currentEnergy, true, () => {
+            this.updateEnergyBar(energySnapshot);
+        });
+
+        if(!options.invisible) {
+            this.showEnergyBar(true);
+            if(!this.energyTimer) {
+                this.energyTimer = globals.currentGame.addTimer({name: this.unitId + 'energyTimer', timeLimit: 1000, runs: 1, callback: function() {
+                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                        this.showEnergyBar(false);
+                    }
+                }.bind(this)});
+                gameUtils.deathPact(this, this.energyTimer);
+            } else {
+                this.energyTimer.reset();
+            }
         }
     },
 
@@ -675,54 +703,142 @@ var UnitBase = {
                 this.renderlings.healthbarbackground.visible = value;
                 this.renderlings.healthbar.visible = value;
                 this.renderlings.healthbarfade.visible = value;
+                this.healthFadeBars.forEach(function(bar) {
+                    bar.visible = value;
+                });
             }
+            this.showingLifeBars = value;
         };
 
-        this.fadeLifeAmount = function(startingAmount) {
-            //create health bar
-            var backgroundScaleX = 1.8;
-            var barScaleXMultiplier = 0.96;
-            var healthBarScale = 0.1;
-            this.renderlings.healthbarfade.visible = true;
-            this.renderlings.healthbarfade.alpha = 1.0;
+        var fadeDuration = 400;
+        this.fadeLifeAmount = function(startingAmount, fadeIn, done) {
+            var givingLife = fadeIn;
 
-            if(this.renderlings.healthbarbackground) {
-                if(this.healthBarFadeTimer) {
-                    this.healthBarFadeTimer.invalidate();
-                }
-
-                var percentage = startingAmount / this.maxHealth;
+            //if fading in, we need a new bar
+            if(givingLife) {
                 if (this.renderlings.healthbarfade) {
-                    this.renderlings.healthbarfade.scale = {
-                        x: backgroundScaleX * barScaleXMultiplier * percentage,
-                        y: healthBarScale
-                    };
+                    // this.renderlings.healthbarfade.alpha = 0.0;
                 }
-                this.healthBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.healthbarfade, 500, null, null, true);
+                var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
+                    scale: {
+                        x: backgroundScaleX * barScaleXMultiplier,
+                        y: healthBarScale
+                    },
+                    anchor: {
+                        x: 0,
+                        y: 0.5
+                    },
+                    where: 'foreground',
+                    rotate: 'none',
+                    avoidIsoMgr: true,
+                    tint: 0x8cf91f,
+                    sortYOffset: 500,
+                    visible: this.showingLifeBars
+                });
+                gameUtils.attachSomethingToBody({something: newBar, body: this.body, offset: this.renderlings.healthbar.offset});
+                let percentage = startingAmount / this.maxHealth;
+                newBar.scale = {
+                    x: backgroundScaleX * barScaleXMultiplier * percentage,
+                    y: healthBarScale
+                };
+
+                var originalDone = done;
+                done = function() {
+                    originalDone();
+                    graphicsUtils.removeSomethingFromRenderer(newBar);
+                    mathArrayUtils.removeObjectFromArray(newBar, this.healthFadeBars);
+                }.bind(this);
+                this.healthFadeBars.push(newBar);
+                graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
+                // graphicsUtils.graduallyTint(newBar, 0x8cf91f, this.renderlings.healthbar.tint, 500);
+            } else {
+                //empty gaining bars
+                this.healthFadeBars.forEach(function(bar) {
+                    graphicsUtils.removeSomethingFromRenderer(bar);
+                });
+                this.healthFadeBars = [];
+                this.renderlings.healthbarfade.alpha = 1.0;
+
+                if(this.renderlings.healthbarbackground) {
+                    if(this.healthBarFadeTimer) {
+                        this.healthBarFadeTimer.invalidate();
+                    }
+
+                    var percentage = startingAmount / this.maxHealth;
+                    if (this.renderlings.healthbarfade) {
+                        this.renderlings.healthbarfade.scale = {
+                            x: backgroundScaleX * barScaleXMultiplier * percentage,
+                            y: healthBarScale
+                        };
+                    }
+                    this.healthBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.healthbarfade, fadeDuration, fadeIn, done, true);
+                }
             }
         };
 
-        this.fadeEnergyAmount = function(startingAmount) {
-            //create health bar
-            var backgroundScaleX = 1.8;
-            var barScaleXMultiplier = 0.96;
-            var healthBarScale = 0.1;
-            this.renderlings.energybarfade.visible = true;
-            this.renderlings.energybarfade.alpha = 1.0;
-
-            if(this.renderlings.energybarbackground) {
-                if(this.energyBarFadeTimer) {
-                    this.energyBarFadeTimer.invalidate();
-                }
-
-                var percentage = startingAmount / this.maxEnergy;
+        this.fadeEnergyAmount = function(startingAmount, fadeIn, done) {
+            var givingEnergy = fadeIn;
+            //if fading in, we need a new bar
+            if(givingEnergy) {
                 if (this.renderlings.energybarfade) {
-                    this.renderlings.energybarfade.scale = {
-                        x: backgroundScaleX * barScaleXMultiplier * percentage,
-                        y: healthBarScale
-                    };
+                    // this.renderlings.energybarfade.alpha = 0.0;
                 }
-                this.energyBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.energybarfade, 500, null, null, true);
+                var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
+                    scale: {
+                        x: backgroundScaleX * barScaleXMultiplier,
+                        y: healthBarScale
+                    },
+                    anchor: {
+                        x: 0,
+                        y: 0.5
+                    },
+                    where: 'foreground',
+                    rotate: 'none',
+                    avoidIsoMgr: true,
+                    sortYOffset: 500,
+                    visible: this.showingEnergyBars
+                });
+                gameUtils.attachSomethingToBody({something: newBar, body: this.body, offset: {
+                    x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
+                    y: -this.unitHeight / 2 - 13
+                }});
+                let percentage = startingAmount / this.maxEnergy;
+                newBar.scale = {
+                    x: backgroundScaleX * barScaleXMultiplier * percentage,
+                    y: healthBarScale
+                };
+
+                var originalDone = done;
+                done = function() {
+                    originalDone();
+                    graphicsUtils.removeSomethingFromRenderer(newBar);
+                    mathArrayUtils.removeObjectFromArray(newBar, this.energyFadeBars);
+                }.bind(this);
+                this.energyFadeBars.push(newBar);
+                graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
+                graphicsUtils.graduallyTint(newBar, 0xff0909, 0xb866f9, fadeDuration);
+            } else {
+                //empty gaining bars
+                this.energyFadeBars.forEach(function(bar) {
+                    graphicsUtils.removeSomethingFromRenderer(bar);
+                });
+                this.energyFadeBars = [];
+
+                this.renderlings.energybarfade.alpha = 1.0;
+                if(this.renderlings.energybarbackground) {
+                    if(this.energyBarFadeTimer) {
+                        this.energyBarFadeTimer.invalidate();
+                    }
+
+                    let percentage = startingAmount / this.maxEnergy;
+                    if (this.renderlings.energybarfade) {
+                        this.renderlings.energybarfade.scale = {
+                            x: backgroundScaleX * barScaleXMultiplier * percentage,
+                            y: healthBarScale
+                        };
+                    }
+                    this.energyBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.energybarfade, fadeDuration, fadeIn, done, true);
+                }
             }
         };
 
@@ -734,13 +850,46 @@ var UnitBase = {
                 this.renderlings.energybarbackground.visible = value;
                 this.renderlings.energybar.visible = value;
                 this.renderlings.energybarfade.visible = value;
+                this.energyFadeBars.forEach(function(bar) {
+                    bar.visible = value;
+                });
             }
+            this.showingEnergyBars = value;
         };
 
+        this.updateHealthBar = function(amount) {
+            var percentage = (amount || this.currentHealth) / this.maxHealth;
+            if (this.renderlings.healthbar) {
+                this.renderlings.healthbar.scale = {
+                    x: backgroundScaleX * barScaleXMultiplier * percentage,
+                    y: healthBarScale
+                };
+                this.renderlings.healthbar.tint = graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1-percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
+            }
+        }.bind(this);
+
+        this.updateEnergyBar = function(amount) {
+            var percentage = (amount || this.currentEnergy) / this.maxEnergy;
+            if (this.renderlings.energybar) {
+                this.renderlings.energybar.scale = {
+                    x: backgroundScaleX * barScaleXMultiplier * percentage,
+                    y: healthBarScale
+                };
+            }
+        }.bind(this);
+
         this.spendEnergy = function(amount) {
+            //fade the energy loss
             this.fadeEnergyAmount(this.currentEnergy);
             this.currentEnergy -= amount;
+
+            //update the energy bar
+            this.updateEnergyBar();
+
+            //show the energy bar
             this.showEnergyBar(true);
+
+            //set the view timer
             if(!this.energyTimer) {
                 this.energyTimer = globals.currentGame.addTimer({name: this.unitId + 'energyTimer', timeLimit: 1000, runs: 1, callback: function() {
                     if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
@@ -779,6 +928,8 @@ var UnitBase = {
         });
 
         Matter.Events.on(this, 'addUnit', function() {
+            var healthBarYOffset = this.energy ? -20 : -13;
+
             if(this._afterAddInit) {
                 this._afterAddInit();
             }
@@ -795,11 +946,6 @@ var UnitBase = {
                 this.unitHeight = this.body.circleRadius * 2;
 
             //create health bar
-            var backgroundScaleX = 1.8;
-            var barScaleXMultiplier = 0.96;
-            var healthBorderScale = 0.16;
-            var healthBarScale = 0.1;
-            var healthBarYOffset = this.energy ? -20 : -13;
             if (this.health) {
                 this.renderChildren.push({
                     id: 'healthbarbackground',
@@ -821,6 +967,7 @@ var UnitBase = {
                     tint: 0x000000,
                     avoidIsoMgr: true,
                     visible: false,
+                    sortYOffset: 250,
                 }, {
                     id: 'healthbarfade',
                     data: 'HealthEnergyBackground',
@@ -840,7 +987,8 @@ var UnitBase = {
                     rotate: 'none',
                     avoidIsoMgr: true,
                     tint: 0xff0017,
-                    visible: false
+                    visible: false,
+                    sortYOffset: 500,
                 }, {
                     id: 'healthbar',
                     data: 'HealthEnergyBackground',
@@ -860,21 +1008,9 @@ var UnitBase = {
                     rotate: 'none',
                     avoidIsoMgr: true,
                     tint: 0x00FF00,
-                    visible: false
+                    visible: false,
+                    sortYOffset: 750,
                 });
-
-                var updateHealthTick = globals.currentGame.addTickCallback(function() {
-                    var percentage = this.currentHealth / this.maxHealth;
-                    if (this.renderlings.healthbar) {
-                        this.renderlings.healthbar.scale = {
-                            x: backgroundScaleX * barScaleXMultiplier * percentage,
-                            y: healthBarScale
-                        };
-                        this.renderlings.healthbar.tint = graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1-percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
-                    }
-                }.bind(this));
-
-                gameUtils.deathPact(this, updateHealthTick);
             }
 
             //create energy bar
@@ -899,6 +1035,7 @@ var UnitBase = {
                     tint: 0x000000,
                     avoidIsoMgr: true,
                     visible: false,
+                    sortYOffset: 250
                 }, {
                     id: 'energybarfade',
                     data: 'HealthEnergyBackground',
@@ -918,7 +1055,8 @@ var UnitBase = {
                     rotate: 'none',
                     avoidIsoMgr: true,
                     tint: 0xf1fa4c,
-                    visible: false
+                    visible: false,
+                    sortYOffset: 500
                 }, {
                     id: 'energybar',
                     data: 'HealthEnergyBackground',
@@ -938,20 +1076,9 @@ var UnitBase = {
                     rotate: 'none',
                     avoidIsoMgr: true,
                     tint: 0xb866f9,
-                    visible: false
+                    visible: false,
+                    sortYOffset: 750
                 });
-
-                var updateEnergyTick = globals.currentGame.addTickCallback(function() {
-                    var percentage = this.currentEnergy / this.maxEnergy;
-                    if (this.renderlings.energybar) {
-                        this.renderlings.energybar.scale = {
-                            x: backgroundScaleX * barScaleXMultiplier * percentage,
-                            y: healthBarScale
-                        };
-                    }
-                }.bind(this));
-
-                gameUtils.deathPact(this, updateEnergyTick);
             }
         }.bind(this));
 
@@ -1010,11 +1137,11 @@ var UnitBase = {
         this.energyRegen = globals.currentGame.addTimer({
             name: 'energyRegen' + this.unitId,
             gogogo: true,
-            timeLimit: 100,
+            timeLimit: 500,
             callback: function() {
                 if(this.ignoreEnergyRegeneration) return;
                 if(this.currentEnergy < this.maxEnergy && this.energyRegenerationRate) {
-                    this.currentEnergy = Math.min(this.currentEnergy + this.getTotalEnergyRegeneration()/10 || 0, this.maxEnergy);
+                    this.giveEnergy(this.getTotalEnergyRegeneration()/2.0, null, {invisible: true});
                 }
             }.bind(this)
         });
@@ -1024,11 +1151,12 @@ var UnitBase = {
         this.healthRegen = globals.currentGame.addTimer({
             name: 'healthRegen' + this.unitId,
             gogogo: true,
-            timeLimit: 100,
+            timeLimit: 500,
             callback: function() {
                 if(this.ignoreHealthRegeneration) return;
                 if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
-                    this.currentHealth = Math.min(this.currentHealth + this.getTotalHealthRegeneration()/10, this.maxHealth);
+                    var healthAddition = this.getTotalHealthRegeneration()/2.0;
+                    this.giveHealth(healthAddition, null, {invisible: true});
                 }
             }.bind(this)
         });

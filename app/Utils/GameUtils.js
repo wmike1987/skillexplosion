@@ -940,7 +940,7 @@ var graphicsUtils = {
     addSomethingToRenderer: function(something, where, options) {
         if ($.type(where) == 'object') {
             options = where;
-            where = options.where;
+            where = options.where || options.stage;
         }
         options = options || {};
 
@@ -1186,9 +1186,9 @@ var graphicsUtils = {
                     } else {
                         sprite.visible = false;
                     }
-                    if (callback) {
-                        callback();
-                    }
+                }
+                if (callback) {
+                    callback();
                 }
             }.bind(this)
         });

@@ -11,12 +11,11 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
 export default function Scout(options) {
     var critter = {};
 
-    var options = options || {};
-    $.extend(options, {radius: 25}, options)
+    options = options || {};
+    $.extend(options, {radius: 25}, options);
 
     //animation settings
-    var runSpeed = .9;
-    var runSpeedBonus = .25;
+    var runSpeedBonus = 0.25;
     var shootSpeed = 1;
 
     var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanN'].spineData);
@@ -138,14 +137,14 @@ export default function Scout(options) {
             speed: attackSpeed,
             times: 1,
         }),
-    }
+    };
 
     var otherAnimations = {
 
-    }
+    };
 
-    var sc = {x: .48, y: .48};
-    var adjustedUpDownsc = {x: .5, y: .5};
+    var sc = {x: 0.48, y: 0.48};
+    var adjustedUpDownsc = {x: 0.5, y: 0.5};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 10;
     var nwswyOffset = 25;
@@ -153,7 +152,7 @@ export default function Scout(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: .9, y: .9},
+        scale: {x: 0.9, y: 0.9},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -233,15 +232,15 @@ export default function Scout(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: .8, y: .8},
+        scale: {x: 0.8, y: 0.8},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var attackSound = gameUtils.getSound('spearmanattack.wav', {volume: .08, rate: 1.0});
-    var deathSound = gameUtils.getSound('spearmandeathsound.wav', {volume: .1, rate: 1.0});
+    var attackSound = gameUtils.getSound('spearmanattack.wav', {volume: 0.08, rate: 1.0});
+    var deathSound = gameUtils.getSound('spearmandeathsound.wav', {volume: 0.1, rate: 1.0});
 
     var unitProperties = $.extend({
         unitType: 'Scout',
@@ -267,7 +266,7 @@ export default function Scout(options) {
             var anim = gameUtils.getAnimation({
                 spritesheetName: 'SpearmanAnimations1',
                 animationName: 'AlienSpearmanDeath',
-                speed: .25,
+                speed: 0.25,
                 fadeAway: true,
                 fadeTime: 8000,
                 transform: [self.deathPosition.x+5, self.deathPosition.y-28, 1.1, 1.1]
@@ -276,7 +275,7 @@ export default function Scout(options) {
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: .75, y: .75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})})
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
             graphicsUtils.fadeSpriteOverTime(shadow, 1500);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
@@ -309,7 +308,7 @@ export default function Scout(options) {
                                 spritesheetName: 'UtilityAnimations1',
                                 animationName: 'GenericHit',
                                 speed: 1.0,
-                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, .5, .5]
+                                transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.5, 0.5]
                             });
                             graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                             bloodAnimation.play();

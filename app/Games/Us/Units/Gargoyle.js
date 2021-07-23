@@ -301,8 +301,8 @@ export default function Gargoyle(options) {
 
             //gargoyle heal
             this.stoneFormAvailable = true;
-            this.stoneFormCooldown = 1500;
-            this.stoneFormLength = 1200;
+            this.stoneFormCooldown = 1800;
+            this.stoneFormLength = 1500;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
                 if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2) {
                     this.stoneFormAvailable = false;
@@ -313,6 +313,8 @@ export default function Gargoyle(options) {
                     transform.play();
                     this.applyBuff({name: "gargBuff", textureName: 'DefensiveBuff', duration: this.stoneFormLength, applyChanges: function() {
                         this.stop(null, {peaceful: true}); //stop any movement
+                        this.showLifeBar(true);
+                        this.barsShowingOverride = true;
                         this.canMove = false;
                         this.canAttack = false;
                         this.isoManagedTint = 0x4d4d4d;
@@ -322,6 +324,8 @@ export default function Gargoyle(options) {
                         this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', position: this.position});
                         this.defense += 10;
                     }.bind(this), removeChanges: function() {
+                        this.showLifeBar(false);
+                        this.barsShowingOverride = false;
                         this.healthRegenerationMultiplier = 1;
                         this.isoManagedTint = null;
                         this.canMove = true;
