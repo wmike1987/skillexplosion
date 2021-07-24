@@ -218,7 +218,7 @@ var camp = {
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
             ursTasks.play();
-            globals.currentGame.shane.currentHealth = 50;
+            globals.currentGame.shane.setHealth(50);
             globals.currentGame.shane.ignoreHealthRegeneration = true;
             globals.currentGame.shane.position = {
                 x: 400,

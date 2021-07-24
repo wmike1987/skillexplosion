@@ -375,7 +375,7 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["VioletTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({
@@ -495,25 +495,20 @@ var game = {
             unit.stop();
         }
 
-        unit.currentHealth = unit.maxHealth;
-        unit.currentEnergy = unit.maxEnergy;
-        unit.updateHealthBar();
-        unit.updateEnergyBar();
+        unit.setHealth(unit.maxHealth);
+        unit.setEnergy(unit.maxEnergy);
 
         //apply fatigue
         if (options.applyFatigue && unit.fatigue) {
             var healthPenalty = unit.fatigue * unit.maxHealth / 100;
             var energyPenalty = unit.fatigue * unit.maxEnergy / 100;
-            unit.fadeLifeAmount(unit.currentHealth);
-            unit.fadeEnergyAmount(unit.currentEnergy);
-            unit.currentHealth -= healthPenalty;
-            unit.currentEnergy -= energyPenalty;
-            unit.updateHealthBar();
-            unit.updateEnergyBar();
+            unit.setHealth(unit.currentHealth - healthPenalty);
+            unit.setEnergy(unit.currentEnergy - energyPenalty);
         }
 
-        if (unit.hideGrave)
+        if (unit.hideGrave) {
             unit.hideGrave();
+        }
     },
 
     flyover: function(done) {

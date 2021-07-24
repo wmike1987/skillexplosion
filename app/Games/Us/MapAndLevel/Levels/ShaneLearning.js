@@ -411,8 +411,8 @@ var shaneLearning = function(options) {
                                                                                                                                                     completeTaskAndRelease(a7a);
                                                                                                                                                     a8.onStart = function() {
                                                                                                                                                         var critter1 = UnitMenu.createUnit('Critter', {team: globals.currentGame.enemyTeam, noWall: true});
-                                                                                                                                                        critter1.currentHealth = 12;
                                                                                                                                                         globals.currentGame.addUnit(critter1);
+                                                                                                                                                        critter1.setHealth(12);
                                                                                                                                                         critter1.position = {x: -50, y: 550};
                                                                                                                                                         critter1.move({x: 200, y: 550});
                                                                                                                                                         critter1.honeRange = 200;

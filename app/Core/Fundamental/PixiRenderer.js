@@ -307,7 +307,7 @@ var renderer = function(engine, options) {
 			newSprite.pluginName = child.pluginName;
 			newSprite.color = child.color;
 		}
-		if(child.alpha) {
+		if(child.alpha || child.alpha === 0.0) {
 			newSprite.alpha = child.alpha;
 		}
 		if(child.gameFilter) {

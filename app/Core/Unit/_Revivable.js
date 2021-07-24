@@ -104,8 +104,10 @@ export default {
         this.graveIsFlashing = false;
 
         this.isDead = false;
-        this.currentEnergy = this.maxEnergy/2;
-        this.currentHealth = this.maxHealth/2;
+        this.setHealth(0.0);
+        this.giveHealth(this.maxHealth/2);
+        this.setEnergy(0.0);
+        this.giveEnergy(this.maxEnergy/2);
         this.position = mathArrayUtils.addScalarToVectorTowardDestination(revivingUnit.position, gameUtils.getCanvasCenter(), 60);
         this.isTargetable = true;
         this.isSelectable = true;

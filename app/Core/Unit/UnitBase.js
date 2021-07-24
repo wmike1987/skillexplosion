@@ -1,7 +1,11 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
 import Moveable from '@core/Unit/_Moveable.js';
 import Attacker from '@core/Unit/_Attacker.js';
 import Iso from '@core/Unit/IsoSpriteManager.js';
@@ -10,17 +14,47 @@ import ItemUtils from '@core/Unit/ItemUtils.js';
 import Command from '@core/Unit/Command.js';
 import styles from '@utils/Styles.js';
 import CommandQueue from '@core/Unit/CommandQueue.js';
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import {
+    globals,
+    keyStates
+} from '@core/Fundamental/GlobalState.js';
 
-var levelUpSound = gameUtils.getSound('levelup.wav', {volume: 0.45, rate: 0.8});
-var itemPlaceSound = gameUtils.getSound('itemplace.wav', {volume: 0.06, rate: 1});
-var petrifySound = gameUtils.getSound('petrify.wav', {volume: 0.07, rate: 1});
-var maimSound = gameUtils.getSound('maimsound.wav', {volume: 0.5, rate: 1.6});
-var condemnSound = gameUtils.getSound('condemn.wav', {volume: 0.2, rate: 0.9});
-var buffSound = gameUtils.getSound('buffcreate.wav', {volume: 0.015, rate: 1.0});
-var healSound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
-var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {volume: 0.02, rate: 1.0});
-var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {volume: 0.03, rate: 2.0});
+var levelUpSound = gameUtils.getSound('levelup.wav', {
+    volume: 0.45,
+    rate: 0.8
+});
+var itemPlaceSound = gameUtils.getSound('itemplace.wav', {
+    volume: 0.06,
+    rate: 1
+});
+var petrifySound = gameUtils.getSound('petrify.wav', {
+    volume: 0.07,
+    rate: 1
+});
+var maimSound = gameUtils.getSound('maimsound.wav', {
+    volume: 0.5,
+    rate: 1.6
+});
+var condemnSound = gameUtils.getSound('condemn.wav', {
+    volume: 0.2,
+    rate: 0.9
+});
+var buffSound = gameUtils.getSound('buffcreate.wav', {
+    volume: 0.015,
+    rate: 1.0
+});
+var healSound = gameUtils.getSound('healsound.wav', {
+    volume: 0.006,
+    rate: 1.3
+});
+var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {
+    volume: 0.02,
+    rate: 1.0
+});
+var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {
+    volume: 0.03,
+    rate: 2.0
+});
 
 var backgroundScaleX = 1.8;
 var barScaleXMultiplier = 0.96;
@@ -59,10 +93,15 @@ var UnitBase = {
     currentEnergy: 0,
     energyFadeBars: [],
     healthFadeBars: [],
+    showingLifeBars: false,
+    showingEnergyBars: false,
     isSelectable: true,
     smallerBodyWidthChange: false,
     smallerBodyHeightChange: false,
-    bigBodyAddition: {x: 0, y: 0},
+    bigBodyAddition: {
+        x: 0,
+        y: 0
+    },
     abilities: [],
     abilityAugments: [],
     commands: {
@@ -100,27 +139,58 @@ var UnitBase = {
     neutralTint: 0xb8b62d,
 
     sufferAttack: function(damage, attackingUnit, options) {
-        if(this.unitRemoved) return;
+        if (this.unitRemoved) return;
 
-        options = Object.assign({isProjectile: false}, options);
-        attackingUnit = attackingUnit || {name: 'empty'};
-        var damageObj = {damage: damage};
+        options = Object.assign({
+            isProjectile: false
+        }, options);
+        attackingUnit = attackingUnit || {
+            name: 'empty'
+        };
+        var damageObj = {
+            damage: damage
+        };
 
         //dodge
-        Matter.Events.trigger(this, 'preDodgeSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
-        if(this.attackDodged() || damageObj.manualDodge) {
-            Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
-            Matter.Events.trigger(this, 'dodgeAttack', {performingUnit: this, damageObj: damageObj});
+        Matter.Events.trigger(this, 'preDodgeSufferAttack', {
+            performingUnit: attackingUnit,
+            sufferingUnit: this,
+            damageObj: damageObj
+        });
+        if (this.attackDodged() || damageObj.manualDodge) {
+            Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {
+                performingUnit: this
+            });
+            Matter.Events.trigger(this, 'dodgeAttack', {
+                performingUnit: this,
+                damageObj: damageObj
+            });
             //display a miss graphic
-            graphicsUtils.floatText('Dodge!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeText});
+            graphicsUtils.floatText('Dodge!', {
+                x: this.position.x,
+                y: this.position.y - 25
+            }, {
+                style: styles.dodgeText
+            });
             return;
         }
 
-        Matter.Events.trigger(this, 'preSufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj});
-        if(options.isProjectile) {
-            Matter.Events.trigger(this, 'sufferProjectile', {performingUnit: attackingUnit, sufferingUnit: this, damageObj: damageObj, projectileData: options.projectileData});
+        Matter.Events.trigger(this, 'preSufferAttack', {
+            performingUnit: attackingUnit,
+            sufferingUnit: this,
+            damageObj: damageObj
+        });
+        if (options.isProjectile) {
+            Matter.Events.trigger(this, 'sufferProjectile', {
+                performingUnit: attackingUnit,
+                sufferingUnit: this,
+                damageObj: damageObj,
+                projectileData: options.projectileData
+            });
         }
-        Matter.Events.trigger(attackingUnit, 'dealDamage', {targetUnit: this});
+        Matter.Events.trigger(attackingUnit, 'dealDamage', {
+            targetUnit: this
+        });
 
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
@@ -129,26 +199,54 @@ var UnitBase = {
         var alteredDamage = Math.max(1, (damage - this.getTotalDefense()));
         var damageReducedByArmor = damage - alteredDamage;
 
-        Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: damageReducedByArmor});
+        Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {
+            performingUnit: attackingUnit,
+            sufferingUnit: this,
+            amountDone: damageReducedByArmor
+        });
 
         //killing blow dodge
-        if(this.currentHealth - alteredDamage <= 0) {
-            if(this.hasGritDodge) {
+        if (this.currentHealth - alteredDamage <= 0) {
+            if (this.hasGritDodge) {
                 this.giveGritDodge(false);
                 this.gritDodgeTimer.reset();
-                Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {performingUnit: this});
+                Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {
+                    performingUnit: this
+                });
                 //display a miss graphic
-                graphicsUtils.floatText('Block!', {x: this.position.x, y: this.position.y-25}, {style: styles.dodgeKillingBlowText});
+                graphicsUtils.floatText('Block!', {
+                    x: this.position.x,
+                    y: this.position.y - 25
+                }, {
+                    style: styles.dodgeKillingBlowText
+                });
 
                 //add block graphic
                 let offset = 40;
                 let attackLocation = options.isProjectile ? options.projectileData.startLocation : attackingUnit.position;
                 let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(this.position, attackLocation, offset);
                 let attachmentOffset = Matter.Vector.sub(offsetLocation, this.position);
-                let block = graphicsUtils.addSomethingToRenderer('Block', {where: 'stageOne', position: offsetLocation, scale: {x: 1.0, y: 1.0}});
-                gameUtils.attachSomethingToBody({something: block, body: this.body, offset: attachmentOffset, deathPactSomething: true});
+                let block = graphicsUtils.addSomethingToRenderer('Block', {
+                    where: 'stageOne',
+                    position: offsetLocation,
+                    scale: {
+                        x: 1.0,
+                        y: 1.0
+                    }
+                });
+                gameUtils.attachSomethingToBody({
+                    something: block,
+                    body: this.body,
+                    offset: attachmentOffset,
+                    deathPactSomething: true
+                });
                 block.rotation = mathArrayUtils.pointInDirection(this.position, offsetLocation);
-                graphicsUtils.flashSprite({sprite: block, toColor: 0xd55812, duration: 100, times: 4});
+                graphicsUtils.flashSprite({
+                    sprite: block,
+                    toColor: 0xd55812,
+                    duration: 100,
+                    times: 4
+                });
                 graphicsUtils.fadeSpriteOverTime(block, 500);
                 killingBlowBlock.play();
                 return;
@@ -160,96 +258,156 @@ var UnitBase = {
         this.updateHealthBar();
 
         if (this.currentHealth <= 0) {
-            this._death({attackingUnit: attackingUnit});
-            if(attackingUnit) {
-                Matter.Events.trigger(attackingUnit, 'kill', {killedUnit: this});
-                Matter.Events.trigger(globals.currentGame, 'performKill', {performingUnit: attackingUnit});
+            this._death({
+                attackingUnit: attackingUnit
+            });
+            if (attackingUnit) {
+                Matter.Events.trigger(attackingUnit, 'kill', {
+                    killedUnit: this
+                });
+                Matter.Events.trigger(globals.currentGame, 'performKill', {
+                    performingUnit: attackingUnit
+                });
             }
         } else {
-            Matter.Events.trigger(attackingUnit, 'dealNonLethalDamage', {targetUnit: this});
-            Matter.Events.trigger(this, 'sufferNonLethalAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
+            Matter.Events.trigger(attackingUnit, 'dealNonLethalDamage', {
+                targetUnit: this
+            });
+            Matter.Events.trigger(this, 'sufferNonLethalAttack', {
+                performingUnit: attackingUnit,
+                sufferingUnit: this,
+                amountDone: alteredDamage
+            });
             this.showLifeBar(true);
-            if(!this.barTimer) {
-                this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 1000, runs: 1, callback: function() {
-                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
-                        this.showLifeBar(false);
-                    }
-                }.bind(this)});
+            if (!this.barTimer) {
+                this.barTimer = globals.currentGame.addTimer({
+                    name: this.unitId + 'barTimer',
+                    timeLimit: 1000,
+                    runs: 1,
+                    callback: function() {
+                        if (!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                            this.showLifeBar(false);
+                        }
+                    }.bind(this)
+                });
                 gameUtils.deathPact(this, this.barTimer);
             } else {
                 this.barTimer.reset();
             }
         }
-        Matter.Events.trigger(globals.currentGame, 'sufferAttack', {performingUnit: attackingUnit, sufferingUnit: this, amountDone: alteredDamage});
+        Matter.Events.trigger(globals.currentGame, 'sufferAttack', {
+            performingUnit: attackingUnit,
+            sufferingUnit: this,
+            amountDone: alteredDamage
+        });
     },
 
     attackDodged: function() {
         var r = Math.random();
         var dodgeSum = this.dodge + this.getDodgeAdditionSum();
-        return (r < dodgeSum/100);
+        return (r < dodgeSum / 100);
+    },
+
+    setHealth: function(amount) {
+        this.currentHealth = Math.min(amount, this.maxHealth);
+        this.updateHealthBar({overridePendingUpdates: true});
+    },
+
+    setEnergy: function(amount) {
+        this.currentEnergy = Math.min(amount, this.maxEnergy);
+        this.updateEnergyBar({overridePendingUpdates: true});
     },
 
     giveHealth: function(amount, performingUnit, options) {
-        performingUnit = performingUnit || {name: 'empty'};
-        options = options || {invisible: false};
-        var healingObj = {amount: amount};
-        Matter.Events.trigger(this, 'preReceiveHeal', {performingUnit: performingUnit, healingObj: healingObj});
+        performingUnit = performingUnit || {
+            name: 'empty'
+        };
+        options = options || {
+            invisible: false
+        };
+        var healingObj = {
+            amount: amount
+        };
+        Matter.Events.trigger(this, 'preReceiveHeal', {
+            performingUnit: performingUnit,
+            healingObj: healingObj
+        });
         amount = healingObj.amount;
 
         this.currentHealth += amount;
         var healingDone = amount;
-        if(this.currentHealth >= this.maxHealth) {
-            healingDone -= (this.currentHealth-this.maxHealth);
-            this.currentHealth = this.maxHealth;
-            Matter.Events.trigger(this, 'healedFully', {performingUnit: performingUnit});
+        if (this.currentHealth >= this.maxHealth) {
+            healingDone -= (this.currentHealth - this.maxHealth);
+            Matter.Events.trigger(this, 'healedFully', {
+                performingUnit: performingUnit
+            });
         }
 
         //show give life fade
         let healthSnapshot = this.currentHealth;
         this.fadeLifeAmount(this.currentHealth, true, () => {
-            this.updateHealthBar(healthSnapshot);
+            this.updateHealthBar({amount: healthSnapshot});
         });
 
-        if(!options.invisible) {
+        if (!options.invisible) {
             this.showLifeBar(true);
-            if(!this.barTimer) {
-                this.barTimer = globals.currentGame.addTimer({name: this.unitId + 'barTimer', timeLimit: 1000, runs: 1, callback: function() {
-                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
-                        this.showLifeBar(false);
-                    }
-                }.bind(this)});
+            if (!this.barTimer) {
+                this.barTimer = globals.currentGame.addTimer({
+                    name: this.unitId + 'barTimer',
+                    timeLimit: 1000,
+                    runs: 1,
+                    callback: function() {
+                        if (!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                            this.showLifeBar(false);
+                        }
+                    }.bind(this)
+                });
                 gameUtils.deathPact(this, this.barTimer);
             } else {
                 this.barTimer.reset();
             }
-            Matter.Events.trigger(globals.currentGame, 'performHeal', {performingUnit: performingUnit, amountDone: healingDone});
-            Matter.Events.trigger(performingUnit, 'performHeal', {healedUnit: this, performingUnit: performingUnit, amountDone: healingDone});
-            Matter.Events.trigger(this, 'receiveHeal', {performingUnit: performingUnit, amountDone: healingDone});
+            Matter.Events.trigger(globals.currentGame, 'performHeal', {
+                performingUnit: performingUnit,
+                amountDone: healingDone
+            });
+            Matter.Events.trigger(performingUnit, 'performHeal', {
+                healedUnit: this,
+                performingUnit: performingUnit,
+                amountDone: healingDone
+            });
+            Matter.Events.trigger(this, 'receiveHeal', {
+                performingUnit: performingUnit,
+                amountDone: healingDone
+            });
         }
     },
 
     giveEnergy: function(amount, performingUnit, options) {
-        options = options || {invisible: false};
+        options = options || {
+            invisible: false
+        };
 
         this.currentEnergy += amount;
-        if(this.currentEnergy >= this.maxEnergy) {
-            this.currentEnergy = this.maxEnergy;
-        }
 
         //show give energy fade
         let energySnapshot = this.currentEnergy;
         this.fadeEnergyAmount(this.currentEnergy, true, () => {
-            this.updateEnergyBar(energySnapshot);
+            this.updateEnergyBar({amount: energySnapshot});
         });
 
-        if(!options.invisible) {
+        if (!options.invisible) {
             this.showEnergyBar(true);
-            if(!this.energyTimer) {
-                this.energyTimer = globals.currentGame.addTimer({name: this.unitId + 'energyTimer', timeLimit: 1000, runs: 1, callback: function() {
-                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
-                        this.showEnergyBar(false);
-                    }
-                }.bind(this)});
+            if (!this.energyTimer) {
+                this.energyTimer = globals.currentGame.addTimer({
+                    name: this.unitId + 'energyTimer',
+                    timeLimit: 1000,
+                    runs: 1,
+                    callback: function() {
+                        if (!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                            this.showEnergyBar(false);
+                        }
+                    }.bind(this)
+                });
                 gameUtils.deathPact(this, this.energyTimer);
             } else {
                 this.energyTimer.reset();
@@ -262,21 +420,26 @@ var UnitBase = {
 
         this.deathPosition = mathArrayUtils.clonePosition(this.position);
 
-        if(this.dropItemsOnDeath) {
+        if (this.dropItemsOnDeath) {
             this.dropAllItems();
         }
         this.isDead = true;
-        Matter.Events.trigger(this, 'death', {attackingUnit: options.attackingUnit, deathPosition: this.deathPosition});
+        Matter.Events.trigger(this, 'death', {
+            attackingUnit: options.attackingUnit,
+            deathPosition: this.deathPosition
+        });
         var levelLocalEntities = this.death();
-        if(levelLocalEntities) {
+        if (levelLocalEntities) {
             levelLocalEntities.forEach((ent) => {
-                Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: ent});
+                Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {
+                    entity: ent
+                });
             });
         }
     },
 
     getCurrentOrLastStandingPosition: function() {
-        if(this.isDead) {
+        if (this.isDead) {
             return this.deathPosition;
         } else {
             return this.position;
@@ -291,10 +454,10 @@ var UnitBase = {
         options = options || {};
 
         var teamDecision = true;
-        if(options.softTarget) {
+        if (options.softTarget) {
             //a soft target is one that we've right clicked on
             //in most cases, let's not be able to target a soft target if we're the same team
-            if(this.team == unit.team) {
+            if (this.team == unit.team) {
                 teamDecision = false;
             }
         }
@@ -303,25 +466,25 @@ var UnitBase = {
 
     pickupItem: function(item, explicitSlot, systemGivenItem) {
         //verify explicit slot. If it's filled, nullify it so we'll locate a slot
-        if(explicitSlot) {
-            if(!explicitSlot.location[explicitSlot.index].isEmptySlot) {
+        if (explicitSlot) {
+            if (!explicitSlot.location[explicitSlot.index].isEmptySlot) {
                 explicitSlot = null;
             }
         }
 
         var slot = explicitSlot || this.findItemSlot(item);
 
-        if(slot) {
+        if (slot) {
             //set ownership
             item.owningUnit = this;
 
             //add benefits (if necessary)
-            if(slot.active && !this.disregardItemBuffs)
+            if (slot.active && !this.disregardItemBuffs)
                 this.equipItem(item);
 
             //play Sound
-            if(!systemGivenItem) {
-                if(this.team == globals.currentGame.playerTeam)
+            if (!systemGivenItem) {
+                if (this.team == globals.currentGame.playerTeam)
                     itemPlaceSound.play();
             }
 
@@ -329,26 +492,36 @@ var UnitBase = {
             slot.location[slot.index] = item;
             item.currentSlot = slot;
 
-            Matter.Events.trigger(globals.currentGame.itemSystem, 'pickupItem', {item: item, unit: this});
-            Matter.Events.trigger(this, 'pickupItem', {item: item});
+            Matter.Events.trigger(globals.currentGame.itemSystem, 'pickupItem', {
+                item: item,
+                unit: this
+            });
+            Matter.Events.trigger(this, 'pickupItem', {
+                item: item
+            });
         }
         return slot;
     },
 
     _dropItem: function(item) {
-        if(item.isEmptySlot) return; //do nothing with a blank item
+        if (item.isEmptySlot) return; //do nothing with a blank item
 
         //spawn new item of same type
         var spawnPosition = {};
         do {
-            if(this.forcedItemDropOffset) {
+            if (this.forcedItemDropOffset) {
                 spawnPosition = mathArrayUtils.clonePosition(this.position, this.forcedItemDropOffset);
             } else {
-                spawnPosition = {x: this.position.x + (Math.random()*60 - 30), y: this.position.y + (Math.random()*60 - 30)};
+                spawnPosition = {
+                    x: this.position.x + (Math.random() * 60 - 30),
+                    y: this.position.y + (Math.random() * 60 - 30)
+                };
             }
         } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition));
 
-        item.drop(spawnPosition, {fleeting: !item.immortal});
+        item.drop(spawnPosition, {
+            fleeting: !item.immortal
+        });
 
         //remove added benefits (if necessary)
         this.unequipItem(item);
@@ -356,17 +529,17 @@ var UnitBase = {
 
     dropAllItems: function() {
         $.each(this.currentItems, function(i, item) {
-            if(item) {
+            if (item) {
                 this._dropItem(item);
             }
         }.bind(this));
         $.each(this.currentSpecialtyItems, function(i, item) {
-            if(item) {
+            if (item) {
                 this._dropItem(item);
             }
         }.bind(this));
         $.each(this.currentBackpack, function(i, item) {
-            if(item) {
+            if (item) {
                 this._dropItem(item);
             }
         }.bind(this));
@@ -376,17 +549,17 @@ var UnitBase = {
         var finalSlot = null;
         var workableSlots = [];
         $.each(this.getAllItems(), function(i, item) {
-            if(item.isEmptySlot && itemToPlace.worksWithSlot(item.currentSlot)) {
+            if (item.isEmptySlot && itemToPlace.worksWithSlot(item.currentSlot)) {
                 workableSlots.push(item.currentSlot);
             }
         });
 
         //default to the first found workable slot, but search to see
         //if there's an active available slot too, and prefer that slot if it exists
-        if(workableSlots.length > 0) {
+        if (workableSlots.length > 0) {
             finalSlot = workableSlots[0];
             $.each(workableSlots, function(i, slot) {
-                if(slot.active) {
+                if (slot.active) {
                     finalSlot = slot;
                     return false;
                 }
@@ -397,24 +570,33 @@ var UnitBase = {
 
     equipItem: function(item) {
         item.equip(this);
-        graphicsUtils.addGleamToSprite({sprite: item.icon, gleamWidth: 15, power: 0.75, leanAmount: 12, duration: 500});
+        graphicsUtils.addGleamToSprite({
+            sprite: item.icon,
+            gleamWidth: 15,
+            power: 0.75,
+            leanAmount: 12,
+            duration: 500
+        });
     },
 
     unequipItem: function(item) {
-        if(item.currentSlot.active && !this.disregardItemBuffs)
+        if (item.currentSlot.active && !this.disregardItemBuffs)
             item.unequip(this);
 
         //empty the item's slot
         item.currentSlot.location[item.currentSlot.index] = item.currentSlot.slotDef;
 
-        Matter.Events.trigger(globals.currentGame.itemSystem, 'unitUnequippedItem', {item: item, unit: this});
+        Matter.Events.trigger(globals.currentGame.itemSystem, 'unitUnequippedItem', {
+            item: item,
+            unit: this
+        });
     },
 
     getAbilityByName: function(name) {
         var ret = null;
-        if(this.abilities) {
+        if (this.abilities) {
             $.each(this.abilities, function(i, ability) {
-                if(ability.name == name) {
+                if (ability.name == name) {
                     ret = ability;
                 }
                 return ret == null;
@@ -426,7 +608,10 @@ var UnitBase = {
     equipPassive: function(passive, type) {
         //equip the new passive
         this[type] = passive;
-        Matter.Events.trigger(this, type + 'Equipped', {type: type, passive: passive});
+        Matter.Events.trigger(this, type + 'Equipped', {
+            type: type,
+            passive: passive
+        });
         passive[type] = true;
         passive.isEquipped = true;
         passive.start(type);
@@ -434,12 +619,15 @@ var UnitBase = {
 
     unequipPassive: function(passive) {
         var type = 'attackPassive';
-        if(passive.defensePassive) {
+        if (passive.defensePassive) {
             type = 'defensePassive';
         }
-        Matter.Events.trigger(this, type + 'Unequipped', {type: type, passive: passive});
+        Matter.Events.trigger(this, type + 'Unequipped', {
+            type: type,
+            passive: passive
+        });
         passive.isEquipped = false;
-        if(passive.attackPassive) {
+        if (passive.attackPassive) {
             passive.attackPassive = false;
             this.attackPassive = null;
         } else {
@@ -458,10 +646,10 @@ var UnitBase = {
 
             set: function(value) {
                 var currentPercentage = 100;
-                if(this._maxHealth)
-                    currentPercentage = this.currentHealth/this._maxHealth;
+                if (this._maxHealth)
+                    currentPercentage = this.currentHealth / this._maxHealth;
                 this._maxHealth = value;
-                this.currentHealth = Math.round(this._maxHealth * currentPercentage);
+                this.setHealth(Math.round(this._maxHealth * currentPercentage));
             }
         });
 
@@ -472,10 +660,10 @@ var UnitBase = {
 
             set: function(value) {
                 var currentPercentage = 100;
-                if(this._maxEnergy)
-                    currentPercentage = this.currentEnergy/this._maxEnergy;
+                if (this._maxEnergy)
+                    currentPercentage = this.currentEnergy / this._maxEnergy;
                 this._maxEnergy = value;
-                this.currentEnergy = Math.round(this._maxEnergy * currentPercentage);
+                this.setEnergy(Math.round(this._maxEnergy * currentPercentage));
             }
         });
 
@@ -485,7 +673,14 @@ var UnitBase = {
             },
 
             set: function(value) {
-                this._currentHealth = Math.min(value, this.maxHealth);
+                if(value < 0) {
+                    value = 0;
+                }
+
+                if(value > this.maxHealth) {
+                    value = this.maxHealth;
+                }
+                this._currentHealth = value;
             }
         });
 
@@ -495,7 +690,14 @@ var UnitBase = {
             },
 
             set: function(value) {
-                this._currentEnergy = Math.min(value, this.maxEnergy);
+                if(value < 0) {
+                    value = 0;
+                }
+
+                if(value > this.maxEnergy) {
+                    value = this.maxEnergy;
+                }
+                this._currentEnergy = value;
             }
         });
 
@@ -505,32 +707,21 @@ var UnitBase = {
             },
         });
 
-        // setup health and energy
-        if (this.health) {
-            this.maxHealth = this.health;
-            this.currentHealth = this.health;
-        }
-
-        if (this.energy) {
-            this.maxEnergy = this.energy;
-            this.currentEnergy = this.energy;
-        }
-
         //event handling/dispatch queue
         this.commandQueue = CommandQueue();
         this.handleEvent = function(event) {
-            if(event.type == 'click') {
-                if(this.eventClickMappings[event.id]) {
+            if (event.type == 'click') {
+                if (this.eventClickMappings[event.id]) {
                     let eventState = {};
 
                     //determine current state of things and store it in a command object
-                    if(this.eventClickStateGathering[event.id]) {
+                    if (this.eventClickStateGathering[event.id]) {
                         eventState = this.eventClickStateGathering[event.id]();
                     }
 
                     //the mappings can be simply a function, or a more complicated object
                     let newCommand = null;
-                    if(typeof this.eventClickMappings[event.id] === "function") {
+                    if (typeof this.eventClickMappings[event.id] === "function") {
                         newCommand = Command({
                             queue: this.commandQueue,
                             method: this.eventClickMappings[event.id],
@@ -556,26 +747,25 @@ var UnitBase = {
                         $.extend(newCommand, this.eventClickMappings[event.id]);
                     }
 
-                    if(keyStates.Shift) {
+                    if (keyStates.Shift) {
                         this.commandQueue.enqueue(newCommand);
-                    }
-                    else {
+                    } else {
                         this.commandQueue.clear();
                         this.commandQueue.enqueue(newCommand);
                     }
                 }
-            } else if(event.type == 'key') {
-                if(this.eventKeyMappings[event.id]) {
+            } else if (event.type == 'key') {
+                if (this.eventKeyMappings[event.id]) {
                     let eventState = {};
 
                     //determine current state of things and store it in a command object
-                    if(this.eventKeyStateGathering[event.id]) {
+                    if (this.eventKeyStateGathering[event.id]) {
                         eventState = this.eventKeyStateGathering[event.id]();
                     }
 
                     //the mappings can be simply a function, or a more complicated object
                     let newCommand = null;
-                    if(typeof this.eventKeyMappings[event.id] === "function") {
+                    if (typeof this.eventKeyMappings[event.id] === "function") {
                         newCommand = Command({
                             queue: this.commandQueue,
                             method: this.eventKeyMappings[event.id],
@@ -601,10 +791,9 @@ var UnitBase = {
                         $.extend(newCommand, this.eventKeyMappings[event.id]);
                     }
 
-                    if(keyStates.Shift) {
+                    if (keyStates.Shift) {
                         this.commandQueue.enqueue(newCommand);
-                    }
-                    else {
+                    } else {
                         this.commandQueue.clear();
                         this.commandQueue.enqueue(newCommand);
                     }
@@ -613,7 +802,7 @@ var UnitBase = {
         };
 
         var handleEvent = function(event) {
-            if(this == event.unit)
+            if (this == event.unit)
                 this.handleEvent(event);
         }.bind(this);
 
@@ -622,19 +811,19 @@ var UnitBase = {
         Matter.Events.on(this, "onremove", function() {
             this.unitRemoved = true;
             Matter.Events.off(globals.currentGame.unitSystem, 'unitSystemEventDispatch', handleEvent);
-            if(!this.itemsEnabled) return;
+            if (!this.itemsEnabled) return;
             $.each(this.getCompleteSetOfItemObjects(), function(i, item) {
-                if(item) {
+                if (item) {
                     globals.currentGame.removeItem(item);
                 }
             });
         }.bind(this));
 
         Matter.Events.on(this, "consume", function() {
-            if(this.consumeSound) {
+            if (this.consumeSound) {
                 this.consumeSound.play();
             }
-            if(this.portrait) {
+            if (this.portrait) {
                 graphicsUtils.graduallyTint(this.portrait, 0xFFFFFF, 0x4ecc1a, 100, null, false, 3);
             }
         }.bind(this));
@@ -646,10 +835,18 @@ var UnitBase = {
                 speed: 0.4,
             });
             anim.tint = 0xff3333;
-            anim.scale = {x: 0.4, y: 0.4};
+            anim.scale = {
+                x: 0.4,
+                y: 0.4
+            };
             gameUtils.moveSpriteOffScreen(anim);
             graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
-            gameUtils.attachSomethingToBody({something: anim, body: this.body, offset: this.body.renderlings.selected.offset, deathPactSomething: true});
+            gameUtils.attachSomethingToBody({
+                something: anim,
+                body: this.body,
+                offset: this.body.renderlings.selected.offset,
+                deathPactSomething: true
+            });
             anim.play();
         }.bind(this));
 
@@ -660,27 +857,35 @@ var UnitBase = {
                 speed: 0.4,
             });
             anim.tint = 0x479cff;
-            anim.scale = {x: 0.4, y: 0.4};
+            anim.scale = {
+                x: 0.4,
+                y: 0.4
+            };
             gameUtils.moveSpriteOffScreen(anim);
             graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
-            gameUtils.attachSomethingToBody({something: anim, body: this.body, offset: this.body.renderlings.selected.offset, deathPactSomething: true});
+            gameUtils.attachSomethingToBody({
+                something: anim,
+                body: this.body,
+                offset: this.body.renderlings.selected.offset,
+                deathPactSomething: true
+            });
             anim.play();
         }.bind(this));
 
         //hover Method
         this.hover = function() {
-            if(this.team == globals.currentGame.enemyTeam) {
-                if(this.tintMe) {
+            if (this.team == globals.currentGame.enemyTeam) {
+                if (this.tintMe) {
                     this.tintMe(this.enemyTint);
                 }
                 this.isoManagedTint = this.enemyTint;
-            } else if(this.team == globals.currentGame.neutralTeam){
-                if(this.tintMe) {
+            } else if (this.team == globals.currentGame.neutralTeam) {
+                if (this.tintMe) {
                     this.tintMe(this.neutralTint);
                 }
                 this.isoManagedTint = this.neutralTint;
             } else {
-                if(this.tintMe) {
+                if (this.tintMe) {
                     this.tintMe(this.friendlyTint);
                 }
                 this.isoManagedTint = this.friendlyTint;
@@ -690,16 +895,16 @@ var UnitBase = {
 
         this.unhover = function(event) {
             this.isoManagedTint = 0xFFFFFF;
-            if(this.untintMe) {
+            if (this.untintMe) {
                 this.untintMe();
             }
         };
 
         this.showLifeBar = function(value) {
-            if(this.hideLifeBar) return;
-            if(value !== false)
+            if (this.hideLifeBar) return;
+            if (value !== false)
                 value = true;
-            if(this.renderlings.healthbarbackground) {
+            if (this.renderlings.healthbarbackground) {
                 this.renderlings.healthbarbackground.visible = value;
                 this.renderlings.healthbar.visible = value;
                 this.renderlings.healthbarfade.visible = value;
@@ -715,7 +920,7 @@ var UnitBase = {
             var givingLife = fadeIn;
 
             //if fading in, we need a new bar
-            if(givingLife) {
+            if (givingLife) {
                 if (this.renderlings.healthbarfade) {
                     // this.renderlings.healthbarfade.alpha = 0.0;
                 }
@@ -735,7 +940,11 @@ var UnitBase = {
                     sortYOffset: 500,
                     visible: this.showingLifeBars
                 });
-                gameUtils.attachSomethingToBody({something: newBar, body: this.body, offset: this.renderlings.healthbar.offset});
+                gameUtils.attachSomethingToBody({
+                    something: newBar,
+                    body: this.body,
+                    offset: this.renderlings.healthbar.offset
+                });
                 let percentage = startingAmount / this.maxHealth;
                 newBar.scale = {
                     x: backgroundScaleX * barScaleXMultiplier * percentage,
@@ -759,8 +968,8 @@ var UnitBase = {
                 this.healthFadeBars = [];
                 this.renderlings.healthbarfade.alpha = 1.0;
 
-                if(this.renderlings.healthbarbackground) {
-                    if(this.healthBarFadeTimer) {
+                if (this.renderlings.healthbarbackground) {
+                    if (this.healthBarFadeTimer) {
                         this.healthBarFadeTimer.invalidate();
                     }
 
@@ -779,7 +988,7 @@ var UnitBase = {
         this.fadeEnergyAmount = function(startingAmount, fadeIn, done) {
             var givingEnergy = fadeIn;
             //if fading in, we need a new bar
-            if(givingEnergy) {
+            if (givingEnergy) {
                 if (this.renderlings.energybarfade) {
                     // this.renderlings.energybarfade.alpha = 0.0;
                 }
@@ -798,10 +1007,14 @@ var UnitBase = {
                     sortYOffset: 500,
                     visible: this.showingEnergyBars
                 });
-                gameUtils.attachSomethingToBody({something: newBar, body: this.body, offset: {
-                    x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
-                    y: -this.unitHeight / 2 - 13
-                }});
+                gameUtils.attachSomethingToBody({
+                    something: newBar,
+                    body: this.body,
+                    offset: {
+                        x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
+                        y: -this.unitHeight / 2 - 13
+                    }
+                });
                 let percentage = startingAmount / this.maxEnergy;
                 newBar.scale = {
                     x: backgroundScaleX * barScaleXMultiplier * percentage,
@@ -825,8 +1038,8 @@ var UnitBase = {
                 this.energyFadeBars = [];
 
                 this.renderlings.energybarfade.alpha = 1.0;
-                if(this.renderlings.energybarbackground) {
-                    if(this.energyBarFadeTimer) {
+                if (this.renderlings.energybarbackground) {
+                    if (this.energyBarFadeTimer) {
                         this.energyBarFadeTimer.invalidate();
                     }
 
@@ -843,10 +1056,10 @@ var UnitBase = {
         };
 
         this.showEnergyBar = function(value) {
-            if(this.hideEnergyBar) return;
-            if(value !== false)
+            if (this.hideEnergyBar) return;
+            if (value !== false)
                 value = true;
-            if(this.renderlings.energybarbackground) {
+            if (this.renderlings.energybarbackground) {
                 this.renderlings.energybarbackground.visible = value;
                 this.renderlings.energybar.visible = value;
                 this.renderlings.energybarfade.visible = value;
@@ -857,19 +1070,44 @@ var UnitBase = {
             this.showingEnergyBars = value;
         };
 
-        this.updateHealthBar = function(amount) {
-            var percentage = (amount || this.currentHealth) / this.maxHealth;
+        this.updateHealthBar = function(options) {
+            options = options || {};
+            var amount = options.amount || this.currentHealth;
+            var overridePendingUpdates = options.overridePendingUpdates;
+
+            if(overridePendingUpdates) {
+                this.healthFadeBars.forEach((bar) => {
+                    graphicsUtils.removeSomethingFromRenderer(bar);
+                });
+                if(this.healthBarFadeTimer) {
+                    this.healthBarFadeTimer.invalidate();
+                }
+            }
+
+            var percentage = amount / this.maxHealth;
             if (this.renderlings.healthbar) {
                 this.renderlings.healthbar.scale = {
                     x: backgroundScaleX * barScaleXMultiplier * percentage,
                     y: healthBarScale
                 };
-                this.renderlings.healthbar.tint = graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1-percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
+                this.renderlings.healthbar.tint = graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1 - percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
             }
         }.bind(this);
 
-        this.updateEnergyBar = function(amount) {
-            var percentage = (amount || this.currentEnergy) / this.maxEnergy;
+        this.updateEnergyBar = function(options) {
+            options = options || {};
+            var amount = options.amount || this.currentEnergy;
+            var overridePendingUpdates = options.overridePendingUpdates;
+
+            if(overridePendingUpdates) {
+                this.energyFadeBars.forEach((bar) => {
+                    graphicsUtils.removeSomethingFromRenderer(bar);
+                });
+                if(this.energyBarFadeTimer) {
+                    this.energyBarFadeTimer.invalidate();
+                }
+            }
+            var percentage = amount / this.maxEnergy;
             if (this.renderlings.energybar) {
                 this.renderlings.energybar.scale = {
                     x: backgroundScaleX * barScaleXMultiplier * percentage,
@@ -890,12 +1128,17 @@ var UnitBase = {
             this.showEnergyBar(true);
 
             //set the view timer
-            if(!this.energyTimer) {
-                this.energyTimer = globals.currentGame.addTimer({name: this.unitId + 'energyTimer', timeLimit: 1000, runs: 1, callback: function() {
-                    if(!this.showingBarsWithAlt && !this.barsShowingOverride) {
-                        this.showEnergyBar(false);
-                    }
-                }.bind(this)});
+            if (!this.energyTimer) {
+                this.energyTimer = globals.currentGame.addTimer({
+                    name: this.unitId + 'energyTimer',
+                    timeLimit: 1000,
+                    runs: 1,
+                    callback: function() {
+                        if (!this.showingBarsWithAlt && !this.barsShowingOverride) {
+                            this.showEnergyBar(false);
+                        }
+                    }.bind(this)
+                });
                 gameUtils.deathPact(this, this.energyTimer);
             } else {
                 this.energyTimer.reset();
@@ -911,7 +1154,7 @@ var UnitBase = {
             set: function(value) {
                 this._isTargetable = value;
             },
-			configurable: true
+            configurable: true
         });
 
 
@@ -924,13 +1167,22 @@ var UnitBase = {
             set: function(value) {
                 this._canTakeAbilityDamage = value;
             },
-			configurable: true
+            configurable: true
         });
 
         Matter.Events.on(this, 'addUnit', function() {
             var healthBarYOffset = this.energy ? -20 : -13;
 
-            if(this._afterAddInit) {
+            // setup health and energy
+            if (this.health) {
+                this.maxHealth = this.health;
+            }
+
+            if (this.energy) {
+                this.maxEnergy = this.energy;
+            }
+
+            if (this._afterAddInit) {
                 this._afterAddInit();
             }
 
@@ -987,6 +1239,7 @@ var UnitBase = {
                     rotate: 'none',
                     avoidIsoMgr: true,
                     tint: 0xff0017,
+                    alpha: 0.0,
                     visible: false,
                     sortYOffset: 500,
                 }, {
@@ -1055,6 +1308,7 @@ var UnitBase = {
                     rotate: 'none',
                     avoidIsoMgr: true,
                     tint: 0xf1fa4c,
+                    alpha: 0.0,
                     visible: false,
                     sortYOffset: 500
                 }, {
@@ -1080,12 +1334,15 @@ var UnitBase = {
                     sortYOffset: 750
                 });
             }
+
+            //immediately realize the new render children
+            globals.currentGame.renderer.realizeBody(this.body);
         }.bind(this));
 
         //kill handler (disabled for now)
-        if(false) {
+        if (false) {
             Matter.Events.on(this, 'kill', function(event) {
-                if(!this.isDead) {
+                if (!this.isDead) {
                     this.giveExperience(event.killedUnit.experienceWorth || 0);
                 }
             }.bind(this));
@@ -1094,7 +1351,7 @@ var UnitBase = {
         //grit handling
         this.gritHandler = globals.currentGame.addTickCallback(function() {
             var gritSum = this.getTotalGrit();
-            if(this.currentHealth < gritSum/100*this.maxHealth) {
+            if (this.currentHealth < gritSum / 100 * this.maxHealth) {
                 this.gritMult = 2;
             } else {
                 this.gritMult = 1;
@@ -1113,15 +1370,15 @@ var UnitBase = {
                 return self.isDead || !globals.currentGame.levelInPlay;
             },
             callback: function() {
-                if(this.timerActive && self.getTotalGrit() > 0.0) {
+                if (this.timerActive && self.getTotalGrit() > 0.0) {
                     self.giveGritDodge(true);
                 }
             },
             tickMonitor: function() {
-                if(self.getTotalGrit() > 0.0) {
+                if (self.getTotalGrit() > 0.0) {
                     self.gritCooldown = (gritHigh - ((self.getTotalGrit() / 100.0) * (gritHigh - gritLow)));
                     this.timeLimit = self.gritCooldown * 1000;
-                    if(!this.timerActive) {
+                    if (!this.timerActive) {
                         this.timerActive = true;
                         this.reset();
                     }
@@ -1139,9 +1396,11 @@ var UnitBase = {
             gogogo: true,
             timeLimit: 500,
             callback: function() {
-                if(this.ignoreEnergyRegeneration) return;
-                if(this.currentEnergy < this.maxEnergy && this.energyRegenerationRate) {
-                    this.giveEnergy(this.getTotalEnergyRegeneration()/2.0, null, {invisible: true});
+                if (this.ignoreEnergyRegeneration) return;
+                if (this.currentEnergy < this.maxEnergy && this.energyRegenerationRate) {
+                    this.giveEnergy(this.getTotalEnergyRegeneration() / 2.0, null, {
+                        invisible: true
+                    });
                 }
             }.bind(this)
         });
@@ -1153,16 +1412,18 @@ var UnitBase = {
             gogogo: true,
             timeLimit: 500,
             callback: function() {
-                if(this.ignoreHealthRegeneration) return;
-                if(this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
-                    var healthAddition = this.getTotalHealthRegeneration()/2.0;
-                    this.giveHealth(healthAddition, null, {invisible: true});
+                if (this.ignoreHealthRegeneration) return;
+                if (this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
+                    var healthAddition = this.getTotalHealthRegeneration() / 2.0;
+                    this.giveHealth(healthAddition, null, {
+                        invisible: true
+                    });
                 }
             }.bind(this)
         });
         gameUtils.deathPact(this, this.healthRegen);
 
-        if(this._init) {
+        if (this._init) {
             this._init(); //per-unit hook
         }
     },
@@ -1176,19 +1437,18 @@ var UnitBase = {
     },
 
     addFilter: function(filter, filterArea) {
-        if(this.mainRenderSprite) {
-            if($.isArray(this.mainRenderSprite)) {
+        if (this.mainRenderSprite) {
+            if ($.isArray(this.mainRenderSprite)) {
                 $.each(this.mainRenderSprite, function(i, spriteId) {
                     $.each(this.renderlings, function(id, child) {
-                        if(id == spriteId) {
-                            if(!child.filters) {
+                        if (id == spriteId) {
+                            if (!child.filters) {
                                 child.filters = filter;
-                            }
-                            else {
+                            } else {
                                 (child.filters.push(filter));
                             }
 
-                            if(filterArea) {
+                            if (filterArea) {
                                 child.filterArea = filterArea;
                             }
                         }
@@ -1196,15 +1456,14 @@ var UnitBase = {
                 }.bind(this));
             } else {
                 $.each(this.renderlings, function(id, child) {
-                    if(id == this.mainRenderSprite) {
-                        if(!child.filters) {
+                    if (id == this.mainRenderSprite) {
+                        if (!child.filters) {
                             child.filters = filter;
-                        }
-                        else {
+                        } else {
                             (child.filters.push(filter));
                         }
 
-                        if(filterArea) {
+                        if (filterArea) {
                             child.filterArea = filterArea;
                         }
                     }
@@ -1226,18 +1485,23 @@ var UnitBase = {
         });
         levelUpAnimation.play();
         graphicsUtils.addSomethingToRenderer(levelUpAnimation, 'stageOne');
-        gameUtils.attachSomethingToBody({something: levelUpAnimation, body: this.body});
+        gameUtils.attachSomethingToBody({
+            something: levelUpAnimation,
+            body: this.body
+        });
         levelUpSound.play();
-        this.currentHealth = this.maxHealth;
-        this.currentEnergy = this.maxEnergy;
+        this.setHealth(this.maxHealth);
+        this.setEnergy(this.maxEnergy);
         this.expendableSkillPoints += 2;
 
-        Matter.Events.trigger(this, 'levelup', {unit: this});
+        Matter.Events.trigger(this, 'levelup', {
+            unit: this
+        });
     },
 
     giveExperience: function(exp) {
         this.currentExperience += exp;
-        if(this.currentExperience >= this.nextLevelExp) {
+        if (this.currentExperience >= this.nextLevelExp) {
             this.levelUp();
         }
     },
@@ -1267,42 +1531,52 @@ var UnitBase = {
 
     petrify: function(duration) {
         var unit = this;
-        if(unit.isDead || !unit.isMoveable) {
+        if (unit.isDead || !unit.isMoveable) {
             return;
         }
         var buffName = 'petrify';
         var shakeTimer = null;
-        this.applyBuff({name: buffName, unit: this, textureName: 'PetrifyBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
-            this.stop(null, {peaceful: true});
-            this.canMove = false;
-            this.canAttack = false;
-            this.isTargetable = false;
-            this.isoManagedAlpha = 0.6;
-            this.idleCancel = true;
-            Matter.Sleeping.set(this.body, true);
-            if(this.petrifyTintTimer) {
-                globals.currentGame.invalidateTimer(this.petrifyTintTimer);
+        this.applyBuff({
+            name: buffName,
+            unit: this,
+            textureName: 'PetrifyBuff',
+            playSound: false,
+            duration: duration || 2000,
+            applyChanges: function() {
+                this.stop(null, {
+                    peaceful: true
+                });
+                this.canMove = false;
+                this.canAttack = false;
+                this.isTargetable = false;
+                this.isoManagedAlpha = 0.6;
+                this.idleCancel = true;
+                Matter.Sleeping.set(this.body, true);
+                if (this.petrifyTintTimer) {
+                    globals.currentGame.invalidateTimer(this.petrifyTintTimer);
+                }
+                this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
+                shakeTimer = graphicsUtils.shakeSprite(this.isoManager.visibleIsoSprite.spine, 400);
+                gameUtils.deathPact(unit, shakeTimer);
+                petrifySound.play();
+            },
+            removeChanges: function(context) {
+                Matter.Sleeping.set(unit.body, false);
+                unit.stop();
+                unit.canMove = true;
+                unit.canAttack = true;
+                unit.isTargetable = true;
+                unit.idleCancel = false;
+                gameUtils.undeathPact(unit, shakeTimer);
+                globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
+                unit.isoManagedTint = null;
+                unit.isoManagedAlpha = null;
             }
-            this.petrifyTintTimer = graphicsUtils.graduallyTint(this, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
-            shakeTimer = graphicsUtils.shakeSprite(this.isoManager.visibleIsoSprite.spine, 400);
-            gameUtils.deathPact(unit, shakeTimer);
-            petrifySound.play();
-        }, removeChanges: function(context) {
-            Matter.Sleeping.set(unit.body, false);
-            unit.stop();
-            unit.canMove = true;
-            unit.canAttack = true;
-            unit.isTargetable = true;
-            unit.idleCancel = false;
-            gameUtils.undeathPact(unit, shakeTimer);
-            globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
-            unit.isoManagedTint = null;
-            unit.isoManagedAlpha = null;
-        }});
+        });
     },
 
     maim: function(duration) {
-        if(this.isDead) {
+        if (this.isDead) {
             return;
         }
         var movePenalty = 1.5;
@@ -1311,56 +1585,123 @@ var UnitBase = {
         var unit = this;
         var buffName = 'maim';
         maimSound.play();
-        this.applyBuff({name: buffName, unit: this, textureName: 'MaimBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
-            unit.moveSpeed -= movePenalty;
-            unit.addDefenseAddition(defensePenalty);
-        }, removeChanges: function() {
-            unit.moveSpeed += movePenalty;
-            unit.removeDefenseAddition(defensePenalty);
-        }});
+        this.applyBuff({
+            name: buffName,
+            unit: this,
+            textureName: 'MaimBuff',
+            playSound: false,
+            duration: duration || 2000,
+            applyChanges: function() {
+                unit.moveSpeed -= movePenalty;
+                unit.addDefenseAddition(defensePenalty);
+            },
+            removeChanges: function() {
+                unit.moveSpeed += movePenalty;
+                unit.removeDefenseAddition(defensePenalty);
+            }
+        });
     },
 
     condemn: function(duration, condemningUnit) {
-        if(this.isDead) {
+        if (this.isDead) {
             return;
         }
         var defensePenalty = -1;
         var buffName = 'condemn';
         condemnSound.play();
         var handler;
-        this.applyBuff({name: buffName, unit: this, textureName: 'CondemnBuff', playSound: false, duration: duration || 2000, applyChanges: function() {
-            this.addDefenseAddition(defensePenalty);
-            handler = gameUtils.matterOnce(this, 'death', function() {
-                var position1 = condemningUnit.position;
-                var offset2 = {x: Math.random()*40-20, y: Math.random()*40-20};
-                var offset3 = {x: Math.random()*40-20, y: Math.random()*40-20};
-                var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: 0.8, y: 0.8}});
-                var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: 0.8, y: 0.8}});
-                var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {where: 'stageTwo', position: position1, scale: {x: 0.8, y: 0.8}});
-                gameUtils.attachSomethingToBody({something: condemnNote1, body: condemningUnit.body});
-                gameUtils.attachSomethingToBody({something: condemnNote2, body: condemningUnit.body, offset: offset2});
-                gameUtils.attachSomethingToBody({something: condemnNote3, body: condemningUnit.body, offset: offset3});
-                graphicsUtils.floatSprite(condemnNote1, {runs: 45});
-                graphicsUtils.floatSprite(condemnNote2, {runs: 50});
-                graphicsUtils.floatSprite(condemnNote3, {runs: 65});
-                condemningUnit.giveHealth(15);
-                healSound.play();
-            });
-        }, removeChanges: function() {
-            this.removeDefenseAddition(defensePenalty);
-            handler.removeHandler();
-        }.bind(this)});
+        this.applyBuff({
+            name: buffName,
+            unit: this,
+            textureName: 'CondemnBuff',
+            playSound: false,
+            duration: duration || 2000,
+            applyChanges: function() {
+                this.addDefenseAddition(defensePenalty);
+                handler = gameUtils.matterOnce(this, 'death', function() {
+                    var position1 = condemningUnit.position;
+                    var offset2 = {
+                        x: Math.random() * 40 - 20,
+                        y: Math.random() * 40 - 20
+                    };
+                    var offset3 = {
+                        x: Math.random() * 40 - 20,
+                        y: Math.random() * 40 - 20
+                    };
+                    var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
+                        where: 'stageTwo',
+                        position: position1,
+                        scale: {
+                            x: 0.8,
+                            y: 0.8
+                        }
+                    });
+                    var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
+                        where: 'stageTwo',
+                        position: position1,
+                        scale: {
+                            x: 0.8,
+                            y: 0.8
+                        }
+                    });
+                    var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
+                        where: 'stageTwo',
+                        position: position1,
+                        scale: {
+                            x: 0.8,
+                            y: 0.8
+                        }
+                    });
+                    gameUtils.attachSomethingToBody({
+                        something: condemnNote1,
+                        body: condemningUnit.body
+                    });
+                    gameUtils.attachSomethingToBody({
+                        something: condemnNote2,
+                        body: condemningUnit.body,
+                        offset: offset2
+                    });
+                    gameUtils.attachSomethingToBody({
+                        something: condemnNote3,
+                        body: condemningUnit.body,
+                        offset: offset3
+                    });
+                    graphicsUtils.floatSprite(condemnNote1, {
+                        runs: 45
+                    });
+                    graphicsUtils.floatSprite(condemnNote2, {
+                        runs: 50
+                    });
+                    graphicsUtils.floatSprite(condemnNote3, {
+                        runs: 65
+                    });
+                    condemningUnit.giveHealth(15);
+                    healSound.play();
+                });
+            },
+            removeChanges: function() {
+                this.removeDefenseAddition(defensePenalty);
+                handler.removeHandler();
+            }.bind(this)
+        });
     },
 
     becomeHidden: function(duration) {
-        this.applyBuff({name: 'hidden', textureName: 'HiddenBuff', playSound: true, duration: duration || 2000, applyChanges: function() {
-            this.isTargetable = false;
-            this.isoManager.visibleIsoSprite.alpha = 0.4;
-            this.isoManagedAlpha = 0.4;
-        }, removeChanges: function() {
-            this.isoManagedAlpha = null;
-            this.isTargetable = true;
-        }.bind(this)});
+        this.applyBuff({
+            name: 'hidden',
+            textureName: 'HiddenBuff',
+            playSound: true,
+            duration: duration || 2000,
+            applyChanges: function() {
+                this.isTargetable = false;
+                this.isoManager.visibleIsoSprite.alpha = 0.4;
+                this.isoManagedAlpha = 0.4;
+            },
+            removeChanges: function() {
+                this.isoManagedAlpha = null;
+                this.isTargetable = true;
+            }.bind(this)
+        });
     },
 
     //simulates a dead unit without moving it or removing it
@@ -1412,18 +1753,33 @@ var UnitBase = {
     },
 
     giveGritDodge: function(value) {
-        if(value) {
-            var gritBlockIndicator = graphicsUtils.addSomethingToRenderer('GritBuff', {where: 'stageOne', scale: {x: 1.1, y: 1.1}});
+        if (value) {
+            var gritBlockIndicator = graphicsUtils.addSomethingToRenderer('GritBuff', {
+                where: 'stageOne',
+                scale: {
+                    x: 1.1,
+                    y: 1.1
+                }
+            });
             // graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 650, gleamWidth: 10});
             graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, true);
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 750, gleamWidth: 20});
+                graphicsUtils.addGleamToSprite({
+                    sprite: gritBlockIndicator,
+                    duration: 750,
+                    gleamWidth: 20
+                });
             }, 250);
             gainKillingBlow.play();
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, false);
             }, 850);
-            gameUtils.attachSomethingToBody({something: gritBlockIndicator, runImmediately: true, body: this.body, somethingId: 'gritBlockIndicator'});
+            gameUtils.attachSomethingToBody({
+                something: gritBlockIndicator,
+                runImmediately: true,
+                body: this.body,
+                somethingId: 'gritBlockIndicator'
+            });
         }
         this.hasGritDodge = value;
     },
@@ -1435,14 +1791,14 @@ var UnitBase = {
         });
 
         var baseDamageAmount = this.damage;
-        if(this.damageMember && this.damageMember instanceof Function) {
+        if (this.damageMember && this.damageMember instanceof Function) {
             baseDamageAmount = this.damageMember();
         }
         return Math.max(-baseDamageAmount, sum);
     },
 
     addAddition: function(type, amount) {
-        if(!this.additions[type]) {
+        if (!this.additions[type]) {
             this.additions[type] = [];
         }
         this.additions[type].push(amount);
@@ -1453,7 +1809,7 @@ var UnitBase = {
     },
 
     getAdditionSum: function(type) {
-        if(!this.additions[type]) return 0;
+        if (!this.additions[type]) return 0;
 
         var sum = 0;
         this.additions[type].forEach((addition) => {
@@ -1509,15 +1865,20 @@ var UnitBase = {
      * }
      */
     applyBuff: function(options) {
-        options = Object.assign({playSound: true}, options);
+        options = Object.assign({
+            playSound: true
+        }, options);
         var name = options.name;
         var unit = this;
         var textureName = options.textureName;
-        var scale = options.scale || {x: 1, y: 1};
+        var scale = options.scale || {
+            x: 1,
+            y: 1
+        };
         var originalyOffset = -this.buffYOffset || -60;
         var playSound = options.playSound;
         var buffDuration = options.duration;
-        if(!unit.buffs) {
+        if (!unit.buffs) {
             unit.buffs = {};
             unit.orderedBuffs = [];
             unit.removeAllBuffs = function() {
@@ -1527,10 +1888,10 @@ var UnitBase = {
             };
         }
 
-        if(unit.buffs[name]) {
+        if (unit.buffs[name]) {
             var buffAlreadyExists = true;
         }
-        if(!unit.buffs[name]) {
+        if (!unit.buffs[name]) {
             var buffObj = {
                 removeBuffImage: function(options) {
                     unit.buffs[name].dobj.removeGleam();
@@ -1547,8 +1908,13 @@ var UnitBase = {
                         }
                     });
                     graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
-                    if(!options.detached) {
-                        gameUtils.attachSomethingToBody({something: debuffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true});
+                    if (!options.detached) {
+                        gameUtils.attachSomethingToBody({
+                            something: debuffAnim,
+                            body: unit.body,
+                            offset: unit.buffs[name].offset,
+                            deathPactSomething: true
+                        });
                     }
                     debuffAnim.play();
                     gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
@@ -1557,18 +1923,33 @@ var UnitBase = {
                 }
             };
 
-            if(!textureName) {
+            if (!textureName) {
                 textureName = 'TransparentSquare';
             }
-            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {tint: options.tint || 0xFFFFFF, where: 'stageTwo', scale: {x: scale.x, y: scale.y}});
-            gameUtils.attachSomethingToBody({something: dobj, body: unit.body, offset: {x: 0, y: originalyOffset}, deathPactSomething: true});
+            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {
+                tint: options.tint || 0xFFFFFF,
+                where: 'stageTwo',
+                scale: {
+                    x: scale.x,
+                    y: scale.y
+                }
+            });
+            gameUtils.attachSomethingToBody({
+                something: dobj,
+                body: unit.body,
+                offset: {
+                    x: 0,
+                    y: originalyOffset
+                },
+                deathPactSomething: true
+            });
             buffObj.dobj = dobj;
             unit.buffs[name] = buffObj;
             unit.orderedBuffs.push(buffObj);
         }
 
         //reorder buffs (could be multiple images to show, let's lay them out nicely, rows of three)
-        if(!unit.reorderBuffs) {
+        if (!unit.reorderBuffs) {
             var b1 = null;
             var b2 = null;
             var xSpacing = 32;
@@ -1576,24 +1957,27 @@ var UnitBase = {
             unit.reorderBuffs = function() {
                 unit.orderedBuffs.forEach((buff, i) => {
                     var attachmentTick = buff.dobj.bodyAttachmentTick;
-                    var row = Math.floor(i/3);
+                    var row = Math.floor(i / 3);
                     var yOffset = row * -ySpacing;
-                    var col = i%3;
+                    var col = i % 3;
                     var xOffset = 0;
-                    if(col == 0) {
+                    if (col == 0) {
                         //start of a new row
                         b1 = buff;
                         b2 = null;
-                    } else if(col == 1) {
-                        xOffset = xSpacing/2;
-                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
+                    } else if (col == 1) {
+                        xOffset = xSpacing / 2;
+                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
                         b2 = buff;
-                    } else if(col == 2) {
+                    } else if (col == 2) {
                         xOffset = xSpacing;
-                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
-                        b2.dobj.bodyAttachmentTick.offset.x -= xSpacing/2;
+                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
+                        b2.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
                     }
-                    buff.offset = {x: xOffset, y: originalyOffset + yOffset};
+                    buff.offset = {
+                        x: xOffset,
+                        y: originalyOffset + yOffset
+                    };
                     attachmentTick.offset = buff.offset;
                 });
             };
@@ -1614,19 +1998,30 @@ var UnitBase = {
             transform: [unit.position.x, unit.position.y, 1.0, 1.0]
         });
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
-        graphicsUtils.addGleamToSprite({sprite: unit.buffs[name].dobj, duration: 650, gleamWidth: 10});
-        gameUtils.attachSomethingToBody({something: buffAnim, body: unit.body, offset: unit.buffs[name].offset, deathPactSomething: true});
+        graphicsUtils.addGleamToSprite({
+            sprite: unit.buffs[name].dobj,
+            duration: 650,
+            gleamWidth: 10
+        });
+        gameUtils.attachSomethingToBody({
+            something: buffAnim,
+            body: unit.body,
+            offset: unit.buffs[name].offset,
+            deathPactSomething: true
+        });
         buffAnim.play();
 
         //play sound
-        if(playSound) {
+        if (playSound) {
             buffSound.play();
         }
 
         //if the same buff already exists, destroy previous timers etc
         var realizedBuff = unit.buffs[name];
-        if(buffAlreadyExists) {
-            realizedBuff.removeBuff({preserveImage: true});
+        if (buffAlreadyExists) {
+            realizedBuff.removeBuff({
+                preserveImage: true
+            });
             realizedBuff.removeBuff = null;
         }
 
@@ -1644,7 +2039,7 @@ var UnitBase = {
             cleanUpOptions = cleanUpOptions || {};
 
             //remove image (we'll preserve if it an incoming buff of the same type overrides it)
-            if(!cleanUpOptions.preserveImage) {
+            if (!cleanUpOptions.preserveImage) {
                 realizedBuff.removeBuffImage(cleanUpOptions);
             }
             //remove associated events
@@ -1652,10 +2047,13 @@ var UnitBase = {
             //remove changes
             options.removeChanges();
         };
-        if(buffDuration) {
-            var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {executeOnNuke: true, timerName: this.unitId + name + 'buffRemove'});
+        if (buffDuration) {
+            var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {
+                executeOnNuke: true,
+                timerName: this.unitId + name + 'buffRemove'
+            });
         }
-        if(!realizedBuff.removeBuff) {
+        if (!realizedBuff.removeBuff) {
             realizedBuff.removeBuff = function(cleanUpOptions) {
                 //mainCleanUp
                 mainCleanUp(cleanUpOptions);
@@ -1663,9 +2061,19 @@ var UnitBase = {
                 globals.currentGame.invalidateTimer(timer);
             };
         }
-        var removeEvents = options.removeEvents || [{obj: globals.currentGame, eventName: 'VictoryOrDefeat'},
-                                                    {obj: this, eventName: 'death'},
-                                                    {obj: this, eventName: 'onremove'}];
+        var removeEvents = options.removeEvents || [{
+                obj: globals.currentGame,
+                eventName: 'VictoryOrDefeat'
+            },
+            {
+                obj: this,
+                eventName: 'death'
+            },
+            {
+                obj: this,
+                eventName: 'onremove'
+            }
+        ];
         removeEvents.forEach((re) => {
             var ret = gameUtils.matterOnce(re.obj, re.eventName, function() {
                 realizedBuff.removeBuff();

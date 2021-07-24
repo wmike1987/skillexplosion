@@ -877,8 +877,8 @@ var UnitSystem = function(properties) {
                      this.selectedUnit.honeRange = 1500;
                      this.selectedUnit.range = 1000;
                      this.selectedUnit.moveSpeed = 10;
-                     this.selectedUnit.maxHealth = 10000;
-                     this.selectedUnit.currentHealth = 10000;
+                     // this.selectedUnit.maxHealth = 10000;
+                     this.selectedUnit.setHealth(50);
                  }
              }
 

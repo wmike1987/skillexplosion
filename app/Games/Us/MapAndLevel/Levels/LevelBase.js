@@ -262,33 +262,37 @@ var levelBase = {
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
             this.spawner.cleanUp();
-            gameUtils.doSomethingAfterDuration(() => {
-                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: options.result});
-            }, 0, {
-                trueTimer: true
-            });
         }.bind(this);
 
+        /*
+         * Win condition
+         */
         this.endDelayInProgress = false;
         var winCondition = game.addTickCallback(function() {
+            var result = 'win';
+
+            //see if our enemy sets have been fulfilled
             var fulfilled = this.enemySets.every((eset) => {
                 return eset.fulfilled;
             });
             if (!fulfilled) return;
 
+            //if they have, see if enemy units still exist
             var unitsOfOpposingTeamExist = false;
             if (game.unitsByTeam[game.enemyTeam] && game.unitsByTeam[game.enemyTeam].length > 0) {
                 unitsOfOpposingTeamExist = true;
             }
 
+            //if enemy units don't exist, and there are no outstanding items to address, start the end level procedure
             if (!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0) {
                 this.endDelayInProgress = true;
                 if (this.customWinBehavior) {
                     removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) {
-                    commonWinLossTasks({result: 'win'});
+                    commonWinLossTasks({result: result});
                     gameUtils.doSomethingAfterDuration(() => {
+                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
                         Matter.Events.trigger(this, 'endLevelActions');
                         var sc = game.transitionToBlankScene();
                         game.map.show();
@@ -299,10 +303,12 @@ var levelBase = {
                         game.removeAllLevelLocalEntities();
                     }, 500);
                 } else {
-                    commonWinLossTasks({result: 'win'});
+                    commonWinLossTasks({result: result});
                     gameUtils.doSomethingAfterDuration(() => {
                         globals.currentGame.togglePause();
                         gameUtils.doSomethingAfterDuration(() => {
+                            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
+
                             var sc = game.gotoEndLevelScreen({
                                 shane: game.shaneCollector.getLastCollector(),
                                 ursula: game.ursulaCollector.getLastCollector()
@@ -310,9 +316,11 @@ var levelBase = {
                             Matter.Events.trigger(this, 'endLevelActions', {
                                 endLevelScene: sc
                             });
+
                             game.unitsInPlay.forEach((unit) => {
                                 gameUtils.moveUnitOffScreen(unit);
                             });
+
                             game.removeAllLevelLocalEntities();
                             gameUtils.setCursorStyle('Main');
                             globals.currentGame.togglePause();
@@ -324,7 +332,12 @@ var levelBase = {
             }
         }.bind(this));
 
+
+       /*
+        * Loss condition
+        */
         var lossCondition = game.addTickCallback(function() {
+            var result = 'loss';
             if (!this.endDelayInProgress) {
                 var stillAlive = game.unitsInPlay.some((unit) => {
                     return !unit.isDead;
@@ -332,11 +345,12 @@ var levelBase = {
                 if (stillAlive) return;
                 this.endDelayInProgress = true;
 
-                commonWinLossTasks({result: 'loss'});
+                commonWinLossTasks({result: result});
                 this.resetLevel();
                 game.itemSystem.removeAllItemsOnGround(true);
                 gameUtils.doSomethingAfterDuration(() => {
                     if (this.gotoMapOnWin) {
+                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
@@ -346,6 +360,7 @@ var levelBase = {
                         });
                         game.map.show();
                     } else {
+                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
                             shane: game.shaneCollector.getLastCollector(),

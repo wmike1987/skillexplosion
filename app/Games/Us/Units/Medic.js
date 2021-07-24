@@ -765,8 +765,8 @@ export default function Medic(options) {
                                 replenAnimation.tint = 0xfb32b1;
                                 graphicsUtils.addSomethingToRenderer(replenAnimation, 'stageOne');
 
-                                livingAlliedUnit.currentHealth = livingAlliedUnit.maxHealth;
-                                livingAlliedUnit.currentEnergy = livingAlliedUnit.maxEnergy;
+                                livingAlliedUnit.giveHealth(livingAlliedUnit.maxHealth, medic);
+                                livingAlliedUnit.giveEnergy(livingAlliedUnit.maxEnergy);
                             }
                         };
                         var projectile = new Projectile(projectileOptions);
