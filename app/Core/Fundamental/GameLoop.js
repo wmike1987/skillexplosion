@@ -26,6 +26,9 @@ var Loop = function(options) {
     this.isFixed = options.isFixed;
     this.maxDelta = 100;
     this.paused = false;
+    this.onPauseCallbacks = [];
+    this.onResumeCallbacks = [];
+
     var frame = 0;
 
     if(options.interpolate === false) {
@@ -63,14 +66,18 @@ var Loop = function(options) {
 
         if(this.paused) {
             if(this.justPaused) {
-                this.onPauseCallback();
+                this.onPauseCallbacks.forEach((callback) => {
+                    callback();
+                });
                 this.justPaused = false;
             }
             //paused tick for true timers
             Matter.Events.trigger(this, 'tick', event);
             return;
         } else if(this.justResumed){
-            this.onResumeCallback();
+            this.onResumeCallbacks.forEach((callback) => {
+                callback();
+            });
             this.justResumed = false;
         }
 
@@ -131,11 +138,11 @@ var Loop = function(options) {
 
     //register onpause/onresume listener
     this.onPause = function(f) {
-        this.onPauseCallback = f;
+        this.onPauseCallbacks.push(f);
     };
 
     this.onResume = function(f) {
-        this.onResumeCallback = f;
+        this.onResumeCallbacks.push(f);
     };
 
     this.pause = function() {

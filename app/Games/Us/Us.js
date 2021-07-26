@@ -296,11 +296,7 @@ var game = {
         var spaceToContinueBehavior = function() {
             this.map.show();
             this.map.allowMouseEvents(false);
-            var blankScene = new Scene();
-            this.currentScene.transitionToScene({
-                newScene: blankScene,
-                fadeIn: true
-            });
+            var blankScene = this.transitionToBlankScene();
             gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
                 this.map.allowMouseEvents(true);
             });
@@ -319,7 +315,7 @@ var game = {
             done: spaceToContinueBehavior
         });
         var vScene = vScreen.createScene({});
-        this.currentScene.transitionToScene(vScene);
+        this.currentScene.transitionToScene({newScene: vScene, transitionLength: 1000});
 
         return vScene;
     },

@@ -109,7 +109,7 @@ var UnitSystem = function(properties) {
                 gogogo: true,
                 timeLimit: 100,
                 callback: function() {
-                    if(this.prevailingUnitCircle.alpha <= 0.5) {
+                    if(this.prevailingUnitCircle.alpha <= 0.4) {
                         this.prevailingUnitCircle.alphaChange = 0.1;
                     }
                     if(this.prevailingUnitCircle.alpha >= 1) {
@@ -147,7 +147,7 @@ var UnitSystem = function(properties) {
                     Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {unit: value, fromUnit: fromUnit});
 
                     if(body) {
-                        this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.1);
+                        this.prevailingUnitCircle.scale = Matter.Vector.mult(body.renderlings.selected.scale, 1.0);
                         gameUtils.attachSomethingToBody({something: this.prevailingUnitCircle, runImmediately: true, body: body, offset: body.renderlings.selected.offset, somethingId: 'prevailingCircleAttach'});
                     } else {
                         gameUtils.detachSomethingFromBody(this.prevailingUnitCircle);

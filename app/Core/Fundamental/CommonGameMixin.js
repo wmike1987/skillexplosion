@@ -1,24 +1,38 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import hs from  '@utils/HS.js';
-import * as h from  'howler';
+import hs from '@utils/HS.js';
+import * as h from 'howler';
 import styles from '@utils/Styles.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
-import {UnitSystem, UnitSystemAssets} from '@core/Unit/UnitSystem.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
+import {
+    UnitSystem,
+    UnitSystemAssets
+} from '@core/Unit/UnitSystem.js';
 import ItemSystem from '@core/Unit/ItemSystem.js';
 import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js';
-import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
+import {
+    globals,
+    keyStates,
+    mousePosition
+} from '@core/Fundamental/GlobalState.js';
 
 /*
-* This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
-*/
+ * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
+ */
 var common = {
 
     /*
      * Defaults
      */
-    victoryCondition: {type: 'timed', limit: 30},
+    victoryCondition: {
+        type: 'timed',
+        limit: 30
+    },
     noBorder: false,
     noCeiling: false,
     noGround: false,
@@ -39,7 +53,10 @@ var common = {
     neutralTeam: 49,
     lagCompensation: 2,
     pixiPaused: false,
-    commonAssets: [{name: "CommonGameTextures", target: "Textures/CommonGameTextures.json"}],
+    commonAssets: [{
+        name: "CommonGameTextures",
+        target: "Textures/CommonGameTextures.json"
+    }],
 
     /*
      * Game lifecycle
@@ -63,19 +80,33 @@ var common = {
          * Create some other variables
          */
         this.tickCallbacks = [],
-        this.vertexHistories = [],
-        this.invincibleTickCallbacks = [],
-        this.eventListeners = [],
-        this.invincibleListeners = [],
-        this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
-        this.mousePosition = mousePosition,
-        this.debugObj = {},
-        this.canvas = {width: gameUtils.getPlayableWidth(), height: gameUtils.getPlayableHeight()};
+            this.vertexHistories = [],
+            this.invincibleTickCallbacks = [],
+            this.eventListeners = [],
+            this.invincibleListeners = [],
+            this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
+            this.mousePosition = mousePosition,
+            this.debugObj = {},
+            this.canvas = {
+                width: gameUtils.getPlayableWidth(),
+                height: gameUtils.getPlayableHeight()
+            };
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
-        this.endGameSound = gameUtils.getSound('bells.wav', {volume: 0.05});
-        this.loseLifeSound = gameUtils.getSound('loselife1.mp3', {rate: 1.4, volume: 5.0});
-        this.s = {s: 0, t: 0, f: 0, w: 0, sl: 0};
+        this.endGameSound = gameUtils.getSound('bells.wav', {
+            volume: 0.05
+        });
+        this.loseLifeSound = gameUtils.getSound('loselife1.mp3', {
+            rate: 1.4,
+            volume: 5.0
+        });
+        this.s = {
+            s: 0,
+            t: 0,
+            f: 0,
+            w: 0,
+            sl: 0
+        };
         this.unitsByTeam = {};
         var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
 
@@ -92,74 +123,93 @@ var common = {
         };
         this.removePriorityMouseDownEvent = function(f) {
             var index = this.priorityMouseDownEvents.indexOf(f);
-            if(index > -1)
+            if (index > -1)
                 this.priorityMouseDownEvents.splice(index, 1);
         };
 
         /*
          * Incorporate UnitSystem if specified
          */
-         if(this.enableUnitSystem) {
-             // Create new unit system, letting it share some common game properties
-             this.unitSystem = new UnitSystem(Object.assign({enablePathingSystem: this.enablePathingSystem}, options));
-         }
+        if (this.enableUnitSystem) {
+            // Create new unit system, letting it share some common game properties
+            this.unitSystem = new UnitSystem(Object.assign({
+                enablePathingSystem: this.enablePathingSystem
+            }, options));
+        }
 
-         /*
-          * Incorporate ItemSystem if specified
-          */
-         if(this.enableItemSystem) {
-             // Create new item system
-             this.itemSystem = new ItemSystem();
-         }
+        /*
+         * Incorporate ItemSystem if specified
+         */
+        if (this.enableItemSystem) {
+            // Create new item system
+            this.itemSystem = new ItemSystem();
+        }
+
+        /*
+         * register game loop pause behavior
+         */
+        this.gameLoop.onPause(() => {
+            this.gameState = 'paused';
+        });
+
+        this.gameLoop.onResume(() => {
+            this.gameState = 'playing';
+        });
 
         //begin tracking previous frame positions and attributes
         this.addTickCallback(function() {
             $.each(this.vertexHistories, function(index, body) {
-                body.previousPosition = {x: body.position.x, y: body.position.y}; //used for interpolation in PixiRenderer
-            }
-        );}.bind(this), true, 'beforeTick');
+                body.previousPosition = {
+                    x: body.position.x,
+                    y: body.position.y
+                }; //used for interpolation in PixiRenderer
+            });
+        }.bind(this), true, 'beforeTick');
 
         var maxLagToAccountFor = this.lagCompensation;
         this.addTickCallback(function() {
             $.each(this.vertexHistories, function(index, body) {
                 //Veritices
                 body.verticeCopy = mathArrayUtils.cloneVertices(body.vertices);
-                if(!body.verticesCopy) {
+                if (!body.verticesCopy) {
                     body.verticesCopy = [];
                 }
                 body.verticesCopy.push(mathArrayUtils.cloneVertices(body.vertices));
-                if(body.verticesCopy.length > maxLagToAccountFor) {
+                if (body.verticesCopy.length > maxLagToAccountFor) {
                     body.verticesCopy.shift();
                 }
 
                 //Positions
-                body.positionCopy = {x: body.position.x, y: body.position.y};
-                if(!body.positionsCopy) {
+                body.positionCopy = {
+                    x: body.position.x,
+                    y: body.position.y
+                };
+                if (!body.positionsCopy) {
                     body.positionsCopy = [];
                 }
                 body.positionsCopy.push(mathArrayUtils.clonePosition(body.position));
-                if(body.positionsCopy.length > maxLagToAccountFor) {
+                if (body.positionsCopy.length > maxLagToAccountFor) {
                     body.positionsCopy.shift();
                 }
 
                 //Parts
-                if(!body.partsCopy) {
+                if (!body.partsCopy) {
                     body.partsCopy = [];
                 }
                 body.partsCopy.push(mathArrayUtils.cloneParts(body.parts));
-                if(body.partsCopy.length > maxLagToAccountFor) {
+                if (body.partsCopy.length > maxLagToAccountFor) {
                     body.partsCopy.shift();
                 }
             }.bind(this));
         }.bind(this), true, 'beforeTick');
 
         this['incr' + 'ement' + 'Sco' + 're'] = function(value) {
-            this.s.s += value*77;
-            this.s.t += value*33;
-            this.s.f += value*55;
-            if(this.wave) {
+            this.s.s += value * 77;
+            this.s.t += value * 33;
+            this.s.f += value * 55;
+            if (this.wave) {
                 this.s.w = this.wave.waveValue * 44;
-                if(this.subLevel)
+                if (this.subLevel)
                     this.s.sl = this.subLevel;
             }
             is(value);
@@ -167,20 +217,31 @@ var common = {
 
         this.addEventListener('mousemove', function(event) {
             var rect = this.canvasEl.getBoundingClientRect();
-			this.mousePosition.x = event.clientX - rect.left;
-			this.mousePosition.y = event.clientY - rect.top;
-            this.debugObj.playableCenterOffset = {x: this.mousePosition.x - gameUtils.getPlayableCenter().x, y: this.mousePosition.y - gameUtils.getPlayableCenter().y};
+            this.mousePosition.x = event.clientX - rect.left;
+            this.mousePosition.y = event.clientY - rect.top;
+            this.debugObj.playableCenterOffset = {
+                x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
+                y: this.mousePosition.y - gameUtils.getPlayableCenter().y
+            };
         }.bind(this), true, false);
 
         //fps (ctrl + shift + f to toggle)
-        this.lastDeltaText = graphicsUtils.addSomethingToRenderer("TEX+:" + 0 + " ms", 'hud', {x: 32, y: this.canvas.height - 15, style: styles.fpsStyle});
-        this.fpsText = graphicsUtils.addSomethingToRenderer("TEX+:" + "0" + " fps", 'hud', {x: 27, y: this.canvas.height - 30, style: styles.fpsStyle});
+        this.lastDeltaText = graphicsUtils.addSomethingToRenderer("TEX+:" + 0 + " ms", 'hud', {
+            x: 32,
+            y: this.canvas.height - 15,
+            style: styles.fpsStyle
+        });
+        this.fpsText = graphicsUtils.addSomethingToRenderer("TEX+:" + "0" + " fps", 'hud', {
+            x: 27,
+            y: this.canvas.height - 30,
+            style: styles.fpsStyle
+        });
         this.fpsText.persists = true;
         this.lastDeltaText.persists = true;
         this.addTickCallback(function(event) {
             this.lastDeltaText.text = this.engine.runner.deltaTime.toFixed(2) + "ms";
             this.frameSecondCounter += this.engine.runner.deltaTime;
-            if(this.frameSecondCounter > 1000) {
+            if (this.frameSecondCounter > 1000) {
                 this.frameSecondCounter -= 1000;
                 this.fpsText.text = this.frames + " fps";
                 this.frames = 0;
@@ -193,7 +254,12 @@ var common = {
         this.fpsText.visible = false;
 
         //create paused game text and hide initially
-        var pausedGameText = graphicsUtils.addSomethingToRenderer("TEX+:PAUSED", 'hud', {persists: true, style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+        var pausedGameText = graphicsUtils.addSomethingToRenderer("TEX+:PAUSED", 'hud', {
+            persists: true,
+            style: styles.style,
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2
+        });
         pausedGameText.visible = false;
 
         //frequency body remover, space out removing bodies from the Matter world
@@ -201,12 +267,13 @@ var common = {
         this.softRemover = {
             bodies: [],
             remove: function(body) {
-                if(body.unit) {
-                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {unit: body.unit});
+                if (body.unit) {
+                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {
+                        unit: body.unit
+                    });
                 }
                 body.softRemove = true;
-                body.collisionFilter =
-                {
+                body.collisionFilter = {
                     category: 0x0000,
                     mask: 0,
                     group: -1
@@ -216,7 +283,7 @@ var common = {
             init: function() {
                 this.myTick = Matter.Events.on(myGame.engine.runner, 'tick', function(event) {
                     var body = this.bodies.shift();
-                    if(body) {
+                    if (body) {
                         Matter.World.remove(myGame.world, [body]);
                     }
                 }.bind(this));
@@ -228,12 +295,12 @@ var common = {
         this.softRemover.init();
 
         //keydown listener for ctrl shift f and ctrl shift x
-        $('body').on('keydown', function( event ) {
-            if(keyStates['Shift'] && keyStates['Control']) {
-                if(event.key == 'f' || event.key == 'F') {
+        $('body').on('keydown', function(event) {
+            if (keyStates['Shift'] && keyStates['Control']) {
+                if (event.key == 'f' || event.key == 'F') {
                     this.lastDeltaText.visible = !this.lastDeltaText.visible;
                     this.fpsText.visible = !this.fpsText.visible;
-                    if(this.renderer.stats.stats.dom.style.visibility != 'hidden') {
+                    if (this.renderer.stats.stats.dom.style.visibility != 'hidden') {
                         this.renderer.stats.stats.dom.style.visibility = 'hidden';
                     } else {
                         this.renderer.stats.stats.dom.style.visibility = 'visible';
@@ -241,17 +308,27 @@ var common = {
                 }
             }
 
-            if(keyStates['Alt'] && keyStates['Shift']) {
-                if(event.key == 's' || event.key == 'S') {
-                    this.togglePause();
+            if (keyStates['Alt']) {
+                if (event.key == 's' || event.key == 'S') {
+                    if (this.unitSystem.selectedUnit) {
+                        this.unitSystem.selectedUnit.giveEnergy(10);
+                    }
+
+                    if (this.gameState == 'paused') {
+                        this.togglePause();
+                    } else {
+                        gameUtils.executeSomethingNextFrame(() => {
+                            this.togglePause();
+                        })
+                    }
                 }
             }
 
 
 
-            if(keyStates['Control']) {
-                if(event.key == 'b' || event.key == 'B') {
-                    if(this.transitionSprite) {
+            if (keyStates['Control']) {
+                if (event.key == 'b' || event.key == 'B') {
+                    if (this.transitionSprite) {
                         graphicsUtils.removeSomethingFromRenderer(this.transitionSprite);
                         this.transitionSprite = null;
                         return;
@@ -282,43 +359,43 @@ var common = {
             $.each(tempTimers, function(key, value) {
 
                 //tick monitor is called whether or not the timer has stopped
-                if(value.tickMonitor) {
+                if (value.tickMonitor) {
                     value.tickMonitor(event.deltaTime);
                 }
 
                 //check to see if we have a pause condition
                 var pauseFromCondition = false;
-                if(value.pauseCondition) {
+                if (value.pauseCondition) {
                     pauseFromCondition = value.pauseCondition();
                 }
 
                 //don't continue if we're in any of these states
-                if(!value || value.done || value.paused || pauseFromCondition || value.invalidated || value.runs === 0) {
+                if (!value || value.done || value.paused || pauseFromCondition || value.invalidated || value.runs === 0) {
                     return;
                 }
 
                 //if the game is paused and we're not a true timing util, return
-                if(this.gameState == 'paused' && !value.trueTimer) {
+                if (this.gameState == 'paused' && !value.trueTimer) {
                     return;
                 }
 
                 //default values
-                if(!value.timeElapsed) {
+                if (!value.timeElapsed) {
                     value.timeElapsed = 0;
                 }
-                if(!value.totalElapsedTime) {
+                if (!value.totalElapsedTime) {
                     value.totalElapsedTime = 0;
                 }
-                if(value.runs == 'gogogo') {
+                if (value.runs == 'gogogo') {
                     value.runs = null;
                     value.gogogo = true;
                 }
-                if(!value.runs) {
+                if (!value.runs) {
                     value.runs = 1;
                 }
 
                 //determine the active time limit
-                if(value.skipToEnd) {
+                if (value.skipToEnd) {
                     value.timeLimitOverride = 0.01;
                 }
                 value.activeTimeLimit = value.timeLimitOverride || value.timeLimit;
@@ -327,44 +404,44 @@ var common = {
                 value.started = true;
                 value.timeElapsed += event.deltaTime;
                 value.totalElapsedTime += event.deltaTime;
-                value.percentDone = Math.min(value.timeElapsed/value.activeTimeLimit, 1);
-                value.totalPercentOfRunsDone = Math.min(value.currentRun/value.originalRuns, 1);
+                value.percentDone = Math.min(value.timeElapsed / value.activeTimeLimit, 1);
+                value.totalPercentOfRunsDone = Math.min(value.currentRun / value.originalRuns, 1);
 
                 //call tickback
-                if(value.tickCallback) value.tickCallback(event.deltaTime);
+                if (value.tickCallback) value.tickCallback(event.deltaTime);
 
                 //call immediately, possibly with a delay
-                if(value.immediateStart) {
+                if (value.immediateStart) {
                     var immediateDelay = value.immediateDelay || 0;
                     value.timeElapsed = value.activeTimeLimit - immediateDelay;
                     value.immediateStart = false;
                 }
 
                 //if we past our active time limit, execute the callbacks
-                while(value.activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
+                while (value.activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
                     value.executeCallbacks();
                 }
             }.bind(this));
 
             //setup timer victory condition
-            if(this.victoryCondition.type == 'timed' && this.regulationPlay && this.regulationPlay.state() == 'pending') {
+            if (this.victoryCondition.type == 'timed' && this.regulationPlay && this.regulationPlay.state() == 'pending') {
                 this.timeLeft -= event.deltaTime;
-                this.gameTime.text = parseInt(this.timeLeft/1000);
-                if(this.timeLeft)
-                if(this.gameTime.text == " ") this.gameTime.text = '0';
-                if(this.timeLeft < 15000) {
+                this.gameTime.text = parseInt(this.timeLeft / 1000);
+                if (this.timeLeft)
+                    if (this.gameTime.text == " ") this.gameTime.text = '0';
+                if (this.timeLeft < 15000) {
                     this.gameTime.style = styles.redScoreStyle;
                 } else {
                     this.gameTime.style = styles.scoreStyle;
                 }
-                if(this.timeLeft <= 1000) {
+                if (this.timeLeft <= 1000) {
                     this.regulationPlay.resolve();
                 }
             }
 
         }.bind(this), true);
 
-        if(this.initExtension)
+        if (this.initExtension)
             this.initExtension();
     },
 
@@ -375,10 +452,14 @@ var common = {
         this.gameState = 'pregame';
 
         var onClick = null;
-        if(this.preGameExtension) {
+        if (this.preGameExtension) {
             onClick = this.preGameExtension() || function() {};
         } else {
-            var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:"+this.clickAnywhereToStart, 'hud', {style: styles.style, x: this.canvas.width/2, y: this.canvas.height/2});
+            var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:" + this.clickAnywhereToStart, 'hud', {
+                style: styles.style,
+                x: this.canvas.width / 2,
+                y: this.canvas.height / 2
+            });
             onClick = function() {
                 graphicsUtils.removeSomethingFromRenderer(startGameText);
             };
@@ -386,7 +467,7 @@ var common = {
 
         //pregame deferred (proceed to startGame when clicked)
         var proceedPastPregame = $.Deferred();
-        if(!this.bypassPregame) {
+        if (!this.bypassPregame) {
             $(this.canvasEl).one("mouseup", $.proxy(function(event) {
                 setTimeout(function() {
                     proceedPastPregame.resolve();
@@ -396,7 +477,7 @@ var common = {
         }
 
         //used for other ways to enter a game
-        if(this.alternatePregameSetup) {
+        if (this.alternatePregameSetup) {
             this.alternatePregameSetup(proceedPastPregame);
         }
 
@@ -408,27 +489,27 @@ var common = {
      */
     startGame: function(options) {
 
-         //initialize unitSystem, this creates the selection box, dispatches unit events, etc
-         if(this.unitSystem)
-             this.unitSystem.initialize();
+        //initialize unitSystem, this creates the selection box, dispatches unit events, etc
+        if (this.unitSystem)
+            this.unitSystem.initialize();
 
-         if(this.itemSystem)
-             this.itemSystem.initialize();
+        if (this.itemSystem)
+            this.itemSystem.initialize();
 
         //disable right click during game
-        $('body').on("contextmenu.common", function(e){
+        $('body').on("contextmenu.common", function(e) {
             e.preventDefault();
         });
 
         //disable other default behaviors changing
-        $('body').on("keydown.common", function(e){
-            if(e.key === 'Tab' || e.keyCode === 9 || e.key == 'Alt') {
+        $('body').on("keydown.common", function(e) {
+            if (e.key === 'Tab' || e.keyCode === 9 || e.key == 'Alt') {
                 e.preventDefault();
             }
         });
 
         //disable default click action - double clicking selects page text
-        $('#gameTheater').on('mousedown.prevent', (function(e){
+        $('#gameTheater').on('mousedown.prevent', (function(e) {
             e.preventDefault();
         }));
 
@@ -436,16 +517,28 @@ var common = {
         this._initStartGameState();
 
         //create border unless not wanted
-        if(!this.noBorder) {
+        if (!this.noBorder) {
             var border = [];
-            if(!this.noCeiling)
-                border.push(Matter.Bodies.rectangle(this.canvas.width/2, -5, this.canvas.width, 10, { isStatic: true, noWire: true}));
-            if(!this.noGround)
-                border.push(Matter.Bodies.rectangle(this.canvas.width/2, this.canvas.height+25, this.canvas.width, 50, { isStatic: true, noWire: true}));
-            if(!this.noLeftWall)
-                border.push(Matter.Bodies.rectangle(-5, this.canvas.height/2, 10, this.canvas.height, { isStatic: true, noWire: true}));
-            if(!this.noRightWall)
-                border.push(Matter.Bodies.rectangle(this.canvas.width+5, this.canvas.height/2, 10, this.canvas.height, { isStatic: true, noWire: true}));
+            if (!this.noCeiling)
+                border.push(Matter.Bodies.rectangle(this.canvas.width / 2, -5, this.canvas.width, 10, {
+                    isStatic: true,
+                    noWire: true
+                }));
+            if (!this.noGround)
+                border.push(Matter.Bodies.rectangle(this.canvas.width / 2, this.canvas.height + 25, this.canvas.width, 50, {
+                    isStatic: true,
+                    noWire: true
+                }));
+            if (!this.noLeftWall)
+                border.push(Matter.Bodies.rectangle(-5, this.canvas.height / 2, 10, this.canvas.height, {
+                    isStatic: true,
+                    noWire: true
+                }));
+            if (!this.noRightWall)
+                border.push(Matter.Bodies.rectangle(this.canvas.width + 5, this.canvas.height / 2, 10, this.canvas.height, {
+                    isStatic: true,
+                    noWire: true
+                }));
 
             border.forEach(function(el, index) {
                 el.collisionFilter.category = 0x0004;
@@ -454,26 +547,62 @@ var common = {
         }
 
         //score overlay
-        this.s = {s: 0, t: 0, f: 0};
-        if(!this.hideScore) {
-            this.score = graphicsUtils.addSomethingToRenderer("TEX+:" + this.baseScoreText, 'hud', {x: 5, y: 5, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
+        this.s = {
+            s: 0,
+            t: 0,
+            f: 0
+        };
+        if (!this.hideScore) {
+            this.score = graphicsUtils.addSomethingToRenderer("TEX+:" + this.baseScoreText, 'hud', {
+                x: 5,
+                y: 5,
+                anchor: {
+                    x: 0,
+                    y: 0
+                },
+                style: styles.scoreStyle
+            });
             this.score.persists = true;
             this.setScore(0);
         }
 
         //wave overlay
-        if(this.showWave) {
-            this.wave = graphicsUtils.addSomethingToRenderer("TEX+:" + this.baseWaveText, 'hud', {x: 5, y: 30, anchor: {x: 0, y: 0}, style: styles.scoreStyle});
+        if (this.showWave) {
+            this.wave = graphicsUtils.addSomethingToRenderer("TEX+:" + this.baseWaveText, 'hud', {
+                x: 5,
+                y: 30,
+                anchor: {
+                    x: 0,
+                    y: 0
+                },
+                style: styles.scoreStyle
+            });
             this.wave.persists = true;
             this.setWave(0);
         }
 
         //timer overlay, if necessary
-        if(!this.hideEndCondition) {
-            if(this.victoryCondition.type == 'timed') {
-                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: 0.5, y: 0}, style: styles.scoreStyle});
+        if (!this.hideEndCondition) {
+            if (this.victoryCondition.type == 'timed') {
+                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hud', {
+                    x: this.canvasRect.width / 2,
+                    y: 5,
+                    anchor: {
+                        x: 0.5,
+                        y: 0
+                    },
+                    style: styles.scoreStyle
+                });
             } else if (this.victoryCondition.type == 'lives') {
-                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hud', {x: this.canvasRect.width/2, y: 5, anchor: {x: 0.5, y: 0}, style: styles.scoreStyle});
+                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hud', {
+                    x: this.canvasRect.width / 2,
+                    y: 5,
+                    anchor: {
+                        x: 0.5,
+                        y: 0
+                    },
+                    style: styles.scoreStyle
+                });
             }
         }
 
@@ -482,12 +611,18 @@ var common = {
         this.gameState = 'playing';
 
         //create click indication listener
-        if(!this.noClickIndicator) {
-            var clickPointSprite = graphicsUtils.addSomethingToRenderer('MouseX', 'foreground', {x: -50, y: -50});
+        if (!this.noClickIndicator) {
+            var clickPointSprite = graphicsUtils.addSomethingToRenderer('MouseX', 'foreground', {
+                x: -50,
+                y: -50
+            });
             clickPointSprite.scale.x = 0.25;
             clickPointSprite.scale.y = 0.25;
             this.addEventListener('mousedown', function(event) {
-                clickPointSprite.position = {x: event.data.global.x, y: event.data.global.y};
+                clickPointSprite.position = {
+                    x: event.data.global.x,
+                    y: event.data.global.y
+                };
             }.bind(this), false, true);
         }
 
@@ -497,51 +632,57 @@ var common = {
 
     _initStartGameState: function() {
         //init the start time
-        this.timeLeft = (this.victoryCondition.limit+1)*1000;
+        this.timeLeft = (this.victoryCondition.limit + 1) * 1000;
         this.lives = this.victoryCondition.limit;
     },
 
     togglePause: function() {
-        if(this.gameLoop.paused) {
+        if (this.gameLoop.paused) {
             this.gameLoop.resume();
-            this.gameState = 'playing';
         } else {
             this.gameLoop.pause();
-            this.gameState = 'paused';
         }
     },
 
     endGame: function(options) {
         this.gameState = 'ending';
         this.endGameSound.play();
-        this.nuke({savePersistables: true});
+        this.nuke({
+            savePersistables: true
+        });
 
         //prompt for the score
         var scoreSubmission = $.Deferred();
-        setTimeout(function(){
+        setTimeout(function() {
             this.scoreContainer = $('<div>').appendTo('#gameTheater');
-            this.nameInput = $('<input>', {'class': 'nameInput'}).appendTo(this.scoreContainer);
-            this.submitButton = $('<div>', {'class': 'submitButton'}).appendTo(this.scoreContainer).text('Submit').on('click', function() {
+            this.nameInput = $('<input>', {
+                'class': 'nameInput'
+            }).appendTo(this.scoreContainer);
+            this.submitButton = $('<div>', {
+                'class': 'submitButton'
+            }).appendTo(this.scoreContainer).text('Submit').on('click', function() {
                 $(this.scoreContainer).remove();
                 scoreSubmission.resolve();
                 hs.ps(this.gameName, $(this.nameInput).val(), this.score.scoreValue, this.s, this.showWave ? this.wave.waveValue : null, this.subLevel ? this.subLevel : null);
                 gtag('event', 'submission', {
-                  'event_category' : 'score',
-                  'event_label' : this.gameName + " - " + $(this.nameInput).val() + " - " + this.score.scoreValue,
+                    'event_category': 'score',
+                    'event_label': this.gameName + " - " + $(this.nameInput).val() + " - " + this.score.scoreValue,
                 });
             }.bind(this));
 
-            this.continueButton= $('<div>', {'class': 'playAgainButton'}).appendTo(this.scoreContainer).text('Play Again').on('click', function() {
+            this.continueButton = $('<div>', {
+                'class': 'playAgainButton'
+            }).appendTo(this.scoreContainer).text('Play Again').on('click', function() {
                 $(this.scoreContainer).remove();
                 scoreSubmission.resolve();
             }.bind(this));
 
             $(this.scoreContainer).css('position', 'absolute');
-            $(this.scoreContainer).css('left', this.canvasRect.width/2-$(this.scoreContainer).width()/2);
-            $(this.scoreContainer).css('top', this.canvasRect.height/2 - $(this.scoreContainer).height()/2);
+            $(this.scoreContainer).css('left', this.canvasRect.width / 2 - $(this.scoreContainer).width() / 2);
+            $(this.scoreContainer).css('top', this.canvasRect.height / 2 - $(this.scoreContainer).height() / 2);
         }.bind(this), 500);
 
-        if(this.endGameExtension)
+        if (this.endGameExtension)
             this.endGameExtension();
 
         //reset to beginning
@@ -553,15 +694,15 @@ var common = {
         this.addBody(unit.selectionBody);
         this.addBody(unit.selectionBodyBig);
 
-        if(unit.animationSpecificBodies) {
+        if (unit.animationSpecificBodies) {
             unit.animationSpecificBodies.forEach((body) => {
                 this.addBody(body);
             });
         }
 
         //track the team this unit is on
-        if(unit.team) {
-            if(!this.unitsByTeam[unit.team]) {
+        if (unit.team) {
+            if (!this.unitsByTeam[unit.team]) {
                 this.unitsByTeam[unit.team] = [unit];
             } else {
                 this.unitsByTeam[unit.team].push(unit);
@@ -572,27 +713,29 @@ var common = {
         Matter.Events.trigger(unit, 'addUnit', {});
 
         //Trigger this from the game itself too
-        Matter.Events.trigger(this, 'addUnit', {unit: unit});
+        Matter.Events.trigger(this, 'addUnit', {
+            unit: unit
+        });
     },
 
     removeUnit: function(unit) {
         Matter.Events.trigger(unit, "onremove", {});
 
         //clear slaves (deathPact())
-        if(unit.slaves) {
+        if (unit.slaves) {
             this.removeSlaves(unit.slaves);
         }
 
         //Handle unitsByTeam. Since unitsByTeam is a loopable datastructure let's grep instead of splice
         //(don't want to alter the array since we might be iterating over it)
-        if(unit.team) {
-            if(!this.unitsByTeam[unit.team]) { //this could happen if we try to remove a pooled unit but haven't added a unit of that team to the game yet
+        if (unit.team) {
+            if (!this.unitsByTeam[unit.team]) { //this could happen if we try to remove a pooled unit but haven't added a unit of that team to the game yet
                 this.unitsByTeam[unit.team] = [];
             }
             var bbtindex = this.unitsByTeam[unit.team].indexOf(unit);
-            if(bbtindex > -1)
+            if (bbtindex > -1)
                 this.unitsByTeam[unit.team] = $.grep(this.unitsByTeam[unit.team], function(obj, index) {
-                        return index != bbtindex;
+                    return index != bbtindex;
                 });
         }
         this.removeBody(unit.body);
@@ -614,7 +757,7 @@ var common = {
         Matter.Events.off(item);
 
         //clear slaves
-        if(item.slaves) {
+        if (item.slaves) {
             this.removeSlaves(item.slaves);
         }
 
@@ -629,12 +772,12 @@ var common = {
         // }
 
         //This might have some performance impact... possibly will investigate
-        if(body.idAdded) {
+        if (body.idAdded) {
             console.warn("attempting to add already-added body");
             console.warn(body);
         }
 
-        if(body.vertices)
+        if (body.vertices)
             this.vertexHistories.push(body);
 
         //add to matter world
@@ -645,7 +788,7 @@ var common = {
     removeBody: function(body, hardRemove) {
 
         //just in case?
-        if(body.hasBeenRemoved) return;
+        if (body.hasBeenRemoved) return;
 
         body.isSleeping = false;
 
@@ -653,7 +796,7 @@ var common = {
         Matter.Events.trigger(body, "onremove", {});
 
         //clear slaves (deathPact())
-        if(body.slaves) {
+        if (body.slaves) {
             this.removeSlaves(body.slaves, hardRemove);
         }
 
@@ -661,7 +804,7 @@ var common = {
         Matter.Events.off(body);
 
         //remove body from world
-        if(hardRemove) {
+        if (hardRemove) {
             Matter.World.remove(this.world, [body]);
         } else { //we're a soft remove
             this.softRemover.remove(body);
@@ -669,7 +812,7 @@ var common = {
 
         //clean up vertice history
         var index = this.vertexHistories.indexOf(body);
-        if(index > -1)
+        if (index > -1)
             this.vertexHistories.splice(index, 1);
 
         //for internal use
@@ -690,33 +833,33 @@ var common = {
         //renderer method.
         var slaveCopy = [].concat(slaves);
         $.each(slaveCopy, function(index, slave) {
-            if(slave.isUnit) {
+            if (slave.isUnit) {
                 this.removeUnit(slave);
                 //console.info("removing " + slave)
-            }
-            else if(slave.type == 'body') { //is body
+            } else if (slave.type == 'body') { //is body
                 this.removeBody(slave, hardBodyRemove);
                 // console.info("removing " + slave)
-            }
-            else if(slave.isTickCallback) {
+            } else if (slave.isTickCallback) {
                 this.removeTickCallback(slave);
                 // console.info("removing " + slave.slaveId)
-            }
-            else if(slave.isTimer) {
+            } else if (slave.isTimer) {
                 this.invalidateTimer(slave);
                 //console.info("removing " + slave)
-            } else if(slave.slaves) {
+            } else if (slave.slaves) {
                 this.removeSlaves(slave.slaves, hardBodyRemove);
-            }
-            else if(slave instanceof Function) {
+            } else if (slave instanceof Function) {
                 //console.info("removing " + slave)
                 slave();
-            } else if(slave.unload) {
+            } else if (slave.unload) {
                 // let's unload the sound, but it might be playing upon death, so let's wait then unload it
-                gameUtils.doSomethingAfterDuration(() => {slave.unload();}, 1500, {executeOnNuke: true});
-            } else if(slave.isSprite) {
+                gameUtils.doSomethingAfterDuration(() => {
+                    slave.unload();
+                }, 1500, {
+                    executeOnNuke: true
+                });
+            } else if (slave.isSprite) {
                 graphicsUtils.removeSomethingFromRenderer(slave);
-            } else if(slave.constructor === PIXI.BitmapText || slave.constructor === PIXI.Text) {
+            } else if (slave.constructor === PIXI.BitmapText || slave.constructor === PIXI.Text) {
                 graphicsUtils.removeSomethingFromRenderer(slave);
             }
         }.bind(this));
@@ -753,13 +896,13 @@ var common = {
         //Sometimes this could persist
         $(this.canvasEl).off("mouseup");
 
-        if(this.nukeExtension) {
+        if (this.nukeExtension) {
             this.nukeExtension(options);
         }
 
         Matter.Events.off(this);
 
-        if(!this.world) return;
+        if (!this.world) return;
 
         //Remove units safely (removeUnit())
         var unitsToRemove = [];
@@ -787,7 +930,7 @@ var common = {
         this.renderer.clear(options.noMercy, options.savePersistables);
 
         //Unload sounds we've created
-        if(options.noMercy) {
+        if (options.noMercy) {
             this.endGameSound.unload();
             this.loseLifeSound.unload();
         }
@@ -797,7 +940,7 @@ var common = {
         this.clearTickCallbacks(options.noMercy);
 
         $.each(this.timers, function(i, timer) {
-            if(timer && (!timer.persists || options.noMercy) && timer.executeOnNuke && timer.runs > 0) {
+            if (timer && (!timer.persists || options.noMercy) && timer.executeOnNuke && timer.runs > 0) {
                 timer.totallyDoneCallback();
             }
         }.bind(this));
@@ -807,27 +950,27 @@ var common = {
         this.vertexHistories = [];
 
         //Clear body listeners if no mercy
-        if(options.noMercy) {
+        if (options.noMercy) {
             $('body').off();
         }
 
         //Clear unit system
-        if(this.unitSystem) {
+        if (this.unitSystem) {
             this.unitSystem.cleanUp();
         }
 
         //Clear item system
-        if(this.itemSystem) {
+        if (this.itemSystem) {
             this.itemSystem.cleanUp();
         }
     },
 
     resetGame: function() {
-        if(this.score)
+        if (this.score)
             graphicsUtils.removeSomethingFromRenderer(this.score);
-        if(this.wave)
+        if (this.wave)
             graphicsUtils.removeSomethingFromRenderer(this.wave);
-        if(this.resetGameExtension)
+        if (this.resetGameExtension)
             this.resetGameExtension();
 
         this.preGame();
@@ -839,16 +982,16 @@ var common = {
         timer.originalRuns = timer.runs;
 
         //add a reset method to the timer
-        if(!timer.reset) timer.reset = timer.execute = function(options) {
+        if (!timer.reset) timer.reset = timer.execute = function(options) {
             options = options || {};
             this.timeElapsed = 0;
             this.percentDone = 0;
             this.totalPercentOfRunsDone = 0;
 
             this.runs = timer.originalRuns;
-            if(options.runs)
+            if (options.runs)
                 this.runs = options.runs;
-            if(this.resetExtension)
+            if (this.resetExtension)
                 this.resetExtension();
             this.done = false;
             this.started = false;
@@ -858,26 +1001,26 @@ var common = {
 
         var game = this;
         timer.executeCallbacks = function() {
-            if(this.runs > 0) {
+            if (this.runs > 0) {
                 this.percentDone = 0;
                 this.timeElapsed -= this.activeTimeLimit;
                 this.currentRun = this.originalRuns - this.runs;
-                if(this.callback) this.callback();
-                if(!this.gogogo) {
+                if (this.callback) this.callback();
+                if (!this.gogogo) {
                     this.runs--;
                 }
 
-                if(this.runs > 0) {
+                if (this.runs > 0) {
                     var callBackPaused = this.paused;
-                    if(callBackPaused)
+                    if (callBackPaused)
                         this.paused = true;
                 }
-                if(this.runs <= 0 || this.manualEndLife) {
+                if (this.runs <= 0 || this.manualEndLife) {
                     this.done = true;
-                    if(this.totallyDoneCallback) {
+                    if (this.totallyDoneCallback) {
                         this.totallyDoneCallback.call(this);
                     }
-                    if(this.killsSelf)  {
+                    if (this.killsSelf) {
                         game.invalidateTimer(this);
                     }
                 }
@@ -891,8 +1034,8 @@ var common = {
         return timer;
     },
     invalidateTimer: function(timer) {
-        if(!timer || timer.invalidated) return;
-        if($.isArray(timer)) {
+        if (!timer || timer.invalidated) return;
+        if ($.isArray(timer)) {
             $.each(timer, function(i, timer) {
                 timer.invalidated = true;
                 Matter.Events.trigger(timer, 'onInvalidate');
@@ -911,29 +1054,37 @@ var common = {
 
     invalidateTimers: function(clearPersistables) {
         $.each(this.timers, function(i, timer) {
-            if(timer && !clearPersistables && timer.persists) return;
+            if (timer && !clearPersistables && timer.persists) return;
             this.invalidateTimer(timer);
         }.bind(this));
     },
 
     addLives: function(numberOfLives) {
-        if(numberOfLives < 0) {
+        if (numberOfLives < 0) {
             this.loseLife();
             //shake life text
             self = this;
-            this.addTimer({name: 'shakeLifeTimer', timeLimit: 48, runs: 12, callback: function() {
-                self.hudLives.position = {x: self.hudLives.x + (this.runs%2==0 ? 1 : -1)*2, y: self.hudLives.y};
-                if(this.runs%2==0) {
-                    self.hudLives.style = styles.redScoreStyle;
-                } else {
-                    self.hudLives.style = styles.scoreStyle;
+            this.addTimer({
+                name: 'shakeLifeTimer',
+                timeLimit: 48,
+                runs: 12,
+                callback: function() {
+                    self.hudLives.position = {
+                        x: self.hudLives.x + (this.runs % 2 == 0 ? 1 : -1) * 2,
+                        y: self.hudLives.y
+                    };
+                    if (this.runs % 2 == 0) {
+                        self.hudLives.style = styles.redScoreStyle;
+                    } else {
+                        self.hudLives.style = styles.scoreStyle;
+                    }
                 }
-            }});
+            });
         }
 
         this.lives = this.lives + numberOfLives;
-        if(this.lives < 0) this.lives = 0;
-        if(this.lives <= 0)
+        if (this.lives < 0) this.lives = 0;
+        if (this.lives <= 0)
             this.regulationPlay.resolve();
         this.hudLives.text = "Lives: " + this.lives;
     },
@@ -944,22 +1095,25 @@ var common = {
         var timer = this.getTimer('lifeFlash');
     },
     addToGameTimer: function(amount) { //in millis
-        this.timeLeft  += amount;
+        this.timeLeft += amount;
     },
 
     /*
      * Event Utils
      */
     addListener: function(eventName, handler, invincible, isPixiInteractive) {
-        var listener = {eventName: eventName, handler: handler};
-        if(isPixiInteractive) {
-            if(invincible)
+        var listener = {
+            eventName: eventName,
+            handler: handler
+        };
+        if (isPixiInteractive) {
+            if (invincible)
                 this.invincibleListeners.push(listener);
             else
                 this.eventListeners.push(listener);
             this.renderer.interactiveObject.on(eventName, handler);
         } else {
-            if(invincible)
+            if (invincible)
                 this.invincibleListeners.push(listener);
             else
                 this.eventListeners.push(listener);
@@ -968,7 +1122,7 @@ var common = {
         return listener;
     },
     removeListener: function(listener) {
-        if(this.eventListeners.indexOf(listener) > 0) {
+        if (this.eventListeners.indexOf(listener) > 0) {
             this.canvasEl.removeEventListener(this.eventListeners[this.eventListeners.indexOf(listener)].eventName, this.eventListeners[this.eventListeners.indexOf(listener)].handler);
             this.renderer.interactiveObject && this.renderer.interactiveObject.removeListener(this.eventListeners[this.eventListeners.indexOf(listener)].eventName, this.eventListeners[this.eventListeners.indexOf(listener)].handler);
             this.eventListeners.splice(this.eventListeners.indexOf(listener), 1);
@@ -981,7 +1135,7 @@ var common = {
         }.bind(this));
         this.eventListeners = [];
 
-        if(noMercy) {
+        if (noMercy) {
             this.invincibleListeners.forEach(function(listener) {
                 this.canvasEl.removeEventListener(listener.eventName, listener.handler);
                 this.renderer.interactiveObject && this.renderer.interactiveObject.removeListener(listener.eventName, listener.handler);
@@ -993,31 +1147,31 @@ var common = {
     addTickCallback: function(callback, invincible, eventName) {
         //make backwards compatible
         var options = {};
-        if(mathArrayUtils.isObject(invincible)) {
+        if (mathArrayUtils.isObject(invincible)) {
             options = invincible;
         } else {
             options.invincible = invincible;
             options.eventName = eventName;
         }
 
-        if(options.runImmediately) {
+        if (options.runImmediately) {
             callback(options.immediateOptions || {});
         }
 
         var self = this;
         var tickDeltaWrapper = function(event) {
-            if(tickDeltaWrapper.removePending) return;
-            if(options.invincible || (self.gameState == 'playing')) {
+            if (tickDeltaWrapper.removePending) return;
+            if (options.invincible || (self.gameState == 'playing')) {
                 callback(event);
             }
         };
         tickDeltaWrapper.isTickCallback = true;
 
-        if(options.invincible)
+        if (options.invincible)
             this.invincibleTickCallbacks.push(tickDeltaWrapper);
         else
             this.tickCallbacks.push(tickDeltaWrapper);
-        Matter.Events.on(this.engine.runner, options.eventName || 'tick'/*'afterUpdate'*/, tickDeltaWrapper);
+        Matter.Events.on(this.engine.runner, options.eventName || 'tick' /*'afterUpdate'*/ , tickDeltaWrapper);
         callback.tickDeltaWrapper = tickDeltaWrapper; //so we can turn this off with the original function
         return tickDeltaWrapper; //return so you can turn this off if needed
     },
@@ -1030,9 +1184,9 @@ var common = {
      * prevent all subsequent invocations of the callback().
      */
     removeTickCallback: function(callback) {
-        if(!callback) return;
+        if (!callback) return;
 
-        if(callback.tickDeltaWrapper) {
+        if (callback.tickDeltaWrapper) {
             callback = callback.tickDeltaWrapper;
         }
 
@@ -1041,10 +1195,10 @@ var common = {
         Matter.Events.off(this.engine.runner, callback);
 
         //remove from our internal lists here
-        if(this.invincibleTickCallbacks.indexOf(callback) > -1) {
+        if (this.invincibleTickCallbacks.indexOf(callback) > -1) {
             this.invincibleTickCallbacks.splice(this.invincibleTickCallbacks.indexOf(callback), 1);
         }
-        if(this.tickCallbacks.indexOf(callback) > -1) {
+        if (this.tickCallbacks.indexOf(callback) > -1) {
             this.tickCallbacks.splice(this.tickCallbacks.indexOf(callback), 1);
         }
 
@@ -1058,7 +1212,7 @@ var common = {
         }.bind(this));
         this.tickCallbacks = [];
 
-        if(noMercy) {
+        if (noMercy) {
             this.invincibleTickCallbacks.forEach(function(callback) {
                 Matter.Events.off(this.engine, callback);
                 Matter.Events.off(this.engine.runner, callback);
@@ -1067,9 +1221,9 @@ var common = {
         }
     },
 
-     /*
-      * Score Utils
-      */
+    /*
+     * Score Utils
+     */
     incrementScore: function(value) {
         this.score.scoreValue += value;
         this.score.text = this.baseScoreText + this.score.scoreValue;
@@ -1092,7 +1246,7 @@ var common = {
 
     loadGame: function() {
         this.totalAssets = this.assets.concat(this.commonAssets);
-        if(this.enableUnitSystem) {
+        if (this.enableUnitSystem) {
             this.totalAssets = this.totalAssets.concat(UnitSystemAssets);
         }
         CommonGameStarter(Object.assign({}, this));
@@ -1108,4 +1262,6 @@ common.removeEventListener = common.removeListener;
 common.removeText = common.removeSprite;
 
 // return common;
-export {common as CommonGameMixin};
+export {
+    common as CommonGameMixin
+};

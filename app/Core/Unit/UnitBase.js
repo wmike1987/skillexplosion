@@ -1029,7 +1029,7 @@ var UnitBase = {
                 }.bind(this);
                 this.energyFadeBars.push(newBar);
                 graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
-                graphicsUtils.graduallyTint(newBar, 0xff0909, 0xb866f9, fadeDuration);
+                graphicsUtils.graduallyTint(newBar, 0x1fffff, 0xb866f9, fadeDuration);
             } else {
                 //empty gaining bars
                 this.energyFadeBars.forEach(function(bar) {

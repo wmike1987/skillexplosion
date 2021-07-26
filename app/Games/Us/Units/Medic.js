@@ -158,7 +158,7 @@ export default function Medic(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.55, y: 0.55},
+        scale: {x: 0.54, y: 0.54},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -168,7 +168,7 @@ export default function Medic(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.35, y: 0.35},
+        scale: {x: 0.33, y: 0.33},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -880,16 +880,16 @@ export default function Medic(options) {
         },
     });
 
-    var ffDDuration = 4000;
+    var ffDDuration = 3000;
     var ffADuration = 3000;
     var familiarFace  = new Passive({
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free secret step (up to two).'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 4 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 8000,
+        defenseCooldown: 2000,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 6000,
         aggressionPredicate: function() {

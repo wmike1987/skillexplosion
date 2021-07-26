@@ -1192,7 +1192,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
         }
     }.bind(this));
 
-    var unavailableTint = 0x4C4949;
+    var unavailableTint = 0x2b2b2b;
     if (!this.abilityAvailableTick) {
         this.abilityAvailableTick = globals.currentGame.addTickCallback(function() {
             if (this.prevailingUnit) {

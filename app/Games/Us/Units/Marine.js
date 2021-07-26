@@ -206,7 +206,7 @@ export default function Marine(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.55, y: 0.55},
+        scale: {x: 0.54, y: 0.54},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -216,7 +216,7 @@ export default function Marine(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.35, y: 0.35},
+        scale: {x: 0.33, y: 0.33},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,

@@ -22,7 +22,7 @@ export default function DestructibleBox(options) {
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 1, y: 1},
+        scale: {x: 1.1, y: 1.1},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,

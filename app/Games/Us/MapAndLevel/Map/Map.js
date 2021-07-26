@@ -14,6 +14,7 @@ import {
     globals
 } from '@core/Fundamental/GlobalState.js';
 import styles from '@utils/Styles.js';
+import windowShader from '@shaders/WindowShader.js';
 
 /*
  * Main Map object
@@ -320,13 +321,44 @@ var map = function(specs) {
         });
         this.removedAdrenalineBlocks = [];
 
+        // //meditate handler
+        // this.currentWindowShader = new PIXI.Filter(null, windowShader, {
+        //     centerPoint: {x: 0, y: 0}
+        // });
+        // this.currentWindowShader.filterArea = globals.currentGame.renderer.pixiApp.screen;
+        // $('body').on('keydown.meditate', function(event) {
+        //     var key = event.key.toLowerCase();
+        //     if (key == 'control') {
+        //         this.toggleWindow();
+        //     }
+        // }.bind(this));
+
         Matter.Events.trigger(this, 'showMap', {});
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
     };
 
+    this.toggleWindow = function() {
+        if(!this.windowed) {
+            this.windowed = true;
+            // globals.currentGame.renderer.layers.foregroundOne.filters = [this.currentWindowShader];
+            globals.currentGame.renderer.layers.hudNTwo.filters = [this.currentWindowShader];
+        } else {
+            this.windowed = false;
+            // mathArrayUtils.removeObjectFromArray(this.currentWindowShader, globals.currentGame.renderer.layers.foregroundOne.filters);
+            mathArrayUtils.removeObjectFromArray(this.currentWindowShader, globals.currentGame.renderer.layers.hudNTwo.filters);
+        }
+    },
+
     this.hide = function() {
         this.isShown = false;
         Matter.Events.trigger(this, 'hideMap', {});
+
+        //turn off window shader
+        // if(this.windowed) {
+        //     $('body').off('keydown.meditate');
+        //     this.toggleWindow();
+        // }
+
         this.mapSprite.visible = false;
         this.graph.forEach(node => {
             node.displayObject.visible = this.mapSprite.visible;

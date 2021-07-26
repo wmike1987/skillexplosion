@@ -7,7 +7,7 @@ export default `
     uniform vec2 centerPoint;
     uniform vec2 screenSize;
     uniform float gridSize;
-    uniform bool fadeOut;
+    uniform bool fadeIn;
     uniform float a;
     uniform float b;
     uniform float c;
@@ -32,22 +32,22 @@ export default `
         xDiff = alteredXDiff;
         yDiff = alteredYDiff;
 
-        float screenSizeHyp = sqrt(screenSize.x*screenSize.x + screenSize.y*screenSize.y)/gridSize;
+        //find hyp starting from our center point
+        float largestX = max(centerPoint.x, screenSize.x - centerPoint.x);
+        float largestY = max(centerPoint.y, screenSize.y - centerPoint.y);
+        float screenSizeHyp = sqrt(largestX*largestX + largestY*largestY)/gridSize;
 
         float inOrOut = 1.0;
         float addBuffer = 0.0;
-        if(fadeOut) {
+        if(fadeIn) {
           addBuffer = 0.2;
         }
 
-        float hypMultiplier = 1.0;
-        if(fadeOut) {
-            hypMultiplier = 0.6;
-        }
+        float hypMultiplier = 1.2;
 
         float r = (sqrt(xDiff*xDiff + yDiff*yDiff)/((screenSizeHyp)*hypMultiplier) + addBuffer);
 
-        if(!fadeOut) {
+        if(!fadeIn) {
           r = 1.0 - r;
         }
 

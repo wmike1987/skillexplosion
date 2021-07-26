@@ -107,8 +107,6 @@ Scene.prototype.transitionToScene = function(options) {
 
     globals.currentGame.currentScene = newScene;
 
-    // globals.currentGame.togglePause();
-    // globals.currentGame.togglePause();
     //define transition vars
     var iterTime;
     var fadeIn = null;
@@ -157,7 +155,7 @@ Scene.prototype.transitionToScene = function(options) {
             screenSize: gameUtils.getPlayableWH(),
             centerPoint: options.centerPoint || gameUtils.getCanvasCenter(),
             gridSize: 2,
-            fadeOut: options.fadeIn
+            fadeIn: options.fadeIn
         });
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
