@@ -24,7 +24,8 @@ var levelBase = {
         });
     },
 
-    enterLevel: function() {
+    enterLevel: function(options) {
+        options = options || {};
         if (this.hijackEntry) {
             var res = this.hijackEntry();
             if (res) return;
@@ -35,12 +36,19 @@ var levelBase = {
 
         globals.currentGame.currentScene.transitionToScene({
             newScene: scene,
-            centerPoint: this.mapNode.position
+            centerPoint: this.mapNode.position,
+            mode: options.mode || null,
+            transitionLength: options.transitionLength || null,
         });
         Matter.Events.trigger(globals.currentGame, 'EnterLevel', {
             level: this
         });
-        this.mode.enter.call(this, scene);
+
+        if(options.customEnterLevel) {
+            options.customEnterLevel(this);
+        } else {
+            this.mode.enter.call(this, scene);
+        }
     },
 
     startLevelSpawn: function() {
@@ -319,6 +327,7 @@ var levelBase = {
                             });
 
                             game.unitsInPlay.forEach((unit) => {
+                                unit.endLevelPosition = mathArrayUtils.clonePosition(unit.position);
                                 gameUtils.moveUnitOffScreen(unit);
                             });
 

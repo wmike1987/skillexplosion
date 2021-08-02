@@ -75,6 +75,7 @@ var game = {
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 3.0, rate: 1.0});
         this.boxSound = gameUtils.getSound('criticalhit.wav', {volume: 0.15, rate: 0.65});
+        this.reconfigureSound = gameUtils.getSound('wooshconfigure.wav', {volume: 0.05, rate: 1.25});
 
         this.levelLocalEntities = [];
 
@@ -318,6 +319,26 @@ var game = {
         this.currentScene.transitionToScene({newScene: vScene, transitionLength: 1000});
 
         return vScene;
+    },
+
+    reconfigureAtCurrentLevel: function() {
+        var game = this;
+        this.currentLevel.enterLevel({customEnterLevel: function(level) {
+            level.campLikeActive = true;
+            game.setUnit(game.shane, {
+                position: game.shane.endLevelPosition,
+                moveToCenter: false,
+            });
+            game.setUnit(game.ursula, {
+                position: game.ursula.endLevelPosition,
+                moveToCenter: false,
+            });
+            game.map.removeAdrenalineBlock();
+            level.createMapTable(game.currentScene);
+            game.unitSystem.unpause();
+            level.mapTableActive = true;
+            game.reconfigureSound.play();
+        }, mode: 'SIDE', transitionLength: 1000, leftToRight: false});
     },
 
     closeMap: function() {
@@ -605,6 +626,7 @@ var game = {
             this.heartbeat.unload();
             this.flyoverSound.unload();
             this.boxSound.unload();
+            this.reconfigureSound.unload();
             mathArrayUtils.operateOnObjectByKey(this.commonSounds, (key, value) => {
                 value.unload();
             });

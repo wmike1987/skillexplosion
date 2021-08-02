@@ -152,9 +152,6 @@ var map = function(specs) {
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function(event) {
         if (event.result == 'win') {
             this.startingFatigue += 5;
-            this.addAdrenalineBlock();
-        } else {
-            this.removeAdrenalineBlock();
         }
     }.bind(this));
 
@@ -326,6 +323,7 @@ var map = function(specs) {
         //     centerPoint: {x: 0, y: 0}
         // });
         // this.currentWindowShader.filterArea = globals.currentGame.renderer.pixiApp.screen;
+        // this.currentWindowShader.autoFit = false;
         // $('body').on('keydown.meditate', function(event) {
         //     var key = event.key.toLowerCase();
         //     if (key == 'control') {
@@ -337,17 +335,17 @@ var map = function(specs) {
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
     };
 
-    this.toggleWindow = function() {
-        if(!this.windowed) {
-            this.windowed = true;
-            // globals.currentGame.renderer.layers.foregroundOne.filters = [this.currentWindowShader];
-            globals.currentGame.renderer.layers.hudNTwo.filters = [this.currentWindowShader];
-        } else {
-            this.windowed = false;
-            // mathArrayUtils.removeObjectFromArray(this.currentWindowShader, globals.currentGame.renderer.layers.foregroundOne.filters);
-            mathArrayUtils.removeObjectFromArray(this.currentWindowShader, globals.currentGame.renderer.layers.hudNTwo.filters);
-        }
-    },
+    // this.toggleWindow = function() {
+    //     if(!this.windowed) {
+    //         this.windowed = true;
+    //         // globals.currentGame.renderer.layers.foregroundOne.filters = [this.currentWindowShader];
+    //         globals.currentGame.renderer.layers.hudNTwo.filters = [this.currentWindowShader];
+    //     } else {
+    //         this.windowed = false;
+    //         // mathArrayUtils.removeObjectFromArray(this.currentWindowShader, globals.currentGame.renderer.layers.foregroundOne.filters);
+    //         mathArrayUtils.removeObjectFromArray(this.currentWindowShader, globals.currentGame.renderer.layers.hudNTwo.filters);
+    //     }
+    // },
 
     this.hide = function() {
         this.isShown = false;

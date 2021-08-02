@@ -447,6 +447,46 @@ export default {
 	    strokeThickness: 4
 	}),
 
+	escapeToContinueStyle: new PIXI.TextStyle({
+		name: 'escapeToContinueStyle',
+		fill: "white",
+		fontSize: 32,
+		fontStyle: "italic",
+		fontWeight: "bold",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 4
+	}),
+
+	escapeToContinueStyleVariant: new PIXI.TextStyle({
+		name: 'escapeToContinueStyleVariant',
+		fill: "#14a0b9",
+		fontSize: 32,
+		fontStyle: "italic",
+		fontWeight: "bold",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 4
+	}),
+
+	endLevelAdrenalinePlusStyle: new PIXI.TextStyle({
+		name: 'endLevelAdrenalinePlusStyle',
+		fill: "#da2ae9",
+		fontSize: 12,
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 4
+	}),
+
+	endLevelAdrenalineMinusStyle: new PIXI.TextStyle({
+		name: 'endLevelAdrenalineMinusStyle',
+		fill: "#716e71",
+		fontSize: 12,
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 4
+	}),
+
 	statScreenVictoryTitleStyle: new PIXI.TextStyle({
 		name: 'statScreenVictoryTitleStyle',
 		fill: "White",

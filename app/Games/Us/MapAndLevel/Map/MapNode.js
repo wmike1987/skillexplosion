@@ -47,8 +47,8 @@ var MapLevelNode = function(options) {
         myNode.complete();
 
         if (event.endLevelScene) {
-            gameUtils.matterOnce(event.endLevelScene, 'sceneFadeOutBegin', function() {
-                myNode.playCompleteAnimation();
+            gameUtils.matterOnce(globals.currentGame.map, 'showMap', () => {
+                myNode.playCompleteAnimation(myNode.levelDetails.lesserSpin);
             });
         } else {
             myNode.playCompleteAnimation();

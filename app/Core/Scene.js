@@ -5,6 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 import dissolveShader from '@shaders/DissolveShader.js';
 import circleDissolveShader from '@shaders/CircleDissolveShader.js';
+import sideSwipeShader from '@shaders/SideSwipeShader.js';
 
 /*
  * This module represents a scene.
@@ -84,6 +85,7 @@ Scene.prototype.clear = function() {
 var SceneModes = {
     BLACK: 'BLACK',
     FADE_AWAY: 'FADE_AWAY',
+    SIDE: 'SIDE',
 };
 
 /*
@@ -95,7 +97,7 @@ var SceneModes = {
  */
 Scene.prototype.transitionToScene = function(options) {
     var newScene = null;
-    var transitionLength = 1500;
+    var transitionLength = 1200;
     var mode = SceneModes.FADE_AWAY;
     if(options.isScene) {
         newScene = options;
@@ -133,11 +135,11 @@ Scene.prototype.transitionToScene = function(options) {
             graphicsUtils.removeSomethingFromRenderer(tintDO);
         };
     } else if(mode == SceneModes.FADE_AWAY) {
-        var currentGame = globals.currentGame;
+        let currentGame = globals.currentGame;
         const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
         const transitionSprite = new PIXI.Sprite(renderTexture);
-        var rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
-        var renderer = globals.currentGame.renderer.pixiApp.renderer;
+        let rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
+        let renderer = globals.currentGame.renderer.pixiApp.renderer;
 
         renderer.render(rStage, renderTexture, false, null, true);
 
@@ -147,7 +149,7 @@ Scene.prototype.transitionToScene = function(options) {
         iterTime = 32;
         runs = transitionLength/iterTime;
 
-        var dShader = new PIXI.Filter(null, circleDissolveShader, {
+        let dShader = new PIXI.Filter(null, circleDissolveShader, {
             a: Math.random()*10 + 10,
             b: 10,
             c: 555555,
@@ -160,8 +162,44 @@ Scene.prototype.transitionToScene = function(options) {
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
 
         fadeIn = function() {};
-        fadeOut = function() {
-            dShader.uniforms.progress -= 1/(transitionLength/iterTime);
+        let totalTime = 0;
+        fadeOut = function(delta) {
+            totalTime += delta;
+            dShader.uniforms.progress = 1.0 - (totalTime/transitionLength);
+        };
+
+        cleanUp = function() {
+            graphicsUtils.removeSomethingFromRenderer(transitionSprite);
+            globals.currentGame.renderer.layers.transitionLayer.filters = [];
+        };
+    } else if(mode == SceneModes.SIDE) {
+        let currentGame = globals.currentGame;
+        const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
+        const transitionSprite = new PIXI.Sprite(renderTexture);
+        let rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
+        let renderer = globals.currentGame.renderer.pixiApp.renderer;
+
+        renderer.render(rStage, renderTexture, false, null, true);
+
+        graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
+
+        inRuns = 1;
+        iterTime = 32;
+        runs = transitionLength/iterTime;
+
+        var dShader = new PIXI.Filter(null, sideSwipeShader, {
+            progress: 0.0,
+            screenSize: gameUtils.getPlayableWH(),
+            leftToRight: options.leftToRight === false ? false : true
+        });
+        globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];
+
+        fadeIn = function() {};
+        let totalTime = 0;
+        fadeOut = function(delta) {
+            totalTime += delta;
+            totalTime += delta;
+            dShader.uniforms.progress = totalTime/transitionLength;
         };
 
         cleanUp = function() {
@@ -172,14 +210,14 @@ Scene.prototype.transitionToScene = function(options) {
 
     Matter.Events.trigger(this, 'sceneFadeOutBegin');
     Matter.Events.trigger(newScene, 'sceneFadeInBegin');
-    newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, callback: function() {
-        fadeIn();
+    newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, tickCallback: function(delta) {
+        fadeIn(delta);
     }.bind(this), totallyDoneCallback: function() {
         Matter.Events.trigger(this, 'clear');
         this.clear();
         newScene.initializeScene();
-        globals.currentGame.addTimer({name: 'sceneOut' + this.id, runs: runs, timeLimit: iterTime, killsSelf: true, callback: function() {
-            fadeOut();
+        globals.currentGame.addTimer({name: 'sceneOut' + this.id, timeLimit: transitionLength, killsSelf: true, tickCallback: function(delta) {
+            fadeOut(delta);
         }.bind(this), totallyDoneCallback: function() {
             Matter.Events.trigger(this, 'sceneFadeOutDone');
             Matter.Events.trigger(newScene, 'sceneFadeInDone');
