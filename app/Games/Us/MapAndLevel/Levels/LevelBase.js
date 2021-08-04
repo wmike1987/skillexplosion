@@ -313,7 +313,6 @@ var levelBase = {
                 } else {
                     commonWinLossTasks({result: result});
                     gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.ursula.giveHealth(15);
                         globals.currentGame.togglePause();
                         gameUtils.doSomethingAfterDuration(() => {
                             Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});

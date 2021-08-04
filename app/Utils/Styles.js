@@ -472,7 +472,7 @@ export default {
 	endLevelAdrenalinePlusStyle: new PIXI.TextStyle({
 		name: 'endLevelAdrenalinePlusStyle',
 		fill: "#da2ae9",
-		fontSize: 12,
+		fontSize: 14,
 		lineJoin: "round",
 		miterLimit: 0,
 		strokeThickness: 4
@@ -481,7 +481,7 @@ export default {
 	endLevelAdrenalineMinusStyle: new PIXI.TextStyle({
 		name: 'endLevelAdrenalineMinusStyle',
 		fill: "#716e71",
-		fontSize: 12,
+		fontSize: 14,
 		lineJoin: "round",
 		miterLimit: 0,
 		strokeThickness: 4

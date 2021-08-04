@@ -1042,7 +1042,7 @@ export default function Medic(options) {
     var rad = options.radius || 25;
     var unitProperties = $.extend({
         unitType: 'Medic',
-        health: 45,
+        health: 40,
         energy: 60,
         hitboxWidth: 28,
         hitboxHeight: 56,

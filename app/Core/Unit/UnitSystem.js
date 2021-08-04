@@ -843,12 +843,7 @@ var UnitSystem = function(properties) {
              if(event.key == 'C' || event.key == 'c') {
                  if(keyStates.Control) {
                      if(this.selectedUnit) {
-                         gameUtils.executeSomethingNextFrame(() => {
-                             this.selectedUnit.stop();
-                             gameUtils.executeSomethingNextFrame(() => {
-                                 this.selectedUnit.move(gameUtils.getCanvasCenter());
-                             });
-                         });
+                         this.selectedUnit.setHealth(5000);
                     }
                 }
             }

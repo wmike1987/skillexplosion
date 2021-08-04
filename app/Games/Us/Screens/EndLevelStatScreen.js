@@ -912,8 +912,8 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
 
         //space to continue
-        this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 1, y: 0.5}, position: {x: gameUtils.getPlayableWidth() - 110, y: gameUtils.getCanvasHeight() - 70}});
-        this.plusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(+1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalinePlusStyle, anchor: {x: 0, y: 0.5}, position: {x: gameUtils.getPlayableWidth() - 100, y: gameUtils.getCanvasHeight() - 70}});
+        this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 125, y: gameUtils.getCanvasHeight() - 80}});
+        this.plusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(+1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalinePlusStyle, anchor: {x: 0, y: 1}, position: {x: gameUtils.getPlayableWidth() - 115, y: gameUtils.getCanvasHeight() - 84}});
         scene.add(this.spaceToContinue);
         scene.add(this.plusOneAdrenaline);
         this.spaceToContinue.visible = false;
@@ -924,8 +924,8 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
 
         //escape to configure
-        this.escapeToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Esc to reconfigure", {where: 'hudText', style: styles.escapeToContinueStyleVariant, anchor: {x: 1, y: 0.5}, position: {x: gameUtils.getPlayableWidth() - 110, y: gameUtils.getCanvasHeight() - 30}});
-        this.minusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(-1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalineMinusStyle, anchor: {x: 0, y: 0.5}, position: {x: gameUtils.getPlayableWidth() - 100, y: gameUtils.getCanvasHeight() - 30}});
+        this.escapeToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Esc to reconfigure", {where: 'hudText', style: styles.escapeToContinueStyleVariant, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 125, y: gameUtils.getCanvasHeight() - 30}});
+        this.minusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(-1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalineMinusStyle, anchor: {x: 0, y: 1}, position: {x: gameUtils.getPlayableWidth() - 115, y: gameUtils.getCanvasHeight() - 34}});
         scene.add(this.escapeToContinue);
         scene.add(this.minusOneAdrenaline);
         this.escapeToContinue.visible = false;

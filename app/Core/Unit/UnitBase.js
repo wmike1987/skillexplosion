@@ -346,7 +346,7 @@ var UnitBase = {
         //show give life fade
         let healthSnapshot = this.currentHealth;
         this.fadeLifeAmount(this.currentHealth, true, () => {
-            this.updateHealthBar({amount: healthSnapshot});
+            this.updateHealthBar({amount: healthSnapshot, preserveGainTintTimer: true});
         });
 
         if (!options.invisible) {
@@ -917,14 +917,15 @@ var UnitBase = {
 
         var fadeDuration = 500;
         var sortYLifeCounter = 500;
-        var startingFadeColor = 0xfb25ff;
+        var startingFadeColor = 0x0557d1;
+        var alternateStartingFadeColor = 0x0557d1;
         this.fadeLifeAmount = function(startingAmount, fadeIn, done) {
             var givingLife = fadeIn;
 
             //if fading in, we need a new bar
             if (givingLife) {
                 if (this.renderlings.healthbarfade) {
-                    this.renderlings.healthbarfade.alpha = 0.0;
+                    // this.renderlings.healthbarfade.alpha = 0.0;
                 }
                 if(this.healthFadeBars.length == 0) {
                     sortYLifeCounter = 500;
@@ -964,7 +965,12 @@ var UnitBase = {
                 }.bind(this);
                 this.healthFadeBars.push(newBar);
                 gameUtils.deathPact(this, newBar);
-                graphicsUtils.graduallyTint(newBar, startingFadeColor, this._getHealthBarTint(this.currentHealth), fadeDuration, null, null, 0.5, done);
+
+                var color = startingFadeColor;
+                if(this.currentHealth/this.maxHealth >= 0.6) {
+                    color = alternateStartingFadeColor;
+                }
+                graphicsUtils.graduallyTint(newBar, color, this._getHealthBarTint(this.currentHealth), fadeDuration, null, null, 0.5, done);
 
                 //also begin tinting existing healthbar
                 if(this.healthBarGainTintTimer) {
@@ -977,10 +983,6 @@ var UnitBase = {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
 
-                //stop any previous gain tinting
-                if(this.healthBarGainTintTimer) {
-                    this.healthBarGainTintTimer.invalidate();
-                }
                 this.healthFadeBars = [];
                 this.renderlings.healthbarfade.alpha = 1.0;
 
@@ -1012,7 +1014,7 @@ var UnitBase = {
                     sortYEnergyCounter = 500;
                 }
                 if (this.renderlings.energybarfade) {
-                    this.renderlings.energybarfade.alpha = 0.0;
+                    // this.renderlings.energybarfade.alpha = 0.0;
                 }
                 var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
                     scale: {
@@ -1113,14 +1115,31 @@ var UnitBase = {
                     x: backgroundScaleX * barScaleXMultiplier * percentage,
                     y: healthBarScale
                 };
-                this.renderlings.healthbar.tint = this._getHealthBarTint(amount);
+                //stop any previous gain tinting if desired
+                if(!options.preserveGainTintTimer) {
+                    if(this.healthBarGainTintTimer) {
+                        this.healthBarGainTintTimer.invalidate();
+                    }
+                    this.renderlings.healthbar.tint = this._getHealthBarTint(amount);
+                }
             }
         }.bind(this);
 
         this._getHealthBarTint = function(amount) {
             var percentage = amount / this.maxHealth;
-            return graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1 - percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
-        }
+            var r = 255;
+            var g = 255;
+            var b = 0;
+            var threshold = 0.75;
+
+            if(percentage >= threshold) {
+                r = 255 * ((1 - percentage)*(1/(1-threshold)));
+            } else {
+                g = 255 * (percentage*(1/threshold));
+            }
+
+            return graphicsUtils.rgbToHex(r, g, b);
+        };
 
         this.updateEnergyBar = function(options) {
             options = options || {};
@@ -1269,7 +1288,7 @@ var UnitBase = {
                     tint: 0xff0017,
                     alpha: 0.0,
                     visible: false,
-                    sortYOffset: 500,
+                    sortYOffset: 400,
                 }, {
                     id: 'healthbar',
                     data: 'HealthEnergyBackground',
@@ -1338,7 +1357,7 @@ var UnitBase = {
                     tint: 0xf1fa4c,
                     alpha: 0.0,
                     visible: false,
-                    sortYOffset: 500
+                    sortYOffset: 400
                 }, {
                     id: 'energybar',
                     data: 'HealthEnergyBackground',
