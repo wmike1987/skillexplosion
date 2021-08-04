@@ -450,7 +450,7 @@ export default {
 	escapeToContinueStyle: new PIXI.TextStyle({
 		name: 'escapeToContinueStyle',
 		fill: "white",
-		fontSize: 32,
+		fontSize: 43,
 		fontStyle: "italic",
 		fontWeight: "bold",
 		lineJoin: "round",
@@ -461,7 +461,7 @@ export default {
 	escapeToContinueStyleVariant: new PIXI.TextStyle({
 		name: 'escapeToContinueStyleVariant',
 		fill: "#14a0b9",
-		fontSize: 32,
+		fontSize: 43,
 		fontStyle: "italic",
 		fontWeight: "bold",
 		lineJoin: "round",

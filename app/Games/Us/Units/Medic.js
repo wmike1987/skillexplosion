@@ -787,7 +787,7 @@ export default function Medic(options) {
     var rsDAmount = 25;
     var raisedStakes  = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Double healing cost and healing amount for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Gain ' + rsDAmount + ' grit for 10 seconds.'],
         textureName: 'RaisedStakes',
         unit: medic,
@@ -805,12 +805,12 @@ export default function Medic(options) {
         aggressionAction: function(event) {
             medic.applyBuff({name: "stakesHealBuff" + mathArrayUtils.getId(), duration: rsADuration, textureName: 'RaisedStakesBuff', applyChanges: function() {
                 var healAbility = medic.getAbilityByName('Heal');
-                healAbility.energyCost *= 2;
-                healAbility.healAmount *= 2;
+                healAbility.energyCost *= 3;
+                healAbility.healAmount *= 3;
             }, removeChanges: function() {
                 var healAbility = medic.getAbilityByName('Heal');
-                healAbility.energyCost /= 2;
-                healAbility.healAmount /= 2;
+                healAbility.energyCost /= 3;
+                healAbility.healAmount /= 3;
             }});
         },
     });
@@ -850,14 +850,14 @@ export default function Medic(options) {
     var slADuration = 3000;
     var slyLogic  = new Passive({
         title: 'Sly Logic',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies 30 dodge for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies 25 dodge for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain 5 dodge for length of round.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
-        defenseCooldown: 8000,
+        defenseCooldown: 7000,
         aggressionEventName: 'performHeal',
-        aggressionCooldown: 7000,
+        aggressionCooldown: 6000,
         defenseAction: function(event) {
             event.damageObj.manualDodge = true;
             medic.addDodgeAddition(5);
@@ -872,9 +872,9 @@ export default function Medic(options) {
             var allies = gameUtils.getUnitAllies(medic);
             allies.forEach((ally) => {
                 ally.applyBuff({name: "slyLogicDodgeBuff", textureName: 'DodgeBuff', duration: slADuration, applyChanges: function() {
-                    ally.addDodgeAddition(30);
+                    ally.addDodgeAddition(25);
                 }, removeChanges: function() {
-                    ally.removeDodgeAddition(30);
+                    ally.removeDodgeAddition(25);
                 }});
             });
         },

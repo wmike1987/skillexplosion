@@ -361,18 +361,11 @@ var campLevel = function() {
                 globals.currentGame.closeMap();
             },
             init: function() {
-                this.campAvailableCount = 0;
                 this.nightsLeft = 3;
                 Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
-                    // this.campAvailableCount++;
-
                     if (event.node == this) {
                         this.nightsLeft -= 1;
                     }
-                }.bind(this));
-
-                Matter.Events.on(globals.currentGame, 'TravelReset', function() {
-                    this.campAvailableCount--;
                 }.bind(this));
 
                 Matter.Events.on(this, 'ArrivedAtNode', function() {
@@ -382,8 +375,6 @@ var campLevel = function() {
                 Matter.Events.on(this.mapRef, 'showMap', function() {
                     var availabilityText = 'Available now. (' + this.nightsLeft + ' nights available)';
                     if (this.mapRef.currentNode != this && !this.travelPredicate()) {
-                        // var nodesLeft = 3 - this.campAvailableCount % 3;
-                        // var roundS = nodesLeft == 1 ? ' round.' : ' rounds.';
                         availabilityText = 'Camp unavailable.';
                     } else if (this.mapRef.currentNode == this) {
                         availabilityText = 'Currently in camp.';

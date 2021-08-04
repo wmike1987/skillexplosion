@@ -104,8 +104,8 @@ var game = {
         });
 
         //setup a common sound pool
-        this.commonSounds = {};
-        this.commonSounds.sceneContinue = gameUtils.getSound('gunclick1.wav', {volume: 0.1, rate: 1.0});
+        this.soundPool = {};
+        this.soundPool.sceneContinue = gameUtils.getSound('gunclick1.wav', {volume: 0.1, rate: 1.0});
 
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
@@ -193,6 +193,11 @@ var game = {
                 }.bind(this)
             });
         }.bind(this));
+
+        Matter.Events.on(globals.currentGame, 'TravelReset', function(event) {
+            this.setCurrentLevel(event.resetToNode.levelDetails)
+        }.bind(this));
+
         Matter.Events.on(this, 'travelFinished', function(event) {
             this.invalidateTimer(this.fatigueTimer);
         }.bind(this));
@@ -288,7 +293,7 @@ var game = {
         return blankScene;
     },
 
-    gotoEndLevelScreen: function(collectors, defeat) {
+    gotoEndLevelScreen: function(collectors, loss, continueOnly) {
         this.unitSystem.pause();
         this.unitSystem.deselectUnit(this.shane);
         this.unitSystem.deselectUnit(this.ursula);
@@ -310,10 +315,11 @@ var game = {
         //create end level screen and transition
         var vScreen = new EndLevelScreen({
             shane: this.shane,
-            ursula: this.ursula
+            ursula: this.ursula,
         }, collectors, {
-            type: defeat ? 'defeat' : 'victory',
-            done: spaceToContinueBehavior
+            type: loss ? 'loss' : 'victory',
+            done: spaceToContinueBehavior,
+            onlyContinueAllowed: continueOnly
         });
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene({newScene: vScene, transitionLength: 1000});
@@ -321,20 +327,32 @@ var game = {
         return vScene;
     },
 
-    reconfigureAtCurrentLevel: function() {
+    reconfigureAtCurrentLevel: function(result) {
         var game = this;
         this.currentLevel.enterLevel({customEnterLevel: function(level) {
             level.campLikeActive = true;
+
+            var shanePosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                x: -40,
+                y: 40
+            }) : game.shane.endLevelPosition;
+
+            var ursulaPosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                x: 40,
+                y: 40
+            }) : game.ursula.endLevelPosition;
             game.setUnit(game.shane, {
-                position: game.shane.endLevelPosition,
+                position: shanePosition,
                 moveToCenter: false,
             });
             game.setUnit(game.ursula, {
-                position: game.ursula.endLevelPosition,
+                position: ursulaPosition,
                 moveToCenter: false,
             });
             game.map.removeAdrenalineBlock();
-            level.createMapTable(game.currentScene);
+            if(!level.mapTableSprite) {
+                level.createMapTable(game.currentScene);
+            }
             game.unitSystem.unpause();
             level.mapTableActive = true;
             game.reconfigureSound.play();
@@ -627,7 +645,7 @@ var game = {
             this.flyoverSound.unload();
             this.boxSound.unload();
             this.reconfigureSound.unload();
-            mathArrayUtils.operateOnObjectByKey(this.commonSounds, (key, value) => {
+            mathArrayUtils.operateOnObjectByKey(this.soundPool, (key, value) => {
                 value.unload();
             });
         }

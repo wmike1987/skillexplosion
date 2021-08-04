@@ -178,7 +178,8 @@ var airDropStation = function(options) {
             actor: "MacMurray",
             text: "Stimulant drop is en route. What do you need?",
             backgroundBox: true,
-            letterSpeed: 30
+            letterSpeed: 30,
+            delayAfterEnd: 250,
         });
         var self = this;
         var chain = new DialogueChain([title, a1], {
@@ -230,7 +231,8 @@ var airDropSpecialStation = function(options) {
             actor: "MacMurray",
             text: "Supply drop inbound. What do you need?",
             backgroundBox: true,
-            letterSpeed: 30
+            letterSpeed: 30,
+            delayAfterEnd: 250,
         });
         var self = this;
         var chain = new DialogueChain([title, a1], {

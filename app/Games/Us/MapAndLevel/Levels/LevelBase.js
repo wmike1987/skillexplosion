@@ -283,16 +283,21 @@ var levelBase = {
             var fulfilled = this.enemySets.every((eset) => {
                 return eset.fulfilled;
             });
-            if (!fulfilled) return;
 
             //if they have, see if enemy units still exist
             var unitsOfOpposingTeamExist = false;
-            if (game.unitsByTeam[game.enemyTeam] && game.unitsByTeam[game.enemyTeam].length > 0) {
-                unitsOfOpposingTeamExist = true;
+
+            //manual win flag for debugging
+            if(!globals.currentGame.manualWin) {
+                if (!fulfilled) return;
+
+                if (game.unitsByTeam[game.enemyTeam] && game.unitsByTeam[game.enemyTeam].length > 0) {
+                    unitsOfOpposingTeamExist = true;
+                }
             }
 
             //if enemy units don't exist, and there are no outstanding items to address, start the end level procedure
-            if (!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0) {
+            if (globals.currentGame.manualWin || (!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0)) {
                 this.endDelayInProgress = true;
                 if (this.customWinBehavior) {
                     removeCurrentConditions();
@@ -372,12 +377,13 @@ var levelBase = {
                         game.unitsInPlay.forEach((unit) => {
                             unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                         });
+                        var continueOnly = game.map.lastNode.type == 'camp' ? true : false;
                         Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
                             shane: game.shaneCollector.getLastCollector(),
-                            ursula: game.ursulaCollector.getLastCollector()
-                        }, true);
+                            ursula: game.ursulaCollector.getLastCollector(),
+                        }, true, continueOnly);
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
                         enemies.forEach((enemy) => {

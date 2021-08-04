@@ -893,47 +893,65 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             $('body').on('keydown.uskeydownendscreen', function(event) {
                 var key = event.key.toLowerCase();
                 if (key == ' ') {
-                    globals.currentGame.commonSounds.sceneContinue.play();
+                    globals.currentGame.soundPool.sceneContinue.play();
                     $('body').off('keydown.uskeydownendscreen');
                     graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
                         if(options.done) {
+                            if(options.type == 'victory')
                             globals.currentGame.map.addAdrenalineBlock();
                             options.done();
                         }
                     });
-                } else if(key == 'escape') {
-                    globals.currentGame.commonSounds.sceneContinue.play();
+                } else if(key == 'escape' && !options.onlyContinueAllowed) {
+                    globals.currentGame.soundPool.sceneContinue.play();
                     $('body').off('keydown.uskeydownendscreen');
                     graphicsUtils.graduallyTint(this.escapeToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                        globals.currentGame.reconfigureAtCurrentLevel();
+                        globals.currentGame.reconfigureAtCurrentLevel(options.type);
                     });
                 }
             }.bind(this));
         });
 
-        //space to continue
-        this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 125, y: gameUtils.getCanvasHeight() - 80}});
-        this.plusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(+1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalinePlusStyle, anchor: {x: 0, y: 1}, position: {x: gameUtils.getPlayableWidth() - 115, y: gameUtils.getCanvasHeight() - 84}});
-        scene.add(this.spaceToContinue);
-        scene.add(this.plusOneAdrenaline);
-        this.spaceToContinue.visible = false;
-        this.plusOneAdrenaline.visible = false;
-        Matter.Events.on(scene, 'sceneFadeInDone', () => {
-            this.spaceToContinue.visible = true;
-            this.plusOneAdrenaline.visible = true;
-        });
+        if(options.onlyContinueAllowed) {
+            //space to continue
+            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 20}});
+            scene.add(this.spaceToContinue);
+            this.spaceToContinue.visible = false;
+            Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                this.spaceToContinue.visible = true;
+            });
+        } else {
+            //space to continue
+            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 35}});
+            scene.add(this.spaceToContinue);
+            this.spaceToContinue.visible = false;
 
-        //escape to configure
-        this.escapeToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Esc to reconfigure", {where: 'hudText', style: styles.escapeToContinueStyleVariant, anchor: {x: 1, y: 1}, position: {x: gameUtils.getPlayableWidth() - 125, y: gameUtils.getCanvasHeight() - 30}});
-        this.minusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(-1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalineMinusStyle, anchor: {x: 0, y: 1}, position: {x: gameUtils.getPlayableWidth() - 115, y: gameUtils.getCanvasHeight() - 34}});
-        scene.add(this.escapeToContinue);
-        scene.add(this.minusOneAdrenaline);
-        this.escapeToContinue.visible = false;
-        this.minusOneAdrenaline.visible = false;
-        Matter.Events.on(scene, 'sceneFadeInDone', () => {
-            this.escapeToContinue.visible = true;
-            this.minusOneAdrenaline.visible = true;
-        });
+            if(options.type != 'loss') {
+                this.plusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(+1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalinePlusStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 15}});
+                scene.add(this.plusOneAdrenaline);
+                this.plusOneAdrenaline.visible = false;
+            }
+
+            Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                this.spaceToContinue.visible = true;
+                if(this.plusOneAdrenaline) {
+                    this.plusOneAdrenaline.visible = true;
+                }
+            });
+
+            //escape to configure
+            this.escapeToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Esc to reconfigure", {where: 'hudText', style: styles.escapeToContinueStyleVariant, anchor: {x: 0.5, y: 1}, position: {x: 210, y: gameUtils.getCanvasHeight() - 35}});
+            this.minusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(-1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalineMinusStyle, anchor: {x: 0.5, y: 1}, position: {x: 210, y: gameUtils.getCanvasHeight() - 15}});
+            scene.add(this.escapeToContinue);
+            scene.add(this.minusOneAdrenaline);
+            this.escapeToContinue.visible = false;
+            this.minusOneAdrenaline.visible = false;
+            Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                this.escapeToContinue.visible = true;
+                this.minusOneAdrenaline.visible = true;
+            });
+        }
+
 
         return scene;
     };

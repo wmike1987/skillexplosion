@@ -845,6 +845,8 @@ var UnitSystem = function(properties) {
                      if(this.selectedUnit) {
                          this.selectedUnit.setHealth(5000);
                     }
+
+                    globals.currentGame.manualWin = !globals.currentGame.manualWin;
                 }
             }
 

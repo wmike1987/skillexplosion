@@ -39,7 +39,7 @@ var DialogueScene = {
                     $('body').on('keydown.completeScene', function( event ) {
                         if(keyStates.Control && (keyStates.c || keyStates.C)) {
                             $('body').off('keydown.' + 'completeScene');
-                            globals.currentGame.commonSounds.sceneContinue.play();
+                            globals.currentGame.soundPool.sceneContinue.play();
                             dialogueChain.done(true);
                         }
                     }.bind(this));
@@ -66,8 +66,11 @@ var DialogueScene = {
                 if(key == ' ') {
                     //clear dialogue and start initial level
                     globals.currentGame.unitSystem.unpause();
+                    globals.currentGame.soundPool.sceneContinue.play();
                     $('body').off('keydown.' + 'DScene:' + this.id);
-                    this.escape();
+                    graphicsUtils.graduallyTint(spacetoContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                            this.escape();
+                    }.bind(this));
                 }
             }.bind(this));
         }.bind(this);

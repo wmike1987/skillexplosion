@@ -1040,6 +1040,10 @@ var graphicsUtils = {
     },
 
     pointToSomethingWithArrow: function(something, yOffset, arrowScale) {
+        if(something._destroyed) {
+            return;
+        }
+
         arrowScale = arrowScale || 1.0;
         yOffset = yOffset || 0.0;
         var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudOne', {
