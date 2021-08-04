@@ -887,21 +887,9 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             globals.currentGame.invalidateTimer(tintMedicBorder);
         };
 
-        //Continue button
+        //Continue buttons plus victory/defeat event
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
-            $('body').on('keydown.uskeydownendscreen', function(event) {
-                var key = event.key.toLowerCase();
-                if (key == ' ') {
-                    globals.currentGame.commonSounds.sceneContinue.play();
-                    $('body').off('keydown.uskeydownendscreen');
-                    graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                        if(options.done) {
-                            options.done();
-                        }
-                    });
-                }
-            }.bind(this));
-
+            Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
             $('body').on('keydown.uskeydownendscreen', function(event) {
                 var key = event.key.toLowerCase();
                 if (key == ' ') {

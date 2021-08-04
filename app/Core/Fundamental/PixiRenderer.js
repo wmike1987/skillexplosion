@@ -196,7 +196,11 @@ var renderer = function(engine, options) {
 	 */
 	this.start = function() {
 
-		//init pixi and it's game loop, important to note that this loop happens after ours (ensuring renderWorld is called prior to this frame's rendering).
+		//Init pixi and it's game loop, important to note that this loop happens after ours (ensuring renderWorld is called prior to this frame's rendering).
+		//Also note that we're using the shared ticker, so upon starting our pixi app, we need to kill the shared ticker so that it starts up in the correct order
+		//(otherwise it would have remained at the location that the original ticker started at)
+		PIXI.Ticker._shared.destroy();
+		PIXI.Ticker._shared = null;
 		this.pixiApp = new PIXI.Application({sharedTicker: true, width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
 		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;

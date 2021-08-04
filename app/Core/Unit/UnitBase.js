@@ -915,14 +915,19 @@ var UnitBase = {
             this.showingLifeBars = value;
         };
 
-        var fadeDuration = 400;
+        var fadeDuration = 500;
+        var sortYLifeCounter = 500;
+        var startingFadeColor = 0xfb25ff;
         this.fadeLifeAmount = function(startingAmount, fadeIn, done) {
             var givingLife = fadeIn;
 
             //if fading in, we need a new bar
             if (givingLife) {
                 if (this.renderlings.healthbarfade) {
-                    // this.renderlings.healthbarfade.alpha = 0.0;
+                    this.renderlings.healthbarfade.alpha = 0.0;
+                }
+                if(this.healthFadeBars.length == 0) {
+                    sortYLifeCounter = 500;
                 }
                 var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
                     scale: {
@@ -936,8 +941,8 @@ var UnitBase = {
                     where: 'foreground',
                     rotate: 'none',
                     avoidIsoMgr: true,
-                    tint: 0x8cf91f,
-                    sortYOffset: 500,
+                    tint: startingFadeColor,
+                    sortYOffset: --sortYLifeCounter,
                     visible: this.showingLifeBars
                 });
                 gameUtils.attachSomethingToBody({
@@ -958,13 +963,24 @@ var UnitBase = {
                     mathArrayUtils.removeObjectFromArray(newBar, this.healthFadeBars);
                 }.bind(this);
                 this.healthFadeBars.push(newBar);
-                graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
-                // graphicsUtils.graduallyTint(newBar, 0x8cf91f, this.renderlings.healthbar.tint, 500);
+                gameUtils.deathPact(this, newBar);
+                graphicsUtils.graduallyTint(newBar, startingFadeColor, this._getHealthBarTint(this.currentHealth), fadeDuration, null, null, 0.5, done);
+
+                //also begin tinting existing healthbar
+                if(this.healthBarGainTintTimer) {
+                    this.healthBarGainTintTimer.invalidate();
+                }
+                this.healthBarGainTintTimer = graphicsUtils.graduallyTint(this.renderlings.healthbar, this.renderlings.healthbar.tint, this._getHealthBarTint(this.currentHealth), fadeDuration, null, null, 0.5);
             } else {
                 //empty gaining bars
                 this.healthFadeBars.forEach(function(bar) {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
+
+                //stop any previous gain tinting
+                if(this.healthBarGainTintTimer) {
+                    this.healthBarGainTintTimer.invalidate();
+                }
                 this.healthFadeBars = [];
                 this.renderlings.healthbarfade.alpha = 1.0;
 
@@ -985,12 +1001,18 @@ var UnitBase = {
             }
         };
 
+        var sortYEnergyCounter = 500;
         this.fadeEnergyAmount = function(startingAmount, fadeIn, done) {
             var givingEnergy = fadeIn;
-            //if fading in, we need a new bar
+
+            //if giving energy, make a new bar
             if (givingEnergy) {
+                //reset this if we can
+                if(this.energyFadeBars.length == 0) {
+                    sortYEnergyCounter = 500;
+                }
                 if (this.renderlings.energybarfade) {
-                    // this.renderlings.energybarfade.alpha = 0.0;
+                    this.renderlings.energybarfade.alpha = 0.0;
                 }
                 var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
                     scale: {
@@ -1004,7 +1026,7 @@ var UnitBase = {
                     where: 'foreground',
                     rotate: 'none',
                     avoidIsoMgr: true,
-                    sortYOffset: 500,
+                    sortYOffset: --sortYEnergyCounter, //decrement the new bar's sort offset so that new bars appear behind older bars
                     visible: this.showingEnergyBars
                 });
                 gameUtils.attachSomethingToBody({
@@ -1028,8 +1050,9 @@ var UnitBase = {
                     mathArrayUtils.removeObjectFromArray(newBar, this.energyFadeBars);
                 }.bind(this);
                 this.energyFadeBars.push(newBar);
-                graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
-                graphicsUtils.graduallyTint(newBar, 0x1fffff, 0xb866f9, fadeDuration);
+                gameUtils.deathPact(this, newBar);
+                // graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
+                graphicsUtils.graduallyTint(newBar, 0x1fffff, 0xb866f9, fadeDuration, null, null, 0.5, done);
             } else {
                 //empty gaining bars
                 this.energyFadeBars.forEach(function(bar) {
@@ -1090,9 +1113,14 @@ var UnitBase = {
                     x: backgroundScaleX * barScaleXMultiplier * percentage,
                     y: healthBarScale
                 };
-                this.renderlings.healthbar.tint = graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1 - percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
+                this.renderlings.healthbar.tint = this._getHealthBarTint(amount);
             }
         }.bind(this);
+
+        this._getHealthBarTint = function(amount) {
+            var percentage = amount / this.maxHealth;
+            return graphicsUtils.rgbToHex(percentage >= 0.5 ? ((1 - percentage) * 2 * 255) : 255, percentage <= 0.5 ? (percentage * 2 * 255) : 255, 0);
+        }
 
         this.updateEnergyBar = function(options) {
             options = options || {};
@@ -2063,7 +2091,7 @@ var UnitBase = {
         }
         var removeEvents = options.removeEvents || [{
                 obj: globals.currentGame,
-                eventName: 'VictoryOrDefeat'
+                eventName: 'VictoryDefeatSceneFadeIn'
             },
             {
                 obj: this,

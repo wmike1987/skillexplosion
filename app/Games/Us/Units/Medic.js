@@ -1042,7 +1042,7 @@ export default function Medic(options) {
     var rad = options.radius || 25;
     var unitProperties = $.extend({
         unitType: 'Medic',
-        health: 40,
+        health: 45,
         energy: 60,
         hitboxWidth: 28,
         hitboxHeight: 56,
@@ -1062,7 +1062,7 @@ export default function Medic(options) {
                                     {animation: walkAnimations.downRight, height: 8, width: 25, offset: {x: 8, y: -18}}],
         damageAdditionType: 'heal',
         energyRegenerationRate: 1.5,
-        healthRegenerationRate: 0.25,
+        healthRegenerationRate: 0.5,
         portrait: graphicsUtils.createDisplayObject('MedicPortrait'),
         wireframe: graphicsUtils.createDisplayObject('MedicGroupPortrait'),
         graveSpriteName: 'MedicGrave',

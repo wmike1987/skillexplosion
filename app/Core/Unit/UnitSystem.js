@@ -865,6 +865,7 @@ var UnitSystem = function(properties) {
                  if(keyStates.Control) {
                      if(this.selectedUnit) {
                          this.selectedUnit.giveEnergy(15);
+                         this.selectedUnit.giveHealth(15);
                          // this.box.invalidateNextMouseUp = true;
                      }
                  }

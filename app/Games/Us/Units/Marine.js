@@ -879,7 +879,7 @@ export default function Marine(options) {
         health: 75,
         defense: 1,
         energy: 20,
-        energyRegenerationRate: 0.25,
+        energyRegenerationRate: 0.35,
         healthRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),

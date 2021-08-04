@@ -327,7 +327,7 @@ var levelBase = {
                             });
 
                             game.unitsInPlay.forEach((unit) => {
-                                unit.endLevelPosition = mathArrayUtils.clonePosition(unit.position);
+                                unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                                 gameUtils.moveUnitOffScreen(unit);
                             });
 
@@ -370,6 +370,9 @@ var levelBase = {
                         });
                         game.map.show();
                     } else {
+                        game.unitsInPlay.forEach((unit) => {
+                            unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
+                        });
                         Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
