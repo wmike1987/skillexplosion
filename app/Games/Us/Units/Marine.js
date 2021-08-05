@@ -690,11 +690,12 @@ export default function Marine(options) {
 
     var gsDDuration = 300;
     var gsADuration = 300;
-    var allyArmorDuration = 15000;
+    var allyArmorDuration = 8000;
+    var armorGiven = 2;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
         defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for 4 hp.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally 1 def for 15s.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 8s.'],
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -718,9 +719,9 @@ export default function Marine(options) {
                 if(ally.isDead) return;
                 var id = mathArrayUtils.getId();
                 ally.applyBuff({name: "givingSpiritDefBuff" + id, textureName: 'DefensiveBuff', duration: allyArmorDuration, applyChanges: function() {
-                    ally.addDefenseAddition(1);
+                    ally.addDefenseAddition(armorGiven);
                 }, removeChanges: function() {
-                    ally.removeDefenseAddition(1);
+                    ally.removeDefenseAddition(armorGiven);
                 }});
             });
         },
