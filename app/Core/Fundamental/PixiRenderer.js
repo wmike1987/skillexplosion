@@ -165,6 +165,8 @@ var renderer = function(engine, options) {
 				        sprite.rotation = Math.random();
 				} else if (sprite.behaviorSpecs && sprite.behaviorSpecs.rotate != null) {
 			        sprite.rotation = sprite.behaviorSpecs.rotate;
+				} else if(sprite.behaviorSpecs && sprite.behaviorSpecs.rotateFunction) {
+					sprite.behaviorSpecs.rotateFunction(sprite);
 				} else {
 					sprite.rotation = body.angle + (sprite.initialRotate || 0);
 				}

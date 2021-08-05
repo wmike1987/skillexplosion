@@ -743,6 +743,7 @@ export default function Medic(options) {
                         var projectileOptions = {
                             damage: 0,
                             speed: 1.0,
+                            tracking: false,
                             displayObject: combospiritAnimation,
                             target: livingAlliedUnit,
                             owningUnit: unit,
@@ -821,7 +822,7 @@ export default function Medic(options) {
         title: 'Wicked Ways',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
+        passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 25hp upon death.'],
         textureName: 'WickedWays',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -830,7 +831,9 @@ export default function Medic(options) {
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            attackingUnit.condemn(wwDDuration, medic);
+            if(attackingUnit.condemn) {
+                attackingUnit.condemn(wwDDuration, medic);
+            }
         },
         aggressionAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);

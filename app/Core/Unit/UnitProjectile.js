@@ -1,13 +1,19 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 
 /*
  * options:
  *  damage
  *  speed
- *  trackTarget
+ *  tracking
  *  impactRemoveFunction
  *  impactType {always, collision}
  *  impactFunction
@@ -21,6 +27,7 @@ export default function(options) {
     $.extend(this, {
         autoSend: false,
         impactType: 'always',
+        trackTarget: false,
         collisionFunction: function(otherUnit) {
             return otherUnit != this.owningUnit && otherUnit && otherUnit.isTargetable && otherUnit.team != this.owningUnit.team;
         },
@@ -28,49 +35,72 @@ export default function(options) {
             globals.currentGame.removeBody(this.body);
         },
         impactFunction: function(target) {
-            target.sufferAttack(this.damage, this.owningUnit, {isProjectile: true, projectileData: {startLocation: this.startLocation, location: mathArrayUtils.clonePosition(this.body.position)}});
-            if(this.impactExtension) {
+            target.sufferAttack(this.damage, this.owningUnit, {
+                isProjectile: true,
+                projectileData: {
+                    startLocation: this.startLocation,
+                    location: mathArrayUtils.clonePosition(this.body.position)
+                }
+            });
+            if (this.impactExtension) {
                 this.impactExtension(target);
             }
         }.bind(this)
     }, options);
 
     var startPosition = mathArrayUtils.clonePosition(this.owningUnit.position);
-    if(this.originOffset) {
+    if (this.originOffset) {
         startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset);
     }
     this.startLocation = startPosition;
     this.body = Matter.Bodies.circle(startPosition.x, startPosition.y, 4, {
-                  frictionAir: 0,
-                  mass: options.mass || 5,
-                  isSensor: true
-                });
+        frictionAir: 0,
+        mass: options.mass || 5,
+        isSensor: true
+    });
 
-    var targetPosition = this.destination || mathArrayUtils.clonePosition(this.target.position);
-    var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(targetPosition, startPosition));
+    //setup position wrapper
+    var positionWrapper = {
+        position: this.destination || mathArrayUtils.clonePosition(this.target.position)
+    };
+    if (this.tracking) {
+        positionWrapper.position = this.target.position;
+    }
+
+    var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(positionWrapper.position, startPosition));
     this.send = function() {
-        gameUtils.sendBodyToDestinationAtSpeed(this.body, targetPosition, this.speed);
+        var trackingTimer = gameUtils.sendBodyToDestinationAtSpeed(this.body, positionWrapper, this.speed, true, true, null, this.tracking);
         var impactTick = globals.currentGame.addTickCallback(function() {
-          if(gameUtils.bodyRanOffStage(this.body)) {
-              globals.currentGame.removeBody(this.body);
-          }
+            if (gameUtils.bodyRanOffStage(this.body)) {
+                globals.currentGame.removeBody(this.body);
+            }
 
-          if(this.impactType == 'always' && mathArrayUtils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
-              if(this.impactRemoveFunction) {
-                  this.impactRemoveFunction();
-              }
-              this.impactFunction(this.target);
-          }
+            if (this.impactType == 'always' && mathArrayUtils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
+                if (this.impactRemoveFunction) {
+                    this.impactRemoveFunction();
+                }
+                this.impactFunction(this.target);
+            }
 
-      }.bind(this));
+        }.bind(this));
+
+        //if we're tracking and the unit dies, use the death position
+        if (this.tracking) {
+            Matter.Events.on(this.target, 'death', function(event) {
+                trackingTimer.invalidate();
+            });
+        }
         gameUtils.deathPact(this.body, impactTick);
+        if (trackingTimer) {
+            gameUtils.deathPact(this.body, trackingTimer);
+        }
 
-        if(this.impactType == 'collision') {
+        if (this.impactType == 'collision') {
             Matter.Events.on(this.body, 'onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == this.body ? pair.pair.bodyA : pair.pair.bodyB;
                 var otherUnit = otherBody.unit;
-                if(otherUnit != null) {
-                    if(this.collisionFunction(otherUnit)) {
+                if (otherUnit != null) {
+                    if (this.collisionFunction(otherUnit)) {
                         this.impactRemoveFunction();
                         this.impactFunction(otherUnit);
                     }
@@ -82,14 +112,21 @@ export default function(options) {
     this.body.renderChildren = [{
         id: 'projectile',
         data: this.displayObject,
-        rotate: mathArrayUtils.pointInDirection(startPosition, targetPosition)
+        rotateFunction: function(sprite) {
+            sprite.rotation = mathArrayUtils.pointInDirection(this.body.position, positionWrapper.position);
+        }.bind(this),
     }];
 
     globals.currentGame.addBody(this.body);
-    Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {entity: this.body});
+    Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {
+        entity: this.body
+    });
 
-    if(this.autoSend) {
+    if (this.autoSend) {
         this.send();
     }
 
+    this.cleanUp = function() {
+        globals.currentGame.removeBody(this.body);
+    };
 }

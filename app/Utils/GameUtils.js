@@ -353,18 +353,39 @@ var gameUtils = {
         }
     },
 
-    sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards, arrivedCallback) {
-        //figure out the movement vector
-        var velocityVector = Matter.Vector.sub(destination, body.position);
-        var velocityScale = speed / Matter.Vector.magnitude(velocityVector);
+    sendBodyToDestinationAtSpeed: function(body, destination, speed, surpassDestination, rotateTowards, arrivedCallback, track) {
+        var setVelocityFunction = function() {
+            //see if we have a potentially changing position
+            var position = destination;
+            if(destination.position) {
+                position = destination.position;
+            }
+            var velocityVector = Matter.Vector.sub(position, body.position);
+            var velocityScale = speed / Matter.Vector.magnitude(velocityVector);
 
-        if (surpassDestination) {
-            Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
-        } else {
-            if (Matter.Vector.magnitude(velocityVector) < speed)
-                Matter.Body.setVelocity(body, velocityVector);
-            else
+            if (surpassDestination) {
                 Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+            } else {
+                if (Matter.Vector.magnitude(velocityVector) < speed) {
+                    Matter.Body.setVelocity(body, velocityVector);
+                }
+                else {
+                    Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
+                }
+            }
+        };
+
+        //initially set the velocity
+        setVelocityFunction();
+
+        //if we're tracking a position, set this up
+        var trackingTimer = null;
+        if(track) {
+            trackingTimer = globals.currentGame.addTimer({
+                name: 'trackingTimer:' + mathArrayUtils.getId(),
+                gogogo: true,
+                tickCallback: setVelocityFunction
+            });
         }
 
         if (arrivedCallback) {
@@ -375,11 +396,16 @@ var gameUtils = {
             var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, body.position));
             var removeSelf = globals.currentGame.addTickCallback(function() {
                 if (gameUtils.bodyRanOffStage(body) || mathArrayUtils.distanceBetweenPoints(body.position, originalOrigin) >= originalDistance) {
+                    if(trackingTimer) {
+                        trackingTimer.invalidate();
+                    }
                     arrivedCallback();
                     globals.currentGame.removeTickCallback(removeSelf);
                 }
             });
         }
+
+        return trackingTimer;
     },
 
     bodyRanOffStage: function(body) {

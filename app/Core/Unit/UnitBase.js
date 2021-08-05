@@ -13,6 +13,7 @@ import EmptySlot from '@core/Unit/EmptySlot.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Command from '@core/Unit/Command.js';
 import styles from '@utils/Styles.js';
+import Projectile from '@core/Unit/UnitProjectile.js';
 import CommandQueue from '@core/Unit/CommandQueue.js';
 import {
     globals,
@@ -39,12 +40,16 @@ var condemnSound = gameUtils.getSound('condemn.wav', {
     volume: 0.2,
     rate: 0.9
 });
+var condemnSound2 = gameUtils.getSound('condemn.wav', {
+    volume: 0.05,
+    rate: 1.5
+});
 var buffSound = gameUtils.getSound('buffcreate.wav', {
     volume: 0.015,
     rate: 1.0
 });
 var healSound = gameUtils.getSound('healsound.wav', {
-    volume: 0.006,
+    volume: 0.035,
     rate: 1.3
 });
 var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {
@@ -915,7 +920,7 @@ var UnitBase = {
             this.showingLifeBars = value;
         };
 
-        var fadeDuration = 500;
+        var fadeDuration = 375;
         var sortYLifeCounter = 500;
         var startingFadeColor = 0x0557d1;
         var alternateStartingFadeColor = 0x0557d1;
@@ -1354,7 +1359,7 @@ var UnitBase = {
                     stage: 'foreground',
                     rotate: 'none',
                     avoidIsoMgr: true,
-                    tint: 0xf1fa4c,
+                    tint: 0xff366c,
                     alpha: 0.0,
                     visible: false,
                     sortYOffset: 400
@@ -1665,65 +1670,101 @@ var UnitBase = {
             duration: duration || 2000,
             applyChanges: function() {
                 this.addDefenseAddition(defensePenalty);
+                var condemned = this;
                 handler = gameUtils.matterOnce(this, 'death', function() {
-                    var position1 = condemningUnit.position;
-                    var offset2 = {
-                        x: Math.random() * 40 - 20,
-                        y: Math.random() * 40 - 20
+                    //spawn projectile
+                    var combospiritAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'MedicAnimations2',
+                        animationName: 'combospirit',
+                        speed: 1.0,
+                        loop: true,
+                        transform: [condemned.position.x, condemned.position.y, 1.5, 1.5]
+                    });
+                    combospiritAnimation.tint = 0xdf3453;
+                    combospiritAnimation.play();
+                    var projectileOptions = {
+                        damage: 0,
+                        speed: 8.0,
+                        displayObject: combospiritAnimation,
+                        tracking: true,
+                        target: condemningUnit,
+                        owningUnit: condemned,
+                        impactType: 'collision',
+                        collisionFunction: function(otherUnit) {
+                            return otherUnit == condemningUnit;
+                        },
+                        originOffset: 0,
+
+                        autoSend: true,
+                        impactFunction: function(target) {
+                            var position1 = condemningUnit.position;
+                            var offset2 = {
+                                x: Math.random() * 40 - 20,
+                                y: Math.random() * 40 - 20
+                            };
+                            var offset3 = {
+                                x: Math.random() * 40 - 20,
+                                y: Math.random() * 40 - 20
+                            };
+                            var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
+                                where: 'stageTwo',
+                                position: position1,
+                                scale: {
+                                    x: 0.8,
+                                    y: 0.8
+                                }
+                            });
+                            var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
+                                where: 'stageTwo',
+                                position: position1,
+                                scale: {
+                                    x: 0.8,
+                                    y: 0.8
+                                }
+                            });
+                            var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
+                                where: 'stageTwo',
+                                position: position1,
+                                scale: {
+                                    x: 0.8,
+                                    y: 0.8
+                                }
+                            });
+                            gameUtils.attachSomethingToBody({
+                                something: condemnNote1,
+                                body: condemningUnit.body
+                            });
+                            gameUtils.attachSomethingToBody({
+                                something: condemnNote2,
+                                body: condemningUnit.body,
+                                offset: offset2
+                            });
+                            gameUtils.attachSomethingToBody({
+                                something: condemnNote3,
+                                body: condemningUnit.body,
+                                offset: offset3
+                            });
+                            graphicsUtils.floatSprite(condemnNote1, {
+                                runs: 45
+                            });
+                            graphicsUtils.floatSprite(condemnNote2, {
+                                runs: 50
+                            });
+                            graphicsUtils.floatSprite(condemnNote3, {
+                                runs: 65
+                            });
+                            condemningUnit.giveHealth(25, condemningUnit);
+                            healSound.play();
+                            gameUtils.doSomethingAfterDuration(() => {
+                                condemnSound2.play();
+                            }, 200);
+                        }
                     };
-                    var offset3 = {
-                        x: Math.random() * 40 - 20,
-                        y: Math.random() * 40 - 20
+                    var projectile = new Projectile(projectileOptions);
+                    var dpfunction = function() {
+                        projectile.cleanUp();
                     };
-                    var condemnNote1 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
-                        where: 'stageTwo',
-                        position: position1,
-                        scale: {
-                            x: 0.8,
-                            y: 0.8
-                        }
-                    });
-                    var condemnNote2 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
-                        where: 'stageTwo',
-                        position: position1,
-                        scale: {
-                            x: 0.8,
-                            y: 0.8
-                        }
-                    });
-                    var condemnNote3 = graphicsUtils.addSomethingToRenderer("CondemnBuff", {
-                        where: 'stageTwo',
-                        position: position1,
-                        scale: {
-                            x: 0.8,
-                            y: 0.8
-                        }
-                    });
-                    gameUtils.attachSomethingToBody({
-                        something: condemnNote1,
-                        body: condemningUnit.body
-                    });
-                    gameUtils.attachSomethingToBody({
-                        something: condemnNote2,
-                        body: condemningUnit.body,
-                        offset: offset2
-                    });
-                    gameUtils.attachSomethingToBody({
-                        something: condemnNote3,
-                        body: condemningUnit.body,
-                        offset: offset3
-                    });
-                    graphicsUtils.floatSprite(condemnNote1, {
-                        runs: 45
-                    });
-                    graphicsUtils.floatSprite(condemnNote2, {
-                        runs: 50
-                    });
-                    graphicsUtils.floatSprite(condemnNote3, {
-                        runs: 65
-                    });
-                    condemningUnit.giveHealth(15);
-                    healSound.play();
+                    gameUtils.deathPact(condemningUnit, dpfunction);
                 });
             },
             removeChanges: function() {

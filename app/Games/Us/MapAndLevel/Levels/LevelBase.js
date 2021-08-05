@@ -298,6 +298,7 @@ var levelBase = {
 
             //if enemy units don't exist, and there are no outstanding items to address, start the end level procedure
             if (globals.currentGame.manualWin || (!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0)) {
+                globals.currentGame.manualWin = false;
                 this.endDelayInProgress = true;
                 if (this.customWinBehavior) {
                     removeCurrentConditions();

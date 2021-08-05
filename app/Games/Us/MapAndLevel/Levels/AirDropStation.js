@@ -30,6 +30,14 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {
     volume: 0.03,
     rate: 1
 });
+var itemRevealSound = gameUtils.getSound('itemreveal1.wav', {
+    volume: 0.2,
+    rate: 1
+});
+var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
+    volume: 0.2,
+    rate: 0.75
+});
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
@@ -189,6 +197,7 @@ var airDropStation = function(options) {
                     numberOfChoices: 3,
                     possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']
                 });
+                stimulantRevealSound.play();
                 chain.cleanUp();
             }
         });
@@ -242,6 +251,7 @@ var airDropSpecialStation = function(options) {
                     numberOfChoices: 3,
                     possibleChoices: this.selectionOptions
                 });
+                itemRevealSound.play();
                 chain.cleanUp();
             }.bind(this)
         });
