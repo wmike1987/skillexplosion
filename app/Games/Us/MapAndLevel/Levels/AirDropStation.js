@@ -31,12 +31,12 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {
     rate: 1
 });
 var itemRevealSound = gameUtils.getSound('itemreveal1.wav', {
-    volume: 0.2,
+    volume: 0.08,
     rate: 1
 });
 var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
-    volume: 0.2,
-    rate: 0.75
+    volume: 0.08,
+    rate: 1.0
 });
 
 //Create the air drop base
