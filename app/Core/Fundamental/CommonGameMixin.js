@@ -41,6 +41,7 @@ var common = {
     noClickIndicator: false,
     bypassPregame: false,
     hideScore: false,
+    preGameLoadComplete: false,
     baseScoreText: "Score: ",
     baseWaveText: "Wave: ",
     score: 0,
@@ -468,13 +469,28 @@ var common = {
         //pregame deferred (proceed to startGame when clicked)
         var proceedPastPregame = $.Deferred();
         if (!this.bypassPregame) {
-            $(this.canvasEl).one("mouseup", $.proxy(function(event) {
-                setTimeout(function() {
-                    proceedPastPregame.resolve();
-                    onClick();
-                }, 10); //dissociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
-            }, this));
+            let game = this;
+
+            Matter.Events.on(this, 'preGameLoadComplete', () => {
+                //once we complete the preload, wait a frame to create the mouse listener. Any events queued up during the preload
+                //would immediately execute otherwise, and our goal is to ignore events entered during the preload, so we'll let the queue'd
+                //events fire, then create the listener the next frame
+                gameUtils.executeSomethingNextFrame(() => {
+                    $(this.canvasEl).on('mouseup', $.proxy(function(event) {
+                        $(this).off(event);
+                        gameUtils.executeSomethingNextFrame(() => {
+                            proceedPastPregame.resolve();
+                            onClick();
+                        }); //dissociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
+                    }, this));
+                });
+            });
         }
+
+        //execute the pregame loading next frame so that we immediate display the splash screen
+        gameUtils.executeSomethingNextFrame(() => {
+            this._preGameLoad();
+        }, 2); //a little hacky to wait 2 frames here... but the pixi renderer seems to need an extra frame to execute the first update
 
         //used for other ways to enter a game
         if (this.alternatePregameSetup) {
@@ -484,17 +500,28 @@ var common = {
         proceedPastPregame.done(this.startGame.bind(this));
     },
 
+    _preGameLoad: function() {
+        if (this.unitSystem) {
+            this.unitSystem.initialize();
+        }
+
+        if (this.itemSystem) {
+            this.itemSystem.initialize();
+        }
+
+        if(this.preGameLoadExtension) {
+            this.preGameLoadExtension();
+        }
+
+        console.info('completed pre load');
+        Matter.Events.trigger(this, 'preGameLoadComplete');
+        this.preGameLoadComplete = true;
+    },
+
     /*
      * Init various common game elements
      */
     startGame: function(options) {
-
-        //initialize unitSystem, this creates the selection box, dispatches unit events, etc
-        if (this.unitSystem)
-            this.unitSystem.initialize();
-
-        if (this.itemSystem)
-            this.itemSystem.initialize();
 
         //disable right click during game
         $('body').on("contextmenu.common", function(e) {

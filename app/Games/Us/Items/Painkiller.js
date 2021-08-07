@@ -6,7 +6,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 export default function(options) {
     var item = Object.assign({
         name: "Painkiller",
-        description: "Consume to gain .5 armor.",
+        description: "Consume to gain 0.5 armor.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'BlackSyringe',
         placePredicate: function(position) {

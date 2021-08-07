@@ -209,13 +209,16 @@ Scene.prototype.transitionToScene = function(options) {
     }
 
     Matter.Events.trigger(this, 'sceneFadeOutBegin');
-    Matter.Events.trigger(newScene, 'sceneFadeInBegin');
+    // Matter.Events.trigger(newScene, 'sceneFadeInBegin');
     newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, tickCallback: function(delta) {
+        //fade in (this isn't actually used at the moment)
         fadeIn(delta);
     }.bind(this), totallyDoneCallback: function() {
-        Matter.Events.trigger(this, 'clear');
+        //when the 'fade in' is done (should be instantly), we will clear this scene, and initialize the next scene (the screen will be 'covered' by the render texture)
         this.clear();
         newScene.initializeScene();
+
+        //start the fade out of the render texture
         globals.currentGame.addTimer({name: 'sceneOut' + this.id, timeLimit: transitionLength, killsSelf: true, tickCallback: function(delta) {
             fadeOut(delta);
         }.bind(this), totallyDoneCallback: function() {

@@ -39,12 +39,13 @@ var levelBase = {
             centerPoint: this.mapNode.position,
             mode: options.mode || null,
             transitionLength: options.transitionLength || null,
+            leftToRight: options.leftToRight
         });
         Matter.Events.trigger(globals.currentGame, 'EnterLevel', {
             level: this
         });
 
-        if(options.customEnterLevel) {
+        if (options.customEnterLevel) {
             options.customEnterLevel(this);
         } else {
             this.mode.enter.call(this, scene);
@@ -117,7 +118,7 @@ var levelBase = {
         }
 
         //fulfill enemy sets
-        if(this.enemyDefs) {
+        if (this.enemyDefs) {
             this.enemySets = EnemySetSpecifier.create(this.enemyDefs);
 
             //propagate some attrs if defined on the enemyDef
@@ -250,6 +251,8 @@ var levelBase = {
     },
 
     initializeWinLossCondition: function() {
+        var winResult = 'win';
+        var lossResult = 'loss';
         var game = globals.currentGame;
 
         var removeCurrentConditions = function() {
@@ -257,13 +260,41 @@ var levelBase = {
             game.removeTickCallback(lossCondition);
         };
 
-        var commonWinLossTasks = function(options) {
+        //to-be called upon the win/loss conditions being fulfilled
+        var winAndContinueTasks = function(options) {
+            removeCurrentConditions.call(this);
+            game.shaneCollector.stopCurrentCollector();
+            game.ursulaCollector.stopCurrentCollector();
+            this.spawner.cleanUp();
+
+            //wait second then add space to continue button
+            gameUtils.doSomethingAfterDuration(() => {
+                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getPlayableHeight() - 20}});
+                this.spcaeFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
+                game.currentScene.add(this.spaceToContinue);
+                game.soundPool.positiveSound.play();
+
+                //add space listener
+                $('body').on('keydown.levelkeydown', function(event) {
+                    var key = event.key.toLowerCase();
+                    if (key == ' ') {
+                        $('body').off('keydown.levelkeydown');
+                        game.soundPool.sceneContinue.play();
+                        this.spcaeFlashTimer.invalidate();
+                        graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                            options.onContinue();
+                        });
+                    }
+                }.bind(this));
+            }, 1000);
+        }.bind(this);
+
+        //to-be called upon the win/loss conditions being fulfilled
+        var commonWinLossTasks = function() {
             globals.currentGame.unitSystem.pause();
             gameUtils.setCursorStyle('None');
             removeCurrentConditions.call(this);
             game.unitsInPlay.forEach((unit) => {
-                // unit.canAttack = false;
-                // unit.canMove = false;
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
             });
@@ -273,22 +304,23 @@ var levelBase = {
         }.bind(this);
 
         /*
-         * Win condition
+         * Win condition listener
          */
         this.endDelayInProgress = false;
         var winCondition = game.addTickCallback(function() {
-            var result = 'win';
 
-            //see if our enemy sets have been fulfilled
+            /*
+             * See if our enemy sets have been fulfilled
+             */
             var fulfilled = this.enemySets.every((eset) => {
                 return eset.fulfilled;
             });
 
-            //if they have, see if enemy units still exist
+            //if they have been fulfilled, see if enemy units still exist
             var unitsOfOpposingTeamExist = false;
 
             //manual win flag for debugging
-            if(!globals.currentGame.manualWin) {
+            if (!globals.currentGame.manualWin) {
                 if (!fulfilled) return;
 
                 if (game.unitsByTeam[game.enemyTeam] && game.unitsByTeam[game.enemyTeam].length > 0) {
@@ -296,63 +328,78 @@ var levelBase = {
                 }
             }
 
-            //if enemy units don't exist, and there are no outstanding items to address, start the end level procedure
-            if (globals.currentGame.manualWin || (!this.endDelayInProgress && !unitsOfOpposingTeamExist && game.itemSystem.itemsOnGround.length == 0 && game.itemSystem.getDroppingItems().length == 0)) {
+            //win condition
+            let winConditional = function() {
+                return globals.currentGame.manualWin ||
+                    (!this.endDelayInProgress &&
+                        !unitsOfOpposingTeamExist &&
+                        game.itemSystem.itemsOnGround.length == 0 &&
+                        game.itemSystem.getDroppingItems().length == 0);
+            }.bind(this);
+
+            //if the win condition is met...
+            if (winConditional()) {
                 globals.currentGame.manualWin = false;
                 this.endDelayInProgress = true;
-                if (this.customWinBehavior) {
+
+                if (this.customWinBehavior) { //custom win behavior
                     removeCurrentConditions();
                     this.customWinBehavior();
-                } else if (this.gotoMapOnWin) {
-                    commonWinLossTasks({result: result});
-                    gameUtils.doSomethingAfterDuration(() => {
-                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
-                        Matter.Events.trigger(this, 'endLevelActions');
-                        var sc = game.transitionToBlankScene();
-                        game.map.show();
-                        gameUtils.setCursorStyle('Main');
-                        game.unitsInPlay.forEach((unit) => {
-                            gameUtils.moveUnitOffScreen(unit);
-                        });
-                        game.removeAllLevelLocalEntities();
-                    }, 500);
-                } else {
-                    commonWinLossTasks({result: result});
-                    gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.togglePause();
+                } else if (this.gotoMapOnWin) { //else goto map upon win
+                    winAndContinueTasks({onContinue: function() {
                         gameUtils.doSomethingAfterDuration(() => {
-                            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
-
-                            var sc = game.gotoEndLevelScreen({
-                                shane: game.shaneCollector.getLastCollector(),
-                                ursula: game.ursulaCollector.getLastCollector()
+                            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                                result: winResult
                             });
-                            Matter.Events.trigger(this, 'endLevelActions', {
-                                endLevelScene: sc
-                            });
-
+                            Matter.Events.trigger(this, 'endLevelActions');
+                            var sc = game.transitionToBlankScene();
+                            game.map.show();
+                            gameUtils.setCursorStyle('Main');
                             game.unitsInPlay.forEach((unit) => {
-                                unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                                 gameUtils.moveUnitOffScreen(unit);
                             });
-
                             game.removeAllLevelLocalEntities();
-                            gameUtils.setCursorStyle('Main');
+                        }, 32);
+                    }.bind(this)});
+                } else { //else do the default win behavior
+                    winAndContinueTasks({onContinue: function() {
+                        gameUtils.doSomethingAfterDuration(() => {
                             globals.currentGame.togglePause();
-                        }, 100, {
-                            trueTimer: true
-                        });
-                    }, 500);
+                            gameUtils.doSomethingAfterDuration(() => {
+                                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                                    result: winResult
+                                });
+
+                                var sc = game.gotoEndLevelScreen({
+                                    shane: game.shaneCollector.getLastCollector(),
+                                    ursula: game.ursulaCollector.getLastCollector()
+                                });
+                                Matter.Events.trigger(this, 'endLevelActions', {
+                                    endLevelScene: sc
+                                });
+
+                                game.unitsInPlay.forEach((unit) => {
+                                    unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
+                                    gameUtils.moveUnitOffScreen(unit);
+                                });
+
+                                game.removeAllLevelLocalEntities();
+                                gameUtils.setCursorStyle('Main');
+                                globals.currentGame.togglePause();
+                            }, 32, {
+                                trueTimer: true
+                            });
+                        }, 0);
+                    }.bind(this)});
                 }
             }
         }.bind(this));
 
 
-       /*
-        * Loss condition
-        */
+        /*
+         * Loss condition
+         */
         var lossCondition = game.addTickCallback(function() {
-            var result = 'loss';
             if (!this.endDelayInProgress) {
                 var stillAlive = game.unitsInPlay.some((unit) => {
                     return !unit.isDead;
@@ -360,12 +407,16 @@ var levelBase = {
                 if (stillAlive) return;
                 this.endDelayInProgress = true;
 
-                commonWinLossTasks({result: result});
+                commonWinLossTasks({
+                    result: lossResult
+                });
                 this.resetLevel();
                 game.itemSystem.removeAllItemsOnGround(true);
                 gameUtils.doSomethingAfterDuration(() => {
                     if (this.gotoMapOnWin) {
-                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
+                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                            result: lossResult
+                        });
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
@@ -379,7 +430,9 @@ var levelBase = {
                             unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                         });
                         var continueOnly = game.map.lastNode.type == 'camp' ? true : false;
-                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {result: result});
+                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                            result: lossResult
+                        });
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
                             shane: game.shaneCollector.getLastCollector(),
