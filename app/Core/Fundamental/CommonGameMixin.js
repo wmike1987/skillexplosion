@@ -148,7 +148,88 @@ var common = {
             this.gameState = 'playing';
         });
 
-        //begin tracking previous frame positions and attributes
+        this['incr' + 'ement' + 'Sco' + 're'] = function(value) {
+            this.s.s += value * 77;
+            this.s.t += value * 33;
+            this.s.f += value * 55;
+            if (this.wave) {
+                this.s.w = this.wave.waveValue * 44;
+                if (this.subLevel)
+                    this.s.sl = this.subLevel;
+            }
+            is(value);
+        }.bind(this);
+
+        this.addEventListener('mousemove', function(event) {
+            var rect = this.canvasEl.getBoundingClientRect();
+            this.mousePosition.x = event.clientX - rect.left;
+            this.mousePosition.y = event.clientY - rect.top;
+            this.debugObj.playableCenterOffset = {
+                x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
+                y: this.mousePosition.y - gameUtils.getPlayableCenter().y
+            };
+        }.bind(this), true, false);
+    },
+
+    showLoadingScreen: function() {
+        //load splash screen asset first
+        var loadingScreenAsset = this.loadingScreenAsset;
+        var loader = AssetLoader.load(loadingScreenAsset);
+        var loadingScreenShowingDeferred = $.Deferred();
+        loader.loaderDeferred.done(() => {
+            var titleScene = new Scene();
+            this.currentScene = titleScene;
+
+            var backgroundImage = this.getLoadingScreen();
+            graphicsUtils.makeSpriteSize(backgroundImage, gameUtils.getCanvasWH());
+            titleScene.add(backgroundImage);
+            this.splashScreenText = graphicsUtils.addSomethingToRenderer("TEX+:Loading: ", {
+                where: 'hudText',
+                style: styles.titleOneStyle,
+                x: this.canvas.width / 2,
+                y: this.canvas.height * 3 / 4
+            });
+            titleScene.add(this.splashScreenText);
+            titleScene.initializeScene();
+            loadingScreenShowingDeferred.resolve();
+        });
+
+        return {
+            splashScreenDeferred: loadingScreenShowingDeferred,
+            loaderProgressFunction: function(loader) {
+                this.setSplashScreenText("Loading: " + loader.percentDone + '%');
+            }.bind(this)
+        };
+    },
+
+    setSplashScreenText: function(value) {
+        this.splashScreenText.text = value;
+    },
+
+    loadAssets: function() {
+        return AssetLoader.load(this.totalAssets);
+    },
+
+    postLoadInit: function() {
+
+        //enable unit and item systems
+        if (this.enableUnitSystem) {
+            // Create new unit system, letting it share some common game properties
+            this.unitSystem = new UnitSystem(Object.assign({
+                enablePathingSystem: this.enablePathingSystem
+            }, {
+                renderer: this.renderer,
+                engine: this.engine,
+                unitPanelConstructor: this.unitPanelConstructor
+            }));
+        }
+
+        if (this.enableItemSystem) {
+            // Create new item system
+            this.itemSystem = new ItemSystem();
+        }
+
+        //track previous frame positions and attributes
         this.addTickCallback(function() {
             $.each(this.vertexHistories, function(index, body) {
                 body.previousPosition = {
@@ -158,6 +239,7 @@ var common = {
             });
         }.bind(this), true, 'beforeTick');
 
+        //Vertice history function
         var maxLagToAccountFor = this.lagCompensation;
         this.addTickCallback(function() {
             $.each(this.vertexHistories, function(index, body) {
@@ -195,29 +277,7 @@ var common = {
             }.bind(this));
         }.bind(this), true, 'beforeTick');
 
-        this['incr' + 'ement' + 'Sco' + 're'] = function(value) {
-            this.s.s += value * 77;
-            this.s.t += value * 33;
-            this.s.f += value * 55;
-            if (this.wave) {
-                this.s.w = this.wave.waveValue * 44;
-                if (this.subLevel)
-                    this.s.sl = this.subLevel;
-            }
-            is(value);
-        }.bind(this);
-
-        this.addEventListener('mousemove', function(event) {
-            var rect = this.canvasEl.getBoundingClientRect();
-            this.mousePosition.x = event.clientX - rect.left;
-            this.mousePosition.y = event.clientY - rect.top;
-            this.debugObj.playableCenterOffset = {
-                x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
-                y: this.mousePosition.y - gameUtils.getPlayableCenter().y
-            };
-        }.bind(this), true, false);
-
-        //fps (ctrl + shift + f to toggle)
+        //debugging display objects
         this.lastDeltaText = graphicsUtils.addSomethingToRenderer("TEX+:" + 0 + " ms", 'hud', {
             x: 32,
             y: this.canvas.height - 15,
@@ -254,41 +314,9 @@ var common = {
         });
         pausedGameText.visible = false;
 
-        //frequency body remover, space out removing bodies from the Matter world
-        var myGame = this;
-        this.softRemover = {
-            bodies: [],
-            remove: function(body) {
-                if (body.unit) {
-                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {
-                        unit: body.unit
-                    });
-                }
-                body.softRemove = true;
-                body.collisionFilter = {
-                    category: 0x0000,
-                    mask: 0,
-                    group: -1
-                };
-                this.bodies.push(body);
-            },
-            init: function() {
-                this.myTick = Matter.Events.on(myGame.engine.runner, 'tick', function(event) {
-                    var body = this.bodies.shift();
-                    if (body) {
-                        Matter.World.remove(myGame.world, [body]);
-                    }
-                }.bind(this));
-            },
-            cleanUp: function() {
-                this.bodies = [];
-            }
-        };
-        this.softRemover.init();
-
-        //keydown listener for ctrl shift f and ctrl shift x
+        //debugging key listeners
         $('body').on('keydown', function(event) {
-            if (keyStates['Shift'] && keyStates['Control']) {
+            if (keyStates.Shift && keyStates.Control) {
                 if (event.key == 'f' || event.key == 'F') {
                     this.lastDeltaText.visible = !this.lastDeltaText.visible;
                     this.fpsText.visible = !this.fpsText.visible;
@@ -300,7 +328,7 @@ var common = {
                 }
             }
 
-            if (keyStates['Alt']) {
+            if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
                     if (this.unitSystem.selectedUnit) {
                         this.unitSystem.selectedUnit.giveEnergy(10);
@@ -311,14 +339,12 @@ var common = {
                     } else {
                         gameUtils.executeSomethingNextFrame(() => {
                             this.togglePause();
-                        })
+                        });
                     }
                 }
             }
 
-
-
-            if (keyStates['Control']) {
+            if (keyStates.Control) {
                 if (event.key == 'b' || event.key == 'B') {
                     if (this.transitionSprite) {
                         graphicsUtils.removeSomethingFromRenderer(this.transitionSprite);
@@ -327,19 +353,8 @@ var common = {
                     }
                     console.info(this.debugObj.playableCenterOffset);
                     this.map.addAdrenalineBlock();
-                    // const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
-                    // this.transitionSprite = new PIXI.Sprite(renderTexture);
-                    // var rStage = this.renderer.pixiApp.stage;
-                    // var renderer = this.renderer.pixiApp.renderer;
-                    //
-                    // renderer.render(rStage, renderTexture, false, null, true);
-                    //
-                    // // this.transitionSprite.alpha = 1;
-                    // graphicsUtils.addSomethingToRenderer(this.transitionSprite, "transitionLayer");
-
                 }
             }
-
         }.bind(this));
 
         //setup timing utility
@@ -432,67 +447,42 @@ var common = {
             }
 
         }.bind(this), true);
-    },
 
-    showLoadingScreen: function() {
-        //load splash screen asset first
-        var loadingScreenAsset = this.loadingScreenAsset;
-        var loader = AssetLoader.load(loadingScreenAsset);
-        var loadingScreenShowingDeferred = $.Deferred();
-        loader.loaderDeferred.done(() => {
-            var titleScene = new Scene();
-            this.currentScene = titleScene;
-
-            var backgroundImage = this.getLoadingScreen();
-            graphicsUtils.makeSpriteSize(backgroundImage, gameUtils.getCanvasWH());
-            titleScene.add(backgroundImage);
-            this.splashScreenText = graphicsUtils.addSomethingToRenderer("TEX+:Loading: ", {
-                where: 'hudText',
-                style: styles.titleOneStyle,
-                x: this.canvas.width / 2,
-                y: this.canvas.height * 3 / 4
-            });
-            titleScene.add(this.splashScreenText);
-            titleScene.initializeScene();
-            loadingScreenShowingDeferred.resolve();
-        });
-
-        return {
-            splashScreenDeferred: loadingScreenShowingDeferred,
-            loaderProgressFunction: function(loader) {
-                this.setSplashScreenText("Loading: " + loader.percentDone + '%');
-            }.bind(this)
+        //frequency body remover, space out removing bodies from the Matter world
+        var myGame = this;
+        this.softRemover = {
+            bodies: [],
+            remove: function(body) {
+                if (body.unit) {
+                    Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {
+                        unit: body.unit
+                    });
+                }
+                body.softRemove = true;
+                body.collisionFilter = {
+                    category: 0x0000,
+                    mask: 0,
+                    group: -1
+                };
+                this.bodies.push(body);
+            },
+            init: function() {
+                this.myTick = Matter.Events.on(myGame.engine.runner, 'tick', function(event) {
+                    var body = this.bodies.shift();
+                    if (body) {
+                        Matter.World.remove(myGame.world, [body]);
+                    }
+                }.bind(this));
+            },
+            cleanUp: function() {
+                this.bodies = [];
+            }
         };
-    },
+        this.softRemover.init();
 
-    setSplashScreenText: function(value) {
-        this.splashScreenText.text = value;
-    },
-
-    loadAssets: function() {
-        return AssetLoader.load(this.totalAssets);
-    },
-
-    postLoadInit: function() {
-
-        if (this.enableUnitSystem) {
-            // Create new unit system, letting it share some common game properties
-            this.unitSystem = new UnitSystem(Object.assign({
-                enablePathingSystem: this.enablePathingSystem
-            }, {
-                renderer: this.renderer,
-                engine: this.engine,
-                unitPanelConstructor: this.unitPanelConstructor
-            }));
-        }
-
-        if (this.enableItemSystem) {
-            // Create new item system
-            this.itemSystem = new ItemSystem();
-        }
-
-        if (this.initExtension)
+        if (this.initExtension) {
             this.initExtension();
+        }
     },
 
     /*
@@ -562,7 +552,6 @@ var common = {
             this.preGameLoadExtension();
         }
 
-        console.info('completed pre load');
         Matter.Events.trigger(this, 'preGameLoadComplete');
         this.preGameLoadComplete = true;
     },
@@ -1325,7 +1314,8 @@ var common = {
         if (this.enableUnitSystem) {
             this.totalAssets = this.totalAssets.concat(UnitSystemAssets);
         }
-        CommonGameStarter(Object.assign({}, this));
+        CommonGameStarter(this);
+        this.gameState = 'loading';
     }
 };
 

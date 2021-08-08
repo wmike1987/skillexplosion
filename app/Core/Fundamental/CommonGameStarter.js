@@ -88,13 +88,6 @@ var CommonGameStarter = function(game) {
         let loader = game.loadAssets();
         let loaderDef = loader.loaderDeferred;
 
-        /*
-         * Game requests could be spammed by someone thus throwing all sorts of stuff out of whack
-         * when tackling the asset loading delay. We'll setup just one deferred to execute
-         * when asset loading is done and a flurry of game starts will merely update which game (and options)
-         * were requested
-         */
-
         //update the "loading..." text as assets are loaded
         if (loaderDef.state() == 'pending') {
             var loadingCallback = loader.onLoad.add(() => {

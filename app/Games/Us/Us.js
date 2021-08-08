@@ -1024,4 +1024,6 @@ game.assets = [{
     },
 ];
 
-export default $.extend({}, CommonGameMixin, game);
+export default function() {
+    Object.assign(this, CommonGameMixin, game);
+}

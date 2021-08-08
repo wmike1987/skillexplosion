@@ -207,7 +207,7 @@ var renderer = function(engine, options) {
 		//(otherwise it would have remained at the location that the original ticker started at)
 		PIXI.Ticker._shared.destroy();
 		PIXI.Ticker._shared = null;
-		this.pixiApp = new PIXI.Application({sharedTicker: true, width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
+		this.pixiApp = new PIXI.Application({sharedTicker: true, width: options.width, height: options.height + options.unitPanelHeight, backgroundAlpha : 0});
 		// PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;
 
@@ -292,10 +292,16 @@ var renderer = function(engine, options) {
 	    }
 
 	    newSprite.offset = {x: 0, y: 0};
+
 	    if(child.offset) {
 			newSprite.offset.x = child.offset.x;
 			newSprite.offset.y = child.offset.y;
 	    }
+
+        if(body.position) {
+            newSprite.position.x = body.position.x + newSprite.offset.x;
+            newSprite.position.y = body.position.x + newSprite.offset.y;
+        }
 
 	    if(child.anchor) {
 			newSprite.anchor.x = child.anchor.x;
