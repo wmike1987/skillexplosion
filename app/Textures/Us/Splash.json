@@ -1,0 +1,20 @@
+{"frames": {
+
+"SplashColored.png":
+{
+	"frame": {"x":1,"y":1,"w":1200,"h":700},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":700},
+	"sourceSize": {"w":1200,"h":700}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Splash.png",
+	"format": "RGBA8888",
+	"size": {"w":1202,"h":702},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:2769710cf7416e0873e48109185a208c:58a00d3cc66b4ddc41a0a1e979b36cc3:761e6d57e8ed97731ad98312f62ad760$"
+}
+}

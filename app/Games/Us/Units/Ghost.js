@@ -21,8 +21,8 @@ export default function Ghost(options) {
 
     //The ghost character has all its spine data in one sheet, but we need two instances of it in order to scale it
     //for East (-1 scale) and West direction.
-    var spineAll = new PIXI.spine.Spine(PIXI.Loader.shared.resources['apparitionAll'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['apparitionAll'].spineData);
+    var spineAll = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['apparitionAll'].spineData);
+    var spineEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['apparitionAll'].spineData);
 
     var runSpeed = 1.3;
     var runAnimations = {

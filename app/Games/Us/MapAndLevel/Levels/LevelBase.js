@@ -45,6 +45,8 @@ var levelBase = {
             level: this
         });
 
+        globals.currentGame.removeAllLevelLocalEntities();
+
         if (options.customEnterLevel) {
             options.customEnterLevel(this);
         } else {

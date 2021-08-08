@@ -73,9 +73,18 @@ var game = {
             volume: 0.12,
             rate: 0.9
         });
-        this.flyoverSound = gameUtils.getSound('flyover.wav', {volume: 3.0, rate: 1.0});
-        this.boxSound = gameUtils.getSound('criticalhit.wav', {volume: 0.15, rate: 0.65});
-        this.reconfigureSound = gameUtils.getSound('wooshconfigure.wav', {volume: 0.05, rate: 1.25});
+        this.flyoverSound = gameUtils.getSound('flyover.wav', {
+            volume: 3.0,
+            rate: 1.0
+        });
+        this.boxSound = gameUtils.getSound('criticalhit.wav', {
+            volume: 0.15,
+            rate: 0.65
+        });
+        this.reconfigureSound = gameUtils.getSound('wooshconfigure.wav', {
+            volume: 0.05,
+            rate: 1.25
+        });
 
         this.levelLocalEntities = [];
 
@@ -105,17 +114,23 @@ var game = {
 
         //setup a common sound pool
         this.soundPool = {};
-        this.soundPool.sceneContinue = gameUtils.getSound('gunclick1.wav', {volume: 0.1, rate: 1.0});
+        this.soundPool.sceneContinue = gameUtils.getSound('gunclick1.wav', {
+            volume: 0.1,
+            rate: 1.0
+        });
         this.soundPool.sceneSwipe = gameUtils.getSound('gleamsweep.wav', {
             volume: 0.05,
             rate: 1.5
         });
-        this.soundPool.positiveSound = gameUtils.getSound('positivevictorysound2.wav', {volume: 0.07, rate: 1.0});
+        this.soundPool.positiveSound = gameUtils.getSound('positivevictorysound2.wav', {
+            volume: 0.07,
+            rate: 1.0
+        });
 
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
             //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
-            if(this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
+            if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
                 //manually enable the camp
                 let campNode = this.map.findNodeById('camp');
                 campNode.manualEnable = true;
@@ -128,7 +143,7 @@ var game = {
                     graphicsUtils.removeSomethingFromRenderer(arrow);
                     campNode.manualEnable = false;
                     campNode.activeCampTooltipOverride = null;
-                    if(currentPhaseObj.onEnterBehavior) {
+                    if (currentPhaseObj.onEnterBehavior) {
                         currentPhaseObj.onEnterBehavior();
                     }
                     globals.currentGame.nextPhase();
@@ -214,7 +229,7 @@ var game = {
 
         let skipIntro = false;
 
-        if(!skipIntro) {
+        if (!skipIntro) {
             var shaneIntro = new ShaneIntro({
                 done: () => {
                     this.initShane();
@@ -230,9 +245,7 @@ var game = {
 
     },
 
-    preGameExtension: function() {
-        var titleScene = new Scene();
-        this.currentScene = titleScene;
+    getLoadingScreen: function() {
         var background = graphicsUtils.createDisplayObject('SplashColored', {
             where: 'hudText',
             anchor: {
@@ -240,28 +253,19 @@ var game = {
                 y: 0
             }
         });
-        var initializingText = graphicsUtils.addSomethingToRenderer("TEX+:Initializing...", {
-            where: 'hudText',
-            style: styles.titleOneStyle,
-            x: this.canvas.width / 2,
-            y: this.canvas.height * 3 / 4
-        });
-        titleScene.add(initializingText);
-
-        gameUtils.matterOnce(this, 'preGameLoadComplete', () => {
-            var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:Click To Begin", {
-                where: 'hudText',
-                style: styles.titleOneStyle,
-                x: this.canvas.width / 2,
-                y: this.canvas.height * 3 / 4
-            });
-            titleScene.add(startGameText);
-            initializingText.visible = false;
-        });
 
         graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
-        titleScene.add(background);
-        titleScene.initializeScene();
+        this.currentScene.add(background);
+
+        return background;
+    },
+
+    preGameExtension: function() {
+        this.setSplashScreenText('Initializing');
+
+        gameUtils.matterOnce(this, 'preGameLoadComplete', () => {
+            this.setSplashScreenText('Click anywhere to begin');
+        });
 
         return () => {
             this.soundPool.sceneContinue.play();
@@ -278,7 +282,7 @@ var game = {
     nextPhase: function(options) {
         this.currentPhaseObj = this.currentWorld.phases[this.currentPhase++](options);
         this.currentPhaseObj = this.currentPhaseObj || {};
-        if(!this.currentPhaseObj.bypassMapPhaseBehavior) {
+        if (!this.currentPhaseObj.bypassMapPhaseBehavior) {
             this.map.newPhase = true;
         }
         let campNode = this.map.findNodeById('camp');
@@ -301,8 +305,12 @@ var game = {
         var camp = this.currentWorld.getLevelById('camp');
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
-        this.nextPhase({skippedTutorial: true});
-        this.map.setHeadTokenPosition({node: this.map.findNodeById('camp')});
+        this.nextPhase({
+            skippedTutorial: true
+        });
+        this.map.setHeadTokenPosition({
+            node: this.map.findNodeById('camp')
+        });
     },
 
     transitionToBlankScene: function() {
@@ -329,7 +337,7 @@ var game = {
             });
         }.bind(this);
 
-        if(this.map.currentNode.type == 'camp') {
+        if (this.map.currentNode.type == 'camp') {
             spaceToContinueBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
         }
 
@@ -347,7 +355,12 @@ var game = {
             this.soundPool.sceneSwipe.play();
         });
         var vScene = vScreen.createScene({});
-        this.currentScene.transitionToScene({newScene: vScene, transitionLength: 750, mode: 'SIDE', leftToRight: true});
+        this.currentScene.transitionToScene({
+            newScene: vScene,
+            transitionLength: 750,
+            mode: 'SIDE',
+            leftToRight: true
+        });
 
         return vScene;
     },
@@ -355,108 +368,116 @@ var game = {
     reconfigureAtCurrentLevel: function(result) {
         var game = this;
         game.reconfigureSound.play();
-        this.currentLevel.enterLevel({customEnterLevel: function(level) {
-            level.campLikeActive = true;
+        this.currentLevel.enterLevel({
+            customEnterLevel: function(level) {
+                level.campLikeActive = true;
 
-            var shanePosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
-                x: -40,
-                y: 40
-            }) : game.shane.endLevelPosition;
+                var shanePosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                    x: -40,
+                    y: 40
+                }) : game.shane.endLevelPosition;
 
-            var ursulaPosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
-                x: 40,
-                y: 40
-            }) : game.ursula.endLevelPosition;
-            game.setUnit(game.shane, {
-                position: shanePosition,
-                moveToCenter: false,
-            });
-            game.setUnit(game.ursula, {
-                position: ursulaPosition,
-                moveToCenter: false,
-            });
-            game.map.removeAdrenalineBlock();
-            if(!level.mapTableSprite) {
-                level.createMapTable(game.currentScene);
-            }
-            game.unitSystem.unpause();
-            level.mapTableActive = true;
-
-            //Init common doodads
-            var flag = gameUtils.getAnimation({
-                spritesheetName: 'UtilityAnimations2',
-                animationName: 'wflag',
-                speed: 0.2,
-                loop: true,
-                transform: [0, 0, 1, 1]
-            });
-
-            //add flag
-            let x = Math.random() * 150;
-            let y = Math.random() * 150;
-            flag.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: x, y: y});
-            flag.play();
-            var flagD = new Doodad({
-                collides: true,
-                autoAdd: false,
-                radius: 20,
-                texture: [flag],
-                stage: 'stage',
-                scale: {
-                    x: 1,
-                    y: 1
-                },
-                shadowOffset: {
-                    x: 0,
-                    y: 30
-                },
-                shadowScale: {
-                    x: 0.7,
-                    y: 0.7
-                },
-                offset: {
-                    x: 0,
-                    y: 0
-                },
-                sortYOffset: 35,
-                position: flag.position
-            });
-            game.currentScene.add(flagD);
-
-            //add gunrack
-            var gunrack = new Doodad({
-                drawWire: false,
-                collides: true,
-                autoAdd: false,
-                radius: 10,
-                texture: 'gunrack',
-                stage: 'stage',
-                scale: {
-                    x: 1.0,
-                    y: 1.0
-                },
-                offset: {
-                    x: 0,
-                    y: 0
-                },
-                sortYOffset: 0,
-                shadowIcon: 'IsoShadowBlurred',
-                shadowScale: {
-                    x: 1,
-                    y: 1
-                },
-                shadowOffset: {
-                    x: -2,
-                    y: 15
-                },
-                position: {
-                    x: gameUtils.getCanvasCenter().x - 180 + x / 2.0,
-                    y: gameUtils.getPlayableCenter().y - 30 + y / 2.0
+                var ursulaPosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                    x: 40,
+                    y: 40
+                }) : game.ursula.endLevelPosition;
+                game.setUnit(game.shane, {
+                    position: shanePosition,
+                    moveToCenter: false,
+                });
+                game.setUnit(game.ursula, {
+                    position: ursulaPosition,
+                    moveToCenter: false,
+                });
+                game.map.removeAdrenalineBlock();
+                if (!level.mapTableSprite) {
+                    level.createMapTable(game.currentScene);
                 }
-            });
-            game.currentScene.add(gunrack);
+                game.unitSystem.unpause();
+                level.mapTableActive = true;
 
-        }, mode: 'SIDE', transitionLength: 1000, leftToRight: false});
+                //Init common doodads
+                var flag = gameUtils.getAnimation({
+                    spritesheetName: 'UtilityAnimations2',
+                    animationName: 'wflag',
+                    speed: 0.2,
+                    loop: true,
+                    transform: [0, 0, 1, 1]
+                });
+
+                //add flag
+                let x = Math.random() * 150;
+                let y = Math.random() * 150;
+                flag.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
+                    x: x,
+                    y: y
+                });
+                flag.play();
+                var flagD = new Doodad({
+                    collides: true,
+                    autoAdd: false,
+                    radius: 20,
+                    texture: [flag],
+                    stage: 'stage',
+                    scale: {
+                        x: 1,
+                        y: 1
+                    },
+                    shadowOffset: {
+                        x: 0,
+                        y: 30
+                    },
+                    shadowScale: {
+                        x: 0.7,
+                        y: 0.7
+                    },
+                    offset: {
+                        x: 0,
+                        y: 0
+                    },
+                    sortYOffset: 35,
+                    position: flag.position
+                });
+                game.currentScene.add(flagD);
+
+                //add gunrack
+                var gunrack = new Doodad({
+                    drawWire: false,
+                    collides: true,
+                    autoAdd: false,
+                    radius: 10,
+                    texture: 'gunrack',
+                    stage: 'stage',
+                    scale: {
+                        x: 1.0,
+                        y: 1.0
+                    },
+                    offset: {
+                        x: 0,
+                        y: 0
+                    },
+                    sortYOffset: 0,
+                    shadowIcon: 'IsoShadowBlurred',
+                    shadowScale: {
+                        x: 1,
+                        y: 1
+                    },
+                    shadowOffset: {
+                        x: -2,
+                        y: 15
+                    },
+                    position: {
+                        x: gameUtils.getCanvasCenter().x - 180 + x / 2.0,
+                        y: gameUtils.getPlayableCenter().y - 30 + y / 2.0
+                    }
+                });
+                game.currentScene.add(gunrack);
+
+            },
+            mode: 'SIDE',
+            transitionLength: 1000,
+            leftToRight: false
+        });
     },
 
     closeMap: function() {
@@ -489,8 +510,7 @@ var game = {
         this.levelLocalEntities.forEach((entity) => {
             if (entity.type == 'body') {
                 this.removeBody(entity);
-            }
-            else {
+            } else {
                 graphicsUtils.removeSomethingFromRenderer(entity);
             }
         });
@@ -647,25 +667,34 @@ var game = {
     },
 
     flyover: function(done) {
-        var shadow = Matter.Bodies.circle(-2800, gameUtils.getCanvasHeight()/2.0, 1, {
-          restitution: 0.95,
-          frictionAir: 0,
-          mass: 1,
-          isSensor: true
+        var shadow = Matter.Bodies.circle(-2800, gameUtils.getCanvasHeight() / 2.0, 1, {
+            restitution: 0.95,
+            frictionAir: 0,
+            mass: 1,
+            isSensor: true
         });
 
         shadow.renderChildren = [{
-          id: 'planeShadow',
-          data: 'AirplaneShadow',
-          scale: {x: 7, y: 7},
-          anchor: {x: 0, y: 0.5},
-          stage: "foreground",
+            id: 'planeShadow',
+            data: 'AirplaneShadow',
+            scale: {
+                x: 7,
+                y: 7
+            },
+            anchor: {
+                x: 0,
+                y: 0.5
+            },
+            stage: "foreground",
         }];
         this.addBody(shadow);
         this.flyoverSound.play();
-        gameUtils.sendBodyToDestinationAtSpeed(shadow, {x: gameUtils.getCanvasWidth() + 100, y: shadow.position.y}, 35, false, false, () => {
+        gameUtils.sendBodyToDestinationAtSpeed(shadow, {
+            x: gameUtils.getCanvasWidth() + 100,
+            y: shadow.position.y
+        }, 35, false, false, () => {
             this.removeBody(shadow);
-            if(done) {
+            if (done) {
                 done();
             }
         });
@@ -702,7 +731,7 @@ var game = {
             spritesheetName: 'UtilityAnimations3',
             animationName: 'smokeimpact',
             speed: 0.8,
-            transform: [location.x, location.y-50, 2.5, 2]
+            transform: [location.x, location.y - 50, 2.5, 2]
         });
         smokeAnimation3.tint = 0x251f1e;
         smokeAnimation3.alpha = 0.5;
@@ -712,21 +741,37 @@ var game = {
 
         var items = mathArrayUtils.convertToArray(item);
         var randomDropLocation = false;
-        if(items.length > 1) {
+        if (items.length > 1) {
             randomDropLocation = true;
         }
-        var box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, special: special, forcedItemDropOffset: !randomDropLocation});
+        var box = UnitMenu.createUnit('DestructibleBox', {
+            team: this.neutralTeam,
+            special: special,
+            forcedItemDropOffset: !randomDropLocation
+        });
 
         items.forEach((item) => {
-            if(item.className) {
-                ItemUtils.giveUnitItem({gamePrefix: "Us", className: item.className, unit: box, immortal: true});
+            if (item.className) {
+                ItemUtils.giveUnitItem({
+                    gamePrefix: "Us",
+                    className: item.className,
+                    unit: box,
+                    immortal: true
+                });
             } else {
-                ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: item, unit: box, immortal: true});
+                ItemUtils.giveUnitItem({
+                    gamePrefix: "Us",
+                    itemName: item,
+                    unit: box,
+                    immortal: true
+                });
             }
         });
         globals.currentGame.addUnit(box);
         this.boxSound.play();
-        box.position = mathArrayUtils.clonePosition(location, {y: -5});
+        box.position = mathArrayUtils.clonePosition(location, {
+            y: -5
+        });
     },
 
     resetGameExtension: function() {
@@ -740,7 +785,7 @@ var game = {
             this.currentScene.clear();
         }
 
-        if(this.heartbeat) {
+        if (this.heartbeat) {
             this.heartbeat.unload();
             this.flyoverSound.unload();
             this.boxSound.unload();
@@ -751,6 +796,11 @@ var game = {
         }
     }
 };
+
+game.loadingScreenAsset = {
+        name: "Splash",
+        target: "Textures/Us/Splash.json"
+    };
 
 game.assets = [{
         name: "BaseUnitAnimations1",

@@ -49,13 +49,13 @@ $(document).ready(async function() {
     //anoint button
     $('.game').each((i, gameElement) => {
         let gameName = $(gameElement).attr('name');
-        // $(gameElement).text(gameName);
         $(gameElement).click(() => {
+            //Clear old game
             if(globals.currentGame) {
                 globals.currentGame.nuke({noMercy: true});
             }
             import(/* webpackChunkName: "[request]" */ /* webpackInclude: /(Us)+.js$/ */'@games/' + gameName + '.js').then((module) => {
-
+                //Load new game
                 module.default.loadGame();
             });
         });

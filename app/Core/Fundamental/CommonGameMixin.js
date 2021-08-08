@@ -13,6 +13,7 @@ import {
     UnitSystem,
     UnitSystemAssets
 } from '@core/Unit/UnitSystem.js';
+import Scene from '@core/Scene.js';
 import ItemSystem from '@core/Unit/ItemSystem.js';
 import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js';
 import {
@@ -20,6 +21,7 @@ import {
     keyStates,
     mousePosition
 } from '@core/Fundamental/GlobalState.js';
+import AssetLoader from '@core/Fundamental/AssetLoader.js';
 
 /*
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -62,16 +64,23 @@ var common = {
     /*
      * Game lifecycle
      *
-     * init:      instance variables, setup listeners which will persist throughout the life of the canvas. Calls initExtension() which
-     *            can be implemented by each specific game. Called once per lifetime of entire game by CommonGameStarter.
-     * preGame:   game state prior to playing the game, typically a 'click to proceed' screen. Calls preGameExtension().
-     * startGame: create game objects and game listeners (those that will be cleaned up after victory is satisfied)
-     *            calls play() which is meant to be implemented by each individual game in which game-specific obj are created
-     * endGame:   actions to take once victory is satisfied. Go to score screen, then reset game (call's start). Calls endGameExtension().
-     * resetGame: called after endGame is completed. Jumps to preGame. Calls resetGameExtension().
+     * Load Game:
+     * loadGame: called upon clicking the game link
+     * commonGameInitialization: setup common attributes of the game
+     *
+     * Load Assets:
+     * showLoadingScreen: a pre-init step which will show a splash screen which is meant to hide the loading of assets
+     * loadAssets: load the games assets
+     *
+     * Initialize Game:
+     * postLoadInit: initialize more complex game components (unit system etc)
+     * preGame:      game state prior to playing the game, typically a 'click to proceed' screen. Calls preGameExtension().
+     * startGame:    create game objects and game listeners (those that will be cleaned up after victory is satisfied)
+     *               calls play() which is meant to be implemented by each individual game in which game-specific obj are created
+     * endGame:      actions to take once victory is satisfied. Go to score screen, then reset game (call's start). Calls endGameExtension().
+     * resetGame:    called after endGame is completed. Jumps to preGame. Calls resetGameExtension().
      */
-    init: function(options) {
-
+    commonGameInitialization: function(options) {
         /*
          * Blow up options into properties
          */
@@ -80,18 +89,18 @@ var common = {
         /*
          * Create some other variables
          */
-        this.tickCallbacks = [],
-            this.vertexHistories = [],
-            this.invincibleTickCallbacks = [],
-            this.eventListeners = [],
-            this.invincibleListeners = [],
-            this.timers = {}, /* {name: string, timeLimit: double, callback: function} */
-            this.mousePosition = mousePosition,
-            this.debugObj = {},
-            this.canvas = {
-                width: gameUtils.getPlayableWidth(),
-                height: gameUtils.getPlayableHeight()
-            };
+        this.tickCallbacks = [];
+        this.vertexHistories = [];
+        this.invincibleTickCallbacks = [];
+        this.eventListeners = [];
+        this.invincibleListeners = [];
+        this.timers = {}; /* {name: string, timeLimit: double, callback: function} */
+        this.mousePosition = mousePosition;
+        this.debugObj = {};
+        this.canvas = {
+            width: gameUtils.getPlayableWidth(),
+            height: gameUtils.getPlayableHeight()
+        };
         this.canvasRect = this.canvasEl.getBoundingClientRect();
         this.justLostALife = 0;
         this.endGameSound = gameUtils.getSound('bells.wav', {
@@ -127,24 +136,6 @@ var common = {
             if (index > -1)
                 this.priorityMouseDownEvents.splice(index, 1);
         };
-
-        /*
-         * Incorporate UnitSystem if specified
-         */
-        if (this.enableUnitSystem) {
-            // Create new unit system, letting it share some common game properties
-            this.unitSystem = new UnitSystem(Object.assign({
-                enablePathingSystem: this.enablePathingSystem
-            }, options));
-        }
-
-        /*
-         * Incorporate ItemSystem if specified
-         */
-        if (this.enableItemSystem) {
-            // Create new item system
-            this.itemSystem = new ItemSystem();
-        }
 
         /*
          * register game loop pause behavior
@@ -441,6 +432,64 @@ var common = {
             }
 
         }.bind(this), true);
+    },
+
+    showLoadingScreen: function() {
+        //load splash screen asset first
+        var loadingScreenAsset = this.loadingScreenAsset;
+        var loader = AssetLoader.load(loadingScreenAsset);
+        var loadingScreenShowingDeferred = $.Deferred();
+        loader.loaderDeferred.done(() => {
+            var titleScene = new Scene();
+            this.currentScene = titleScene;
+
+            var backgroundImage = this.getLoadingScreen();
+            graphicsUtils.makeSpriteSize(backgroundImage, gameUtils.getCanvasWH());
+            titleScene.add(backgroundImage);
+            this.splashScreenText = graphicsUtils.addSomethingToRenderer("TEX+:Loading: ", {
+                where: 'hudText',
+                style: styles.titleOneStyle,
+                x: this.canvas.width / 2,
+                y: this.canvas.height * 3 / 4
+            });
+            titleScene.add(this.splashScreenText);
+            titleScene.initializeScene();
+            loadingScreenShowingDeferred.resolve();
+        });
+
+        return {
+            splashScreenDeferred: loadingScreenShowingDeferred,
+            loaderProgressFunction: function(loader) {
+                this.setSplashScreenText("Loading: " + loader.percentDone + '%');
+            }.bind(this)
+        };
+    },
+
+    setSplashScreenText: function(value) {
+        this.splashScreenText.text = value;
+    },
+
+    loadAssets: function() {
+        return AssetLoader.load(this.totalAssets);
+    },
+
+    postLoadInit: function() {
+
+        if (this.enableUnitSystem) {
+            // Create new unit system, letting it share some common game properties
+            this.unitSystem = new UnitSystem(Object.assign({
+                enablePathingSystem: this.enablePathingSystem
+            }, {
+                renderer: this.renderer,
+                engine: this.engine,
+                unitPanelConstructor: this.unitPanelConstructor
+            }));
+        }
+
+        if (this.enableItemSystem) {
+            // Create new item system
+            this.itemSystem = new ItemSystem();
+        }
 
         if (this.initExtension)
             this.initExtension();
@@ -490,7 +539,7 @@ var common = {
         //execute the pregame loading next frame so that we immediate display the splash screen
         gameUtils.executeSomethingNextFrame(() => {
             this._preGameLoad();
-        }, 2); //a little hacky to wait 2 frames here... but the pixi renderer seems to need an extra frame to execute the first update
+        });
 
         //used for other ways to enter a game
         if (this.alternatePregameSetup) {
@@ -509,7 +558,7 @@ var common = {
             this.itemSystem.initialize();
         }
 
-        if(this.preGameLoadExtension) {
+        if (this.preGameLoadExtension) {
             this.preGameLoadExtension();
         }
 

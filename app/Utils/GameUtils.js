@@ -15,6 +15,7 @@ import gleamShader from '@shaders/GleamShader.js';
 var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 var begin = ["BEGIN"];
 
+
 var gameUtils = {
 
     /*
@@ -56,7 +57,7 @@ var gameUtils = {
             }
             anim = new PIXI.AnimatedSprite(frames);
         } else {
-            anim = new PIXI.AnimatedSprite(PIXI.Loader.shared.resources[options.spritesheetName].spritesheet.animations[options.animationName]);
+            anim = new PIXI.AnimatedSprite(globals.currentGame.renderer.texturePool[options.spritesheetName].spritesheet.animations[options.animationName]);
         }
 
         if (options.reverse) {

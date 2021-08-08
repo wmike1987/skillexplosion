@@ -20,14 +20,14 @@ export default function Marine(options) {
     var walkSpeedBonus = 0.25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineN.spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineS.spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineW.spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineW.spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineSW.spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineSW.spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineNW.spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.marineNW.spineData);
+    var spineNorth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineN.spineData);
+    var spineSouth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineS.spineData);
+    var spineWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineW.spineData);
+    var spineEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineW.spineData);
+    var spineSouthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineSW.spineData);
+    var spineSouthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineSW.spineData);
+    var spineNorthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineNW.spineData);
+    var spineNorthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.marineNW.spineData);
 
     var walkAnimations = {
         up: gameUtils.getSpineAnimation({

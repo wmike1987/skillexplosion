@@ -2,9 +2,13 @@
  * Customer pixi renderer, coupled to matter.js - Author: wmike1987
  */
 import * as PIXI from 'pixi.js';
+import * as PIXI_UTILS from '@pixi/utils';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 import {PIXIHooks, StatsJSAdapter} from 'gstats';
 import Stats from 'stats.js';
 
@@ -204,7 +208,7 @@ var renderer = function(engine, options) {
 		PIXI.Ticker._shared.destroy();
 		PIXI.Ticker._shared = null;
 		this.pixiApp = new PIXI.Application({sharedTicker: true, width: options.width, height: options.height + options.unitPanelHeight, backgroundColor : 0xffffff});
-		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+		// PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;
 
 		//destroy the accessibility plugin which was/is causing a div to appear and affects the browser's scroll bar
@@ -254,6 +258,14 @@ var renderer = function(engine, options) {
 		//update sprites after Matter.Runner tick
 		Matter.Events.on(this.engine.runner, 'renderWorld', function(event) {
 			this.renderWorld(this.engine, event);
+		}.bind(this));
+
+		//keep a pool of our resources
+		this.texturePool = {};
+		Matter.Events.on(globals.currentGame, 'assetsLoaded', function(event) {
+			mathArrayUtils.operateOnObjectByKey(event.resources, function(key, value) {
+				this.texturePool[key] = value;
+			}.bind(this));
 		}.bind(this));
 	};
 
@@ -401,15 +413,15 @@ var renderer = function(engine, options) {
 			}
 
 			//Attempt to load from preloaded texture or spine asset
-		    if(PIXI.Loader.shared.resources[something]) {
-				if(PIXI.Loader.shared.resources[something].texture)
-		        	return new PIXI.Sprite(PIXI.Loader.shared.resources[something].texture);
+		    if(this.texturePool[something]) {
+				if(this.texturePool[something].texture)
+		        	return new PIXI.Sprite(this.texturePool[something].texture);
 				else
-					return new PIXI.spine.Spine(PIXI.Loader.shared.resources[something].spineData);
+					return new PIXI.spine.Spine(this.texturePool[something].spineData);
 			}
 		    else { //Check for textures inside a texture atlas
 		        var foundAtlasTexture;
-		        $.each(PIXI.Loader.shared.resources, function(key, value) {
+		        $.each(this.texturePool, function(key, value) {
 					if(this.texAtlCache[something]) {
 						foundAtlasTexture = new PIXI.Sprite(this.texAtlCache[something]);
 						return false;
@@ -519,7 +531,8 @@ var renderer = function(engine, options) {
 			this.pixiApp.destroy(true, true);
 		}
 
-		// this.frequencyDestroyer.cleanUp();
+		//destroy texture cache
+		PIXI_UTILS.destroyTextureCache();
 	};
 
 	this.drawWireFrame = function(body) {

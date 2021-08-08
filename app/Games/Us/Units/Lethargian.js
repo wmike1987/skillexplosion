@@ -19,14 +19,14 @@ export default function Sentinel(options) {
     var runSpeedBonus = .25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienN'].spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienS'].spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienW'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienW'].spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienSW'].spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienSW'].spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienNW'].spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['alienNW'].spineData);
+    var spineNorth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienN'].spineData);
+    var spineSouth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienS'].spineData);
+    var spineWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienW'].spineData);
+    var spineEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienW'].spineData);
+    var spineSouthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienSW'].spineData);
+    var spineSouthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienSW'].spineData);
+    var spineNorthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienNW'].spineData);
+    var spineNorthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['alienNW'].spineData);
 
     var runAnimations = {
         up: gameUtils.getSpineAnimation({

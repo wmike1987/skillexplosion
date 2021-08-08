@@ -18,14 +18,14 @@ export default function Scout(options) {
     var runSpeedBonus = 0.25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanN'].spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanS'].spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanW'].spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanW'].spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanSW'].spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanSW'].spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanNW'].spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources['spearmanNW'].spineData);
+    var spineNorth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanN'].spineData);
+    var spineSouth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanS'].spineData);
+    var spineWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanW'].spineData);
+    var spineEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanW'].spineData);
+    var spineSouthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanSW'].spineData);
+    var spineSouthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanSW'].spineData);
+    var spineNorthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanNW'].spineData);
+    var spineNorthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['spearmanNW'].spineData);
 
     var runSpeed = 1.3;
     var runAnimations = {

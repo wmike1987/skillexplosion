@@ -107,7 +107,7 @@ var game = {
 		var yLoc = -60;
 		var drop = Matter.Bodies.fromVertices(xLoc, yLoc, Matter.Vertices.fromPath('-6, 64   ,  -11, 63   ,  -20, 59   ,  -30, 49   ,  -35, 38   ,  -36, 22   ,  -34, 16   ,  -30, 5   ,  -27, -3   ,  -1, -64   ,  4, -53   ,  17, -26   ,  20, -19   ,  24, -9   ,  31, 7   ,  36, 23   ,  36, 35   ,  30, 49   ,  21, 58   , 8, 64') , { restitution: .95, friction: .3});
 
-		var displacementSprite = new PIXI.Sprite(PIXI.Loader.shared.resources["DropletDisplacement"].textures['DropletDisplacement.png']); //trying something
+		var displacementSprite = new PIXI.Sprite(globals.currentGame.renderer.texturePool["DropletDisplacement"].textures['DropletDisplacement.png']); //trying something
 
     	var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
 		displacementFilter.scale.x = Math.random() * 10 + 20;

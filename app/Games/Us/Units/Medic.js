@@ -21,14 +21,14 @@ export default function Medic(options) {
     var walkSpeedBonus = 0.25;
     var shootSpeed = 1;
 
-    var spineNorth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicN.spineData);
-    var spineSouth = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicS.spineData);
-    var spineWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicW.spineData);
-    var spineEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicW.spineData);
-    var spineSouthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicSW.spineData);
-    var spineSouthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicSW.spineData);
-    var spineNorthWest = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicNW.spineData);
-    var spineNorthEast = new PIXI.spine.Spine(PIXI.Loader.shared.resources.medicNW.spineData);
+    var spineNorth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicN.spineData);
+    var spineSouth = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicS.spineData);
+    var spineWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicW.spineData);
+    var spineEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicW.spineData);
+    var spineSouthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicSW.spineData);
+    var spineSouthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicSW.spineData);
+    var spineNorthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicNW.spineData);
+    var spineNorthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool.medicNW.spineData);
 
     var walkAnimations = {
         up: gameUtils.getSpineAnimation({
