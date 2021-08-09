@@ -298,6 +298,7 @@ export default function Critter(options) {
                 attackAnimations: attackAnimations,
                 cooldown: 650,
                 honeRange: 300,
+                isMelee: true,
                 range: options.radius*2+10,
                 damage: 6,
                 attackExtension: function(target) {

@@ -298,6 +298,7 @@ export default function Scout(options) {
                 cooldown: 1200,
                 honeRange: 300,
                 range: options.radius*2+10,
+                isMelee: true,
                 damage: 6,
                 attackExtension: function(target) {
                     var attackDelay = 100;

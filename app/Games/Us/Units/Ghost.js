@@ -307,6 +307,7 @@ export default function Ghost(options) {
                 cooldown: 1200,
                 honeRange: 300,
                 range: options.radius*2+10,
+                isMelee: true,
                 damage: 6,
                 attackExtension: function(target) {
                     var self = this;

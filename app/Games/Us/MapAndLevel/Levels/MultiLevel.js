@@ -45,7 +45,7 @@ var multiLevel = function(options) {
                 level.customWinBehavior = function() {
                     this.spawner.cleanUp();
                     globals.currentGame.setCurrentLevel(nextLevel, {immediatePool: true});
-                    nextLevel.startLevelSpawn();
+                    nextLevel.startLevelSpawn({keepCurrentCollector: true});
                 };
             }
         });

@@ -54,7 +54,8 @@ var levelBase = {
         }
     },
 
-    startLevelSpawn: function() {
+    startLevelSpawn: function(options) {
+        options = options || {}
         var level = this;
         var game = globals.currentGame;
         //start enemy spawn
@@ -81,8 +82,11 @@ var levelBase = {
                 style: styles.titleOneStyle
             });
             game.heartbeat.play();
-            game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
-            game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+
+            if(!options.keepCurrentCollector) {
+                game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
+                game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+            }
             level.initializeWinLossCondition();
         }, 2400);
     },

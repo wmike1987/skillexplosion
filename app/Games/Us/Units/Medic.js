@@ -251,6 +251,7 @@ export default function Medic(options) {
     var deathSound = gameUtils.getSound('medicdeathsound.wav', {volume: 0.2, rate: 1.05});
     var blockSound = gameUtils.getSound('blocksound.wav', {volume: 0.1, rate: 2.2});
     var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.03, rate: 1.0});
+    var criticalHitSound2 = gameUtils.getSound('criticalhit.wav', {volume: 0.03, rate: 1.75});
 
     var combospiritinit = gameUtils.getSound('combospiritinit.wav', {volume: 0.03, rate: 1.0});
     var fullheal = gameUtils.getSound('fullheal.wav', {volume: 0.05, rate: 1.0});
@@ -783,25 +784,38 @@ export default function Medic(options) {
         }]
     });
 
-    var rsDDuration = 10000;
     var rsADuration = 3000;
     var rsDAmount = 25;
     var raisedStakes  = new Passive({
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Gain ' + rsDAmount + ' grit for 10 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 2000,
+        defenseCooldown: 4000,
         aggressionEventName: 'holdPosition',
-        aggressionCooldown: 5000,
+        aggressionCooldown: 4000,
         defenseAction: function(event) {
-            medic.applyBuff({name: "stakesGritBuff" + mathArrayUtils.getId(), duration: rsDDuration, textureName: 'GritBuff', applyChanges: function() {
-                medic.addGritAddition(rsDAmount);
-            }, removeChanges: function() {
-                medic.removeGritAddition(rsDAmount);
-            }});
+            //damage attacker
+            let grit = medic.getTotalGrit()/2.0;
+            if(grit > 0) {
+                var attacker = event.performingUnit;
+                if(!attacker || attacker.isDead || !attacker.isMelee) return;
+
+                attacker.sufferAttack(grit, medic);
+                var maimBlast = gameUtils.getAnimation({
+                    spritesheetName: 'MedicAnimations1',
+                    animationName: 'maimblast',
+                    speed: 1.0,
+                    transform: [attacker.position.x, attacker.position.y, 0.85, 0.85]
+                });
+                maimBlast.tint = 0xf1ca00;
+                maimBlast.rotation = Math.random() * Math.PI;
+                maimBlast.play();
+                graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
+                criticalHitSound2.play();
+            }
         },
         aggressionAction: function(event) {
             medic.applyBuff({name: "stakesHealBuff" + mathArrayUtils.getId(), duration: rsADuration, textureName: 'RaisedStakesBuff', applyChanges: function() {
@@ -828,7 +842,7 @@ export default function Medic(options) {
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
         aggressionEventName: 'dealDamage',
-        aggressionCooldown: 8000,
+        aggressionCooldown: 6000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             if(attackingUnit.condemn) {
@@ -943,13 +957,13 @@ export default function Medic(options) {
         textureName: 'DeepThought',
         unit: medic,
         defenseEventName: 'sufferProjectile',
-        defenseCooldown: 8000,
+        defenseCooldown: 6000,
         aggressionEventName: 'kill',
         aggressionCooldown: 8000,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             medic.getAbilityByName('Mine').method.call(medic, null);
-            attackingUnit.petrify(3000);
+            attackingUnit.petrify(dtDDuration);
         },
         preStart: function(type) {
             var passive = this;
@@ -987,11 +1001,11 @@ export default function Medic(options) {
         }
     });
 
-    var efADuration = 5000;
-    var efDDuration = 5000;
+    var efADuration = 4000;
+    var efDDuration = 4000;
     var energyGain = 15;
     var elegantForm  = new Passive({
-        title: 'Elegant Form',
+        title: 'Precise Posture',
         aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain ' + energyGain + ' energy.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal 5 damage to attacker.'],
         textureName: 'ElegantForm',

@@ -695,7 +695,7 @@ export default function Marine(options) {
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
         defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for 4 hp.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 8s.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 8 seconds.'],
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -727,12 +727,12 @@ export default function Marine(options) {
         },
     });
 
-    var robDDuration = 2000;
+    var robDDuration = 3000;
     var robADuration = 4000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 2s.'],
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4s.'],
+        defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4 seconds.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'holdPosition',
@@ -762,8 +762,8 @@ export default function Marine(options) {
 
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6s.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 3s.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 3 seconds.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -783,7 +783,7 @@ export default function Marine(options) {
     var cpADuration = 4000;
     var clearPerspective  = new Passive({
         title: 'Clear Perspective',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Double rifle range for 4s.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Double rifle range for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
         textureName: 'ClearPerspective',
         unit: marine,
@@ -810,8 +810,8 @@ export default function Marine(options) {
     var ssADuration = 4000;
     var spiritualState  = new Passive({
         title: 'Spiritual State',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Gain 1 energy for every 1 hp recieved from healing for 4s.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4s.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Gain 1 energy for every 1 hp recieved from healing for 4 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4 seconds.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'sufferProjectile',
