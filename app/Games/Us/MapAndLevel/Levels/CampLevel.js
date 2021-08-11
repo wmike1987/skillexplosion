@@ -15,7 +15,7 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import TileMapper from '@core/TileMapper.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
-import Doodad from '@utils/Doodad.js';
+import {Doodad} from '@utils/Doodad.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
@@ -59,17 +59,29 @@ var campLevel = function() {
             x: 0,
             y: 0
         };
-        treeOptions.width = 150;
-        treeOptions.height = gameUtils.getPlayableHeight() + 50;
-        treeOptions.density = 0.15;
-        treeOptions.possibleTrees = possibleTrees;
-        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
 
-        treeOptions.start = {
-            x: gameUtils.getPlayableWidth() - 200,
-            y: 0
-        };
-        scene.add(SceneryUtils.fillAreaWithTrees(treeOptions));
+        var trees = [];
+        if(!this.treeCache) {
+            this.treeCache = [];
+            treeOptions.width = 150;
+            treeOptions.height = gameUtils.getPlayableHeight() + 50;
+            treeOptions.density = 0.15;
+            treeOptions.possibleTrees = possibleTrees;
+            this.treeCache = this.treeCache.concat(SceneryUtils.fillAreaWithTrees(treeOptions));
+
+            treeOptions.start = {
+                x: gameUtils.getPlayableWidth() - 200,
+                y: 0
+            };
+            this.treeCache = this.treeCache.concat(SceneryUtils.fillAreaWithTrees(treeOptions));
+            trees = this.treeCache;
+        } else {
+            this.treeCache.forEach((tr) => {
+                trees.push(tr.rebuild());
+            });
+        }
+
+        scene.add(trees);
 
         //Init common doodads
         var flag = gameUtils.getAnimation({

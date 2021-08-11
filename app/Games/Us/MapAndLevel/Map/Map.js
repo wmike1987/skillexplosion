@@ -178,8 +178,8 @@ var map = function(specs) {
         var position = genericOptions.position;
         var collision, outOfBounds = false;
         var nodeBuffer = 100;
-        var radius = genericOptions.outer ? 1000 : 200;
-        var minRadius = genericOptions.outer ? 400 : 0;
+        var radius = genericOptions.levelOptions.outer ? 1000 : 200;
+        var minRadius = genericOptions.levelOptions.outer ? 400 : 0;
         var tries = 0;
         if (!position) {
             do {

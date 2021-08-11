@@ -10,7 +10,7 @@ import {
     mathArrayUtils
 } from '@utils/GameUtils.js';
 import TileMapper from '@core/TileMapper.js';
-import Doodad from '@utils/Doodad.js';
+import {Doodad} from '@utils/Doodad.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
 import Scene from '@core/Scene.js';
@@ -83,7 +83,7 @@ var levelBase = {
             });
             game.heartbeat.play();
 
-            if(!options.keepCurrentCollector) {
+            if (!options.keepCurrentCollector) {
                 game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
                 game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
             }
@@ -111,7 +111,8 @@ var levelBase = {
             mapRef: options.mapRef,
             campLikeActive: false,
             entrySound: worldSpecs.entrySound,
-            tileTint: this.tileTint || mathArrayUtils.getRandomElementOfArray(worldSpecs.acceptableTileTints),
+            tileTint: this.tileTint || (this.outer ? worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes)] :
+                worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes)]),
             worldSpecs: Object.assign({}, worldSpecs),
         }, options.levelOptions || {});
 
@@ -155,12 +156,13 @@ var levelBase = {
     },
 
     fillLevelScene: function(scene) {
-        var tileMap = TileMapper.produceTileMap({
+        this.tileMap = TileMapper.produceTileMap({
             possibleTextures: this.worldSpecs.levelTiles,
             tileWidth: this.worldSpecs.tileSize,
             tileTint: this.tileTint,
+            seed: this.tileMap ? this.tileMap.seed : null
         });
-        scene.add(tileMap);
+        scene.add(this.tileMap);
 
         if (this.worldSpecs.decorateTerrain) {
             this.worldSpecs.decorateTerrain.call(this, scene, this.tileTint);
@@ -275,7 +277,18 @@ var levelBase = {
 
             //wait second then add space to continue button
             gameUtils.doSomethingAfterDuration(() => {
-                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getPlayableHeight() - 20}});
+                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                    where: 'hudText',
+                    style: styles.escapeToContinueStyle,
+                    anchor: {
+                        x: 0.5,
+                        y: 1
+                    },
+                    position: {
+                        x: gameUtils.getPlayableWidth() - 210,
+                        y: gameUtils.getPlayableHeight() - 20
+                    }
+                });
                 this.spcaeFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
                 game.currentScene.add(this.spaceToContinue);
                 game.soundPool.positiveSound.play();
@@ -352,51 +365,55 @@ var levelBase = {
                     removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
-                    winAndContinueTasks({onContinue: function() {
-                        gameUtils.doSomethingAfterDuration(() => {
-                            Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
-                                result: winResult
-                            });
-                            Matter.Events.trigger(this, 'endLevelActions');
-                            var sc = game.transitionToBlankScene();
-                            game.map.show();
-                            gameUtils.setCursorStyle('Main');
-                            game.unitsInPlay.forEach((unit) => {
-                                gameUtils.moveUnitOffScreen(unit);
-                            });
-                            game.removeAllLevelLocalEntities();
-                        }, 32);
-                    }.bind(this)});
-                } else { //else do the default win behavior
-                    winAndContinueTasks({onContinue: function() {
-                        gameUtils.doSomethingAfterDuration(() => {
-                            globals.currentGame.togglePause();
+                    winAndContinueTasks({
+                        onContinue: function() {
                             gameUtils.doSomethingAfterDuration(() => {
                                 Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
                                     result: winResult
                                 });
-
-                                var sc = game.gotoEndLevelScreen({
-                                    shane: game.shaneCollector.getLastCollector(),
-                                    ursula: game.ursulaCollector.getLastCollector()
-                                });
-                                Matter.Events.trigger(this, 'endLevelActions', {
-                                    endLevelScene: sc
-                                });
-
+                                Matter.Events.trigger(this, 'endLevelActions');
+                                var sc = game.transitionToBlankScene();
+                                game.map.show();
+                                gameUtils.setCursorStyle('Main');
                                 game.unitsInPlay.forEach((unit) => {
-                                    unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                                     gameUtils.moveUnitOffScreen(unit);
                                 });
-
                                 game.removeAllLevelLocalEntities();
-                                gameUtils.setCursorStyle('Main');
+                            }, 32);
+                        }.bind(this)
+                    });
+                } else { //else do the default win behavior
+                    winAndContinueTasks({
+                        onContinue: function() {
+                            gameUtils.doSomethingAfterDuration(() => {
                                 globals.currentGame.togglePause();
-                            }, 32, {
-                                trueTimer: true
-                            });
-                        }, 0);
-                    }.bind(this)});
+                                gameUtils.doSomethingAfterDuration(() => {
+                                    Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                                        result: winResult
+                                    });
+
+                                    var sc = game.gotoEndLevelScreen({
+                                        shane: game.shaneCollector.getLastCollector(),
+                                        ursula: game.ursulaCollector.getLastCollector()
+                                    });
+                                    Matter.Events.trigger(this, 'endLevelActions', {
+                                        endLevelScene: sc
+                                    });
+
+                                    game.unitsInPlay.forEach((unit) => {
+                                        unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
+                                        gameUtils.moveUnitOffScreen(unit);
+                                    });
+
+                                    game.removeAllLevelLocalEntities();
+                                    gameUtils.setCursorStyle('Main');
+                                    globals.currentGame.togglePause();
+                                }, 32, {
+                                    trueTimer: true
+                                });
+                            }, 0);
+                        }.bind(this)
+                    });
                 }
             }
         }.bind(this));

@@ -19,7 +19,8 @@ import {globals} from '@core/Fundamental/GlobalState.js';
 *       autoAdd: boolean (default true)
 *   }
 */
-var doodad = function(options) {
+var Doodad = function(options) {
+    this.rebuildOptions = Object.assign({}, options);
     options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true}, options);
 
     // create body
@@ -38,9 +39,11 @@ var doodad = function(options) {
 
     Matter.Body.setPosition(this.body, options.position);
     this.position = this.body.position;
+    this.rebuildOptions.position = this.position;
 
-    if(options.drawWire)
+    if(options.drawWire) {
         this.body.drawWire = true;
+    }
 
     //get textures
     var rchildren = [];
@@ -85,8 +88,9 @@ var doodad = function(options) {
     this.body.renderChildren = rchildren;
 
     // make non-colliding body
-    if(!options.collides)
+    if(!options.collides) {
         this.body.collisionFilter.category = 0;
+    }
 
     this.initialize = function() {
         globals.currentGame.addBody(this.body);
@@ -101,6 +105,10 @@ var doodad = function(options) {
     this.cleanUp = function() {
         globals.currentGame.removeBody(this.body);
     };
+
+    this.rebuild = function() {
+        return new Doodad(this.rebuildOptions);
+    };
 };
 
-export default doodad;
+export {Doodad};

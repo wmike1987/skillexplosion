@@ -2,8 +2,9 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import * as $ from 'jquery';
 
 //This module represents a tile map. This is produced by the tile mapper
-var tileMap = function() {
+var tileMap = function(options) {
     this.tiles = [];
+    this.seed = options.seed;
 };
 
 tileMap.prototype.initialize = function(options) {

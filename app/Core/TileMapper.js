@@ -5,6 +5,7 @@ import {
     mathArrayUtils
 } from '@utils/GameUtils.js';
 import TileMap from '@core/TileMap';
+import seedrandom from 'seedrandom';
 
 //This module takes in a collection of sprites + tile options and returns a TileMap
 //We assume isometric tiles, aka height = width/2
@@ -20,6 +21,7 @@ var tileMapper = {};
  * }
  */
 tileMapper.produceTileMap = function(options) {
+    var randomizedSeed = mathArrayUtils.setRandomizerSeed(options.seed || null);
     var textureArray = options.possibleTextures;
     var bounds = options.bounds || gameUtils.getCanvasWH();
     var tileWidth = options.tileWidth;
@@ -39,7 +41,7 @@ tileMapper.produceTileMap = function(options) {
     var noZones = options.noZones || [];
     noZones = mathArrayUtils.convertToArray(noZones);
 
-    var tm = new TileMap();
+    var tm = new TileMap({seed: randomizedSeed});
     var column = 0;
     for (var x = tileStart.x; x <= bounds.x + tileWidth;) {
 

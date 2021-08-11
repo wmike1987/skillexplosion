@@ -20,6 +20,7 @@
     "pixi-spine": "^2.1.11",
     "pixi.js": "^6.0.4",
     "poly-decomp": "^0.3.0",
+    "seedrandom": "^3.0.5",
     "stats.js": "^0.17.0"
   },
   "devDependencies": {

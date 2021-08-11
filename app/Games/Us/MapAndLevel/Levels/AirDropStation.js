@@ -15,7 +15,7 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import TileMapper from '@core/TileMapper.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
-import Doodad from '@utils/Doodad.js';
+import {Doodad} from '@utils/Doodad.js';
 import {
     Dialogue,
     DialogueChain

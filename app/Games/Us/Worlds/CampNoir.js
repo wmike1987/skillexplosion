@@ -19,7 +19,7 @@ import {
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
-import Doodad from '@utils/Doodad.js';
+import {Doodad} from '@utils/Doodad.js';
 import Scene from '@core/Scene.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Map from '@games/Us/MapAndLevel/Map/Map.js';
@@ -34,9 +34,11 @@ import {
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
 
 var tileSize = 225;
-var acceptableTileTints = [0xad850b, 0x7848ee, 0xff9e9e];
-var acceptableOrnamentTints = [0xad850b, 0x7848ee, 0xffab7a];
-var acceptableFlowerTints = [0x9f9f9f, 0x5d46f1, 0xf78d8d];
+var innerIndex = 0;
+var outerIndex = 1;
+var acceptableTileTints = [0xff9e9e, 0x7848ee];
+var acceptableOrnamentTints = [0xffab7a, 0xad850b];
+var acceptableFlowerTints = [0xf78d8d, 0x9f9f9f];
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -603,7 +605,9 @@ var phaseThree = function() {
 
     //outer
     let outerParam = {
-        outer: true
+        levelOptions: {
+            outer: true,
+        }
     };
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
@@ -619,6 +623,8 @@ var campNoir = {
         enemyDefs: enemyDefs,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
+        innerTintIndexes: [0],
+        outerTintIndexes: [1],
         levelTiles: getLevelTiles(),
         possibleTrees: possibleTrees,
         decorateTerrain: function(scene, tint) {
@@ -627,7 +633,7 @@ var campNoir = {
             for (var i = 0; i <= 7; i++) {
                 ornamentTiles.push('FrollGround/DesertFlower' + i);
             }
-            var ornamentMap = TileMapper.produceTileMap({
+            this.ornamentMap = TileMapper.produceTileMap({
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
@@ -635,7 +641,8 @@ var campNoir = {
                 where: 'stage',
                 r: 1,
                 tileTint: ornamentTint,
-                noZones: this.noZones
+                noZones: this.noZones,
+                seed: this.ornamentMap ? this.ornamentMap.seed : null
             });
 
             var flowerTint = acceptableFlowerTints[acceptableTileTints.indexOf(tint)];
@@ -664,7 +671,7 @@ var campNoir = {
                     });
                 }
             }
-            var animatedOrnamentMap = TileMapper.produceTileMap({
+            this.animatedOrnamentMap = TileMapper.produceTileMap({
                 possibleTextures: animationOrnamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
@@ -672,12 +679,12 @@ var campNoir = {
                 where: 'stage',
                 r: 1,
                 tileTint: flowerTint,
-                noZones: this.noZones
+                noZones: this.noZones,
+                seed: this.animatedOrnamentMap ? this.animatedOrnamentMap.seed : null
             });
 
-            scene.add(ornamentMap);
-            scene.add(animatedOrnamentMap);
-            this.flowerTileMap = animatedOrnamentMap;
+            scene.add(this.ornamentMap);
+            scene.add(this.animatedOrnamentMap);
             var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', 0.2);
             scene.add(l1);
         }

@@ -17,7 +17,7 @@ import Medic from '@games/Us/Units/Medic.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
-import Doodad from '@utils/Doodad.js';
+import {Doodad} from '@utils/Doodad.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Scene from '@core/Scene.js';
 import UnitPanel from '@games/Us/UnitPanel.js';

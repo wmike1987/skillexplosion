@@ -11,6 +11,7 @@ import {
     globals
 } from '@core/Fundamental/GlobalState.js';
 import gleamShader from '@shaders/GleamShader.js';
+import seedrandom from 'seedrandom';
 
 var praiseWords = ["GREAT", "EXCELLENT", "NICE", "WELL DONE", "AWESOME"];
 var begin = ["BEGIN"];
@@ -1779,6 +1780,14 @@ var mathArrayUtils = {
 
     isObject: function(varr) {
         return typeof varr === 'object' && varr !== null;
+    },
+
+    setRandomizerSeed: function(seed) {
+        if(!seed) {
+            seed = seedrandom()();
+        }
+        seedrandom(seed, {global: true});
+        return seed;
     },
 
     //1, 4 return an int in (1, 2, 3, 4)
