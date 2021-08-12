@@ -42,13 +42,13 @@ var UrsulaTasks = function(scene) {
     var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", isTask: true, backgroundBox: true });
     var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", isTask: true, backgroundBox: true});
     var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", isTask: true, backgroundBox: true});
-    var a4a = new Dialogue({actor: "Task", text: "Hover over your Secret Step ability to read its description.", isTask: true, backgroundBox: true});
+    var a4a = new Dialogue({actor: "Task", text: "Hover over your Vanish ability to read its description.", isTask: true, backgroundBox: true});
     var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", isTask: true, backgroundBox: true});
     var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", newBreak: true, isTask: true, backgroundBox: true});
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
     var a5c = new Dialogue({actor: "Task", text: "Pick up your item.", isTask: true, backgroundBox: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
-    var a7 = new Dialogue({text: "You can also lay a mine while secret stepping.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
+    var a7 = new Dialogue({text: "You can also lay a mine while vanishing.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
 
     var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a6, a7], {startDelay: 200, done: function() {
         chain.cleanUp();
@@ -114,7 +114,7 @@ var UrsulaTasks = function(scene) {
     };
 
     a4a.onStart = function() {
-        var ssAbility = globals.currentGame.ursula.getAbilityByName('Secret Step');
+        var ssAbility = globals.currentGame.ursula.getAbilityByName('Vanish');
         var arrow = graphicsUtils.pointToSomethingWithArrow(ssAbility.icon, -30, 0.75);
         gameUtils.matterOnce(ssAbility.icon, 'tooltipShown', () => {
             achieve.play();

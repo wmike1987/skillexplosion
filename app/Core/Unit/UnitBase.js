@@ -1581,11 +1581,16 @@ var UnitBase = {
         return completeSet.concat(this.emptySlots);
     },
 
-    petrify: function(duration) {
+    petrify: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let petrifyingUnit = options.petrifyingUnit;
         var unit = this;
+
         if (unit.isDead || !unit.isMoveable) {
             return;
         }
+
         var buffName = 'petrify';
         var shakeTimer = null;
         this.applyBuff({
@@ -1625,6 +1630,7 @@ var UnitBase = {
                 unit.isoManagedAlpha = null;
             }
         });
+        Matter.Events.trigger(petrifyingUnit, 'petrify', {petrifiedUnit: unit, petrifyingUnit: petrifyingUnit});
     },
 
     maim: function(duration) {
@@ -1654,10 +1660,16 @@ var UnitBase = {
         });
     },
 
-    condemn: function(duration, condemningUnit) {
-        if (this.isDead) {
+    condemn: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let condemningUnit = options.condemningUnit;
+
+        var unit = this;
+        if (unit.isDead) {
             return;
         }
+
         var defensePenalty = -1;
         var buffName = 'condemn';
         condemnSound.play();
@@ -1672,6 +1684,10 @@ var UnitBase = {
                 this.addDefenseAddition(defensePenalty);
                 var condemned = this;
                 handler = gameUtils.matterOnce(this, 'death', function() {
+                    if(condemningUnit.isDead) {
+                        return;
+                    }
+
                     //spawn projectile
                     var combospiritAnimation = gameUtils.getAnimation({
                         spritesheetName: 'MedicAnimations2',
@@ -1765,6 +1781,9 @@ var UnitBase = {
                         projectile.cleanUp();
                     };
                     gameUtils.deathPact(condemningUnit, dpfunction);
+                    Matter.Events.on(projectile, 'remove', () => {
+                        gameUtils.undeathPact(condemningUnit, dpfunction);
+                    });
                 });
             },
             removeChanges: function() {
@@ -1772,6 +1791,7 @@ var UnitBase = {
                 handler.removeHandler();
             }.bind(this)
         });
+        Matter.Events.trigger(condemningUnit, 'condemn', {condemnedUnit: unit, condemningUnit: condemningUnit});
     },
 
     becomeHidden: function(duration) {
@@ -2043,6 +2063,9 @@ var UnitBase = {
             var xSpacing = 32;
             var ySpacing = 32;
             unit.reorderBuffs = function() {
+                if(unit.isDead) {
+                    return;
+                }
                 unit.orderedBuffs.forEach((buff, i) => {
                     var attachmentTick = buff.dobj.bodyAttachmentTick;
                     var row = Math.floor(i / 3);

@@ -71,10 +71,17 @@ export default function(options) {
     this.send = function() {
         var trackingTimer = gameUtils.sendBodyToDestinationAtSpeed(this.body, positionWrapper, this.speed, true, true, null, this.tracking);
         var impactTick = globals.currentGame.addTickCallback(function() {
+            //hijack this tick to also update the position wrapper in case the target's position attribute changes
+            if (this.tracking) {
+                positionWrapper.position = this.target.position;
+            }
+
+            //off stage detector
             if (gameUtils.bodyRanOffStage(this.body)) {
                 globals.currentGame.removeBody(this.body);
             }
 
+            //impact detector (if 'always')
             if (this.impactType == 'always' && mathArrayUtils.distanceBetweenPoints(this.body.position, startPosition) >= originalDistance) {
                 if (this.impactRemoveFunction) {
                     this.impactRemoveFunction();
@@ -91,6 +98,9 @@ export default function(options) {
             });
         }
         gameUtils.deathPact(this.body, impactTick);
+        gameUtils.deathPact(this.body, function() {
+            Matter.Events.trigger(this, 'remove');
+        }.bind(this));
         if (trackingTimer) {
             gameUtils.deathPact(this.body, trackingTimer);
         }

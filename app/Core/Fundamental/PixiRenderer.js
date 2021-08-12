@@ -300,7 +300,7 @@ var renderer = function(engine, options) {
 
         if(body.position) {
             newSprite.position.x = body.position.x + newSprite.offset.x;
-            newSprite.position.y = body.position.x + newSprite.offset.y;
+            newSprite.position.y = body.position.y + newSprite.offset.y;
         }
 
 	    if(child.anchor) {

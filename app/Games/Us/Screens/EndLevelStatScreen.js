@@ -42,7 +42,7 @@ var dashesPerformed = "Dashes Performed";
 //Ursula titles
 var ursulaTitle = "Ursula";
 var minesLaid = "Mines Laid";
-var secretStepsPerformed = "Secret Steps";
+var secretStepsPerformed = "Vanish";
 
 var createContainer = function() {
     var container = new PIXI.Container();

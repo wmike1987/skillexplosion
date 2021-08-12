@@ -264,7 +264,7 @@ export default function Medic(options) {
         destination = mathArrayUtils.clonePosition(destination, {y: -this.footOffset || -20});
 
         //get current augment
-        var thisAbility = this.getAbilityByName('Secret Step');
+        var thisAbility = this.getAbilityByName('Vanish');
         var ghostAugment = thisAbility.isAugmentEnabled('ghost');
         var fleetFeetAugment = thisAbility.isAugmentEnabled('fleet feet');
         var softLandingAugment = thisAbility.isAugmentEnabled('soft landing');
@@ -363,7 +363,7 @@ export default function Medic(options) {
             Matter.Events.trigger(medic, 'secretStepCollision', {otherUnit: otherUnit});
             if(ghostAugment) {
                 if(otherUnit && otherUnit != medic) {
-                    otherUnit.petrify(ghostAugment.duration);
+                    otherUnit.petrify({duration: ghostAugment.duration, petrifyingUnit: medic});
                 }
             }
         });
@@ -375,11 +375,11 @@ export default function Medic(options) {
         gameUtils.moveUnitOffScreen(this);
         this.stop();
 
-        this.getAbilityByName("Secret Step").manuallyDisabled = true;
+        this.getAbilityByName("Vanish").manuallyDisabled = true;
 
         var removeSelf = globals.currentGame.addTickCallback(function() {
           if(gameUtils.bodyRanOffStage(shadow) || mathArrayUtils.distanceBetweenPoints(shadow.position, originalOrigin) >= originalDistance) {
-              this.getAbilityByName("Secret Step").manuallyDisabled = false;
+              this.getAbilityByName("Vanish").manuallyDisabled = false;
               var x = shadow.position.x;
               var y = shadow.position.y;
               if(x < 0) x = 5;
@@ -416,13 +416,13 @@ export default function Medic(options) {
     };
 
     var secretStepAbility = new Ability({
-        name: 'Secret Step',
+        name: 'Vanish',
         key: 'd',
         type: 'click',
         icon: graphicsUtils.createDisplayObject('SecretStepIcon'),
         method: secretStep,
         handlesOwnBlink: true,
-        title: 'Secret Step',
+        title: 'Vanish',
         description: 'Safely relocate to anywhere on the map.',
         hotkey: 'D',
         energyCost: 10,
@@ -436,10 +436,10 @@ export default function Medic(options) {
             title: 'Fleet Feet',
             description: 'Increase stepping speed and reduce energy cost by 2.',
             equip: function(unit) {
-                unit.getAbilityByName('Secret Step').energyCost -= 2;
+                unit.getAbilityByName('Vanish').energyCost -= 2;
             },
             unequip: function(unit) {
-                unit.getAbilityByName('Secret Step').energyCost += 2;
+                unit.getAbilityByName('Vanish').energyCost += 2;
             }
         },{
             name: 'ghost',
@@ -846,7 +846,7 @@ export default function Medic(options) {
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             if(attackingUnit.condemn) {
-                attackingUnit.condemn(wwDDuration, medic);
+                attackingUnit.condemn({duration: wwDDuration, condemningUnit: medic});
             }
         },
         aggressionAction: function(event) {
@@ -901,7 +901,7 @@ export default function Medic(options) {
     var ffADuration = 3000;
     var familiarFace  = new Passive({
         title: 'Familiar Face',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free secret step (up to two).'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
         defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
         textureName: 'FamiliarFace',
         unit: medic,
@@ -931,14 +931,14 @@ export default function Medic(options) {
                 }
                 medic.freeSecretStepBuffs.push('freeSecretStep' + medic.freeSteps);
 
-                var ss = medic.getAbilityByName('Secret Step');
+                var ss = medic.getAbilityByName('Vanish');
                 ss.manuallyEnabled = true;
                 ss.byPassEnergyCost = true;
             }, removeChanges: function() {
                 mathArrayUtils.removeObjectFromArray('freeSecretStep' + medic.freeSteps, medic.freeSecretStepBuffs);
                 medic.freeSteps -= 1;
                 if(medic.freeSteps == 0) {
-                    var ss = medic.getAbilityByName('Secret Step');
+                    var ss = medic.getAbilityByName('Vanish');
                     ss.manuallyEnabled = false;
                     ss.byPassEnergyCost = false;
                 }
@@ -963,7 +963,7 @@ export default function Medic(options) {
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             medic.getAbilityByName('Mine').method.call(medic, null);
-            attackingUnit.petrify(dtDDuration);
+            attackingUnit.petrify(dtDDuration, {duration: dtDDuration, petrifyingUnit: medic});
         },
         preStart: function(type) {
             var passive = this;
