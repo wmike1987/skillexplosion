@@ -345,6 +345,21 @@ var common = {
                 }
             }
 
+            if (keyStates.Alt) {
+                if (event.key == 'w' || event.key == 'W') {
+                    var spr = graphicsUtils.addSomethingToRenderer('singletire', {where: 'stage'});
+                    this.addTickCallback(() => {
+                        spr.position = this.mousePosition;
+                    });
+                }
+            }
+
+            if (keyStates.Alt) {
+                if (event.key == 'm' || event.key == 'M') {
+                    console.info(this.mousePosition);
+                }
+            }
+
             if (keyStates.Control) {
                 if (event.key == 'b' || event.key == 'B') {
                     if (this.transitionSprite) {

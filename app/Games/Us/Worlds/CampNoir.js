@@ -147,7 +147,7 @@ var camp = {
                 y: 10
             },
             position: {
-                x: gameUtils.getCanvasCenter().x + 150,
+                x: gameUtils.getCanvasCenter().x + 225,
                 y: gameUtils.getPlayableHeight() - 350
             }
         });
@@ -184,6 +184,283 @@ var camp = {
             }
         });
         objs.push(gunrack);
+
+        var fencef1 = new Doodad({
+            drawWire: false,
+            bodyScale: {
+                y: 0.5,
+                x: 2.2
+            },
+            bodyRotate: 12.1,
+            collides: true,
+            autoAdd: false,
+            radius: 60,
+            texture: ['tripleFencef'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 150,
+                y: 300
+            }
+        });
+        objs.push(fencef1);
+
+        var fencef2 = new Doodad({
+            drawWire: false,
+            bodyScale: {
+                y: 0.5,
+                x: 2.2
+            },
+            bodyRotate: 12.1,
+            collides: true,
+            autoAdd: false,
+            radius: 60,
+            texture: ['tripleFencef'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 375,
+                y: 180
+            }
+        });
+        objs.push(fencef2);
+
+        var fenceh1 = new Doodad({
+            drawWire: false,
+            bodyScale: {
+                y: 0.1
+            },
+            collides: true,
+            autoAdd: false,
+            radius: 120,
+            texture: ['tripleFenceh'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 600,
+                y: 120
+            }
+        });
+        objs.push(fenceh1);
+
+        var fenceh2 = new Doodad({
+            drawWire: false,
+            bodyScale: {
+                y: 0.1
+            },
+            collides: true,
+            autoAdd: false,
+            radius: 120,
+            texture: ['tripleFenceh'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 830,
+                y: 120
+            }
+        });
+        objs.push(fenceh2);
+
+        var fenceb1 = new Doodad({
+            drawWire: false,
+            bodyScale: {
+                y: 0.1,
+                x: 1.2
+            },
+            bodyRotate: -12.1,
+            collides: true,
+            autoAdd: false,
+            radius: 120,
+            texture: ['tripleFenceb'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 1057,
+                y: 184
+            }
+        });
+        objs.push(fenceb1);
+
+        var tripleTire1 = new Doodad({
+            drawWire: false,
+            collides: true,
+            autoAdd: false,
+            radius: 22,
+            texture: ['tripletire'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 260,
+                y: 300
+            }
+        });
+        objs.push(tripleTire1);
+
+        var singleTire1 = new Doodad({
+            drawWire: false,
+            collides: true,
+            autoAdd: false,
+            radius: 10,
+            texture: ['singletire'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 935,
+                y: 170
+            }
+        });
+        objs.push(singleTire1);
+
+        var singleTire2 = new Doodad({
+            drawWire: false,
+            collides: true,
+            autoAdd: false,
+            radius: 10,
+            texture: ['singletire'],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 0,
+                y: 0
+            },
+            shadowOffset: {
+                x: 0,
+                y: 10
+            },
+            position: {
+                x: 490,
+                y: 365
+            }
+        });
+        objs.push(singleTire2);
 
         return objs;
     },

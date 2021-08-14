@@ -8,6 +8,7 @@ import {globals} from '@core/Fundamental/GlobalState.js';
 *   options = {
 *       collides: boolean (default false)
 *       bodyScale: {x, y}
+*       bodyRotate: float (degrees)
 *       pathingBlocker: boolean (default true)
 *       radius: float
 *       sightBlocker: boolean (default false)
@@ -41,6 +42,10 @@ var Doodad = function(options) {
     this.position = this.body.position;
     this.rebuildOptions.position = this.position;
 
+    if(options.bodyRotate) {
+        Matter.Body.rotate(this.body, options.bodyRotate);
+    }
+
     if(options.drawWire) {
         this.body.drawWire = true;
     }
@@ -66,6 +71,7 @@ var Doodad = function(options) {
             id: item.name || 'mainData' + i,
             data: data,
             offset: offset,
+            rotate: 'none',
             scale: scale,
             stage: stage,
             sortYOffset: options.sortYOffset || 0,

@@ -208,8 +208,8 @@ var levelBase = {
                 y: 18
             },
             position: options.position || {
-                x: gameUtils.getCanvasCenter().x - 130,
-                y: gameUtils.getPlayableHeight() - 190
+                x: gameUtils.getCanvasCenter().x + 130,
+                y: gameUtils.getCanvasCenter().y - 150
             }
         });
         this.mapTable = mapTable;

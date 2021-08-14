@@ -56,7 +56,10 @@ commonAirDropStation.initExtension = function() {
     }];
 };
 commonAirDropStation.fillLevelSceneExtension = function(scene) {
-    this.createMapTable(scene);
+    this.createMapTable(scene, {position: {
+        x: gameUtils.getCanvasCenter().x + 130,
+        y: gameUtils.getCanvasCenter().y - 0
+    }});
 };
 
 commonAirDropStation.createMapNode = function(options) {
