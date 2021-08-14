@@ -1059,7 +1059,7 @@ var UnitSystem = function(properties) {
             }
         });
 
-        //'A' or 'a' dispatch (reserved for attack/move)
+        //'A' or 'a' dispatch (reserved for attack/move) and 'W' or 'w' dispatch (for changing s.o.m)
         $('body').on('keydown.unitSystem', function(event) {
             if (!this.active || this.box.active) return;
 
@@ -1096,7 +1096,7 @@ var UnitSystem = function(properties) {
                     if (this.selectedUnit) {
                         ItemUtils.createItemAndGrasp({
                             gamePrefix: "Us",
-                            itemName: ["BasicMicrochip"],
+                            itemName: ["Book"],
                             unit: this.selectedUnit
                         });
                     }
@@ -1125,6 +1125,7 @@ var UnitSystem = function(properties) {
                 }
             }
 
+            //Non-debugging keys
             if (this.hasEnemySelected()) return;
             if (event.key == 'a' || event.key == 'A') {
                 $.each(this.selectedUnits, function(prop, unit) {
@@ -1135,6 +1136,12 @@ var UnitSystem = function(properties) {
                         }
                     }
                 }.bind(this));
+            }
+
+            if (event.key == 'w' || event.key == 'W') {
+                if(this.selectedUnit) {
+                    this.selectedUnit.swapStatesOfMind();
+                }
             }
         }.bind(this));
 
@@ -1150,7 +1157,7 @@ var UnitSystem = function(properties) {
             }
 
             //if we're a reserved key, do nothing
-            if (key == 'shift' || key == 'tab' || key == 'alt' || key == 'a') return;
+            if (key == 'shift' || key == 'tab' || key == 'alt' || key == 'a' || key =='w') return;
 
             //if we have an enemy selected, do nothing
             if (this.hasEnemySelected()) return;

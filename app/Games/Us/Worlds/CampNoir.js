@@ -687,8 +687,7 @@ var phaseOne = function() {
     var learningNode = this.map.addMapNode('shaneLearning', {
         position: firstLevelPosition,
         levelOptions: {
-            levelId: 'shaneLearning',
-            tileTint: 0xad850b
+            levelId: 'shaneLearning'
         },
         mapNodeOptions: {
             noSpawnGleam: true

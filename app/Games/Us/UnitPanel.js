@@ -606,6 +606,11 @@ unitPanel.prototype.initialize = function(options) {
         this.displayUnitPassives(event.unit);
     }.bind(this));
 
+    //listen for when the prevailing unit changes
+    Matter.Events.on(this.unitSystem, 'swapStatesOfMind', function(event) {
+        this.swapStatesOfMind(event.unit);
+    }.bind(this));
+
     //listen for item pickup
     if (globals.currentGame.itemSystem) {
         Matter.Events.on(globals.currentGame.itemSystem, 'pickupItem', function(event) {
@@ -1527,6 +1532,11 @@ unitPanel.prototype.displayCommands = function() {
     }
 };
 
+unitPanel.prototype.swapStatesOfMind = function(unit) {
+    this.unitPassivePanel.refreshForUnit(unit);
+    this.displayUnitPassives();
+};
+
 unitPanel.prototype.showAugmentsForUnit = function(unit) {
     this.unitAugmentPanel.showForUnit(unit);
 };
@@ -1546,17 +1556,17 @@ unitPanel.prototype.hidePassivesForCurrentUnit = function() {
 unitPanel.prototype.showAugmentsAndPassivesForUnit = function(unit) {
     this.unitAugmentPanel.showForUnit(unit);
     this.unitPassivePanel.showForUnit(unit);
-},
+};
 
 unitPanel.prototype.hideAugmentsAndPassivesForUnit = function() {
     this.unitAugmentPanel.hideForCurrentUnit();
     this.unitPassivePanel.hideForCurrentUnit();
-},
+};
 
 unitPanel.prototype.enterCamp = function() {
     this.unitAugmentPanel.lowerOpenButton();
     this.unitPassivePanel.lowerOpenButton();
-},
+};
 
 unitPanel.prototype.leaveCamp = function() {
     this.unitAugmentPanel.hideForCurrentUnit();
@@ -1564,7 +1574,7 @@ unitPanel.prototype.leaveCamp = function() {
 
     this.unitPassivePanel.hideForCurrentUnit();
     this.unitPassivePanel.hideOpenButton();
-},
+};
 
 unitPanel.prototype.cleanUp = function() {
     globals.currentGame.removeTickCallback(this.updateUnitStatTick);

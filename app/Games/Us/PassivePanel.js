@@ -105,6 +105,12 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     this.flashPanel();
 };
 
+ConfigPanel.prototype.refreshForUnit = function(unit) {
+    if(unit && this.showButton.state == 'lifted') {
+        this.showPassives(unit);
+    }
+};
+
 ConfigPanel.prototype.showPassives = function(unit) {
     var passiveCenterX = this.unitPanelRef.passiveCenterX;
     var alphaPassive = 0.8;
@@ -117,7 +123,11 @@ ConfigPanel.prototype.showPassives = function(unit) {
         this.currentDefensePassiveBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', {where: "hudOne", tint: 0x0094ff});
         this.currentDefensePassiveBorder.visible = false;
         this.currentDefensePassiveBorder.sortYOffset = 1000;
+    } else {
+        this.currentDefensePassiveBorder.visible = false;
+        this.currentAttackPassiveBorder.visible = false;
     }
+
     $.each(unit.passiveAbilities, function(j, passive) {
         var xpos;
         var yOffsetI = j % 3;

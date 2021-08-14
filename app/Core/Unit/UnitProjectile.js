@@ -61,7 +61,8 @@ export default function(options) {
 
     //setup position wrapper
     var positionWrapper = {
-        position: this.destination || mathArrayUtils.clonePosition(this.target.position)
+        position: this.destination || mathArrayUtils.clonePosition(this.target.position),
+        originalPosition: startPosition
     };
     if (this.tracking) {
         positionWrapper.position = this.target.position;
@@ -123,7 +124,11 @@ export default function(options) {
         id: 'projectile',
         data: this.displayObject,
         rotateFunction: function(sprite) {
-            sprite.rotation = mathArrayUtils.pointInDirection(this.body.position, positionWrapper.position);
+            if(this.tracking) {
+                sprite.rotation = mathArrayUtils.pointInDirection(this.body.position, positionWrapper.position);
+            } else {
+                sprite.rotation = mathArrayUtils.pointInDirection(positionWrapper.originalPosition, positionWrapper.position);
+            }
         }.bind(this),
     }];
 

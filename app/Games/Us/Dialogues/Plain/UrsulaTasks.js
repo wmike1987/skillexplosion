@@ -43,7 +43,7 @@ var UrsulaTasks = function(scene) {
     var a3a = new Dialogue({actor: "Task", text: "Hover over your Heal ability to read its description.", isTask: true, backgroundBox: true});
     var a3b = new Dialogue({actor: "Task", text: "Press 'A' then left click near (or on) Shane to heal him.", isTask: true, backgroundBox: true});
     var a4a = new Dialogue({actor: "Task", text: "Hover over your Vanish ability to read its description.", isTask: true, backgroundBox: true});
-    var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to secret-step to that point.", isTask: true, backgroundBox: true});
+    var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to vanish to that point.", isTask: true, backgroundBox: true});
     var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", newBreak: true, isTask: true, backgroundBox: true});
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
     var a5c = new Dialogue({actor: "Task", text: "Pick up your item.", isTask: true, backgroundBox: true});
@@ -291,6 +291,7 @@ var UrsulaTasks = function(scene) {
     var d5 = new Dialogue({text: "Each state of mind has two modes to choose from.", isInfo: true, backgroundBox: true, delayAfterEnd: 1000});
     var d6 = new Dialogue({text: "Activate the aggression mode of your learned state of mind. (Click)", isTask: true, backgroundBox: true});
     var d7 = new Dialogue({text: "Now switch to the defensive mode. (Ctrl+Click)", isTask: true, backgroundBox: true});
+    var d8 = new Dialogue({text: "Press 'w' to swap your current states of mind. This can be done at any time.", isTask: true, backgroundBox: true});
 
     d1.onStart = function() {
         arrow = graphicsUtils.pointToSomethingWithArrow(book, -5, 0.5);
@@ -340,7 +341,15 @@ var UrsulaTasks = function(scene) {
         });
     };
 
-    var bookChain = new DialogueChain([d1, d2, d3, d4, d5, d6, d7], {startDelay: 200, done: function() {
+    d8.onStart = function() {
+        gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'swapStatesOfMind', function(event) {
+            achieve.play();
+            completeTaskAndRelease(d8);
+            return true;
+        });
+    };
+
+    var bookChain = new DialogueChain([d1, d2, d3, d4, d5, d6, d7, d8], {startDelay: 200, done: function() {
         bookChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             finalMacMurrayChain.play();

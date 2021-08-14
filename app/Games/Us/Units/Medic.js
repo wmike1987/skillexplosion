@@ -434,7 +434,7 @@ export default function Medic(options) {
             name: 'fleet feet',
             icon: graphicsUtils.createDisplayObject('FleetFeet'),
             title: 'Fleet Feet',
-            description: 'Increase stepping speed and reduce energy cost by 2.',
+            description: 'Increase vanishing speed and reduce energy cost by 2.',
             equip: function(unit) {
                 unit.getAbilityByName('Vanish').energyCost -= 2;
             },
@@ -446,7 +446,7 @@ export default function Medic(options) {
             duration: 3000,
             icon: graphicsUtils.createDisplayObject('Petrify'),
             title: 'Ghost',
-            description: ['Petrify units for 3 seconds by stepping through them.'],
+            description: ['Petrify units for 3 seconds by vanishing through them.'],
             // systemMessage: 'Petrified units cannot move, attack, nor be targeted by normal attacks.'
         },
         {
@@ -454,7 +454,7 @@ export default function Medic(options) {
             icon: graphicsUtils.createDisplayObject('SoftLanding'),
             title: 'Soft Landing',
             duration: 3000,
-            description: 'Become hidden for 3 seconds after stepping.'
+            description: 'Become hidden for 3 seconds after vanishing.'
         }]
     });
 

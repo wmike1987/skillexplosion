@@ -60,6 +60,10 @@ var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {
     volume: 0.03,
     rate: 2.0
 });
+var equip = gameUtils.getSound('augmentEquip.wav', {
+    volume: 0.03,
+    rate: 1.0
+});
 
 var backgroundScaleX = 1.8;
 var barScaleXMultiplier = 0.96;
@@ -315,12 +319,16 @@ var UnitBase = {
 
     setHealth: function(amount) {
         this.currentHealth = Math.min(amount, this.maxHealth);
-        this.updateHealthBar({overridePendingUpdates: true});
+        this.updateHealthBar({
+            overridePendingUpdates: true
+        });
     },
 
     setEnergy: function(amount) {
         this.currentEnergy = Math.min(amount, this.maxEnergy);
-        this.updateEnergyBar({overridePendingUpdates: true});
+        this.updateEnergyBar({
+            overridePendingUpdates: true
+        });
     },
 
     giveHealth: function(amount, performingUnit, options) {
@@ -351,7 +359,10 @@ var UnitBase = {
         //show give life fade
         let healthSnapshot = this.currentHealth;
         this.fadeLifeAmount(this.currentHealth, true, () => {
-            this.updateHealthBar({amount: healthSnapshot, preserveGainTintTimer: true});
+            this.updateHealthBar({
+                amount: healthSnapshot,
+                preserveGainTintTimer: true
+            });
         });
 
         if (!options.invisible) {
@@ -397,7 +408,9 @@ var UnitBase = {
         //show give energy fade
         let energySnapshot = this.currentEnergy;
         this.fadeEnergyAmount(this.currentEnergy, true, () => {
-            this.updateEnergyBar({amount: energySnapshot});
+            this.updateEnergyBar({
+                amount: energySnapshot
+            });
         });
 
         if (!options.invisible) {
@@ -642,6 +655,35 @@ var UnitBase = {
         passive.stop();
     },
 
+    swapStatesOfMind: function() {
+        var currentAttack = this.attackPassive;
+        var currentDefensive = this.defensePassive;
+
+        if(currentAttack || currentDefensive) {
+            equip.play();
+        } else {
+            return;
+        }
+
+        if (currentAttack) {
+            this.unequipPassive(currentAttack);
+        }
+
+        if (currentDefensive) {
+            this.unequipPassive(currentDefensive);
+        }
+
+        if (currentAttack) {
+            this.equipPassive(currentAttack, 'defensePassive');
+        }
+
+        if (currentDefensive) {
+            this.equipPassive(currentDefensive, 'attackPassive');
+        }
+
+        Matter.Events.trigger(globals.currentGame.unitSystem, 'swapStatesOfMind', {unit: this});
+    },
+
     initUnit: function() {
 
         Object.defineProperty(this, 'maxHealth', {
@@ -678,11 +720,11 @@ var UnitBase = {
             },
 
             set: function(value) {
-                if(value < 0) {
+                if (value < 0) {
                     value = 0;
                 }
 
-                if(value > this.maxHealth) {
+                if (value > this.maxHealth) {
                     value = this.maxHealth;
                 }
                 this._currentHealth = value;
@@ -695,11 +737,11 @@ var UnitBase = {
             },
 
             set: function(value) {
-                if(value < 0) {
+                if (value < 0) {
                     value = 0;
                 }
 
-                if(value > this.maxEnergy) {
+                if (value > this.maxEnergy) {
                     value = this.maxEnergy;
                 }
                 this._currentEnergy = value;
@@ -932,7 +974,7 @@ var UnitBase = {
                 if (this.renderlings.healthbarfade) {
                     // this.renderlings.healthbarfade.alpha = 0.0;
                 }
-                if(this.healthFadeBars.length == 0) {
+                if (this.healthFadeBars.length == 0) {
                     sortYLifeCounter = 500;
                 }
                 var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
@@ -972,13 +1014,13 @@ var UnitBase = {
                 gameUtils.deathPact(this, newBar);
 
                 var color = startingFadeColor;
-                if(this.currentHealth/this.maxHealth >= 0.6) {
+                if (this.currentHealth / this.maxHealth >= 0.6) {
                     color = alternateStartingFadeColor;
                 }
                 graphicsUtils.graduallyTint(newBar, color, this._getHealthBarTint(this.currentHealth), fadeDuration, null, null, 0.5, done);
 
                 //also begin tinting existing healthbar
-                if(this.healthBarGainTintTimer) {
+                if (this.healthBarGainTintTimer) {
                     this.healthBarGainTintTimer.invalidate();
                 }
                 this.healthBarGainTintTimer = graphicsUtils.graduallyTint(this.renderlings.healthbar, this.renderlings.healthbar.tint, this._getHealthBarTint(this.currentHealth), fadeDuration, null, null, 0.5);
@@ -1015,7 +1057,7 @@ var UnitBase = {
             //if giving energy, make a new bar
             if (givingEnergy) {
                 //reset this if we can
-                if(this.energyFadeBars.length == 0) {
+                if (this.energyFadeBars.length == 0) {
                     sortYEnergyCounter = 500;
                 }
                 if (this.renderlings.energybarfade) {
@@ -1105,11 +1147,11 @@ var UnitBase = {
             var amount = options.amount || this.currentHealth;
             var overridePendingUpdates = options.overridePendingUpdates;
 
-            if(overridePendingUpdates) {
+            if (overridePendingUpdates) {
                 this.healthFadeBars.forEach((bar) => {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
-                if(this.healthBarFadeTimer) {
+                if (this.healthBarFadeTimer) {
                     this.healthBarFadeTimer.invalidate();
                 }
             }
@@ -1121,8 +1163,8 @@ var UnitBase = {
                     y: healthBarScale
                 };
                 //stop any previous gain tinting if desired
-                if(!options.preserveGainTintTimer) {
-                    if(this.healthBarGainTintTimer) {
+                if (!options.preserveGainTintTimer) {
+                    if (this.healthBarGainTintTimer) {
                         this.healthBarGainTintTimer.invalidate();
                     }
                     this.renderlings.healthbar.tint = this._getHealthBarTint(amount);
@@ -1137,10 +1179,10 @@ var UnitBase = {
             var b = 0;
             var threshold = 0.75;
 
-            if(percentage >= threshold) {
-                r = 255 * ((1 - percentage)*(1/(1-threshold)));
+            if (percentage >= threshold) {
+                r = 255 * ((1 - percentage) * (1 / (1 - threshold)));
             } else {
-                g = 255 * (percentage*(1/threshold));
+                g = 255 * (percentage * (1 / threshold));
             }
 
             return graphicsUtils.rgbToHex(r, g, b);
@@ -1151,11 +1193,11 @@ var UnitBase = {
             var amount = options.amount || this.currentEnergy;
             var overridePendingUpdates = options.overridePendingUpdates;
 
-            if(overridePendingUpdates) {
+            if (overridePendingUpdates) {
                 this.energyFadeBars.forEach((bar) => {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
-                if(this.energyBarFadeTimer) {
+                if (this.energyBarFadeTimer) {
                     this.energyBarFadeTimer.invalidate();
                 }
             }
@@ -1630,7 +1672,10 @@ var UnitBase = {
                 unit.isoManagedAlpha = null;
             }
         });
-        Matter.Events.trigger(petrifyingUnit, 'petrify', {petrifiedUnit: unit, petrifyingUnit: petrifyingUnit});
+        Matter.Events.trigger(petrifyingUnit, 'petrify', {
+            petrifiedUnit: unit,
+            petrifyingUnit: petrifyingUnit
+        });
     },
 
     maim: function(duration) {
@@ -1684,7 +1729,7 @@ var UnitBase = {
                 this.addDefenseAddition(defensePenalty);
                 var condemned = this;
                 handler = gameUtils.matterOnce(this, 'death', function() {
-                    if(condemningUnit.isDead) {
+                    if (condemningUnit.isDead) {
                         return;
                     }
 
@@ -1791,7 +1836,10 @@ var UnitBase = {
                 handler.removeHandler();
             }.bind(this)
         });
-        Matter.Events.trigger(condemningUnit, 'condemn', {condemnedUnit: unit, condemningUnit: condemningUnit});
+        Matter.Events.trigger(condemningUnit, 'condemn', {
+            condemnedUnit: unit,
+            condemningUnit: condemningUnit
+        });
     },
 
     becomeHidden: function(duration) {
@@ -2063,7 +2111,7 @@ var UnitBase = {
             var xSpacing = 32;
             var ySpacing = 32;
             unit.reorderBuffs = function() {
-                if(unit.isDead) {
+                if (unit.isDead) {
                     return;
                 }
                 unit.orderedBuffs.forEach((buff, i) => {
