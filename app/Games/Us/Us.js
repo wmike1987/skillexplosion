@@ -118,9 +118,13 @@ var game = {
             volume: 0.1,
             rate: 1.0
         });
-        this.soundPool.sceneSwipe = gameUtils.getSound('gleamsweep.wav', {
-            volume: 0.05,
-            rate: 1.5
+        this.soundPool.sceneSwipe = gameUtils.getSound('dashsound2.wav', {
+            volume: 0.03,
+            rate: 1.0
+        });
+        this.soundPool.sceneSwipePositive = gameUtils.getSound('positivesceneswipe.wav', {
+            volume: 0.04,
+            rate: 1.1
         });
         this.soundPool.positiveSound = gameUtils.getSound('positivevictorysound2.wav', {
             volume: 0.07,
@@ -215,7 +219,7 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(globals.currentGame, 'TravelReset', function(event) {
-            this.setCurrentLevel(event.resetToNode.levelDetails)
+            this.setCurrentLevel(event.resetToNode.levelDetails);
         }.bind(this));
 
         Matter.Events.on(this, 'travelFinished', function(event) {
@@ -313,11 +317,13 @@ var game = {
         });
     },
 
-    transitionToBlankScene: function() {
+    transitionToBlankScene: function(options) {
         var blankScene = new Scene();
         this.currentScene.transitionToScene({
             newScene: blankScene,
-            fadeIn: true
+            fadeIn: true,
+            mode: options.mode,
+            transitionLength: options.transitionLength
         });
         return blankScene;
     },
@@ -331,7 +337,7 @@ var game = {
         var spaceToContinueBehavior = function() {
             this.map.show();
             this.map.allowMouseEvents(false);
-            var blankScene = this.transitionToBlankScene();
+            var blankScene = this.transitionToBlankScene({mode: 'SIDE', transitionLength: 500});
             gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
                 this.map.allowMouseEvents(true);
             });
@@ -357,7 +363,7 @@ var game = {
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene({
             newScene: vScene,
-            transitionLength: 750,
+            transitionLength: 500,
             mode: 'SIDE',
             leftToRight: true
         });

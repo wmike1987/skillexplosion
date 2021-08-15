@@ -616,9 +616,9 @@ var enemyDefs = {
     mobs: {
         enemySets: [{
             type: 'Eruptlet',
-            amount: 20,
-            atATime: 3,
-            hz: 4000
+            amount: 28,
+            atATime: 4,
+            hz: 3800
         }]
     },
     outerMobs: {
@@ -891,6 +891,14 @@ var phaseThree = function() {
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('mobs', outerParam);
+    this.map.addMapNode('airDropSpecialStation', {
+        levelOptions: {
+            // prereqCount: 0,
+            selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'specialtyItem', 3),
+            outer: true
+        }
+    });
 };
 
 //this defines the camp noir world

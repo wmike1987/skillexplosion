@@ -25,12 +25,12 @@ var openmapSound = gameUtils.getSound('openmap.wav', {
     rate: 1.0
 });
 var openmapSound2 = gameUtils.getSound('openmap2.wav', {
-    volume: 0.06,
-    rate: 0.8
+    volume: 0.1,
+    rate: 1.0
 });
-var openmapSound3 = gameUtils.getSound('openmap3.wav', {
+var openmapSound3 = gameUtils.getSound('itemreveal2.wav', {
     volume: 0.04,
-    rate: 0.8
+    rate: 1.4
 });
 var openmapNewPhase = gameUtils.getSound('gleamsweep.wav', {
     volume: 0.06,

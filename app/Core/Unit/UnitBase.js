@@ -65,10 +65,10 @@ var equip = gameUtils.getSound('augmentEquip.wav', {
     rate: 1.0
 });
 
-var backgroundScaleX = 1.8;
-var barScaleXMultiplier = 0.96;
-var healthBorderScale = 0.16;
-var healthBarScale = 0.1;
+var backgroundScaleX = 54;
+var backgroundScaleY = 6;
+var barScaleX = 52;
+var barScaleY = 4;
 
 //default unit attributes
 var UnitBase = {
@@ -977,10 +977,10 @@ var UnitBase = {
                 if (this.healthFadeBars.length == 0) {
                     sortYLifeCounter = 500;
                 }
-                var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
+                var newBar = graphicsUtils.addSomethingToRenderer('TintableSquare', {
                     scale: {
-                        x: backgroundScaleX * barScaleXMultiplier,
-                        y: healthBarScale
+                        x: barScaleX,
+                        y: barScaleY
                     },
                     anchor: {
                         x: 0,
@@ -1000,8 +1000,8 @@ var UnitBase = {
                 });
                 let percentage = startingAmount / this.maxHealth;
                 newBar.scale = {
-                    x: backgroundScaleX * barScaleXMultiplier * percentage,
-                    y: healthBarScale
+                    x: barScaleX * percentage,
+                    y: barScaleY
                 };
 
                 var originalDone = done;
@@ -1041,8 +1041,8 @@ var UnitBase = {
                     var percentage = startingAmount / this.maxHealth;
                     if (this.renderlings.healthbarfade) {
                         this.renderlings.healthbarfade.scale = {
-                            x: backgroundScaleX * barScaleXMultiplier * percentage,
-                            y: healthBarScale
+                            x: barScaleX * percentage,
+                            y: barScaleY
                         };
                     }
                     this.healthBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.healthbarfade, fadeDuration, fadeIn, done, true);
@@ -1063,10 +1063,10 @@ var UnitBase = {
                 if (this.renderlings.energybarfade) {
                     // this.renderlings.energybarfade.alpha = 0.0;
                 }
-                var newBar = graphicsUtils.addSomethingToRenderer('HealthEnergyBackground', {
+                var newBar = graphicsUtils.addSomethingToRenderer('TintableSquare', {
                     scale: {
-                        x: backgroundScaleX * barScaleXMultiplier,
-                        y: healthBarScale
+                        x: barScaleX,
+                        y: barScaleY
                     },
                     anchor: {
                         x: 0,
@@ -1081,15 +1081,12 @@ var UnitBase = {
                 gameUtils.attachSomethingToBody({
                     something: newBar,
                     body: this.body,
-                    offset: {
-                        x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
-                        y: -this.unitHeight / 2 - 13
-                    }
+                    offset: this.renderlings.energybar.offset
                 });
                 let percentage = startingAmount / this.maxEnergy;
                 newBar.scale = {
-                    x: backgroundScaleX * barScaleXMultiplier * percentage,
-                    y: healthBarScale
+                    x: barScaleX * percentage,
+                    y: barScaleY
                 };
 
                 var originalDone = done;
@@ -1118,8 +1115,8 @@ var UnitBase = {
                     let percentage = startingAmount / this.maxEnergy;
                     if (this.renderlings.energybarfade) {
                         this.renderlings.energybarfade.scale = {
-                            x: backgroundScaleX * barScaleXMultiplier * percentage,
-                            y: healthBarScale
+                            x: barScaleX * percentage,
+                            y: barScaleY
                         };
                     }
                     this.energyBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.energybarfade, fadeDuration, fadeIn, done, true);
@@ -1159,8 +1156,8 @@ var UnitBase = {
             var percentage = amount / this.maxHealth;
             if (this.renderlings.healthbar) {
                 this.renderlings.healthbar.scale = {
-                    x: backgroundScaleX * barScaleXMultiplier * percentage,
-                    y: healthBarScale
+                    x: barScaleX * percentage,
+                    y: barScaleY
                 };
                 //stop any previous gain tinting if desired
                 if (!options.preserveGainTintTimer) {
@@ -1204,8 +1201,8 @@ var UnitBase = {
             var percentage = amount / this.maxEnergy;
             if (this.renderlings.energybar) {
                 this.renderlings.energybar.scale = {
-                    x: backgroundScaleX * barScaleXMultiplier * percentage,
-                    y: healthBarScale
+                    x: barScaleX * percentage,
+                    y: barScaleY
                 };
             }
         }.bind(this);
@@ -1265,7 +1262,11 @@ var UnitBase = {
         });
 
         Matter.Events.on(this, 'addUnit', function() {
-            var healthBarYOffset = this.energy ? -20 : -13;
+            var healthBarYOffset = -20;
+            var energyBarYOffset = -12;
+            if(!this.energy) {
+                healthBarYOffset = energyBarYOffset;
+            }
 
             // setup health and energy
             if (this.health) {
@@ -1295,13 +1296,13 @@ var UnitBase = {
             if (this.health) {
                 this.renderChildren.push({
                     id: 'healthbarbackground',
-                    data: 'HealthEnergyBackground',
+                    data: 'TintableSquare',
                     scale: {
                         x: backgroundScaleX,
-                        y: healthBorderScale
+                        y: backgroundScaleY
                     },
                     offset: {
-                        x: -32 * backgroundScaleX / 2,
+                        x: -backgroundScaleX / 2,
                         y: -this.unitHeight / 2 + healthBarYOffset
                     },
                     anchor: {
@@ -1316,13 +1317,13 @@ var UnitBase = {
                     sortYOffset: 250,
                 }, {
                     id: 'healthbarfade',
-                    data: 'HealthEnergyBackground',
+                    data: 'TintableSquare',
                     scale: {
-                        x: backgroundScaleX * barScaleXMultiplier,
-                        y: healthBarScale
+                        x: barScaleX,
+                        y: barScaleY
                     },
                     offset: {
-                        x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
+                        x: (-backgroundScaleX / 2) + ((backgroundScaleX - barScaleX) / 2.0),
                         y: -this.unitHeight / 2 + healthBarYOffset
                     },
                     anchor: {
@@ -1338,13 +1339,13 @@ var UnitBase = {
                     sortYOffset: 400,
                 }, {
                     id: 'healthbar',
-                    data: 'HealthEnergyBackground',
+                    data: 'TintableSquare',
                     scale: {
-                        x: backgroundScaleX * barScaleXMultiplier,
-                        y: healthBarScale
+                        x: barScaleX,
+                        y: barScaleY
                     },
                     offset: {
-                        x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
+                        x: (-backgroundScaleX / 2) + ((backgroundScaleX - barScaleX) / 2.0),
                         y: -this.unitHeight / 2 + healthBarYOffset
                     },
                     anchor: {
@@ -1364,14 +1365,14 @@ var UnitBase = {
             if (this.energy) {
                 this.renderChildren.push({
                     id: 'energybarbackground',
-                    data: 'HealthEnergyBackground',
+                    data: 'TintableSquare',
                     scale: {
                         x: backgroundScaleX,
-                        y: healthBorderScale
+                        y: backgroundScaleY
                     },
                     offset: {
-                        x: -32 * backgroundScaleX / 2,
-                        y: -this.unitHeight / 2 - 13
+                        x: -backgroundScaleX / 2,
+                        y: -this.unitHeight / 2 + energyBarYOffset
                     },
                     anchor: {
                         x: 0,
@@ -1385,14 +1386,14 @@ var UnitBase = {
                     sortYOffset: 250
                 }, {
                     id: 'energybarfade',
-                    data: 'HealthEnergyBackground',
+                    data: 'TintableSquare',
                     scale: {
-                        x: backgroundScaleX * barScaleXMultiplier,
-                        y: healthBarScale
+                        x: barScaleX,
+                        y: barScaleY
                     },
                     offset: {
-                        x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
-                        y: -this.unitHeight / 2 - 13
+                        x: (-backgroundScaleX / 2) + ((backgroundScaleX - barScaleX) / 2.0),
+                        y: -this.unitHeight / 2 + energyBarYOffset
                     },
                     anchor: {
                         x: 0,
@@ -1407,14 +1408,14 @@ var UnitBase = {
                     sortYOffset: 400
                 }, {
                     id: 'energybar',
-                    data: 'HealthEnergyBackground',
+                    data: 'TintableSquare',
                     scale: {
-                        x: backgroundScaleX * barScaleXMultiplier,
-                        y: healthBarScale
+                        x: barScaleX,
+                        y: barScaleY
                     },
                     offset: {
-                        x: -32 * backgroundScaleX / 2 + 32 * backgroundScaleX * (1 - barScaleXMultiplier) / 2,
-                        y: -this.unitHeight / 2 - 13
+                        x: (-backgroundScaleX / 2) + ((backgroundScaleX - barScaleX) / 2.0),
+                        y: -this.unitHeight / 2 + energyBarYOffset
                     },
                     anchor: {
                         x: 0,

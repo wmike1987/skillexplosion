@@ -7,7 +7,7 @@ import ItemUtils from '@core/Unit/ItemUtils.js';
 
 var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: 0.05, rate: 1.25});
-var equip = gameUtils.getSound('augmentEquip.wav', {volume: 0.05, rate: 1.15});
+var equip = gameUtils.getSound('augmentequip2.wav', {volume: 0.18, rate: 1.20});
 var unequip = gameUtils.getSound('augmentEquip.wav', {volume: 0.02, rate: 0.85});
 var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: 0.015, rate: 1});
 var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: 0.16, rate: 1});
