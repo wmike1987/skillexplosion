@@ -228,7 +228,7 @@ export default function Eruptlet(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.6, y: 0.6},
+        scale: {x: 0.5, y: 0.5},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
@@ -301,7 +301,7 @@ export default function Eruptlet(options) {
             cooldown: 650,
             honeRange: 300,
             range: options.radius*2,
-            damage: 12,
+            damage: 14,
             attack: function(target) {
                 var deathAnimation = gameUtils.getAnimation({
                     spritesheetName: 'EruptletAnimations1',

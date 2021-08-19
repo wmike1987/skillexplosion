@@ -111,10 +111,12 @@ var levelBase = {
             mapRef: options.mapRef,
             campLikeActive: false,
             entrySound: worldSpecs.entrySound,
-            tileTint: this.tileTint || (this.outer ? worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes)] :
-                worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes)]),
             worldSpecs: Object.assign({}, worldSpecs),
         }, options.levelOptions || {});
+
+        //set the tile tint
+        this.tileTint = options.levelOptions.tileTint || (this.outer ? worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes)] :
+            worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes)]);
 
         //set the enemy  def
         this.enemyDefs = Object.assign({}, worldSpecs.enemyDefs[type]);

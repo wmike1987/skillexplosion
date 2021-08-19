@@ -269,7 +269,52 @@ export default {
 
 	regularItemName: new PIXI.TextStyle({
 		name: 'regularItemName',
-		fill: "#D3D7E8",
+		fill: "#f6f8ff",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 14,
+		textBaseline: "bottom",
+		strokeThickness: 1
+	}),
+
+	stimulantItemName: new PIXI.TextStyle({
+		name: 'stimulantItemName',
+		fill: "#ff54d9",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 14,
+		textBaseline: "bottom",
+		strokeThickness: 1
+	}),
+
+	shaneItemName: new PIXI.TextStyle({
+		name: 'shaneItemName',
+		fill: "#ff5454",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 14,
+		textBaseline: "bottom",
+		strokeThickness: 1
+	}),
+
+	ursulaItemName: new PIXI.TextStyle({
+		name: 'ursulaItemName',
+		fill: "#58ff54",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 14,
+		textBaseline: "bottom",
+		strokeThickness: 1
+	}),
+
+	microchipItemName: new PIXI.TextStyle({
+		name: 'microchipItemName',
+		fill: "#ffbb54",
+		fontFamily: "Tahoma, Geneva, sans-serif",
+		fontSize: 14,
+		textBaseline: "bottom",
+		strokeThickness: 1
+	}),
+
+	bookItemName: new PIXI.TextStyle({
+		name: 'bookItemName',
+		fill: "#54d6ff",
 		fontFamily: "Tahoma, Geneva, sans-serif",
 		fontSize: 14,
 		textBaseline: "bottom",

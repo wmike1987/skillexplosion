@@ -7,6 +7,7 @@ export default function(options) {
     var item = Object.assign({
         name: "Book",
         description: ['Learn a state of mind.'],
+        fontType: 'book',
         additionCondition: function(augment) {
             return augment.name == 'first aid pouch';
         },

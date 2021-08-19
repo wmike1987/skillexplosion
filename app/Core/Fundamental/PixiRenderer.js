@@ -208,7 +208,6 @@ var renderer = function(engine, options) {
 		PIXI.Ticker._shared.destroy();
 		PIXI.Ticker._shared = null;
 		this.pixiApp = new PIXI.Application({sharedTicker: true, width: options.width, height: options.height + options.unitPanelHeight, backgroundAlpha : 0});
-		// PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		this.canvasEl = this.pixiApp.renderer.view;
 
 		//destroy the accessibility plugin which was/is causing a div to appear and affects the browser's scroll bar

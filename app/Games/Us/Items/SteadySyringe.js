@@ -12,7 +12,8 @@ export default function(options) {
         name: "Steady Syringe",
         description: "Increase heal amount by " + healAmount + ".",
         icon: 'SteadySyringe',
-        type: 'Medic'
+        type: 'Medic',
+        fontType: 'ursula'
     }, options);
     return new ic(item);
 }

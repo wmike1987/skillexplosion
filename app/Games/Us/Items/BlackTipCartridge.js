@@ -11,7 +11,8 @@ export default function(options) {
         name: "Black Tipped Cartridge",
         description: "Add +" + damageAmount + " to base damage.",
         icon: 'BlackTipCartridge',
-        type: 'Marine'
+        type: 'Marine',
+        fontType: 'shane'
     }, options);
     return new ic(item);
 }

@@ -11,6 +11,7 @@ export default function(options) {
         poweredByMessage: {text: 'Gen-1 Microchip', style: 'basicPoweredByStyle'},
         systemMessage: "Drop on agument to enable.",
         icon: 'BasicMicrochip',
+        fontType: 'microchip',
 
         plugCondition: function() {
             return true;

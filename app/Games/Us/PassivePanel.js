@@ -291,6 +291,7 @@ ConfigPanel.prototype.lowerOpenButton = function() {
         this.showButton.state = "lowered";
         this.showButton.visible = false;
         this.showButtonGlass.position = {x: this.showButton.position.x, y: gameUtils.getPlayableHeight()+this.configButtonGlassHeight/2.75};
+        this.showButtonGlass.visible = true;
         this.showButtonSkinny.scale = {x: 1.00, y: 1.00};
         this.showButtonGlass.scale = {x: 0.3, y: 1.1};
         this.showButtonSkinny.visible = true;

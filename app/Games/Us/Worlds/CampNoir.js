@@ -34,11 +34,9 @@ import {
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
 
 var tileSize = 225;
-var innerIndex = 0;
-var outerIndex = 1;
 var acceptableTileTints = [0xff9e9e, 0x7848ee];
-var acceptableOrnamentTints = [0xffab7a, 0xad850b];
-var acceptableFlowerTints = [0xf78d8d, 0x9f9f9f];
+var acceptableOrnamentTints = [0xffab7a, 0xfb4a9a];
+var acceptableFlowerTints = [0xf78d8d, 0xffad78];
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -616,8 +614,8 @@ var enemyDefs = {
     mobs: {
         enemySets: [{
             type: 'Eruptlet',
-            amount: 28,
-            atATime: 4,
+            amount: 35,
+            atATime: 5,
             hz: 3800
         }]
     },

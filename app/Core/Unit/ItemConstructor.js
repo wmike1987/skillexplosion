@@ -162,8 +162,22 @@ var ic = function(options) {
             },
             alpha: 0.85
         });
+
+        var style = styles.regularItemName;
+        if(newItem.fontType == 'shane') {
+            style = styles.shaneItemName;
+        } else if(newItem.fontType == 'ursula') {
+            style = styles.ursulaItemName;
+        } else if(newItem.fontType == 'stimulant') {
+            style = styles.stimulantItemName;
+        } else if(newItem.fontType == 'microchip') {
+            style = styles.microchipItemName;
+        } else if(newItem.fontType == 'book') {
+            style = styles.bookItemName;
+        }
+
         newItem.nameDisplay = graphicsUtils.createDisplayObject('TEX+:' + newItem.name, {
-            style: styles.regularItemName
+            style: style
         });
         graphicsUtils.makeSpriteSize(newItem.nameDisplayBase, {
             w: newItem.nameDisplay.width + 15,
