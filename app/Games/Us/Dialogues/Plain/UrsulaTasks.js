@@ -81,7 +81,7 @@ var UrsulaTasks = function(scene) {
             var destination = event.destination;
             if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
             achieve.play();
-            graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+            graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTimeLegacy(moveBeacon, 500);}});
 
             completeTaskAndRelease(a2);
             return true;
@@ -130,7 +130,7 @@ var UrsulaTasks = function(scene) {
         gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'secretStepLand', (event) => {
             var destination = event.destination;
             if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
-            graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+            graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTimeLegacy(moveBeacon, 500);}});
             achieve.play();
             completeTaskAndRelease(a4b);
             return true;

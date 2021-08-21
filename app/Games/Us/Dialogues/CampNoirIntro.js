@@ -54,7 +54,7 @@ var CampNoirIntro = function(options) {
             actor: "Shane",
             text: "A dead man.",
             onStart: function() {
-                // graphicsUtils.fadeSpriteOverTime(blackBox, 1000);
+                // graphicsUtils.fadeSpriteOverTimeLegacy(blackBox, 1000);
                 // me.realizedPictureBorder.position.x += 187.5;
                 // graphicsUtils.makeSpriteSize(me.realizedPictureBorder, {x: me.realizedPicture.width, y: me.realizedPicture.height});
             }

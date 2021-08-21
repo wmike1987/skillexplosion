@@ -62,7 +62,7 @@ var shaneLearning = function(options) {
         flameAnim.position = flpos;
         flameAnim.play();
         flameAnim.myName = 'mike';
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 100, y: 50});
@@ -77,7 +77,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 75;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 200, y: -30});
@@ -92,7 +92,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 50;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -50, y: 0});
@@ -107,7 +107,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 100;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -90, y: -75});
@@ -122,7 +122,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 100;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -10, y: 150});
@@ -137,7 +137,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 50;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 0, y: 150});
@@ -152,7 +152,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 25;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: -85, y: 120});
@@ -167,7 +167,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 25;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 300, y: 0});
@@ -182,7 +182,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 25;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 350, y: 150});
@@ -197,7 +197,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 25;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 60, y: 185});
@@ -212,7 +212,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 25;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
 
         flpos = mathArrayUtils.clonePosition(podPosition, {x: 250, y: -350});
@@ -227,7 +227,7 @@ var shaneLearning = function(options) {
         flameAnim.sortYOffset = 300;
         flameAnim.position = flpos;
         flameAnim.play();
-        graphicsUtils.fadeSpriteOverTime(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
+        graphicsUtils.fadeSpriteOverTimeLegacy(flameAnim, fadeTime + Math.random() * fadeTimeVariation);
         scene.add(flameAnim);
     };
 
@@ -335,7 +335,7 @@ var shaneLearning = function(options) {
                                 gameUtils.matterConditionalOnce(globals.currentGame.shane, 'destinationReached', (event) => {
                                     var destination = event.destination;
                                     if(mathArrayUtils.distanceBetweenPoints(destination, moveBeaconLocation) > 80) return;
-                                    graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTime(moveBeacon, 500);}});
+                                    graphicsUtils.flashSprite({sprite: moveBeacon, onEnd: () => {graphicsUtils.fadeSpriteOverTimeLegacy(moveBeacon, 500);}});
                                     achieve.play();
                                     var boxItem = firstBox.getAllItems()[0];
                                     gameUtils.doSomethingAfterDuration(() => {

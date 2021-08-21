@@ -74,7 +74,7 @@ var gameUtils = {
                         options.onCompleteExtension();
                     }
                 };
-                graphicsUtils.fadeSpriteOverTime(anim, options.fadeTime || 2000, false, done);
+                graphicsUtils.fadeSpriteOverTimeLegacy(anim, options.fadeTime || 2000, false, done);
             }.bind(this);
         } else {
             anim.onComplete = function() { //default onComplete function
@@ -1193,13 +1193,28 @@ var graphicsUtils = {
         });
     },
 
-    fadeSpriteOverTime: function(sprite, time, fadeIn, callback, nokill) {
+    fadeSpriteOverTime: function(options) {
+        options = Object.assign({
+            time: 1000,
+            fadeIn: false,
+            callback: null,
+            nokill: false,
+            makeVisible: false
+        }, options);
+
+        this.fadeSpriteOverTimeLegacy(options.sprite, options.time, options.fadeIn, options.callback, options.nokill, options.makeVisible);
+    },
+
+    fadeSpriteOverTimeLegacy: function(sprite, time, fadeIn, callback, nokill, makeVisible) {
         var startingAlpha = sprite.alpha || 1.0;
         var finalAlpha = 0;
         if (fadeIn) {
             finalAlpha = startingAlpha;
             startingAlpha = 0;
             sprite.alpha = 0;
+        }
+        if(makeVisible) {
+            sprite.visible = true;
         }
         var runs = time / 16;
         var rate = (finalAlpha - startingAlpha) / runs;

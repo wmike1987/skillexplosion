@@ -17,7 +17,7 @@ export default {
             this.reviveAmount = 0;
             this.grave = graphicsUtils.addSomethingToRenderer(this.graveSpriteName, {where: 'stage', position: mathArrayUtils.clonePosition(this.position, {y: 20}), anchor: {x: 0.5, y: 0.5}, scale: {x: 0.85, y: 0.85}});
             //fade in
-            graphicsUtils.fadeSpriteOverTime(this.grave, 2000, true);
+            graphicsUtils.fadeSpriteOverTimeLegacy(this.grave, 2000, true);
 
             this.reviveCenter = mathArrayUtils.clonePosition(this.position);
             this.grave.tint = graphicsUtils.percentAsHexColor(0, {start: {r: 255, g: 255, b: 255}, final: {r: 255, g: 0, b: 0}});

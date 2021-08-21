@@ -134,6 +134,10 @@ var game = {
             volume: 0.07,
             rate: 1.5
         });
+        this.soundPool.keypressSound = gameUtils.getSound('keypress1.wav', {
+            volume: 0.15,
+            rate: 1
+        });
 
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
@@ -250,7 +254,6 @@ var game = {
             this.skipTutorial();
             this.currentWorld.gotoLevelById('camp');
         }
-
     },
 
     getLoadingScreen: function() {
@@ -322,6 +325,7 @@ var game = {
     },
 
     transitionToBlankScene: function(options) {
+        options = options || {};
         var blankScene = new Scene();
         this.currentScene.transitionToScene({
             newScene: blankScene,

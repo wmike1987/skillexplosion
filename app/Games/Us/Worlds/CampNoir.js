@@ -471,7 +471,7 @@ var camp = {
             this.mapTableActive = true;
         }
 
-        if(false) {
+        if(true) {
             this.mapTableActive = true;
         }
 

@@ -275,7 +275,7 @@ export default function Gargoyle(options) {
             deathSound.play();
 
             var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
-            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
             return [shadow, anim];

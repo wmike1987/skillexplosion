@@ -1045,7 +1045,7 @@ export default function Medic(options) {
             gameUtils.attachSomethingToBody({something: block, body: medic.body, offset: attachmentOffset, deathPactSomething: true});
             block.rotation = mathArrayUtils.pointInDirection(medic.position, offsetLocation);
             graphicsUtils.flashSprite({sprite: block, toColor: 0x8d01be, duration: 100, times: 4});
-            graphicsUtils.fadeSpriteOverTime(block, 500);
+            graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
 
             blockSound.play();
         },
@@ -1104,7 +1104,7 @@ export default function Medic(options) {
             this.corpse = anim;
 
             var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
-            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
 
             anim.play();
             deathSoundBlood.play();

@@ -923,7 +923,7 @@ export default function Marine(options) {
             this.corpse = anim;
 
             var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
-            graphicsUtils.fadeSpriteOverTime(shadow, 1500);
+            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
 
             anim.play();
             deathSound.play();

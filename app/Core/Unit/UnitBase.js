@@ -256,7 +256,7 @@ var UnitBase = {
                     duration: 100,
                     times: 4
                 });
-                graphicsUtils.fadeSpriteOverTime(block, 500);
+                graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
                 killingBlowBlock.play();
                 return;
             }
@@ -1045,7 +1045,7 @@ var UnitBase = {
                             y: barScaleY
                         };
                     }
-                    this.healthBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.healthbarfade, fadeDuration, fadeIn, done, true);
+                    this.healthBarFadeTimer = graphicsUtils.fadeSpriteOverTimeLegacy(this.renderlings.healthbarfade, fadeDuration, fadeIn, done, true);
                 }
             }
         };
@@ -1097,7 +1097,7 @@ var UnitBase = {
                 }.bind(this);
                 this.energyFadeBars.push(newBar);
                 gameUtils.deathPact(this, newBar);
-                // graphicsUtils.fadeSpriteOverTime(newBar, fadeDuration, fadeIn, done, true);
+                // graphicsUtils.fadeSpriteOverTimeLegacy(newBar, fadeDuration, fadeIn, done, true);
                 graphicsUtils.graduallyTint(newBar, 0x1fffff, 0xb866f9, fadeDuration, null, null, 0.5, done);
             } else {
                 //empty gaining bars
@@ -1119,7 +1119,7 @@ var UnitBase = {
                             y: barScaleY
                         };
                     }
-                    this.energyBarFadeTimer = graphicsUtils.fadeSpriteOverTime(this.renderlings.energybarfade, fadeDuration, fadeIn, done, true);
+                    this.energyBarFadeTimer = graphicsUtils.fadeSpriteOverTimeLegacy(this.renderlings.energybarfade, fadeDuration, fadeIn, done, true);
                 }
             }
         };
@@ -1919,7 +1919,7 @@ var UnitBase = {
                 }
             });
             // graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 650, gleamWidth: 10});
-            graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, true);
+            graphicsUtils.fadeSpriteOverTimeLegacy(gritBlockIndicator, 250, true);
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.addGleamToSprite({
                     sprite: gritBlockIndicator,
@@ -1929,7 +1929,7 @@ var UnitBase = {
             }, 250);
             gainKillingBlow.play();
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime(gritBlockIndicator, 250, false);
+                graphicsUtils.fadeSpriteOverTimeLegacy(gritBlockIndicator, 250, false);
             }, 850);
             gameUtils.attachSomethingToBody({
                 something: gritBlockIndicator,
