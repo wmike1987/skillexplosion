@@ -849,12 +849,15 @@ export default function Marine(options) {
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 5000,
+        defenseCooldown: 4000,
         aggressionEventName: 'kill',
         aggressionCooldown: 4000,
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
+                if(unit.isDead) {
+                    return;
+                }
                 var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position});
                 gameUtils.attachSomethingToBody({something: gritUp, body: unit.body});
                 graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
@@ -965,7 +968,7 @@ export default function Marine(options) {
                     var crit = 1;
                     var critActive = false;
                     if(hoodedPeepAugment) {
-                        if(Math.random() < hoodedPeepAugment.chance) {
+                        if(Math.random() < 1 + hoodedPeepAugment.chance) {
                             crit = hoodedPeepAugment.multiplier;
                             critActive = true;
                         }
@@ -993,7 +996,7 @@ export default function Marine(options) {
                     if(critActive) {
                         fireSound.play();
                         criticalHitSound.play();
-                        var chText = graphicsUtils.floatText(dTotal*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText, speed: 1.5});
+                        var chText = graphicsUtils.floatText(dTotal*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText});
                     } else {
                         fireSound.play();
                     }

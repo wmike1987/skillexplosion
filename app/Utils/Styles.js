@@ -415,6 +415,28 @@ export default {
 		strokeThickness: 1
 	}),
 
+	adrenalineTextLarge:  new PIXI.TextStyle({
+		name: 'adrenalineTextLarge',
+		fill: "#d22a7b",
+		fontSize: 40,
+		fontStyle: "italic",
+		fontWeight: "lighter",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 1
+	}),
+
+	rewardTextLarge:  new PIXI.TextStyle({
+		name: 'rewardTextLarge',
+		fill: "#16f6db",
+		fontSize: 40,
+		fontStyle: "italic",
+		fontWeight: "lighter",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 1
+	}),
+
 	critHitText: new PIXI.TextStyle({
 		name: 'critHitText',
 	    dropShadowAlpha: 0.6,
@@ -534,7 +556,7 @@ export default {
 
 	statScreenVictoryTitleStyle: new PIXI.TextStyle({
 		name: 'statScreenVictoryTitleStyle',
-		fill: "White",
+		fill: "#ffffff",
 		fontSize: 120,
 		fontFamily: "Tahoma, Geneva, sans-serif",
 		lineJoin: "round",
@@ -544,7 +566,7 @@ export default {
 
 	statScreenDefeatTitleStyle: new PIXI.TextStyle({
 		name: 'statScreenDefeatTitleStyle',
-		fill: "#810202",
+		fill: "#ffffff",
 		fontSize: 120,
 		fontFamily: "Tahoma, Geneva, sans-serif",
 		lineJoin: "round",

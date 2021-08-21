@@ -897,9 +897,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                     $('body').off('keydown.uskeydownendscreen');
                     graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
                         if(options.done) {
-                            if(options.type == 'victory')
-                            globals.currentGame.map.addAdrenalineBlock();
-                            options.done();
+                            options.done({type: options.type});
                         }
                     });
                 } else if(key == 'escape' && !options.onlyContinueAllowed) {
@@ -921,22 +919,58 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                 this.spaceToContinue.visible = true;
             });
         } else {
-            //space to continue
-            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 35}});
-            scene.add(this.spaceToContinue);
-            this.spaceToContinue.visible = false;
 
-            if(options.type != 'loss') {
-                this.plusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(+1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalinePlusStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 15}});
-                scene.add(this.plusOneAdrenaline);
-                this.plusOneAdrenaline.visible = false;
+            if(options.type == 'loss') {
+                //space to continue upon loss
+                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 35}});
+                scene.add(this.spaceToContinue);
+                this.spaceToContinue.visible = false;
+            } else {
+                //show +1 adrenaline
+                Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                    gameUtils.doSomethingAfterDuration(() => {
+                        var adrenDuration = 2500;
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({y: 300}), {where: 'hudTwo', style: styles.adrenalineTextLarge, speed: 6, duration: adrenDuration});
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                        scene.add(adrText);
+
+                        gameUtils.doSomethingAfterDuration(() => {
+                            globals.currentGame.soundPool.positiveSoundFast.play();
+                            var rewardText = graphicsUtils.floatText('Choose your reward!', gameUtils.getPlayableCenterPlus({y: 300}), {where: 'hudTwo', style: styles.rewardTextLarge, speed: 6, duration: adrenDuration});
+                            scene.add(rewardText);
+                            graphicsUtils.addGleamToSprite({
+                                sprite: rewardText,
+                                gleamWidth: 50,
+                                duration: 500
+                            });
+                        }, adrenDuration + 250);
+                    }, 1250);
+                });
             }
 
             Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                this.spaceToContinue.visible = true;
-                if(this.plusOneAdrenaline) {
-                    this.plusOneAdrenaline.visible = true;
+                var tintTo = 0x62ff68;
+                if(options.type == 'loss') {
+                    tintTo = 0xf12323;
                 }
+                graphicsUtils.flashSprite({
+                    sprite: titleText,
+                    fromColor: 0xffffff,
+                    toColor: tintTo,
+                    duration: 750,
+                    times: 0.5
+                });
+                if(this.spaceToContinue) {
+                    this.spaceToContinue.visible = true;
+                }
+                // if(this.plusOneAdrenaline) {
+                //     this.plusOneAdrenaline.visible = true;
+                // }
             });
 
             //escape to configure
@@ -946,10 +980,6 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             // scene.add(this.minusOneAdrenaline);
             // this.escapeToContinue.visible = false;
             // this.minusOneAdrenaline.visible = false;
-            Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                // this.escapeToContinue.visible = true;
-                // this.minusOneAdrenaline.visible = true;
-            });
         }
 
 

@@ -1364,7 +1364,7 @@ var graphicsUtils = {
         } else {
             newStyle = styles.style;
         }
-        var floatedText = graphicsUtils.addSomethingToRenderer("TEX+:" + text, 'hud', {
+        var floatedText = graphicsUtils.addSomethingToRenderer("TEX+:" + text, options.where || 'hud', {
             style: options.style || newStyle,
             x: gameUtils.getCanvasWidth() / 2,
             y: gameUtils.getCanvasHeight() / 2
@@ -1373,18 +1373,20 @@ var graphicsUtils = {
         floatedText.alpha = 1.4;
         globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
-            timeLimit: 32,
+            timeLimit: options.duration || 1000,
             killsSelf: true,
-            runs: options.runs || 30,
-            callback: function() {
+            runs: 1,
+            tickCallback: function(delta) {
                 if (!options.stationary) {
-                    floatedText.position.y -= (1 * (options.speed || 1));
+                    floatedText.position.y -= (delta * (options.speed/100 || 0.03));
                 }
-                floatedText.alpha -= (1.4 * (options.speed || 1)) / (options.runs || 34);
+                floatedText.alpha = 1 - this.percentDone;
             },
             totallyDoneCallback: function() {
-                graphicsUtils.removeSomethingFromRenderer(floatedText, 'hud');
-                if (options.deferred) options.deferred.resolve();
+                graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
+                if (options.deferred) {
+                    options.deferred.resolve();
+                }
             }.bind(this)
         });
 

@@ -130,6 +130,10 @@ var game = {
             volume: 0.07,
             rate: 1.0
         });
+        this.soundPool.positiveSoundFast = gameUtils.getSound('positivevictorysound2.wav', {
+            volume: 0.07,
+            rate: 1.5
+        });
 
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
@@ -334,13 +338,17 @@ var game = {
         this.unitSystem.deselectUnit(this.ursula);
 
         //determine spaceToContinueBehavior
-        var spaceToContinueBehavior = function() {
-            this.map.show();
-            this.map.allowMouseEvents(false);
-            var blankScene = this.transitionToBlankScene({mode: 'SIDE', transitionLength: 500});
-            gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
-                this.map.allowMouseEvents(true);
-            });
+        var spaceToContinueBehavior = function(options) {
+            this.reconfigureAtCurrentLevel();
+            if(options.type == 'victory') {
+                this.map.addAdrenalineBlock();
+            }
+            // this.map.show();
+            // this.map.allowMouseEvents(false);
+            // var blankScene = this.transitionToBlankScene({mode: 'SIDE', transitionLength: 500});
+            // gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
+            //     this.map.allowMouseEvents(true);
+            // });
         }.bind(this);
 
         if (this.map.currentNode.type == 'camp') {
