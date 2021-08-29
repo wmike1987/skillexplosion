@@ -15,7 +15,9 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import TileMapper from '@core/TileMapper.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
-import {Doodad} from '@utils/Doodad.js';
+import {
+    Doodad
+} from '@utils/Doodad.js';
 import {
     Dialogue,
     DialogueChain
@@ -56,10 +58,12 @@ commonAirDropStation.initExtension = function() {
     }];
 };
 commonAirDropStation.fillLevelSceneExtension = function(scene) {
-    this.createMapTable(scene, {position: {
-        x: gameUtils.getCanvasCenter().x + 130,
-        y: gameUtils.getCanvasCenter().y - 0
-    }});
+    this.createMapTable(scene, {
+        position: {
+            x: gameUtils.getCanvasCenter().x + 130,
+            y: gameUtils.getCanvasCenter().y - 0
+        }
+    });
 };
 
 commonAirDropStation.createMapNode = function(options) {
@@ -295,10 +299,13 @@ var selectionMechanism = {
 
                 //show item icon
                 graphicsUtils.addDisplayObjectToRenderer(item.icon);
-                graphicsUtils.makeSpriteSize(item.icon, 50);
+                graphicsUtils.makeSpriteSize(item.icon, 36);
                 item.icon.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
                     x: j * spacing - subtractionAmount,
                     y: -100
+                });
+                graphicsUtils.addBorderToSprite({
+                    sprite: item.icon
                 });
                 Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
                     systemMessage: 'Click to receive from air drop.'
@@ -359,9 +366,14 @@ var selectionMechanism = {
         });
 
         globals.currentGame.flyover(() => {
-            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
-                y: -100
-            }), [item.itemName], true);
+            globals.currentGame.dustAndItemBox({
+                location: gameUtils.getPlayableCenterPlus({
+                    y: -100
+                }),
+                item: [item.itemName],
+                special: true,
+                autoDestroyBox: true
+            });
             this.level.mapTableActive = true;
         });
     },

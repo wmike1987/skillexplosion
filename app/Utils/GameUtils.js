@@ -1702,6 +1702,24 @@ var graphicsUtils = {
         });
     },
 
+    addBorderToSprite: function(options) {
+        options = Object.assign({
+            tint: 0xFFFFFF,
+            thickness: 1,
+            alpha: 0.25,
+        }, options);
+        let sprite = options.sprite;
+        var border = graphicsUtils.addSomethingToRenderer('TintableSquare', {where: sprite.where, position: sprite.position, alpha: options.alpha});
+        graphicsUtils.makeSpriteSize(border, sprite.width + 2);
+        border.sortYOffset = -1;
+        border.tint = options.tint;
+        gameUtils.matterOnce(sprite, 'destroy', () => {
+            graphicsUtils.removeSomethingFromRenderer(border);
+        });
+
+        return border;
+    },
+
     addGleamToSprite: function(options) {
         options = Object.assign({
             runs: 1,

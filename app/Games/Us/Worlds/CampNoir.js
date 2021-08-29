@@ -19,7 +19,9 @@ import {
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
-import {Doodad} from '@utils/Doodad.js';
+import {
+    Doodad
+} from '@utils/Doodad.js';
 import Scene from '@core/Scene.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Map from '@games/Us/MapAndLevel/Map/Map.js';
@@ -471,7 +473,7 @@ var camp = {
             this.mapTableActive = true;
         }
 
-        if(true) {
+        if (true) {
             this.mapTableActive = true;
         }
 
@@ -815,18 +817,25 @@ var phaseTwo = function(options) {
                         chain.cleanUp();
                         gameUtils.doSomethingAfterDuration(() => {
                             globals.currentGame.flyover(() => {
-                                globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
-                                    x: 200,
-                                    y: 120
-                                }), ['BasicMicrochip', 'Book'], true);
-                                globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
-                                    x: 200,
-                                    y: 50
-                                }), [{
-                                    className: 'worn'
-                                }, {
-                                    className: 'worn'
-                                }]);
+                                globals.currentGame.dustAndItemBox({
+                                    location: gameUtils.getPlayableCenterPlus({
+                                        x: 200,
+                                        y: 120
+                                    }),
+                                    item: ['BasicMicrochip', 'Book'],
+                                    special: true
+                                });
+                                globals.currentGame.dustAndItemBox({
+                                    location: gameUtils.getPlayableCenterPlus({
+                                        x: 200,
+                                        y: 50
+                                    }),
+                                    item: [{
+                                        className: 'worn'
+                                    }, {
+                                        className: 'worn'
+                                    }]
+                                });
                                 gameUtils.doSomethingAfterDuration(() => {
                                     campLevel.mapTableFalseSetting = false;
                                     campLevel.mapTableActive = true;
@@ -850,10 +859,14 @@ var phaseTwo = function(options) {
         nextPhase: 'allNodesComplete',
         onEnterBehavior: function() {
             globals.currentGame.flyover(() => {
-                globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
-                    x: 200,
-                    y: 120
-                }), ['BasicMicrochip', 'Book'], true);
+                globals.currentGame.dustAndItemBox({
+                    location: gameUtils.getPlayableCenterPlus({
+                        x: 200,
+                        y: 120
+                    }),
+                    item: ['BasicMicrochip', 'Book'],
+                    special: true
+                });
             });
         }
     };

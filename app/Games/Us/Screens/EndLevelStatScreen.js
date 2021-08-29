@@ -183,7 +183,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         }
 
         var tintTo = 0x62ff68;
-        if(options.type == 'loss') {
+        if (options.type == 'loss') {
             tintTo = 0xf12323;
         }
 
@@ -200,7 +200,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             duration: titleTextFadetime,
             times: 0.5
         });
-        graphicsUtils.fadeSpriteOverTime({sprite: titleText, duration: 0, fadeIn: true, nokill: true, makeVisible: true});
+        graphicsUtils.fadeSpriteOverTime({
+            sprite: titleText,
+            duration: 0,
+            fadeIn: true,
+            nokill: true,
+            makeVisible: true
+        });
         scene.add(titleText);
 
         var skinnyDivider = '———————';
@@ -218,7 +224,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marinePortrait, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marinePortrait,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -229,7 +241,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marinePortraitBorder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marinePortraitBorder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -248,7 +266,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marineDamage, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineDamage,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -267,7 +291,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marineDefense, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineDefense,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -286,7 +316,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marineHealth, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineHealth,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -305,7 +341,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marineGrit, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineGrit,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -324,7 +366,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marineDodge, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineDodge,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -343,7 +391,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: marineEnergy, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineEnergy,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -372,7 +426,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 2);
         });
@@ -394,7 +454,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneKillsTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneKillsTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 2);
         });
@@ -412,7 +478,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneKills, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneKills,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 2);
         });
@@ -429,7 +501,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 3);
         });
@@ -447,7 +525,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDamageTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 3);
         });
@@ -464,7 +548,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDamage, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDamage,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 3);
         });
@@ -481,7 +571,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 4);
         });
@@ -499,7 +595,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageTakenTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDamageTakenTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 4);
         });
@@ -516,7 +618,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageTaken, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDamageTaken,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 4);
         });
@@ -533,7 +641,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 5);
         });
@@ -551,7 +665,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageReducedByAmorTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDamageReducedByAmorTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 5);
         });
@@ -568,7 +688,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageReducedByAmor, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDamageReducedByAmor,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 5);
         });
@@ -585,7 +711,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 6);
         });
@@ -603,7 +735,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDodgedTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDodgedTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 6);
         });
@@ -620,7 +758,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDodgedText, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDodgedText,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 6);
         });
@@ -637,7 +781,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 7);
         });
@@ -655,7 +805,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneHealingDoneTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneHealingDoneTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 7);
         });
@@ -672,7 +828,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneHealingDone, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneHealingDone,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 7);
         });
@@ -689,7 +851,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 8);
         });
@@ -707,7 +875,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneKnifeTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneKnifeTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 8);
         });
@@ -724,7 +898,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneKnifeStats, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneKnifeStats,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 8);
         });
@@ -741,7 +921,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
@@ -759,7 +945,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDashTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDashTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
@@ -776,7 +968,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: shaneDashesPerformed, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneDashesPerformed,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
@@ -793,7 +991,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
                 //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
@@ -809,7 +1013,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicPortrait, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicPortrait,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -820,7 +1030,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicPortraitBorder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicPortraitBorder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -839,7 +1055,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicDamage, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicDamage,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -858,7 +1080,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicDefense, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicDefense,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -877,7 +1105,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicHealth, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicHealth,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -896,7 +1130,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicGrit, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicGrit,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -915,7 +1155,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicDodge, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicDodge,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
@@ -934,7 +1180,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: medicEnergy, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: medicEnergy,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
         // var defenseAdditionText = '';
@@ -962,7 +1214,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 2);
         });
 
@@ -983,7 +1241,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaKillsTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaKillsTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 2);
         });
 
@@ -999,7 +1263,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaKills, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaKills,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 2);
         });
 
@@ -1015,7 +1285,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 3);
         });
         this.ursulaStats.push([ursulaKillsTitle, ursulaKills, placeholder]);
@@ -1032,7 +1308,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDamageTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDamageTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 3);
         });
 
@@ -1048,7 +1330,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDamage, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDamage,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 3);
         });
 
@@ -1064,7 +1352,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 4);
         });
         this.ursulaStats.push([ursulaDamageTitle, ursulaDamage, placeholder]);
@@ -1081,7 +1375,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDamageTakenTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDamageTakenTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 4);
         });
 
@@ -1097,7 +1397,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDamageTaken, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDamageTaken,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 4);
         });
 
@@ -1113,7 +1419,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 5);
         });
         this.ursulaStats.push([ursulaDamageTakenTitle, ursulaDamageTaken, placeholder]);
@@ -1130,7 +1442,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDamageReducedByAmorTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDamageReducedByAmorTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 5);
         });
 
@@ -1146,7 +1464,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDamageReducedByAmor, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDamageReducedByAmor,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 5);
         });
 
@@ -1162,7 +1486,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 6);
         });
         this.ursulaStats.push([ursulaDamageReducedByAmorTitle, ursulaDamageReducedByAmor, placeholder]);
@@ -1179,7 +1509,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDodgedTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDodgedTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 6);
         });
 
@@ -1195,7 +1531,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaDodgedText, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDodgedText,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 6);
         });
 
@@ -1211,7 +1553,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 7);
         });
         this.ursulaStats.push([ursulaDodgedTitle, ursulaDodgedText, placeholder]);
@@ -1228,7 +1576,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaHealingDoneTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaHealingDoneTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 7);
         });
 
@@ -1244,7 +1598,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: ursulaHealingDone, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaHealingDone,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 7);
         });
 
@@ -1260,7 +1620,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 8);
         });
         this.ursulaStats.push([ursulaHealingDoneTitle, ursulaHealingDone, placeholder]);
@@ -1277,7 +1643,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: minesLaidTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: minesLaidTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 8);
         });
 
@@ -1293,7 +1665,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: minesLaidDone, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: minesLaidDone,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 8);
         });
 
@@ -1309,7 +1687,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 9);
         });
         this.ursulaStats.push([minesLaidTitle, minesLaidDone, placeholder]);
@@ -1326,7 +1710,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: secretStepsTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: secretStepsTitle,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 9);
         });
 
@@ -1342,7 +1732,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: secretStepsDone, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: secretStepsDone,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 9);
         });
 
@@ -1358,7 +1754,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         });
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: placeholder,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime * 9);
         });
         this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
@@ -1384,40 +1786,64 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         //Continue buttons plus victory/defeat event
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
             Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
-            if(this.spaceToContinue) {
+            if (this.spaceToContinue) {
                 $('body').on('keydown.uskeydownendscreen', function(event) {
                     var key = event.key.toLowerCase();
                     if (key == ' ') {
                         globals.currentGame.soundPool.sceneContinue.play();
                         $('body').off('keydown.uskeydownendscreen');
                         graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                            if(options.done) {
-                                options.done({type: options.type});
+                            if (options.done) {
+                                options.done({
+                                    type: options.type
+                                });
                             }
                         });
-                    } else if(key == 'escape' && !options.onlyContinueAllowed) {
+                    } else if (key == 'escape' && !options.onlyContinueAllowed) {
                         // globals.currentGame.soundPool.sceneContinue.play();
                         // $('body').off('keydown.uskeydownendscreen');
                         // graphicsUtils.graduallyTint(this.escapeToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                            //     globals.currentGame.reconfigureAtCurrentLevel(options.type);
-                            // });
-                        }
-                    }.bind(this));
+                        //     globals.currentGame.reconfigureAtCurrentLevel(options.type);
+                        // });
+                    }
+                }.bind(this));
             }
         });
 
-        if(options.onlyContinueAllowed) {
+        if (options.onlyContinueAllowed) {
             //space to continue
-            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 20}});
+            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                where: 'hudText',
+                style: styles.escapeToContinueStyle,
+                anchor: {
+                    x: 0.5,
+                    y: 1
+                },
+                position: {
+                    x: gameUtils.getPlayableWidth() - 210,
+                    y: gameUtils.getCanvasHeight() - 20
+                }
+            });
             scene.add(this.spaceToContinue);
             this.spaceToContinue.visible = false;
             Matter.Events.on(scene, 'sceneFadeInDone', () => {
                 this.spaceToContinue.visible = true;
             });
         } else {
-            if(options.type == 'loss') {
+            if (options.type == 'loss') {
                 //space to continue upon loss
-                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 35}});
+                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                    where: 'hudText',
+                    style: styles.escapeToContinueStyle,
+                    anchor: {
+                        x: 0.5,
+                        y: 1
+                    },
+                    position: {
+                        x: gameUtils.getPlayableWidth() - 210,
+                        y: gameUtils.getCanvasHeight() - 35
+                    }
+                });
                 scene.add(this.spaceToContinue);
                 this.spaceToContinue.visible = false;
             } else {
@@ -1426,7 +1852,14 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                     gameUtils.doSomethingAfterDuration(() => {
                         var adrenDuration = 2000;
                         globals.currentGame.soundPool.positiveSoundFast.play();
-                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({y: 300}), {where: 'hudTwo', style: styles.adrenalineTextLarge, speed: 6, duration: adrenDuration});
+                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: adrenDuration
+                        });
                         graphicsUtils.addGleamToSprite({
                             sprite: adrText,
                             gleamWidth: 50,
@@ -1436,7 +1869,14 @@ var EndLevelStatScreen = function(units, statsObj, options) {
 
                         gameUtils.doSomethingAfterDuration(() => {
                             globals.currentGame.soundPool.positiveSoundFast.play();
-                            var rewardText = graphicsUtils.floatText('Choose your reward!', gameUtils.getPlayableCenterPlus({y: 300}), {where: 'hudTwo', style: styles.rewardTextLarge, speed: 6, duration: adrenDuration});
+                            var rewardText = graphicsUtils.floatText('Choose a pill!', gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.rewardTextLarge,
+                                speed: 6,
+                                duration: adrenDuration
+                            });
                             scene.add(rewardText);
                             graphicsUtils.addGleamToSprite({
                                 sprite: rewardText,
@@ -1458,18 +1898,23 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                     i.destroy();
                                 });
 
-                                if(options.done) {
-                                    options.done({type: options.type});
+                                if (options.done) {
+                                    options.done({
+                                        type: options.type
+                                    });
                                 }
                                 $('body').off('keydown.uskeydownendscreen');
 
                                 // Matter.Events.on(globals.currentGame.currentScene, 'sceneFadeInDone', () => {
-                                    globals.currentGame.flyover(() => {
-                                        globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
+                                globals.currentGame.flyover(() => {
+                                    globals.currentGame.dustAndItemBox({
+                                        location: gameUtils.getPlayableCenterPlus({
                                             y: 50
-                                        }), [item.itemName], true);
+                                        }),
+                                        item: [item.itemName],
+                                        autoDestroyBox: true
                                     });
-                                // });
+                                });
                             };
 
                             var j = 0;
@@ -1490,10 +1935,16 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                         //show item icon
                                         graphicsUtils.addDisplayObjectToRenderer(item.icon);
                                         graphicsUtils.changeDisplayObjectStage(item.icon, 'hudTwo');
-                                        graphicsUtils.makeSpriteSize(item.icon, 50);
-                                        item.icon.position = gameUtils.getPlayableCenterPlus({x: -50 + (j * 100), y: 300});
+                                        graphicsUtils.makeSpriteSize(item.icon, 36);
+                                        item.icon.position = gameUtils.getPlayableCenterPlus({
+                                            x: -50 + (j * 100),
+                                            y: 300
+                                        });
+                                        graphicsUtils.addBorderToSprite({
+                                            sprite: item.icon
+                                        });
                                         Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
-                                            systemMessage: 'Click to take.'
+                                            systemMessage: 'Click to receive.'
                                         }));
                                         j++;
 
@@ -1508,13 +1959,13 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                     }.bind(this));
                                 });
                             }, 1000);
-                        }, adrenDuration/2.0);
+                        }, adrenDuration / 2.0);
                     }, startFadeTime * 9 + 1250);
                 });
             }
 
             Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                if(this.spaceToContinue) {
+                if (this.spaceToContinue) {
                     this.spaceToContinue.visible = true;
                 }
                 // if(this.plusOneAdrenaline) {

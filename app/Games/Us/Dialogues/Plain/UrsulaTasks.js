@@ -193,7 +193,7 @@ var UrsulaTasks = function(scene) {
 
     b2.onFullyShown = function() {
         globals.currentGame.flyover(() => {
-            globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({x: 100}), ['BasicMicrochip', 'Book'], true);
+            globals.currentGame.dustAndItemBox({location: gameUtils.getPlayableCenterPlus({x: 100}), item: ['BasicMicrochip', 'Book'], special: true});
             b2.preventAutoEnd = false;
         });
     };

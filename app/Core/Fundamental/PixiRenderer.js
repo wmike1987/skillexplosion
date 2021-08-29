@@ -378,6 +378,7 @@ var renderer = function(engine, options) {
 	this.addToPixiStage = function(something, where) {
 		where = where || 'stage';
 		something.myLayer = where;
+        something.where = where;
 		this.stages[where].addChild(something);
 		something.parentGroup = this.layerGroups[where];
 	};

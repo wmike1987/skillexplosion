@@ -718,7 +718,17 @@ var game = {
         });
     },
 
-    dustAndItemBox: function(location, item, special, smokeTint) {
+    dustAndItemBox: function(options) {
+        options = Object.assign({
+            special: false,
+            autoDestroyBox: false,
+        }, options);
+
+        let location = options.location;
+        let item = options.item;
+        let special = options.special;
+        let smokeTint = options.smokeTint;
+
         //play animation
         var center = gameUtils.getPlayableCenter();
         var smokeAnimation = gameUtils.getAnimation({
@@ -790,6 +800,12 @@ var game = {
         box.position = mathArrayUtils.clonePosition(location, {
             y: -5
         });
+
+        if(options.autoDestroyBox) {
+            gameUtils.doSomethingAfterDuration(() => {
+                box.sufferAttack(1000);
+            }, 200);
+        }
     },
 
     resetGameExtension: function() {
