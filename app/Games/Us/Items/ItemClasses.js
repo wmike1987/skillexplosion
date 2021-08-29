@@ -30,6 +30,10 @@ var ItemClasses = {
         specialtyItem: {tint: 0x0f7e09, items: []},
     },
 
+    lightStimulant: {
+        item: {tint: 0x80ffbb, items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill']},
+    },
+
     stimulant: {
         item: {tint: 0x80ffbb, items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']},
     },

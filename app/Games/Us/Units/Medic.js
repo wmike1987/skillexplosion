@@ -963,7 +963,7 @@ export default function Medic(options) {
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             medic.getAbilityByName('Mine').method.call(medic, null);
-            attackingUnit.petrify(dtDDuration, {duration: dtDDuration, petrifyingUnit: medic});
+            attackingUnit.petrify({duration: dtDDuration, petrifyingUnit: medic});
         },
         preStart: function(type) {
             var passive = this;

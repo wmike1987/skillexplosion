@@ -74,8 +74,8 @@ var game = {
             rate: 0.9
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {
-            volume: 3.0,
-            rate: 1.0
+            volume: 1.75,
+            rate: 1.2
         });
         this.boxSound = gameUtils.getSound('criticalhit.wav', {
             volume: 0.15,
@@ -122,9 +122,9 @@ var game = {
             volume: 0.03,
             rate: 1.0
         });
-        this.soundPool.sceneSwipePositive = gameUtils.getSound('positivesceneswipe.wav', {
+        this.soundPool.transitionOne = gameUtils.getSound('gentletransition.wav', {
             volume: 0.04,
-            rate: 1.1
+            rate: 1.0
         });
         this.soundPool.positiveSound = gameUtils.getSound('positivevictorysound2.wav', {
             volume: 0.07,
@@ -407,7 +407,7 @@ var game = {
                     position: ursulaPosition,
                     moveToCenter: false,
                 });
-                game.map.removeAdrenalineBlock();
+
                 if (!level.mapTableSprite) {
                     level.createMapTable(game.currentScene);
                 }
@@ -684,8 +684,8 @@ var game = {
         }
     },
 
-    flyover: function(done) {
-        var shadow = Matter.Bodies.circle(-2800, gameUtils.getCanvasHeight() / 2.0, 1, {
+    flyover: function(done, speed) {
+        var shadow = Matter.Bodies.circle(-4200, gameUtils.getCanvasHeight() / 2.0, 1, {
             restitution: 0.95,
             frictionAir: 0,
             mass: 1,
@@ -710,7 +710,7 @@ var game = {
         gameUtils.sendBodyToDestinationAtSpeed(shadow, {
             x: gameUtils.getCanvasWidth() + 100,
             y: shadow.position.y
-        }, 35, false, false, () => {
+        }, speed || 50, false, false, () => {
             this.removeBody(shadow);
             if (done) {
                 done();

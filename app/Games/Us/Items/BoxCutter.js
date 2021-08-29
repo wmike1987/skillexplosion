@@ -62,7 +62,8 @@ export default function(options) {
         name: "Box Cutter",
         description: "Deal " + damage + " damage upon petrifying or condemning an enemy unit.",
         icon: 'BoxCutter',
-        type: 'Medic'
+        type: 'Medic',
+        fontType: 'ursula',
     }, options);
     return new ic(item);
 }

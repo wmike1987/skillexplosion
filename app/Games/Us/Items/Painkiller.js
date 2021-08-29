@@ -9,6 +9,7 @@ export default function(options) {
         description: "Consume to gain 0.5 armor.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'BlackSyringe',
+        fontType: 'stimulant',
         placePredicate: function(position) {
             var currentUnitPortrait = globals.currentGame.unitSystem.unitPanel.currentPortrait;
             var currentUnit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;

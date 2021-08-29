@@ -295,6 +295,7 @@ var selectionMechanism = {
 
                 //show item icon
                 graphicsUtils.addDisplayObjectToRenderer(item.icon);
+                graphicsUtils.makeSpriteSize(item.icon, 50);
                 item.icon.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
                     x: j * spacing - subtractionAmount,
                     y: -100

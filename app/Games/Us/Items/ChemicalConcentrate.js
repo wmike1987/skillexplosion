@@ -9,6 +9,7 @@ export default function(options) {
         description: "Consume to increase max health and max energy by 3.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'BlueSyringe',
+        fontType: 'stimulant',
         placePredicate: function(position) {
             var currentUnitPortrait = globals.currentGame.unitSystem.unitPanel.currentPortrait;
             var currentUnit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;

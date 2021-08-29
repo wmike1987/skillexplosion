@@ -1386,7 +1386,7 @@ var graphicsUtils = {
         });
         floatedText.position = position;
         floatedText.alpha = 1.4;
-        globals.currentGame.addTimer({
+        var timer = globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
             timeLimit: options.duration || 1000,
             killsSelf: true,
@@ -1403,6 +1403,14 @@ var graphicsUtils = {
                     options.deferred.resolve();
                 }
             }.bind(this)
+        });
+
+        var remove = gameUtils.matterOnce(floatedText, 'destroy', () => {
+            timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
 
         return floatedText;

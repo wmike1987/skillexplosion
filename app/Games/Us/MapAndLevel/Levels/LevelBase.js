@@ -41,6 +41,7 @@ var levelBase = {
             transitionLength: options.transitionLength || null,
             leftToRight: options.leftToRight
         });
+
         Matter.Events.trigger(globals.currentGame, 'EnterLevel', {
             level: this
         });
@@ -256,6 +257,7 @@ var levelBase = {
         scene.addCleanUpTask(() => {
             globals.currentGame.removePriorityMouseDownEvent(mapClickListener);
             globals.currentGame.removeTickCallback(mapHoverTick);
+            this.mapTableSprite = null;
             $('body').off('keydown.map');
         });
     },

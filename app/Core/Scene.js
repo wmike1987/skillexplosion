@@ -209,6 +209,7 @@ Scene.prototype.transitionToScene = function(options) {
     }
 
     Matter.Events.trigger(this, 'sceneFadeOutBegin');
+    Matter.Events.trigger(newScene, 'sceneFadeInBegin');
     // Matter.Events.trigger(newScene, 'sceneFadeInBegin');
     newScene.fadeTimer = globals.currentGame.addTimer({name: 'sceneIn' + this.id, runs: inRuns || runs, timeLimit: iterTime, killsSelf: true, tickCallback: function(delta) {
         //fade in (this isn't actually used at the moment)

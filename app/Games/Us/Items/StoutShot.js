@@ -9,6 +9,7 @@ export default function(options) {
         description: "Consume to gain 3 grit and increase max hp by 3.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'YellowSyringe',
+        fontType: 'stimulant',
         placePredicate: function(position) {
             var currentUnitPortrait = globals.currentGame.unitSystem.unitPanel.currentPortrait;
             var currentUnit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;

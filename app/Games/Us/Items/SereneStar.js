@@ -19,7 +19,8 @@ export default function(options) {
         name: "Serene Star",
         description: ["Add +5 to maximum energy.", "Regenerate +0.5 energy per second.", "Gain 2 energy after knife kill."],
         icon: 'SereneStar',
-        type: 'Marine'
+        type: 'Marine',
+        fontType: 'shane'
     }, options);
     return new ic(item);
 }

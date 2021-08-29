@@ -10,6 +10,7 @@ import Tooltip from '@core/Tooltip.js';
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';
+import ItemUtils from '@core/Unit/ItemUtils.js';
 import Scene from '@core/Scene.js';
 import styles from '@utils/Styles.js';
 
@@ -185,20 +186,27 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         if(options.type == 'loss') {
             tintTo = 0xf12323;
         }
+
+        //play transition sound
+        gameUtils.matterOnce(scene, 'sceneFadeInBegin', () => {
+            globals.currentGame.soundPool.transitionOne.play();
+        });
+
+        var titleTextFadetime = 300;
         graphicsUtils.flashSprite({
             sprite: titleText,
             fromColor: 0xffffff,
             toColor: tintTo,
-            duration: 750,
+            duration: titleTextFadetime,
             times: 0.5
         });
-        graphicsUtils.fadeSpriteOverTime({sprite: titleText, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
+        graphicsUtils.fadeSpriteOverTime({sprite: titleText, duration: 0, fadeIn: true, nokill: true, makeVisible: true});
         scene.add(titleText);
 
         var skinnyDivider = '———————';
         var divider = '———————————';
 
-        var startFadeTime = 175;
+        var startFadeTime = 30;
 
         //Shane
         var startPos = shanePosition(same);
@@ -365,7 +373,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 2);
         });
 
@@ -387,7 +395,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneKillsTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 2);
         });
 
@@ -405,7 +413,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneKills, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 2);
         });
 
@@ -422,7 +430,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 3);
         });
         this.shaneStats.push([shaneKillsTitle, shaneKills, placeholder]);
@@ -440,7 +448,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 3);
         });
 
@@ -457,7 +465,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDamage, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 3);
         });
 
@@ -474,7 +482,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 4);
         });
         this.shaneStats.push([shaneDamageTitle, shaneDamage, placeholder]);
@@ -492,7 +500,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageTakenTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 4);
         });
 
@@ -509,7 +517,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageTaken, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 4);
         });
 
@@ -526,7 +534,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 5);
         });
         this.shaneStats.push([shaneDamageTakenTitle, shaneDamageTaken, placeholder]);
@@ -544,7 +552,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageReducedByAmorTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 5);
         });
 
@@ -561,7 +569,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDamageReducedByAmor, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 5);
         });
 
@@ -578,7 +586,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 6);
         });
         this.shaneStats.push([shaneDamageReducedByAmorTitle, shaneDamageReducedByAmor, placeholder]);
@@ -596,7 +604,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDodgedTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 6);
         });
 
@@ -613,7 +621,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDodgedText, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 6);
         });
 
@@ -630,7 +638,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 7);
         });
         this.shaneStats.push([shaneDodgedTitle, shaneDodgedText, placeholder]);
@@ -648,7 +656,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneHealingDoneTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 7);
         });
 
@@ -665,7 +673,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneHealingDone, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 7);
         });
 
@@ -682,7 +690,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 8);
         });
         this.shaneStats.push([shaneHealingDoneTitle, shaneHealingDone, placeholder]);
@@ -700,7 +708,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneKnifeTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 8);
         });
 
@@ -717,7 +725,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneKnifeStats, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 8);
         });
 
@@ -734,7 +742,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
         this.shaneStats.push([shaneKnifeTitle, shaneKnifeStats, placeholder]);
@@ -752,7 +760,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDashTitle, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
 
@@ -769,7 +777,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: shaneDashesPerformed, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
 
@@ -786,7 +794,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({sprite: placeholder, duration: 1000, fadeIn: true, nokill: true, makeVisible: true});
-                globals.currentGame.soundPool.keypressSound.play();
+                //globals.currentGame.soundPool.keypressSound.play();
             }, startFadeTime * 9);
         });
         this.shaneStats.push([shaneDashTitle, shaneDashesPerformed, placeholder]);
@@ -1376,24 +1384,26 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         //Continue buttons plus victory/defeat event
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
             Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
-            $('body').on('keydown.uskeydownendscreen', function(event) {
-                var key = event.key.toLowerCase();
-                if (key == ' ') {
-                    globals.currentGame.soundPool.sceneContinue.play();
-                    $('body').off('keydown.uskeydownendscreen');
-                    graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                        if(options.done) {
-                            options.done({type: options.type});
+            if(this.spaceToContinue) {
+                $('body').on('keydown.uskeydownendscreen', function(event) {
+                    var key = event.key.toLowerCase();
+                    if (key == ' ') {
+                        globals.currentGame.soundPool.sceneContinue.play();
+                        $('body').off('keydown.uskeydownendscreen');
+                        graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                            if(options.done) {
+                                options.done({type: options.type});
+                            }
+                        });
+                    } else if(key == 'escape' && !options.onlyContinueAllowed) {
+                        // globals.currentGame.soundPool.sceneContinue.play();
+                        // $('body').off('keydown.uskeydownendscreen');
+                        // graphicsUtils.graduallyTint(this.escapeToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                            //     globals.currentGame.reconfigureAtCurrentLevel(options.type);
+                            // });
                         }
-                    });
-                } else if(key == 'escape' && !options.onlyContinueAllowed) {
-                    // globals.currentGame.soundPool.sceneContinue.play();
-                    // $('body').off('keydown.uskeydownendscreen');
-                    // graphicsUtils.graduallyTint(this.escapeToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                    //     globals.currentGame.reconfigureAtCurrentLevel(options.type);
-                    // });
-                }
-            }.bind(this));
+                    }.bind(this));
+            }
         });
 
         if(options.onlyContinueAllowed) {
@@ -1405,7 +1415,6 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                 this.spaceToContinue.visible = true;
             });
         } else {
-
             if(options.type == 'loss') {
                 //space to continue upon loss
                 this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {where: 'hudText', style: styles.escapeToContinueStyle, anchor: {x: 0.5, y: 1}, position: {x: gameUtils.getPlayableWidth() - 210, y: gameUtils.getCanvasHeight() - 35}});
@@ -1415,7 +1424,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                 //show +1 adrenaline
                 Matter.Events.on(scene, 'sceneFadeInDone', () => {
                     gameUtils.doSomethingAfterDuration(() => {
-                        var adrenDuration = 2500;
+                        var adrenDuration = 2000;
                         globals.currentGame.soundPool.positiveSoundFast.play();
                         var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({y: 300}), {where: 'hudTwo', style: styles.adrenalineTextLarge, speed: 6, duration: adrenDuration});
                         graphicsUtils.addGleamToSprite({
@@ -1434,8 +1443,73 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                 gleamWidth: 50,
                                 duration: 500
                             });
-                        }, adrenDuration + 250);
-                    }, 3000);
+
+                            //****************************
+                            //show light stimulant choices
+                            //****************************
+                            var items = [];
+                            var makeSelection = function(item) {
+                                item.icon.tooltipObj.hide();
+
+                                //hide all icons, remove the click handlers, then destory the items
+                                items.forEach((i) => {
+                                    i.icon.visible = false;
+                                    i.removeSelector();
+                                    i.destroy();
+                                });
+
+                                if(options.done) {
+                                    options.done({type: options.type});
+                                }
+                                $('body').off('keydown.uskeydownendscreen');
+
+                                // Matter.Events.on(globals.currentGame.currentScene, 'sceneFadeInDone', () => {
+                                    globals.currentGame.flyover(() => {
+                                        globals.currentGame.dustAndItemBox(gameUtils.getPlayableCenterPlus({
+                                            y: 50
+                                        }), [item.itemName], true);
+                                    });
+                                // });
+                            };
+
+                            var j = 0;
+                            gameUtils.doSomethingAfterDuration(() => {
+                                var selectionOptions = ItemUtils.getRandomItemsFromClass('lightStimulant', 'item', 2);
+                                selectionOptions.forEach((choice) => {
+                                    var itemDef = $.Deferred();
+                                    ItemUtils.createItemObj({
+                                        gamePrefix: 'Us',
+                                        itemName: choice,
+                                        position: gameUtils.getPlayableCenter(),
+                                        dontAddToItemSystem: true,
+                                        itemDeferred: itemDef
+                                    });
+                                    itemDef.done(function(item) {
+                                        items.push(item);
+
+                                        //show item icon
+                                        graphicsUtils.addDisplayObjectToRenderer(item.icon);
+                                        graphicsUtils.changeDisplayObjectStage(item.icon, 'hudTwo');
+                                        graphicsUtils.makeSpriteSize(item.icon, 50);
+                                        item.icon.position = gameUtils.getPlayableCenterPlus({x: -50 + (j * 100), y: 300});
+                                        Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
+                                            systemMessage: 'Click to take.'
+                                        }));
+                                        j++;
+
+                                        //mouse down listener
+                                        var f = function(event) {
+                                            makeSelection(item);
+                                        }.bind(this);
+                                        item.icon.on('mousedown', f);
+                                        item.removeSelector = function() {
+                                            item.icon.off('mousedown', f);
+                                        };
+                                    }.bind(this));
+                                });
+                            }, 1000);
+                        }, adrenDuration/2.0);
+                    }, startFadeTime * 9 + 1250);
                 });
             }
 

@@ -9,6 +9,7 @@ export default function(options) {
         description: "Consume to gain 4 dodge.",
         systemMessage: "Drop on unit portrait to consume.",
         icon: 'NeonGreenSyringe',
+        fontType: 'stimulant',
         placePredicate: function(position) {
             var currentUnitPortrait = globals.currentGame.unitSystem.unitPanel.currentPortrait;
             var currentUnit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;
