@@ -1563,6 +1563,10 @@ unitPanel.prototype.hideAugmentsAndPassivesForUnit = function() {
     this.unitPassivePanel.hideForCurrentUnit();
 };
 
+unitPanel.prototype.refreshAugmentButton = function() {
+    this.unitAugmentPanel.lowerOpenButton();
+};
+
 unitPanel.prototype.enterCamp = function() {
     this.unitAugmentPanel.lowerOpenButton();
     this.unitPassivePanel.lowerOpenButton();

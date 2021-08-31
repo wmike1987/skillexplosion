@@ -16,6 +16,10 @@ var cantdo = gameUtils.getSound('cantpickup.wav', {
 
 var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
+
+    this.currentLevelIsConfigurable = function() {
+        return globals.currentGame.isCurrentLevelConfigurable() || globals.currentGame.isCurrentLevelSOMConfigurable();
+    };
 };
 
 ConfigPanel.prototype.flashPanel = function(unit) {
@@ -41,7 +45,7 @@ ConfigPanel.prototype.initialize = function() {
 
     //close config windows when we click the canvas
     globals.currentGame.addListener("mousedown", function() {
-        if(globals.currentGame.isCurrentLevelConfigurable()) {
+        if(this.currentLevelIsConfigurable()) {
             this.hideForCurrentUnit();
         }
     }.bind(this), false, true);
@@ -283,7 +287,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
 };
 
 ConfigPanel.prototype.lowerOpenButton = function() {
-    if(this.unitPanelRef.prevailingUnit && globals.currentGame.isCurrentLevelConfigurable()) {
+    if(this.unitPanelRef.prevailingUnit && this.currentLevelIsConfigurable()) {
         graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
         graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNTwo');
         graphicsUtils.addOrShowDisplayObject(this.showButtonSkinny);

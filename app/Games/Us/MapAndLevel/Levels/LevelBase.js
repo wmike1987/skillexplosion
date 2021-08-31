@@ -181,6 +181,78 @@ var levelBase = {
         return new MapNode(options);
     },
 
+    createAugmentRack: function(scene, options) {
+        options = options || {};
+
+        //add gunrack
+        var gunrackSprite = graphicsUtils.createDisplayObject('gunrack');
+        this.gunrack = new Doodad({
+            drawWire: false,
+            collides: true,
+            autoAdd: false,
+            radius: 20,
+            texture: [gunrackSprite],
+            stage: 'stage',
+            scale: {
+                x: 1.0,
+                y: 1.0
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+            shadowIcon: 'IsoShadowBlurred',
+            shadowScale: {
+                x: 1,
+                y: 1
+            },
+            shadowOffset: {
+                x: -2,
+                y: 15
+            },
+            position: {
+                x: gameUtils.getCanvasCenter().x - 180 + 50 / 2.0,
+                y: gameUtils.getPlayableCenter().y - 30 + 50 / 2.0
+            }
+        });
+        scene.add(this.gunrack);
+
+        var gunrackHoverTick = globals.currentGame.addTickCallback(function(event) {
+            if(self.campLikeActive) return;
+            if (Matter.Vertices.contains(this.gunrack.body.vertices, mousePosition)) {
+                gunrackSprite.tint = 0xff33cc;
+            } else {
+                gunrackSprite.tint = 0xFFFFFF;
+            }
+        }.bind(this));
+
+        var self = this;
+        //Establish map click listeners
+        var gunrackClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
+            if(self.campLikeActive) return;
+            if (event.which == 3) return; //don't allow right clicks
+            var canvasPoint = {
+                x: 0,
+                y: 0
+            };
+            gameUtils.pixiPositionToPoint(canvasPoint, event);
+
+            if (Matter.Vertices.contains(self.gunrack.body.vertices, canvasPoint) && !this.mapActive) {
+                globals.currentGame.makeCurrentLevelConfigurable();
+                globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
+                globals.currentGame.soundPool.unlock1.play();
+                globals.currentGame.map.removeAdrenalineBlock();
+            }
+        }.bind(globals.currentGame));
+
+        scene.addCleanUpTask(() => {
+            globals.currentGame.removePriorityMouseDownEvent(gunrackClickListener);
+            globals.currentGame.removeTickCallback(gunrackHoverTick);
+            this.gunrack = null;
+        });
+    },
+
     createMapTable: function(scene, options) {
         options = options || {};
 

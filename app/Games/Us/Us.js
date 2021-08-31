@@ -17,7 +17,9 @@ import Medic from '@games/Us/Units/Medic.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
-import {Doodad} from '@utils/Doodad.js';
+import {
+    Doodad
+} from '@utils/Doodad.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Scene from '@core/Scene.js';
 import UnitPanel from '@games/Us/UnitPanel.js';
@@ -137,6 +139,10 @@ var game = {
         this.soundPool.keypressSound = gameUtils.getSound('keypress1.wav', {
             volume: 0.15,
             rate: 1
+        });
+        this.soundPool.unlock1 = gameUtils.getSound('unlockability.wav', {
+            volume: 0.12,
+            rate: 1.2
         });
 
         //next phase detector
@@ -344,7 +350,7 @@ var game = {
         //determine spaceToContinueBehavior
         var spaceToContinueBehavior = function(options) {
             this.reconfigureAtCurrentLevel();
-            if(options.type == 'victory') {
+            if (options.type == 'victory') {
                 this.map.addAdrenalineBlock();
             }
             // this.map.show();
@@ -388,7 +394,7 @@ var game = {
         game.reconfigureSound.play();
         this.currentLevel.enterLevel({
             customEnterLevel: function(level) {
-                level.campLikeActive = true;
+                level.campLikeActiveSOM = true;
 
                 var shanePosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
                     x: -40,
@@ -458,38 +464,7 @@ var game = {
                 });
                 game.currentScene.add(flagD);
 
-                //add gunrack
-                var gunrack = new Doodad({
-                    drawWire: false,
-                    collides: true,
-                    autoAdd: false,
-                    radius: 10,
-                    texture: 'gunrack',
-                    stage: 'stage',
-                    scale: {
-                        x: 1.0,
-                        y: 1.0
-                    },
-                    offset: {
-                        x: 0,
-                        y: 0
-                    },
-                    sortYOffset: 0,
-                    shadowIcon: 'IsoShadowBlurred',
-                    shadowScale: {
-                        x: 1,
-                        y: 1
-                    },
-                    shadowOffset: {
-                        x: -2,
-                        y: 15
-                    },
-                    position: {
-                        x: gameUtils.getCanvasCenter().x - 180 + x / 2.0,
-                        y: gameUtils.getPlayableCenter().y - 30 + y / 2.0
-                    }
-                });
-                game.currentScene.add(gunrack);
+                level.createAugmentRack(game.currentScene);
 
             },
             mode: 'SIDE',
@@ -514,6 +489,14 @@ var game = {
 
     isCurrentLevelConfigurable: function() {
         return this.currentLevel.campLikeActive;
+    },
+
+    isCurrentLevelSOMConfigurable: function() {
+        return this.currentLevel.campLikeActiveSOM;
+    },
+
+    makeCurrentLevelConfigurable: function() {
+        this.currentLevel.campLikeActive = true;
     },
 
     removeAllEnemyUnits: function() {
@@ -801,7 +784,7 @@ var game = {
             y: -5
         });
 
-        if(options.autoDestroyBox) {
+        if (options.autoDestroyBox) {
             gameUtils.doSomethingAfterDuration(() => {
                 box.sufferAttack(1000);
             }, 200);
@@ -832,9 +815,9 @@ var game = {
 };
 
 game.loadingScreenAsset = {
-        name: "Splash",
-        target: "Textures/Us/Splash.json"
-    };
+    name: "Splash",
+    target: "Textures/Us/Splash.json"
+};
 
 game.assets = [{
         name: "BaseUnitAnimations1",

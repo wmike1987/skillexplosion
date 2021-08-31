@@ -968,7 +968,7 @@ export default function Marine(options) {
                     var crit = 1;
                     var critActive = false;
                     if(hoodedPeepAugment) {
-                        if(Math.random() < 1 + hoodedPeepAugment.chance) {
+                        if(Math.random() < hoodedPeepAugment.chance) {
                             crit = hoodedPeepAugment.multiplier;
                             critActive = true;
                         }
