@@ -796,6 +796,7 @@ export default function Medic(options) {
         defenseCooldown: 4000,
         aggressionEventName: 'holdPosition',
         aggressionCooldown: 4000,
+        aggressionDuration: rsADuration,
         defenseAction: function(event) {
             //damage attacker
             let grit = medic.getTotalGrit()/2.0;
@@ -831,18 +832,19 @@ export default function Medic(options) {
     });
 
     var wwDDuration = 3000;
-    var wwADuration = 3000;
+    var wwADuration = 5000;
     var wickedWays  = new Passive({
         title: 'Wicked Ways',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 5 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 25hp upon death.'],
+        passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
         textureName: 'WickedWays',
         unit: medic,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
         aggressionEventName: 'dealDamage',
-        aggressionCooldown: 6000,
+        aggressionCooldown: 3000,
+        aggressionDuration: wwADuration,
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             if(attackingUnit.condemn) {
@@ -875,6 +877,7 @@ export default function Medic(options) {
         defenseCooldown: 7000,
         aggressionEventName: 'performHeal',
         aggressionCooldown: 6000,
+        aggressionDuration: slADuration,
         defenseAction: function(event) {
             event.damageObj.manualDodge = true;
             medic.addDodgeAddition(5);
@@ -898,7 +901,6 @@ export default function Medic(options) {
     });
 
     var ffDDuration = 3000;
-    var ffADuration = 3000;
     var familiarFace  = new Passive({
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
@@ -906,7 +908,8 @@ export default function Medic(options) {
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 2000,
+        defenseCooldown: 1000,
+        defenseDuration: ffDDuration,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 6000,
         aggressionPredicate: function() {

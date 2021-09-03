@@ -9,7 +9,7 @@ var ItemClasses = {
         item: {tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion',
                                        'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
         microchip: {tint: 0xf59a87, items: ['BasicMicrochip']},
-        specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar']},
+        specialtyItem: {tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar', 'PillBottle', 'SkyMedallion']},
     },
 
     rugged: {

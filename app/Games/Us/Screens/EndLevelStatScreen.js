@@ -1960,7 +1960,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                 });
                             }, 1000);
                         }, adrenDuration / 2.0);
-                    }, startFadeTime * 9 + 1250);
+                    }, startFadeTime * 9 + 250);
                 });
             }
 

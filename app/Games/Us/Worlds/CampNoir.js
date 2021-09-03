@@ -910,6 +910,13 @@ var phaseThree = function() {
             outer: true
         }
     });
+
+    this.map.addMapNode('multiLevel', {
+        levelOptions: {
+            outer: true,
+            enemyDefList: ['outerBasic', 'easyGargs', 'outerBasic']
+        }
+    });
 };
 
 //this defines the camp noir world

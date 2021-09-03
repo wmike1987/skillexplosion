@@ -4,7 +4,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
 
 var manipulations = {
     maxEnergy: 5,
-    energyRegenerationRate: 0.5,
+    energyRegenerationRate: 0.25,
     events: {knifeKill: {callback: function(event) {
             var tint = 0xf629a8;
             event.equippedUnit.giveEnergy(2);
@@ -17,7 +17,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Serene Star",
-        description: ["Add +5 to maximum energy.", "Regenerate +0.5 energy per second.", "Gain 2 energy after knife kill."],
+        description: ["Add +5 to maximum energy.", "Regenerate +0.25 energy per second.", "Gain 2 energy after knife kill."],
         icon: 'SereneStar',
         type: 'Marine',
         fontType: 'shane'

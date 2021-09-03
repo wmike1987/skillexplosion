@@ -1705,9 +1705,9 @@ var UnitBase = {
             }
         });
     },
-
     condemn: function(options) {
         options = options || {};
+        let condemnHealthAmount = 15;
         let duration = options.duration;
         let condemningUnit = options.condemningUnit;
 
@@ -1815,7 +1815,7 @@ var UnitBase = {
                             graphicsUtils.floatSprite(condemnNote3, {
                                 runs: 65
                             });
-                            condemningUnit.giveHealth(25, condemningUnit);
+                            condemningUnit.giveHealth(condemnHealthAmount, condemningUnit);
                             healSound.play();
                             gameUtils.doSomethingAfterDuration(() => {
                                 condemnSound2.play();
