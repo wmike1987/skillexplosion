@@ -1611,18 +1611,19 @@ var graphicsUtils = {
         var a1 = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'lifegain2',
-            speed: 0.65 + Math.random() * 0.40,
-            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
+            // speed: 0.65 + Math.random() * 0.40,
+            speed: 0.75,
+            transform: [unit.position.x, unit.position.y, 0.75, 0.75]
         });
         a1.play();
-        a1.alpha = 1;
+        a1.alpha = 1.0;
         a1.tint = tint;
         gameUtils.attachSomethingToBody({
             something: a1,
             body: unit.body,
             offset: {
-                x: Math.random() * 30 - 15,
-                y: -50
+                x: Math.random() * 15 - 7.5,
+                y: -40
             }
         });
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');

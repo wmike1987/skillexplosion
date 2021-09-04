@@ -334,7 +334,8 @@ var common = {
                     // if (this.unitSystem.selectedUnit) {
                     //     this.unitSystem.selectedUnit.giveEnergy(10);
                     // }
-                    this.map.addAdrenalineBlock();
+                    // this.map.addAdrenalineBlock();
+                    graphicsUtils.applyGainAnimationToUnit(this.shane, 0x9b2ac9);
 
                     // if (this.gameState == 'paused') {
                     //     this.togglePause();
