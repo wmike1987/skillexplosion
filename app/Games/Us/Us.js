@@ -128,6 +128,10 @@ var game = {
             volume: 0.04,
             rate: 1.0
         });
+        this.soundPool.transitionTwo = gameUtils.getSound('gentletransition.wav', {
+            volume: 0.04,
+            rate: 0.8
+        });
         this.soundPool.positiveSound = gameUtils.getSound('positivevictorysound2.wav', {
             volume: 0.07,
             rate: 1.0
@@ -342,27 +346,32 @@ var game = {
         return blankScene;
     },
 
-    gotoEndLevelScreen: function(collectors, loss, continueOnly) {
+    gotoEndLevelScreen: function(options) {
+        var collectors, result, continueOnly;
+        ({
+            collectors,
+            result,
+            continueOnly
+        } = options);
+
         this.unitSystem.pause();
         this.unitSystem.deselectUnit(this.shane);
         this.unitSystem.deselectUnit(this.ursula);
 
-        //determine spaceToContinueBehavior
-        var spaceToContinueBehavior = function(options) {
-            this.reconfigureAtCurrentLevel();
-            if (options.type == 'victory') {
+        //determine continue behavior
+        var continueBehavior = function() {
+            this.reconfigureAtCurrentLevel({
+                result: result,
+                revive: result == 'loss'
+            });
+            if (result == 'victory') {
                 this.map.addAdrenalineBlock();
             }
-            // this.map.show();
-            // this.map.allowMouseEvents(false);
-            // var blankScene = this.transitionToBlankScene({mode: 'SIDE', transitionLength: 500});
-            // gameUtils.matterOnce(blankScene, 'sceneFadeInDone', () => {
-            //     this.map.allowMouseEvents(true);
-            // });
         }.bind(this);
 
+        //but if the current node is camp, just enter camp
         if (this.map.currentNode.type == 'camp') {
-            spaceToContinueBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
+            continueBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
         }
 
         //create end level screen and transition
@@ -370,14 +379,15 @@ var game = {
             shane: this.shane,
             ursula: this.ursula,
         }, collectors, {
-            type: loss ? 'loss' : 'victory',
-            done: spaceToContinueBehavior,
+            type: result,
+            done: continueBehavior,
             onlyContinueAllowed: continueOnly
         });
 
         Matter.Events.on(this.currentScene, 'sceneFadeOutBegin', () => {
             this.soundPool.sceneSwipe.play();
         });
+
         var vScene = vScreen.createScene({});
         this.currentScene.transitionToScene({
             newScene: vScene,
@@ -389,38 +399,55 @@ var game = {
         return vScene;
     },
 
-    reconfigureAtCurrentLevel: function(result) {
+    reconfigureAtCurrentLevel: function(options) {
+        options = options || {};
+
+        var result = options.result;
+        var revive = options.revive;
+        var isVictory = options.result == 'victory';
         var game = this;
+
         game.reconfigureSound.play();
         this.currentLevel.enterLevel({
             customEnterLevel: function(level) {
+                //set state of mind config only to be active
                 level.campLikeActiveSOM = true;
 
-                var shanePosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
-                    x: -40,
-                    y: 40
-                }) : game.shane.endLevelPosition;
+                //set unit positions or revive
+                if (!revive) {
+                    game.setUnit(game.shane, {
+                        position: game.shane.endLevelPosition,
+                        moveToCenter: false,
+                    });
 
-                var ursulaPosition = result == 'loss' ? mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
-                    x: 40,
-                    y: 40
-                }) : game.ursula.endLevelPosition;
-                game.setUnit(game.shane, {
-                    position: shanePosition,
-                    moveToCenter: false,
-                });
-                game.setUnit(game.ursula, {
-                    position: ursulaPosition,
-                    moveToCenter: false,
-                });
+                    game.setUnit(game.ursula, {
+                        position: game.ursula.endLevelPosition,
+                        moveToCenter: false,
+                    });
+                } else {
+                    game.shane.grave.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                        x: -40,
+                        y: 40
+                    });
+                    game.ursula.grave.position = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                        x: 40,
+                        y: 40
+                    });
 
+                    gameUtils.doSomethingAfterDuration(() => {
+                        game.shane.revive({health: 1, energy: 1});
+                        game.ursula.revive({health: 1, energy: 1});
+                    }, 500);
+                }
+
+                //create the map table
                 if (!level.mapTableSprite) {
                     level.createMapTable(game.currentScene);
                 }
                 game.unitSystem.unpause();
                 level.mapTableActive = true;
 
-                //Init common doodads
+                //Decorate complete level with doodads
                 var flag = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations2',
                     animationName: 'wflag',
@@ -430,8 +457,8 @@ var game = {
                 });
 
                 //add flag
-                let x = Math.random() * 150;
-                let y = Math.random() * 150;
+                let x = 150;
+                let y = 150;
                 flag.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
                     x: x,
                     y: y

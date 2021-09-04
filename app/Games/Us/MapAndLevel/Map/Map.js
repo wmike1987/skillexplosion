@@ -107,6 +107,11 @@ var map = function(specs) {
     });
     this.adrenalineBlocks = [];
     this.removedAdrenalineBlocks = [];
+
+    this.isAdrenalineFull = function() {
+        return this.adrenaline == this.adrenalineMax;
+    };
+
     this.addAdrenalineBlock = function() {
         if (this.adrenaline >= this.adrenalineMax) {
             return;
@@ -150,8 +155,8 @@ var map = function(specs) {
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function(event) {
-        if (event.result == 'win') {
-            this.startingFatigue += 5;
+        if (event.result == 'victory') {
+            this.startingFatigue += 3;
         }
     }.bind(this));
 

@@ -352,7 +352,7 @@ var levelBase = {
     },
 
     initializeWinLossCondition: function() {
-        var winResult = 'win';
+        var winResult = 'victory';
         var lossResult = 'loss';
         var game = globals.currentGame;
 
@@ -481,14 +481,19 @@ var levelBase = {
                             gameUtils.doSomethingAfterDuration(() => {
                                 globals.currentGame.togglePause();
                                 gameUtils.doSomethingAfterDuration(() => {
+
                                     Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
                                         result: winResult
                                     });
 
                                     var sc = game.gotoEndLevelScreen({
-                                        shane: game.shaneCollector.getLastCollector(),
-                                        ursula: game.ursulaCollector.getLastCollector()
+                                        result: winResult,
+                                        collectors: {
+                                            shane: game.shaneCollector.getLastCollector(),
+                                            ursula: game.ursulaCollector.getLastCollector()
+                                        },
                                     });
+
                                     Matter.Events.trigger(this, 'endLevelActions', {
                                         endLevelScene: sc
                                     });
@@ -551,9 +556,13 @@ var levelBase = {
                         });
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
-                            shane: game.shaneCollector.getLastCollector(),
-                            ursula: game.ursulaCollector.getLastCollector(),
-                        }, true, continueOnly);
+                            result: lossResult,
+                            collectors: {
+                                shane: game.shaneCollector.getLastCollector(),
+                                ursula: game.ursulaCollector.getLastCollector()
+                            },
+                            continueOnly: continueOnly
+                        });
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
                         enemies.forEach((enemy) => {

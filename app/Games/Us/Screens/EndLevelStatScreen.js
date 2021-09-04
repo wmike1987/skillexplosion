@@ -151,8 +151,10 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         var scene = new Scene();
         scene.addBlackBackground();
 
+        var isVictory = options.type == 'victory';
+
         var titleText = null;
-        if (options.type == 'victory') {
+        if (isVictory) {
             titleText = graphicsUtils.createDisplayObject("TEX+:" + 'Victory', {
                 position: {
                     x: gameUtils.getPlayableWidth() / 2,
@@ -182,14 +184,19 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             });
         }
 
+        //victory or loss tint
         var tintTo = 0x62ff68;
-        if (options.type == 'loss') {
+        if (!isVictory) {
             tintTo = 0xf12323;
         }
 
         //play transition sound
         gameUtils.matterOnce(scene, 'sceneFadeInBegin', () => {
-            globals.currentGame.soundPool.transitionOne.play();
+            if(isVictory) {
+                globals.currentGame.soundPool.transitionOne.play();
+            } else {
+                globals.currentGame.soundPool.transitionTwo.play();
+            }
         });
 
         var titleTextFadetime = 300;
@@ -1783,7 +1790,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             globals.currentGame.invalidateTimer(tintMedicBorder);
         };
 
-        //Continue buttons plus victory/defeat event
+        //continue-only key listeners
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
             Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
             if (this.spaceToContinue) {
@@ -1794,22 +1801,18 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                         $('body').off('keydown.uskeydownendscreen');
                         graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
                             if (options.done) {
-                                options.done({
-                                    type: options.type
-                                });
+                                options.done();
                             }
                         });
-                    } else if (key == 'escape' && !options.onlyContinueAllowed) {
-                        // globals.currentGame.soundPool.sceneContinue.play();
-                        // $('body').off('keydown.uskeydownendscreen');
-                        // graphicsUtils.graduallyTint(this.escapeToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                        //     globals.currentGame.reconfigureAtCurrentLevel(options.type);
-                        // });
                     }
                 }.bind(this));
             }
         });
 
+        //We have three options here...
+        //1. continue only (used for tutorial)
+        //2. loss (essentially continue only)
+        //3. victory (generate pill choice)
         if (options.onlyContinueAllowed) {
             //space to continue
             this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
@@ -1830,7 +1833,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                 this.spaceToContinue.visible = true;
             });
         } else {
-            if (options.type == 'loss') {
+            if (!isVictory) {
                 //space to continue upon loss
                 this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
                     where: 'hudText',
@@ -1849,23 +1852,26 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             } else {
                 //show +1 adrenaline
                 Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                    var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
+                    var rewardDuration = 2000;
                     gameUtils.doSomethingAfterDuration(() => {
-                        var adrenDuration = 2000;
-                        globals.currentGame.soundPool.positiveSoundFast.play();
-                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: adrenDuration
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
-                        });
-                        scene.add(adrText);
+                        if(!adrenalineIsFull) {
+                            globals.currentGame.soundPool.positiveSoundFast.play();
+                            var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.adrenalineTextLarge,
+                                speed: 6,
+                                duration: rewardDuration
+                            });
+                            graphicsUtils.addGleamToSprite({
+                                sprite: adrText,
+                                gleamWidth: 50,
+                                duration: 500
+                            });
+                            scene.add(adrText);
+                        }
 
                         gameUtils.doSomethingAfterDuration(() => {
                             globals.currentGame.soundPool.positiveSoundFast.play();
@@ -1875,7 +1881,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                 where: 'hudTwo',
                                 style: styles.rewardTextLarge,
                                 speed: 6,
-                                duration: adrenDuration
+                                duration: rewardDuration
                             });
                             scene.add(rewardText);
                             graphicsUtils.addGleamToSprite({
@@ -1959,8 +1965,8 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                                     }.bind(this));
                                 });
                             }, 1000);
-                        }, adrenDuration / 2.0);
-                    }, startFadeTime * 9 + 250);
+                        }, rewardDuration / 2.0);
+                    }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 250)));
                 });
             }
 

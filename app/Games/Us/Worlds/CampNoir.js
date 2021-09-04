@@ -739,7 +739,7 @@ var phaseOne = function() {
 
     var winCount = 0;
     this.counterFunction = function(event) {
-        if (event.result == 'win') {
+        if (event.result == 'victory') {
             winCount += 1;
             if (winCount == 3) {
                 let campNode = this.map.findNodeById('camp');

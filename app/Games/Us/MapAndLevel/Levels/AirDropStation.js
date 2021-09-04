@@ -44,7 +44,7 @@ var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
 commonAirDropStation.initExtension = function() {
-    this.campLikeActive = true;
+    this.campLikeActiveSOM = true;
     this.completeUponEntry = true;
     this.lesserSpin = true;
     this.entrySound = entrySound;

@@ -28,8 +28,10 @@ var unitSpawner = function(options) {
     this.startPooling = function(options) {
         options = options || {};
 
-        //set the random seed (uses the given seen which is the level's seed)
-        mathArrayUtils.setRandomizerSeed(this.seed);
+        //set the random seed (uses the given seen which is the level's seed) - turned off for now
+        if(false) {
+            mathArrayUtils.setRandomizerSeed(this.seed);
+        }
 
         //determine unit locations and unit item indexes
         $.each(enemySets, function(i, enemy) {

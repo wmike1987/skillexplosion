@@ -331,17 +331,18 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
-                    if (this.unitSystem.selectedUnit) {
-                        this.unitSystem.selectedUnit.giveEnergy(10);
-                    }
+                    // if (this.unitSystem.selectedUnit) {
+                    //     this.unitSystem.selectedUnit.giveEnergy(10);
+                    // }
+                    this.map.addAdrenalineBlock();
 
-                    if (this.gameState == 'paused') {
-                        this.togglePause();
-                    } else {
-                        gameUtils.executeSomethingNextFrame(() => {
-                            this.togglePause();
-                        });
-                    }
+                    // if (this.gameState == 'paused') {
+                    //     this.togglePause();
+                    // } else {
+                    //     gameUtils.executeSomethingNextFrame(() => {
+                    //         this.togglePause();
+                    //     });
+                    // }
                 }
             }
 

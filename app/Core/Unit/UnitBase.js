@@ -1472,6 +1472,7 @@ var UnitBase = {
             tickMonitor: function() {
                 if (self.getTotalGrit() > 0.0) {
                     self.gritCooldown = (gritHigh - ((self.getTotalGrit() / 100.0) * (gritHigh - gritLow)));
+                    self.gritCooldown = self.gritCooldown.toFixed(2);
                     this.timeLimit = self.gritCooldown * 1000;
                     if (!this.timerActive) {
                         this.timerActive = true;
