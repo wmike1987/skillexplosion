@@ -21,7 +21,6 @@ var tileMapper = {};
  * }
  */
 tileMapper.produceTileMap = function(options) {
-    var randomizedSeed = mathArrayUtils.setRandomizerSeed(options.seed || null);
     var textureArray = options.possibleTextures;
     var bounds = options.bounds || gameUtils.getCanvasWH();
     var tileWidth = options.tileWidth;
@@ -41,7 +40,7 @@ tileMapper.produceTileMap = function(options) {
     var noZones = options.noZones || [];
     noZones = mathArrayUtils.convertToArray(noZones);
 
-    var tm = new TileMap({seed: randomizedSeed});
+    var tm = new TileMap();
     var column = 0;
     for (var x = tileStart.x; x <= bounds.x + tileWidth;) {
 

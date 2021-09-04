@@ -10,7 +10,9 @@ import {
     mathArrayUtils
 } from '@utils/GameUtils.js';
 import TileMapper from '@core/TileMapper.js';
-import {Doodad} from '@utils/Doodad.js';
+import {
+    Doodad
+} from '@utils/Doodad.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
 import Scene from '@core/Scene.js';
@@ -26,14 +28,23 @@ var levelBase = {
 
     enterLevel: function(options) {
         options = options || {};
+
+        //set our random seed for which everything level-related will use
+        mathArrayUtils.setRandomizerSeed(this.seed || null);
+
+        //possible hijack the entry
         if (this.hijackEntry) {
             var res = this.hijackEntry();
             if (res) return;
         }
 
+        //create the scene
         var scene = new Scene();
+
+        //fill the scene
         this.fillLevelScene(scene);
 
+        //transition to our new scene
         globals.currentGame.currentScene.transitionToScene({
             newScene: scene,
             centerPoint: this.mapNode.position,
@@ -56,9 +67,10 @@ var levelBase = {
     },
 
     startLevelSpawn: function(options) {
-        options = options || {}
+        options = options || {};
         var level = this;
         var game = globals.currentGame;
+
         //start enemy spawn
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {
@@ -93,7 +105,7 @@ var levelBase = {
     },
 
     startPooling: function() {
-        this.spawner = new UnitSpawner(this.enemySets);
+        this.spawner = new UnitSpawner({enemySets: this.enemySets, seed: this.seed});
         this.spawner.startPooling();
     },
 
@@ -113,6 +125,7 @@ var levelBase = {
             campLikeActive: false,
             entrySound: worldSpecs.entrySound,
             worldSpecs: Object.assign({}, worldSpecs),
+            seed: Math.random()
         }, options.levelOptions || {});
 
         //set the tile tint
@@ -159,11 +172,13 @@ var levelBase = {
     },
 
     fillLevelScene: function(scene) {
+        //set the random seed
+
+        //fill everything
         this.tileMap = TileMapper.produceTileMap({
             possibleTextures: this.worldSpecs.levelTiles,
             tileWidth: this.worldSpecs.tileSize,
-            tileTint: this.tileTint,
-            seed: this.tileMap ? this.tileMap.seed : null
+            tileTint: this.tileTint
         });
         scene.add(this.tileMap);
 
@@ -219,7 +234,7 @@ var levelBase = {
         scene.add(this.gunrack);
 
         var gunrackHoverTick = globals.currentGame.addTickCallback(function(event) {
-            if(self.campLikeActive) return;
+            if (self.campLikeActive) return;
             if (Matter.Vertices.contains(this.gunrack.body.vertices, mousePosition)) {
                 gunrackSprite.tint = 0xff33cc;
             } else {
@@ -230,7 +245,7 @@ var levelBase = {
         var self = this;
         //Establish map click listeners
         var gunrackClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
-            if(self.campLikeActive) return;
+            if (self.campLikeActive) return;
             if (event.which == 3) return; //don't allow right clicks
             var canvasPoint = {
                 x: 0,

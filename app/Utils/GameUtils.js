@@ -624,11 +624,7 @@ var gameUtils = {
         return placement;
     },
 
-    placeBodyJustOffscreen: function(body, direction, variation) {
-        //if we've added a unit, call down to its body
-        if (body.isUnit) {
-            body = body.body;
-        }
+    getJustOffscreenPosition: function(direction, variation) {
         var placement = {};
         var randomPlacement = this.getRandomPlacementWithinCanvasBounds();
         var offscreenAmount = 50;
@@ -650,7 +646,18 @@ var gameUtils = {
             placement.y = this.getPlayableHeight() + offscreenAmount;
             placement.x = randomPlacement.x;
         }
+
+        return placement;
+    },
+
+    placeBodyJustOffscreen: function(body, direction, variation) {
+        //if we've added a unit, call down to its body
+        if (body.isUnit) {
+            body = body.body;
+        }
+        var placement = this.getJustOffscreenPosition(direction, variation);
         Matter.Body.setPosition(body, placement);
+
         return placement;
     },
 
@@ -1068,7 +1075,7 @@ var graphicsUtils = {
     },
 
     pointToSomethingWithArrow: function(something, yOffset, arrowScale) {
-        if(something._destroyed) {
+        if(!something || something._destroyed) {
             return;
         }
 

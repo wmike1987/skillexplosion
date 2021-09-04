@@ -11,18 +11,43 @@ import {
     globals
 } from '@core/Fundamental/GlobalState';
 
-var unitSpawner = function(enemySets) {
-    this.id = mathArrayUtils.uuidv4();
+var unitSpawner = function(options) {
+    options = options || {};
 
+    var enemySets = options.enemySets;
+
+    this.id = mathArrayUtils.uuidv4();
     this.timers = [];
     this.poolTimers = {};
     this.pool = {};
+    this.locationPool = {};
+    this.itemRandomFlips = {};
+    this.seed = options.seed;
 
     var self = this;
-
     this.startPooling = function(options) {
         options = options || {};
-        this.isPooling = true;
+
+        //set the random seed (uses the given seen which is the level's seed)
+        mathArrayUtils.setRandomizerSeed(this.seed);
+
+        //determine unit locations and unit item indexes
+        $.each(enemySets, function(i, enemy) {
+            var k;
+            var locationArray = [];
+            var itemRandomFlips = [];
+            this.locationPool[enemy.constructor.name] = locationArray;
+            this.itemRandomFlips[enemy.constructor.name] = itemRandomFlips;
+            for(k = 0; k < enemy.spawn.total; k++) {
+                //locations
+                locationArray.push(gameUtils.getJustOffscreenPosition('random'));
+
+                //item index
+                itemRandomFlips.push(mathArrayUtils.flipCoin());
+            }
+        }.bind(this));
+
+        //pool unit objects
         $.each(enemySets, function(i, enemy) {
             //create a timer to fill the enemy pool between hz to spread out the load
             var poolTimer = globals.currentGame.addTimer({
@@ -38,13 +63,12 @@ var unitSpawner = function(enemySets) {
             this.timers.push(poolTimer);
             this.poolTimers[enemy.constructor.name] = poolTimer;
         }.bind(this));
+
     };
 
     this.start = function() {
         var spawner = this;
         $.each(enemySets, function(i, enemy) {
-            // console.info('enemy total: ' + Math.floor(enemy.spawn.total))
-            // console.info('floor of enemy total: ' + Math.floor(enemy.spawn.total - 1))
             var total = 0;
             var itemsToGive = enemy.item ? enemy.item.total : 0;
             var spawnTimer = globals.currentGame.addTimer({
@@ -66,7 +90,7 @@ var unitSpawner = function(enemySets) {
                         var newUnit = spawner.getFromPool(enemy.constructor);
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                         newUnit.honeRange = 5000;
-                        gameUtils.placeBodyJustOffscreen(newUnit, 'random');
+                        Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.constructor.name].shift());
 
                         //Give item to unit if chosen
                         if (itemsToGive > 0) {
@@ -74,7 +98,7 @@ var unitSpawner = function(enemySets) {
                             if (lastUnit) {
                                 giveItem = true;
                             } else {
-                                giveItem = mathArrayUtils.flipCoin() && mathArrayUtils.flipCoin();
+                                giveItem = spawner.itemRandomFlips[enemy.constructor.name].shift();
                             }
                             if (giveItem) {
                                 ItemUtils.giveUnitItem({
@@ -115,8 +139,8 @@ var unitSpawner = function(enemySets) {
         var newUnits = this.pool[unitConstructor.name];
 
         //force a call to the pool timer if we don't have a unit
-        if(!newUnits || newUnits.length == 0) {
-            console.info('force spawning unit ' + unitConstructor.name)
+        if (!newUnits || newUnits.length == 0) {
+            console.info('force spawning unit ' + unitConstructor.name);
             this.poolTimers[unitConstructor.name].executeCallbacks();
             newUnits = this.pool[unitConstructor.name];
         }

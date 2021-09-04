@@ -4,8 +4,8 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
 
 var manipulations = {
     maxHealth: 18,
-    grit: 10,
-    armor: 1,
+    gritAddition: 10,
+    defenseAddition: 1,
 };
 
 export default function(options) {

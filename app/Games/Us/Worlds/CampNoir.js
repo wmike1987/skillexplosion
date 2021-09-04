@@ -38,7 +38,8 @@ import {
 var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x7848ee];
 var acceptableOrnamentTints = [0xffab7a, 0xfb4a9a];
-var acceptableFlowerTints = [0xf78d8d, 0xffad78];
+var acceptableFlowerTints = [0xf78d8d, 0x600028];
+var ambientLightTints = [[0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x000000, 0x550000], [0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303]];
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -930,8 +931,9 @@ var campNoir = {
         levelTiles: getLevelTiles(),
         possibleTrees: possibleTrees,
         decorateTerrain: function(scene, tint) {
+            var tIndex = acceptableTileTints.indexOf(tint);
             var ornamentTiles = [];
-            var ornamentTint = acceptableOrnamentTints[acceptableTileTints.indexOf(tint)];
+            var ornamentTint = acceptableOrnamentTints[tIndex];
             for (var i = 0; i <= 7; i++) {
                 ornamentTiles.push('FrollGround/DesertFlower' + i);
             }
@@ -987,7 +989,8 @@ var campNoir = {
 
             scene.add(this.ornamentMap);
             scene.add(this.animatedOrnamentMap);
-            var l1 = gameUtils.createAmbientLights([0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303], 'backgroundOne', 0.2);
+
+            var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.2);
             scene.add(l1);
         }
     },

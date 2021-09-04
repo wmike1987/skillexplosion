@@ -4,9 +4,9 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
 
 var manipulations = {
     maxHealth: 10,
-    grit: 10,
+    gritAddition: 10,
     maxEnergy: 10,
-    dodge: 3,
+    dodgeAddition: 3,
 };
 
 export default function(options) {
