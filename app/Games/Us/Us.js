@@ -76,7 +76,7 @@ var game = {
             rate: 0.9
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {
-            volume: 1.75,
+            volume: 1.55,
             rate: 1.2
         });
         this.boxSound = gameUtils.getSound('criticalhit.wav', {
