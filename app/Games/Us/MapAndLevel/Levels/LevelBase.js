@@ -29,7 +29,7 @@ var levelBase = {
     enterLevel: function(options) {
         options = options || {};
 
-        //set our random seed for which everything level-related will use
+        //set our random seed for terrain decoration
         mathArrayUtils.setRandomizerSeed(this.seed || null);
 
         //possible hijack the entry
@@ -64,6 +64,8 @@ var levelBase = {
         } else {
             this.mode.enter.call(this, scene);
         }
+
+        mathArrayUtils.setRandomToTrueRandom();
     },
 
     startLevelSpawn: function(options) {

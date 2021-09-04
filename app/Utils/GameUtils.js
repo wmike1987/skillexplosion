@@ -1832,6 +1832,10 @@ var mathArrayUtils = {
         return typeof varr === 'object' && varr !== null;
     },
 
+    setRandomToTrueRandom: function() {
+        this.setRandomizerSeed(null);
+    },
+
     setRandomizerSeed: function(seed) {
         if(!seed) {
             seed = seedrandom()();

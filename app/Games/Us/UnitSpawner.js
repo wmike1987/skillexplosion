@@ -64,6 +64,8 @@ var unitSpawner = function(options) {
             this.poolTimers[enemy.constructor.name] = poolTimer;
         }.bind(this));
 
+        //reset randomness
+        mathArrayUtils.setRandomToTrueRandom();
     };
 
     this.start = function() {
