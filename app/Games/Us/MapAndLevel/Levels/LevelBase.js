@@ -27,7 +27,13 @@ var levelBase = {
     },
 
     enterLevel: function(options) {
-        options = options || {};
+        options = Object.assign({
+            enteredByTraveling: false
+        }, options);
+
+        this.enteredState = {
+            enteredByTraveling: options.enteredByTraveling
+        };
 
         //set our random seed for terrain decoration
         mathArrayUtils.setRandomizerSeed(this.seed || null);
@@ -63,6 +69,10 @@ var levelBase = {
             options.customEnterLevel(this);
         } else {
             this.mode.enter.call(this, scene);
+        }
+
+        if (this.enterLevelExtension) {
+            this.enterLevelExtension(scene);
         }
 
         mathArrayUtils.setRandomToTrueRandom();
@@ -107,7 +117,10 @@ var levelBase = {
     },
 
     startPooling: function() {
-        this.spawner = new UnitSpawner({enemySets: this.enemySets, seed: this.seed});
+        this.spawner = new UnitSpawner({
+            enemySets: this.enemySets,
+            seed: this.seed
+        });
         this.spawner.startPooling();
     },
 
@@ -337,7 +350,7 @@ var levelBase = {
         scene.add(function() {
             $('body').on('keydown.map', function(event) {
                 var key = event.key.toLowerCase();
-                if (key == 'escape' && this.mapActive) {
+                if (key == 'escape' && this.mapActive && this.map.keyEventsAllowed) {
                     this.closeMap();
                 }
             }.bind(globals.currentGame));

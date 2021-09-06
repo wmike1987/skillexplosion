@@ -172,6 +172,7 @@ var map = function(specs) {
 
     //setup other properties
     this.mouseEventsAllowed = true;
+    this.keyEventsAllowed = true;
 
     this.addMapNode = function(levelType, options) {
         //default these values
@@ -257,6 +258,7 @@ var map = function(specs) {
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = 0.3;
         this.allowMouseEvents(true);
+        this.allowKeyEvents(true);
         openmapSound2.play();
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
@@ -363,8 +365,13 @@ var map = function(specs) {
         this.mouseEventsAllowed = value;
     };
 
+    this.allowKeyEvents = function(value) {
+        this.keyEventsAllowed = value;
+    };
+
     this.travelToNode = function(node, destinationCallback) {
         this.allowMouseEvents(false);
+        this.allowKeyEvents(false);
         this.lastNode = this.currentNode;
         this.currentNode = node;
         var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {

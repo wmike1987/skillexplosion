@@ -404,10 +404,32 @@ export default {
 	    strokeThickness: 1
 	}),
 
+	fatigueTextMedium:  new PIXI.TextStyle({
+		name: 'fatigueTextMedium',
+		fill: "#888888",
+		fontSize: 30,
+		fontStyle: "italic",
+		fontWeight: "lighter",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 1
+	}),
+
 	adrenalineText:  new PIXI.TextStyle({
 		name: 'adrenalineText',
 		fill: "#d22a7b",
 		fontSize: 15,
+		fontStyle: "italic",
+		fontWeight: "lighter",
+		lineJoin: "round",
+		miterLimit: 0,
+		strokeThickness: 1
+	}),
+
+	adrenalineMedium:  new PIXI.TextStyle({
+		name: 'adrenalineMedium',
+		fill: "#d22a7b",
+		fontSize: 30,
 		fontStyle: "italic",
 		fontWeight: "lighter",
 		lineJoin: "round",

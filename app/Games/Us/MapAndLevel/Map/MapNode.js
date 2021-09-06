@@ -153,10 +153,6 @@ var MapLevelNode = function(options) {
     this.displayObject.on('mousedown', function(event) {
         if (!this.mapRef.mouseEventsAllowed) return;
 
-        //for debugging
-        // this.playCompleteAnimation();
-        // return;
-
         if (!self.isCompleted) {
             var canTravel = true;
             if (options.travelPredicate) {
@@ -196,11 +192,12 @@ var MapLevelNode = function(options) {
                     this.enterSelfBehavior();
                     this.displayObject.tooltipObj.enable();
                 } else {
+                    //this is the main business logic
                     this.mapRef.travelToNode(behavior.nodeToEnter, function() {
                         Matter.Events.trigger(globals.currentGame, "travelFinished", {
                             node: behavior.nodeToEnter
                         });
-                        behavior.nodeToEnter.levelDetails.enterLevel();
+                        behavior.nodeToEnter.levelDetails.enterLevel({enteredByTraveling: true});
                         behavior.nodeToEnter.untintNode();
                         this.displayObject.tooltipObj.enable();
                     }.bind(this));

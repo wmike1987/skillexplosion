@@ -19,6 +19,7 @@ import {Doodad} from '@utils/Doodad.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
+import styles from '@utils/Styles.js';
 
 var entrySound = gameUtils.getSound('enterairdrop1.wav', {
     volume: 0.04,
@@ -129,6 +130,7 @@ var campLevel = function() {
             loop: true,
             transform: [0, 0, 1.2, 1.3]
         });
+        fireAnimation.alpha = 0.0;
         fireAnimation.where = 'stage';
         fireAnimation.play();
         var campfire = new Doodad({
@@ -190,6 +192,7 @@ var campLevel = function() {
             green: 1.0,
             blue: 1.0,
             lightPower: 2.0,
+            progress: 0.5
         });
 
         var stageRed = 3.4;
@@ -204,14 +207,17 @@ var campLevel = function() {
             green: 1.5,
             blue: 1.0,
             lightPower: 2.0,
+            progress: 0.5
         });
         this.treeShader = new PIXI.Filter(null, valueShader, {
-            colors: [0.4, 0.4, 2.0]
+            colors: [0.4, 0.4, 2.0],
+            progress: 0.5
         });
         this.treeShader.myName = 'treeShader';
         this.backgroundLightShader.myName = 'campfire';
         this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
         var flameTimer = null;
+        var progressTimer = null;
         if (true) {
             var initLight = function() {
                 globals.currentGame.renderer.layers.background.filters = [this.backgroundLightShader];
@@ -240,6 +246,27 @@ var campLevel = function() {
                     }.bind(this)
                 });
 
+                var self = this;
+                //if we've entered by traveling, fade to night
+                if(this.enteredState.enteredByTraveling && this.alreadyIntrod) {
+                    progressTimer = globals.currentGame.addTimer({
+                        name: 'lightProgressTimer',
+                        runs: 1,
+                        timeLimit: 3000,
+                        tickCallback: function(deltaTime) {
+                            self.backgroundLightShader.uniforms.progress = this.percentDone;
+                            self.stageLightShader.uniforms.progress = this.percentDone;
+                            self.treeShader.uniforms.progress = this.percentDone;
+                            fireAnimation.alpha = this.percentDone;
+                        }
+                    });
+                } else {
+                    self.backgroundLightShader.uniforms.progress = 1;
+                    self.stageLightShader.uniforms.progress = 1;
+                    self.treeShader.uniforms.progress = 1;
+                    fireAnimation.alpha = 1;
+                }
+
                 this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
                 this.stageLightShader.uniforms.lightRadius = this.lightRadius;
             }.bind(this);
@@ -253,6 +280,7 @@ var campLevel = function() {
         scene._clearExtension = function() {
             var game = globals.currentGame;
             game.invalidateTimer(flameTimer);
+            game.invalidateTimer(progressTimer);
             game.renderer.layers.background.filters = [];
             game.renderer.layers.backgroundOne.filters = [];
             game.renderer.layers.stage.filters = [];
@@ -277,6 +305,7 @@ var campLevel = function() {
             globals.currentGame.currentScene.transitionToScene(campIntro.scene);
             campIntro.play();
             this.alreadyIntrod = true;
+
             return true;
         } else {
             return false;
@@ -301,6 +330,40 @@ var campLevel = function() {
 
         if (this.camp.onLevelPlayable) {
             this.camp.onLevelPlayable.call(this, scene);
+        }
+
+        if(this.alreadyIntrod) {
+
+            //Only reset stuff if we enter by traveling
+            if(!this.enteredState.enteredByTraveling) {
+                return;
+            }
+
+            //reset adrenaline indicator
+            gameUtils.doSomethingAfterDuration(() => {
+                var adrText = graphicsUtils.floatText('Adrenaline reset', gameUtils.getPlayableCenterPlus({
+                    y: 300
+                }), {
+                    where: 'hudThree',
+                    style: styles.adrenalineMedium,
+                    speed: 4,
+                    duration: 4000
+                });
+                scene.add(adrText);
+            }, 500);
+
+            //reset fatigue indicator
+            gameUtils.doSomethingAfterDuration(() => {
+                var fatigueText = graphicsUtils.floatText('Fatigue set to 0%', gameUtils.getPlayableCenterPlus({
+                    y: 300
+                }), {
+                    where: 'hudThree',
+                    style: styles.fatigueTextMedium,
+                    speed: 4,
+                    duration: 4000
+                });
+                scene.add(fatigueText);
+            }, 2500);
         }
     };
 
