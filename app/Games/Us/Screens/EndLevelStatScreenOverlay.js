@@ -66,7 +66,7 @@ var createContainer = function() {
     return container;
 };
 
-var EndLevelStatScreen = function(units, statsObj, options) {
+var EndLevelStatScreenOverlay = function(units, statsObj, options) {
     options = Object.assign({
         type: 'victory'
     }, options);
@@ -147,9 +147,15 @@ var EndLevelStatScreen = function(units, statsObj, options) {
 
     this.shaneStats = [];
     this.ursulaStats = [];
-    this.createScene = function() {
+    this.initialize = function() {
         var scene = new Scene();
-        scene.addBlackBackground();
+        gameUtils.doSomethingAfterDuration(() => {
+            Matter.Events.trigger(scene, 'sceneFadeInDone');
+        }, 500);
+        scene.addBlackBackground({
+            alpha: 0.75,
+            fadeDuration: 500
+        });
 
         var isVictory = options.type == 'victory';
 
@@ -191,13 +197,11 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         }
 
         //play transition sound
-        gameUtils.matterOnce(scene, 'sceneFadeInBegin', () => {
-            if(isVictory) {
-                globals.currentGame.soundPool.transitionOne.play();
-            } else {
-                globals.currentGame.soundPool.transitionTwo.play();
-            }
-        });
+        if (isVictory) {
+            globals.currentGame.soundPool.transitionOne.play();
+        } else {
+            globals.currentGame.soundPool.transitionTwo.play();
+        }
 
         var titleTextFadetime = 300;
         graphicsUtils.flashSprite({
@@ -1011,7 +1015,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
         this.shaneStats.push([shaneDashTitle, shaneDashesPerformed, placeholder]);
 
         //Ursula
-        var startPos = ursulaPosition(same);
+        startPos = ursulaPosition(same);
         startPos.x -= 86;
         var medicPortrait = graphicsUtils.createDisplayObject('MedicPortrait', {
             position: startPos,
@@ -1855,7 +1859,7 @@ var EndLevelStatScreen = function(units, statsObj, options) {
                     var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
                     var rewardDuration = 2000;
                     gameUtils.doSomethingAfterDuration(() => {
-                        if(!adrenalineIsFull) {
+                        if (!adrenalineIsFull) {
                             globals.currentGame.soundPool.positiveSoundFast.play();
                             var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
                                 y: 300
@@ -1988,13 +1992,9 @@ var EndLevelStatScreen = function(units, statsObj, options) {
             // this.minusOneAdrenaline.visible = false;
         }
 
-
+        scene.initializeScene();
         return scene;
-    };
-
-    this.initialize = function() {
-
     };
 };
 
-export default EndLevelStatScreen;
+export default EndLevelStatScreenOverlay;

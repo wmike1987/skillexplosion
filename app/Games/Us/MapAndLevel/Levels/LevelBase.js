@@ -63,6 +63,7 @@ var levelBase = {
             level: this
         });
 
+        //upon entering a new level, remove any level local entities
         globals.currentGame.removeAllLevelLocalEntities();
 
         if (options.customEnterLevel) {
@@ -281,6 +282,8 @@ var levelBase = {
             globals.currentGame.removeTickCallback(gunrackHoverTick);
             this.gunrack = null;
         });
+
+        return this.gunrack;
     },
 
     createMapTable: function(scene, options) {
@@ -362,6 +365,8 @@ var levelBase = {
             this.mapTableSprite = null;
             $('body').off('keydown.map');
         });
+
+        return this.mapTable;
     },
 
     initializeWinLossCondition: function() {
@@ -407,8 +412,9 @@ var levelBase = {
                         game.soundPool.sceneContinue.play();
                         this.spcaeFlashTimer.invalidate();
                         graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                            this.spaceToContinue.visible = false;
                             options.onContinue();
-                        });
+                        }.bind(this));
                     }
                 }.bind(this));
             }, 1000);
@@ -511,12 +517,12 @@ var levelBase = {
                                         endLevelScene: sc
                                     });
 
-                                    game.unitsInPlay.forEach((unit) => {
-                                        unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
-                                        gameUtils.moveUnitOffScreen(unit);
-                                    });
+                                    // game.unitsInPlay.forEach((unit) => {
+                                    //     unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
+                                    //     gameUtils.moveUnitOffScreen(unit);
+                                    // });
 
-                                    game.removeAllLevelLocalEntities();
+                                    // game.removeAllLevelLocalEntities();
                                     gameUtils.setCursorStyle('Main');
                                     globals.currentGame.togglePause();
                                 }, 32, {
@@ -576,7 +582,7 @@ var levelBase = {
                             },
                             continueOnly: continueOnly
                         });
-                        game.removeAllLevelLocalEntities();
+                        // game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);

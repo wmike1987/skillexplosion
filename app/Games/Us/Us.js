@@ -28,7 +28,7 @@ import styles from '@utils/Styles.js';
 import {
     campNoir
 } from '@games/Us/Worlds/CampNoir.js';
-import EndLevelScreen from '@games/Us/Screens/EndLevelStatScreen.js';
+import EndLevelScreenOverlay from '@games/Us/Screens/EndLevelStatScreenOverlay.js';
 import StatCollector from '@games/Us/StatCollector.js';
 import UnitMenu from '@games/Us/UnitMenu.js';
 
@@ -360,22 +360,29 @@ var game = {
 
         //determine continue behavior
         var continueBehavior = function() {
-            this.reconfigureAtCurrentLevel({
-                result: result,
-                revive: result == 'loss'
-            });
             if (result == 'victory') {
                 this.map.addAdrenalineBlock();
+                this.conquerScene({scene: this.currentScene, fadeIn: true});
+                vScene.clear();
+            } else {
+                this.currentScene.add(vScene);
+                this.reconfigureAtCurrentLevel({
+                    result: result,
+                    revive: result == 'loss'
+                });
             }
         }.bind(this);
 
         //but if the current node is camp, just enter camp
         if (this.map.currentNode.type == 'camp') {
-            continueBehavior = this.currentWorld.gotoLevelById.bind(this.currentWorld, 'camp');
+            continueBehavior = function() {
+                this.currentScene.add(vScene);
+                this.currentWorld.gotoLevelById.call(this.currentWorld, 'camp');
+            }.bind(this);
         }
 
-        //create end level screen and transition
-        var vScreen = new EndLevelScreen({
+        //create end level screen
+        var vScreen = new EndLevelScreenOverlay({
             shane: this.shane,
             ursula: this.ursula,
         }, collectors, {
@@ -383,20 +390,106 @@ var game = {
             done: continueBehavior,
             onlyContinueAllowed: continueOnly
         });
+        var vScene = vScreen.initialize({});
 
-        Matter.Events.on(this.currentScene, 'sceneFadeOutBegin', () => {
-            this.soundPool.sceneSwipe.play();
-        });
-
-        var vScene = vScreen.createScene({});
-        this.currentScene.transitionToScene({
-            newScene: vScene,
-            transitionLength: 500,
-            mode: 'SIDE',
-            leftToRight: true
-        });
+        this.shane.setHealth(this.shane.maxHealth, {silent: true});
+        this.shane.setEnergy(this.shane.maxEnergy, {silent: true});
+        this.ursula.setHealth(this.ursula.maxHealth, {silent: true});
+        this.ursula.setEnergy(this.ursula.maxEnergy, {silent: true});
 
         return vScene;
+    },
+
+    conquerScene: function(options) {
+        options = options || {};
+        gameUtils.doSomethingAfterDuration(() => {
+            game.shane.revive({health: 1, energy: 1});
+            game.ursula.revive({health: 1, energy: 1});
+        }, 500);
+
+        var level = this.currentLevel;
+        var game = this;
+        var scene = options.scene;
+
+        //create the map table
+        var mapTable;
+        if (!level.mapTableSprite) {
+            mapTable = level.createMapTable(scene);
+        }
+        game.unitSystem.unpause();
+        level.mapTableActive = true;
+
+        //Decorate complete level with doodads
+        var flag = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations2',
+            animationName: 'wflag',
+            speed: 0.2,
+            loop: true,
+            transform: [0, 0, 1, 1]
+        });
+
+        //add flag
+        let x = 150;
+        let y = 150;
+        flag.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
+            x: x,
+            y: y
+        });
+        flag.play();
+        var flagD = new Doodad({
+            collides: true,
+            autoAdd: false,
+            radius: 20,
+            texture: [flag],
+            stage: 'stage',
+            scale: {
+                x: 1,
+                y: 1
+            },
+            shadowOffset: {
+                x: 0,
+                y: 30
+            },
+            shadowScale: {
+                x: 0.7,
+                y: 0.7
+            },
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 35,
+            position: flag.position
+        });
+        scene.add(flagD);
+
+        var gunrack = level.createAugmentRack(scene);
+
+        if(options.fadeIn) {
+            graphicsUtils.fadeSpriteOverTime({
+                sprite: mapTable.body.renderlings.mainData0,
+                duration: 1000,
+                fadeIn: true,
+                nokill: true,
+                makeVisible: true
+            });
+
+            graphicsUtils.fadeSpriteOverTime({
+                sprite: gunrack.body.renderlings.mainData0,
+                duration: 1000,
+                fadeIn: true,
+                nokill: true,
+                makeVisible: true
+            });
+
+            graphicsUtils.fadeSpriteOverTime({
+                sprite: flag,
+                duration: 1000,
+                fadeIn: true,
+                nokill: true,
+                makeVisible: true
+            });
+        }
     },
 
     reconfigureAtCurrentLevel: function(options) {
@@ -440,59 +533,7 @@ var game = {
                     }, 500);
                 }
 
-                //create the map table
-                if (!level.mapTableSprite) {
-                    level.createMapTable(game.currentScene);
-                }
-                game.unitSystem.unpause();
-                level.mapTableActive = true;
-
-                //Decorate complete level with doodads
-                var flag = gameUtils.getAnimation({
-                    spritesheetName: 'UtilityAnimations2',
-                    animationName: 'wflag',
-                    speed: 0.2,
-                    loop: true,
-                    transform: [0, 0, 1, 1]
-                });
-
-                //add flag
-                let x = 150;
-                let y = 150;
-                flag.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
-                    x: x,
-                    y: y
-                });
-                flag.play();
-                var flagD = new Doodad({
-                    collides: true,
-                    autoAdd: false,
-                    radius: 20,
-                    texture: [flag],
-                    stage: 'stage',
-                    scale: {
-                        x: 1,
-                        y: 1
-                    },
-                    shadowOffset: {
-                        x: 0,
-                        y: 30
-                    },
-                    shadowScale: {
-                        x: 0.7,
-                        y: 0.7
-                    },
-                    offset: {
-                        x: 0,
-                        y: 0
-                    },
-                    sortYOffset: 35,
-                    position: flag.position
-                });
-                game.currentScene.add(flagD);
-
-                level.createAugmentRack(game.currentScene);
-
+                game.conquerScene({scene: game.currentScene});
             },
             mode: 'SIDE',
             transitionLength: 1000,

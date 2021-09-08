@@ -117,7 +117,9 @@ export default {
                         }
 
                         if (this.revivePercent >= 1) {
-                            this.revive({revivingUnit: revivingUnit});
+                            this.revive({
+                                revivingUnit: revivingUnit
+                            });
                         }
                     }
                 }.bind(this)
@@ -143,6 +145,10 @@ export default {
     },
 
     revive: function(options) {
+        if (!this.isDead) {
+            return;
+        }
+
         options = Object.assign({
             gravePosition: mathArrayUtils.clonePosition(this.grave.position),
             health: 0.333,

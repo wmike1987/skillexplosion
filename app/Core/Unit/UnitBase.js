@@ -317,18 +317,28 @@ var UnitBase = {
         return (r < dodgeSum / 100);
     },
 
-    setHealth: function(amount) {
+    setHealth: function(amount, options) {
+        options = options || {};
         this.currentHealth = Math.min(amount, this.maxHealth);
         this.updateHealthBar({
             overridePendingUpdates: true
         });
+
+        if(options.silent) {
+            this.showLifeBar(false);
+        }
     },
 
-    setEnergy: function(amount) {
+    setEnergy: function(amount, options) {
+        options = options || {};
         this.currentEnergy = Math.min(amount, this.maxEnergy);
         this.updateEnergyBar({
             overridePendingUpdates: true
         });
+
+        if(options.silent) {
+            this.showEnergyBar(false);
+        }
     },
 
     giveHealth: function(amount, performingUnit, options) {

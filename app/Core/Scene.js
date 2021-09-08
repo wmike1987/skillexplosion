@@ -17,18 +17,25 @@ var Scene = function() {
     this.objects = [];
     this.cleanUpTasks = [];
     this.isScene = true;
+    this.initialized = false;
+};
+
+var _exectuteObject = function(obj) {
+    if(obj.initialize && !obj.initialized) {
+        obj.initialize();
+    } else if(typeof obj == 'function'){
+        obj();
+    } else {
+        graphicsUtils.addSomethingToRenderer(obj);
+    }
 };
 
 Scene.prototype.initializeScene = function(objOrArray) {
     $.each(this.objects, function(i, obj) {
-        if(obj.initialize && !obj.initialized) {
-            obj.initialize();
-        } else if(typeof obj == 'function'){
-            obj();
-        } else {
-            graphicsUtils.addSomethingToRenderer(obj);
-        }
+        _exectuteObject(obj);
     });
+
+    this.initialized = true;
     Matter.Events.trigger(this, 'initialize');
 };
 
@@ -40,8 +47,14 @@ Scene.prototype.hide = function() {
     });
 };
 
-Scene.prototype.addBlackBackground = function(where) {
-    var background = graphicsUtils.createDisplayObject('TintableSquare', {where: where || 'hudTwo', anchor: {x: 0, y: 0}});
+Scene.prototype.addBlackBackground = function(options) {
+    options = options || {};
+    var background = graphicsUtils.createDisplayObject('TintableSquare', {where: options.where || 'hudTwo', anchor: {x: 0, y: 0}});
+
+    background.alpha = options.alpha || 1;
+    if(options.fadeDuration) {
+        graphicsUtils.fadeSpriteOverTime({fadeIn: true, sprite: background, time: options.fadeDuration, noKill: true, makeVisible: true});
+    }
     background.tint = 0x000000;
     graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
     background.hideImmune = true;
@@ -49,10 +62,23 @@ Scene.prototype.addBlackBackground = function(where) {
 };
 
 Scene.prototype.add = function(objOrArray) {
+    //allow for adding whole scenes to scenes here
+    if(objOrArray.isScene) {
+        objOrArray = objOrArray.objects;
+    }
+
     if(!$.isArray(objOrArray)) {
         objOrArray = [objOrArray];
     }
     $.merge(this.objects, objOrArray);
+
+    //if our scene is already in play, execute the added object(s)
+    if(this.initialized) {
+        var arry = mathArrayUtils.convertToArray(objOrArray);
+        arry.forEach((item) => {
+            _exectuteObject(item);
+        });
+    }
 };
 
 Scene.prototype.addCleanUpTask = function(f) {
