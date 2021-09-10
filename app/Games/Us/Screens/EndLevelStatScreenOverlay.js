@@ -1978,18 +1978,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                 if (this.spaceToContinue) {
                     this.spaceToContinue.visible = true;
                 }
-                // if(this.plusOneAdrenaline) {
-                //     this.plusOneAdrenaline.visible = true;
-                // }
             });
-
-            //escape to configure
-            // this.escapeToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Esc to reconfigure", {where: 'hudText', style: styles.escapeToContinueStyleVariant, anchor: {x: 0.5, y: 1}, position: {x: 210, y: gameUtils.getCanvasHeight() - 35}});
-            // this.minusOneAdrenaline = graphicsUtils.addSomethingToRenderer("TEX+:(-1 adrenaline)", {where: 'hudText', style: styles.endLevelAdrenalineMinusStyle, anchor: {x: 0.5, y: 1}, position: {x: 210, y: gameUtils.getCanvasHeight() - 15}});
-            // scene.add(this.escapeToContinue);
-            // scene.add(this.minusOneAdrenaline);
-            // this.escapeToContinue.visible = false;
-            // this.minusOneAdrenaline.visible = false;
         }
 
         scene.initializeScene();

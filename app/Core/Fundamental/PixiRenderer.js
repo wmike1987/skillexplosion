@@ -504,8 +504,9 @@ var renderer = function(engine, options) {
 					//even though we're decrementing here, cleaning up pixi particles can remove more than one child at a time
 					//so getChildAt could fail. If it does, let's just move on
 					try {
-						if((savePersistables && this.stages[key].getChildAt(i).persists))
-							continue;
+						if((savePersistables && this.stages[key].getChildAt(i).persists)) {
+                            continue;
+                        }
 						this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i))
 					}
 					catch(err) {
@@ -520,8 +521,12 @@ var renderer = function(engine, options) {
 	this.removeAndDestroyChild = function(stage, child) {
 		stage.removeChild(child);
 		if(child.constructor === PIXI.particles.Emitter) {
-			child.emitter.cleanup();
+			child.emitter.destroy();
 		}
+        if(child.constructor === PIXI.particles.Particle) {
+			child.emitter.destroy();
+            // child.destroy();
+        }
 	    else if(child.destroy && !child._destroyed) {
 			Matter.Events.trigger(child, 'destroy', {});
 			child.destroy(); //i'm unsure if I need to check for a destroy method first

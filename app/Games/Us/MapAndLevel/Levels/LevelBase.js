@@ -187,6 +187,14 @@ var levelBase = {
         return this.campLikeActive;
     },
 
+    isLevelSOMConfigurable: function() {
+        return this.campLikeActiveSOM;
+    },
+
+    isLevelNonConfigurable: function() {
+        return !this.campLikeActiveSOM && !this.campLikeActive;
+    },
+
     fillLevelScene: function(scene) {
         //set the random seed
 

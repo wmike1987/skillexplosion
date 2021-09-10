@@ -177,6 +177,7 @@ var common = {
         var loadingScreenAsset = this.loadingScreenAsset;
         var loader = AssetLoader.load(loadingScreenAsset);
         var loadingScreenShowingDeferred = $.Deferred();
+
         loader.loaderDeferred.done(() => {
             var titleScene = new Scene();
             this.currentScene = titleScene;
@@ -199,7 +200,8 @@ var common = {
             splashScreenDeferred: loadingScreenShowingDeferred,
             loaderProgressFunction: function(loader) {
                 this.setSplashScreenText("Loading: " + loader.percentDone + '%');
-            }.bind(this)
+            }.bind(this),
+            loadingTextUpdater: this.setSplashScreenText.bind(this)
         };
     },
 

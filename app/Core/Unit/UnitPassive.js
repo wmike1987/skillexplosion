@@ -8,6 +8,7 @@ var defensePassive = 'defensePassive';
 
 export default function(options) {
     Object.assign(this, options);
+    this.isEquipped = false;
 
     //Automate some of the panel tooltip text
     this.decoratedAggressionDescription = [].concat(this.aggressionDescription);
@@ -16,21 +17,49 @@ export default function(options) {
     this.decoratedDefenseDescription = [].concat(this.defenseDescription);
     var defCooldown = this.defenseCooldown/1000 + ' second cooldown';
 
+    this.decoratedPassiveDescription = [].concat(this.unequippedDescription || "sss");
+
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
     this.description = this.decoratedAggressionDescription.concat([aggCooldown])
-                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]));
+                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]).concat([' ']).concat(this.decoratedPassiveDescription));
+
     this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText];
     this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText];
-    this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText].concat(this.defensiveDescrStyle));
+    this.passiveDescrStyle =  [styles.passivePStyle, styles.abilityTextFaded];
+    this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).
+                            concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
     this.systemMessage = options.passiveSystemMessage;
 
     Matter.Events.on(this, 'unlockedSomething', function() {
+        this.unlocked = true;
         this.description = this.decoratedAggressionDescription.concat([aggCooldown]).concat(['Click to activate'])
-                            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat(['Ctrl+Click to activate']);
+                            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat(['Ctrl+Click to activate'])
+                            .concat([' '].concat(this.decoratedPassiveDescription));
         this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
         this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-        this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText].concat(this.defensiveDescrStyle));
+        this.passiveDescrStyle =  [styles.passivePStyle, styles.abilityTextFaded];
+        this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
         this.systemMessage = options.passiveSystemMessage;
+    }.bind(this));
+
+    Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
+        if(!this.isEquipped && event.level.isLevelNonConfigurable() && this.unlocked) {
+            var order = ++this.unit.passiveOrder;
+            gameUtils.doSomethingAfterDuration(() => {
+                var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {where: 'stageTwo', position: mathArrayUtils.clonePosition(this.unit.position)});
+                graphicsUtils.makeSpriteSize(iconUp, {x: 25, y: 25});
+                var border = graphicsUtils.addBorderToSprite({
+                    sprite: iconUp
+                });
+                gameUtils.attachSomethingToBody({something: iconUp, body: this.unit.body});
+                gameUtils.attachSomethingToBody({something: border, body: this.unit.body});
+                graphicsUtils.floatSprite(iconUp, {direction: 1, runs: 50});
+                graphicsUtils.floatSprite(border, {direction: 1, runs: 50});
+                if(this.passiveAction) {
+                    this.passiveAction();
+                }
+            }, 1000 + order * 750);
+        }
     }.bind(this));
 
     this.cooldownTimer = null;

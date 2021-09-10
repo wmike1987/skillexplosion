@@ -363,6 +363,8 @@ var game = {
             if (result == 'victory') {
                 this.map.addAdrenalineBlock();
                 this.conquerScene({scene: this.currentScene, fadeIn: true});
+                this.currentLevel.campLikeActiveSOM = true;
+                this.unitSystem.unitPanel.refreshPassiveButton();
                 vScene.clear();
             } else {
                 this.currentScene.add(vScene);
@@ -560,7 +562,7 @@ var game = {
     },
 
     isCurrentLevelSOMConfigurable: function() {
-        return this.currentLevel.campLikeActiveSOM;
+        return this.currentLevel.campLikeActiveSOM || this.currentLevel.campLikeActive;
     },
 
     makeCurrentLevelConfigurable: function() {

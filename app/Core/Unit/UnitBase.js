@@ -113,6 +113,7 @@ var UnitBase = {
     },
     abilities: [],
     abilityAugments: [],
+    passiveOrder: 0,
     commands: {
         attack: {
             name: "attack",
@@ -929,6 +930,10 @@ var UnitBase = {
             anim.play();
         }.bind(this));
 
+        Matter.Events.on(this, "VictoryDefeatSceneFadeIn", function() {
+            this.passiveOrder = 0;
+        }.bind(this));
+
         //hover Method
         this.hover = function() {
             if (this.team == globals.currentGame.enemyTeam) {
@@ -1271,6 +1276,7 @@ var UnitBase = {
             configurable: true
         });
 
+        //after we've been added
         Matter.Events.on(this, 'addUnit', function() {
             var healthBarYOffset = -20;
             var energyBarYOffset = -12;
@@ -1297,10 +1303,19 @@ var UnitBase = {
             }
 
             //establish the height of the unit
-            if (this.heightAnimation)
+            if (this.heightAnimation) {
                 this.unitHeight = this.renderlings[this.heightAnimation].height;
-            else
+            }
+            else {
                 this.unitHeight = this.body.circleRadius * 2;
+            }
+
+            //play the pending animation
+            mathArrayUtils.operateOnObjectByKey(this.renderlings, function(key, value) {
+                if(value.isPendingAnimation) {
+                    value.play();
+                }
+            });
 
             //create health bar
             if (this.health) {

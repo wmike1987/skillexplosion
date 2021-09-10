@@ -1437,7 +1437,7 @@ var UnitSystem = function(properties) {
             $('body').off('keydown.unitSystem');
             $('body').off('keyup.unitSystem');
             $('body').off('keypress.unitSystem');
-        },
+        };
 
         //return units attached to the main selection body
         this.convertBodiesToSelectionEnabledUnits = function(bodies, useSelectionBoxBody) {

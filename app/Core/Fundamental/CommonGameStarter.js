@@ -11,6 +11,7 @@ import {
     keyStates
 } from '@core/Fundamental/GlobalState.js';
 import GameLoop from '@core/Fundamental/GameLoop.js';
+import StyleLoader from '@core/Fundamental/StyleLoader.js';
 
 var pixiRenderer;
 var engine;
@@ -82,6 +83,7 @@ var CommonGameStarter = function(game) {
     var ret = game.showLoadingScreen();
 	let splashScreenDeferred = ret.splashScreenDeferred;
 	let progressFunction = ret.loaderProgressFunction;
+    let loadingTextUpdater = ret.loadingTextUpdater;
 
 	//once our loading screen is visible, begin loading all assets
     splashScreenDeferred.done(() => {
@@ -99,6 +101,9 @@ var CommonGameStarter = function(game) {
         if (!pendingGame) {
             pendingGame = true;
             loaderDef.done(() => {
+                //now load specific styles
+                StyleLoader.load([]);
+
                 pendingGame = false;
                 if (loadingCallback) {
                     loadingCallback.detach();

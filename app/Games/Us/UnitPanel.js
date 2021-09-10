@@ -1567,6 +1567,10 @@ unitPanel.prototype.refreshAugmentButton = function() {
     this.unitAugmentPanel.lowerOpenButton();
 };
 
+unitPanel.prototype.refreshPassiveButton = function() {
+    this.unitPassivePanel.lowerOpenButton();
+};
+
 unitPanel.prototype.enterCamp = function() {
     this.unitAugmentPanel.lowerOpenButton();
     this.unitPassivePanel.lowerOpenButton();

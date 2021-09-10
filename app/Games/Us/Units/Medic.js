@@ -790,6 +790,7 @@ export default function Medic(options) {
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 10 grit for length of round.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -837,6 +838,7 @@ export default function Medic(options) {
         title: 'Wicked Ways',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 5 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
         passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
         textureName: 'WickedWays',
         unit: medic,
@@ -845,6 +847,16 @@ export default function Medic(options) {
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 3000,
         aggressionDuration: wwADuration,
+        passiveAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
+            alliesAndSelf.forEach((unit) => {
+                unit.applyBuff({name: "wwHealthGain", textureName: 'WickedWaysHealingBuff', duration: 3000, applyChanges: function() {
+                    unit.healthRegenerationMultiplier *= 2;
+                }, removeChanges: function() {
+                    unit.healthRegenerationMultiplier /= 2;
+                }});
+            });
+        },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             if(attackingUnit.condemn) {
@@ -871,6 +883,7 @@ export default function Medic(options) {
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies 25 dodge for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain 5 dodge for length of round.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 5 dodge for length of round.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
@@ -905,6 +918,7 @@ export default function Medic(options) {
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
         defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain a free vanish.'],
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -917,6 +931,32 @@ export default function Medic(options) {
                 medic.freeSteps = 0;
             }
             return medic.freeSteps < 2;
+        },
+        passiveAction: function(event) {
+            if(!medic.freeSteps) {
+                medic.freeSteps = 0;
+            }
+
+            medic.applyBuff({name: 'freeSecretStep' + (medic.freeSteps+1), textureName: 'SecretStepBuff', duration: null, applyChanges: function() {
+                medic.freeSteps += 1;
+
+                if(!medic.freeSecretStepBuffs) {
+                    medic.freeSecretStepBuffs = [];
+                }
+                medic.freeSecretStepBuffs.push('freeSecretStep' + medic.freeSteps);
+
+                var ss = medic.getAbilityByName('Vanish');
+                ss.manuallyEnabled = true;
+                ss.byPassEnergyCost = true;
+            }, removeChanges: function() {
+                mathArrayUtils.removeObjectFromArray('freeSecretStep' + medic.freeSteps, medic.freeSecretStepBuffs);
+                medic.freeSteps -= 1;
+                if(medic.freeSteps == 0) {
+                    var ss = medic.getAbilityByName('Vanish');
+                    ss.manuallyEnabled = false;
+                    ss.byPassEnergyCost = false;
+                }
+            }});
         },
         defenseAction: function(event) {
             medic.applyBuff({name: 'familiarFaceSpeed', textureName: 'SpeedBuff', duration: ffDDuration, applyChanges: function() {
@@ -957,6 +997,7 @@ export default function Medic(options) {
         originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain a free mine.'],
         textureName: 'DeepThought',
         unit: medic,
         defenseEventName: 'sufferProjectile',
@@ -1011,6 +1052,7 @@ export default function Medic(options) {
         title: 'Precise Posture',
         aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain ' + energyGain + ' energy.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal 5 damage to attacker.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 15 energy.'],
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'sufferProjectile',

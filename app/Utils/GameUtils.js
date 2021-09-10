@@ -85,7 +85,7 @@ var gameUtils = {
                 }
             }.bind(this);
         }
-        anim.persists = true;
+        // anim.persists = true;
         anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
         anim.animationSpeed = options.speed;
         anim.loop = (options.playThisManyTimes == 'loop') || (options.loop && !options.loopPause);
@@ -1996,7 +1996,7 @@ var unitUtils = {
             speed: 0.35,
             loop: true,
         });
-        pendingAnimation.play();
+        pendingAnimation.isPendingAnimation = true;
         return pendingAnimation;
     },
 
