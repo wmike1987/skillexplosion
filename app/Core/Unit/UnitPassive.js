@@ -1,7 +1,8 @@
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 import styles from '@utils/Styles.js';
-import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
+import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
 import * as Matter from 'matter-js';
+import Tooltip from '@core/Tooltip.js';
 
 var attackPassive = 'attackPassive';
 var defensePassive = 'defensePassive';
@@ -17,10 +18,10 @@ export default function(options) {
     this.decoratedDefenseDescription = [].concat(this.defenseDescription);
     var defCooldown = this.defenseCooldown/1000 + ' second cooldown';
 
-    this.decoratedPassiveDescription = [].concat(this.unequippedDescription || "sss");
+    this.decoratedPassiveDescription = [].concat(this.unequippedDescription);
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
-    this.description = this.decoratedAggressionDescription.concat([aggCooldown])
+    this.descriptions = this.decoratedAggressionDescription.concat([aggCooldown])
                         .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]).concat([' ']).concat(this.decoratedPassiveDescription));
 
     this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText];
@@ -30,16 +31,36 @@ export default function(options) {
                             concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
     this.systemMessage = options.passiveSystemMessage;
 
-    Matter.Events.on(this, 'unlockedSomething', function() {
-        this.unlocked = true;
-        this.description = this.decoratedAggressionDescription.concat([aggCooldown]).concat(['Click to activate'])
-                            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat(['Ctrl+Click to activate'])
-                            .concat([' '].concat(this.decoratedPassiveDescription));
+    var setTooltip = function(eventName, equipType) {
+        var agressionActive = this.attackPassive ? 'Active' : 'Click to activate';
+        var defensiveActive = this.defensePassive ? 'Active' : 'Ctrl+Click to activate';
+        var activeOrInactive = this.defensePassive || this.attackPassive ? "Inactive" : "Active";
+        this.descriptions = this.decoratedAggressionDescription.concat([aggCooldown]).concat([agressionActive])
+                            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat([defensiveActive])
+                            .concat([' '].concat(this.decoratedPassiveDescription).concat([activeOrInactive]));
         this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
         this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-        this.passiveDescrStyle =  [styles.passivePStyle, styles.abilityTextFaded];
+        this.passiveDescrStyle =  [styles.passivePStyle, styles.abilityTextFaded, styles.systemMessageText];
         this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
         this.systemMessage = options.passiveSystemMessage;
+        Tooltip.makeTooltippable(this.actionBox, this);
+
+        if(eventName != 'Unequip') {
+            this.actionBox.tooltipObj.display(mousePosition);
+        }
+    }.bind(this);
+
+    Matter.Events.on(this, 'unlockedSomething', function(event) {
+        this.unlocked = true;
+        setTooltip("Unlock");
+    }.bind(this));
+
+    Matter.Events.on(this, 'Equip', function(event) {
+        setTooltip("Equip", event.type);
+    }.bind(this));
+
+    Matter.Events.on(this, 'Unequip', function(event) {
+        setTooltip("Unequip");
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
@@ -58,7 +79,7 @@ export default function(options) {
                 if(this.passiveAction) {
                     this.passiveAction();
                 }
-            }, 1000 + order * 750);
+            }, 1800 + order * 750);
         }
     }.bind(this));
 

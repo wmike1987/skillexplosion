@@ -644,6 +644,10 @@ var UnitBase = {
         passive[type] = true;
         passive.isEquipped = true;
         passive.start(type);
+
+        Matter.Events.trigger(passive, 'Equip', {
+            type: type
+        });
     },
 
     unequipPassive: function(passive) {
@@ -664,6 +668,10 @@ var UnitBase = {
             this.defensePassive = null;
         }
         passive.stop();
+
+        Matter.Events.trigger(passive, 'Unequip', {
+            type: type
+        });
     },
 
     swapStatesOfMind: function() {
@@ -930,7 +938,7 @@ var UnitBase = {
             anim.play();
         }.bind(this));
 
-        Matter.Events.on(this, "VictoryDefeatSceneFadeIn", function() {
+        Matter.Events.on(globals.currentGame, "VictoryDefeatSceneFadeIn", function() {
             this.passiveOrder = 0;
         }.bind(this));
 
@@ -1923,6 +1931,10 @@ var UnitBase = {
         return Math.max(-this.dodge, sum);
     },
 
+    getTotalDodge: function() {
+        return this.dodge + this.getDodgeAdditionSum();
+    },
+
     getGritAdditionSum: function() {
         var sum = 0;
         this.gritAdditions.forEach((addition) => {
@@ -2085,11 +2097,12 @@ var UnitBase = {
                         spritesheetName: 'UtilityAnimations2',
                         animationName: 'buffdestroy',
                         speed: 4,
-                        transform: [unit.position.x, unit.position.y, 0.8, 0.8],
+                        transform: [unit.position.x + unit.buffs[name].offset.x, unit.position.y + unit.buffs[name].offset.y, 0.8, 0.8],
                         onCompleteExtension: function() {
                             unit.reorderBuffs();
                         }
                     });
+
                     graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
                     if (!options.detached) {
                         gameUtils.attachSomethingToBody({

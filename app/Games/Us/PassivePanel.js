@@ -195,7 +195,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         this.unitPanelRef.updateUnitPassives();
                         equip.play();
                         this.currentAttackPassiveBorder.position = passive.icon.position;
-                        this.currentAttackPassiveBorder.visible = true
+                        this.currentAttackPassiveBorder.visible = true;
                     }
                 }
                 if(lastPassive) {
@@ -203,9 +203,6 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     lastPassive.border.scale = {x: 1, y: 1};
                     lastPassive.border.alpha = alphaPassive;
                     lastPassive.border.visible = true;
-
-                    //trigger event and trigger ability panel update
-                    // Matter.Events.trigger(globals.currentGame.unitSystem, 'passiveEquip', {passive: passive, unit: this.prevailingUnit})
                     this.unitPanelRef.updateUnitPassives();
                 } else if(!passive.unlocked) {
                     if(!unit.canUnlockSomething(mindType)) {
@@ -214,8 +211,6 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     }
                     unit.unlockSomething(mindType, passive);
                     Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindLearned', {unit: this.prevailingUnit, passive: passive});
-                    Tooltip.makeTooltippable(passive.actionBox, passive);
-                    passive.actionBox.tooltipObj.display(mousePosition);
                     unlockAugmentSound.play();
                     passive.lock.visible = false;
                 }

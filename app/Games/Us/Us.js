@@ -712,7 +712,7 @@ var game = {
                 unit.showEnergyBar(false);
                 unit.ignoreEnergyRegeneration = false;
                 unit.ignoreHealthRegeneration = false;
-            }, 2400);
+            }, 1750);
             unit.move(options.moveTo || mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
                 x: centerX,
                 y: 0

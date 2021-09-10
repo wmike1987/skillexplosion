@@ -463,6 +463,11 @@ export default function Marine(options) {
             }
         }
 
+        //look for free knives
+        if(this.freeKinves) {
+            this.buffs['freeKnife' + this.freeKinves].removeBuff({detached: true});
+        }
+
         //create knife body
         var knife = Matter.Bodies.circle(0, 0, 6, {
             restitution: 0.95,
@@ -696,7 +701,7 @@ export default function Marine(options) {
         title: 'Giving Spirit',
         defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for 4 hp.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 8 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Heal ally for 5% hp.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Heal ally for 10% of max hp.'],
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -705,6 +710,15 @@ export default function Marine(options) {
         aggressionEventName: 'kill',
         aggressionDuration: gsADuration,
         aggressionCooldown: 2000,
+        passiveAction: function(event) {
+            var allies = gameUtils.getUnitAllies(marine);
+            allies.forEach((ally) => {
+                var healthToGive = ally.maxHealth / 10.0;
+                ally.giveHealth(healthToGive, marine);
+                graphicsUtils.applyGainAnimationToUnit(ally, 0xc60006);
+                healsound.play();
+            });
+        },
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
@@ -734,7 +748,7 @@ export default function Marine(options) {
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3 seconds.'],
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 5% hp.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 10% of max hp.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'holdPosition',
@@ -743,6 +757,12 @@ export default function Marine(options) {
         aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
         aggressionCooldown: 3000,
+        passiveAction: function(event) {
+            var healthToGive = marine.maxHealth / 10.0;
+            marine.giveHealth(healthToGive, marine);
+            graphicsUtils.applyGainAnimationToUnit(marine, 0xc60006);
+            healsound.play();
+        },
         defenseAction: function(event) {
             var f = {};
             marine.applyBuff({name: "rushofbloodabsorb", textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
@@ -773,6 +793,32 @@ export default function Marine(options) {
         defenseCooldown: 3000,
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 6000,
+        passiveAction: function(event) {
+            if(!marine.freeKinves) {
+                marine.freeKinves = 0;
+            }
+
+            marine.applyBuff({name: 'freeKnife' + (marine.freeKinves+1), textureName: 'FreeKnifeBuff', duration: null, applyChanges: function() {
+                marine.freeKinves += 1;
+
+                if(!marine.freeKinfeBuffs) {
+                    marine.freeKinfeBuffs = [];
+                }
+                marine.freeKinfeBuffs.push('freeKnife' + marine.freeKinves);
+
+                var ss = marine.getAbilityByName('Throw Knife');
+                ss.manuallyEnabled = true;
+                ss.byPassEnergyCost = true;
+            }, removeChanges: function() {
+                mathArrayUtils.removeObjectFromArray('freeKnife' + marine.freeKinves, marine.freeKinfeBuffs);
+                marine.freeKinves -= 1;
+                if(marine.freeKinves == 0) {
+                    var ss = marine.getAbilityByName('Throw Knife');
+                    ss.manuallyEnabled = false;
+                    ss.byPassEnergyCost = false;
+                }
+            }});
+        },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             attackingUnit.maim(3000);
@@ -788,7 +834,7 @@ export default function Marine(options) {
         title: 'Clear Perspective',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Double rifle range for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Double rifle range for 10 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Double rifle range for 8 seconds.'],
         textureName: 'ClearPerspective',
         unit: marine,
         defenseEventName: 'sufferProjectile',
@@ -796,6 +842,15 @@ export default function Marine(options) {
         aggressionEventName: 'holdPosition',
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
+        passiveAction: function(event) {
+            marine.applyBuff({name: "keenEye", textureName: 'KeenEyeBuff', duration: 8000, applyChanges: function() {
+                marine.honeRange = marine.honeRange*2;
+                marine.range = marine.range*2;
+            }, removeChanges: function() {
+                marine.honeRange = marine.honeRange/2;
+                marine.range = marine.range/2;
+            }});
+        },
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
         },
@@ -825,6 +880,16 @@ export default function Marine(options) {
         aggressionEventName: 'holdPosition',
         aggressionCooldown: 6000,
         aggressionDuration: ssADuration,
+        passiveAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            alliesAndSelf.forEach((unit) => {
+                unit.applyBuff({name: "spiritualStateGain", textureName: 'SpiritualStateEnergyGainBuff', duration: 3000, applyChanges: function() {
+                    unit.energyRegenerationMultiplier *= 2;
+                }, removeChanges: function() {
+                    unit.energyRegenerationMultiplier /= 2;
+                }});
+            });
+        },
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
@@ -851,13 +916,25 @@ export default function Marine(options) {
         title: 'True Grit',
         aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 8 grit for length of round.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 5 grit for length of round.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 6 grit for length of round.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 10 grit for length of round.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 4000,
         aggressionEventName: 'kill',
         aggressionCooldown: 4000,
+        passiveAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            alliesAndSelf.forEach((unit) => {
+                if(unit.isDead) {
+                    return;
+                }
+                unit.addGritAddition(10);
+                gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
+                    unit.removeGritAddition(10);
+                });
+            });
+        },
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {

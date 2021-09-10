@@ -480,8 +480,10 @@ export default function Medic(options) {
         Matter.Events.trigger(globals.currentGame, 'layMine', {performingUnit: this});
         Matter.Events.trigger(this, 'layMine');
 
-        //play spine animation
-        // this.isoManager.playSpecifiedAnimation('throw', this.isoManager.currentDirection);
+        //remove a free mine if we have one
+        if(this.freeMines) {
+            this.buffs['freeMine' + this.freeMines].removeBuff({detached: true});
+        }
 
         var mineCracks = graphicsUtils.createDisplayObject('MineCracks', {scale: {x: 0.75, y: 0.75}, alpha: 1});
         var stateZero = graphicsUtils.createDisplayObject('MineZero', {scale: {x: 0.75, y: 0.75}, alpha: 0.8});
@@ -790,7 +792,7 @@ export default function Medic(options) {
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 10 grit for length of round.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 25% of current grit for length of round.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -798,6 +800,18 @@ export default function Medic(options) {
         aggressionEventName: 'holdPosition',
         aggressionCooldown: 4000,
         aggressionDuration: rsADuration,
+        passiveAction: function(event) {
+            var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
+            alliesAndSelf.forEach((unit) => {
+                var addedGrit = Math.floor(unit.getTotalGrit() / 3.0);
+                if(addedGrit > 0) {
+                    unit.addGritAddition(addedGrit);
+                    gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
+                        unit.removeGritAddition(addedGrit);
+                    });
+                }
+            });
+        },
         defenseAction: function(event) {
             //damage attacker
             let grit = medic.getTotalGrit()/2.0;
@@ -883,7 +897,7 @@ export default function Medic(options) {
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies 25 dodge for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain 5 dodge for length of round.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 5 dodge for length of round.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 25% of current dodge for length of round.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
@@ -891,6 +905,15 @@ export default function Medic(options) {
         aggressionEventName: 'performHeal',
         aggressionCooldown: 6000,
         aggressionDuration: slADuration,
+        passiveAction: function(event) {
+            var addedDodge = Math.floor(medic.getTotalDodge() / 4.0);
+            if(addedDodge > 0) {
+                medic.addDodgeAddition(addedDodge);
+                gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
+                    medic.removeDodgeAddition(addedDodge);
+                });
+            }
+        },
         defenseAction: function(event) {
             event.damageObj.manualDodge = true;
             medic.addDodgeAddition(5);
@@ -1004,6 +1027,32 @@ export default function Medic(options) {
         defenseCooldown: 6000,
         aggressionEventName: 'kill',
         aggressionCooldown: 8000,
+        passiveAction: function(event) {
+            if(!medic.freeMines) {
+                medic.freeMines = 0;
+            }
+
+            medic.applyBuff({name: 'freeMine' + (medic.freeMines+1), textureName: 'MineBuff', duration: null, applyChanges: function() {
+                medic.freeMines += 1;
+
+                if(!medic.freeMineBuffs) {
+                    medic.freeMineBuffs = [];
+                }
+                medic.freeMineBuffs.push('freeMine' + medic.freeMines);
+
+                var ss = medic.getAbilityByName('Mine');
+                ss.manuallyEnabled = true;
+                ss.byPassEnergyCost = true;
+            }, removeChanges: function() {
+                mathArrayUtils.removeObjectFromArray('freeMine' + medic.freeMines, medic.freeMineBuffs);
+                medic.freeMines -= 1;
+                if(medic.freeMines == 0) {
+                    var ss = medic.getAbilityByName('Mine');
+                    ss.manuallyEnabled = false;
+                    ss.byPassEnergyCost = false;
+                }
+            }});
+        },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
             medic.getAbilityByName('Mine').method.call(medic, null);
@@ -1019,7 +1068,7 @@ export default function Medic(options) {
             if(type == 'attackPassive') {
                 var fe = Matter.Events.on(medic, 'defensePassiveEquipped', function(event) {
                     Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
-                    Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fu);
+                    Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
                     // Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
                     deepThought.aggressionAction = event.passive.aggressionAction;
                     deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
@@ -1027,7 +1076,7 @@ export default function Medic(options) {
                     passive.start('attackPassive');
                 });
                 var fu = Matter.Events.on(medic, 'defensePassiveUnequipped', function(event) {
-                    Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fe);
+                    Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
                     Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
                     deepThought.aggressionAction = null;
                     deepThought.aggressionDescription = deepThought.originalAggressionDescription;
@@ -1038,10 +1087,8 @@ export default function Medic(options) {
             }
         },
         preStop: function(type) {
-            if(type == 'attackPassive') {
-                Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
-                Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
-            }
+            Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
+            Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
         }
     });
 
@@ -1059,6 +1106,9 @@ export default function Medic(options) {
         defenseCooldown: efDDuration,
         aggressionEventName: 'sufferProjectile',
         aggressionCooldown: efADuration,
+        passiveAction: function(event) {
+            medic.giveEnergy(15);
+        },
         defenseAction: function(event) {
             //delay the attack for a second
             gameUtils.doSomethingAfterDuration(() => {
