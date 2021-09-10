@@ -832,14 +832,14 @@ export default function Marine(options) {
     var cpADuration = 4000;
     var clearPerspective  = new Passive({
         title: 'Clear Perspective',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Double rifle range for 4 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Double rifle range for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Double rifle range for 8 seconds.'],
         textureName: 'ClearPerspective',
         unit: marine,
         defenseEventName: 'sufferProjectile',
         defenseCooldown: 9000,
-        aggressionEventName: 'holdPosition',
+        aggressionEventName: 'dealDamage',
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
         passiveAction: function(event) {

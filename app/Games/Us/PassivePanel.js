@@ -7,6 +7,7 @@ import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.j
 var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
 var equipHide = gameUtils.getSound('menuopen1.wav', {volume: 0.05, rate: 1.25});
 var equip = gameUtils.getSound('augmentEquip.wav', {volume: 0.05, rate: 1.2});
+var equip2 = gameUtils.getSound('augmentEquip.wav', {volume: 0.05, rate: 1.6});
 var hoverAugmentSound = gameUtils.getSound('augmenthover.wav', {volume: 0.03, rate: 1});
 var unlockAugmentSound = gameUtils.getSound('unlockability.wav', {volume: 0.16, rate: 1});
 var cantdo = gameUtils.getSound('cantpickup.wav', {
@@ -178,6 +179,11 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         equip.play();
                         this.currentDefensePassiveBorder.position = passive.icon.position;
                         this.currentDefensePassiveBorder.visible = true;
+                    } else {
+                        unit.unequipPassive(passive, {manual: true});
+                        this.currentDefensePassiveBorder.visible = false;
+                        this.unitPanelRef.updateUnitPassives();
+                        equip2.play();
                     }
                 } else {
                     if(!passive.attackPassive && passive.unlocked) {
@@ -196,6 +202,11 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         equip.play();
                         this.currentAttackPassiveBorder.position = passive.icon.position;
                         this.currentAttackPassiveBorder.visible = true;
+                    }  else if (passive.attackPassive) {
+                        unit.unequipPassive(passive, {manual: true});
+                        this.currentAttackPassiveBorder.visible = false;
+                        this.unitPanelRef.updateUnitPassives();
+                        equip2.play();
                     }
                 }
                 if(lastPassive) {

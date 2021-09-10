@@ -650,7 +650,8 @@ var UnitBase = {
         });
     },
 
-    unequipPassive: function(passive) {
+    unequipPassive: function(passive, options) {
+        options = options || {};
         var type = 'attackPassive';
         if (passive.defensePassive) {
             type = 'defensePassive';
@@ -670,11 +671,14 @@ var UnitBase = {
         passive.stop();
 
         Matter.Events.trigger(passive, 'Unequip', {
-            type: type
+            type: type,
+            manual: options.manual
         });
     },
 
     swapStatesOfMind: function() {
+        this.swappingStatesOfMind = true;
+
         var currentAttack = this.attackPassive;
         var currentDefensive = this.defensePassive;
 
@@ -701,6 +705,7 @@ var UnitBase = {
         }
 
         Matter.Events.trigger(globals.currentGame.unitSystem, 'swapStatesOfMind', {unit: this});
+        this.swappingStatesOfMind = false;
     },
 
     initUnit: function() {

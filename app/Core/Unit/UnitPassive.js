@@ -1,6 +1,14 @@
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/GameUtils.js';
 import styles from '@utils/Styles.js';
-import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
+import {
+    globals,
+    keyStates,
+    mousePosition
+} from '@core/Fundamental/GlobalState.js';
 import * as Matter from 'matter-js';
 import Tooltip from '@core/Tooltip.js';
 
@@ -13,39 +21,42 @@ export default function(options) {
 
     //Automate some of the panel tooltip text
     this.decoratedAggressionDescription = [].concat(this.aggressionDescription);
-    var aggCooldown = this.aggressionCooldown/1000 + ' second cooldown';
+    var aggCooldown = this.aggressionCooldown / 1000 + ' second cooldown';
 
     this.decoratedDefenseDescription = [].concat(this.defenseDescription);
-    var defCooldown = this.defenseCooldown/1000 + ' second cooldown';
+    var defCooldown = this.defenseCooldown / 1000 + ' second cooldown';
 
     this.decoratedPassiveDescription = [].concat(this.unequippedDescription);
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
     this.descriptions = this.decoratedAggressionDescription.concat([aggCooldown])
-                        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]).concat([' ']).concat(this.decoratedPassiveDescription));
+        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]).concat([' ']).concat(this.decoratedPassiveDescription));
 
     this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText];
     this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText];
-    this.passiveDescrStyle =  [styles.passivePStyle, styles.abilityTextFaded];
+    this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
     this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).
-                            concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
+    concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
     this.systemMessage = options.passiveSystemMessage;
 
-    var setTooltip = function(eventName, equipType) {
+    var setTooltip = function(eventName, options) {
+        options = options || {};
         var agressionActive = this.attackPassive ? 'Active' : 'Click to activate';
         var defensiveActive = this.defensePassive ? 'Active' : 'Ctrl+Click to activate';
         var activeOrInactive = this.defensePassive || this.attackPassive ? "Inactive" : "Active";
         this.descriptions = this.decoratedAggressionDescription.concat([aggCooldown]).concat([agressionActive])
-                            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat([defensiveActive])
-                            .concat([' '].concat(this.decoratedPassiveDescription).concat([activeOrInactive]));
+            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat([defensiveActive])
+            .concat([' '].concat(this.decoratedPassiveDescription).concat([activeOrInactive]));
         this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
         this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-        this.passiveDescrStyle =  [styles.passivePStyle, styles.abilityTextFaded, styles.systemMessageText];
+        this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded, styles.systemMessageText];
         this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
         this.systemMessage = options.passiveSystemMessage;
         Tooltip.makeTooltippable(this.actionBox, this);
 
-        if(eventName != 'Unequip') {
+        var showTooltip = !this.unit.swappingStatesOfMind && (eventName != 'Unequip' || options.manual);
+
+        if (showTooltip) {
             this.actionBox.tooltipObj.display(mousePosition);
         }
     }.bind(this);
@@ -60,23 +71,43 @@ export default function(options) {
     }.bind(this));
 
     Matter.Events.on(this, 'Unequip', function(event) {
-        setTooltip("Unequip");
+        setTooltip("Unequip", {
+            manual: event.manual
+        });
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
-        if(!this.isEquipped && event.level.isLevelNonConfigurable() && this.unlocked) {
+        if (!this.isEquipped && event.level.isLevelNonConfigurable() && this.unlocked) {
             var order = ++this.unit.passiveOrder;
             gameUtils.doSomethingAfterDuration(() => {
-                var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {where: 'stageTwo', position: mathArrayUtils.clonePosition(this.unit.position)});
-                graphicsUtils.makeSpriteSize(iconUp, {x: 25, y: 25});
+                var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {
+                    where: 'stageTwo',
+                    position: mathArrayUtils.clonePosition(this.unit.position)
+                });
+                graphicsUtils.makeSpriteSize(iconUp, {
+                    x: 25,
+                    y: 25
+                });
                 var border = graphicsUtils.addBorderToSprite({
                     sprite: iconUp
                 });
-                gameUtils.attachSomethingToBody({something: iconUp, body: this.unit.body});
-                gameUtils.attachSomethingToBody({something: border, body: this.unit.body});
-                graphicsUtils.floatSprite(iconUp, {direction: 1, runs: 50});
-                graphicsUtils.floatSprite(border, {direction: 1, runs: 50});
-                if(this.passiveAction) {
+                gameUtils.attachSomethingToBody({
+                    something: iconUp,
+                    body: this.unit.body
+                });
+                gameUtils.attachSomethingToBody({
+                    something: border,
+                    body: this.unit.body
+                });
+                graphicsUtils.floatSprite(iconUp, {
+                    direction: 1,
+                    runs: 50
+                });
+                graphicsUtils.floatSprite(border, {
+                    direction: 1,
+                    runs: 50
+                });
+                if (this.passiveAction) {
                     this.passiveAction();
                 }
             }, 1800 + order * 750);
@@ -88,24 +119,26 @@ export default function(options) {
         //stop previous
         this.stop();
 
-        if(this.preStart) {
+        if (this.preStart) {
             this.preStart(mode);
         }
 
         //start new
         var cooldown = 0.01;
-        if(mode == attackPassive) {
-            if(!this.aggressionAction) return;
+        if (mode == attackPassive) {
+            if (!this.aggressionAction) return;
             cooldown = this.aggressionCooldown;
             let f = Matter.Events.on(this.unit, this.aggressionEventName, function(event) {
-                if(!this.active || this.inProcess) return;
-                if(this.aggressionPredicate && !this.aggressionPredicate(event)) {
+                if (!this.active || this.inProcess) return;
+                if (this.aggressionPredicate && !this.aggressionPredicate(event)) {
                     return;
                 }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
                 this.aggressionAction(event);
-                Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'attackPassiveActivated', {duration: this.aggressionDuration || 32});
+                Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'attackPassiveActivated', {
+                    duration: this.aggressionDuration || 32
+                });
                 gameUtils.doSomethingAfterDuration(function() {
                     this.active = false;
                     this.inProcess = false;
@@ -114,18 +147,20 @@ export default function(options) {
             this.clearListener = function() {
                 Matter.Events.off(this.unit, this.aggressionEventName, f);
             };
-        } else if(mode == defensePassive) {
-            if(!this.defenseAction) return;
+        } else if (mode == defensePassive) {
+            if (!this.defenseAction) return;
             cooldown = this.defenseCooldown;
             let f = Matter.Events.on(this.unit, this.defenseEventName, function(event) {
-                if(!this.active || this.inProcess) return;
-                if(this.defensePredicate && !this.defensePredicate(event)) {
+                if (!this.active || this.inProcess) return;
+                if (this.defensePredicate && !this.defensePredicate(event)) {
                     return;
                 }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
                 this.defenseAction(event);
-                Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'defensePassiveActivated', {duration: this.defenseDuration || 32});
+                Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'defensePassiveActivated', {
+                    duration: this.defenseDuration || 32
+                });
                 gameUtils.doSomethingAfterDuration(function() {
                     this.active = false;
                     this.inProcess = false;
@@ -142,12 +177,14 @@ export default function(options) {
             gogogo: true,
             timeLimit: 1,
             tickCallback: function(deltaTime) {
-                if(this.active) return;
+                if (this.active) return;
                 this.newCharge = true;
                 progress += deltaTime;
-                this.coolDownMeterPercent = Math.min(1, progress/cooldown);
-                if(this.coolDownMeterPercent == 1) {
-                    Matter.Events.trigger(this.unit, mode + 'Charged', {passive: this});
+                this.coolDownMeterPercent = Math.min(1, progress / cooldown);
+                if (this.coolDownMeterPercent == 1) {
+                    Matter.Events.trigger(this.unit, mode + 'Charged', {
+                        passive: this
+                    });
                     this.active = true;
                     progress = 0;
                 }
@@ -158,12 +195,12 @@ export default function(options) {
     };
 
     this.stop = function() {
-        if(this.preStop) {
+        if (this.preStop) {
             this.preStop();
         }
         this.active = false;
         this.inProcess = false;
-        if(this.clearListener) {
+        if (this.clearListener) {
             this.clearListener();
         }
         globals.currentGame.invalidateTimer(this.cooldownTimer);
