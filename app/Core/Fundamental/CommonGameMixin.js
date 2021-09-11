@@ -351,10 +351,15 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                    var spr = graphicsUtils.addSomethingToRenderer('singletire', {where: 'stage'});
-                    this.addTickCallback(() => {
-                        spr.position = this.mousePosition;
-                    });
+                    if(!this.whoaSprite) {
+                        this.whoaSprite = graphicsUtils.addSomethingToRenderer('TEX+:wowowowowowow', {where: 'stage', style: styles.abilityText});
+                        this.whoaSprite.position = {x: 100, y: 100};
+                    } else {
+                        this.whoaSprite.position.y += 0.5;
+                    }
+                    // this.addTickCallback(() => {
+                    //     spr.position = this.mousePosition;
+                    // });
                 }
             }
 

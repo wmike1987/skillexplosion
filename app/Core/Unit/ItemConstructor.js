@@ -199,10 +199,15 @@ var ic = function(options) {
                     x: newItem.body.position.x,
                     y: newItem.body.position.y - 30
                 };
+                mathArrayUtils.roundPositionToWholeNumbers(newItem.nameDisplayBase.position);
+                console.log(newItem.nameDisplayBase.position);
+
                 newItem.nameDisplay.position = {
                     x: newItem.body.position.x,
                     y: newItem.body.position.y - 30
                 };
+                mathArrayUtils.roundPositionToWholeNumbers(newItem.nameDisplay.position);
+                console.log(newItem.nameDisplay.position);
             }
         };
 

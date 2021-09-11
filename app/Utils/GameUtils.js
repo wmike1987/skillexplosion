@@ -1884,7 +1884,7 @@ var mathArrayUtils = {
 
     //This counts zero "0" as a valid value
     isFalseNotZero: function(value) {
-        return (!value && !(value === 0));
+        return (!value && (value !== 0));
     },
 
     cloneVertices: function(vertices) {
@@ -1940,6 +1940,12 @@ var mathArrayUtils = {
 
     flipCoin: function() {
         return Math.random() > 0.5;
+    },
+
+    //round position to whole numbers
+    roundPositionToWholeNumbers: function(position) {
+        position.x = Math.floor(position.x);
+        position.y = Math.floor(position.y);
     },
 
     //return new position
