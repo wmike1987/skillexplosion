@@ -2065,9 +2065,14 @@ var UnitBase = {
      * }
      */
     applyBuff: function(options) {
+        if(this.isDead) {
+            return;
+        }
+        
         options = Object.assign({
             playSound: true
         }, options);
+
         var name = options.name;
         var unit = this;
         var textureName = options.textureName;
