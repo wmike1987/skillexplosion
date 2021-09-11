@@ -10,10 +10,8 @@ Pixi.js for rendering
 
 Javascript for game logic
 
-Require.js for dependency management
-
 # Environment Setup
-Download the repo and start a webserver from the root directory. 
+Download the repo and start a webserver from the root directory.
 
 With python 3 use http server, "python -m http.server"
 
