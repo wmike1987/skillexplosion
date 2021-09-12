@@ -554,6 +554,15 @@ var enemyDefs = {
             hz: 4500
         }]
     },
+    basicHunter: {
+        token: 'default',
+        enemySets: [{
+            type: 'Hunter',
+            amount: [4],
+            atATime: 2,
+            hz: 4000
+        }]
+    },
     basicHard: {
         token: 'hard',
         enemySets: [{
@@ -773,7 +782,7 @@ var phaseTwo = function(options) {
         done: () => {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
-            world.map.addMapNode('basic');
+            world.map.addMapNode('basicHunter');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');

@@ -20,6 +20,7 @@ import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
+import UnitMenu from '@games/Us/UnitMenu.js';
 
 var entrySound = gameUtils.getSound('enterairdrop1.wav', {
     volume: 0.04,
@@ -315,6 +316,20 @@ var campLevel = function() {
     this.onLevelPlayable = function(scene) {
 
         var game = globals.currentGame;
+
+        //unit tester
+        var unitTest = false;
+        if(unitTest) {
+            var unitT = UnitMenu.createUnit('Hunter', {
+                team: game.playerTeam,
+                noIdle: true
+            });
+
+            unitT.position = {x: 500, y: 400};
+            globals.currentGame.addUnit(unitT);
+            globals.currentGame.newUnitTest = unitT;
+        }
+
         game.setUnit(game.shane, {
             position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
                 x: -40,

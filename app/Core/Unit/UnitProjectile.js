@@ -50,7 +50,7 @@ export default function(options) {
 
     var startPosition = mathArrayUtils.clonePosition(this.owningUnit.position);
     if (this.originOffset) {
-        startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.target.position, this.originOffset);
+        startPosition = mathArrayUtils.addScalarToVectorTowardDestination(startPosition, this.destination || this.target.position, this.originOffset);
     }
     this.startLocation = startPosition;
     this.body = Matter.Bodies.circle(startPosition.x, startPosition.y, 4, {
@@ -130,6 +130,20 @@ export default function(options) {
                 sprite.rotation = mathArrayUtils.pointInDirection(positionWrapper.originalPosition, positionWrapper.position);
             }
         }.bind(this),
+    }, {
+        id: 'shadow',
+        data: this.displayObject.creationTextureName,
+        offset: {x: 15, y: 20},
+        tint: 0x000000,
+        alpha: 0.35,
+        rotateFunction: function(sprite) {
+            if(this.tracking) {
+                sprite.rotation = mathArrayUtils.pointInDirection(this.body.position, positionWrapper.position);
+            } else {
+                sprite.rotation = mathArrayUtils.pointInDirection(positionWrapper.originalPosition, positionWrapper.position);
+            }
+        }.bind(this),
+        stage: "stageNTwo",
     }];
 
     globals.currentGame.addBody(this.body);

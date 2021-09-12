@@ -249,7 +249,7 @@ var UnitSystem = function(properties) {
 
                     var fromUnit = this._selectedUnit || null;
                     this._selectedUnit = value;
-                    var body = value ? value.body : null;
+                    var body = value ? value.proxyBody || value.body : null;
 
                     Matter.Events.trigger(unitSystem, 'prevailingUnitChange', {
                         unit: value,
@@ -883,7 +883,7 @@ var UnitSystem = function(properties) {
         Matter.Events.on(this.box, 'onCollideActive onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
             if (!otherBody.isSelectionBody) return;
-            var otherUnit = otherBody.unit || {};
+            var otherUnit = otherBody.unit || otherBody.unitRedirect || {};
             var pendingBodyCount = Object.keys(this.box.pendingSelections).length;
 
             if (otherUnit.isMoving && (this.box.bounds.max.x - this.box.bounds.min.x < smallBoxThreshold && this.box.bounds.max.y - this.box.bounds.min.y < smallBoxThreshold) &&
@@ -912,7 +912,7 @@ var UnitSystem = function(properties) {
 
         Matter.Events.on(this.box, 'onCollideEnd', function(pair) {
             var otherBody = pair.pair.bodyB == this.box ? pair.pair.bodyA : pair.pair.bodyB;
-            var otherUnit = otherBody.unit || {};
+            var otherUnit = otherBody.unit || otherBody.unitRedirect || {};
             if (otherUnit.isSelectable && (otherBody.isSmallerBody || otherBody.isMovingAndStationaryBody || otherBody.isSelectionBody)) {
                 otherUnit.activeBoxCollisions.delete(otherBody);
                 if (otherUnit.activeBoxCollisions.size == 0 && otherUnit != this.box.permaPendingUnit) {
@@ -1265,7 +1265,7 @@ var UnitSystem = function(properties) {
                     if (annointNextUnit)
                         this.selectedUnit = firstUnit;
                 }
-            }.bind(this),
+            }.bind(this);
 
             $('body').on('keyup.unitSystem', function(event) {
                 if (event.key == 'Alt') {
@@ -1443,14 +1443,16 @@ var UnitSystem = function(properties) {
         this.convertBodiesToSelectionEnabledUnits = function(bodies, useSelectionBoxBody) {
             bodies = $.grep(bodies, function(body) {
                 if (useSelectionBoxBody) {
+                    //for selection box
                     return body.isSelectionBody && !body.isSmallerBody;
                 } else {
+                    //use either the 'big body' or a specific isMoving and stationary body for mouse-overs (not box)
                     return (body.isSelectionBigBody || body.isMovingAndStationaryBody) && !body.isSmallerBody;
                 }
             });
 
             bodies = $.map(bodies, function(body) {
-                return body.unit;
+                return body.unit || body.unitRedirect;
             });
 
             return bodies;

@@ -281,6 +281,11 @@ export default function Medic(options) {
           isSensor: true,
         });
         shadow.isShadow = true;
+        shadow.isSelectionBody = true;
+        shadow.isMovingAndStationaryBody = true;
+        shadow.collisionFilter.mask = 0x0002;
+        shadow.unitRedirect = medic;
+        shadow.unitProxy = true;
 
         shadow.renderChildren = [{
           id: 'shadow',
@@ -303,8 +308,19 @@ export default function Medic(options) {
         shadow.renderlings.energybar.preferredBody = shadow;
         shadow.renderlings.energybarfade = this.body.renderlings.energybarfade;
         shadow.renderlings.energybarfade.preferredBody = shadow;
+        shadow.renderlings.selectionPending = this.body.renderlings.selectionPending;
+        shadow.renderlings.selectionPending.preferredBody = shadow;
+        shadow.renderlings.selected = this.body.renderlings.selected;
+        shadow.renderlings.selected.preferredBody = shadow;
 
         shadow.oneFrameOverrideInterpolation = true;
+
+
+        //set the prevailing unit indicator to the shadow
+        this.proxyBody = shadow;
+        if(globals.currentGame.unitSystem.selectedUnit == this) {
+            globals.currentGame.unitSystem.selectedUnit = this;
+        }
 
         var secretStepSpeed = fleetFeetAugment ? 22 : 10;
         gameUtils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
@@ -399,6 +415,16 @@ export default function Medic(options) {
               delete shadow.renderlings.energybar;
               shadow.renderlings.energybarfade.preferredBody = null;
               delete shadow.renderlings.energybarfade;
+              shadow.renderlings.selectionPending.preferredBody = null;
+              delete shadow.renderlings.selectionPending;
+              shadow.renderlings.selected.preferredBody = null;
+              delete shadow.renderlings.selected;
+
+              //reinstate the prevailing unit indicator
+              this.proxyBody = null;
+              if(globals.currentGame.unitSystem.selectedUnit == this) {
+                  globals.currentGame.unitSystem.selectedUnit = this;
+              }
 
               globals.currentGame.removeBody(shadow);
               globals.currentGame.invalidateTimer(footprintTimer);

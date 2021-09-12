@@ -420,10 +420,15 @@ var renderer = function(engine, options) {
 
 			//Attempt to load from preloaded texture or spine asset
 		    if(this.texturePool[something]) {
-				if(this.texturePool[something].texture)
-		        	return new PIXI.Sprite(this.texturePool[something].texture);
-				else
-					return new PIXI.spine.Spine(this.texturePool[something].spineData);
+				if(this.texturePool[something].texture) {
+                    let ret = new PIXI.Sprite(this.texturePool[something].texture);
+                    ret.creationTextureName = something;
+                    return ret;
+                }
+				else {
+                    let ret = new PIXI.spine.Spine(this.texturePool[something].spineData);
+                    return ret;
+                }
 			}
 		    else { //Check for textures inside a texture atlas
 		        var foundAtlasTexture;
@@ -460,7 +465,10 @@ var renderer = function(engine, options) {
 						return false;
 					}
 		        }.bind(this))
-		        if(foundAtlasTexture) return foundAtlasTexture;
+		        if(foundAtlasTexture) {
+                    foundAtlasTexture.creationTextureName = something;
+                    return foundAtlasTexture;
+                }
 		    }
 
 			//Lastly, just try and load a png from the Textures dir
