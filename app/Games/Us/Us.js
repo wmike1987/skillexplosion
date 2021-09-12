@@ -69,6 +69,8 @@ var game = {
     worlds: [campNoir],
     currentCamp: null,
     currentScene: null,
+    showTips: true,
+    showedTips: {},
 
     initExtension: function() {
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
@@ -325,6 +327,7 @@ var game = {
         this.initUrsula();
         var camp = this.currentWorld.getLevelById('camp');
         camp.alreadyIntrod = true;
+        this.showTips = false;
         camp.completedUrsulaTasks = true;
         this.nextPhase({
             skippedTutorial: true
@@ -332,6 +335,15 @@ var game = {
         this.map.setHeadTokenPosition({
             node: this.map.findNodeById('camp')
         });
+    },
+
+    canShowTip: function(tipName, showTipToo) {
+        var ret = this.showTips && !this.showedTips[tipName];
+        if(showTipToo) {
+            this.showedTips[tipName] = true;
+        }
+
+        return ret;
     },
 
     transitionToBlankScene: function(options) {

@@ -810,8 +810,9 @@ var phaseTwo = function(options) {
                 var a1 = new Dialogue({
                     actor: "MacMurray",
                     text: "Air drop incoming, I take it you know what to do...",
+                    letterSpeed: 45,
                     backgroundBox: true,
-                    delayAfterEnd: 1500
+                    delayAfterEnd: 750
                 });
                 var chain = new DialogueChain([a1], {
                     startDelay: 1500,
@@ -860,16 +861,32 @@ var phaseTwo = function(options) {
     return {
         nextPhase: 'allNodesComplete',
         onEnterBehavior: function() {
-            globals.currentGame.flyover(() => {
-                globals.currentGame.dustAndItemBox({
-                    location: gameUtils.getPlayableCenterPlus({
-                        x: 200,
-                        y: 120
-                    }),
-                    item: ['BasicMicrochip', 'Book'],
-                    special: true
-                });
+            var a1 = new Dialogue({
+                actor: "MacMurray",
+                text: "Resupply incoming...",
+                backgroundBox: true,
+                letterSpeed: 30,
+                delayAfterEnd: 1000,
             });
+            var self = this;
+            var chain = new DialogueChain([a1], {
+                startDelay: 750,
+                cleanUpOnDone: true
+            });
+            globals.currentGame.currentScene.add(chain);
+            chain.play();
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.flyover(() => {
+                    globals.currentGame.dustAndItemBox({
+                        location: gameUtils.getPlayableCenterPlus({
+                            x: 200,
+                            y: 120
+                        }),
+                        item: ['BasicMicrochip', 'Book'],
+                        special: true
+                    });
+                });
+            }, 2000);
         }
     };
 };

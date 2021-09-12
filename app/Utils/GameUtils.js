@@ -465,6 +465,7 @@ var gameUtils = {
                  position.x < 0 + buffer ||
                  mathArrayUtils.distanceBetweenPoints(position, point) < minRadius);
 
+        mathArrayUtils.roundPositionToWholeNumbers(position);
         return position;
     },
 
@@ -1648,8 +1649,8 @@ var graphicsUtils = {
         var frontTint = 0xFFFFFF;
         var backTint = 0x525254;
         var faceShowing = 'front';
-        this.isSpinning = true;
-        this.flipTimer = globals.currentGame.addTimer({
+        var isSpinning = true;
+        var flipTimer = globals.currentGame.addTimer({
             name: 'nodeFlipTimer' + mathArrayUtils.getId(),
             gogogo: true,
             tickCallback: function(deltaTime) {
@@ -1674,7 +1675,7 @@ var graphicsUtils = {
                             }
                             this.invalidate();
                             sprite.scale.x = originalScaleX;
-                            self.isSpinning = false;
+                            isSpinning = false;
                             return;
                         }
                     }
@@ -1707,6 +1708,14 @@ var graphicsUtils = {
                     sprite.scale.x = percentDone * originalScaleX;
                 }
             }
+        });
+
+        var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
+            flipTimer.invalidate();
+        });
+
+        Matter.Events.on(flipTimer, 'onInvalidate', () => {
+            remove.removeHandler();
         });
     },
 
@@ -1944,8 +1953,8 @@ var mathArrayUtils = {
 
     //round position to whole numbers
     roundPositionToWholeNumbers: function(position) {
-        position.x = Math.floor(position.x);
-        position.y = Math.floor(position.y);
+        position.x = Math.round(position.x);
+        position.y = Math.round(position.y);
     },
 
     //return new position

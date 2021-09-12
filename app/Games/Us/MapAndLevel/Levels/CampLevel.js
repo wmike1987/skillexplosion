@@ -350,11 +350,11 @@ var campLevel = function() {
                     duration: 4000
                 });
                 scene.add(adrText);
-            }, 500);
+            }, 2500);
 
             //reset fatigue indicator
             gameUtils.doSomethingAfterDuration(() => {
-                var fatigueText = graphicsUtils.floatText('Fatigue set to 0%', gameUtils.getPlayableCenterPlus({
+                var fatigueText = graphicsUtils.floatText('Fatigue reset', gameUtils.getPlayableCenterPlus({
                     y: 300
                 }), {
                     where: 'hudThree',
@@ -363,7 +363,7 @@ var campLevel = function() {
                     duration: 4000
                 });
                 scene.add(fatigueText);
-            }, 2500);
+            }, 4000);
         }
     };
 

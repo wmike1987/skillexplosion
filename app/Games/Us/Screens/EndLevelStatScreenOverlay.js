@@ -151,7 +151,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         var scene = new Scene();
         gameUtils.doSomethingAfterDuration(() => {
             Matter.Events.trigger(scene, 'sceneFadeInDone');
-        }, 500);
+        }, 150);
         scene.addBlackBackground({
             alpha: 0.75,
             fadeDuration: 500

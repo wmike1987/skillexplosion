@@ -103,7 +103,7 @@ var map = function(specs) {
         showInfoCursor: true,
         title: 'Adrenaline',
         descriptions: ['Adrenaline reduces travel fatigue.'],
-        systemMessage: ['Adrenaline is gained/lost by winning/losing a level.', 'Returning to camp resets adrenaline.']
+        systemMessage: ['Adrenaline is gained by beating a level.', 'Adrenaline is lost by reconfiguring after a level', 'Returning to camp resets adrenaline.']
     });
     this.adrenalineBlocks = [];
     this.removedAdrenalineBlocks = [];

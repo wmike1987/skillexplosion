@@ -572,6 +572,10 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                     this.isDone = true;
                     currentDia.deferred.done(this.done);
                 }
+
+                if(this.cleanUpOnDone) {
+                    currentDia.deferred.done(this.cleanUp.bind(this));
+                }
             }
         }
 

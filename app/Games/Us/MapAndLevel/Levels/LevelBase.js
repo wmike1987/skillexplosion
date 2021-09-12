@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 import * as Matter from 'matter-js';
 import {
     globals,
+    keyStates,
     mousePosition
 } from '@core/Fundamental/GlobalState.js';
 import {
@@ -66,6 +67,7 @@ var levelBase = {
         //upon entering a new level, remove any level local entities
         globals.currentGame.removeAllLevelLocalEntities();
 
+        //call a totally custom entry method, or call a prebaked entry method
         if (options.customEnterLevel) {
             options.customEnterLevel(this);
         } else {
@@ -257,19 +259,35 @@ var levelBase = {
         });
         scene.add(this.gunrack);
 
+        //add text
+        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Control + Click to activate', {style: styles.abilityText, where: 'hudThree'});
+        controlClickText.position = mathArrayUtils.clonePosition(this.gunrack.position, {y: 40});
+        mathArrayUtils.roundPositionToWholeNumbers(controlClickText.position);
+        controlClickText.visible = false;
+        scene.add(controlClickText);
+
+        var persistentTip = false;
+        if(globals.currentGame.canShowTip('gunrackhelp', true)) {
+            controlClickText.visible = true;
+            persistentTip = true;
+        }
+
         var gunrackHoverTick = globals.currentGame.addTickCallback(function(event) {
             if (self.campLikeActive) return;
             if (Matter.Vertices.contains(this.gunrack.body.vertices, mousePosition)) {
                 gunrackSprite.tint = 0xff33cc;
-            } else {
+                controlClickText.visible = true;
+                persistentTip = false;
+            } else if(!persistentTip){
                 gunrackSprite.tint = 0xFFFFFF;
+                controlClickText.visible = false;
             }
         }.bind(this));
 
         var self = this;
         //Establish map click listeners
         var gunrackClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
-            if (self.campLikeActive) return;
+            if (self.campLikeActive || !keyStates.Control) return;
             if (event.which == 3) return; //don't allow right clicks
             var canvasPoint = {
                 x: 0,
@@ -278,10 +296,21 @@ var levelBase = {
             gameUtils.pixiPositionToPoint(canvasPoint, event);
 
             if (Matter.Vertices.contains(self.gunrack.body.vertices, canvasPoint) && !this.mapActive) {
+                gunrackSprite.tint = 0xFFFFFF;
+                controlClickText.visible = false;
                 globals.currentGame.makeCurrentLevelConfigurable();
                 globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
                 globals.currentGame.soundPool.unlock1.play();
                 globals.currentGame.map.removeAdrenalineBlock();
+                graphicsUtils.floatText('-1 adrenaline', {
+                    x: gunrackSprite.position.x,
+                    y: gunrackSprite.position.y -25
+                }, {
+                    style: styles.abilityText,
+                    where: 'hudThree',
+                    speed: 2,
+                    duration: 1500
+                });
             }
         }.bind(globals.currentGame));
 
@@ -375,6 +404,10 @@ var levelBase = {
         });
 
         return this.mapTable;
+    },
+
+    onLevelPlayable: function() {
+        //to be overridden
     },
 
     initializeWinLossCondition: function() {
@@ -524,13 +557,6 @@ var levelBase = {
                                     Matter.Events.trigger(this, 'endLevelActions', {
                                         endLevelScene: sc
                                     });
-
-                                    // game.unitsInPlay.forEach((unit) => {
-                                    //     unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
-                                    //     gameUtils.moveUnitOffScreen(unit);
-                                    // });
-
-                                    // game.removeAllLevelLocalEntities();
                                     gameUtils.setCursorStyle('Main');
                                     globals.currentGame.togglePause();
                                 }, 32, {
@@ -632,6 +658,7 @@ var modes = {
                     applyFatigue: true
                 });
                 level.startLevelSpawn();
+                level.onLevelPlayable(scene);
             });
             game.level += 1;
         }

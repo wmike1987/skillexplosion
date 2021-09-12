@@ -351,12 +351,13 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                    if(!this.whoaSprite) {
-                        this.whoaSprite = graphicsUtils.addSomethingToRenderer('TEX+:wowowowowowow', {where: 'stage', style: styles.abilityText});
-                        this.whoaSprite.position = {x: 100, y: 100};
-                    } else {
-                        this.whoaSprite.position.y += 0.5;
-                    }
+                    // globals.currentGame.nextPhase();
+                    // if(!this.whoaSprite) {
+                    //     this.whoaSprite = graphicsUtils.addSomethingToRenderer('TEX+:wowowowowowow', {where: 'stage', style: styles.abilityText});
+                    //     this.whoaSprite.position = {x: 100, y: 100};
+                    // } else {
+                    //     this.whoaSprite.position.y += 0.5;
+                    // }
                     // this.addTickCallback(() => {
                     //     spr.position = this.mousePosition;
                     // });
