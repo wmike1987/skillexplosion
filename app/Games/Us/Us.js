@@ -718,13 +718,17 @@ var game = {
             unit.showEnergyBar();
             unit.barsShowingOverride = true;
             gameUtils.doSomethingAfterDuration(() => {
-                unit.body.collisionFilter.mask += 0x0004;
                 unit.barsShowingOverride = false;
                 unit.showLifeBar(false);
                 unit.showEnergyBar(false);
                 unit.ignoreEnergyRegeneration = false;
                 unit.ignoreHealthRegeneration = false;
             }, 1750);
+
+            gameUtils.doSomethingAfterDuration(() => {
+                unit.body.collisionFilter.mask += 0x0004;
+            }, 2500);
+
             unit.move(options.moveTo || mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
                 x: centerX,
                 y: 0
