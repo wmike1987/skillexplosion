@@ -132,7 +132,8 @@ export default function(options) {
         }.bind(this),
     }, {
         id: 'shadow',
-        data: this.displayObject.creationTextureName,
+        data: this.displayObject.creationTextureName || 'IsoShadowBlurred',
+        scale: this.displayObject.creationTextureName ? {x: 1.0, y: 1.0} : {x: 0.5, y: 1.0},
         offset: {x: 15, y: 20},
         tint: 0x000000,
         alpha: 0.35,
