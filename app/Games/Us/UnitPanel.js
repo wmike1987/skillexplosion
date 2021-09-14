@@ -687,7 +687,7 @@ unitPanel.prototype.initialize = function(options) {
         }
     }.bind(this));
 
-    Matter.Events.on(globals.currentGame, 'enteringLevel', function(event) {
+    Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
         if (!event.level.isLevelConfigurable()) {
             this.leaveCamp.bind(this);
         } else {

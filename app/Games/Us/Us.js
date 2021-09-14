@@ -78,8 +78,8 @@ var game = {
             rate: 0.9
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {
-            volume: 1.55,
-            rate: 1.2
+            volume: 1.45,
+            rate: 1.35
         });
         this.boxSound = gameUtils.getSound('criticalhit.wav', {
             volume: 0.15,
@@ -183,7 +183,7 @@ var game = {
             this.levelInPlay = true;
         }.bind(this));
 
-        Matter.Events.on(this, 'VictoryOrDefeat', function(event) {
+        Matter.Events.on(this, 'TravelStarted', function(event) {
             this.levelInPlay = false;
         }.bind(this));
 
@@ -774,17 +774,22 @@ var game = {
             },
             stage: "foreground",
         }];
-        this.addBody(shadow);
         this.flyoverSound.play();
-        gameUtils.sendBodyToDestinationAtSpeed(shadow, {
-            x: gameUtils.getCanvasWidth() + 100,
-            y: shadow.position.y
-        }, speed || 50, false, false, () => {
-            this.removeBody(shadow);
-            if (done) {
-                done();
-            }
-        });
+
+        gameUtils.doSomethingAfterDuration(() => {
+            this.addBody(shadow);
+            gameUtils.sendBodyToDestinationAtSpeed(shadow, {
+                x: gameUtils.getCanvasWidth() + 100,
+                y: shadow.position.y
+            }, speed || 95, false, false, () => {
+                this.removeBody(shadow);
+                gameUtils.doSomethingAfterDuration(() => {
+                    if (done) {
+                        done();
+                    }
+                }, 150);
+            });
+        }, 200);
     },
 
     dustAndItemBox: function(options) {

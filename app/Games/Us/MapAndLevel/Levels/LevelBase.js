@@ -636,9 +636,6 @@ var modes = {
             //create new scene
             game.closeMap();
             Matter.Events.on(scene, 'initialize', function() {
-                Matter.Events.trigger(game, 'enteringLevel', {
-                    level: level
-                });
                 game.unitSystem.pause();
                 gameUtils.setCursorStyle('None');
                 var shaneStart = mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
@@ -677,9 +674,6 @@ var modes = {
             }
             game.closeMap();
             Matter.Events.on(scene, 'initialize', function() {
-                Matter.Events.trigger(game, 'enteringLevel', {
-                    level: level
-                });
                 level.onLevelPlayable(scene);
             });
         }

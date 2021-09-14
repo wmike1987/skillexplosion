@@ -558,8 +558,13 @@ var enemyDefs = {
         token: 'default',
         enemySets: [{
             type: 'Hunter',
-            amount: [14],
-            atATime: 5,
+            amount: [2],
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Critter',
+            amount: [3, 4],
+            atATime: 1,
             hz: 4000
         }]
     },
