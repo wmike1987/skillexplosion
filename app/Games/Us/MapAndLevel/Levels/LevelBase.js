@@ -47,6 +47,7 @@ var levelBase = {
 
         //create the scene
         var scene = new Scene();
+        this.scene = scene;
 
         //fill the scene
         this.fillLevelScene(scene);
@@ -260,7 +261,7 @@ var levelBase = {
         scene.add(this.gunrack);
 
         //add text
-        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Control + Click to activate', {style: styles.abilityText, where: 'hudThree'});
+        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Control + Click to activate', {style: styles.abilityText, where: 'hudTwo'});
         controlClickText.position = mathArrayUtils.clonePosition(this.gunrack.position, {y: 40});
         mathArrayUtils.roundPositionToWholeNumbers(controlClickText.position);
         controlClickText.visible = false;
@@ -273,7 +274,9 @@ var levelBase = {
         }
 
         var gunrackHoverTick = globals.currentGame.addTickCallback(function(event) {
-            if (self.campLikeActive) return;
+            if (self.campLikeActive || globals.currentGame.mapActive) {
+                return;
+            }
             if (Matter.Vertices.contains(this.gunrack.body.vertices, mousePosition)) {
                 gunrackSprite.tint = 0xff33cc;
                 controlClickText.visible = true;
@@ -472,7 +475,6 @@ var levelBase = {
             });
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
-            this.spawner.cleanUp();
         }.bind(this);
 
         /*
@@ -539,29 +541,22 @@ var levelBase = {
                     winAndContinueTasks({
                         onContinue: function() {
                             gameUtils.doSomethingAfterDuration(() => {
-                                globals.currentGame.togglePause();
-                                gameUtils.doSomethingAfterDuration(() => {
-
-                                    Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
-                                        result: winResult
-                                    });
-
-                                    var sc = game.gotoEndLevelScreen({
-                                        result: winResult,
-                                        collectors: {
-                                            shane: game.shaneCollector.getLastCollector(),
-                                            ursula: game.ursulaCollector.getLastCollector()
-                                        },
-                                    });
-
-                                    Matter.Events.trigger(this, 'endLevelActions', {
-                                        endLevelScene: sc
-                                    });
-                                    gameUtils.setCursorStyle('Main');
-                                    globals.currentGame.togglePause();
-                                }, 32, {
-                                    trueTimer: true
+                                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                                    result: winResult
                                 });
+
+                                var sc = game.gotoEndLevelScreen({
+                                    result: winResult,
+                                    collectors: {
+                                        shane: game.shaneCollector.getLastCollector(),
+                                        ursula: game.ursulaCollector.getLastCollector()
+                                    },
+                                });
+
+                                Matter.Events.trigger(this, 'endLevelActions', {
+                                    endLevelScene: sc
+                                });
+                                gameUtils.setCursorStyle('Main');
                             }, 0);
                         }.bind(this)
                     });
@@ -584,7 +579,6 @@ var levelBase = {
                 commonWinLossTasks({
                     result: lossResult
                 });
-                this.resetLevel();
                 game.itemSystem.removeAllItemsOnGround(true);
                 gameUtils.doSomethingAfterDuration(() => {
                     if (this.gotoMapOnWin) {
@@ -600,6 +594,15 @@ var levelBase = {
                         });
                         game.map.show();
                     } else {
+                        this.scene.addCleanUpTask(() => {
+                            this.spawner.cleanUp();
+                            this.resetLevel();
+                            let game = globals.currentGame;
+                            let enemies = gameUtils.getUnitEnemies(game.shane);
+                            enemies.forEach((enemy) => {
+                                game.removeUnit(enemy);
+                            });
+                        });
                         game.unitsInPlay.forEach((unit) => {
                             unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                         });
@@ -615,11 +618,6 @@ var levelBase = {
                                 ursula: game.ursulaCollector.getLastCollector()
                             },
                             continueOnly: continueOnly
-                        });
-                        // game.removeAllLevelLocalEntities();
-                        let enemies = gameUtils.getUnitEnemies(game.shane);
-                        enemies.forEach((enemy) => {
-                            game.removeUnit(enemy);
                         });
                     }
                 }, 500);
@@ -657,6 +655,7 @@ var modes = {
                 level.startLevelSpawn();
                 level.onLevelPlayable(scene);
             });
+
             game.level += 1;
         }
     },

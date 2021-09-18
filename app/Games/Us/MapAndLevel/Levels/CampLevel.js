@@ -347,6 +347,9 @@ var campLevel = function() {
             this.camp.onLevelPlayable.call(this, scene);
         }
 
+        //play music
+        globals.currentGame.soundPool.campMarch.play();
+
         if(this.alreadyIntrod) {
 
             //Only reset stuff if we enter by traveling

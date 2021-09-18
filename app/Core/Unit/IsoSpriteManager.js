@@ -154,7 +154,7 @@ function IsoSpriteManager(options) {
 
 		this.idleTimer = globals.currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
 			this.timeLimit = 2000 + Math.random() * 2000;
-			if(self.unit.idleCancel) {
+			if(self.unit.idleCancel || self.unit.isDead) {
 				return;
 			}
 			var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)

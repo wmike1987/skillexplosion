@@ -118,6 +118,10 @@ var game = {
 
         //setup a common sound pool
         this.soundPool = {};
+        this.soundPool.campMarch = gameUtils.getSound('march1.mp3', {
+            volume: 0.5,
+            rate: 1.0
+        });
         this.soundPool.sceneContinue = gameUtils.getSound('gunclick1.wav', {
             volume: 0.1,
             rate: 1.0
@@ -382,7 +386,7 @@ var game = {
                 this.currentScene.add(vScene);
                 this.reconfigureAtCurrentLevel({
                     result: result,
-                    revive: result == 'loss'
+                    revive: true
                 });
             }
         }.bind(this);

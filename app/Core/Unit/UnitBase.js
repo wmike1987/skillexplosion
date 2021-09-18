@@ -717,10 +717,12 @@ var UnitBase = {
 
             set: function(value) {
                 var currentPercentage = 100;
-                if (this._maxHealth)
+                if (this._maxHealth) {
                     currentPercentage = this.currentHealth / this._maxHealth;
+                }
                 this._maxHealth = value;
-                this.setHealth(Math.round(this._maxHealth * currentPercentage));
+                let diffToGive = Math.round(this._maxHealth * currentPercentage) - this.currentHealth;
+                this.giveHealth(diffToGive);
             }
         });
 
@@ -731,10 +733,12 @@ var UnitBase = {
 
             set: function(value) {
                 var currentPercentage = 100;
-                if (this._maxEnergy)
+                if (this._maxEnergy) {
                     currentPercentage = this.currentEnergy / this._maxEnergy;
+                }
                 this._maxEnergy = value;
-                this.setEnergy(Math.round(this._maxEnergy * currentPercentage));
+                let diffToGive = Math.round(this._maxEnergy * currentPercentage) - this.currentEnergy;
+                this.giveEnergy(diffToGive);
             }
         });
 
@@ -1297,15 +1301,6 @@ var UnitBase = {
                 healthBarYOffset = energyBarYOffset;
             }
 
-            // setup health and energy
-            if (this.health) {
-                this.maxHealth = this.health;
-            }
-
-            if (this.energy) {
-                this.maxEnergy = this.energy;
-            }
-
             if (this._afterAddInit) {
                 this._afterAddInit();
             }
@@ -1470,6 +1465,15 @@ var UnitBase = {
 
             //immediately realize the new render children
             globals.currentGame.renderer.realizeBody(this.body);
+
+            // setup health and energy
+            if (this.health) {
+                this.maxHealth = this.health;
+            }
+
+            if (this.energy) {
+                this.maxEnergy = this.energy;
+            }
         }.bind(this));
 
         //kill handler (disabled for now)
@@ -2068,7 +2072,7 @@ var UnitBase = {
         if(this.isDead) {
             return;
         }
-        
+
         options = Object.assign({
             playSound: true
         }, options);

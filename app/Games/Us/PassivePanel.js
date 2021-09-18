@@ -334,7 +334,7 @@ ConfigPanel.prototype.liftOpenButton = function() {
 };
 
 ConfigPanel.prototype.collidesWithPoint = function(point) {
-    return (this.showButton.containsPoint(point));
+    return (this.showButton.visible && this.showButton.containsPoint(point));
 };
 
 ConfigPanel.prototype.cleanUp = function() {
