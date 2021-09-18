@@ -31,19 +31,13 @@ var multiLevel = function(options) {
 
         //modify the each level to comprehend that it's part of a chain
         this.chain.forEach((level, index) => {
-            //upon reset, reset all nodes in the chain
-            level.originalResetLevel = level.resetLevel;
-            level.resetLevel = function() {
-                multiRef.chain.forEach(level => {
-                    level.originalResetLevel();
-                });
-            };
 
             //if we not the last node, have the win behavior start the next level
             if(index < this.chain.length-1) {
                 var nextLevel = this.chain[index + 1];
                 level.customWinBehavior = function() {
                     this.spawner.cleanUp();
+                    nextLevel.scene = this.scene;
                     globals.currentGame.setCurrentLevel(nextLevel, {immediatePool: true});
                     nextLevel.startLevelSpawn({keepCurrentCollector: true});
                 };

@@ -87,6 +87,9 @@ var levelBase = {
         var level = this;
         var game = globals.currentGame;
 
+        //reset level
+        this.resetLevel();
+
         //start enemy spawn
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {
@@ -596,7 +599,6 @@ var levelBase = {
                     } else {
                         this.scene.addCleanUpTask(() => {
                             this.spawner.cleanUp();
-                            this.resetLevel();
                             let game = globals.currentGame;
                             let enemies = gameUtils.getUnitEnemies(game.shane);
                             enemies.forEach((enemy) => {

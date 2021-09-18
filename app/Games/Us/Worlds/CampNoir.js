@@ -565,7 +565,7 @@ var enemyDefs = {
             type: 'Critter',
             amount: [3, 4],
             atATime: 1,
-            hz: 4000
+            hz: 3000
         }]
     },
     basicHard: {
@@ -635,6 +635,11 @@ var enemyDefs = {
             amount: 35,
             atATime: 5,
             hz: 3800
+        }, {
+            type: 'Hunter',
+            amount: 2,
+            atATime: 1,
+            hz: 6000
         }]
     },
     outerMobs: {
