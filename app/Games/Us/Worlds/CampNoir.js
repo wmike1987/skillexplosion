@@ -637,7 +637,8 @@ var enemyDefs = {
             hz: 3800
         }, {
             type: 'Hunter',
-            amount: 2,
+            amount: 1,
+            initialDelay: 5000,
             atATime: 1,
             hz: 6000
         }]
