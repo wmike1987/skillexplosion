@@ -149,6 +149,7 @@ var UnitBase = {
     neutralTint: 0xb8b62d,
 
     sufferAttack: function(damage, attackingUnit, options) {
+        var returnInformation = {attackLanded: true};
         if (this.unitRemoved) return;
 
         options = Object.assign({
@@ -182,7 +183,9 @@ var UnitBase = {
             }, {
                 style: styles.dodgeText
             });
-            return;
+
+            returnInformation.attackLanded = false;
+            return returnInformation;
         }
 
         Matter.Events.trigger(this, 'preSufferAttack', {
@@ -259,7 +262,9 @@ var UnitBase = {
                 });
                 graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
                 killingBlowBlock.play();
-                return;
+                
+                returnInformation.attackLanded = false;
+                return returnInformation;
             }
         }
 
@@ -367,14 +372,18 @@ var UnitBase = {
             });
         }
 
-        //show give life fade
-        let healthSnapshot = this.currentHealth;
-        this.fadeLifeAmount(this.currentHealth, true, () => {
-            this.updateHealthBar({
-                amount: healthSnapshot,
-                preserveGainTintTimer: true
+        if(options.immediateChange) {
+            this.updateHealthBar({overridePendingUpdates: true});
+        } else {
+            //show give life fade
+            let healthSnapshot = this.currentHealth;
+            this.fadeLifeAmount(this.currentHealth, true, () => {
+                this.updateHealthBar({
+                    amount: healthSnapshot,
+                    preserveGainTintTimer: true
+                });
             });
-        });
+        }
 
         if (!options.invisible) {
             this.showLifeBar(true);
@@ -411,18 +420,23 @@ var UnitBase = {
 
     giveEnergy: function(amount, performingUnit, options) {
         options = options || {
-            invisible: false
+            invisible: false,
+            noFade: false,
         };
 
         this.currentEnergy += amount;
 
-        //show give energy fade
-        let energySnapshot = this.currentEnergy;
-        this.fadeEnergyAmount(this.currentEnergy, true, () => {
-            this.updateEnergyBar({
-                amount: energySnapshot
+        if(options.immediateChange) {
+            this.updateEnergyBar({overridePendingUpdates: true});
+        } else {
+            //show give energy fade
+            let energySnapshot = this.currentEnergy;
+            this.fadeEnergyAmount(this.currentEnergy, true, () => {
+                this.updateEnergyBar({
+                    amount: energySnapshot
+                });
             });
-        });
+        }
 
         if (!options.invisible) {
             this.showEnergyBar(true);
@@ -721,8 +735,8 @@ var UnitBase = {
                     currentPercentage = this.currentHealth / this._maxHealth;
                 }
                 this._maxHealth = value;
-                let diffToGive = Math.round(this._maxHealth * currentPercentage) - this.currentHealth;
-                this.giveHealth(diffToGive);
+                let diffToGive = this._maxHealth * currentPercentage - this.currentHealth;
+                this.giveHealth(diffToGive, null, {immediateChange: true});
             }
         });
 
@@ -737,8 +751,8 @@ var UnitBase = {
                     currentPercentage = this.currentEnergy / this._maxEnergy;
                 }
                 this._maxEnergy = value;
-                let diffToGive = Math.round(this._maxEnergy * currentPercentage) - this.currentEnergy;
-                this.giveEnergy(diffToGive);
+                let diffToGive = this._maxEnergy * currentPercentage - this.currentEnergy;
+                this.giveEnergy(diffToGive, null, {immediateChange: true});
             }
         });
 
@@ -1181,7 +1195,7 @@ var UnitBase = {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
                 if (this.healthBarFadeTimer) {
-                    this.healthBarFadeTimer.invalidate();
+                    this.healthBarFadeTimer.skipToEnd = true;
                 }
             }
 
@@ -1227,7 +1241,7 @@ var UnitBase = {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
                 if (this.energyBarFadeTimer) {
-                    this.energyBarFadeTimer.invalidate();
+                    this.energyBarFadeTimer.skipToEnd = true;
                 }
             }
             var percentage = amount / this.maxEnergy;
@@ -2084,7 +2098,7 @@ var UnitBase = {
             x: 1,
             y: 1
         };
-        var originalyOffset = -this.buffYOffset || -60;
+        var originalyOffset = -this.buffYOffset || -65;
         var playSound = options.playSound;
         var buffDuration = options.duration;
         if (!unit.buffs) {

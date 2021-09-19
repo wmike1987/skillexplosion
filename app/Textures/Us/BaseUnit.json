@@ -2,7 +2,7 @@
 
 "AbilityTarget.png":
 {
-	"frame": {"x":423,"y":1,"w":32,"h":26},
+	"frame": {"x":399,"y":67,"w":32,"h":26},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -10,7 +10,7 @@
 },
 "AttackIcon.png":
 {
-	"frame": {"x":483,"y":78,"w":28,"h":19},
+	"frame": {"x":477,"y":77,"w":28,"h":19},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":19},
@@ -18,7 +18,7 @@
 },
 "AttackTarget.png":
 {
-	"frame": {"x":433,"y":66,"w":32,"h":26},
+	"frame": {"x":423,"y":1,"w":32,"h":26},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
@@ -58,10 +58,10 @@
 },
 "DodgeBuff.png":
 {
-	"frame": {"x":365,"y":67,"w":32,"h":32},
+	"frame": {"x":451,"y":1,"w":28,"h":28},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
 	"sourceSize": {"w":32,"h":32}
 },
 "Grave.png":
@@ -74,7 +74,7 @@
 },
 "GritBlockActive.png":
 {
-	"frame": {"x":485,"y":57,"w":24,"h":19},
+	"frame": {"x":482,"y":56,"w":24,"h":19},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":8,"w":24,"h":19},
@@ -90,7 +90,7 @@
 },
 "HealthEnergyBackground.png":
 {
-	"frame": {"x":389,"y":1,"w":32,"h":32},
+	"frame": {"x":365,"y":67,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -106,7 +106,7 @@
 },
 "HealthEnergyObscure.png":
 {
-	"frame": {"x":399,"y":67,"w":32,"h":32},
+	"frame": {"x":389,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -114,7 +114,7 @@
 },
 "HiddenBuff.png":
 {
-	"frame": {"x":485,"y":32,"w":24,"h":23},
+	"frame": {"x":482,"y":1,"w":24,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":24,"h":23},
@@ -122,7 +122,7 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":485,"y":99,"w":23,"h":23},
+	"frame": {"x":482,"y":98,"w":23,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":23},
@@ -170,15 +170,15 @@
 },
 "MaimBuff.png":
 {
-	"frame": {"x":485,"y":1,"w":26,"h":29},
-	"rotated": false,
+	"frame": {"x":451,"y":100,"w":26,"h":29},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":3,"w":26,"h":29},
 	"sourceSize": {"w":32,"h":32}
 },
 "MoveIcon.png":
 {
-	"frame": {"x":451,"y":1,"w":28,"h":28},
+	"frame": {"x":481,"y":26,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
@@ -186,8 +186,8 @@
 },
 "MoveTarget.png":
 {
-	"frame": {"x":451,"y":100,"w":32,"h":26},
-	"rotated": false,
+	"frame": {"x":427,"y":66,"w":32,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
@@ -226,7 +226,7 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":461,"y":78,"w":20,"h":20},
+	"frame": {"x":455,"y":77,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
@@ -239,8 +239,8 @@
 	"version": "1.0",
 	"image": "BaseUnit.png",
 	"format": "RGBA8888",
-	"size": {"w":512,"h":127},
+	"size": {"w":510,"h":127},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:67e900eb42c8fe7fe9dc440a38d30510:3c50575bd6cf93886813859c8fbdfac9:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:6549fb3e53e67a88bf76c18c44cfab4d:5242d1184e7dc853e7df1cb6a94ab592:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

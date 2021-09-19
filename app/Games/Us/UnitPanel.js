@@ -1400,9 +1400,11 @@ unitPanel.prototype.displayUnitPassives = function(options) {
                 if (percentDone < 1.0) {
                     this.attackPassiveMeter.tint = 0xbbaeae;
                     unit.attackPassive.activeIcon.tint = 0x575757;
-                } else if (!this.attackPassiveIconFlashing && unit.attackPassive.newCharge) {
+                } else if (!unit.attackPassive.inProcess && unit.attackPassive.newCharge) {
                     this.attackPassiveMeter.tint = 0x09c216;
                     unit.attackPassive.activeIcon.tint = 0xFFFFFF;
+                } else if(unit.attackPassive.inProcess) {
+                    this.attackPassiveMeter.tint = 0x7d302b;
                 }
             } else {
                 this.attackPassiveMeter.visible = false;
@@ -1417,9 +1419,11 @@ unitPanel.prototype.displayUnitPassives = function(options) {
                 if (percentDone < 1.0) {
                     this.defensePassiveMeter.tint = 0xbbaeae;
                     unit.defensePassive.activeIcon.tint = 0x575757;
-                } else if (!this.defensePassiveIconFlashing && unit.defensePassive.newCharge) {
+                } else if (!unit.defensePassive.inProcess && unit.defensePassive.newCharge) {
                     this.defensePassiveMeter.tint = 0x09c216;
                     unit.defensePassive.activeIcon.tint = 0xFFFFFF;
+                } else if(unit.defensePassive.inProcess) {
+                    this.defensePassiveMeter.tint = 0x1f3c62;
                 }
             } else {
                 this.defensePassiveMeter.visible = false;
@@ -1429,24 +1433,18 @@ unitPanel.prototype.displayUnitPassives = function(options) {
 
     this.eventsSet = true;
     Matter.Events.on(this, "attackPassiveActivated", function(event) {
-        this.attackPassiveMeter.tint = 0x7d302b;
         var times = event.duration < 1000 ? 3 : 5;
         var timer = graphicsUtils.graduallyTint(this.currentActivePassive.activeIcon, 0xffffff, 0x575757, event.duration / times);
-        this.attackPassiveIconFlashing = true;
         gameUtils.doSomethingAfterDuration(function() {
             globals.currentGame.invalidateTimer(timer);
-            this.attackPassiveIconFlashing = false;
         }.bind(this), event.duration);
     }.bind(this));
 
     Matter.Events.on(this, "defensePassiveActivated", function(event) {
-        this.defensePassiveMeter.tint = 0x1f3c62;
         var times = event.duration < 1000 ? 3 : 5;
         var timer = graphicsUtils.graduallyTint(this.currentDefensePassive.activeIcon, 0xffffff, 0x575757, event.duration / times);
-        this.defensePassiveIconFlashing = true;
         gameUtils.doSomethingAfterDuration(function() {
             globals.currentGame.invalidateTimer(timer);
-            this.defensePassiveIconFlashing = false;
         }.bind(this), event.duration);
     }.bind(this));
 };

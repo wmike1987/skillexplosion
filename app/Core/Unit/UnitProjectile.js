@@ -35,7 +35,7 @@ export default function(options) {
             globals.currentGame.removeBody(this.body);
         },
         impactFunction: function(target) {
-            target.sufferAttack(this.damage, this.owningUnit, {
+            var attackInfo = target.sufferAttack(this.damage, this.owningUnit, {
                 isProjectile: true,
                 projectileData: {
                     startLocation: this.startLocation,
@@ -43,7 +43,7 @@ export default function(options) {
                 }
             });
             if (this.impactExtension) {
-                this.impactExtension(target);
+                this.impactExtension(target, {attackInfo: attackInfo});
             }
         }.bind(this)
     }, options);

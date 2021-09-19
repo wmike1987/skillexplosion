@@ -316,7 +316,7 @@ export default function Hunter(options) {
                 cooldown: 1400,
                 honeRange: 500,
                 range: 440,
-                damage: 5,
+                damage: 7,
                 itemsEnabled: true,
                 attack: function(target) {
                     var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(target.position, this.position)));
@@ -334,18 +334,21 @@ export default function Hunter(options) {
                             owningUnit: this,
                             originOffset: 30,
                             autoSend: true,
-                            impactExtension: function(target) {
-                                var position = target.getCurrentOrLastStandingPosition();
-                                var bloodAnimation = gameUtils.getAnimation({
-                                    spritesheetName: 'UtilityAnimations1',
-                                    animationName: 'GenericHit',
-                                    speed: 0.8,
-                                    transform: [position.x + Math.random()*8, position.y + Math.random()*8, 0.35, 0.35]
-                                });
-                                target.maim(1000);
-                                graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
-                                bloodAnimation.play();
-                                hitSound.play();
+                            impactExtension: function(target, options) {
+                                options = options || {};
+
+                                if(options.attackLanded) {
+                                    var position = target.getCurrentOrLastStandingPosition();
+                                    var bloodAnimation = gameUtils.getAnimation({
+                                        spritesheetName: 'UtilityAnimations1',
+                                        animationName: 'GenericHit',
+                                        speed: 0.8,
+                                        transform: [position.x + Math.random()*8, position.y + Math.random()*8, 0.35, 0.35]
+                                    });
+                                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                                    bloodAnimation.play();
+                                    hitSound.play();
+                                }
                             }
                         };
                         var projectile = new Projectile(projectileOptions);
