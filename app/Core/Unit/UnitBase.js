@@ -262,7 +262,7 @@ var UnitBase = {
                 });
                 graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
                 killingBlowBlock.play();
-                
+
                 returnInformation.attackLanded = false;
                 return returnInformation;
             }
@@ -315,6 +315,8 @@ var UnitBase = {
             sufferingUnit: this,
             amountDone: alteredDamage
         });
+
+        return returnInformation;
     },
 
     attackDodged: function() {

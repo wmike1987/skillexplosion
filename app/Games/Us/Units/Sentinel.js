@@ -311,7 +311,7 @@ export default function Sentinel(options) {
                         impactExtension: function(target, options) {
                             options = options || {};
 
-                            if(options.attackLanded) {
+                            if(options.attackInfo.attackLanded) {
                                 var position = target.getCurrentOrLastStandingPosition();
                                 var bloodAnimation = gameUtils.getAnimation({
                                     spritesheetName: 'UtilityAnimations1',

@@ -335,9 +335,7 @@ export default function Hunter(options) {
                             originOffset: 30,
                             autoSend: true,
                             impactExtension: function(target, options) {
-                                options = options || {};
-
-                                if(options.attackLanded) {
+                                if(options.attackInfo.attackLanded) {
                                     var position = target.getCurrentOrLastStandingPosition();
                                     var bloodAnimation = gameUtils.getAnimation({
                                         spritesheetName: 'UtilityAnimations1',
@@ -345,6 +343,7 @@ export default function Hunter(options) {
                                         speed: 0.8,
                                         transform: [position.x + Math.random()*8, position.y + Math.random()*8, 0.35, 0.35]
                                     });
+                                    target.maim(1000);
                                     graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                                     bloodAnimation.play();
                                     hitSound.play();
