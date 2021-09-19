@@ -1614,7 +1614,7 @@ var graphicsUtils = {
             animationName: 'lifegain2',
             // speed: 0.65 + Math.random() * 0.40,
             speed: 0.75,
-            transform: [unit.position.x, unit.position.y, 0.75, 0.75]
+            transform: [unit.position.x, unit.position.y, 0.85, 0.85]
         });
         a1.play();
         a1.alpha = 1.0;

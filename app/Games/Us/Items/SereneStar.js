@@ -6,7 +6,7 @@ var manipulations = {
     maxEnergy: 5,
     energyRegenerationRate: 0.25,
     events: {knifeKill: {callback: function(event) {
-            var tint = 0xad12a3;
+            var tint = 0xeb75e5;
             event.equippedUnit.giveEnergy(2);
             graphicsUtils.applyGainAnimationToUnit(event.equippedUnit, tint);
         }

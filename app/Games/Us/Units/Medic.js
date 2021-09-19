@@ -1172,7 +1172,7 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             medic.giveEnergy(energyGain);
-            graphicsUtils.applyGainAnimationToUnit(medic, 0xad12a3);
+            graphicsUtils.applyGainAnimationToUnit(medic, 0xeb75e5);
             manaHealSound.play();
         }
     });

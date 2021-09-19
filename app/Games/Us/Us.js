@@ -880,6 +880,7 @@ var game = {
         });
 
         if (options.autoDestroyBox) {
+            box.isTargetable = false;
             gameUtils.doSomethingAfterDuration(() => {
                 box.sufferAttack(1000);
             }, 200);

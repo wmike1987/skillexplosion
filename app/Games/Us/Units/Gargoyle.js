@@ -321,7 +321,7 @@ export default function Gargoyle(options) {
                         this.isoManagedAlpha = 0;
                         this.healthRegenerationMultiplier = 8;
                         Matter.Sleeping.set(this.body, true);
-                        this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', sortYOffset: 10, position: this.position});
+                        this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', sortYOffset: 15, position: this.position});
                         this.defense += 10;
                     }.bind(this), removeChanges: function() {
                         this.showLifeBar(false);

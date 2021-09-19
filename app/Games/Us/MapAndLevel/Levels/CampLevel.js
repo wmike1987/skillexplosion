@@ -320,9 +320,9 @@ var campLevel = function() {
         //unit tester
         var unitTest = false;
         if(unitTest) {
-            var unitT = UnitMenu.createUnit('Hunter', {
+            var unitT = UnitMenu.createUnit('Gargoyle', {
                 team: game.playerTeam,
-                noIdle: true
+                noIdle: false
             });
 
             unitT.position = {x: 500, y: 400};
