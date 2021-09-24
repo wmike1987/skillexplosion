@@ -197,11 +197,11 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         }
 
         //play transition sound
-        if (isVictory) {
-            globals.currentGame.soundPool.transitionOne.play();
-        } else {
-            globals.currentGame.soundPool.transitionTwo.play();
-        }
+        // if (isVictory) {
+        //     globals.currentGame.soundPool.transitionOne.play();
+        // } else {
+        //     globals.currentGame.soundPool.transitionTwo.play();
+        // }
 
         var titleTextFadetime = 300;
         graphicsUtils.flashSprite({

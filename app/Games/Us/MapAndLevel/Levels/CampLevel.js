@@ -348,7 +348,7 @@ var campLevel = function() {
         }
 
         //play music
-        globals.currentGame.soundPool.campMarch.play();
+        // globals.currentGame.soundPool.campMarch.play();
 
         if(this.alreadyIntrod) {
 

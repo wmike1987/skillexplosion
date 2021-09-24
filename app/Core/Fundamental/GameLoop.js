@@ -16,6 +16,8 @@ if (typeof window !== 'undefined') {
 
 var debug = false;
 
+var frameTimeAverages = [];
+
 //This module manages stepping the physics engine forward
 var Loop = function(options) {
     //for backwards compatibility
@@ -29,6 +31,11 @@ var Loop = function(options) {
     this.onPauseCallbacks = [];
     this.onResumeCallbacks = [];
 
+    //sometimes we get an oscillating < 16.6, > 16.6 series of frames at the start of the app which results
+    //in several 2 frame jumps. This tends to smooth out over time, but initializing us
+    //with a small amount of delta in our pool defeats the jarring effect of this oscillating pattern
+    this.smoothingHelper = 0.2;
+
     var frame = 0;
 
     if(options.interpolate === false) {
@@ -39,7 +46,7 @@ var Loop = function(options) {
     }
 
     this.lastTime = 0;
-    this.deltaAccumulator = 0;
+    this.deltaAccumulator = this.smoothingHelper;
     this.frameRequestId = null;
 
     // if(true) {
@@ -95,6 +102,7 @@ var Loop = function(options) {
         if(this.isFixed) {
             this.deltaAccumulator += this.deltaTime;
             while(this.deltaAccumulator >= this.desiredFrameTime) {
+
                 this.deltaAccumulator -= this.desiredFrameTime;
                 thisFrameDelta =+ this.desiredFrameTime;
                 Matter.Events.trigger(this, 'beforeStep', event);

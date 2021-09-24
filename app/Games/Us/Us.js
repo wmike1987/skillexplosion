@@ -118,7 +118,15 @@ var game = {
 
         //setup a common sound pool
         this.soundPool = {};
-        this.soundPool.campMarch = gameUtils.getSound('march1.mp3', {
+        this.soundPool.campMarch = gameUtils.getSound('music/campdiddy.mp3', {
+            volume: 0.5,
+            rate: 1.0
+        });
+        this.soundPool.winVamp = gameUtils.getSound('music/winvamp.mp3', {
+            volume: 0.1,
+            rate: 1.0
+        });
+        this.soundPool.goToAirDrop = gameUtils.getSound('music/campdiddy.mp3', {
             volume: 0.5,
             rate: 1.0
         });
@@ -409,6 +417,7 @@ var game = {
             onlyContinueAllowed: continueOnly
         });
         var vScene = vScreen.initialize({});
+        this.soundPool.winVamp.play();
 
         this.shane.setHealth(this.shane.maxHealth, {silent: true});
         this.shane.setEnergy(this.shane.maxEnergy, {silent: true});
