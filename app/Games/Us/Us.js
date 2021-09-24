@@ -78,7 +78,11 @@ var game = {
             rate: 0.9
         });
         this.flyoverSound = gameUtils.getSound('flyover.wav', {
-            volume: 1.45,
+            volume: 1.1,
+            rate: 1.35
+        });
+        this.flyoverSoundQuiet = gameUtils.getSound('flyover.wav', {
+            volume: 0.5,
             rate: 1.35
         });
         this.boxSound = gameUtils.getSound('criticalhit.wav', {
@@ -119,6 +123,10 @@ var game = {
         //setup a common sound pool
         this.soundPool = {};
         this.soundPool.campMarch = gameUtils.getSound('music/campdiddy.mp3', {
+            volume: 0.5,
+            rate: 1.0
+        });
+        this.soundPool.mainMarch = gameUtils.getSound('music/march1full.mp3', {
             volume: 0.5,
             rate: 1.0
         });
@@ -197,6 +205,7 @@ var game = {
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
             this.levelInPlay = false;
+            gameUtils.playAsMusic(this.soundPool.mainMarch);
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
@@ -417,7 +426,7 @@ var game = {
             onlyContinueAllowed: continueOnly
         });
         var vScene = vScreen.initialize({});
-        this.soundPool.winVamp.play();
+        gameUtils.playAsMusic(this.soundPool.winVamp);
 
         this.shane.setHealth(this.shane.maxHealth, {silent: true});
         this.shane.setEnergy(this.shane.maxEnergy, {silent: true});
@@ -766,7 +775,8 @@ var game = {
         }
     },
 
-    flyover: function(done, speed) {
+    flyover: function(done, options) {
+        options = Object.assign({speed: 95}, options);
         var shadow = Matter.Bodies.circle(-4200, gameUtils.getCanvasHeight() / 2.0, 1, {
             restitution: 0.95,
             frictionAir: 0,
@@ -787,14 +797,19 @@ var game = {
             },
             stage: "foreground",
         }];
-        this.flyoverSound.play();
+
+        if(options.quiet) {
+            this.flyoverSoundQuiet.play();
+        } else {
+            this.flyoverSound.play();
+        }
 
         gameUtils.doSomethingAfterDuration(() => {
             this.addBody(shadow);
             gameUtils.sendBodyToDestinationAtSpeed(shadow, {
                 x: gameUtils.getCanvasWidth() + 100,
                 y: shadow.position.y
-            }, speed || 95, false, false, () => {
+            }, options.speed, false, false, () => {
                 this.removeBody(shadow);
                 gameUtils.doSomethingAfterDuration(() => {
                     if (done) {

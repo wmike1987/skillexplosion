@@ -1924,7 +1924,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                                         item: [item.itemName],
                                         autoDestroyBox: true
                                     });
-                                });
+                                }, {quiet: true});
                             };
 
                             var j = 0;

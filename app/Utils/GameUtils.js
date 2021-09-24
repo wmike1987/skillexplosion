@@ -797,6 +797,22 @@ var gameUtils = {
         return new h.Howl(options);
     },
 
+    playAsMusic: function(newSong) {
+        //fade out last song
+        var currentSong = globals.currentGame.currentSong.h;
+        var currentSongId = globals.currentGame.currentSong.id;
+        if(currentSong && currentSong.playing(currentSongId)) {
+            currentSong.once( 'fade', () => {
+                currentSong.stop( currentSongId );
+            }, currentSongId );
+            currentSong.fade(currentSong.volume(currentSongId), 0, 750, currentSongId);
+        }
+
+        //play new song
+        globals.currentGame.currentSong.h = newSong;
+        globals.currentGame.currentSong.id = newSong.play();
+    },
+
     praise: function(options) {
         if (!options) {
             options = {

@@ -57,6 +57,7 @@ var common = {
     neutralTeam: 49,
     lagCompensation: 2,
     pixiPaused: false,
+    currentSong: {},
     commonAssets: [{
         name: "CommonGameTextures",
         target: "Textures/CommonGameTextures.json"
@@ -338,6 +339,9 @@ var common = {
                     // }
                     // this.map.addAdrenalineBlock();
                     graphicsUtils.applyGainAnimationToUnit(this.shane, 0x9b2ac9);
+
+                    gameUtils.playAsMusic(this.soundPool.winVamp);
+
 
                     // if (this.gameState == 'paused') {
                     //     this.togglePause();
