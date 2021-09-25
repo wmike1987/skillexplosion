@@ -201,9 +201,6 @@ var MapLevelNode = function(options) {
                         behavior.nodeToEnter.untintNode();
                         this.displayObject.tooltipObj.enable();
                     }.bind(this));
-                    Matter.Events.trigger(globals.currentGame, "travelStarted", {
-                        node: behavior.nodeToEnter
-                    });
                 }
             }
         }

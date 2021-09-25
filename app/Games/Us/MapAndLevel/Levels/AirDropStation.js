@@ -114,7 +114,6 @@ commonAirDropStation.createMapNode = function(options) {
             this.flashNode();
             this.displayObject.tooltipObj.disable();
             this.displayObject.tooltipObj.hide();
-            globals.currentGame.soundPool.goToAirDrop.play();
             airDropClickTokenSound.play();
             return false;
         },
