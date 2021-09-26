@@ -7,7 +7,8 @@ import styles from '@utils/Styles.js';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils,
 } from '@utils/GameUtils.js';
 import {
     UnitSystem,
@@ -338,7 +339,8 @@ var common = {
                     //     this.unitSystem.selectedUnit.giveEnergy(10);
                     // }
                     // this.map.addAdrenalineBlock();
-                    graphicsUtils.applyGainAnimationToUnit(this.shane, 0x9b2ac9);
+                    unitUtils.applyHealthGainAnimationToUnit(this.shane);
+                    unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
 
                     gameUtils.playAsMusic(this.soundPool.winVamp);
 

@@ -1630,28 +1630,6 @@ var graphicsUtils = {
         return timer;
     },
 
-    applyGainAnimationToUnit: function(unit, tint) {
-        var a1 = gameUtils.getAnimation({
-            spritesheetName: 'UtilityAnimations3',
-            animationName: 'lifegain2',
-            // speed: 0.65 + Math.random() * 0.40,
-            speed: 0.75,
-            transform: [unit.position.x, unit.position.y, 0.85, 0.85]
-        });
-        a1.play();
-        a1.alpha = 1.0;
-        a1.tint = tint;
-        gameUtils.attachSomethingToBody({
-            something: a1,
-            body: unit.body,
-            offset: {
-                x: Math.random() * 15 - 7.5,
-                y: -40
-            }
-        });
-        graphicsUtils.addSomethingToRenderer(a1, 'foreground');
-    },
-
     spinSprite: function(sprite, spins, initialFlipTime, slowDownThreshold, lastTurn, doneCallback) {
         //setup flip animation
         var halfFlipTime = null;
@@ -2056,6 +2034,54 @@ var unitUtils = {
             }
         });
     },
+
+    applyGainAnimationToUnit: function(unit, tint) {
+        var a1 = gameUtils.getAnimation({
+            spritesheetName: 'UtilityAnimations3',
+            animationName: 'lifegain2',
+            // speed: 0.65 + Math.random() * 0.40,
+            speed: 0.75,
+            transform: [unit.position.x, unit.position.y, 0.85, 0.85]
+        });
+        a1.play();
+        a1.alpha = 1.0;
+        a1.tint = tint;
+        gameUtils.attachSomethingToBody({
+            something: a1,
+            body: unit.body,
+            offset: {
+                x: Math.random() * 15 - 7.5,
+                y: -40
+            }
+        });
+        graphicsUtils.addSomethingToRenderer(a1, 'foreground');
+
+        return a1;
+    },
+
+    applyEnergyGainAnimationToUnit: function(unit) {
+        var tint = 0xff00c7;
+        var anim = this.applyGainAnimationToUnit(unit, tint);
+        graphicsUtils.flashSprite({
+            sprite: anim,
+            duration: 75,
+            times: 4,
+            fromColor: tint,
+            toColor: 0xe461ff
+        });
+    },
+
+    applyHealthGainAnimationToUnit: function(unit) {
+        var tint = 0xff0000;
+        var anim = this.applyGainAnimationToUnit(unit, tint);
+        graphicsUtils.flashSprite({
+            sprite: anim,
+            duration: 75,
+            times: 4,
+            fromColor: tint,
+            toColor: 0xf95e5e
+        });
+    }
 };
 
 //aliases

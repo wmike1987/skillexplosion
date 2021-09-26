@@ -1,14 +1,13 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils';
 
 var manipulations = {
     maxEnergy: 5,
     energyRegenerationRate: 0.25,
     events: {knifeKill: {callback: function(event) {
-            var tint = 0xeb75e5;
             event.equippedUnit.giveEnergy(2);
-            graphicsUtils.applyGainAnimationToUnit(event.equippedUnit, tint);
+            unitUtils.applyEnergyGainAnimationToUnit(event.equippedUnit);
         }
     }}
 };

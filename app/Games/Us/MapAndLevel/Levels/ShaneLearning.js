@@ -274,7 +274,7 @@ var shaneLearning = function(options) {
                     achieve.play();
                     completeTaskAndRelease(b1);
                     b2.onStart = function() {
-                        gameUtils.matterOnce(globals.currentGame, 'travelStarted', () => {
+                        gameUtils.matterOnce(globals.currentGame, 'TravelStarted', () => {
                             achieve.play();
                             completeTaskAndRelease(b2);
                         });

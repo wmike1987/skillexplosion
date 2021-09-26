@@ -908,7 +908,7 @@ export default function Medic(options) {
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({name: "wwHealthGain", textureName: 'WickedWaysHealingBuff', duration: wwADuration, applyChanges: function() {
                     unit.healthRegenerationMultiplier *= 2;
-                    graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
+                    unitUtils.applyHealthGainAnimationToUnit(unit);
                     unit.giveHealth(10, medic);
                     healSound.play();
                 }, removeChanges: function() {
@@ -1134,6 +1134,7 @@ export default function Medic(options) {
         aggressionCooldown: efADuration,
         passiveAction: function(event) {
             medic.giveEnergy(15);
+            unitUtils.applyEnergyGainAnimationToUnit(medic);
         },
         defenseAction: function(event) {
             //delay the attack for a second
@@ -1172,7 +1173,7 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             medic.giveEnergy(energyGain);
-            graphicsUtils.applyGainAnimationToUnit(medic, 0xeb75e5);
+            unitUtils.applyEnergyGainAnimationToUnit(medic);
             manaHealSound.play();
         }
     });

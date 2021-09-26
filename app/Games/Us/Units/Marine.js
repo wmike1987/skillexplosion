@@ -715,7 +715,7 @@ export default function Marine(options) {
             allies.forEach((ally) => {
                 var healthToGive = ally.maxHealth / 10.0;
                 ally.giveHealth(healthToGive, marine);
-                graphicsUtils.applyGainAnimationToUnit(ally, 0xc60006);
+                unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
             });
         },
@@ -724,7 +724,7 @@ export default function Marine(options) {
             allies.forEach((ally) => {
                 if(ally.isDead) return;
                 ally.giveHealth(6, marine);
-                graphicsUtils.applyGainAnimationToUnit(ally, 0xc60006);
+                unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
             });
         },
@@ -760,7 +760,7 @@ export default function Marine(options) {
         passiveAction: function(event) {
             var healthToGive = marine.maxHealth / 10.0;
             marine.giveHealth(healthToGive, marine);
-            graphicsUtils.applyGainAnimationToUnit(marine, 0xc60006);
+            unitUtils.applyHealthGainAnimationToUnit(marine);
             healsound.play();
         },
         defenseAction: function(event) {
@@ -1064,7 +1064,7 @@ export default function Marine(options) {
                         }, function(unit) {
                             return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
                         }, function(unit) {
-                            graphicsUtils.applyGainAnimationToUnit(unit, 0xc60006);
+                            unitUtils.applyHealthGainAnimationToUnit(unit);
                             healsound.play();
                             var sum = 0;
                             self.firstAidPouchAdditions.forEach((addition) => {
