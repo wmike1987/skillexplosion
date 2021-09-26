@@ -68,17 +68,14 @@ var camp = {
                 radius: 200
             }
         ];
+
+        this.enterMusic = globals.currentGame.soundPool.campVamp;
     },
 
     initSounds: function() {
-        this.entercamp = gameUtils.getSound('entercamp.wav', {
-            volume: 0.05,
-            rate: 0.75
-        });
     },
 
     cleanUpSounds: function() {
-        this.entercamp.unload();
     },
 
     getPossibleTrees: function() {

@@ -274,8 +274,8 @@ var campLevel = function() {
             scene.add(initLight);
         }
 
-        Matter.Events.on(scene, 'initialize', function() {
-            this.camp.entercamp.play();
+        Matter.Events.on(scene, 'sceneFadeInBegin', function() {
+            gameUtils.playAsMusic(this.enterMusic, {fadeDuration: 50});
         }.bind(this));
 
         scene._clearExtension = function() {

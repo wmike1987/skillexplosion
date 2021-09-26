@@ -359,7 +359,7 @@ var gameUtils = {
         var setVelocityFunction = function() {
             //see if we have a potentially changing position
             var position = destination;
-            if(destination.position) {
+            if (destination.position) {
                 position = destination.position;
             }
             var velocityVector = Matter.Vector.sub(position, body.position);
@@ -370,8 +370,7 @@ var gameUtils = {
             } else {
                 if (Matter.Vector.magnitude(velocityVector) < speed) {
                     Matter.Body.setVelocity(body, velocityVector);
-                }
-                else {
+                } else {
                     Matter.Body.setVelocity(body, Matter.Vector.mult(velocityVector, velocityScale));
                 }
             }
@@ -382,7 +381,7 @@ var gameUtils = {
 
         //if we're tracking a position, set this up
         var trackingTimer = null;
-        if(track) {
+        if (track) {
             trackingTimer = globals.currentGame.addTimer({
                 name: 'trackingTimer:' + mathArrayUtils.getId(),
                 gogogo: true,
@@ -398,7 +397,7 @@ var gameUtils = {
             var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, body.position));
             var removeSelf = globals.currentGame.addTickCallback(function() {
                 if (gameUtils.bodyRanOffStage(body) || mathArrayUtils.distanceBetweenPoints(body.position, originalOrigin) >= originalDistance) {
-                    if(trackingTimer) {
+                    if (trackingTimer) {
                         trackingTimer.invalidate();
                     }
                     arrivedCallback();
@@ -460,10 +459,10 @@ var gameUtils = {
             position.y = point.y - radius + (Math.random() * (radius * 2));
 
         } while (position.y > this.getPlayableHeight() - buffer ||
-                 position.y < 0 + buffer ||
-                 position.x > this.getPlayableWidth() - buffer ||
-                 position.x < 0 + buffer ||
-                 mathArrayUtils.distanceBetweenPoints(position, point) < minRadius);
+            position.y < 0 + buffer ||
+            position.x > this.getPlayableWidth() - buffer ||
+            position.x < 0 + buffer ||
+            mathArrayUtils.distanceBetweenPoints(position, point) < minRadius);
 
         mathArrayUtils.roundPositionToWholeNumbers(position);
         return position;
@@ -797,20 +796,27 @@ var gameUtils = {
         return new h.Howl(options);
     },
 
-    playAsMusic: function(newSong) {
+    playAsMusic: function(newSong, options) {
+        options = Object.assign({
+            fadeDuration: 750,
+            newSongDelay: 0
+        }, options);
+
         //fade out last song
         var currentSong = globals.currentGame.currentSong.h;
         var currentSongId = globals.currentGame.currentSong.id;
-        if(currentSong && currentSong.playing(currentSongId)) {
-            currentSong.once( 'fade', () => {
-                currentSong.stop( currentSongId );
-            }, currentSongId );
-            currentSong.fade(currentSong.volume(currentSongId), 0, 750, currentSongId);
+        if (currentSong && currentSong.playing(currentSongId)) {
+            currentSong.once('fade', () => {
+                currentSong.stop(currentSongId);
+            }, currentSongId);
+            currentSong.fade(currentSong.volume(currentSongId), 0, options.fadeDuration, currentSongId);
         }
 
         //play new song
-        globals.currentGame.currentSong.h = newSong;
-        globals.currentGame.currentSong.id = newSong.play();
+        gameUtils.doSomethingAfterDuration(() => {
+            globals.currentGame.currentSong.h = newSong;
+            globals.currentGame.currentSong.id = newSong.play();
+        }, options.newSongDelay);
     },
 
     praise: function(options) {
@@ -1092,7 +1098,7 @@ var graphicsUtils = {
     },
 
     pointToSomethingWithArrow: function(something, yOffset, arrowScale) {
-        if(!something || something._destroyed) {
+        if (!something || something._destroyed) {
             return;
         }
 
@@ -1237,7 +1243,7 @@ var graphicsUtils = {
             startingAlpha = 0;
             sprite.alpha = 0;
         }
-        if(makeVisible) {
+        if (makeVisible) {
             sprite.visible = true;
         }
         var runs = time / 16;
@@ -1252,7 +1258,7 @@ var graphicsUtils = {
             },
             totallyDoneCallback: function() {
                 if (!fadeIn) {
-                    if(!nokill) {
+                    if (!nokill) {
                         graphicsUtils.removeSomethingFromRenderer(sprite);
                     } else {
                         sprite.visible = false;
@@ -1417,7 +1423,7 @@ var graphicsUtils = {
             runs: 1,
             tickCallback: function(delta) {
                 if (!options.stationary) {
-                    floatedText.position.y -= (delta * (options.speed/100 || 0.03));
+                    floatedText.position.y -= (delta * (options.speed / 100 || 0.03));
                 }
                 floatedText.alpha = 1 - this.percentDone;
             },
@@ -1742,7 +1748,11 @@ var graphicsUtils = {
             alpha: 0.25,
         }, options);
         let sprite = options.sprite;
-        var border = graphicsUtils.addSomethingToRenderer('TintableSquare', {where: sprite.where, position: sprite.position, alpha: options.alpha});
+        var border = graphicsUtils.addSomethingToRenderer('TintableSquare', {
+            where: sprite.where,
+            position: sprite.position,
+            alpha: options.alpha
+        });
         graphicsUtils.makeSpriteSize(border, sprite.width + 2);
         border.sortYOffset = -1;
         border.tint = options.tint;
@@ -1863,10 +1873,12 @@ var mathArrayUtils = {
     },
 
     setRandomizerSeed: function(seed) {
-        if(!seed) {
+        if (!seed) {
             seed = seedrandom()();
         }
-        seedrandom(seed, {global: true});
+        seedrandom(seed, {
+            global: true
+        });
         return seed;
     },
 

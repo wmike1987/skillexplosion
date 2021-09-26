@@ -126,6 +126,10 @@ var game = {
             volume: 0.5,
             rate: 1.0
         });
+        this.soundPool.campVamp = gameUtils.getSound('music/campdiddy2.mp3', {
+            volume: 0.5,
+            rate: 1.0
+        });
         this.soundPool.stroll = gameUtils.getSound('music/peacefulstroll.mp3', {
             volume: 0.25,
             rate: 1.0
