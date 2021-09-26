@@ -283,7 +283,6 @@ export default function Medic(options) {
         shadow.isShadow = true;
         shadow.isSelectionBody = true;
         shadow.isMovingAndStationaryBody = true;
-        shadow.collisionFilter.mask = 0x0002;
         shadow.unitRedirect = medic;
         shadow.unitProxy = true;
 
