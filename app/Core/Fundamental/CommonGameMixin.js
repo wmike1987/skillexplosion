@@ -342,7 +342,7 @@ var common = {
                     unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
 
-                    gameUtils.playAsMusic(this.soundPool.winVamp);
+                    gameUtils.playAsMusic(this.soundPool.fillerMovement);
 
 
                     // if (this.gameState == 'paused') {

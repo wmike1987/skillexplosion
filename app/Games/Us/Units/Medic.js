@@ -284,7 +284,6 @@ export default function Medic(options) {
         shadow.isSelectionBody = true;
         shadow.isMovingAndStationaryBody = true;
         shadow.unitRedirect = medic;
-        shadow.unitProxy = true;
 
         shadow.renderChildren = [{
           id: 'shadow',

@@ -967,8 +967,13 @@ var gameUtils = {
     //Death pact currently supports other units, bodies, tick callbacks, timers, and finally functions-to-execute
     //It will also search for an existing slave with the given id and replace it with the incoming slave
     deathPact: function(master, slave, slaveId) {
-        if (!master.slaves)
+        if (!master.slaves) {
             master.slaves = [];
+        }
+
+        if(!slave.masters) {
+            slave.masters = [];
+        }
 
         var added = false;
         if (slaveId) {
@@ -980,13 +985,28 @@ var gameUtils = {
                 }
             });
         }
-        if (!added)
+        if (!added) {
             master.slaves.push(slave);
+            slave.masters.push(master);
+        }
     },
 
     undeathPact: function(master, slave) {
         mathArrayUtils.removeObjectFromArray(slave, master.slaves);
+
+        if(slave.masters) {
+            mathArrayUtils.removeObjectFromArray(master, slave.masters);
+        }
     },
+
+    fullUndeathPact: function(slave) {
+        if(slave.masters) {
+            slave.masters.forEach((master) => {
+                mathArrayUtils.removeObjectFromArray(slave, master.slaves);
+            });
+            slave.masters = [];
+        }
+    }
 };
 
 var graphicsUtils = {
@@ -1128,6 +1148,9 @@ var graphicsUtils = {
 
         //harmless detach, just in case... "harmless"
         gameUtils.detachSomethingFromBody(something);
+
+        //full undeath pact
+        gameUtils.fullUndeathPact(something);
 
         // Two cases
         // 1) we don't have a parent

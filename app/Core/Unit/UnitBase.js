@@ -963,9 +963,13 @@ var UnitBase = {
             anim.play();
         }.bind(this));
 
-        Matter.Events.on(globals.currentGame, "VictoryDefeatSceneFadeIn", function() {
+        var resetPassiveOrder = function() {
             this.passiveOrder = 0;
-        }.bind(this));
+        }.bind(this);
+        Matter.Events.on(globals.currentGame, "VictoryDefeatSceneFadeIn", resetPassiveOrder);
+        gameUtils.deathPact(this, () => {
+            Matter.Events.off(globals.currentGame, "VictoryDefeatSceneFadeIn", resetPassiveOrder);
+        });
 
         //hover Method
         this.hover = function() {

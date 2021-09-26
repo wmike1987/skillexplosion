@@ -134,7 +134,11 @@ var game = {
             volume: 0.25,
             rate: 1.0
         });
-        this.soundPool.mainMarch = gameUtils.getSound('music/march1full.mp3', {
+        this.soundPool.fillerMovement = gameUtils.getSound('music/walkingvamp.mp3', {
+            volume: 1.0,
+            rate: 1.0
+        });
+        this.soundPool.mainMarch = gameUtils.getSound('music/march2.mp3', {
             volume: 0.5,
             rate: 1.0
         });
@@ -221,7 +225,7 @@ var game = {
             if(event.node.levelDetails.isLevelNonConfigurable()) {
                 gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
             } else {
-                gameUtils.playAsMusic(this.soundPool.stroll);
+                gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }
         }.bind(this));
 
@@ -793,7 +797,7 @@ var game = {
     },
 
     flyover: function(done, options) {
-        options = Object.assign({speed: 95}, options);
+        options = Object.assign({speed: 95, quiet: true}, options);
         var shadow = Matter.Bodies.circle(-4200, gameUtils.getCanvasHeight() / 2.0, 1, {
             restitution: 0.95,
             frictionAir: 0,
