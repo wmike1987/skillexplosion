@@ -66,7 +66,12 @@ commonAirDropStation.fillLevelSceneExtension = function(scene) {
     });
 };
 
+commonAirDropStation.cleanUp = function() {
+    globals.currentGame.removeSlaves(this.slaves);
+};
+
 commonAirDropStation.createMapNode = function(options) {
+    var self = this;
     var mapNode = new MapNode({
         levelDetails: this,
         mapRef: options.mapRef,
@@ -126,7 +131,8 @@ commonAirDropStation.createMapNode = function(options) {
             });
             this.regularToken = regularToken;
             this.specialToken = specialToken;
-            Matter.Events.on(this.mapRef, 'showMap', function() {
+
+            var mapEventFunction = function() {
                 if (this.isCompleted) {
                     // this.deactivateToken();
                 } else {
@@ -144,7 +150,11 @@ commonAirDropStation.createMapNode = function(options) {
                         specialToken.visible = false;
                     }
                 }
-            }.bind(this));
+            }.bind(this);
+            Matter.Events.on(this.mapRef, 'showMap', mapEventFunction);
+            gameUtils.deathPact(self, () => {
+                Matter.Events.off(this.mapRef, 'showMap', mapEventFunction);
+            });
             return [regularToken, specialToken];
         },
         deactivateToken: function() {

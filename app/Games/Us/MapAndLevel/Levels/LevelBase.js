@@ -416,6 +416,10 @@ var levelBase = {
         //to be overridden
     },
 
+    cleanUp: function() {
+
+    },
+
     initializeWinLossCondition: function() {
         var winResult = 'victory';
         var lossResult = 'loss';

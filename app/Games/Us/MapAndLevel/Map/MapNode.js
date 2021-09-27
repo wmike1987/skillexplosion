@@ -313,6 +313,10 @@ MapLevelNode.prototype.cleanUp = function() {
     if (this.cleanUpExtension) {
         this.cleanUpExtension();
     }
+
+    if (this.levelDetails.cleanUp) {
+        this.levelDetails.cleanUp();
+    }
 };
 
 MapLevelNode.prototype.focusNode = function() {
