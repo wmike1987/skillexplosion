@@ -19,6 +19,7 @@ export default function(options) {
 
         dropCallback: function(position) {
             this.owningUnit.removeUnlockerKey('augment');
+            this.owningUnit.clearUnlockContext('augment');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();
@@ -39,6 +40,7 @@ export default function(options) {
 
         placeCallback: function() {
             this.owningUnit.removeUnlockerKey('augment');
+            this.owningUnit.clearUnlockContext('augment');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();

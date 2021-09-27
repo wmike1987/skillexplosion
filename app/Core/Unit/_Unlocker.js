@@ -24,6 +24,10 @@ export default {
         this.unlockContext[id] = context;
     },
 
+    clearUnlockContext: function(id) {
+        this.unlockContext[id] = null;
+    },
+
     removeUnlockerKey: function(id) {
         this.keyPoints[id] -= 1;
     },

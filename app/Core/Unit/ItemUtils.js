@@ -68,6 +68,10 @@ var getRandomItemsFromClass = function(className, typeName, amount) {
 };
 
 var giveUnitItem = function(options) {
+    //extract unit from options
+    var unit = options.unit;
+    options.unit = null;
+
     var itemInfo = resolveItemInformation(options);
     Object.assign(options, itemInfo);
 
@@ -77,10 +81,10 @@ var giveUnitItem = function(options) {
     const target = 'Items/'+ itemName +'.js';
     import(/* webpackChunkName: "us-items"*/ /*webpackMode: "lazy-once" */ `@games/Us/${target}`).then((item) => {
         item = item.default(options);
-        if(options.unit.isDead) {
-            item.drop(options.unit.position);
+        if(unit.isDead) {
+            item.drop(unit.position);
         } else {
-            options.unit.pickupItem(item, null, true);
+            unit.pickupItem(item, null, true);
         }
     });
 };

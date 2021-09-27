@@ -17,6 +17,7 @@ export default function(options) {
 
         dropCallback: function(position) {
             this.owningUnit.removeUnlockerKey('mind');
+            this.owningUnit.clearUnlockContext('mind');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelSOMConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
@@ -37,6 +38,7 @@ export default function(options) {
 
         placeCallback: function() {
             this.owningUnit.removeUnlockerKey('mind');
+            this.owningUnit.clearUnlockContext('mind');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelSOMConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
