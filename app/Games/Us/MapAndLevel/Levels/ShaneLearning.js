@@ -256,7 +256,12 @@ var shaneLearning = function(options) {
         var self = this;
         var firstBox = this.box;
         this.mapTableActive = false;
-        // this.mapTableActive = true;
+
+        if(false) {
+            this.mapTableActive = true;
+            let campNode = globals.currentGame.map.findNodeById('camp');
+            campNode.manualEnable = true;
+        }
         var chain = new DialogueChain([title, a1, a1a, a1b, a1c, a2, a3, a3a, a4, a4a, a5, a6, a6a, a7, a7a, a8], {startDelay: 200, done: function() {
             chain.cleanUp();
             var b1 = new Dialogue({text: "Click on the satellite computer to open the map.", isTask: true, backgroundBox: true, });

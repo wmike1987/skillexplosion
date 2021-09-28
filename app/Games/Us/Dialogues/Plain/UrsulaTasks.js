@@ -34,7 +34,7 @@ var UrsulaTasks = function(scene) {
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
     this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
-    ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SturdyCanteen"], unit: this.box, immortal: true});
+    ItemUtils.giveUnitItem({gamePrefix: "Us", className: ["stimulant"], unit: this.box, immortal: true});
     globals.currentGame.addUnit(this.box);
     this.box.position = {x: 900, y: 300};
 
@@ -46,11 +46,12 @@ var UrsulaTasks = function(scene) {
     var a4b = new Dialogue({actor: "Task", text: "Press 'D' then left click on the beacon to vanish to that point.", isTask: true, backgroundBox: true});
     var a5a = new Dialogue({actor: "Task", text: "Hover over your Mine ability to read its description.", newBreak: true, isTask: true, backgroundBox: true});
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
-    var a5c = new Dialogue({actor: "Task", text: "Pick up your item.", isTask: true, backgroundBox: true});
+    var a5c = new Dialogue({actor: "Task", text: "Pick up your item", isInfo: true, backgroundBox: true});
+    var a5d = new Dialogue({actor: "Task", text: "This item is consumable. Read its description and consume it.", isTask: true, backgroundBox: true});
     var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
     var a7 = new Dialogue({text: "You can also lay a mine while vanishing.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
 
-    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a6, a7], {startDelay: 200, done: function() {
+    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a5d, a6, a7], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             transitionChain.play();
@@ -158,9 +159,29 @@ var UrsulaTasks = function(scene) {
     };
 
     a5c.onStart = function() {
-        gameUtils.matterOnce(globals.currentGame.ursula, 'pickupItem', (event) => {
+        var a = gameUtils.matterOnce(globals.currentGame.ursula, 'pickupItem', (event) => {
             achieve.play();
             completeTaskAndRelease(a5c);
+            b.removeHandler();
+        });
+
+        var b = gameUtils.matterOnce(globals.currentGame.shane, 'pickupItem', (event) => {
+            achieve.play();
+            completeTaskAndRelease(a5c);
+            a.removeHandler();
+        });
+    };
+
+    a5d.onStart = function() {
+        var a = gameUtils.matterOnce(globals.currentGame.ursula, 'consume', (event) => {
+            achieve.play();
+            completeTaskAndRelease(a5d);
+            b.removeHandler();
+        });
+        var b = gameUtils.matterOnce(globals.currentGame.shane, 'consume', (event) => {
+            achieve.play();
+            completeTaskAndRelease(a5d);
+            a.removeHandler();
         });
     };
 

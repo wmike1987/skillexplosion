@@ -1,27 +1,20 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
 import {globals} from '@core/Fundamental/GlobalState.js';
+import Consumable from '@games/Us/Items/Consumable.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
 
 export default function(options) {
     var item = Object.assign({
         name: "Awareness Tonic",
         description: "Consume to gain 3 dodge and increase max hp by 3.",
-        systemMessage: "Drop on unit portrait to consume.",
+        systemMessage: "Ctrl+Click to consume.",
         icon: 'GreenSyringe',
         fontType: 'stimulant',
-        placePredicate: function(position) {
-            var currentUnitPortrait = globals.currentGame.unitSystem.unitPanel.currentPortrait;
-            var currentUnit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;
-            if(currentUnitPortrait.containsPoint(position)) {
-                currentUnit.dodge += 3;
-                currentUnit.maxHealth += 3;
-                Matter.Events.trigger(currentUnit, 'consume', {});
-                globals.currentGame.itemSystem.removeItem(this);
-                return false;
-            }
-            return true;
+        consume: function(currentUnit) {
+            currentUnit.dodge += 3;
+            currentUnit.maxHealth += 3;
         },
-    }, options);
+    }, options, Consumable);
     return new ic(item);
 }

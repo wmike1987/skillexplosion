@@ -853,7 +853,7 @@ var phaseTwo = function(options) {
                                     item: [{
                                         className: 'worn'
                                     }, {
-                                        className: 'worn'
+                                        className: 'stimulant'
                                     }]
                                 });
                                 gameUtils.doSomethingAfterDuration(() => {

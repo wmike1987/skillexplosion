@@ -138,6 +138,12 @@ var ic = function(options) {
         newItem.icon.on('mousedown', function(event) {
             if (newItem.notGrabbable) return;
             if (globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
+            if(newItem.grabPredicate) {
+                var ret = newItem.grabPredicate();
+                if(!ret) {
+                    return;
+                }
+            }
             newItem.owningUnit.unequipItem(newItem);
             newItem.grasp(newItem.owningUnit);
         }.bind(this));

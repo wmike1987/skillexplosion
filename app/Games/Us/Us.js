@@ -368,9 +368,16 @@ var game = {
         this.initShane();
         this.initUrsula();
         var camp = this.currentWorld.getLevelById('camp');
-        camp.alreadyIntrod = true;
         this.showTips = false;
+        camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
+
+        if(false) {
+            this.showTips = true;
+            camp.alreadyIntrod = false;
+            camp.completedUrsulaTasks = false;
+        }
+
         this.nextPhase({
             skippedTutorial: true
         });
@@ -651,7 +658,6 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
@@ -712,6 +718,8 @@ var game = {
             name: 'Ursula',
             dropItemsOnDeath: false
         });
+
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PepPill"], unit: this.ursula});
         // ItemUtils.giveUnitItem({
         //     gamePrefix: "Us",
         //     itemName: ["TechnologyKey"],
