@@ -14,7 +14,7 @@ export default {
     _consume: function() {
         var unit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;
         this.consume(unit);
-        Matter.Events.trigger(unit, 'consume', {});
+        Matter.Events.trigger(unit, 'consume', {item: this});
         globals.currentGame.itemSystem.removeItem(this);
     }
 };

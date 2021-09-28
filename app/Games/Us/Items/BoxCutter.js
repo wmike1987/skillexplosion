@@ -5,6 +5,7 @@ import {
     mathArrayUtils,
     unitUtils
 } from '@utils/GameUtils.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
     volume: 0.08,
@@ -64,6 +65,6 @@ export default function(options) {
         icon: 'BoxCutter',
         type: 'Medic',
         fontType: 'ursula',
-    }, options);
+    }, options, ursulaOnly);
     return new ic(item);
 }

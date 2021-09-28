@@ -8,8 +8,7 @@ export default function(options) {
         manipulations: manipulations,
         name: "Violet Tipped Cartridge",
         description: "Add +8 to base damage.",
-        icon: 'VioletTipCartridge',
-        type: 'Marine'
-    }, options);
+        icon: 'VioletTipCartridge'
+    }, options, shaneOnly);
     return new ic(item);
 }

@@ -1,4 +1,5 @@
 import ic from '@core/Unit/ItemConstructor.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var damageAmount = 3;
 
@@ -11,8 +12,6 @@ export default function(options) {
         name: "Black Tipped Cartridge",
         description: "Add +" + damageAmount + " to base damage.",
         icon: 'BlackTipCartridge',
-        type: 'Marine',
-        fontType: 'shane'
-    }, options);
+    }, options, shaneOnly);
     return new ic(item);
 }

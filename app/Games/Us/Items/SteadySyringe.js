@@ -1,4 +1,5 @@
 import ic from '@core/Unit/ItemConstructor.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var healAmount = 1.0;
 
@@ -14,6 +15,6 @@ export default function(options) {
         icon: 'SteadySyringe',
         type: 'Medic',
         fontType: 'ursula'
-    }, options);
+    }, options, ursulaOnly);
     return new ic(item);
 }

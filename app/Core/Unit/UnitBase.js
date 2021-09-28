@@ -910,7 +910,10 @@ var UnitBase = {
             });
         }.bind(this));
 
-        Matter.Events.on(this, "consume", function() {
+        Matter.Events.on(this, "consume", function(event) {
+            var item = event.item;
+            this.unequipItem(item);
+            
             if (this.consumeSound) {
                 this.consumeSound.play();
             }

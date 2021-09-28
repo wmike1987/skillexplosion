@@ -1,6 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     maxHealth: 10,
@@ -15,8 +16,6 @@ export default function(options) {
         name: "Sky Medallion",
         description: ["Add 10% to grit.", "Add 10 to maximum health.", "Add 10 to maximum energy.", "Add 3 to dodge"],
         icon: 'SilverMedalCircle1',
-        type: 'Marine',
-        fontType: 'shane'
-    }, options);
+    }, options, shaneOnly);
     return new ic(item);
 }

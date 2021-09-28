@@ -1745,8 +1745,8 @@ var graphicsUtils = {
     addBorderToSprite: function(options) {
         options = Object.assign({
             tint: 0xFFFFFF,
-            thickness: 1,
-            alpha: 0.25,
+            thickness: 2,
+            alpha: 0.45,
         }, options);
         let sprite = options.sprite;
         var border = graphicsUtils.addSomethingToRenderer('TintableSquare', {
@@ -1754,7 +1754,7 @@ var graphicsUtils = {
             position: sprite.position,
             alpha: options.alpha
         });
-        graphicsUtils.makeSpriteSize(border, sprite.width + 2);
+        graphicsUtils.makeSpriteSize(border, sprite.width + options.thickness*2);
         border.sortYOffset = -1;
         border.tint = options.tint;
         gameUtils.matterOnce(sprite, 'destroy', () => {

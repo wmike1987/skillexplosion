@@ -1,4 +1,5 @@
 import ic from '@core/Unit/ItemConstructor.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     damageAddition: 5,
@@ -9,7 +10,6 @@ export default function(options) {
         name: "Green Tipped Cartridge",
         description: "Add +5 to base damage.",
         icon: 'GreenTipCartridge',
-        type: 'Marine'
-    }, options);
+    }, options, shaneOnly);
     return new ic(item);
 }

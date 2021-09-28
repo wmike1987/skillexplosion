@@ -1,6 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     maxHealth: 18,
@@ -16,6 +17,6 @@ export default function(options) {
         icon: 'PillBottle',
         type: 'Medic',
         fontType: 'ursula'
-    }, options);
+    }, options, ursulaOnly);
     return new ic(item);
 }

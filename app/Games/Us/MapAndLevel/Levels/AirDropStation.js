@@ -315,7 +315,8 @@ var selectionMechanism = {
                     y: -100
                 });
                 graphicsUtils.addBorderToSprite({
-                    sprite: item.icon
+                    sprite: item.icon,
+                    tint: item.borderTint || 0xffffff
                 });
                 Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
                     systemMessage: 'Click to receive from air drop.'
