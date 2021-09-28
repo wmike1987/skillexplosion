@@ -61,13 +61,13 @@ var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {
     volume: 0.03,
     rate: 2.0
 });
-var dodgeSound = gameUtils.getSound('petrify.wav', {
-    volume: 0.07,
-    rate: 1.5
-});
 var equip = gameUtils.getSound('augmentEquip.wav', {
     volume: 0.03,
     rate: 1.0
+});
+var dodgeSound = gameUtils.getSound('petrify.wav', {
+    volume: 0.07,
+    rate: 1.5
 });
 
 var backgroundScaleX = 54;
@@ -110,6 +110,7 @@ var UnitBase = {
     showingLifeBars: false,
     showingEnergyBars: false,
     isSelectable: true,
+    dodgeSound: dodgeSound,
     smallerBodyWidthChange: false,
     smallerBodyHeightChange: false,
     bigBodyAddition: {
@@ -189,7 +190,7 @@ var UnitBase = {
                 style: styles.dodgeText
             });
             unitUtils.showBlockGraphic({attackOptions: options, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
-            dodgeSound.play();
+            this.dodgeSound.play();
 
             returnInformation.attackLanded = false;
             return returnInformation;
@@ -706,7 +707,6 @@ var UnitBase = {
     },
 
     initUnit: function() {
-
         Object.defineProperty(this, 'maxHealth', {
             get: function() {
                 return this._maxHealth || 0;

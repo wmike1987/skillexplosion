@@ -367,6 +367,10 @@ export default function Marine(options) {
         volume: 0.002,
         rate: 3
     });
+    var dodgeSound = gameUtils.getSound('shane_dodge.mp3', {
+        volume: 0.4,
+        rate: 1
+    });
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {
         volume: 0.01,
         rate: 0.6
@@ -1179,6 +1183,7 @@ export default function Marine(options) {
         graveSpriteName: 'MarineGrave',
         team: options.team || 4,
         priority: 10,
+        dodgeSound: dodgeSound,
         consumeSound: yeahsound,
         hitboxWidth: 30,
         hitboxHeight: 58,
@@ -1311,7 +1316,7 @@ export default function Marine(options) {
         radius: options.radius || 25,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [dashSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
+        slaves: [dashSound, dodgeSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
             poisonSound, criticalHitSound, yeahsound, unitProperties.wireframe, unitProperties.portrait
         ],
         unit: unitProperties,
