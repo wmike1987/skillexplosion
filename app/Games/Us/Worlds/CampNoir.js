@@ -817,7 +817,7 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('airDropSpecialStation', {
                 levelOptions: {
-                    prereqCount: 0,
+                    // prereqCount: 0,
                     selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'specialtyItem', 3)
                 }
             });

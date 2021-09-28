@@ -4,7 +4,8 @@ import * as $ from 'jquery';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/GameUtils.js';
 import Moveable from '@core/Unit/_Moveable.js';
 import Attacker from '@core/Unit/_Attacker.js';
@@ -59,6 +60,10 @@ var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {
 var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {
     volume: 0.03,
     rate: 2.0
+});
+var dodgeSound = gameUtils.getSound('petrify.wav', {
+    volume: 0.07,
+    rate: 1.5
 });
 var equip = gameUtils.getSound('augmentEquip.wav', {
     volume: 0.03,
@@ -183,6 +188,8 @@ var UnitBase = {
             }, {
                 style: styles.dodgeText
             });
+            unitUtils.showBlockGraphic({attackOptions: options, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
+            dodgeSound.play();
 
             returnInformation.attackLanded = false;
             return returnInformation;
@@ -234,33 +241,7 @@ var UnitBase = {
                     style: styles.dodgeKillingBlowText
                 });
 
-                //add block graphic
-                let offset = 40;
-                let attackLocation = options.isProjectile ? options.projectileData.startLocation : attackingUnit.position;
-                let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(this.position, attackLocation, offset);
-                let attachmentOffset = Matter.Vector.sub(offsetLocation, this.position);
-                let block = graphicsUtils.addSomethingToRenderer('Block', {
-                    where: 'stageOne',
-                    position: offsetLocation,
-                    scale: {
-                        x: 1.0,
-                        y: 1.0
-                    }
-                });
-                gameUtils.attachSomethingToBody({
-                    something: block,
-                    body: this.body,
-                    offset: attachmentOffset,
-                    deathPactSomething: true
-                });
-                block.rotation = mathArrayUtils.pointInDirection(this.position, offsetLocation);
-                graphicsUtils.flashSprite({
-                    sprite: block,
-                    toColor: 0xd55812,
-                    duration: 100,
-                    times: 4
-                });
-                graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
+                unitUtils.showBlockGraphic({attackOptions: options, attackingUnit: attackingUnit, unit: this, tint: 0xd55812});
                 killingBlowBlock.play();
 
                 returnInformation.attackLanded = false;
@@ -913,7 +894,7 @@ var UnitBase = {
         Matter.Events.on(this, "consume", function(event) {
             var item = event.item;
             this.unequipItem(item);
-            
+
             if (this.consumeSound) {
                 this.consumeSound.play();
             }

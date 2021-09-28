@@ -264,7 +264,7 @@ var levelBase = {
         scene.add(this.gunrack);
 
         //add text
-        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Control + Click to activate', {style: styles.abilityText, where: 'hudTwo'});
+        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Ctrl+Click to activate augment panel', {style: styles.abilityText, where: 'hudTwo'});
         controlClickText.position = mathArrayUtils.clonePosition(this.gunrack.position, {y: 40});
         mathArrayUtils.roundPositionToWholeNumbers(controlClickText.position);
         controlClickText.visible = false;
@@ -312,10 +312,10 @@ var levelBase = {
                     x: gunrackSprite.position.x,
                     y: gunrackSprite.position.y -25
                 }, {
-                    style: styles.abilityText,
+                    style: styles.critHitText,
                     where: 'hudThree',
                     speed: 2,
-                    duration: 1500
+                    duration: 2000
                 });
             }
         }.bind(globals.currentGame));

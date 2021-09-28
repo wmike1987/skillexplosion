@@ -7,8 +7,15 @@ import Ability from '@core/Unit/UnitAbility.js';
 import Passive from '@core/Unit/UnitPassive.js';
 import rv from '@core/Unit/_Revivable.js';
 import styles from '@utils/Styles.js';
-import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/GameUtils.js';
 
 export default function Marine(options) {
     var marine = {};
@@ -196,142 +203,228 @@ export default function Marine(options) {
 
     };
 
-    var sc = {x: 0.35, y: 0.35};
-    var adjustedUpsc = {x: 0.37, y: 0.37};
-    var adjustedDownsc = {x: 0.37, y: 0.37};
-    var flipsc = {x: -1 * sc.x, y: sc.y};
+    var sc = {
+        x: 0.35,
+        y: 0.35
+    };
+    var adjustedUpsc = {
+        x: 0.37,
+        y: 0.37
+    };
+    var adjustedDownsc = {
+        x: 0.37,
+        y: 0.37
+    };
+    var flipsc = {
+        x: -1 * sc.x,
+        y: sc.y
+    };
     var yOffset = 22;
     var sortYOffset = 0;
-    var rc = [
-    {
-        id: 'selected',
-        data: 'IsometricSelected',
-        scale: {x: 0.54, y: 0.54},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 20},
-    },
-    {
-        id: 'selectionPending',
-        data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.33, y: 0.33},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 20},
-    },{
-        id: 'left',
-        data: spineWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-        sortYOffset: sortYOffset,
-    },{
-        id: 'right',
-        data: spineEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-        sortYOffset: sortYOffset,
-    },
-    {
-        id: 'up',
-        data: spineNorth,
-        scale: adjustedUpsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset-2},
-        sortYOffset: sortYOffset,
-    },
-    {
-        id: 'down',
-        data: spineSouth,
-        scale: adjustedDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset-2},
-        sortYOffset: sortYOffset,
-    },
-    {
-        id: 'upLeft',
-        data: spineNorthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-        sortYOffset: sortYOffset,
-    },
-    {
-        id: 'upRight',
-        data: spineNorthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-        sortYOffset: sortYOffset,
-    },
-    {
-        id: 'downRight',
-        data: spineSouthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-        sortYOffset: sortYOffset,
-    }, {
-        id: 'downLeft',
-        data: spineSouthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-        sortYOffset: sortYOffset,
-    },{
-        id: 'shadow',
-        data: 'IsoShadowBlurred',
-        scale: {x: 0.55, y: 0.55},
-        visible: true,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        stage: "stageNTwo",
-        offset: {x: 0, y: 20}}];
+    var rc = [{
+            id: 'selected',
+            data: 'IsometricSelected',
+            scale: {
+                x: 0.54,
+                y: 0.54
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 20
+            },
+        },
+        {
+            id: 'selectionPending',
+            data: unitUtils.getPendingAnimation(),
+            scale: {
+                x: 0.33,
+                y: 0.33
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 20
+            },
+        }, {
+            id: 'left',
+            data: spineWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+            sortYOffset: sortYOffset,
+        }, {
+            id: 'right',
+            data: spineEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+            sortYOffset: sortYOffset,
+        },
+        {
+            id: 'up',
+            data: spineNorth,
+            scale: adjustedUpsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset - 2
+            },
+            sortYOffset: sortYOffset,
+        },
+        {
+            id: 'down',
+            data: spineSouth,
+            scale: adjustedDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset - 2
+            },
+            sortYOffset: sortYOffset,
+        },
+        {
+            id: 'upLeft',
+            data: spineNorthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+            sortYOffset: sortYOffset,
+        },
+        {
+            id: 'upRight',
+            data: spineNorthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+            sortYOffset: sortYOffset,
+        },
+        {
+            id: 'downRight',
+            data: spineSouthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+            sortYOffset: sortYOffset,
+        }, {
+            id: 'downLeft',
+            data: spineSouthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+            sortYOffset: sortYOffset,
+        }, {
+            id: 'shadow',
+            data: 'IsoShadowBlurred',
+            scale: {
+                x: 0.55,
+                y: 0.55
+            },
+            visible: true,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            stage: "stageNTwo",
+            offset: {
+                x: 0,
+                y: 20
+            }
+        }
+    ];
 
-    var fireSound = gameUtils.getSound('machinegun.wav', {volume: 0.002, rate: 3});
-    var poisonSound = gameUtils.getSound('poisonhit1.wav', {volume: 0.01, rate: 0.6});
+    var fireSound = gameUtils.getSound('machinegun.wav', {
+        volume: 0.002,
+        rate: 3
+    });
+    var poisonSound = gameUtils.getSound('poisonhit1.wav', {
+        volume: 0.01,
+        rate: 0.6
+    });
 
     //crit
-    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {volume: 0.03, rate: 1.0});
+    var criticalHitSound = gameUtils.getSound('criticalhit.wav', {
+        volume: 0.03,
+        rate: 1.0
+    });
 
     //death
-    var deathSound = gameUtils.getSound('marinedeathsound.wav', {volume: 0.2, rate: 1.0});
-    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {volume: 0.06, rate: 1.2});
+    var deathSound = gameUtils.getSound('marinedeathsound.wav', {
+        volume: 0.2,
+        rate: 1.0
+    });
+    var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {
+        volume: 0.06,
+        rate: 1.2
+    });
 
     //other
-    var healsound = gameUtils.getSound('healsound.wav', {volume: 0.006, rate: 1.3});
-    var yeahsound = gameUtils.getSound('shaneyeah.wav', {volume: 0.1, rate: 1.0});
+    var healsound = gameUtils.getSound('healsound.wav', {
+        volume: 0.006,
+        rate: 1.3
+    });
+    var yeahsound = gameUtils.getSound('shaneyeah.wav', {
+        volume: 0.1,
+        rate: 1.0
+    });
 
     //Dash
     var dashVelocity = 0.8;
-    var dashSound = gameUtils.getSound('dashsound2.wav', {volume: 0.04, rate: 1.2});
+    var dashSound = gameUtils.getSound('dashsound2.wav', {
+        volume: 0.04,
+        rate: 1.2
+    });
     var dash = function(destination, commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Dash');
         var defensivePostureAugment = thisAbility.isAugmentEnabled('defensive posture');
         var deathWishAugment = thisAbility.isAugmentEnabled('death wish');
 
-        this.stop(null, {peaceful: true}); //stop any movement
+        this.stop(null, {
+            peaceful: true
+        }); //stop any movement
         this.moveSpeedAugment = this.moveSpeed;
         this.body.frictionAir = 0.2;
         var velocityVector = Matter.Vector.sub(destination, this.position);
         var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
-        Matter.Body.applyForce(this.body, this.position, {x: velocityScaled * velocityVector.x, y: velocityScaled * velocityVector.y});
+        Matter.Body.applyForce(this.body, this.position, {
+            x: velocityScaled * velocityVector.x,
+            y: velocityScaled * velocityVector.y
+        });
         dashSound.play();
-        Matter.Events.trigger(globals.currentGame, 'dash', {performingUnit: this});
+        Matter.Events.trigger(globals.currentGame, 'dash', {
+            performingUnit: this
+        });
         Matter.Events.trigger(this, 'dash');
 
         //play animation
@@ -353,11 +446,11 @@ export default function Marine(options) {
             runs: 1,
             timeLimit: 280,
             callback: function() {
-                if(self.commandQueue.getCurrentCommand().id == commandObj.command.id) {
+                if (self.commandQueue.getCurrentCommand().id == commandObj.command.id) {
                     //only stop if we're still on the current dash command
                     self.stop();
                 }
-                if(self.commandQueue.getCurrentCommand().id == 'empty' || self.commandQueue.getCurrentCommand().method.name == 'throwKnife') {
+                if (self.commandQueue.getCurrentCommand().id == 'empty' || self.commandQueue.getCurrentCommand().method.name == 'throwKnife') {
                     //if we're a knife or empty, become on alert
                     self._becomeOnAlert();
                 }
@@ -367,20 +460,32 @@ export default function Marine(options) {
         });
 
         var defensivePostureGain = 2;
-        if(defensivePostureAugment) {
-            marine.applyBuff({name: "defpostbuff", textureName: 'DefensiveBuff', duration: 3000, applyChanges: function() {
-                self.addDefenseAddition(defensivePostureGain);
-            }, removeChanges: function() {
-                self.removeDefenseAddition(defensivePostureGain);
-            }});
+        if (defensivePostureAugment) {
+            marine.applyBuff({
+                name: "defpostbuff",
+                textureName: 'DefensiveBuff',
+                duration: 3000,
+                applyChanges: function() {
+                    self.addDefenseAddition(defensivePostureGain);
+                },
+                removeChanges: function() {
+                    self.removeDefenseAddition(defensivePostureGain);
+                }
+            });
         }
 
-        if(deathWishAugment) {
-            marine.applyBuff({name: "deathwishbuff", textureName: 'DeathWishBuff', duration: 2000, applyChanges: function() {
-                self.damage += 3;
-            }, removeChanges: function() {
-                self.damage -= 3;
-            }});
+        if (deathWishAugment) {
+            marine.applyBuff({
+                name: "deathwishbuff",
+                textureName: 'DeathWishBuff',
+                duration: 2000,
+                applyChanges: function() {
+                    self.damage += 3;
+                },
+                removeChanges: function() {
+                    self.damage -= 3;
+                }
+            });
         }
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
     };
@@ -400,12 +505,11 @@ export default function Marine(options) {
         enablers: [function(commandObj) {
             return marine.canMove;
         }.bind(this)],
-        augments: [
-            {
+        augments: [{
                 name: 'vital reserves',
                 icon: graphicsUtils.createDisplayObject('VitalReserves'),
                 title: 'Vital Reserves',
-                description: ['Decrease energy cost by ' + vrECost,  'Add ' + vrHpCost + ' hp to cost.'],
+                description: ['Decrease energy cost by ' + vrECost, 'Add ' + vrHpCost + ' hp to cost.'],
                 equip: function(unit) {
                     this.ability.energyCost -= vrECost;
                     this.ability.hpEnable = this.ability.enablers.push(function() {
@@ -442,8 +546,14 @@ export default function Marine(options) {
     });
 
     //Knife
-    var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {volume: 0.03, rate: 1.5});
-    var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {volume: 0.05, rate: 1});
+    var knifeThrowSound = gameUtils.getSound('knifethrow.wav', {
+        volume: 0.03,
+        rate: 1.5
+    });
+    var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
+        volume: 0.05,
+        rate: 1
+    });
     var knifeSpeed = 22;
     marine.knifeDamage = 15;
     var throwKnife = function(destination, commandObj, childKnife) {
@@ -453,19 +563,21 @@ export default function Marine(options) {
         var pierceAugment = thisAbility.isAugmentEnabled('pierce');
         var poisonTipAugment = thisAbility.isAugmentEnabled('poison tip');
 
-        if(!childKnife && multiThrowAugment) {
+        if (!childKnife && multiThrowAugment) {
             var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(destination, this.position)));
-            var start = (multiThrowAugment.knives-1)/-2;
+            var start = (multiThrowAugment.knives - 1) / -2;
             var spacing = 25;
-            for(var n = start; n < start + multiThrowAugment.knives; n++) {
-                if(n == 0) continue;
-                thisAbility.method.call(this, Matter.Vector.add(destination, Matter.Vector.mult(perpVector, n*spacing)), null, true);
+            for (var n = start; n < start + multiThrowAugment.knives; n++) {
+                if (n == 0) continue;
+                thisAbility.method.call(this, Matter.Vector.add(destination, Matter.Vector.mult(perpVector, n * spacing)), null, true);
             }
         }
 
         //look for free knives
-        if(this.freeKinves) {
-            this.buffs['freeKnife' + this.freeKinves].removeBuff({detached: true});
+        if (this.freeKinves) {
+            this.buffs['freeKnife' + this.freeKinves].removeBuff({
+                detached: true
+            });
         }
 
         //create knife body
@@ -476,42 +588,55 @@ export default function Marine(options) {
             isSensor: true
         });
 
-        if(pierceAugment) {
+        if (pierceAugment) {
             knife.lives = pierceAugment.lives;
         }
 
         Matter.Body.setPosition(knife, this.position);
         var knifeTint = 0xFFFFFF;
-        if(poisonTipAugment) {
+        if (poisonTipAugment) {
             knifeTint = 0x009933;
         }
-        if(pierceAugment) {
+        if (pierceAugment) {
             knifeTint = 0x6666ff;
         }
-        if(pierceAugment && poisonTipAugment) {
+        if (pierceAugment && poisonTipAugment) {
             knifeTint = 0xe88a1b;
         }
         knife.renderChildren = [{
-            id: 'knife',
-            data: 'ThrowingDaggerBase',
-            scale: {x: 0.7, y: 0.7},
-            rotate: mathArrayUtils.pointInDirection(knife.position, destination),
-        },
-        {
-            id: 'knifeblade',
-            data: 'ThrowingDaggerBlade',
-            scale: {x: 0.7, y: 0.7},
-            rotate: mathArrayUtils.pointInDirection(knife.position, destination),
-            tint: knifeTint,
-        },
-        {
-            id: 'shadow',
-            data: 'IsoShadowBlurred',
-            scale: {x: 1/8, y: 2},
-            offset: {x: 15, y: 20},
-            rotate: mathArrayUtils.pointInDirection(knife.position, destination),
-            stage: "stageNTwo",
-        }];
+                id: 'knife',
+                data: 'ThrowingDaggerBase',
+                scale: {
+                    x: 0.7,
+                    y: 0.7
+                },
+                rotate: mathArrayUtils.pointInDirection(knife.position, destination),
+            },
+            {
+                id: 'knifeblade',
+                data: 'ThrowingDaggerBlade',
+                scale: {
+                    x: 0.7,
+                    y: 0.7
+                },
+                rotate: mathArrayUtils.pointInDirection(knife.position, destination),
+                tint: knifeTint,
+            },
+            {
+                id: 'shadow',
+                data: 'IsoShadowBlurred',
+                scale: {
+                    x: 1 / 8,
+                    y: 2
+                },
+                offset: {
+                    x: 15,
+                    y: 20
+                },
+                rotate: mathArrayUtils.pointInDirection(knife.position, destination),
+                stage: "stageNTwo",
+            }
+        ];
         globals.currentGame.addBody(knife);
 
         //send knife
@@ -520,28 +645,30 @@ export default function Marine(options) {
         knife.destination = destination;
         gameUtils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
         var removeSelf = globals.currentGame.addTickCallback(function() {
-            if(gameUtils.bodyRanOffStage(knife)) {
+            if (gameUtils.bodyRanOffStage(knife)) {
                 globals.currentGame.removeBody(knife);
             }
         });
         gameUtils.deathPact(knife, removeSelf);
 
         //play spine animation
-        this.isoManager.playSpecifiedAnimation('throw', gameUtils.isoDirectionBetweenPositions(this.position, destination), {movePrecedence: true});
+        this.isoManager.playSpecifiedAnimation('throw', gameUtils.isoDirectionBetweenPositions(this.position, destination), {
+            movePrecedence: true
+        });
 
         var self = this;
         Matter.Events.on(knife, 'onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
-            if(otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
-                if(poisonTipAugment) {
+            if (otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
+                if (poisonTipAugment) {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
-                        runs: poisonTipAugment.seconds*2,
+                        runs: poisonTipAugment.seconds * 2,
                         killsSelf: true,
                         timeLimit: 500,
                         callback: function() {
-                            if(otherUnit.isDead) {
+                            if (otherUnit.isDead) {
                                 globals.currentGame.invalidateTimer(this);
                                 return;
                             }
@@ -552,18 +679,20 @@ export default function Marine(options) {
                                 speed: 2.1,
                                 transform: [otherUnit.position.x, otherUnit.position.y, 0.4, 0.4]
                             });
-                            poisonAnimation.rotation = Math.random() * Math.PI*2;
+                            poisonAnimation.rotation = Math.random() * Math.PI * 2;
                             graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
-                            otherUnit.sufferAttack(poisonTipAugment.damage/(poisonTipAugment.seconds*2), self);
+                            otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self);
                         }
                     });
                 }
 
                 otherUnit.sufferAttack(marine.knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
-                if(otherUnit.isDead) {
+                if (otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
-                    Matter.Events.trigger(globals.currentGame, 'knifeKill', {performingUnit: this});
+                    Matter.Events.trigger(globals.currentGame, 'knifeKill', {
+                        performingUnit: this
+                    });
                 }
                 var bloodPierceAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
@@ -575,9 +704,9 @@ export default function Marine(options) {
                 bloodPierceAnimation.play();
                 bloodPierceAnimation.rotation = mathArrayUtils.pointInDirection(knife.position, knife.destination, 'east');
                 graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
-                if(pierceAugment) {
+                if (pierceAugment) {
                     knife.lives -= 1;
-                    if(knife.lives == 0) {
+                    if (knife.lives == 0) {
                         globals.currentGame.removeBody(knife);
                     }
                 } else {
@@ -585,13 +714,13 @@ export default function Marine(options) {
                 }
             }
 
-            if(otherBody.isMine) {
+            if (otherBody.isMine) {
                 Matter.Events.trigger(this, 'knifeMine');
                 otherBody.explode();
             }
         }.bind(this));
 
-        if(commandObj) {
+        if (commandObj) {
             globals.currentGame.addTimer({
                 name: 'knifeDoneTimer' + knife.id,
                 runs: 1,
@@ -603,7 +732,9 @@ export default function Marine(options) {
             });
         }
 
-        Matter.Events.trigger(globals.currentGame, 'knifeThrow', {performingUnit: this});
+        Matter.Events.trigger(globals.currentGame, 'knifeThrow', {
+            performingUnit: this
+        });
         Matter.Events.trigger(this, 'knifeThrow');
     };
     var knifeAbility = new Ability({
@@ -614,17 +745,21 @@ export default function Marine(options) {
         method: throwKnife,
         title: 'Throwing Knife',
         description: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.',
-        updaters: {descriptions: function() {
-            return {index: 0, value: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.'};
-        }},
+        updaters: {
+            descriptions: function() {
+                return {
+                    index: 0,
+                    value: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.'
+                };
+            }
+        },
         hotkey: 'F',
         energyCost: 6,
         activeAugment: null,
         enablers: [function(commandObj) {
             return marine.canAttack;
         }.bind(this)],
-        augments: [
-            {
+        augments: [{
                 name: 'pierce',
                 lives: 4,
                 icon: graphicsUtils.createDisplayObject('PiercingKnife'),
@@ -661,8 +796,7 @@ export default function Marine(options) {
         enablers: [function(commandObj) {
             return marine.canAttack;
         }.bind(this)],
-        augments: [
-            {
+        augments: [{
                 name: 'fully auto',
                 delta: -100,
                 icon: graphicsUtils.createDisplayObject('FullyAuto'),
@@ -722,7 +856,7 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                if(ally.isDead) return;
+                if (ally.isDead) return;
                 ally.giveHealth(6, marine);
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
@@ -731,13 +865,19 @@ export default function Marine(options) {
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                if(ally.isDead) return;
+                if (ally.isDead) return;
                 var id = mathArrayUtils.getId();
-                ally.applyBuff({name: "givingSpiritDefBuff" + id, textureName: 'DefensiveBuff', duration: allyArmorDuration, applyChanges: function() {
-                    ally.addDefenseAddition(armorGiven);
-                }, removeChanges: function() {
-                    ally.removeDefenseAddition(armorGiven);
-                }});
+                ally.applyBuff({
+                    name: "givingSpiritDefBuff" + id,
+                    textureName: 'DefensiveBuff',
+                    duration: allyArmorDuration,
+                    applyChanges: function() {
+                        ally.addDefenseAddition(armorGiven);
+                    },
+                    removeChanges: function() {
+                        ally.removeDefenseAddition(armorGiven);
+                    }
+                });
             });
         },
     });
@@ -765,20 +905,32 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             var f = {};
-            marine.applyBuff({name: "rushofbloodabsorb", textureName: 'RushOfBloodBuff', duration: robDDuration,  applyChanges: function() {
-                f.handler = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
-                    event.healingObj.amount *= 2;
-                });
-            }, removeChanges: function() {
-                Matter.Events.off(marine, 'preReceiveHeal', f.handler);
-            }});
+            marine.applyBuff({
+                name: "rushofbloodabsorb",
+                textureName: 'RushOfBloodBuff',
+                duration: robDDuration,
+                applyChanges: function() {
+                    f.handler = Matter.Events.on(marine, 'preReceiveHeal', function(event) {
+                        event.healingObj.amount *= 2;
+                    });
+                },
+                removeChanges: function() {
+                    Matter.Events.off(marine, 'preReceiveHeal', f.handler);
+                }
+            });
         },
         aggressionAction: function(event) {
-            marine.applyBuff({name: "rushofbloodspeed", textureName: 'SpeedBuff', duration: robADuration,  applyChanges: function() {
-                marine.moveSpeed += 0.6;
-            }, removeChanges: function() {
-                marine.moveSpeed -= 0.6;
-            }});
+            marine.applyBuff({
+                name: "rushofbloodspeed",
+                textureName: 'SpeedBuff',
+                duration: robADuration,
+                applyChanges: function() {
+                    marine.moveSpeed += 0.6;
+                },
+                removeChanges: function() {
+                    marine.moveSpeed -= 0.6;
+                }
+            });
         },
     });
 
@@ -794,30 +946,36 @@ export default function Marine(options) {
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 6000,
         passiveAction: function(event) {
-            if(!marine.freeKinves) {
+            if (!marine.freeKinves) {
                 marine.freeKinves = 0;
             }
 
-            marine.applyBuff({name: 'freeKnife' + (marine.freeKinves+1), textureName: 'FreeKnifeBuff', duration: null, applyChanges: function() {
-                marine.freeKinves += 1;
+            marine.applyBuff({
+                name: 'freeKnife' + (marine.freeKinves + 1),
+                textureName: 'FreeKnifeBuff',
+                duration: null,
+                applyChanges: function() {
+                    marine.freeKinves += 1;
 
-                if(!marine.freeKinfeBuffs) {
-                    marine.freeKinfeBuffs = [];
-                }
-                marine.freeKinfeBuffs.push('freeKnife' + marine.freeKinves);
+                    if (!marine.freeKinfeBuffs) {
+                        marine.freeKinfeBuffs = [];
+                    }
+                    marine.freeKinfeBuffs.push('freeKnife' + marine.freeKinves);
 
-                var ss = marine.getAbilityByName('Throw Knife');
-                ss.manuallyEnabled = true;
-                ss.byPassEnergyCost = true;
-            }, removeChanges: function() {
-                mathArrayUtils.removeObjectFromArray('freeKnife' + marine.freeKinves, marine.freeKinfeBuffs);
-                marine.freeKinves -= 1;
-                if(marine.freeKinves == 0) {
                     var ss = marine.getAbilityByName('Throw Knife');
-                    ss.manuallyEnabled = false;
-                    ss.byPassEnergyCost = false;
+                    ss.manuallyEnabled = true;
+                    ss.byPassEnergyCost = true;
+                },
+                removeChanges: function() {
+                    mathArrayUtils.removeObjectFromArray('freeKnife' + marine.freeKinves, marine.freeKinfeBuffs);
+                    marine.freeKinves -= 1;
+                    if (marine.freeKinves == 0) {
+                        var ss = marine.getAbilityByName('Throw Knife');
+                        ss.manuallyEnabled = false;
+                        ss.byPassEnergyCost = false;
+                    }
                 }
-            }});
+            });
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
@@ -830,7 +988,7 @@ export default function Marine(options) {
     });
 
     var cpADuration = 4000;
-    var clearPerspective  = new Passive({
+    var clearPerspective = new Passive({
         title: 'Clear Perspective',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Double rifle range for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
@@ -843,31 +1001,43 @@ export default function Marine(options) {
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
         passiveAction: function(event) {
-            marine.applyBuff({name: "keenEye", textureName: 'KeenEyeBuff', duration: 8000, applyChanges: function() {
-                marine.honeRange = marine.honeRange*2;
-                marine.range = marine.range*2;
-            }, removeChanges: function() {
-                marine.honeRange = marine.honeRange/2;
-                marine.range = marine.range/2;
-            }});
+            marine.applyBuff({
+                name: "keenEye",
+                textureName: 'KeenEyeBuff',
+                duration: 8000,
+                applyChanges: function() {
+                    marine.honeRange = marine.honeRange * 2;
+                    marine.range = marine.range * 2;
+                },
+                removeChanges: function() {
+                    marine.honeRange = marine.honeRange / 2;
+                    marine.range = marine.range / 2;
+                }
+            });
         },
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
         },
         aggressionAction: function(event) {
-            marine.applyBuff({name: "keenEye", textureName: 'KeenEyeBuff', duration: cpADuration, applyChanges: function() {
-                marine.honeRange = marine.honeRange*2;
-                marine.range = marine.range*2;
-            }, removeChanges: function() {
-                marine.honeRange = marine.honeRange/2;
-                marine.range = marine.range/2;
-            }});
+            marine.applyBuff({
+                name: "keenEye",
+                textureName: 'KeenEyeBuff',
+                duration: cpADuration,
+                applyChanges: function() {
+                    marine.honeRange = marine.honeRange * 2;
+                    marine.range = marine.range * 2;
+                },
+                removeChanges: function() {
+                    marine.honeRange = marine.honeRange / 2;
+                    marine.range = marine.range / 2;
+                }
+            });
         },
     });
 
     var ssDDuration = 4000;
     var ssADuration = 4000;
-    var spiritualState  = new Passive({
+    var spiritualState = new Passive({
         title: 'Spiritual State',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Gain 1 energy for every 1 hp recieved from healing for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4 seconds.'],
@@ -883,36 +1053,54 @@ export default function Marine(options) {
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({name: "spiritualStateGain", textureName: 'SpiritualStateEnergyGainBuff', duration: 3000, applyChanges: function() {
-                    unit.energyRegenerationMultiplier *= 2;
-                }, removeChanges: function() {
-                    unit.energyRegenerationMultiplier /= 2;
-                }});
+                unit.applyBuff({
+                    name: "spiritualStateGain",
+                    textureName: 'SpiritualStateEnergyGainBuff',
+                    duration: 3000,
+                    applyChanges: function() {
+                        unit.energyRegenerationMultiplier *= 2;
+                    },
+                    removeChanges: function() {
+                        unit.energyRegenerationMultiplier /= 2;
+                    }
+                });
             });
         },
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({name: "spiritualStateGain", textureName: 'SpiritualStateEnergyGainBuff', duration: ssDDuration, applyChanges: function() {
-                    unit.energyRegenerationMultiplier *= 2;
-                }, removeChanges: function() {
-                    unit.energyRegenerationMultiplier /= 2;
-                }});
+                unit.applyBuff({
+                    name: "spiritualStateGain",
+                    textureName: 'SpiritualStateEnergyGainBuff',
+                    duration: ssDDuration,
+                    applyChanges: function() {
+                        unit.energyRegenerationMultiplier *= 2;
+                    },
+                    removeChanges: function() {
+                        unit.energyRegenerationMultiplier /= 2;
+                    }
+                });
             });
         },
         aggressionAction: function(event) {
             var f = {};
-            marine.applyBuff({name: "spiritualStateMatch", duration: ssADuration, textureName: 'SpiritualStateBuff', applyChanges: function() {
-                f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
-                    marine.giveEnergy(event.amountDone);
-                });
-            }, removeChanges: function() {
-                Matter.Events.off(marine, 'receiveHeal', f.handler);
-            }});
+            marine.applyBuff({
+                name: "spiritualStateMatch",
+                duration: ssADuration,
+                textureName: 'SpiritualStateBuff',
+                applyChanges: function() {
+                    f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
+                        marine.giveEnergy(event.amountDone);
+                    });
+                },
+                removeChanges: function() {
+                    Matter.Events.off(marine, 'receiveHeal', f.handler);
+                }
+            });
         },
     });
 
-    var trueGrit  = new Passive({
+    var trueGrit = new Passive({
         title: 'True Grit',
         aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 8 grit for length of round.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 5 grit for length of round.'],
@@ -926,7 +1114,7 @@ export default function Marine(options) {
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                if(unit.isDead) {
+                if (unit.isDead) {
                     return;
                 }
                 unit.addGritAddition(10);
@@ -938,12 +1126,21 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                if(unit.isDead) {
+                if (unit.isDead) {
                     return;
                 }
-                var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: unit.position});
-                gameUtils.attachSomethingToBody({something: gritUp, body: unit.body});
-                graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
+                var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {
+                    where: 'stageTwo',
+                    position: unit.position
+                });
+                gameUtils.attachSomethingToBody({
+                    something: gritUp,
+                    body: unit.body
+                });
+                graphicsUtils.floatSprite(gritUp, {
+                    direction: 1,
+                    runs: 50
+                });
                 unit.addGritAddition(5);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
                     unit.removeGritAddition(5);
@@ -951,9 +1148,18 @@ export default function Marine(options) {
             });
         },
         aggressionAction: function(event) {
-            var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {where: 'stageTwo', position: marine.position});
-            gameUtils.attachSomethingToBody({something: gritUp, body: marine.body});
-            graphicsUtils.floatSprite(gritUp, {direction: 1, runs: 50});
+            var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {
+                where: 'stageTwo',
+                position: marine.position
+            });
+            gameUtils.attachSomethingToBody({
+                something: gritUp,
+                body: marine.body
+            });
+            graphicsUtils.floatSprite(gritUp, {
+                direction: 1,
+                runs: 50
+            });
             marine.addGritAddition(5);
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
                 marine.removeGritAddition(5);
@@ -977,14 +1183,79 @@ export default function Marine(options) {
         hitboxWidth: 30,
         hitboxHeight: 58,
         // adjustHitbox: true,
-        animationSpecificHitboxes: [{animation: walkAnimations.down, height: 8, width: 48, offset: {x: -6, y: -5}},
-                                    {animation: walkAnimations.up, height: 8, width: 50, offset: {x: 0, y: -8}},
-                                    {animation: walkAnimations.upRight, height: 8, width: 50, offset: {x: 0, y: -15}},
-                                    {animation: walkAnimations.upLeft, height: 8, width: 50, offset: {x: 0, y: -15}},
-                                    {animation: walkAnimations.downRight, height: 8, width: 50, offset: {x: 0, y: -13}},
-                                    {animation: walkAnimations.downLeft, height: 8, width: 50, offset: {x: 0, y: -13}},
-                                    {animation: attackAnimations.left, height: 8, width: 35, offset: {x: -16, y: -18}},
-                                    {animation: attackAnimations.right, height: 8, width: 35, offset: {x: 16, y: -18}}],
+        animationSpecificHitboxes: [{
+                animation: walkAnimations.down,
+                height: 8,
+                width: 48,
+                offset: {
+                    x: -6,
+                    y: -5
+                }
+            },
+            {
+                animation: walkAnimations.up,
+                height: 8,
+                width: 50,
+                offset: {
+                    x: 0,
+                    y: -8
+                }
+            },
+            {
+                animation: walkAnimations.upRight,
+                height: 8,
+                width: 50,
+                offset: {
+                    x: 0,
+                    y: -15
+                }
+            },
+            {
+                animation: walkAnimations.upLeft,
+                height: 8,
+                width: 50,
+                offset: {
+                    x: 0,
+                    y: -15
+                }
+            },
+            {
+                animation: walkAnimations.downRight,
+                height: 8,
+                width: 50,
+                offset: {
+                    x: 0,
+                    y: -13
+                }
+            },
+            {
+                animation: walkAnimations.downLeft,
+                height: 8,
+                width: 50,
+                offset: {
+                    x: 0,
+                    y: -13
+                }
+            },
+            {
+                animation: attackAnimations.left,
+                height: 8,
+                width: 35,
+                offset: {
+                    x: -16,
+                    y: -18
+                }
+            },
+            {
+                animation: attackAnimations.right,
+                height: 8,
+                width: 35,
+                offset: {
+                    x: 16,
+                    y: -18
+                }
+            }
+        ],
         itemsEnabled: true,
         name: options.name,
         heightAnimation: 'up',
@@ -1005,7 +1276,16 @@ export default function Marine(options) {
             graphicsUtils.addSomethingToRenderer(anim);
             this.corpse = anim;
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {
+                where: 'stageNTwo',
+                scale: {
+                    x: 0.75,
+                    y: 0.75
+                },
+                position: mathArrayUtils.clonePosition(self.deathPosition, {
+                    y: 22
+                })
+            });
             graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
 
             anim.play();
@@ -1015,193 +1295,211 @@ export default function Marine(options) {
         },
         _init: function() {
             this.firstAidPouchAdditions = [];
-            if(!this.bypassRevival) {
+            if (!this.bypassRevival) {
                 $.extend(this, rv);
                 this.revivableInit();
             }
 
             $.extend(this, aug);
             this.unlockerInit();
-        }}, options);
+        }
+    }, options);
 
     return UC({
-            givenUnitObj: marine,
-            renderChildren: rc,
-            radius: options.radius || 25,
-            mass: options.mass || 8,
-            mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [dashSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
-                     poisonSound, criticalHitSound, yeahsound, unitProperties.wireframe, unitProperties.portrait],
-            unit: unitProperties,
-            moveable: {
-                moveSpeed: 2.50,
-                walkAnimations: walkAnimations,
-            }, attacker: {
-                attackAnimations: attackAnimations,
-                cooldown: 650,
-                honeRange: 300,
-                range: 180,
-                damage: 10,
-                attack: function(target) {
-                    //get current augment
-                    var thisAbility = this.getAbilityByName('Rifle');
-                    var hoodedPeepAugment = thisAbility.isAugmentEnabled('hooded peep');
-                    var firstAidPouchAugment = thisAbility.isAugmentEnabled('first aid pouch');
+        givenUnitObj: marine,
+        renderChildren: rc,
+        radius: options.radius || 25,
+        mass: options.mass || 8,
+        mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+        slaves: [dashSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
+            poisonSound, criticalHitSound, yeahsound, unitProperties.wireframe, unitProperties.portrait
+        ],
+        unit: unitProperties,
+        moveable: {
+            moveSpeed: 2.50,
+            walkAnimations: walkAnimations,
+        },
+        attacker: {
+            attackAnimations: attackAnimations,
+            cooldown: 650,
+            honeRange: 300,
+            range: 180,
+            damage: 10,
+            attack: function(target) {
+                //get current augment
+                var thisAbility = this.getAbilityByName('Rifle');
+                var hoodedPeepAugment = thisAbility.isAugmentEnabled('hooded peep');
+                var firstAidPouchAugment = thisAbility.isAugmentEnabled('first aid pouch');
 
-                    var crit = 1;
-                    var critActive = false;
-                    if(hoodedPeepAugment) {
-                        if(Math.random() < hoodedPeepAugment.chance) {
-                            crit = hoodedPeepAugment.multiplier;
-                            critActive = true;
-                        }
+                var crit = 1;
+                var critActive = false;
+                if (hoodedPeepAugment) {
+                    if (Math.random() < hoodedPeepAugment.chance) {
+                        crit = hoodedPeepAugment.multiplier;
+                        critActive = true;
                     }
+                }
 
-                    var self = this;
-                    if(firstAidPouchAugment) {
-                        gameUtils.applyToUnitsByTeam(function(team) {
-                            return self.team == team;
-                        }, function(unit) {
-                            return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
-                        }, function(unit) {
-                            unitUtils.applyHealthGainAnimationToUnit(unit);
-                            healsound.play();
-                            var sum = 0;
-                            self.firstAidPouchAdditions.forEach((addition) => {
-                                sum += addition;
-                            });
-                            unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
+                var self = this;
+                if (firstAidPouchAugment) {
+                    gameUtils.applyToUnitsByTeam(function(team) {
+                        return self.team == team;
+                    }, function(unit) {
+                        return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
+                    }, function(unit) {
+                        unitUtils.applyHealthGainAnimationToUnit(unit);
+                        healsound.play();
+                        var sum = 0;
+                        self.firstAidPouchAdditions.forEach((addition) => {
+                            sum += addition;
                         });
-                    }
+                        unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
+                    });
+                }
 
-                    var dTotal = this.damage + this.getDamageAdditionSum();
-                    target.sufferAttack(dTotal*crit, this);
-                    if(critActive) {
-                        fireSound.play();
-                        criticalHitSound.play();
-                        var chText = graphicsUtils.floatText(dTotal*crit + '!', {x: target.position.x, y: target.position.y-15}, {style: styles.critHitText});
-                    } else {
-                        fireSound.play();
-                    }
-                    var abilityTint = 0x80ba80;
-                    graphicsUtils.makeSpriteBlinkTint({sprite: this.getAbilityByName('Rifle').icon, tint: abilityTint, speed: 100});
+                var dTotal = this.damage + this.getDamageAdditionSum();
+                target.sufferAttack(dTotal * crit, this);
+                if (critActive) {
+                    fireSound.play();
+                    criticalHitSound.play();
+                    var chText = graphicsUtils.floatText(dTotal * crit + '!', {
+                        x: target.position.x,
+                        y: target.position.y - 15
+                    }, {
+                        style: styles.critHitText
+                    });
+                } else {
+                    fireSound.play();
+                }
+                var abilityTint = 0x80ba80;
+                graphicsUtils.makeSpriteBlinkTint({
+                    sprite: this.getAbilityByName('Rifle').icon,
+                    tint: abilityTint,
+                    speed: 100
+                });
 
-                    //bullet emitter
-                    var emitter = gameUtils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
-                        config: {
-                        	"alpha": {
-                        		"start": 1,
-                        		"end": 1
-                        	},
-                        	"scale": {
-                        		"start": 0.3,
-                        		"end": 0.2,
-                        		"minimumScaleMultiplier": 1
-                        	},
-                        	"color": {
-                        		"start": "#ffd21f",
-                        		"end": "#fff23d"
-                        	},
-                        	"speed": {
-                        		"start": 200,
-                        		"end": 200,
-                        		"minimumSpeedMultiplier": 1
-                        	},
-                        	"acceleration": {
-                        		"x": 0,
-                        		"y": 0
-                        	},
-                        	"maxSpeed": 0,
-                        	"startRotation": {
-                        		"min": 0,
-                        		"max": 360
-                        	},
-                        	"noRotation": false,
-                        	"rotationSpeed": {
-                        		"min": 0,
-                        		"max": 0
-                        	},
-                        	"lifetime": {
-                        		"min": 0.02,
-                        		"max": 0.02
-                        	},
-                        	"blendMode": "normal",
-                        	"frequency": 0.3/3,
-                        	"emitterLifetime": 0.3,
-                        	"maxParticles": 3,
-                        	"pos": {
-                        		"x": 0,
-                        		"y": 0
-                        	},
-                        	"addAtBack": false,
-                        	"spawnType": "circle",
-                        	"spawnCircle": {
-                        		"x": 0,
-                        		"y": 0,
-                        		"r": 8
-                        	}
-                    }, texture: PIXI.Texture.from('Textures/bulletParticle.png')});
-                    emitter.updateSpawnPos(target.position.x, target.position.y);
-                    emitter.playOnceAndDestroy();
+                //bullet emitter
+                var emitter = gameUtils.createParticleEmitter({
+                    where: globals.currentGame.renderer.stages.stage,
+                    config: {
+                        "alpha": {
+                            "start": 1,
+                            "end": 1
+                        },
+                        "scale": {
+                            "start": 0.3,
+                            "end": 0.2,
+                            "minimumScaleMultiplier": 1
+                        },
+                        "color": {
+                            "start": "#ffd21f",
+                            "end": "#fff23d"
+                        },
+                        "speed": {
+                            "start": 200,
+                            "end": 200,
+                            "minimumSpeedMultiplier": 1
+                        },
+                        "acceleration": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "maxSpeed": 0,
+                        "startRotation": {
+                            "min": 0,
+                            "max": 360
+                        },
+                        "noRotation": false,
+                        "rotationSpeed": {
+                            "min": 0,
+                            "max": 0
+                        },
+                        "lifetime": {
+                            "min": 0.02,
+                            "max": 0.02
+                        },
+                        "blendMode": "normal",
+                        "frequency": 0.3 / 3,
+                        "emitterLifetime": 0.3,
+                        "maxParticles": 3,
+                        "pos": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "addAtBack": false,
+                        "spawnType": "circle",
+                        "spawnCircle": {
+                            "x": 0,
+                            "y": 0,
+                            "r": 8
+                        }
+                    },
+                    texture: PIXI.Texture.from('Textures/bulletParticle.png')
+                });
+                emitter.updateSpawnPos(target.position.x, target.position.y);
+                emitter.playOnceAndDestroy();
 
-                    //blood emitter
-                    var bloodEmitter = gameUtils.createParticleEmitter({where: globals.currentGame.renderer.stages.stage,
-                        config: {
-                    	"alpha": {
-                    		"start": 1,
-                    		"end": 1
-                    	},
-                    	"scale": {
-                    		"start": 0.1 * crit,
-                    		"end": 0.01,
-                    		"minimumScaleMultiplier": 1
-                    	},
-                    	"color": {
-                    		"start": "#ff0000",
-                    		"end": "#ff0000"
-                    	},
-                    	"speed": {
-                    		"start": 0,
-                    		"end": 0,
-                    		"minimumSpeedMultiplier": 1
-                    	},
-                    	"acceleration": {
-                    		"x": 0,
-                    		"y": 1800
-                    	},
-                    	"maxSpeed": 0,
-                    	"startRotation": {
-                    		"min": 0,
-                    		"max": 0
-                    	},
-                    	"noRotation": false,
-                    	"rotationSpeed": {
-                    		"min": 0,
-                    		"max": 0
-                    	},
-                    	"lifetime": {
-                    		"min": 0.25,
-                    		"max": 0.3
-                    	},
-                    	"blendMode": "normal",
-                    	"frequency": 0.01,
-                    	"emitterLifetime": 0.2,
-                    	"maxParticles": 2*(Math.pow(crit, 3)),
-                    	"pos": {
-                    		"x": 0,
-                    		"y": 0
-                    	},
-                    	"addAtBack": false,
-                    	"spawnType": "circle",
-                    	"spawnCircle": {
-                    		"x": 0,
-                    		"y": 0,
-                    		"r": 20
-                    	}
-                    }, texture: PIXI.Texture.from('Textures/particle.png')});
-                    bloodEmitter.updateSpawnPos(target.position.x, target.position.y);
-                    bloodEmitter.playOnceAndDestroy();
-                },
+                //blood emitter
+                var bloodEmitter = gameUtils.createParticleEmitter({
+                    where: globals.currentGame.renderer.stages.stage,
+                    config: {
+                        "alpha": {
+                            "start": 1,
+                            "end": 1
+                        },
+                        "scale": {
+                            "start": 0.1 * crit,
+                            "end": 0.01,
+                            "minimumScaleMultiplier": 1
+                        },
+                        "color": {
+                            "start": "#ff0000",
+                            "end": "#ff0000"
+                        },
+                        "speed": {
+                            "start": 0,
+                            "end": 0,
+                            "minimumSpeedMultiplier": 1
+                        },
+                        "acceleration": {
+                            "x": 0,
+                            "y": 1800
+                        },
+                        "maxSpeed": 0,
+                        "startRotation": {
+                            "min": 0,
+                            "max": 0
+                        },
+                        "noRotation": false,
+                        "rotationSpeed": {
+                            "min": 0,
+                            "max": 0
+                        },
+                        "lifetime": {
+                            "min": 0.25,
+                            "max": 0.3
+                        },
+                        "blendMode": "normal",
+                        "frequency": 0.01,
+                        "emitterLifetime": 0.2,
+                        "maxParticles": 2 * (Math.pow(crit, 3)),
+                        "pos": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "addAtBack": false,
+                        "spawnType": "circle",
+                        "spawnCircle": {
+                            "x": 0,
+                            "y": 0,
+                            "r": 20
+                        }
+                    },
+                    texture: PIXI.Texture.from('Textures/particle.png')
+                });
+                bloodEmitter.updateSpawnPos(target.position.x, target.position.y);
+                bloodEmitter.playOnceAndDestroy();
             },
-   });
+        },
+    });
 }

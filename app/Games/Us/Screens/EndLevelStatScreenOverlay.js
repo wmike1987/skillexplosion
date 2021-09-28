@@ -1857,7 +1857,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                 //show +1 adrenaline
                 Matter.Events.on(scene, 'sceneFadeInDone', () => {
                     var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
-                    var rewardDuration = 1750;
+                    var rewardDuration = 800;
                     gameUtils.doSomethingAfterDuration(() => {
                         if (!adrenalineIsFull) {
                             globals.currentGame.soundPool.positiveSoundFast.play();
@@ -1968,8 +1968,8 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                                         };
                                     }.bind(this));
                                 });
-                            }, rewardDuration / 2.0);
-                        }, rewardDuration / 2.0);
+                            }, rewardDuration);
+                        }, rewardDuration);
                     }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
                 });
             }

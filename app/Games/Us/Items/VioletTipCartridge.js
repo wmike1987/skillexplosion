@@ -1,4 +1,5 @@
 import ic from '@core/Unit/ItemConstructor.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     damageAddition: 8,

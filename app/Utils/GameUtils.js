@@ -1424,6 +1424,7 @@ var graphicsUtils = {
 
     floatText: function(text, position, options) {
         options = options || {};
+        var alphaBuffer = 2.0;
         var newStyle;
         if (options.textSize) {
             newStyle = $.extend({}, styles.style, {
@@ -1438,17 +1439,17 @@ var graphicsUtils = {
             y: gameUtils.getCanvasHeight() / 2
         });
         floatedText.position = position;
-        floatedText.alpha = 1.4;
+        floatedText.alpha = alphaBuffer;
         var timer = globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
-            timeLimit: options.duration || 1000,
+            timeLimit: options.duration || 750,
             killsSelf: true,
             runs: 1,
             tickCallback: function(delta) {
                 if (!options.stationary) {
                     floatedText.position.y -= (delta * (options.speed / 100 || 0.03));
                 }
-                floatedText.alpha = 1 - this.percentDone;
+                floatedText.alpha = alphaBuffer - this.percentDone * alphaBuffer;
             },
             totallyDoneCallback: function() {
                 graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
@@ -2104,6 +2105,40 @@ var unitUtils = {
             fromColor: tint,
             toColor: 0xf95e5e
         });
+    },
+
+    showBlockGraphic: function(options) {
+        var attackOptions = options.attackOptions;
+        var attackingUnit = options.attackingUnit;
+        var unit = options.unit;
+
+        //add block graphic
+        let offset = 40;
+        let attackLocation = attackOptions.isProjectile ? attackOptions.projectileData.startLocation : attackingUnit.position;
+        let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(unit.position, attackLocation, offset);
+        let attachmentOffset = Matter.Vector.sub(offsetLocation, unit.position);
+        let block = graphicsUtils.addSomethingToRenderer('Block', {
+            where: 'stageOne',
+            position: offsetLocation,
+            scale: {
+                x: 1.0,
+                y: 1.0
+            }
+        });
+        gameUtils.attachSomethingToBody({
+            something: block,
+            body: unit.body,
+            offset: attachmentOffset,
+            deathPactSomething: true
+        });
+        block.rotation = mathArrayUtils.pointInDirection(unit.position, offsetLocation);
+        graphicsUtils.flashSprite({
+            sprite: block,
+            toColor: options.tint,
+            duration: 100,
+            times: 4
+        });
+        graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
     }
 };
 
