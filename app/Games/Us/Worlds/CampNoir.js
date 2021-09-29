@@ -34,6 +34,9 @@ import {
 import {
     UrsulaTasks
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
+import {
+    MapLearning
+} from '@games/Us/Dialogues/Plain/MapLearning.js';
 
 var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x7848ee];
@@ -465,7 +468,7 @@ var camp = {
 
     //This one is a little complicated since there are so many ways to enter camp noir
     onLevelPlayable: function(scene) {
-        if (this.mapTableFalseSetting) {
+        if (this.mapTableFalseOverride) {
             this.mapTableActive = false;
         } else {
             this.mapTableActive = true;
@@ -474,9 +477,14 @@ var camp = {
         //debug setting
         if (true) {
             this.mapTableActive = true;
+            gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+                graphicsUtils.removeSomethingFromRenderer(arrow);
+                var mapLearning = new MapLearning(scene);
+                mapLearning.play();
+            });
         }
 
-        //we want to nudge the player to the map if we're entering camp noir proper for the first time.
+        //We want to nudge the player to the map if we're entering camp noir proper for the first time.
         //But not during ursula tasks and not quite during the skipped tutorial since we have a slight delay
         //before we want to nudge the player when they skip
         if (this.completedUrsulaTasks && !this.skippedTutorial && !this.mapTableNudge) {
@@ -484,9 +492,12 @@ var camp = {
             var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTable, -20, 0.5);
             gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
                 graphicsUtils.removeSomethingFromRenderer(arrow);
+                var mapLearning = new MapLearning(scene);
+                mapLearning.play();
             });
         }
 
+        //If we haven't completed ursula tasks, init ursula's tasks
         if (!this.completedUrsulaTasks) {
             this.mapTableActive = false;
             globals.currentGame.shane.isSelectable = false;
@@ -499,7 +510,7 @@ var camp = {
             }
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
-            ursTasks.play();
+            // ursTasks.play();
             globals.currentGame.shane.setHealth(50);
             globals.currentGame.shane.ignoreHealthRegeneration = true;
             globals.currentGame.shane.position = {
@@ -823,7 +834,7 @@ var phaseTwo = function(options) {
             });
             if (options.skippedTutorial) {
                 campLevel.skippedTutorial = true;
-                campLevel.mapTableFalseSetting = true;
+                campLevel.mapTableFalseOverride = true;
                 var a1 = new Dialogue({
                     actor: "MacMurray",
                     text: "Air drop incoming, I take it you know what to do...",
@@ -857,7 +868,7 @@ var phaseTwo = function(options) {
                                     }]
                                 });
                                 gameUtils.doSomethingAfterDuration(() => {
-                                    campLevel.mapTableFalseSetting = false;
+                                    campLevel.mapTableFalseOverride = false;
                                     campLevel.mapTableActive = true;
                                     var arrow = graphicsUtils.pointToSomethingWithArrow(campLevel.mapTableSprite, -20, 0.5);
                                     gameUtils.matterOnce(globals.currentGame, 'showMap', () => {

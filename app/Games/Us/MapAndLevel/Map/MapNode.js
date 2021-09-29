@@ -106,7 +106,7 @@ var MapLevelNode = function(options) {
         description: options.tooltipDescription || enemyDescriptions,
         descriptionIcons: enemyIcons
     });
-    this.tooltip = this.displayObject.tooltip;
+    this.displayObject.tooltipObj.isNodeTooltip = true;
 
     //Establish event handlers
     this.displayObject.on('mouseover', function(event) {

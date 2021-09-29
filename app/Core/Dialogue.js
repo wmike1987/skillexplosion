@@ -43,7 +43,7 @@ var Dialogue = function Dialogue(options) {
         },
         backgroundBox: false,
         actorLetterSpeed: 40,
-        letterSpeed: 80,
+        letterSpeed: 45,
         delayAfterEnd: 1500,
         pauseAtPeriods: true,
         pauseAtCommas: true,

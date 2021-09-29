@@ -372,7 +372,7 @@ var game = {
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
 
-        if(false) {
+        if(true) {
             this.showTips = true;
             camp.alreadyIntrod = false;
             camp.completedUrsulaTasks = false;

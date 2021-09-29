@@ -283,6 +283,7 @@ Tooltip.prototype.display = function(position, options) {
     this.base.visible = true;
 
     Matter.Events.trigger(this.dobj, 'tooltipShown');
+    Matter.Events.trigger(globals.currentGame, 'tooltipShown', {tooltip: this});
 };
 
 Tooltip.prototype.disable = function() {

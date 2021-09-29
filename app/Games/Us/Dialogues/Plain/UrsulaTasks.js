@@ -21,8 +21,6 @@ import {
 import UnitMenu from '@games/Us/UnitMenu.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 
-
-var pauseAfterCompleteTime = 750;
 var completeTaskAndRelease = function(dialogue) {
     if(dialogue.isTask) {
         dialogue.completeTask();
@@ -202,7 +200,7 @@ var UrsulaTasks = function(scene) {
         finalMacMurrayChain.cleanUp();
     });
 
-    var b1 = new Dialogue({actor: "MacMurray", text: "Great. Those who've come before you have lived and died by their wits out here.", pauseAfterWord: {word: 'Great.', duration: 1000}, backgroundBox: true, letterSpeed: 40});
+    var b1 = new Dialogue({actor: "MacMurray", text: "Great. Those who've come before you have lived and died by their wits on Mega.", pauseAfterWord: {word: 'Great.', duration: 1000}, backgroundBox: true, letterSpeed: 40});
     var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 40, continuation: true, preventAutoEnd: true});
 
     var transitionChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
@@ -377,12 +375,8 @@ var UrsulaTasks = function(scene) {
         }, 1000);
     }});
 
-    var e2 = new Dialogue({actor: "MacMurray", text: "One final thing. You can reconfigure yourself after each level, but completing levels", pauseAfterWord: {word: 'thing.', duration: 1000}, continuation: true, delayAfterEnd: 0, backgroundBox: true, letterSpeed: 40});
-    var e3 = new Dialogue({actor: "MacMurray", text: "back-to-back builds up adrenaline. Adrenaline reduces travel fatigue which might", pauseAfterWord: {word: 'enaline.', duration: 1000}, continuation: true, delayAfterEnd: 0, backgroundBox: true, letterSpeed: 40});
-    var e4 = new Dialogue({actor: "MacMurray", text: "just end up saving your life.", continuation: true, backgroundBox: true, letterSpeed: 40});
-    var e5 = new Dialogue({actor: "MacMurray", text: "Returning to camp will reset your fatigue but also your adrenaline.", backgroundBox: true, letterSpeed: 40});
-    var e6 = new Dialogue({actor: "MacMurray", text: "Get some rest, I'll be in touch...", backgroundBox: true, letterSpeed: 40});
-    var finalMacMurrayChain = new DialogueChain([e2, e3, e4, e5, e6], {startDelay: 200, done: function() {
+    var e6 = new Dialogue({actor: "MacMurray", text: "Shane, Ursula, get some rest. I'll be in touch...", backgroundBox: true, letterSpeed: 40});
+    var finalMacMurrayChain = new DialogueChain([e6], {startDelay: 200, done: function() {
         finalMacMurrayChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             globals.currentGame.nextPhase();

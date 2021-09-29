@@ -42,7 +42,7 @@ var ShaneIntro = function(options) {
         }));
         ds.push(new Dialogue({
             text: "...",
-            delayAfterEnd: 4500,
+            delayAfterEnd: 1000,
             picture: 'HappyLanding.png',
             pictureDelay: 2250,
             pictureSize: 256,
