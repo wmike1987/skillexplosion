@@ -443,26 +443,28 @@ export default {
 
     adrenalineTextLarge: new PIXI.TextStyle({
         name: 'adrenalineTextLarge',
-        fill: "#d22a7b",
-        fontSize: 40,
-        fontStyle: "italic",
+        fill: "#fb13f4",
+        fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontWeight: "lighter",
-        lineJoin: "round",
-        miterLimit: 0,
-        strokeThickness: 1
+        fontSize: 55,
+        fontStyle: "italic",
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        strokeThickness: 5,
+        padding: 11,
     }),
 
     rewardTextLarge: new PIXI.TextStyle({
         name: 'rewardTextLarge',
         fill: "#16f6db",
-        fontSize: 40,
-        fontStyle: "italic",
+        fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontWeight: "lighter",
-        lineJoin: "round",
-        miterLimit: 0,
-        strokeThickness: 1
+        fontSize: 55,
+        fontStyle: "italic",
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        strokeThickness: 5,
+        padding: 11,
     }),
 
     critHitText: new PIXI.TextStyle({

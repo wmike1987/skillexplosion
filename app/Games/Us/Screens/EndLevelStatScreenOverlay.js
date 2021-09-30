@@ -48,6 +48,8 @@ var ursulaTitle = "Ursula";
 var minesLaid = "Mines Laid";
 var secretStepsPerformed = "Vanishes Performed";
 
+var rewardDuration = 800;
+
 var createContainer = function() {
     var container = new PIXI.Container();
     var left = graphicsUtils.createDisplayObject('Container1Left', {
@@ -70,11 +72,9 @@ var createContainer = function() {
 };
 
 var presentItems = function(options) {
-    var scene = options.scene;
     var nodeIndex = 0;
     var numberOfChoices = globals.currentGame.map.completedNodes.length;
     var choices = [];
-    var rewardDuration = 800;
     var done = options.done;
 
     var recursivePresentation = function() {
@@ -93,7 +93,6 @@ var presentItems = function(options) {
             speed: 6,
             duration: rewardDuration
         });
-        scene.add(rewardText);
         graphicsUtils.addGleamToSprite({
             sprite: rewardText,
             gleamWidth: 50,
@@ -185,7 +184,6 @@ var presentItems = function(options) {
                     recursivePresentation();
                 }, 100);
             }
-
             return;
         };
     };
@@ -1918,7 +1916,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
             Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
             $('body').on('keydown.uskeydownendscreen', function(event) {
-                if (!this.spaceToContinue) {
+                if (!this.spaceToContinue || isVictory) {
                     return;
                 }
                 var key = event.key.toLowerCase();
@@ -1960,93 +1958,66 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         } else {
             if (!isVictory) {
                 var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
+                var pauseTime = adrenalineGained ? 1000 : 0;
                 gameUtils.doSomethingAfterDuration(() => {
                     //get adrenaline lost during an outing
                     gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.soundPool.negativeSound.play();
-                        for (var x = 0; x < adrenalineGained; x++) {
-                            globals.currentGame.map.removeAdrenalineBlock();
-                        }
-                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: 800
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
-                        });
-                    }, 1000);
 
-                    //show items gains by completed nodes in outing
-                    var completedNodes = globals.currentGame.map.inProgressOutingNodes;
-                    gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.soundPool.negativeSound.play();
-                        for (var x = 0; x < adrenalineGained; x++) {
-                            globals.currentGame.map.removeAdrenalineBlock();
+                        if(adrenalineGained) {
+                            for (var x = 0; x < adrenalineGained; x++) {
+                                globals.currentGame.map.removeAdrenalineBlock();
+                            }
+                            globals.currentGame.soundPool.negativeSound.play();
+                            var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.adrenalineTextLarge,
+                                speed: 6,
+                                duration: 800
+                            });
+                            graphicsUtils.addGleamToSprite({
+                                sprite: adrText,
+                                gleamWidth: 50,
+                                duration: 500
+                            });
                         }
-                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: 800
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
-                        });
-                    }, 2250);
+                    }, pauseTime);
 
-                    //show items
-                    gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.soundPool.negativeSound.play();
-                        for (var x = 0; x < adrenalineGained; x++) {
-                            globals.currentGame.map.removeAdrenalineBlock();
-                        }
-                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: 800
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
-                        });
-                    }, 2000);
+                    //present items if we've completed nodes
+                    if(globals.currentGame.map.completedNodes.length > 0) {
+                        $('body').off('keydown.uskeydownendscreen');
+                        gameUtils.doSomethingAfterDuration(() => {
+                            presentItems({
+                                done: options.done
+                            });
+                        }, pauseTime + rewardDuration);
+                    } else {
+                        //else we'll have space to continue show up
+                        gameUtils.doSomethingAfterDuration(() => {
+                            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                                where: 'hudText',
+                                style: styles.escapeToContinueStyle,
+                                anchor: {
+                                    x: 0.5,
+                                    y: 1
+                                },
+                                position: {
+                                    x: gameUtils.getPlayableWidth() - 210,
+                                    y: gameUtils.getCanvasHeight() - 35
+                                }
+                            });
+                            scene.add(this.spaceToContinue);
+                            this.spaceToContinue.visible = true;
+                        }, pauseTime + rewardDuration);
+                    }
 
-                    //space to continue upon loss
-                    this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
-                        where: 'hudText',
-                        style: styles.escapeToContinueStyle,
-                        anchor: {
-                            x: 0.5,
-                            y: 1
-                        },
-                        position: {
-                            x: gameUtils.getPlayableWidth() - 210,
-                            y: gameUtils.getCanvasHeight() - 35
-                        }
-                    });
-                    scene.add(this.spaceToContinue);
-                    this.spaceToContinue.visible = true;
                 }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
 
             } else if (isVictory) {
                 //show +1 adrenaline
                 Matter.Events.on(scene, 'sceneFadeInDone', () => {
                     var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
-                    var rewardDuration = 800;
                     gameUtils.doSomethingAfterDuration(() => {
                         if (!adrenalineIsFull) {
                             globals.currentGame.soundPool.positiveSoundFast.play();
@@ -2068,7 +2039,6 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
                         gameUtils.doSomethingAfterDuration(() => {
                             presentItems({
-                                scene: scene,
                                 done: options.done
                             });
                         }, rewardDuration);
