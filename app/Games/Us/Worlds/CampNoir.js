@@ -477,11 +477,11 @@ var camp = {
         //debug setting
         if (true) {
             this.mapTableActive = true;
-            gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
-                graphicsUtils.removeSomethingFromRenderer(arrow);
-                var mapLearning = new MapLearning(scene);
-                mapLearning.play();
-            });
+            // gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+            //     graphicsUtils.removeSomethingFromRenderer(arrow);
+            //     var mapLearning = new MapLearning(scene);
+            //     mapLearning.play();
+            // });
         }
 
         //We want to nudge the player to the map if we're entering camp noir proper for the first time.

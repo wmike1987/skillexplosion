@@ -40,6 +40,10 @@ var openmapNewPhase = gameUtils.getSound('gleamsweep.wav', {
 //Creates the map, the map head, the map nodes and their tooltips, as well as initializes the level obj which the player will enter upon clicking the node
 var map = function(specs) {
 
+    this.outingNodes = [];
+    this.inProgressOutingNodes = [];
+    this.outingMax = 3;
+
     //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
         isSensor: true,
@@ -257,7 +261,11 @@ var map = function(specs) {
         this.isShown = true;
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = 0.3;
-        this.allowMouseEvents(true);
+
+        if(!this.outingInProgress) {
+            this.allowMouseEvents(true);
+        }
+
         this.allowKeyEvents(true);
         openmapSound2.play();
         openmapSound3.play();
@@ -324,6 +332,12 @@ var map = function(specs) {
             });
         });
 
+        if(this.outingInProgress) {
+            this.outingNodes.forEach((node) => {
+                node.showNodeInOuting();
+            });
+        }
+
         Matter.Events.trigger(this, 'showMap', {});
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
     };
@@ -349,6 +363,9 @@ var map = function(specs) {
             }
         });
 
+        //Clear the outing if we're in progress
+        this.clearOuting();
+
         this.headTokenSprite.visible = false;
         this.fatigueText.visible = false;
         this.adrenalineText.visible = false;
@@ -367,6 +384,165 @@ var map = function(specs) {
 
     this.allowKeyEvents = function(value) {
         this.keyEventsAllowed = value;
+    };
+
+    this.addNodeToOuting = function(node) {
+        node.showNodeInOuting();
+        this.outingNodes.push(node);
+        this.updateOutingEngagement();
+    };
+
+    this.removeNodeFromOuting = function(node) {
+        node.unshowNodeInOuting();
+        mathArrayUtils.removeObjectFromArray(node, this.outingNodes);
+        this.updateOutingEngagement();
+    };
+
+    this.clearOuting = function(options) {
+        options = options || {};
+        this.inProgressOutingNodes.forEach((node) => {
+            node.unshowNodeInOuting();
+        });
+        this.outingNodes.forEach((node) => {
+            node.unshowNodeInOuting();
+        });
+
+        $('body').off('keydown.engagespace');
+
+        graphicsUtils.removeSomethingFromRenderer(this.engageText);
+
+        if(!this.outingInProgress) {
+            this.allowMouseEvents(true);
+            this.allowKeyEvents(true);
+
+            this.inProgressOutingNodes.forEach((node) => {
+                node.levelDetails.customWinBehavior = null;
+            });
+            this.outingNodes.forEach((node) => {
+                node.levelDetails.customWinBehavior = null;
+            });
+            this.outingNodes = [];
+            this.inProgressOutingNodes = [];
+
+            this.engageText = null;
+        }
+    };
+
+    this.isNodeInOuting = function(node) {
+        return this.outingNodes.indexOf(node) > -1;
+    };
+
+    this.updateOutingEngagement = function() {
+        var game = globals.currentGame;
+        if(this.outingNodes.length > 0 && this.engageText == null) {
+            this.engageText = graphicsUtils.addSomethingToRenderer("TEX+:Space to embark", {
+                where: 'hudText',
+                style: styles.escapeToContinueStyle,
+                anchor: {
+                    x: 0.5,
+                    y: 1
+                },
+                position: {
+                    x: gameUtils.getPlayableWidth() - 210,
+                    y: gameUtils.getPlayableHeight() - 20
+                }
+            });
+            this.spaceFlashTimer = graphicsUtils.graduallyTint(this.engageText, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
+            game.currentScene.add(this.engageText);
+            game.soundPool.positiveSoundFast.play();
+
+            //add space listener
+            $('body').on('keydown.engagespace', function(event) {
+                var key = event.key.toLowerCase();
+                if (key == ' ') {
+                    $('body').off('keydown.engagespace');
+                    game.soundPool.sceneContinue.play();
+                    this.spaceFlashTimer.invalidate();
+                    this.embarkOnOuting();
+                    graphicsUtils.graduallyTint(this.engageText, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                        this.engageText.visible = false;
+                    }.bind(this));
+                }
+            }.bind(this));
+        } else if(this.outingNodes.length == 0) {
+            $('body').off('keydown.engagespace');
+            graphicsUtils.removeSomethingFromRenderer(this.engageText);
+            this.engageText = null;
+        }
+    };
+
+    this.embarkOnOuting = function() {
+        this.outingInProgress = true;
+        this.preOutingNode = this.currentNode;
+        this.outingAdrenalineGained = 0;
+        this.completedNodes = [];
+
+        this.allowMouseEvents(false);
+        this.allowKeyEvents(false);
+
+        var finalNode = this.outingNodes[this.outingNodes.length-1];
+        this.outingNodes.forEach((node) => {
+            var mynode = node;
+            if(mynode == finalNode) {
+                return;
+            }
+
+            //define custom win behavior
+            mynode.levelDetails.customWinBehavior = () => {
+                this.completedNodes.push(mynode);
+
+                //show +1 adrenaline
+                if (!this.isAdrenalineFull()) {
+                    this.addAdrenalineBlock();
+                    this.outingAdrenalineGained += 1;
+                    gameUtils.doSomethingAfterDuration(() => {
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: 1500
+                        });
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                        globals.currentGame.currentScene.add(adrText);
+                    }, 1000);
+                }
+
+                //show the map and trigger a travel to the next node
+                gameUtils.doSomethingAfterDuration(() => {
+                    Matter.Events.trigger(mynode.levelDetails, 'endLevelActions');
+                    globals.currentGame.transitionToBlankScene();
+                    this.show();
+                    gameUtils.doSomethingAfterDuration(() => {
+                        var mapnode = this.outingNodes.shift();
+                        this.inProgressOutingNodes.push(mapnode);
+                        mapnode.onMouseDownBehavior({systemTriggered: true});
+                    }, 2000);
+                }, 2600);
+            };
+        });
+
+        var lastNode = this.outingNodes.shift();
+        this.inProgressOutingNodes.push(lastNode);
+        lastNode.onMouseDownBehavior({systemTriggered: true});
+
+        var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, "VictoryOrDefeat", (event) => {
+            this.outingInProgress = false;
+            var result = event.result;
+
+            if(result == 'victory') {
+                this.completedNodes.push(lastNode);
+                this.clearOuting();
+            } else {
+                this.clearOuting();
+            }
+        });
     };
 
     this.travelToNode = function(node, destinationCallback) {
@@ -396,9 +572,18 @@ var map = function(specs) {
         Matter.Body.setPosition(this.headTokenBody, mathArrayUtils.clonePosition(this.lastNode.position, {
             y: 20
         }));
-        this.currentNode = this.lastNode;
+
+        var node = this.lastNode;
+        if(this.outingInProgress) {
+            node = this.preOutingNode;
+            this.inProgressOutingNodes.forEach((node) => {
+
+            });
+        }
+
+        this.currentNode = node;
         Matter.Events.trigger(globals.currentGame, "TravelReset", {
-            resetToNode: this.lastNode
+            resetToNode: node
         });
     };
 

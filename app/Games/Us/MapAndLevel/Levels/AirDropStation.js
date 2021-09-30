@@ -23,6 +23,7 @@ import {
     DialogueChain
 } from '@core/Dialogue.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
+import {ItemClasses} from '@games/Us/Items/ItemClasses.js';
 
 var entrySound = gameUtils.getSound('enterairdrop1.wav', {
     volume: 0.04,
@@ -212,7 +213,7 @@ var airDropStation = function(options) {
             done: function() {
                 selection.presentChoices({
                     numberOfChoices: 3,
-                    possibleChoices: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']
+                    possibleChoices: ItemClasses.lightStimulant.item.items
                 });
                 stimulantRevealSound.play();
                 chain.cleanUp();

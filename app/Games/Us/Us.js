@@ -174,6 +174,10 @@ var game = {
             volume: 0.07,
             rate: 1.5
         });
+        this.soundPool.negativeSound = gameUtils.getSound('negative_sound.wav', {
+            volume: 0.07,
+            rate: 1.0
+        });
         this.soundPool.keypressSound = gameUtils.getSound('keypress1.wav', {
             volume: 0.15,
             rate: 1
@@ -181,6 +185,14 @@ var game = {
         this.soundPool.unlock1 = gameUtils.getSound('unlockability.wav', {
             volume: 0.12,
             rate: 1.2
+        });
+        this.soundPool.itemPlaceSound = gameUtils.getSound('itemplace.wav', {
+            volume: 0.06,
+            rate: 1
+        });
+        this.soundPool.itemChoose = gameUtils.getSound('itemplace.wav', {
+            volume: 0.05,
+            rate: 1.5
         });
 
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp];
@@ -372,7 +384,7 @@ var game = {
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
 
-        if(true) {
+        if(false) {
             this.showTips = true;
             camp.alreadyIntrod = false;
             camp.completedUrsulaTasks = false;

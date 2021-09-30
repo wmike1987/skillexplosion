@@ -25,10 +25,6 @@ var levelUpSound = gameUtils.getSound('levelup.wav', {
     volume: 0.45,
     rate: 0.8
 });
-var itemPlaceSound = gameUtils.getSound('itemplace.wav', {
-    volume: 0.06,
-    rate: 1
-});
 var petrifySound = gameUtils.getSound('petrify.wav', {
     volume: 0.07,
     rate: 1
@@ -512,7 +508,7 @@ var UnitBase = {
             //play Sound
             if (!systemGivenItem) {
                 if (this.team == globals.currentGame.playerTeam)
-                    itemPlaceSound.play();
+                    globals.currentGame.soundPool.itemPlaceSound.play();
             }
 
             //add item to unit's item list

@@ -1870,6 +1870,23 @@ var mathArrayUtils = {
         return typeof varr === 'object' && varr !== null;
     },
 
+    distributeXPositionsEvenlyAroundPoint: function(options) {
+        options = options || {};
+        var position = options.position;
+        var numberOfPositions = options.numberOfPositions;
+        var numberOnSides = (numberOfPositions-1)/2.0;
+        var spacing = options.spacing || 50;
+
+        var calculatedPositions = [];
+
+        var totalSpacing = spacing * numberOfPositions-1;
+        for(var x = -numberOnSides; x <= numberOnSides; x++) {
+            calculatedPositions.push(this.clonePosition(position, {x: (x * spacing)}));
+        }
+
+        return calculatedPositions;
+    },
+
     setRandomToTrueRandom: function() {
         this.setRandomizerSeed(null);
     },

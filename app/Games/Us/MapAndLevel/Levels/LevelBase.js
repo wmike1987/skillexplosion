@@ -147,7 +147,9 @@ var levelBase = {
             campLikeActive: false,
             entrySound: worldSpecs.entrySound,
             worldSpecs: Object.assign({}, worldSpecs),
-            seed: Math.random()
+            seed: Math.random(),
+            itemClass: 'lightStimulant',
+            itemType: 'item'
         }, options.levelOptions || {});
 
         //set the tile tint
@@ -199,6 +201,10 @@ var levelBase = {
 
     isLevelNonConfigurable: function() {
         return !this.campLikeActiveSOM && !this.campLikeActive;
+    },
+
+    isBattleLevel: function() {
+        return this.isLevelNonConfigurable();
     },
 
     fillLevelScene: function(scene) {
@@ -451,7 +457,7 @@ var levelBase = {
                         y: gameUtils.getPlayableHeight() - 20
                     }
                 });
-                this.spcaeFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
+                this.spaceFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
                 game.currentScene.add(this.spaceToContinue);
                 game.soundPool.positiveSound.play();
 
@@ -461,7 +467,7 @@ var levelBase = {
                     if (key == ' ') {
                         $('body').off('keydown.levelkeydown');
                         game.soundPool.sceneContinue.play();
-                        this.spcaeFlashTimer.invalidate();
+                        this.spaceFlashTimer.invalidate();
                         graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
                             this.spaceToContinue.visible = false;
                             options.onContinue();

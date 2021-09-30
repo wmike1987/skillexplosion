@@ -13,6 +13,9 @@ import {
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Scene from '@core/Scene.js';
 import styles from '@utils/Styles.js';
+import {
+    ItemClasses
+} from '@games/Us/Items/ItemClasses.js';
 
 //Stat titles
 var kills = "Kills";
@@ -64,6 +67,130 @@ var createContainer = function() {
     container.addChild(left);
     container.addChild(right);
     return container;
+};
+
+var presentItems = function(options) {
+    var scene = options.scene;
+    var nodeIndex = 0;
+    var numberOfChoices = globals.currentGame.map.completedNodes.length;
+    var choices = [];
+    var rewardDuration = 800;
+    var done = options.done;
+
+    var recursivePresentation = function() {
+        var currentNode = globals.currentGame.map.completedNodes[nodeIndex];
+        nodeIndex += 1;
+
+        //Show the choose item text
+        globals.currentGame.soundPool.positiveSoundFast.play();
+        var t = numberOfChoices == 1 ? 'Take your item!' : 'Choose an item!';
+        t = (nodeIndex > 1) ? "Choose another!" : t;
+        var rewardText = graphicsUtils.floatText(t, gameUtils.getPlayableCenterPlus({
+            y: 300
+        }), {
+            where: 'hudTwo',
+            style: styles.rewardTextLarge,
+            speed: 6,
+            duration: rewardDuration
+        });
+        scene.add(rewardText);
+        graphicsUtils.addGleamToSprite({
+            sprite: rewardText,
+            gleamWidth: 50,
+            duration: 500
+        });
+
+        //Display the choices
+        var j = 0;
+        var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
+            numberOfPositions: numberOfChoices,
+            position: gameUtils.getPlayableCenterPlus({
+                x: 0,
+                y: 300
+            }),
+            spacing: 50
+        });
+        gameUtils.doSomethingAfterDuration(() => {
+            var selectionOptions = ItemUtils.getRandomItemsFromClass(currentNode.levelDetails.itemClass, currentNode.levelDetails.itemType, numberOfChoices);
+            selectionOptions.forEach((choice) => {
+                var position = positions[j];
+                j++;
+
+                var itemDef = $.Deferred();
+                ItemUtils.createItemObj({
+                    gamePrefix: 'Us',
+                    itemName: choice,
+                    position: gameUtils.getPlayableCenter(),
+                    dontAddToItemSystem: true,
+                    itemDeferred: itemDef
+                });
+                itemDef.done(function(item) {
+                    items.push(item);
+
+                    //show item icon
+                    graphicsUtils.addDisplayObjectToRenderer(item.icon);
+                    graphicsUtils.changeDisplayObjectStage(item.icon, 'hudTwo');
+                    graphicsUtils.makeSpriteSize(item.icon, 36);
+                    item.icon.position = position;
+                    graphicsUtils.addBorderToSprite({
+                        sprite: item.icon
+                    });
+                    Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
+                        systemMessage: 'Click to receive.'
+                    }));
+
+                    //mouse down listener
+                    var f = function(event) {
+                        makeSelection(item);
+                    }.bind(this);
+                    item.icon.on('mousedown', f);
+                    item.removeSelector = function() {
+                        item.icon.off('mousedown', f);
+                    };
+                }.bind(this));
+            });
+        }, rewardDuration);
+
+        var items = [];
+
+        //selection method
+        var makeSelection = function(item) {
+            choices.push(item.itemName);
+            item.icon.tooltipObj.hide();
+            globals.currentGame.soundPool.itemChoose.play();
+
+            //hide all icons, remove the click handlers, then destory the items
+            items.forEach((i) => {
+                i.icon.visible = false;
+                i.removeSelector();
+                i.destroy();
+            });
+
+            if (choices.length == globals.currentGame.map.completedNodes.length) {
+                globals.currentGame.flyover(() => {
+                    globals.currentGame.dustAndItemBox({
+                        location: gameUtils.getPlayableCenterPlus({
+                            y: 50
+                        }),
+                        item: choices,
+                        autoDestroyBox: true
+                    });
+                }, {
+                    quiet: true
+                });
+                done(); //We're done
+            } else {
+                //present the next set of choices
+                gameUtils.doSomethingAfterDuration(() => {
+                    recursivePresentation();
+                }, 100);
+            }
+
+            return;
+        };
+    };
+
+    recursivePresentation();
 };
 
 var EndLevelStatScreenOverlay = function(units, statsObj, options) {
@@ -195,13 +322,6 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         if (!isVictory) {
             tintTo = 0xf12323;
         }
-
-        //play transition sound
-        // if (isVictory) {
-        //     globals.currentGame.soundPool.transitionOne.play();
-        // } else {
-        //     globals.currentGame.soundPool.transitionTwo.play();
-        // }
 
         var titleTextFadetime = 300;
         graphicsUtils.flashSprite({
@@ -1797,20 +1917,21 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         //continue-only key listeners
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
             Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
-            if (this.spaceToContinue) {
-                $('body').on('keydown.uskeydownendscreen', function(event) {
-                    var key = event.key.toLowerCase();
-                    if (key == ' ') {
-                        globals.currentGame.soundPool.sceneContinue.play();
-                        $('body').off('keydown.uskeydownendscreen');
-                        graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                            if (options.done) {
-                                options.done();
-                            }
-                        });
-                    }
-                }.bind(this));
-            }
+            $('body').on('keydown.uskeydownendscreen', function(event) {
+                if (!this.spaceToContinue) {
+                    return;
+                }
+                var key = event.key.toLowerCase();
+                if (key == ' ') {
+                    globals.currentGame.soundPool.sceneContinue.play();
+                    $('body').off('keydown.uskeydownendscreen');
+                    graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                        if (options.done) {
+                            options.done();
+                        }
+                    });
+                }
+            }.bind(this));
         });
 
         //We have three options here...
@@ -1838,22 +1959,90 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             });
         } else {
             if (!isVictory) {
-                //space to continue upon loss
-                this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
-                    where: 'hudText',
-                    style: styles.escapeToContinueStyle,
-                    anchor: {
-                        x: 0.5,
-                        y: 1
-                    },
-                    position: {
-                        x: gameUtils.getPlayableWidth() - 210,
-                        y: gameUtils.getCanvasHeight() - 35
-                    }
-                });
-                scene.add(this.spaceToContinue);
-                this.spaceToContinue.visible = false;
-            } else {
+                var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
+                gameUtils.doSomethingAfterDuration(() => {
+                    //get adrenaline lost during an outing
+                    gameUtils.doSomethingAfterDuration(() => {
+                        globals.currentGame.soundPool.negativeSound.play();
+                        for (var x = 0; x < adrenalineGained; x++) {
+                            globals.currentGame.map.removeAdrenalineBlock();
+                        }
+                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: 800
+                        });
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }, 1000);
+
+                    //show items gains by completed nodes in outing
+                    var completedNodes = globals.currentGame.map.inProgressOutingNodes;
+                    gameUtils.doSomethingAfterDuration(() => {
+                        globals.currentGame.soundPool.negativeSound.play();
+                        for (var x = 0; x < adrenalineGained; x++) {
+                            globals.currentGame.map.removeAdrenalineBlock();
+                        }
+                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: 800
+                        });
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }, 2250);
+
+                    //show items
+                    gameUtils.doSomethingAfterDuration(() => {
+                        globals.currentGame.soundPool.negativeSound.play();
+                        for (var x = 0; x < adrenalineGained; x++) {
+                            globals.currentGame.map.removeAdrenalineBlock();
+                        }
+                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: 800
+                        });
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }, 2000);
+
+                    //space to continue upon loss
+                    this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                        where: 'hudText',
+                        style: styles.escapeToContinueStyle,
+                        anchor: {
+                            x: 0.5,
+                            y: 1
+                        },
+                        position: {
+                            x: gameUtils.getPlayableWidth() - 210,
+                            y: gameUtils.getCanvasHeight() - 35
+                        }
+                    });
+                    scene.add(this.spaceToContinue);
+                    this.spaceToContinue.visible = true;
+                }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
+
+            } else if (isVictory) {
                 //show +1 adrenaline
                 Matter.Events.on(scene, 'sceneFadeInDone', () => {
                     var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
@@ -1878,97 +2067,10 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                         }
 
                         gameUtils.doSomethingAfterDuration(() => {
-                            globals.currentGame.soundPool.positiveSoundFast.play();
-                            var rewardText = graphicsUtils.floatText('Choose a pill!', gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }), {
-                                where: 'hudTwo',
-                                style: styles.rewardTextLarge,
-                                speed: 6,
-                                duration: rewardDuration
+                            presentItems({
+                                scene: scene,
+                                done: options.done
                             });
-                            scene.add(rewardText);
-                            graphicsUtils.addGleamToSprite({
-                                sprite: rewardText,
-                                gleamWidth: 50,
-                                duration: 500
-                            });
-
-                            //****************************
-                            //show light stimulant choices
-                            //****************************
-                            var items = [];
-                            var makeSelection = function(item) {
-                                item.icon.tooltipObj.hide();
-
-                                //hide all icons, remove the click handlers, then destory the items
-                                items.forEach((i) => {
-                                    i.icon.visible = false;
-                                    i.removeSelector();
-                                    i.destroy();
-                                });
-
-                                if (options.done) {
-                                    options.done({
-                                        type: options.type
-                                    });
-                                }
-                                $('body').off('keydown.uskeydownendscreen');
-
-                                // Matter.Events.on(globals.currentGame.currentScene, 'sceneFadeInDone', () => {
-                                globals.currentGame.flyover(() => {
-                                    globals.currentGame.dustAndItemBox({
-                                        location: gameUtils.getPlayableCenterPlus({
-                                            y: 50
-                                        }),
-                                        item: [item.itemName],
-                                        autoDestroyBox: true
-                                    });
-                                }, {quiet: true});
-                            };
-
-                            var j = 0;
-                            gameUtils.doSomethingAfterDuration(() => {
-                                var selectionOptions = ItemUtils.getRandomItemsFromClass('lightStimulant', 'item', 2);
-                                selectionOptions.forEach((choice) => {
-                                    var itemDef = $.Deferred();
-                                    ItemUtils.createItemObj({
-                                        gamePrefix: 'Us',
-                                        itemName: choice,
-                                        position: gameUtils.getPlayableCenter(),
-                                        dontAddToItemSystem: true,
-                                        itemDeferred: itemDef
-                                    });
-                                    itemDef.done(function(item) {
-                                        items.push(item);
-
-                                        //show item icon
-                                        graphicsUtils.addDisplayObjectToRenderer(item.icon);
-                                        graphicsUtils.changeDisplayObjectStage(item.icon, 'hudTwo');
-                                        graphicsUtils.makeSpriteSize(item.icon, 36);
-                                        item.icon.position = gameUtils.getPlayableCenterPlus({
-                                            x: -50 + (j * 100),
-                                            y: 300
-                                        });
-                                        graphicsUtils.addBorderToSprite({
-                                            sprite: item.icon
-                                        });
-                                        Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
-                                            systemMessage: 'Click to receive.'
-                                        }));
-                                        j++;
-
-                                        //mouse down listener
-                                        var f = function(event) {
-                                            makeSelection(item);
-                                        }.bind(this);
-                                        item.icon.on('mousedown', f);
-                                        item.removeSelector = function() {
-                                            item.icon.off('mousedown', f);
-                                        };
-                                    }.bind(this));
-                                });
-                            }, rewardDuration);
                         }, rewardDuration);
                     }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
                 });

@@ -150,8 +150,9 @@ var MapLevelNode = function(options) {
         }
     }.bind(this));
 
-    this.displayObject.on('mousedown', function(event) {
-        if (!this.mapRef.mouseEventsAllowed) return;
+    this.onMouseDownBehavior = function(mouseDownOptions) {
+        mouseDownOptions = mouseDownOptions || {};
+        if (!this.mapRef.mouseEventsAllowed && !mouseDownOptions.systemTriggered) return;
 
         if (!self.isCompleted) {
             var canTravel = true;
@@ -180,8 +181,8 @@ var MapLevelNode = function(options) {
 
                 if (behavior.flash) {
                     this.flashNode();
-                    this.displayObject.tooltipObj.hide();
-                    this.displayObject.tooltipObj.disable();
+                    // this.displayObject.tooltipObj.hide();
+                    // this.displayObject.tooltipObj.disable();
                 }
 
                 if (behavior.sound) {
@@ -192,18 +193,30 @@ var MapLevelNode = function(options) {
                     this.enterSelfBehavior();
                     this.displayObject.tooltipObj.enable();
                 } else {
-                    //this is the main business logic
-                    this.mapRef.travelToNode(behavior.nodeToEnter, function() {
-                        Matter.Events.trigger(globals.currentGame, "travelFinished", {
-                            node: behavior.nodeToEnter
-                        });
-                        behavior.nodeToEnter.levelDetails.enterLevel({enteredByTraveling: true});
-                        behavior.nodeToEnter.untintNode();
-                        this.displayObject.tooltipObj.enable();
-                    }.bind(this));
+                    if(behavior.nodeToEnter.levelDetails.isBattleLevel() && !this.mapRef.outingInProgress) {
+                        if(this.mapRef.isNodeInOuting(behavior.nodeToEnter)) {
+                            this.mapRef.removeNodeFromOuting(behavior.nodeToEnter);
+                        } else {
+                            this.mapRef.addNodeToOuting(behavior.nodeToEnter);
+                        }
+                    } else {
+                        //this is the main business logic
+                        this.mapRef.travelToNode(behavior.nodeToEnter, function() {
+                            Matter.Events.trigger(globals.currentGame, "travelFinished", {
+                                node: behavior.nodeToEnter
+                            });
+                            behavior.nodeToEnter.levelDetails.enterLevel({enteredByTraveling: true});
+                            behavior.nodeToEnter.untintNode();
+                            this.displayObject.tooltipObj.enable();
+                        }.bind(this));
+                    }
                 }
             }
         }
+    };
+
+    this.displayObject.on('mousedown', function(event) {
+        this.onMouseDownBehavior();
     }.bind(this));
 
     if (options.deactivateToken) {
@@ -341,6 +354,46 @@ MapLevelNode.prototype.focusNode = function() {
     }
 };
 
+MapLevelNode.prototype.showNodeInOuting = function() {
+    if (!this.isSpinning) {
+        this.isFocused = true;
+        this.outingFocusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {
+            where: 'hudNTwo',
+            alpha: 1.0,
+            position: this.position,
+            tint: 0xe93d3d
+        });
+        graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
+        graphicsUtils.makeSpriteSize(this.outingFocusCircle, this.enlargedTokenSize);
+        graphicsUtils.rotateSprite(this.outingFocusCircle, {
+            speed: 20
+        });
+
+        if (this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
+            });
+        }
+    }
+};
+
+MapLevelNode.prototype.unshowNodeInOuting = function() {
+    if (!this.outingFocusCircle) return;
+    if (!this.isSpinning) {
+        this.isFocused = false;
+        graphicsUtils.removeSomethingFromRenderer(this.outingFocusCircle);
+        this.outingFocusCircle = null;
+        graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
+
+        if (this.manualTokens) {
+            this.manualTokens.forEach((token) => {
+                graphicsUtils.makeSpriteSize(token, this.defaultTokenSize);
+            });
+        }
+    }
+};
+
+
 MapLevelNode.prototype.tintNode = function(value) {
     var tintValue = 0x20cd2c;
     this.displayObject.tint = value || tintValue;
@@ -375,6 +428,14 @@ MapLevelNode.prototype.sizeNode = function(size) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.makeSpriteSize(token, size || this.defaultTokenSize);
         });
+    }
+
+    if(this.outingFocusCircle) {
+        graphicsUtils.makeSpriteSize(this.outingFocusCircle, size || this.defaultTokenSize);
+    }
+
+    if(this.focusCircle) {
+        graphicsUtils.makeSpriteSize(this.focusCircle, size || this.defaultTokenSize);
     }
 };
 

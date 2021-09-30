@@ -31,35 +31,36 @@ var MapLearning = function(scene) {
 
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
-    var a1 = new Dialogue({actor: "Ursula", text: "Look at all the enemy camps in our territory... Let's view our intel.", letterSpeed: 40, isTask: false, backgroundBox: true});
-    var a2 = new Dialogue({actor: "Task", text: "Hover over an enemy camp for more details.", isTask: true, backgroundBox: true });
-    var a3 = new Dialogue({actor: "Ursula", text: "This map is how we'll embark on outings.", isTask: false, letterSpeed: 40, backgroundBox: true, delayAfterEnd: 1000});
-    var a4 = new Dialogue({actor: "Ursula", text: "After finishing an outing, we'll receive a supply drop from HQ.", isTask: false, backgroundBox: true, delayAfterEnd: 1000});
-    var a5 = new Dialogue({actor: "Ursula", text: "We'll also gain one point of adrenaline after each camp.", continuation: true, backgroundBox: true});
-    var a6 = new Dialogue({actor: "Info", text: "Adrenaline is shown in the lower left of the map.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
-    var a7 = new Dialogue({actor: "Shane", text: "...What? Adrenaline?", pauseAfterWord: {word: 'What?', duration: 750}, newBreak: true, isTask: false, backgroundBox: true});
-    var a8 = new Dialogue({actor: "Ursula", text: "Traveling causes fatigue, making long treks difficult.", backgroundBox: true});
-    var a9 = new Dialogue({actor: "Ursula", text: "Adrenaline reduces the amount of fatigue we'll accumulate while traveling.", letterSpeed: 40, continuation: true, backgroundBox: true});
-    var a10 = new Dialogue({actor: "Info", text: "Returning to camp resets fatigue, but also resets adrenaline.", isInfo: true, backgroundBox: true});
-    var a11 = new Dialogue({actor: "Ursula", text: "You'll get the hang of it.", backgroundBox: true});
+    var a1 = new Dialogue({actor: "Ursula", text: "Look at all these enemy camps... let's check our intel.", letterSpeed: 45, pauseAfterWord: {word: 'territory.', duration: 500}, isTask: false, backgroundBox: true, delayAfterEnd: 1000});
+    var a3 = new Dialogue({actor: "Task", text: "Hover over an enemy camp for more details.", isTask: true, backgroundBox: true });
+    var a4 = new Dialogue({actor: "Ursula", text: "This map is how we'll embark on outings.", newBreak: true, isTask: false, letterSpeed: 45, backgroundBox: true, delayAfterEnd: 1000});
+    var a5 = new Dialogue({actor: "Shane", text: "An... outing?", isTask: false, backgroundBox: true});
+    var a6 = new Dialogue({actor: "Ursula", text: "An outing is a series of enemy camps we'll hit back-to-back.", letterSpeed: 45, backgroundBox: true});
+    var a7 = new Dialogue({actor: "Info", text: "Outings can be up to three camps long.", isInfo: true, backgroundBox: true});
+    var a8 = new Dialogue({actor: "Ursula", text: "Longer outings can be risky since we can't reconfigure between each camp.", letterSpeed: 45, backgroundBox: true, delayAfterEnd: 0});
+    var a9 = new Dialogue({actor: "Ursula", text: "But they'll increase our supply options from HQ.", continuation: true, backgroundBox: true});
 
+    var a10 = new Dialogue({actor: "Shane", text: "A supply drop... so HQ actually cares about us?", pauseAfterWord: {word: 'What?', duration: 750}, newBreak: true, isTask: false, backgroundBox: true});
+    var a11 = new Dialogue({actor: "Ursula", text: "I wouldn't say 'cares,' but after finishing an outing they'll send us supplies.", letterSpeed: 45, backgroundBox: true, delayAfterEnd: 1000});
+    var a12 = new Dialogue({actor: "Ursula", text: "In addition, after each camp we'll gain one point of adrenaline.",letterSpeed: 45, continuation: true, backgroundBox: true});
+    var a13 = new Dialogue({actor: "Info", text: "Adrenaline is shown in the lower left of the map.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
 
-    var a12 = new Dialogue({actor: "Shane", text: "And what exactly is an outing?", newBreak: true, isTask: false, backgroundBox: true});
-    var a13 = new Dialogue({actor: "Ursula", text: "An outing a series of enemy camps that we will hit back-to-back.", letterSpeed: 40, backgroundBox: true});
-    var a14 = new Dialogue({actor: "Info", text: "Outings can be up to three camps long.", isInfo: true, backgroundBox: true});
-    var a15 = new Dialogue({actor: "Ursula", text: "Longer outings can be risky since we can't reconfigure between each camp.", letterSpeed: 40, backgroundBox: true, delayAfterEnd: 0});
-    var a16 = new Dialogue({actor: "Ursula", text: "But they'll increase our supply options from HQ.", continuation: true, backgroundBox: true});
+    var a14 = new Dialogue({actor: "Shane", text: "...What? Adrenaline?", pauseAfterWord: {word: 'What?', duration: 750}, newBreak: true, isTask: false, backgroundBox: true});
+    var a15 = new Dialogue({actor: "Ursula", text: "Traveling causes fatigue, making long treks difficult.", backgroundBox: true});
+    var a16 = new Dialogue({actor: "Ursula", text: "Adrenaline reduces the amount of fatigue accumulated during travel.", letterSpeed: 40, continuation: true, backgroundBox: true});
+    var a17 = new Dialogue({actor: "Info", text: "Returning to camp resets fatigue, but also resets adrenaline.", isInfo: true, backgroundBox: true});
+    var a18 = new Dialogue({actor: "Ursula", text: "You'll get the hang of it.", backgroundBox: true, delayAfterEnd: 1000});
 
-    var a17 = new Dialogue({actor: "Ursula", text: "Let's get going.",  newBreak: true, continuation: false, backgroundBox: true});
+    var a19 = new Dialogue({actor: "Ursula", text: "Let's get going.",  newBreak: true, continuation: false, backgroundBox: true});
 
-    var chain = new DialogueChain([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17], {cleanUpOnDone: true, startDelay: 200});
+    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19], {cleanUpOnDone: true, startDelay: 200});
 
-    a2.onStart = function() {
+    a3.onStart = function() {
         gameUtils.matterConditionalOnce(globals.currentGame, 'tooltipShown', function(event) {
             var tooltip = event.tooltip;
             if(tooltip.isNodeTooltip) {
                 achieve.play();
-                completeTaskAndRelease(a2);
+                completeTaskAndRelease(a3);
                 return true;
             }
         });
