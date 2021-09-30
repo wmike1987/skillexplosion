@@ -538,7 +538,7 @@ var map = function(specs) {
         var lastNode = this.outingNodes.shift();
         this.inProgressOutingNodes.push(lastNode);
         lastNode.onMouseDownBehavior({systemTriggered: true});
-        gameUtils.setCursorStyle('None');
+        Matter.Events.trigger(globals.currentGame, "EmbarkOnOuting");
 
         var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, "VictoryOrDefeat", (event) => {
             this.outingInProgress = false;

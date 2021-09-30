@@ -233,10 +233,12 @@ var game = {
             this.levelInPlay = false;
         }.bind(this));
 
+        Matter.Events.on(this, 'EmbarkOnOuting', function(event) {
+            gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
+        }.bind(this));
+
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            if(event.node.levelDetails.isLevelNonConfigurable()) {
-                gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
-            } else {
+            if(!event.node.levelDetails.isLevelNonConfigurable()) {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }
         }.bind(this));
