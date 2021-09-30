@@ -482,14 +482,20 @@ var map = function(specs) {
 
         var finalNode = this.outingNodes[this.outingNodes.length-1];
         this.outingNodes.forEach((node) => {
-            var mynode = node;
-            if(mynode == finalNode) {
+            var myNode = node;
+
+            //don't change the final node's behavior
+            if(myNode == finalNode) {
                 return;
             }
 
+            if(myNode.getOutingCompatibleNode) {
+                myNode = myNode.getOutingCompatibleNode();
+            }
+
             //define custom win behavior
-            mynode.levelDetails.customWinBehavior = () => {
-                this.completedNodes.push(mynode);
+            myNode.levelDetails.customWinBehavior = () => {
+                this.completedNodes.push(myNode);
 
                 //show +1 adrenaline
                 if (!this.isAdrenalineFull()) {
@@ -516,13 +522,14 @@ var map = function(specs) {
 
                 //show the map and trigger a travel to the next node
                 gameUtils.doSomethingAfterDuration(() => {
-                    Matter.Events.trigger(mynode.levelDetails, 'endLevelActions');
+                    Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
                     globals.currentGame.transitionToBlankScene();
                     this.show();
                     gameUtils.doSomethingAfterDuration(() => {
                         var mapnode = this.outingNodes.shift();
                         this.inProgressOutingNodes.push(mapnode);
                         mapnode.onMouseDownBehavior({systemTriggered: true});
+                        gameUtils.setCursorStyle('None');
                     }, 2000);
                 }, 2600);
             };
@@ -531,6 +538,7 @@ var map = function(specs) {
         var lastNode = this.outingNodes.shift();
         this.inProgressOutingNodes.push(lastNode);
         lastNode.onMouseDownBehavior({systemTriggered: true});
+        gameUtils.setCursorStyle('None');
 
         var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, "VictoryOrDefeat", (event) => {
             this.outingInProgress = false;

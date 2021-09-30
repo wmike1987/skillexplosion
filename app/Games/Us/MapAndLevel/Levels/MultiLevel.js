@@ -41,8 +41,14 @@ var multiLevel = function(options) {
                     globals.currentGame.setCurrentLevel(nextLevel, {immediatePool: true});
                     nextLevel.startLevelSpawn({keepCurrentCollector: true});
                 };
+            } else {
+
             }
         });
+    };
+
+    this.getOutingCompatibleNode = function() {
+        return this.mapNodes[this.mapNodes.length-1];
     };
 
     //process the chain on the first node
@@ -84,6 +90,8 @@ var multiLevel = function(options) {
             this.mapNodes.push(mln);
             level.mapNode = mln;
         });
+
+        this.mapNodes[0].getOutingCompatibleNode = this.getOutingCompatibleNode.bind(this);
 
         //disallow these from being prereqs
         multiRef.mapNodes.forEach(node => {
