@@ -1285,10 +1285,14 @@ var UnitSystem = function(properties) {
     };
 
     this.deselectAllUnits = function() {
-        globals.currentGame.unitsInPlay.forEach((unit) => {
+        mathArrayUtils.operateOnObjectByKey(this.selectedUnits, (key, unit) => {
             this.deselectUnit(unit);
         });
-    },
+
+        mathArrayUtils.operateOnObjectByKey(this.box.pendingSelections, (key, unit) => {
+            this.deselectUnit(unit);
+        });
+    };
 
     this.deselectUnit = function(unit) {
         //Re-assign the selected unit if needed

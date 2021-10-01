@@ -510,7 +510,7 @@ var camp = {
             }
             this.completedUrsulaTasks = true;
             var ursTasks = new UrsulaTasks(scene);
-            // ursTasks.play();
+            ursTasks.play();
             globals.currentGame.shane.setHealth(50);
             globals.currentGame.shane.ignoreHealthRegeneration = true;
             globals.currentGame.shane.position = {
@@ -587,12 +587,7 @@ var enemyDefs = {
             type: 'Sentinel',
             amount: [1, 2],
             atATime: 1,
-            hz: 4500,
-            item: {
-                total: 1,
-                className: 'worn',
-                classType: 'item'
-            },
+            hz: 4500
         }, {
             type: 'Gargoyle',
             amount: [2],
@@ -618,11 +613,6 @@ var enemyDefs = {
     easyGargs: {
         token: 'hard',
         enemySets: [{
-            item: {
-                total: 1,
-                className: 'worn',
-                classType: 'item'
-            },
             type: 'Gargoyle',
             amount: [4, 5],
             atATime: 1,
@@ -667,11 +657,6 @@ var enemyDefs = {
     easySentinels: {
         token: 'hard',
         enemySets: [{
-            item: {
-                total: 1,
-                className: 'worn',
-                classType: 'item'
-            },
             type: 'Sentinel',
             amount: [4, 5],
             atATime: 2,
@@ -703,6 +688,12 @@ var phaseOne = function() {
         x: 200,
         y: 180
     };
+
+    //play training session music
+    gameUtils.matterOnce(globals.currentGame, 'TravelStarted', () => {
+        gameUtils.playAsMusic(globals.currentGame.soundPool.mainMarch);
+    });
+
     this.map.addMapNode('camp', {
         levelOptions: {
             levelId: 'camp',
@@ -734,7 +725,8 @@ var phaseOne = function() {
         }),
         levelOptions: {
             levelId: 'learning1',
-            gotoMapOnWin: true
+            gotoMapOnWin: true,
+            trainingLevel: true
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -747,7 +739,8 @@ var phaseOne = function() {
         }),
         levelOptions: {
             levelId: 'learning2',
-            gotoMapOnWin: true
+            gotoMapOnWin: true,
+            trainingLevel: true
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -759,7 +752,8 @@ var phaseOne = function() {
             y: 150
         }),
         levelOptions: {
-            gotoMapOnWin: true
+            gotoMapOnWin: true,
+            trainingLevel: true
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -801,13 +795,18 @@ var phaseTwo = function(options) {
         done: () => {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
-            world.map.addMapNode('basicHunter');
+            world.map.addMapNode('basicHunter', {
+                levelOptions: {
+                    itemClass: 'worn',
+                }
+            });
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basicHard', {
                 levelOptions: {
-                    token: 'hard'
+                    token: 'hard',
+                    itemClass: 'worn',
                 }
             });
             world.map.addMapNode('multiLevel', {
@@ -883,6 +882,7 @@ var phaseTwo = function(options) {
             }
         }
     });
+    
     globals.currentGame.currentScene.transitionToScene(startDialogue.scene);
     startDialogue.play();
 

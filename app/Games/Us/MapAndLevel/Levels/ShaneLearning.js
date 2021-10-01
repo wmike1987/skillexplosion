@@ -232,6 +232,12 @@ var shaneLearning = function(options) {
     };
 
     this.onLevelPlayable = function(scene) {
+        //debug
+        if(false) {
+            globals.currentGame.currentWorld.gotoLevelById('camp');
+            return;
+        }
+
         var pauseAfterCompleteTime = 0;
 
         globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});

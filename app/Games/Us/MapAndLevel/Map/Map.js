@@ -400,6 +400,8 @@ var map = function(specs) {
 
     this.clearOuting = function(options) {
         options = options || {};
+
+        //clear visuals
         this.inProgressOutingNodes.forEach((node) => {
             node.unshowNodeInOuting();
         });
@@ -411,6 +413,7 @@ var map = function(specs) {
 
         graphicsUtils.removeSomethingFromRenderer(this.engageText);
 
+        //if our outing is not in progress, clear any state related to the configured outing
         if(!this.outingInProgress) {
             this.allowMouseEvents(true);
             this.allowKeyEvents(true);
@@ -481,6 +484,8 @@ var map = function(specs) {
         this.allowKeyEvents(false);
 
         var finalNode = this.outingNodes[this.outingNodes.length-1];
+
+        //Change the win behavior of every node except the final node
         this.outingNodes.forEach((node) => {
             var myNode = node;
 
@@ -489,6 +494,7 @@ var map = function(specs) {
                 return;
             }
 
+            //sometimes we need to get the right "sub node" for the node we have here
             if(myNode.getOutingCompatibleNode) {
                 myNode = myNode.getOutingCompatibleNode();
             }
@@ -506,6 +512,9 @@ var map = function(specs) {
                     this.outingAdrenalineGained += 1;
                     t = '+1 adrenaline!';
                 }
+
+                //disable the cursor
+                gameUtils.setCursorStyle('None');
 
                 gameUtils.doSomethingAfterDuration(() => {
                     globals.currentGame.soundPool.positiveSoundFast.play();
@@ -531,29 +540,31 @@ var map = function(specs) {
                     globals.currentGame.transitionToBlankScene();
                     this.show();
                     gameUtils.doSomethingAfterDuration(() => {
+                        //get the next node and trigger the mouse down behavior
                         var mapnode = this.outingNodes.shift();
                         this.inProgressOutingNodes.push(mapnode);
                         mapnode.onMouseDownBehavior({systemTriggered: true});
-                        gameUtils.setCursorStyle('None');
                     }, 2000);
-                }, 2600);
+                }, 2500);
             };
         });
 
-        var lastNode = this.outingNodes.shift();
-        this.inProgressOutingNodes.push(lastNode);
-        lastNode.onMouseDownBehavior({systemTriggered: true});
+        //start the first node which will kick off the whole process
+        var firstNode = this.outingNodes.shift();
+        this.inProgressOutingNodes.push(firstNode);
+        firstNode.onMouseDownBehavior({systemTriggered: true});
+
+        //let everyone know
         Matter.Events.trigger(globals.currentGame, "EmbarkOnOuting");
 
+        //upon normal win/loss behavior clear the outing
         var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, "VictoryOrDefeat", (event) => {
             this.outingInProgress = false;
-            var result = event.result;
+            this.clearOuting();
 
-            if(result == 'victory') {
-                this.completedNodes.push(lastNode);
-                this.clearOuting();
-            } else {
-                this.clearOuting();
+            //if we've won, add the finalNode to the completed node list
+            if(event.result == 'victory') {
+                this.completedNodes.push(finalNode);
             }
         });
     };

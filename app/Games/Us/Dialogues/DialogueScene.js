@@ -83,6 +83,7 @@ var DialogueScene = {
         this.scene = dialogueScene;
 
         this.play = function() {
+            globals.currentGame.unitSystem.deselectAllUnits();
             dialogueScene.add(dialogueChain);
             dialogueChain.play();
         };

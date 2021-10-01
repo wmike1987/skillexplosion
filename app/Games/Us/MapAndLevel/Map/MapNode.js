@@ -193,14 +193,15 @@ var MapLevelNode = function(options) {
                     this.enterSelfBehavior();
                     this.displayObject.tooltipObj.enable();
                 } else {
-                    if(behavior.nodeToEnter.levelDetails.isBattleLevel() && !this.mapRef.outingInProgress) {
+                    //detect if we can add this node to an outing
+                    if(behavior.nodeToEnter.levelDetails.isOutingReady() && !this.mapRef.outingInProgress) {
                         if(this.mapRef.isNodeInOuting(behavior.nodeToEnter)) {
                             this.mapRef.removeNodeFromOuting(behavior.nodeToEnter);
                         } else {
                             this.mapRef.addNodeToOuting(behavior.nodeToEnter);
                         }
                     } else {
-                        //this is the main business logic
+                        //this is the plain travel-to-node behavior
                         this.mapRef.travelToNode(behavior.nodeToEnter, function() {
                             Matter.Events.trigger(globals.currentGame, "travelFinished", {
                                 node: behavior.nodeToEnter

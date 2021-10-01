@@ -181,6 +181,9 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         this.currentDefensePassiveBorder.visible = true;
                     } else {
                         unit.unequipPassive(passive, {manual: true});
+                        passive.border.scale = {x: 1, y: 1};
+                        passive.border.alpha = 1;
+                        passive.border.visible = true;
                         this.currentDefensePassiveBorder.visible = false;
                         this.unitPanelRef.updateUnitPassives();
                         equip2.play();
@@ -204,6 +207,9 @@ ConfigPanel.prototype.showPassives = function(unit) {
                         this.currentAttackPassiveBorder.visible = true;
                     }  else if (passive.attackPassive) {
                         unit.unequipPassive(passive, {manual: true});
+                        passive.border.scale = {x: 1, y: 1};
+                        passive.border.alpha = 1;
+                        passive.border.visible = true;
                         this.currentAttackPassiveBorder.visible = false;
                         this.unitPanelRef.updateUnitPassives();
                         equip2.play();

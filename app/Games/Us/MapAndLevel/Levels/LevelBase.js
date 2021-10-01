@@ -207,6 +207,10 @@ var levelBase = {
         return this.isLevelNonConfigurable();
     },
 
+    isOutingReady: function() {
+        return this.isBattleLevel() && !this.trainingLevel;
+    },
+
     fillLevelScene: function(scene) {
         //set the random seed
 
