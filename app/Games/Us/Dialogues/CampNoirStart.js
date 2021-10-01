@@ -42,9 +42,10 @@ var CampNoirStart = function(options) {
             text: "It's... 3:00am. Those pencil pushers can wait until mor--",
             actionText: {
                 word: "Grunts",
-                actionDuration: 1200,
+                actionDuration: 2000,
                 fadeOutOnly: true
             },
+            pauseAfterWord: {word: "It's...", duration: 750},
             delayAfterEnd: 0,
             picture: '302.png',
             pictureWordTrigger: '3:00'
@@ -59,10 +60,10 @@ var CampNoirStart = function(options) {
         var a4 = new Dialogue({
             actor: "Shane",
             text: "Christ... a wave?",
-            delayAfterEnd: 0
+            pauseAfterWord: {word: "Christ...", duration: 900},
+            delayAfterEnd: 750
         });
         var a5 = new Dialogue({
-            interrupt: true,
             actor: "Ursula",
             text: "Yes."
         });

@@ -37,19 +37,19 @@ var MapLearning = function(scene) {
     var a5 = new Dialogue({actor: "Shane", text: "An... outing?", isTask: false, backgroundBox: true});
     var a6 = new Dialogue({actor: "Ursula", text: "An outing is a series of enemy camps we'll hit back-to-back.", letterSpeed: 45, backgroundBox: true});
     var a7 = new Dialogue({actor: "Info", text: "Outings can be up to three camps long.", isInfo: true, backgroundBox: true});
-    var a8 = new Dialogue({actor: "Ursula", text: "Longer outings can be risky since we can't reconfigure between each camp.", letterSpeed: 45, backgroundBox: true, delayAfterEnd: 0});
-    var a9 = new Dialogue({actor: "Ursula", text: "But they'll increase our supply options from HQ.", continuation: true, backgroundBox: true});
+    var a8 = new Dialogue({actor: "Ursula", text: "Longer outings are risky since we can't reconfigure between each camp.", letterSpeed: 45, backgroundBox: true, delayAfterEnd: 0});
+    var a9 = new Dialogue({actor: "Ursula", text: "But they also mean more options in a supply drop.", delayAfterEnd: 3500, continuation: true, backgroundBox: true});
 
-    var a10 = new Dialogue({actor: "Shane", text: "A supply drop... so HQ actually cares about us?", pauseAfterWord: {word: 'What?', duration: 750}, newBreak: true, isTask: false, backgroundBox: true});
-    var a11 = new Dialogue({actor: "Ursula", text: "I wouldn't say 'cares,' but after finishing an outing they'll send us supplies.", letterSpeed: 45, backgroundBox: true, delayAfterEnd: 1000});
-    var a12 = new Dialogue({actor: "Ursula", text: "In addition, after each camp we'll gain one point of adrenaline.",letterSpeed: 45, continuation: true, backgroundBox: true});
+    var a10 = new Dialogue({actor: "Shane", text: "A supply drop... so Command actually cares about us?", pauseAfterWord: {word: 'What?', duration: 750}, newBreak: true, isTask: false, backgroundBox: true});
+    var a11 = new Dialogue({actor: "Ursula", text: "Not exactly, but after an outing Command will indeed send us supplies.", letterSpeed: 45, backgroundBox: true, delayAfterEnd: 1000});
+    var a12 = new Dialogue({actor: "Ursula", text: "Additionally, after each camp we'll gain one point of adrenaline.",letterSpeed: 45, continuation: true, backgroundBox: true});
     var a13 = new Dialogue({actor: "Info", text: "Adrenaline is shown in the lower left of the map.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
 
     var a14 = new Dialogue({actor: "Shane", text: "...What? Adrenaline?", pauseAfterWord: {word: 'What?', duration: 750}, newBreak: true, isTask: false, backgroundBox: true});
     var a15 = new Dialogue({actor: "Ursula", text: "Traveling causes fatigue, making long treks difficult.", backgroundBox: true});
-    var a16 = new Dialogue({actor: "Ursula", text: "Adrenaline reduces the amount of fatigue accumulated during travel.", letterSpeed: 40, continuation: true, backgroundBox: true});
+    var a16 = new Dialogue({actor: "Ursula", text: "Adrenaline reduces the amount of fatigue accumulated during travel.", delayAfterEnd: 2000, letterSpeed: 40, continuation: true, backgroundBox: true});
     var a17 = new Dialogue({actor: "Info", text: "Returning to camp resets fatigue, but also resets adrenaline.", isInfo: true, backgroundBox: true});
-    var a18 = new Dialogue({actor: "Ursula", text: "You'll get the hang of it.", backgroundBox: true, delayAfterEnd: 1000});
+    var a18 = new Dialogue({actor: "Ursula", text: "You'll get the hang of it.", backgroundBox: true, delayAfterEnd: 1800});
 
     var a19 = new Dialogue({actor: "Ursula", text: "Let's get going.",  newBreak: true, continuation: false, backgroundBox: true});
 

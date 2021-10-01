@@ -200,7 +200,7 @@ var UrsulaTasks = function(scene) {
         finalMacMurrayChain.cleanUp();
     });
 
-    var b1 = new Dialogue({actor: "MacMurray", text: "Great. Those who've come before you have lived and died by their wits on Mega.", pauseAfterWord: {word: 'Great.', duration: 1000}, backgroundBox: true, letterSpeed: 40});
+    var b1 = new Dialogue({actor: "MacMurray", text: "Great. Those who've come before you have lived and died by their wits.", pauseAfterWord: {word: 'Great.', duration: 1000}, backgroundBox: true, letterSpeed: 40});
     var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 40, continuation: true, preventAutoEnd: true});
 
     var transitionChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
@@ -382,6 +382,11 @@ var UrsulaTasks = function(scene) {
             globals.currentGame.nextPhase();
         }, 1500);
     }});
+
+    //debug
+    if(false) {
+        return finalMacMurrayChain;
+    }
 
     return chain;
 };
