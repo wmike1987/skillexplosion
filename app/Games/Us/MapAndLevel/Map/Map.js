@@ -496,29 +496,34 @@ var map = function(specs) {
             //define custom win behavior
             myNode.levelDetails.customWinBehavior = () => {
                 this.completedNodes.push(myNode);
+                globals.currentGame.unitSystem.deselectAllUnits();
+                globals.currentGame.unitSystem.pause();
 
                 //show +1 adrenaline
+                var t = "Excellent";
                 if (!this.isAdrenalineFull()) {
                     this.addAdrenalineBlock();
                     this.outingAdrenalineGained += 1;
-                    gameUtils.doSomethingAfterDuration(() => {
-                        globals.currentGame.soundPool.positiveSoundFast.play();
-                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: 1500
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
-                        });
-                        globals.currentGame.currentScene.add(adrText);
-                    }, 1000);
+                    t = '+1 adrenaline!';
                 }
+
+                gameUtils.doSomethingAfterDuration(() => {
+                    globals.currentGame.soundPool.positiveSoundFast.play();
+                    var adrText = graphicsUtils.floatText(t, gameUtils.getPlayableCenterPlus({
+                        y: 300
+                    }), {
+                        where: 'hudTwo',
+                        style: styles.adrenalineTextLarge,
+                        speed: 6,
+                        duration: 1500
+                    });
+                    graphicsUtils.addGleamToSprite({
+                        sprite: adrText,
+                        gleamWidth: 50,
+                        duration: 500
+                    });
+                    globals.currentGame.currentScene.add(adrText);
+                }, 1000);
 
                 //show the map and trigger a travel to the next node
                 gameUtils.doSomethingAfterDuration(() => {

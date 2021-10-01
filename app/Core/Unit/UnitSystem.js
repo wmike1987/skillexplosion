@@ -1284,6 +1284,12 @@ var UnitSystem = function(properties) {
         globals.currentGame.addBody(this.box);
     };
 
+    this.deselectAllUnits = function() {
+        globals.currentGame.unitsInPlay.forEach((unit) => {
+            this.deselectUnit(unit);
+        });
+    },
+
     this.deselectUnit = function(unit) {
         //Re-assign the selected unit if needed
         if (this.selectedUnit == unit) {

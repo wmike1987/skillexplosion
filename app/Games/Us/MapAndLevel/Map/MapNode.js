@@ -361,8 +361,17 @@ MapLevelNode.prototype.showNodeInOuting = function() {
             where: 'hudNTwo',
             alpha: 1.0,
             position: this.position,
-            tint: 0xe93d3d
         });
+
+        graphicsUtils.flashSprite({
+            sprite: this.outingFocusCircle,
+            duration: 200,
+            fromColor: 0xff2222,
+            toColor: 0xff0000,
+            pauseDurationAtEnds: 500,
+            times: 999
+        });
+
         graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
         graphicsUtils.makeSpriteSize(this.outingFocusCircle, this.enlargedTokenSize);
         graphicsUtils.rotateSprite(this.outingFocusCircle, {
