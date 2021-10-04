@@ -42,7 +42,7 @@ var map = function(specs) {
 
     this.outingNodes = [];
     this.inProgressOutingNodes = [];
-    this.outingMax = 3;
+    this.maxOutingLength = 3;
 
     //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
@@ -333,8 +333,8 @@ var map = function(specs) {
         });
 
         if(this.outingInProgress) {
-            this.outingNodes.forEach((node) => {
-                node.showNodeInOuting();
+            this.outingNodeMemory.forEach((node, index) => {
+                node.showNodeInOuting({number: index, defaultSize: true});
             });
         }
 
@@ -387,7 +387,6 @@ var map = function(specs) {
     };
 
     this.addNodeToOuting = function(node) {
-        node.showNodeInOuting();
         this.outingNodes.push(node);
         this.updateOutingEngagement();
     };
@@ -437,6 +436,13 @@ var map = function(specs) {
 
     this.updateOutingEngagement = function() {
         var game = globals.currentGame;
+
+        //refresh the graphics
+        this.outingNodes.forEach((node, index) => {
+            node.showNodeInOuting({number: index});
+        });
+
+        //create the space to embark text
         if(this.outingNodes.length > 0 && this.engageText == null) {
             this.engageText = graphicsUtils.addSomethingToRenderer("TEX+:Space to embark", {
                 where: 'hudText',
@@ -474,11 +480,16 @@ var map = function(specs) {
         }
     };
 
+    this.isOutingFull = function() {
+        return this.outingNodes.length >= this.maxOutingLength;
+    };
+
     this.embarkOnOuting = function() {
         this.outingInProgress = true;
         this.preOutingNode = this.currentNode;
         this.outingAdrenalineGained = 0;
         this.completedNodes = [];
+        this.outingNodeMemory = [...this.outingNodes];
 
         this.allowMouseEvents(false);
         this.allowKeyEvents(false);

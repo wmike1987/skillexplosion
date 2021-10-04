@@ -256,6 +256,7 @@ var ic = function(options) {
             });
 
             var item = this;
+            var shadowYScale = 1.0;
 
             //play drop animation
             var dropAnimationName = item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll';
@@ -263,8 +264,10 @@ var ic = function(options) {
                 dropAnimationName = 'BookDrop';
             } else if(item.classInformation.itemClass == 'stimulant') {
                 dropAnimationName = 'StimulantDrop';
+                shadowYScale = 0.0;
             } else if(item.classInformation.itemClass == 'lightStimulant') {
                 dropAnimationName = 'PillDrop';
+                shadowYScale = 0.0;
             }
             this.itemDrop = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
@@ -345,7 +348,7 @@ var ic = function(options) {
                     data: 'IsoShadowBlurred',
                     scale: {
                         x: 0.6,
-                        y: 0.6
+                        y: 0.6 * shadowYScale
                     },
                     visible: true,
                     rotate: 'none',

@@ -178,6 +178,10 @@ var game = {
             volume: 0.07,
             rate: 1.0
         });
+        this.soundPool.negativeSound2 = gameUtils.getSound('negative_sound.wav', {
+            volume: 0.07,
+            rate: 1.5
+        });
         this.soundPool.keypressSound = gameUtils.getSound('keypress1.wav', {
             volume: 0.15,
             rate: 1

@@ -73,15 +73,14 @@ var multiLevel = function(options) {
         return true;
     };
 
-    var mouseDown = function() {
+    var mouseDown = function(mouseDownOptions) {
         this.sizeNode();
         multiRef.mapNodes.forEach(node => {
             node.tintNode(backgroundNodeTint);
         });
         multiRef.mapNodes[0].untintNode();
-        multiRef.mapNodes[0].flashNode();
         multiRef.mapNodes[0].sizeNode(multiRef.mapNodes[0].enlargedTokenSize);
-        return {flash: false, sound: true, customPosition: multiRef.centerPosition, nodeToEnter: multiRef.mapNodes[0]};
+        return {flash: true, sound: true, customPosition: multiRef.centerPosition, nodeToEnter: multiRef.mapNodes[0]};
     };
 
     this.createMapNode = function(options) {
