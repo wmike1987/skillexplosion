@@ -4,7 +4,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import styles from '@utils/Styles.js';
 import Tooltip from '@core/Tooltip.js';
 import ucp from '@games/Us/UnitAugmentPanel.js';

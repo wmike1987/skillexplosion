@@ -1,7 +1,7 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js';
 import {airDropStation, airDropSpecialStation} from '@games/Us/MapAndLevel/Levels/AirDropStation.js';

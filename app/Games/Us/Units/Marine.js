@@ -15,7 +15,7 @@ import {
     graphicsUtils,
     mathArrayUtils,
     unitUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 
 export default function Marine(options) {
     var marine = {};

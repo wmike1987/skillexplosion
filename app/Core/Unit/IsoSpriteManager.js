@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import Moveable from '@core/Unit/_Moveable.js';
 import Attacker from '@core/Unit/_Attacker.js';
 import {globals} from '@core/Fundamental/GlobalState.js';

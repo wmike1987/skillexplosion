@@ -6,7 +6,7 @@ import {
     graphicsUtils,
     mathArrayUtils,
     unitUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import Moveable from '@core/Unit/_Moveable.js';
 import Attacker from '@core/Unit/_Attacker.js';
 import Iso from '@core/Unit/IsoSpriteManager.js';

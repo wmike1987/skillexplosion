@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {ItemClasses} from '@games/Us/Items/ItemClasses.js';
 
 var initiateBlinkDeath = function(options) {

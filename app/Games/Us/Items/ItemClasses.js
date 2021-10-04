@@ -2,13 +2,13 @@ import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 var ItemClasses = {
     worn: {
         item: {description: 'Worn Item', tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion',
                                        'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
-        microchip: {description: 'Microchip', tint: 0xf59a87, items: ['BasicMicrochip']},
+        microchip: {description: 'Microchip', tint: 0xf59a87, items: ['BasicMicrochip'], gleamAnimation: "MicrochipGleam"},
         specialtyItem: {description: 'Worn Specialty Item', tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar', 'PillBottle', 'SkyMedallion']},
     },
 
@@ -31,11 +31,11 @@ var ItemClasses = {
     },
 
     lightStimulant: {
-        item: {description: 'Pill', tint: 0x80ffbb, items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill']},
+        item: {description: 'Pill', tint: 0x80ffbb, items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill'], gleamAnimation: 'PillGleam'},
     },
 
     stimulant: {
-        item: {description: 'Stimulant', tint: 0x80ffbb, items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic']},
+        item: {description: 'Stimulant', tint: 0x80ffbb, items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic'], gleamAnimation: "StimulantGleam"},
     },
 
     book: {

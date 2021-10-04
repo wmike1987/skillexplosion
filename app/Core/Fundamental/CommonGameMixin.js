@@ -9,7 +9,7 @@ import {
     graphicsUtils,
     mathArrayUtils,
     unitUtils,
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import {
     UnitSystem,
     UnitSystemAssets

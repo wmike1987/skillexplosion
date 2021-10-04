@@ -2,7 +2,7 @@
 
 "BookDrop0.png":
 {
-	"frame": {"x":855,"y":1,"w":42,"h":60},
+	"frame": {"x":1,"y":181,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
@@ -10,7 +10,7 @@
 },
 "BookDrop1.png":
 {
-	"frame": {"x":510,"y":1,"w":42,"h":67},
+	"frame": {"x":145,"y":47,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
@@ -26,23 +26,23 @@
 },
 "BookDrop3.png":
 {
-	"frame": {"x":1632,"y":1,"w":34,"h":58},
-	"rotated": true,
+	"frame": {"x":1,"y":345,"w":34,"h":58},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":34,"h":58},
 	"sourceSize": {"w":48,"h":80}
 },
 "BookDrop4.png":
 {
-	"frame": {"x":475,"y":1,"w":33,"h":44},
-	"rotated": false,
+	"frame": {"x":1,"y":457,"w":33,"h":44},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":30,"w":33,"h":44},
 	"sourceSize": {"w":48,"h":80}
 },
 "BookDrop5.png":
 {
-	"frame": {"x":1253,"y":1,"w":40,"h":52},
+	"frame": {"x":68,"y":269,"w":40,"h":52},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":24,"w":40,"h":52},
@@ -50,7 +50,7 @@
 },
 "BookGleam0.png":
 {
-	"frame": {"x":1692,"y":1,"w":25,"h":21},
+	"frame": {"x":229,"y":311,"w":25,"h":21},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":12,"y":10,"w":25,"h":21},
@@ -58,7 +58,7 @@
 },
 "BookGleam1.png":
 {
-	"frame": {"x":1692,"y":1,"w":25,"h":21},
+	"frame": {"x":229,"y":311,"w":25,"h":21},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":12,"y":10,"w":25,"h":21},
@@ -66,7 +66,7 @@
 },
 "ItemDropFroll0.png":
 {
-	"frame": {"x":917,"y":1,"w":42,"h":60},
+	"frame": {"x":63,"y":181,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
@@ -74,7 +74,7 @@
 },
 "ItemDropFroll1.png":
 {
-	"frame": {"x":579,"y":1,"w":42,"h":67},
+	"frame": {"x":145,"y":91,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
@@ -90,7 +90,7 @@
 },
 "ItemDropFroll3.png":
 {
-	"frame": {"x":648,"y":1,"w":42,"h":67},
+	"frame": {"x":1,"y":93,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
@@ -98,7 +98,7 @@
 },
 "ItemDropFroll4.png":
 {
-	"frame": {"x":979,"y":1,"w":42,"h":60},
+	"frame": {"x":125,"y":223,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
@@ -106,7 +106,7 @@
 },
 "ItemDropFroll5.png":
 {
-	"frame": {"x":1307,"y":1,"w":40,"h":52},
+	"frame": {"x":1,"y":303,"w":40,"h":52},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":24,"w":40,"h":52},
@@ -114,7 +114,7 @@
 },
 "ItemDropFroll6.png":
 {
-	"frame": {"x":1165,"y":1,"w":42,"h":42},
+	"frame": {"x":97,"y":311,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":37,"w":42,"h":42},
@@ -122,7 +122,7 @@
 },
 "ItemDropFroll7.png":
 {
-	"frame": {"x":217,"y":1,"w":44,"h":44},
+	"frame": {"x":42,"y":405,"w":44,"h":44},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":35,"w":44,"h":44},
@@ -130,23 +130,23 @@
 },
 "ItemGleamFroll-0.png":
 {
-	"frame": {"x":309,"y":1,"w":44,"h":40},
-	"rotated": true,
+	"frame": {"x":96,"y":451,"w":44,"h":40},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":40},
 	"sourceSize": {"w":48,"h":40}
 },
 "ItemGleamFroll-1.png":
 {
-	"frame": {"x":351,"y":1,"w":44,"h":40},
-	"rotated": true,
+	"frame": {"x":141,"y":311,"w":44,"h":40},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":40},
 	"sourceSize": {"w":48,"h":40}
 },
 "ItemGleamFroll-2.png":
 {
-	"frame": {"x":1415,"y":1,"w":47,"h":40},
+	"frame": {"x":47,"y":451,"w":47,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":40},
@@ -154,7 +154,7 @@
 },
 "ItemGleamFroll-3.png":
 {
-	"frame": {"x":393,"y":1,"w":44,"h":39},
+	"frame": {"x":134,"y":399,"w":44,"h":39},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":39},
@@ -162,7 +162,7 @@
 },
 "ItemGleamFroll-4.png":
 {
-	"frame": {"x":434,"y":1,"w":44,"h":39},
+	"frame": {"x":174,"y":353,"w":44,"h":39},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":39},
@@ -170,7 +170,7 @@
 },
 "MicrochipDrop0.png":
 {
-	"frame": {"x":1041,"y":1,"w":42,"h":60},
+	"frame": {"x":1,"y":225,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
@@ -178,7 +178,7 @@
 },
 "MicrochipDrop1.png":
 {
-	"frame": {"x":717,"y":1,"w":42,"h":67},
+	"frame": {"x":70,"y":93,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
@@ -194,7 +194,7 @@
 },
 "MicrochipDrop3.png":
 {
-	"frame": {"x":786,"y":1,"w":42,"h":67},
+	"frame": {"x":139,"y":135,"w":42,"h":67},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
@@ -202,7 +202,7 @@
 },
 "MicrochipDrop4.png":
 {
-	"frame": {"x":1103,"y":1,"w":42,"h":60},
+	"frame": {"x":63,"y":225,"w":42,"h":60},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
@@ -210,15 +210,15 @@
 },
 "MicrochipDrop5.png":
 {
-	"frame": {"x":1361,"y":1,"w":40,"h":52},
-	"rotated": true,
+	"frame": {"x":55,"y":311,"w":40,"h":52},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":24,"w":40,"h":52},
 	"sourceSize": {"w":48,"h":80}
 },
 "MicrochipDrop6.png":
 {
-	"frame": {"x":1209,"y":1,"w":42,"h":42},
+	"frame": {"x":130,"y":355,"w":42,"h":42},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":37,"w":42,"h":42},
@@ -226,7 +226,7 @@
 },
 "MicrochipDrop7.png":
 {
-	"frame": {"x":263,"y":1,"w":44,"h":44},
+	"frame": {"x":88,"y":405,"w":44,"h":44},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":35,"w":44,"h":44},
@@ -234,7 +234,7 @@
 },
 "MicrochipGleam0.png":
 {
-	"frame": {"x":1464,"y":1,"w":40,"h":40},
+	"frame": {"x":187,"y":311,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -242,7 +242,7 @@
 },
 "MicrochipGleam1.png":
 {
-	"frame": {"x":1506,"y":1,"w":40,"h":40},
+	"frame": {"x":142,"y":445,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -250,7 +250,7 @@
 },
 "MicrochipGleam2.png":
 {
-	"frame": {"x":1548,"y":1,"w":40,"h":40},
+	"frame": {"x":175,"y":399,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -258,7 +258,7 @@
 },
 "MicrochipGleam3.png":
 {
-	"frame": {"x":1590,"y":1,"w":40,"h":40},
+	"frame": {"x":184,"y":441,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -266,7 +266,7 @@
 },
 "MicrochipGleam4.png":
 {
-	"frame": {"x":1548,"y":1,"w":40,"h":40},
+	"frame": {"x":175,"y":399,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -274,7 +274,7 @@
 },
 "MicrochipGleam5.png":
 {
-	"frame": {"x":1506,"y":1,"w":40,"h":40},
+	"frame": {"x":142,"y":445,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
@@ -282,10 +282,178 @@
 },
 "MicrochipGleam6.png":
 {
-	"frame": {"x":1464,"y":1,"w":40,"h":40},
+	"frame": {"x":187,"y":311,"w":40,"h":40},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":0,"w":40,"h":40},
+	"sourceSize": {"w":48,"h":40}
+},
+"PillDrop0.png":
+{
+	"frame": {"x":125,"y":267,"w":42,"h":60},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillDrop1.png":
+{
+	"frame": {"x":217,"y":1,"w":34,"h":67},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":5,"w":34,"h":67},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillDrop2.png":
+{
+	"frame": {"x":1,"y":269,"w":32,"h":65},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":5,"w":32,"h":65},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillDrop3.png":
+{
+	"frame": {"x":214,"y":70,"w":34,"h":63},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":7,"w":34,"h":63},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillDrop4.png":
+{
+	"frame": {"x":137,"y":179,"w":42,"h":61},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":11,"w":42,"h":61},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillDrop5.png":
+{
+	"frame": {"x":37,"y":365,"w":38,"h":50},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":24,"w":38,"h":50},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillDrop6.png":
+{
+	"frame": {"x":1,"y":137,"w":42,"h":66},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":66},
+	"sourceSize": {"w":48,"h":80}
+},
+"PillGleam0.png":
+{
+	"frame": {"x":226,"y":429,"w":24,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":15,"y":9,"w":24,"h":26},
+	"sourceSize": {"w":48,"h":40}
+},
+"PillGleam1.png":
+{
+	"frame": {"x":226,"y":429,"w":24,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":15,"y":9,"w":24,"h":26},
+	"sourceSize": {"w":48,"h":40}
+},
+"StimulantDrop0.png":
+{
+	"frame": {"x":187,"y":267,"w":42,"h":60},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":60},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantDrop1.png":
+{
+	"frame": {"x":208,"y":135,"w":42,"h":67},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":5,"w":42,"h":67},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantDrop2.png":
+{
+	"frame": {"x":1,"y":47,"w":44,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":70},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantDrop3.png":
+{
+	"frame": {"x":73,"y":47,"w":44,"h":70},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":0,"w":44,"h":70},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantDrop4.png":
+{
+	"frame": {"x":200,"y":204,"w":42,"h":61},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":11,"w":42,"h":61},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantDrop5.png":
+{
+	"frame": {"x":1,"y":405,"w":39,"h":50},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":24,"w":39,"h":50},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantDrop6.png":
+{
+	"frame": {"x":69,"y":137,"w":42,"h":66},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":14,"w":42,"h":66},
+	"sourceSize": {"w":48,"h":80}
+},
+"StimulantGleam0.png":
+{
+	"frame": {"x":217,"y":391,"w":36,"h":34},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":36,"h":34},
+	"sourceSize": {"w":48,"h":40}
+},
+"StimulantGleam1.png":
+{
+	"frame": {"x":215,"y":353,"w":36,"h":36},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":36,"h":36},
+	"sourceSize": {"w":48,"h":40}
+},
+"StimulantGleam2.png":
+{
+	"frame": {"x":89,"y":365,"w":39,"h":37},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":39,"h":37},
+	"sourceSize": {"w":48,"h":40}
+},
+"StimulantGleam3.png":
+{
+	"frame": {"x":215,"y":353,"w":36,"h":36},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":36,"h":36},
+	"sourceSize": {"w":48,"h":40}
+},
+"StimulantGleam4.png":
+{
+	"frame": {"x":217,"y":391,"w":36,"h":34},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":36,"h":34},
 	"sourceSize": {"w":48,"h":40}
 }},
 "animations": {
@@ -294,15 +462,19 @@
 	"ItemDropFroll": ["ItemDropFroll0.png","ItemDropFroll1.png","ItemDropFroll2.png","ItemDropFroll3.png","ItemDropFroll4.png","ItemDropFroll5.png","ItemDropFroll6.png","ItemDropFroll7.png"],
 	"ItemGleamFroll": ["ItemGleamFroll-0.png","ItemGleamFroll-1.png","ItemGleamFroll-2.png","ItemGleamFroll-3.png","ItemGleamFroll-4.png"],
 	"MicrochipDrop": ["MicrochipDrop0.png","MicrochipDrop1.png","MicrochipDrop2.png","MicrochipDrop3.png","MicrochipDrop4.png","MicrochipDrop5.png","MicrochipDrop6.png","MicrochipDrop7.png"],
-	"MicrochipGleam": ["MicrochipGleam0.png","MicrochipGleam1.png","MicrochipGleam2.png","MicrochipGleam3.png","MicrochipGleam4.png","MicrochipGleam5.png","MicrochipGleam6.png"]
+	"MicrochipGleam": ["MicrochipGleam0.png","MicrochipGleam1.png","MicrochipGleam2.png","MicrochipGleam3.png","MicrochipGleam4.png","MicrochipGleam5.png","MicrochipGleam6.png"],
+	"PillDrop": ["PillDrop0.png","PillDrop1.png","PillDrop2.png","PillDrop3.png","PillDrop4.png","PillDrop5.png","PillDrop6.png"],
+	"PillGleam": ["PillGleam0.png","PillGleam1.png"],
+	"StimulantDrop": ["StimulantDrop0.png","StimulantDrop1.png","StimulantDrop2.png","StimulantDrop3.png","StimulantDrop4.png","StimulantDrop5.png","StimulantDrop6.png"],
+	"StimulantGleam": ["StimulantGleam0.png","StimulantGleam1.png","StimulantGleam2.png","StimulantGleam3.png","StimulantGleam4.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "ItemAnimations1.png",
 	"format": "RGBA8888",
-	"size": {"w":1714,"h":46},
+	"size": {"w":252,"h":492},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:36b4f44f282723ab9b256758c261b842:3f4fd0f316b26ed3cc3fd1215f7ac277:4867c4f7974ae99ac7db6afe492be53a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:2bb3c3daed1137453b9acaa5ba1331f8:582a79ec66b9e4996ed96f374b8d22a6:4867c4f7974ae99ac7db6afe492be53a$"
 }
 }

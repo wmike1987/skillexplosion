@@ -1,4 +1,4 @@
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import * as $ from 'jquery';
 
 //This module represents a tile map. This is produced by the tile mapper

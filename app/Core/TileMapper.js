@@ -3,7 +3,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import TileMap from '@core/TileMap';
 import seedrandom from 'seedrandom';
 

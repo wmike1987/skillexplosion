@@ -10,7 +10,7 @@ import Gargoyle from '@games/Us/Units/Gargoyle.js';
 import Scout from '@games/Us/Units/Scout.js';
 import Ghost from '@games/Us/Units/Ghost.js';
 import DestructibleBox from '@games/Us/Units/DestructibleBox.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 var unitMenu = {};
 unitMenu.EnemyMarine = {c: EnemyMarine, p: 'MarinePortrait'};

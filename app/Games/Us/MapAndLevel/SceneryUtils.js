@@ -12,7 +12,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';

@@ -5,7 +5,7 @@ import * as PIXI from 'pixi.js';
 import * as PIXI_UTILS from '@pixi/utils';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';

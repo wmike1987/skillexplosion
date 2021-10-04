@@ -5,7 +5,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import {
     Dialogue,
     DialogueChain

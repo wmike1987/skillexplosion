@@ -1,6 +1,6 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import styles from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 

@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 var failedPredicate = gameUtils.getSound('cantpickup.wav', {volume: 0.02, rate: 1.3});
 

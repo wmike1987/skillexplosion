@@ -9,7 +9,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import TileMapper from '@core/TileMapper.js';
 import {
     Doodad

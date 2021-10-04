@@ -5,7 +5,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import Tooltip from '@core/Tooltip.js';
 import {
     levelFactory

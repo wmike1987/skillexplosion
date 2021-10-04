@@ -6,7 +6,7 @@ import aug from '@core/Unit/_Unlocker.js'
 import Ability from '@core/Unit/UnitAbility.js'
 import Projectile from '@core/Unit/UnitProjectile.js'
 import {globals} from '@core/Fundamental/GlobalState'
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js'
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 export default function Sentinel(options) {
     var sentinel = {};

@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 export default {
     grabPredicate: function() {

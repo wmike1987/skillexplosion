@@ -1,6 +1,6 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/GameUtils';
+import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {

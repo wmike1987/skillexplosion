@@ -11,7 +11,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import {
     Dialogue,
     DialogueChain
@@ -957,11 +957,13 @@ var phaseThree = function() {
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('mobs', outerParam);
-    this.map.addMapNode('airDropSpecialStation', {
+    this.map.addMapNode('airDropStation', {
         levelOptions: {
-            // prereqCount: 0,
-            selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'specialtyItem', 3),
-            outer: true
+            prereqCount: 3,
+            itemClass: 'worn',
+            itemType: 'specialtyItem',
+            regularTokenName: 'AirDropSpecialToken',
+            specialTokenName: 'AirDropSpecialTokenGleam'
         }
     });
 

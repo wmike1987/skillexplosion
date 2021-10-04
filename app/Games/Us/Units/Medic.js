@@ -16,7 +16,7 @@ import {
     graphicsUtils,
     mathArrayUtils,
     unitUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 
 export default function Medic(options) {
     var medic = {};

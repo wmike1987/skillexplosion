@@ -1,7 +1,7 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {globals, mousePosition} from '@core/Fundamental/GlobalState.js';
 import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js';
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';

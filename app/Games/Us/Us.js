@@ -11,7 +11,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import Marine from '@games/Us/Units/Marine.js';
 import Medic from '@games/Us/Units/Medic.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
@@ -672,7 +672,7 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PepPill"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});

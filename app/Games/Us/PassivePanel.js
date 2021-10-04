@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import Tooltip from '@core/Tooltip.js';
 import * as Matter from 'matter-js';
 import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';

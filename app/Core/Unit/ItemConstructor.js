@@ -5,7 +5,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import styles from '@utils/Styles.js';
 import Tooltip from '@core/Tooltip.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
@@ -94,6 +94,14 @@ var microchipDropSound = gameUtils.getSound('itemdrop.wav', {
 var bookDropSound = gameUtils.getSound('criticalhit.wav', {
     volume: 0.025,
     rate: 1.15
+});
+var stimulantDropSound = gameUtils.getSound('itemdrop.wav', {
+    volume: 0.04,
+    rate: 1.75
+});
+var pillDropSound = gameUtils.getSound('itemdrop.wav', {
+    volume: 0.04,
+    rate: 2.25
 });
 var itemSwoosh = gameUtils.getSound('itemSwoosh.wav', {
     volume: 0.04,
@@ -253,6 +261,10 @@ var ic = function(options) {
             var dropAnimationName = item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll';
             if (item.classInformation.itemClass == 'book') {
                 dropAnimationName = 'BookDrop';
+            } else if(item.classInformation.itemClass == 'stimulant') {
+                dropAnimationName = 'StimulantDrop';
+            } else if(item.classInformation.itemClass == 'lightStimulant') {
+                dropAnimationName = 'PillDrop';
             }
             this.itemDrop = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
@@ -274,9 +286,16 @@ var ic = function(options) {
                         ItemUtils.initiateBlinkDeath({
                             item: item
                         });
-                    var dropSound = item.classInformation.itemType == 'microchip' ? microchipDropSound : itemDropSound;
-                    if (item.classInformation.itemClass == 'book') {
+
+                    var dropSound = itemDropSound;
+                    if (item.classInformation.itemType == 'microchip') {
+                        dropSound = microchipDropSound;
+                    }else if (item.classInformation.itemClass == 'book') {
                         dropSound = bookDropSound;
+                    } else if(item.classInformation.itemClass == 'stimulant') {
+                        dropSound = stimulantDropSound;
+                    } else if(item.classInformation.itemClass == 'lightStimulant') {
+                        dropSound = pillDropSound;
                     }
                     dropSound.play();
                 }
@@ -307,7 +326,7 @@ var ic = function(options) {
             //play gleam animation
             var itemAnim = gameUtils.getAnimation({
                 spritesheetName: 'ItemAnimations1',
-                animationName: (item.classInformation.typeInfo.gleamAnimation) || (item.classInformation.itemType == 'microchip' ? 'MicrochipGleam' : 'ItemGleamFroll'),
+                animationName: item.classInformation.typeInfo.gleamAnimation || 'ItemGleamFroll',
                 speed: 0.15,
                 loopPause: 2000,
                 transform: [position.x, position.y],
@@ -318,7 +337,7 @@ var ic = function(options) {
             newItem.renderChildren = [{
                     id: 'itemFootprint',
                     data: itemAnim,
-                    sortYOffset: 8,
+                    sortYOffset: 0,
                     visible: true,
                 },
                 {

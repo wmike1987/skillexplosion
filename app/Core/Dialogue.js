@@ -4,7 +4,7 @@ import {
     gameUtils,
     graphicsUtils,
     mathArrayUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import styles from '@utils/Styles.js';
 import {
     globals,

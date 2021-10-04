@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 
 //This module represents a doodad (a physical, non-unit body, which can have properties)

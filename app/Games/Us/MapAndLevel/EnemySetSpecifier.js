@@ -1,7 +1,7 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/GameUtils.js';
+import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import unitMenu from '@games/Us/UnitMenu.js';
 
 var easyMode = false;

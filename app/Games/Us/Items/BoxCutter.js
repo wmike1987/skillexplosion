@@ -4,7 +4,7 @@ import {
     graphicsUtils,
     mathArrayUtils,
     unitUtils
-} from '@utils/GameUtils.js';
+} from '@utils/UtilityMenu.js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
