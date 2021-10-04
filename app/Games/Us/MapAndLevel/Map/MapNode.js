@@ -12,6 +12,7 @@ import {
     globals
 } from '@core/Fundamental/GlobalState.js';
 import styles from '@utils/Styles.js';
+import {ItemClasses} from '@games/Us/Items/ItemClasses.js';
 
 var hoverTick = gameUtils.getSound('augmenthover.wav', {
     volume: 0.03,
@@ -92,19 +93,21 @@ var MapLevelNode = function(options) {
     var enemyDescriptions = [];
     var enemyIcons = [];
     var self = this;
-    if (this.levelDetails.enemySets.length > 0) {
-        this.isBattleNode = true;
-    }
+    // if (this.levelDetails.enemySets.length > 0) {
+    //     this.isBattleNode = true;
+    // }
     this.levelDetails.enemySets.forEach(set => {
         enemyDescriptions.push(' x ' + set.spawn.total);
         enemyIcons.push(set.icon);
     });
 
     //create the tooltip with a few assumptions
+    var supplyDropMessage = this.levelDetails.isSupplyDropEligible ? 'Supply Drop: ' + ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].description : null;
     Tooltip.makeTooltippable(this.displayObject, {
-        title: options.tooltipTitle || this.levelDetails.type,
-        description: options.tooltipDescription || enemyDescriptions,
-        descriptionIcons: enemyIcons
+        title: options.tooltipTitle || this.levelDetails.nodeTitle || 'Enemy Camp',
+        description: options.tooltipDescription || this.levelDetails.tooltipDescription || enemyDescriptions,
+        descriptionIcons: enemyIcons,
+        systemMessage: supplyDropMessage
     });
     this.displayObject.tooltipObj.isNodeTooltip = true;
 

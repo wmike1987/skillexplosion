@@ -149,7 +149,8 @@ var levelBase = {
             worldSpecs: Object.assign({}, worldSpecs),
             seed: Math.random(),
             itemClass: 'lightStimulant',
-            itemType: 'item'
+            itemType: 'item',
+            isSupplyDropEligible: true
         }, options.levelOptions || {});
 
         //set the tile tint

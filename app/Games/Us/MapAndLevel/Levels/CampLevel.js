@@ -39,6 +39,7 @@ var campLevel = function() {
         this.camp = options.levelOptions.camp;
         this.position = gameUtils.getPlayableCenter();
         this.mode = this.possibleModes.CUSTOM;
+        this.isSupplyDropEligible = false;
 
         if (this.camp.initExtension) {
             this.camp.initExtension.call(this);
@@ -363,7 +364,7 @@ var campLevel = function() {
                     y: 300
                 }), {
                     where: 'hudThree',
-                    style: styles.adrenalineMedium,
+                    style: styles.adrenalineTextLarge,
                     speed: 4,
                     duration: 4000
                 });
@@ -376,7 +377,7 @@ var campLevel = function() {
                     y: 300
                 }), {
                     where: 'hudThree',
-                    style: styles.fatigueTextMedium,
+                    style: styles.fatigueTextLarge,
                     speed: 4,
                     duration: 4000
                 });

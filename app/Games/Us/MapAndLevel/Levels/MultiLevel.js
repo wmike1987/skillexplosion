@@ -23,9 +23,12 @@ var multiLevel = function(options) {
     this.enemyDefList = ['basic', 'basic', 'basic'];
 
     this.initExtension = function(type, worldSpecs, options) {
-        this.enemyDefList.forEach((type) => {
+        this.enemyDefList.forEach((type, index) => {
             let newOptions = Object.assign({}, options);
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
+            if(index > 0) {
+                newLevel.isSupplyDropEligible = false;
+            }
             this.chain.push(newLevel);
         });
 

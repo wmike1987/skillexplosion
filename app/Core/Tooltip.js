@@ -50,19 +50,23 @@ var Tooltip = function(options) {
 
     //create the icon map - these icons will be placed to the left of each description, in order
     this.descriptionIcons = [];
-    this.iconSize = 32;
-    if($.isArray(options.descriptionIcons)) {
+    this.descriptionIconBorders = [];
+    if(options.descriptionIcons) {
+        this.iconSize = 32;
+        options.descriptionIcons = mathArrayUtils.convertToArray(options.descriptionIcons);
         $.each(options.descriptionIcons, function(i, icon) {
             var sizedIcon = graphicsUtils.createDisplayObject(icon, {where: 'hudText', anchor: {x: 0, y: 0.5}});
             this.descriptions[i].anchor = {x: 0, y: 0.5};
             graphicsUtils.makeSpriteSize(sizedIcon, this.iconSize);
             this.descriptionIcons.push(sizedIcon);
+
+            var border = graphicsUtils.addBorderToSprite({sprite: sizedIcon, thickness: 0});
+            border.anchor = sizedIcon.anchor;
+            border.tint = 0x60eff4;
+            border.alpha = 0.1;
+            border.visible = false;
+            this.descriptionIconBorders.push(border);
         }.bind(this));
-    } else if(options.descriptionIcons){
-        var sizedIcon = graphicsUtils.createDisplayObject(options.descriptionIcons, {where: 'hudText', anchor: {x: 0, y: 0.5}});
-        this.descriptions[0].anchor = {x: 0, y: 0.5};
-        graphicsUtils.makeSpriteSize(sizedIcon, this.iconSize);
-        this.descriptionIcons.push(sizedIcon);
     }
 
     //set a description height which will either be the text height, or icon height
@@ -180,6 +184,10 @@ Tooltip.prototype.destroy = function(options) {
         graphicsUtils.removeSomethingFromRenderer(icon);
     });
     this.descriptionIcons = null;
+    $.each(this.descriptionIconBorders, function(i, bg) {
+        graphicsUtils.removeSomethingFromRenderer(bg);
+    });
+    this.descriptionIconBorders = null;
 
     $.each(this.systemMessages, function(i, sysMessage) {
         graphicsUtils.removeSomethingFromRenderer(sysMessage);
@@ -256,6 +264,7 @@ Tooltip.prototype.display = function(position, options) {
         //if we're using description icons, need to make some alterations
         if(this.descriptionIcons.length > 0) {
             this.descriptionIcons[i].position = descr.position;
+            this.descriptionIconBorders[i].position = descr.position;
             descr.position.x += this.iconSize;
         }
     }.bind(this));
@@ -274,6 +283,10 @@ Tooltip.prototype.display = function(position, options) {
 
     $.each(this.descriptionIcons, function(i, icon) {
         icon.visible = true;
+    });
+
+    $.each(this.descriptionIconBorders, function(i, bg) {
+        bg.visible = true;
     });
 
     $.each(this.systemMessages, function(i, sysMessage) {
@@ -302,6 +315,9 @@ Tooltip.prototype.hide = function() {
     });
     $.each(this.descriptionIcons, function(i, icon) {
         icon.visible = false;
+    });
+    $.each(this.descriptionIconBorders, function(i, bg) {
+        bg.visible = false;
     });
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.visible = false;

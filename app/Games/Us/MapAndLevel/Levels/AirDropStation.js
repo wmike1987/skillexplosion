@@ -15,6 +15,7 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import Tooltip from '@core/Tooltip.js';
 import TileMapper from '@core/TileMapper.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
+import styles from '@utils/Styles.js';
 import {
     Doodad
 } from '@utils/Doodad.js';
@@ -49,6 +50,9 @@ commonAirDropStation.initExtension = function() {
     this.completeUponEntry = true;
     this.lesserSpin = true;
     this.entrySound = entrySound;
+    this.isAirDrop = true;
+    this.nodeTitle = "Air Drop Station";
+    this.tooltipDescription = 'Subtract 6% fatigue and receive supply drop.';
     this.mode = this.possibleModes.CUSTOM;
     this.noZones = [{
         center: {
@@ -90,7 +94,7 @@ commonAirDropStation.createMapNode = function(options) {
                     prereqDistanceLimit += 100;
                 }
                 var node = mathArrayUtils.getRandomElementOfArray(this.mapRef.graph);
-                if (node.canBePrereq() && node.isBattleNode && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(options.position, node.position) < prereqDistanceLimit) {
+                if (node.canBePrereq() && node.levelDetails.isBattleLevel() && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(options.position, node.position) < prereqDistanceLimit) {
                     node.chosenAsPrereq = true;
                     node.master = this;
                     this.prereqs.push(node);
@@ -173,13 +177,17 @@ commonAirDropStation.createMapNode = function(options) {
 
 var airDropStation = function(options) {
     this.type = 'airDropStations';
-    this.regularTokenName = 'AirDropToken';
-    this.specialTokenName = 'AirDropTokenGleam';
-    this.prereqCount = 1;
+    this.regularTokenName = options.regularTokenName || 'AirDropToken';
+    this.specialTokenName = options.specialTokenName || 'AirDropTokenGleam';
+    this.prereqCount = options.prereqCount || 1;
     this.tileSize = 225.0;
+    this.itemClass = options.itemClass;
+    this.itemType = options.itemType;
 
     this.onLevelPlayable = function(scene) {
         var game = globals.currentGame;
+
+        //move units to center
         game.setUnit(game.shane, {
             position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation),
             moveToCenter: true
@@ -189,9 +197,37 @@ var airDropStation = function(options) {
             moveToCenter: true
         });
 
+        //play sound
         this.entrySound.play();
+
+        //create the selection mechanism
         var selection = Object.create(selectionMechanism);
         selection.level = this;
+
+        //alter fatigue
+        gameUtils.doSomethingAfterDuration(() => {
+            globals.currentGame.soundPool.positiveSoundFast.play();
+            var fatText = graphicsUtils.floatText('-6% fatigue', gameUtils.getPlayableCenterPlus({
+                y: 300
+            }), {
+                where: 'hudTwo',
+                style: styles.fatigueTextLarge,
+                speed: 6,
+                duration: 1500
+            });
+            graphicsUtils.addGleamToSprite({
+                sprite: fatText,
+                gleamWidth: 50,
+                duration: 500
+            });
+        }, 1500);
+
+        //subtract fatigue
+        globals.currentGame.map.startingFatigue -= 6;
+        if(globals.currentGame.map.startingFatigue < 0) {
+            globals.currentGame.map.startingFatigue = 0;
+        }
+
         //begin dialogue
         var title = new Dialogue({
             blinkLastLetter: false,
@@ -202,18 +238,19 @@ var airDropStation = function(options) {
         });
         var a1 = new Dialogue({
             actor: "MacMurray",
-            text: "Stimulant drop is en route. What do you need?",
+            text: "Supply drop is en route. What do you need?",
             backgroundBox: true,
             letterSpeed: 30,
             delayAfterEnd: 250,
         });
         var self = this;
         var chain = new DialogueChain([title, a1], {
-            startDelay: 50,
+            startDelay: 2250,
             done: function() {
                 selection.presentChoices({
                     numberOfChoices: 3,
-                    possibleChoices: ItemClasses.lightStimulant.item.items
+                    itemClass: self.itemClass,
+                    itemType: self.itemType
                 });
                 stimulantRevealSound.play();
                 chain.cleanUp();
@@ -225,68 +262,9 @@ var airDropStation = function(options) {
 };
 airDropStation.prototype = commonAirDropStation;
 
-var airDropSpecialStation = function(options) {
-    this.type = 'airDropSpecialStations';
-    this.regularTokenName = 'AirDropSpecialToken';
-    this.specialTokenName = 'AirDropSpecialTokenGleam';
-    this.prereqCount = 3;
-    this.tileSize = 225;
-
-    this.onLevelPlayable = function(scene) {
-        var game = globals.currentGame;
-        game.setUnit(game.shane, {
-            position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation),
-            moveToCenter: true
-        });
-        game.setUnit(game.ursula, {
-            position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation),
-            moveToCenter: true
-        });
-
-        this.entrySound.play();
-        var selection = Object.create(selectionMechanism);
-        selection.level = this;
-        //begin dialogue
-        var title = new Dialogue({
-            blinkLastLetter: false,
-            title: true,
-            text: "Radio Transmission",
-            delayAfterEnd: 500,
-            letterSpeed: 30
-        });
-        var a1 = new Dialogue({
-            actor: "MacMurray",
-            text: "Supply drop inbound. What do you need?",
-            backgroundBox: true,
-            letterSpeed: 30,
-            delayAfterEnd: 250,
-        });
-        var self = this;
-        var chain = new DialogueChain([title, a1], {
-            startDelay: 50,
-            done: function() {
-                selection.presentChoices({
-                    numberOfChoices: 3,
-                    possibleChoices: this.selectionOptions
-                });
-                itemRevealSound.play();
-                chain.cleanUp();
-            }.bind(this)
-        });
-        scene.add(chain);
-        chain.play();
-    };
-};
-airDropSpecialStation.prototype = commonAirDropStation;
-
 var selectionMechanism = {
     _chooseRandomItems: function() {
-        this.presentedChoices = [];
-        for (var x = 0; x < this.numberOfChoices; x++) {
-            var choice = mathArrayUtils.getRandomElementOfArray(this.possibleChoices);
-            mathArrayUtils.removeObjectFromArray(choice, this.possibleChoices);
-            this.presentedChoices.push(choice);
-        }
+        this.presentedChoices = ItemUtils.getRandomItemsFromClass(this.itemClass, this.itemType, 3);
     },
 
     _displayChoices: function() {
@@ -391,8 +369,8 @@ var selectionMechanism = {
     },
 
     presentChoices: function(options) {
-        this.numberOfChoices = options.numberOfChoices;
-        this.possibleChoices = options.possibleChoices;
+        this.itemClass = options.itemClass;
+        this.itemType = options.itemType;
 
         this._chooseRandomItems();
 
@@ -401,6 +379,5 @@ var selectionMechanism = {
 };
 
 export {
-    airDropStation,
-    airDropSpecialStation
+    airDropStation
 };

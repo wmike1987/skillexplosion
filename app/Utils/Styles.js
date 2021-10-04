@@ -405,16 +405,17 @@ export default {
         strokeThickness: 1
     }),
 
-    fatigueTextMedium: new PIXI.TextStyle({
-        name: 'fatigueTextMedium',
+    fatigueTextLarge: new PIXI.TextStyle({
+        name: 'fatigueTextLarge',
         fill: "#888888",
-        fontSize: 30,
-        fontStyle: "italic",
+        fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontWeight: "lighter",
-        lineJoin: "round",
-        miterLimit: 0,
-        strokeThickness: 1
+        fontSize: 48,
+        fontStyle: "italic",
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        strokeThickness: 5,
+        padding: 11,
     }),
 
     adrenalineText: new PIXI.TextStyle({
@@ -429,24 +430,12 @@ export default {
         strokeThickness: 1
     }),
 
-    adrenalineMedium: new PIXI.TextStyle({
-        name: 'adrenalineMedium',
-        fill: "#d22a7b",
-        fontSize: 30,
-        fontStyle: "italic",
-        fontFamily: "Tahoma, Geneva, sans-serif",
-        fontWeight: "lighter",
-        lineJoin: "round",
-        miterLimit: 0,
-        strokeThickness: 1
-    }),
-
     adrenalineTextLarge: new PIXI.TextStyle({
         name: 'adrenalineTextLarge',
         fill: "#fb13f4",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 55,
+        fontSize: 48,
         fontStyle: "italic",
         fontVariant: "small-caps",
         lineJoin: "bevel",
@@ -459,7 +448,7 @@ export default {
         fill: "#16f6db",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 55,
+        fontSize: 48,
         fontStyle: "italic",
         fontVariant: "small-caps",
         lineJoin: "bevel",

@@ -797,6 +797,7 @@ var phaseTwo = function(options) {
             world.map.clearAllNodesExcept('camp');
             world.map.addMapNode('basicHunter', {
                 levelOptions: {
+                    nodeTitle: "Hunter's Camp",
                     itemClass: 'worn',
                 }
             });
@@ -805,6 +806,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basic');
             world.map.addMapNode('basicHard', {
                 levelOptions: {
+                    nodeTitle: 'Mega Den',
                     token: 'hard',
                     itemClass: 'worn',
                 }
@@ -822,13 +824,18 @@ var phaseTwo = function(options) {
             // world.map.addMapNode('airDropStation');
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
-                    // prereqCount: 0
+                    prereqCount: 1,
+                    itemClass: 'stimulant',
+                    itemType: 'item'
                 }
             });
-            world.map.addMapNode('airDropSpecialStation', {
+            world.map.addMapNode('airDropStation', {
                 levelOptions: {
-                    // prereqCount: 0,
-                    selectionOptions: ItemUtils.getRandomItemsFromClass('worn', 'specialtyItem', 3)
+                    prereqCount: 3,
+                    itemClass: 'worn',
+                    itemType: 'specialtyItem',
+                    regularTokenName: 'AirDropSpecialToken',
+                    specialTokenName: 'AirDropSpecialTokenGleam'
                 }
             });
             if (options.skippedTutorial) {
@@ -882,7 +889,7 @@ var phaseTwo = function(options) {
             }
         }
     });
-    
+
     globals.currentGame.currentScene.transitionToScene(startDialogue.scene);
     startDialogue.play();
 

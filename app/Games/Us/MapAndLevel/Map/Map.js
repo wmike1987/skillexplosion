@@ -158,7 +158,7 @@ var map = function(specs) {
         }
     }.bind(this));
 
-    Matter.Events.on(globals.currentGame, 'VictoryOrDefeat', function(event) {
+    Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', function(event) {
         if (event.result == 'victory') {
             this.startingFatigue += 3;
         }
@@ -513,6 +513,8 @@ var map = function(specs) {
                     t = '+1 adrenaline!';
                 }
 
+                Matter.Events.trigger(globals.currentGame, 'OutingLevelCompleted', {result: 'victory'});
+
                 //disable the cursor
                 gameUtils.setCursorStyle('None');
 
@@ -531,7 +533,6 @@ var map = function(specs) {
                         gleamWidth: 50,
                         duration: 500
                     });
-                    globals.currentGame.currentScene.add(adrText);
                 }, 1000);
 
                 //show the map and trigger a travel to the next node
