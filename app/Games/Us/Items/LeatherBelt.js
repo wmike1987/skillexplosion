@@ -1,8 +1,8 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    dodge: 4,
-    defense: 0.5,
+    dodgeAddition: 4,
+    defenseAddition: 0.5,
 };
 
 export default function(options) {

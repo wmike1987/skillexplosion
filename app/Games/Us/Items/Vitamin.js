@@ -7,13 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Vitamin",
-        description: "Consume to add 1 to max health and 0.15 to armor.",
+        description: "Consume to add 0.2 to armor.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'PepPillTwo',
         fontType: 'stimulant',
         consume: function(unit) {
-            unit.maxHealth += 1;
-            unit.defense += 0.15;
+            unit.defense += 0.2;
         },
     }, options, Consumable);
     return new ic(item);

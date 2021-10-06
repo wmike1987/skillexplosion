@@ -167,6 +167,7 @@ var mathArrayUtils = {
     roundPositionToWholeNumbers: function(position) {
         position.x = Math.round(position.x);
         position.y = Math.round(position.y);
+        return position;
     },
 
     //return new position

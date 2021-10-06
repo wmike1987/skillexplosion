@@ -472,8 +472,7 @@ var gameUtils = {
             position.x < 0 + buffer ||
             mathArrayUtils.distanceBetweenPoints(position, point) < minRadius);
 
-        mathArrayUtils.roundPositionToWholeNumbers(position);
-        return position;
+        return mathArrayUtils.roundPositionToWholeNumbers(position);
     },
 
     isPositionWithinPlayableBounds: function(position, buffer) {

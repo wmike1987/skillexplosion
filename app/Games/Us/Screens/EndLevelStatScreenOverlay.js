@@ -225,8 +225,8 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
     var startY = gameUtils.getCanvasHeight() / 15 * 2;
     var yIncrement = gameUtils.getCanvasHeight() / 15;
     var stage = "hudText";
-    var healthEnergyXOffset = 38;
-    var healthEnergyXSlice = 172 / 16;
+    var healthEnergyXOffset = 57;
+    var healthEnergyXSlice = 198 / 16;
     var unitStatYSpacing = 22;
     var unitStatTextBuffer = 2;
 
@@ -278,7 +278,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             Matter.Events.trigger(scene, 'sceneFadeInDone');
         }, 150);
         scene.addBlackBackground({
-            alpha: 0.75,
+            alpha: 0.85,
             fadeDuration: 500
         });
 
@@ -345,7 +345,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
         //Shane
         var startPos = shanePosition(same);
-        startPos.x -= 86;
+        startPos.x -= 105;
         var marinePortrait = graphicsUtils.createDisplayObject('MarinePortrait', {
             position: startPos,
             where: stage,
@@ -405,7 +405,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime);
         });
 
-        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "Arm: " + shane.defense, {
+        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "A: " + shane.defense.toFixed(2), {
             position: {
                 x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer
@@ -418,6 +418,28 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var defenseAdditionText = '';
+        if (shane.defenseAdditions.length > 0) {
+            var sign = '+';
+            if (shane.getDefenseAdditionSum() < 0) {
+                sign = '';
+            }
+            defenseAdditionText = sign + shane.getDefenseAdditionSum().toFixed(1);
+        }
+        var defenseAdditionPosition = mathArrayUtils.clonePosition(marineDefense.position, {
+            x: marineDefense.width
+        });
+        var marineDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {
+            position: mathArrayUtils.roundPositionToWholeNumbers(defenseAdditionPosition),
+            style: unitDefenseAdditionsStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.0,
+                y: 0.5
+            }
+        });
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({
@@ -427,10 +449,18 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                     nokill: true,
                     makeVisible: true
                 });
+
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: marineDefenseAdditions,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
-        var marineHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + shane.maxHealth, {
+        var marineHealth = graphicsUtils.createDisplayObject("TEX+:" + "H: " + shane.maxHealth, {
             position: {
                 x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer + unitStatYSpacing
@@ -530,19 +560,6 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime);
         });
 
-        // var defenseAdditionText = '';
-        // if(shane.defenseAdditions.length > 0) {
-        //     var sign = '+';
-        //     if(shane.getDefenseAdditionSum() < 0) {
-        //         sign = '';
-        //     }
-        //     defenseAdditionText = sign + shane.getDefenseAdditionSum();
-        // }
-        // var marineDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {position: {x: shaneColumnX + healthEnergyXOffset + marineDefense.width/2, y: shaneY + unitStatYSpacing*1.5}, style: unitDefenseAdditionsStyle, where: "hudText", anchor: {x:0.5, y:0.5}});
-        // if(defenseAdditionText != '') {
-        //     marineDefense.position.x -= marineDefenseAdditions.width/2;
-        // }
-
         var placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {
             position: shanePosition(reg),
             style: statDividerStyle,
@@ -568,7 +585,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
         var tintMarineBorder = graphicsUtils.graduallyTint(marinePortraitBorder, 0x18bb96, 0xa80505, 6000);
         this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth,
-            marineEnergy, marineDamage, marineDefense, /*marineDefenseAdditions,*/ marineGrit, marineDodge
+            marineEnergy, marineDamage, marineDefense, marineDefenseAdditions, marineGrit, marineDodge
         ]);
 
         var shaneKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {
@@ -805,7 +822,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 5);
         });
 
-        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageReducedByArmor, {
+        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageReducedByArmor.toFixed(2), {
             position: shanePosition(reg),
             style: statStyle,
             where: "hudText",
@@ -1134,7 +1151,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
         //Ursula
         startPos = ursulaPosition(same);
-        startPos.x -= 86;
+        startPos.x -= 105;
         var medicPortrait = graphicsUtils.createDisplayObject('MedicPortrait', {
             position: startPos,
             where: stage,
@@ -1194,7 +1211,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime);
         });
 
-        var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "Arm: " + ursula.defense, {
+        var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "A: " + ursula.defense.toFixed(1), {
             position: {
                 x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer
@@ -1207,6 +1224,31 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var defenseAdditionText = '';
+        if (ursula.defenseAdditions.length > 0) {
+            var sign = '+';
+            if (ursula.getDefenseAdditionSum() < 0) {
+                sign = '';
+            }
+            defenseAdditionText = sign + ursula.getDefenseAdditionSum().toFixed(1);
+        }
+        var defenseAdditionPosition = mathArrayUtils.clonePosition(medicDefense.position, {
+            x: medicDefense.width
+        });
+        var ursulaDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {
+            position: mathArrayUtils.roundPositionToWholeNumbers(defenseAdditionPosition),
+            style: unitDefenseAdditionsStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.0,
+                y: 0.5
+            }
+        });
+        // if(defenseAdditionText != '') {
+        //     medicDefense.position.x -= ursulaDefenseAdditions.width/2;
+        // }
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({
@@ -1216,10 +1258,18 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                     nokill: true,
                     makeVisible: true
                 });
+
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaDefenseAdditions,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
             }, startFadeTime);
         });
 
-        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "HP: " + ursula.maxHealth, {
+        var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "H: " + ursula.maxHealth, {
             position: {
                 x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer + unitStatYSpacing
@@ -1318,18 +1368,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                 });
             }, startFadeTime);
         });
-        // var defenseAdditionText = '';
-        // if(ursula.defenseAdditions.length > 0) {
-        //     var sign = '+';
-        //     if(ursula.getDefenseAdditionSum() < 0) {
-        //         sign = '';
-        //     }
-        //     defenseAdditionText = sign + ursula.getDefenseAdditionSum();
-        // }
-        // var ursulaDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {position: {x: ursColumnX + healthEnergyXOffset + medicDefense.width/2, y: ursulaY + unitStatYSpacing*1.5}, style: unitDefenseAdditionsStyle, where: "hudText", anchor: {x:0.5, y:0.5}});
-        // if(defenseAdditionText != '') {
-        //     medicDefense.position.x -= ursulaDefenseAdditions.width/2;
-        // }
+
 
         placeholder = graphicsUtils.createDisplayObject("TEX+:" + skinnyDivider, {
             position: ursulaPosition(reg),
@@ -1355,7 +1394,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
         var tintMedicBorder = graphicsUtils.graduallyTint(medicPortraitBorder, 0x18bb96, 0xa80505, 6000);
         this.ursulaStats.push([medicPortrait, medicPortraitBorder, placeholder, medicHealth, medicEnergy, medicDamage,
-            medicDefense, /*ursulaDefenseAdditions,*/ medicGrit, medicDodge
+            medicDefense, ursulaDefenseAdditions, medicGrit, medicDodge
         ]);
 
         var ursulaKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {
@@ -1581,7 +1620,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 5);
         });
 
-        var ursulaDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageReducedByArmor, {
+        var ursulaDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageReducedByArmor.toFixed(2), {
             position: ursulaPosition(reg),
             style: statStyle,
             where: "hudText",
@@ -1963,7 +2002,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                     //get adrenaline lost during an outing
                     gameUtils.doSomethingAfterDuration(() => {
 
-                        if(adrenalineGained) {
+                        if (adrenalineGained) {
                             for (var x = 0; x < adrenalineGained; x++) {
                                 globals.currentGame.map.removeAdrenalineBlock();
                             }
@@ -1985,7 +2024,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                     }, pauseTime);
 
                     //present items if we've completed nodes
-                    if(globals.currentGame.map.completedNodes.length > 0) {
+                    if (globals.currentGame.map.completedNodes.length > 0) {
                         $('body').off('keydown.uskeydownendscreen');
                         gameUtils.doSomethingAfterDuration(() => {
                             presentItems({

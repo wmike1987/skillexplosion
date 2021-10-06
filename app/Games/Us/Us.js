@@ -676,11 +676,13 @@ var game = {
             // adjustHitbox: false
         });
         this.shane = s;
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PepPill"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BearMedallion"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["VioletTipCartridge"], unit: this.shane});
         // ItemUtils.giveUnitItem({
@@ -737,6 +739,8 @@ var game = {
             dropItemsOnDeath: false
         });
 
+
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PepPill"], unit: this.ursula});
         // ItemUtils.giveUnitItem({
         //     gamePrefix: "Us",

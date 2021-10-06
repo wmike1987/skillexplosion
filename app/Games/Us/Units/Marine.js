@@ -484,10 +484,10 @@ export default function Marine(options) {
                 textureName: 'DeathWishBuff',
                 duration: 2000,
                 applyChanges: function() {
-                    self.damage += 3;
+                    self.addDamageAddition(3);
                 },
                 removeChanges: function() {
-                    self.damage -= 3;
+                    self.removeDamageAddition(3);
                 }
             });
         }

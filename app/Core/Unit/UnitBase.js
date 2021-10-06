@@ -143,7 +143,7 @@ var UnitBase = {
     eventKeyMappings: {},
     eventKeyStateGathering: {},
     currentItems: [null, null, null, null, null, null],
-    currentSpecialtyItems: [null, null, null],
+    currentSpecialtyItems: [null, null, null, null, null, null],
     currentBackpack: [null, null, null],
     dropItemsOnDeath: true,
     friendlyTint: 0x10c700,
