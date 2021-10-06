@@ -558,7 +558,7 @@ export default function Marine(options) {
         volume: 0.05,
         rate: 1
     });
-    var knifeSpeed = 22;
+    marine.knifeSpeed = 22;
     marine.knifeDamage = 15;
     var throwKnife = function(destination, commandObj, childKnife) {
         //get augments
@@ -647,7 +647,7 @@ export default function Marine(options) {
         knifeThrowSound.play();
         knife.deltaTime = this.body.deltaTime;
         knife.destination = destination;
-        gameUtils.sendBodyToDestinationAtSpeed(knife, destination, knifeSpeed, true, true);
+        gameUtils.sendBodyToDestinationAtSpeed(knife, destination, marine.knifeSpeed, true, true);
         var removeSelf = globals.currentGame.addTickCallback(function() {
             if (gameUtils.bodyRanOffStage(knife)) {
                 globals.currentGame.removeBody(knife);

@@ -214,7 +214,7 @@ export default {
         fill: "#017340",
         fillGradientType: 1,
         fontFamily: "Helvetica",
-        fontSize: 14,
+        fontSize: 12,
         strokeThickness: 2,
         textBaseline: "center",
     }),
