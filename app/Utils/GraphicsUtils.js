@@ -753,6 +753,7 @@ var graphicsUtils = {
         });
     },
 
+    //supports an existing border, calling this again will resize the border
     addBorderToSprite: function(options) {
         options = Object.assign({
             tint: 0xFFFFFF,
@@ -760,19 +761,28 @@ var graphicsUtils = {
             alpha: 0.45,
         }, options);
         let sprite = options.sprite;
-        var border = graphicsUtils.addSomethingToRenderer('TintableSquare', {
-            where: sprite.where,
-            position: sprite.position,
-            alpha: options.alpha
-        });
-        graphicsUtils.makeSpriteSize(border, sprite.width + options.thickness*2);
-        border.sortYOffset = -1;
-        border.tint = options.tint;
-        gameUtils.matterOnce(sprite, 'destroy', () => {
-            graphicsUtils.removeSomethingFromRenderer(border);
-        });
+
+        var border = options.existingBorder;
+        if(!border) {
+            border = graphicsUtils.addSomethingToRenderer('TintableSquare', {
+                where: sprite.where,
+                position: sprite.position,
+                alpha: options.alpha
+            });
+            border.borderOptions = options;
+            border.sortYOffset = -1;
+            border.tint = options.tint;
+            gameUtils.matterOnce(sprite, 'destroy', () => {
+                graphicsUtils.removeSomethingFromRenderer(border);
+            });
+        }
+        graphicsUtils.makeSpriteSize(border, {x: sprite.width + options.thickness*2, y: sprite.height + options.thickness*2});
 
         return border;
+    },
+
+    resizeBorderSprite: function(borderSprite) {
+        this.addBorderToSprite(Object.assign({existingBorder: borderSprite}, borderSprite.borderOptions));
     },
 
     addGleamToSprite: function(options) {

@@ -194,6 +194,7 @@ Tooltip.prototype.destroy = function(options) {
     });
     this.systemMessages = null;
 
+    //this will also kill the base border
     graphicsUtils.removeSomethingFromRenderer(this.base);
 
     $.each(this.updaters, function(key, updater) {
@@ -295,6 +296,16 @@ Tooltip.prototype.display = function(position, options) {
     this.sizeBase();
     this.base.visible = true;
 
+    //add the base border on first display
+    if(!this.baseBorder) {
+        this.baseBorder = graphicsUtils.addBorderToSprite({sprite: this.base, thickness: 2, tint: 0xa2a2a2, alpha: 0.75});
+    } else {
+        graphicsUtils.resizeBorderSprite(this.baseBorder);
+    }
+    this.baseBorder.visible = true;
+    var borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)})
+    this.baseBorder.position = borderPosition;
+
     Matter.Events.trigger(this.dobj, 'tooltipShown');
     Matter.Events.trigger(globals.currentGame, 'tooltipShown', {tooltip: this});
 };
@@ -323,6 +334,10 @@ Tooltip.prototype.hide = function() {
         sysMessage.visible = false;
     });
     this.base.visible = false;
+
+    if(this.baseBorder) {
+        this.baseBorder.visible = false;
+    }
 };
 
 Tooltip.makeTooltippable = function(displayObject, options) {
