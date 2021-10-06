@@ -6,7 +6,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 var ItemClasses = {
     worn: {
-        item: {description: 'Worn Item', tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion',
+        item: {description: 'Worn Item', tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion', 'LeatherBelt',
                                        'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup']},
         microchip: {description: 'Microchip', tint: 0xf59a87, items: ['BasicMicrochip'], gleamAnimation: "MicrochipGleam"},
         specialtyItem: {description: 'Worn Specialty Item', tint: 0x7ffcea, items: ['SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar', 'PillBottle', 'SkyMedallion']},

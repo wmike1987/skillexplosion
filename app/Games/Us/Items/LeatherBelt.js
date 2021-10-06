@@ -1,15 +1,16 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    maxEnergy: 9,
+    dodge: 4,
+    defense: 0.5,
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Picture Of Earth",
-        description: "Add +" + manipulations.maxEnergy + " to maximum energy.",
-        icon: 'PictureOfEarth'
+        name: "Leather Belt",
+        description: ["Add 0.5 to armor.", "Add 4 to dodge."],
+        icon: 'LeatherBelt'
     }, options);
     return new ic(item);
 }

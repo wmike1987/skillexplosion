@@ -8,6 +8,9 @@ import style from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState';
 import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
 
+var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
+var deathSound = gameUtils.getSound('boxexplode.wav', {volume: 0.025, rate: 1.75});
+
 export default function DestructibleBox(options) {
     var box = {};
 
@@ -64,9 +67,6 @@ export default function DestructibleBox(options) {
         this.renderlings.main.tint = 0xFFFFFF;
     };
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
-    var deathSound = gameUtils.getSound('boxexplode.wav', {volume: 0.025, rate: 1.75});
-
     var unitProperties = $.extend({
         unitType: 'Box',
         health: 20,
@@ -117,7 +117,7 @@ export default function DestructibleBox(options) {
             radius: options.radius,
             mass: options.mass || 8,
             mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
+            slaves: [/*attackSound, deathSound,*/ unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
     });
 }

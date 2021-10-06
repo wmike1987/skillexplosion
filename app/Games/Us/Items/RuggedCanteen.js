@@ -8,7 +8,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Rugged Canteen",
-        description: "Add +" + manipulations.maxHealth + " to maximum health.",
+        description: "Add " + manipulations.maxHealth + " to maximum health.",
         icon: 'RuggedCanteen'
     }, options);
     return new ic(item);

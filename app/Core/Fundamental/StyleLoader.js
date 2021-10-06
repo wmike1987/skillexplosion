@@ -11,6 +11,12 @@ var load = function() {
 
     //hard-coded important styles
     var importantStyles = [];
+    importantStyles.push(styles.regularItemName);
+    importantStyles.push(styles.shaneItemName);
+    importantStyles.push(styles.ursulaItemName);
+    importantStyles.push(styles.stimulantItemName);
+    importantStyles.push(styles.microchipItemName);
+    importantStyles.push(styles.bookItemName);
     importantStyles.push(styles.statTitleStyle);
     importantStyles.push(styles.statTextStyle);
     importantStyles.push(styles.statDividerStyle);
