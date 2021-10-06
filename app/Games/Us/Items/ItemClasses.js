@@ -31,7 +31,7 @@ var ItemClasses = {
     },
 
     lightStimulant: {
-        item: {description: 'Pill', tint: 0x80ffbb, items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill'], gleamAnimation: 'PillGleam'},
+        item: {description: 'Pill', tint: 0x80ffbb, items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill', 'Vitamin'], gleamAnimation: 'PillGleam'},
     },
 
     stimulant: {
