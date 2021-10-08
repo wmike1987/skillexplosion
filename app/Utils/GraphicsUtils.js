@@ -765,7 +765,7 @@ var graphicsUtils = {
         var border = options.existingBorder;
         if(!border) {
             border = graphicsUtils.addSomethingToRenderer('TintableSquare', {
-                where: sprite.where,
+                where: options.where || sprite.where,
                 position: sprite.position,
                 alpha: options.alpha
             });

@@ -36,7 +36,11 @@ var unitDefenseStyle = styles.unitDefenseStyle;
 var unitGritStyle = styles.unitGritStyle;
 var unitDodgeStyle = styles.unitDodgeStyle;
 var unitDefenseAdditionsStyle = styles.unitDefenseAdditionsStyle;
+var unitDamageAdditionsStyle = styles.unitDamageAdditionsStyle;
+var unitGritAdditionsStyle = styles.unitGritAdditionsStyle;
+var unitDodgeAdditionsStyle = styles.unitDodgeAdditionsStyle;
 var unitGeneralEnergyStyle = styles.unitGeneralEnergyStyle;
+
 
 //Shane titles
 var shaneTitle = "Shane";
@@ -69,6 +73,18 @@ var createContainer = function() {
     container.addChild(left);
     container.addChild(right);
     return container;
+};
+
+var overlayCommonFade = function(sprite, delay) {
+    gameUtils.doSomethingAfterDuration(() => {
+        graphicsUtils.fadeSpriteOverTime({
+            sprite: sprite,
+            duration: 1000,
+            fadeIn: true,
+            nokill: true,
+            makeVisible: true
+        });
+    }, delay);
 };
 
 var presentItems = function(options) {
@@ -191,6 +207,50 @@ var presentItems = function(options) {
     recursivePresentation();
 };
 
+var capitalizeFirstLetter = function(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+var getAdditionObj = function(unit, additionName, locationRef, style) {
+    var text = '';
+
+    var additions = null;
+    var additionSum = null;
+    if(!unit[additionName]) {
+        additions = unit.getAdditions(additionName);
+        additionSum = unit.getAdditionSum(additionName);
+    } else {
+        var methodName = 'get' + (additionName.charAt(0).toUpperCase() + additionName.slice(1, -1)) + 'Sum';
+        additions = unit[additionName];
+        additionSum = unit[methodName]();
+    }
+
+    if (additions.length > 0) {
+        var sign = '+';
+
+        if (additionSum < 0) {
+            sign = '';
+        }
+        text = sign + additionSum.toFixed(1);
+    }
+    var addPos = mathArrayUtils.clonePosition(locationRef.position, {
+        x: locationRef.width
+    });
+
+    var additionObj = graphicsUtils.createDisplayObject("TEX+:" + text, {
+        position: mathArrayUtils.roundPositionToWholeNumbers(addPos),
+        style: style,
+        where: "hudText",
+        visible: false,
+        anchor: {
+            x: 0.0,
+            y: 0.5
+        }
+    });
+
+    return additionObj;
+};
+
 var EndLevelStatScreenOverlay = function(units, statsObj, options) {
     options = Object.assign({
         type: 'victory'
@@ -278,7 +338,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             Matter.Events.trigger(scene, 'sceneFadeInDone');
         }, 150);
         scene.addBlackBackground({
-            alpha: 0.85,
+            alpha: 0.75,
             fadeDuration: 500
         });
 
@@ -379,6 +439,8 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                 });
             }, startFadeTime);
         });
+        var b1 = graphicsUtils.addBorderToSprite({sprite: marinePortraitBorder, thickness: 0, tint: 0x000000, alpha: 1.0, where: 'hud'});
+        b1.visible = false;
 
         var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {
             position: {
@@ -393,19 +455,15 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var shaneDamageAdditions = getAdditionObj(shane, 'damageAdditions', marineDamage, unitDamageAdditionsStyle);
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: marineDamage,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(marineDamage, startFadeTime);
+            overlayCommonFade(shaneDamageAdditions, startFadeTime);
         });
 
-        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "A: " + shane.defense.toFixed(2), {
+        var marineDefense = graphicsUtils.createDisplayObject("TEX+:" + "A: " + shane.defense.toFixed(1), {
             position: {
                 x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer
@@ -419,45 +477,12 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             visible: false
         });
 
-        var defenseAdditionText = '';
-        if (shane.defenseAdditions.length > 0) {
-            var sign = '+';
-            if (shane.getDefenseAdditionSum() < 0) {
-                sign = '';
-            }
-            defenseAdditionText = sign + shane.getDefenseAdditionSum().toFixed(1);
-        }
-        var defenseAdditionPosition = mathArrayUtils.clonePosition(marineDefense.position, {
-            x: marineDefense.width
-        });
-        var marineDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {
-            position: mathArrayUtils.roundPositionToWholeNumbers(defenseAdditionPosition),
-            style: unitDefenseAdditionsStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.0,
-                y: 0.5
-            }
-        });
+        var shaneDefenseAdditions = getAdditionObj(shane, 'defenseAdditions', marineDefense, unitDefenseAdditionsStyle);
 
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: marineDefense,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: marineDefenseAdditions,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(marineDefense, startFadeTime);
+            overlayCommonFade(shaneDefenseAdditions, startFadeTime);
+            overlayCommonFade(b1, startFadeTime);
         });
 
         var marineHealth = graphicsUtils.createDisplayObject("TEX+:" + "H: " + shane.maxHealth, {
@@ -498,16 +523,12 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var shaneGritAdditions = getAdditionObj(shane, 'gritAdditions', marineGrit, unitGritAdditionsStyle);
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: marineGrit,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(marineGrit, startFadeTime);
+            overlayCommonFade(shaneGritAdditions, startFadeTime);
         });
 
         var marineDodge = graphicsUtils.createDisplayObject("TEX+:" + "Ddg: " + shane.dodge, {
@@ -523,16 +544,12 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var shaneDodgeAdditions = getAdditionObj(shane, 'dodgeAdditions', marineDodge, unitDodgeAdditionsStyle);
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: marineDodge,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(marineDodge, startFadeTime);
+            overlayCommonFade(shaneDodgeAdditions, startFadeTime);
         });
 
         var marineEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + shane.maxEnergy, {
@@ -585,7 +602,8 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
         var tintMarineBorder = graphicsUtils.graduallyTint(marinePortraitBorder, 0x18bb96, 0xa80505, 6000);
         this.shaneStats.push([marinePortrait, marinePortraitBorder, placeholder, marineHealth,
-            marineEnergy, marineDamage, marineDefense, marineDefenseAdditions, marineGrit, marineDodge
+            marineEnergy, marineDamage, marineDefense, shaneDefenseAdditions, marineGrit, marineDodge, shaneGritAdditions,
+            shaneDodgeAdditions, shaneDamageAdditions
         ]);
 
         var shaneKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {
@@ -1174,16 +1192,13 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             where: stage,
             visible: false
         });
+
+        var b2 = graphicsUtils.addBorderToSprite({sprite: medicPortraitBorder, thickness: 0, tint: 0x000000, alpha: 1.0, where: 'hud'});
+        b2.visible = false;
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: medicPortraitBorder,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(medicPortraitBorder, startFadeTime);
+            overlayCommonFade(b2, startFadeTime);
         });
 
         var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + ursula.damageLabel + ursula.damageMember(), {
@@ -1199,16 +1214,12 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var ursulaHealAdditions = getAdditionObj(ursula, 'heal', medicDamage, unitDamageAdditionsStyle);
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: medicDamage,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(medicDamage, startFadeTime);
+            overlayCommonFade(ursulaHealAdditions, startFadeTime);
         });
 
         var medicDefense = graphicsUtils.createDisplayObject("TEX+:" + "A: " + ursula.defense.toFixed(1), {
@@ -1225,48 +1236,11 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             visible: false
         });
 
-        var defenseAdditionText = '';
-        if (ursula.defenseAdditions.length > 0) {
-            var sign = '+';
-            if (ursula.getDefenseAdditionSum() < 0) {
-                sign = '';
-            }
-            defenseAdditionText = sign + ursula.getDefenseAdditionSum().toFixed(1);
-        }
-        var defenseAdditionPosition = mathArrayUtils.clonePosition(medicDefense.position, {
-            x: medicDefense.width
-        });
-        var ursulaDefenseAdditions = graphicsUtils.createDisplayObject("TEX+:" + defenseAdditionText, {
-            position: mathArrayUtils.roundPositionToWholeNumbers(defenseAdditionPosition),
-            style: unitDefenseAdditionsStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.0,
-                y: 0.5
-            }
-        });
-        // if(defenseAdditionText != '') {
-        //     medicDefense.position.x -= ursulaDefenseAdditions.width/2;
-        // }
+        var ursulaDefenseAdditions = getAdditionObj(ursula, 'defenseAdditions', medicDefense, unitDefenseAdditionsStyle);
 
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: medicDefense,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: ursulaDefenseAdditions,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(medicDefense, startFadeTime);
+            overlayCommonFade(ursulaDefenseAdditions, startFadeTime);
         });
 
         var medicHealth = graphicsUtils.createDisplayObject("TEX+:" + "H: " + ursula.maxHealth, {
@@ -1307,16 +1281,12 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var ursulaGritAdditions = getAdditionObj(ursula, 'gritAdditions', medicGrit, unitGritAdditionsStyle);
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: medicGrit,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(medicGrit, startFadeTime);
+            overlayCommonFade(ursulaGritAdditions, startFadeTime);
         });
 
         var medicDodge = graphicsUtils.createDisplayObject("TEX+:" + "Ddg: " + ursula.dodge, {
@@ -1332,16 +1302,12 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             },
             visible: false
         });
+
+        var ursulaDodgeAdditions = getAdditionObj(ursula, 'dodgeAdditions', medicDodge, unitDodgeAdditionsStyle);
+
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: medicDodge,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime);
+            overlayCommonFade(medicDodge, startFadeTime);
+            overlayCommonFade(ursulaDodgeAdditions, startFadeTime);
         });
 
         var medicEnergy = graphicsUtils.createDisplayObject("TEX+:" + "E: " + ursula.maxEnergy, {
@@ -1394,7 +1360,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
 
         var tintMedicBorder = graphicsUtils.graduallyTint(medicPortraitBorder, 0x18bb96, 0xa80505, 6000);
         this.ursulaStats.push([medicPortrait, medicPortraitBorder, placeholder, medicHealth, medicEnergy, medicDamage,
-            medicDefense, ursulaDefenseAdditions, medicGrit, medicDodge
+            medicDefense, ursulaDefenseAdditions, medicGrit, medicDodge, ursulaHealAdditions, ursulaGritAdditions, ursulaDodgeAdditions
         ]);
 
         var ursulaKillsTitle = graphicsUtils.createDisplayObject("TEX+:" + kills, {

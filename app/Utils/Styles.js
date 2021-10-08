@@ -214,7 +214,7 @@ export default {
         fill: "#017340",
         fillGradientType: 1,
         fontFamily: "Helvetica",
-        fontSize: 12,
+        fontSize: 14,
         strokeThickness: 2,
         textBaseline: "center",
     }),
@@ -235,7 +235,7 @@ export default {
         fillGradientType: 1,
         fontFamily: "Helvetica",
         fontSize: 12,
-        strokeThickness: 2,
+        strokeThickness: 1,
         textBaseline: "center",
     }),
 
