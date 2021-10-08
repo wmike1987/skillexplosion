@@ -941,14 +941,14 @@ export default function Marine(options) {
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 6 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain a free knife.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
         aggressionEventName: 'dealNonLethalDamage',
-        aggressionCooldown: 6000,
+        aggressionCooldown: 5000,
         passiveAction: function(event) {
             if (!marine.freeKinves) {
                 marine.freeKinves = 0;
@@ -983,11 +983,11 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            attackingUnit.maim(3000);
+            attackingUnit.maim({duration: 6000});
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
-            targetUnit.maim(6000);
+            targetUnit.maim({duration: 6000});
         },
     });
 

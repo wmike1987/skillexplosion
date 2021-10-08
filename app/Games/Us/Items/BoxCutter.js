@@ -53,6 +53,26 @@ var manipulations = {
                     }
                 }, 50);
             }
+        },
+        maim: {
+            callback: function(event) {
+                let maimedUnit = event.maimedUnit;
+
+                gameUtils.doSomethingAfterDuration(() => {
+                    if (!maimedUnit.isDead && maimedUnit.team != event.equippedUnit.team) {
+                        maimedUnit.sufferAttack(damage, event.equippedUnit);
+                        var bloodPierceAnimation = gameUtils.getAnimation({
+                            spritesheetName: 'UtilityAnimations1',
+                            animationName: 'pierce',
+                            speed: 0.95,
+                            transform: [maimedUnit.position.x, maimedUnit.position.y, 0.45, 0.45]
+                        });
+                        knifeImpactSound.play();
+                        bloodPierceAnimation.play();
+                        graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
+                    }
+                }, 50);
+            }
         }
     }
 };
@@ -61,7 +81,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Box Cutter",
-        description: "Deal " + damage + " damage upon petrifying or condemning an enemy unit.",
+        description: "Deal " + damage + " damage upon petrifying, condemning, or maiming an enemy unit.",
         icon: 'BoxCutter',
         type: 'Medic',
         fontType: 'ursula',

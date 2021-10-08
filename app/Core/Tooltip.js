@@ -257,10 +257,12 @@ Tooltip.prototype.display = function(position, options) {
 
     //place title
     this.title.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height + this.buffer/2};
+    mathArrayUtils.roundPositionToWholeNumbers(this.title.position);
 
     //place descriptions and description icons
     $.each(this.descriptions, function(i, descr) {
         descr.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height + this.title.height + this.buffer/2 + (this.iconBuffer || this.buffer) + (i * (this.descrHeight))};
+        mathArrayUtils.roundPositionToWholeNumbers(descr.position);
 
         //if we're using description icons, need to make some alterations
         if(this.descriptionIcons.length > 0) {
@@ -273,6 +275,7 @@ Tooltip.prototype.display = function(position, options) {
     //place system messages
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.position = {x: position.x - xOffset + this.buffer, y: position.y + yOffset - this.base.height  + this.title.height + this.buffer/2 + this.buffer + (this.descriptions.length)*this.descrHeight + this.descriptionSystemMessageBuffer + ((i * sysMessage.height) + (i * this.systemMessagesBuffer))};
+        mathArrayUtils.roundPositionToWholeNumbers(sysMessage.position);
     }.bind(this));
 
     this.base.position = position;
@@ -303,7 +306,7 @@ Tooltip.prototype.display = function(position, options) {
         graphicsUtils.resizeBorderSprite(this.baseBorder);
     }
     this.baseBorder.visible = true;
-    var borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)})
+    var borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
     this.baseBorder.position = borderPosition;
 
     Matter.Events.trigger(this.dobj, 'tooltipShown');

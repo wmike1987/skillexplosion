@@ -258,7 +258,7 @@ var graphicsUtils = {
 
     fadeSpriteOverTime: function(options) {
         options = Object.assign({
-            time: 1000,
+            time: options.duration || 1000,
             fadeIn: false,
             callback: null,
             nokill: false,
@@ -273,21 +273,24 @@ var graphicsUtils = {
         var finalAlpha = 0;
         if (fadeIn) {
             finalAlpha = startingAlpha;
-            startingAlpha = 0;
             sprite.alpha = 0;
+        } else {
         }
         if (makeVisible) {
             sprite.visible = true;
         }
-        var runs = time / 16;
-        var rate = (finalAlpha - startingAlpha) / runs;
+
         var timer = globals.currentGame.addTimer({
             name: 'fadeSpriteOverTime:' + mathArrayUtils.getId(),
-            timeLimit: 16,
-            runs: runs,
+            timeLimit: time,
+            runs: 1,
             killsSelf: true,
-            callback: function() {
-                sprite.alpha += rate;
+            tickCallback: function() {
+                if(fadeIn) {
+                    sprite.alpha = this.percentDone * finalAlpha;
+                } else {
+                    sprite.alpha = startingAlpha - (this.percentDone * startingAlpha);
+                }
             },
             totallyDoneCallback: function() {
                 if (!fadeIn) {

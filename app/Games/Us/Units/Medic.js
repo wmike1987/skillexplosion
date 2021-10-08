@@ -650,7 +650,7 @@ export default function Medic(options) {
         var thisAbility = this.getAbilityByName('Mine');
         var pressurePlateAugment = thisAbility.isAugmentEnabled('pressure plate');
         var shrapnelAugment = thisAbility.isAugmentEnabled('shrapnel');
-        var maimAugment = thisAbility.isAugmentEnabled('maim');
+        var scorchAugment = thisAbility.isAugmentEnabled('scorch');
 
         var mine = Matter.Bodies.circle(this.position.x, this.position.y + 20, 15, {
             isSensor: true,
@@ -745,10 +745,10 @@ export default function Medic(options) {
         if (shrapnelAugment) {
             mineExplosionAnimation.tint = 0x6bafaf;
         }
-        if (maimAugment) {
+        if (scorchAugment) {
             mineExplosionAnimation.tint = 0xd2cb1b;
         }
-        if (maimAugment && shrapnelAugment) {
+        if (scorchAugment && shrapnelAugment) {
             mineExplosionAnimation.tint = 0xf0df00;
         }
         graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {
@@ -849,11 +849,6 @@ export default function Medic(options) {
                     dmg = dmg * 2;
                 }
                 unit.sufferAttack(dmg, medic);
-                if (maimAugment) {
-                    if (!unit.isDead) {
-                        unit.maim();
-                    }
-                }
                 var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
@@ -866,10 +861,55 @@ export default function Medic(options) {
                 graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
             });
 
-            if (maimAugment || shrapnelAugment) {
+            if (scorchAugment) {
+                var scorchedAreaBody = Matter.Bodies.circle(mine.position.x, mine.position.y, blastRadius/2.0, {
+                    restitution: 0.95,
+                    frictionAir: 0,
+                    mass: options.mass || 5,
+                    isSensor: true,
+                });
+                globals.currentGame.addBody(scorchedAreaBody);
+                Matter.Body.scale(scorchedAreaBody, 1, 0.5);
+                Matter.Events.on(scorchedAreaBody, 'onCollide', function(pair) {
+                    var otherBody = pair.pair.bodyB == scorchedAreaBody ? pair.pair.bodyA : pair.pair.bodyB;
+                    var otherUnit = otherBody.unit;
+                    if (otherUnit != null && otherUnit.team != medic.team) {
+                        otherUnit.maim({
+                            duration: scorchAugment.duration,
+                            maimingUnit: medic
+                        });
+                    }
+                }.bind(this));
+
+                var maimArea = graphicsUtils.createDisplayObject('ScorchedArea', {
+                    alpha: 1.0,
+                    tint: 0x340606
+                });
+                scorchedAreaBody.renderChildren = [{
+                    id: 'maimArea',
+                    data: maimArea,
+                    stage: 'stageNOne',
+                }];
+
+                graphicsUtils.graduallyTint(maimArea, 0x000000, 0x65002d, 500);
+
+                graphicsUtils.makeSpriteSize({
+                    sprite: maimArea,
+                    size: blastRadius
+                });
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: maimArea,
+                    duration: 11000,
+                    callback: function() {
+                        globals.currentGame.removeBody(scorchedAreaBody);
+                    }
+                });
+            }
+
+            if (shrapnelAugment) {
                 //extra mine explosion graphic
-                var scale = maimAugment ? 2.5 : 3.5;
-                var tint = maimAugment ? 0xf00000 : 0xffffff;
+                var scale = 3.5;
+                var tint = 0xffffff;
                 var mineMaimExplosionAnimation = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations2',
                     animationName: 'additionalexplosion',
@@ -909,11 +949,11 @@ export default function Medic(options) {
         hotkey: 'F',
         energyCost: 15,
         augments: [{
-                name: 'maim',
-                duration: 5000,
+                name: 'scorch',
+                duration: 10000,
                 icon: graphicsUtils.createDisplayObject('Maim'),
-                title: 'Maim',
-                description: 'Maim enemies hit by blast for 5 seconds.',
+                title: 'Scorch',
+                description: 'Leave an explosion area which maims enemy units for 10 seconds.',
                 // systemMessage: 'Maimed enemies are slowed and suffer -1 armor.'
             },
             {

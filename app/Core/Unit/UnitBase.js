@@ -1722,7 +1722,9 @@ var UnitBase = {
         });
     },
 
-    maim: function(duration) {
+    maim: function(options) {
+        var duration = options.duration;
+        var maimingUnit = options.maimingUnit;
         if (this.isDead) {
             return;
         }
@@ -1747,6 +1749,13 @@ var UnitBase = {
                 unit.removeDefenseAddition(defensePenalty);
             }
         });
+
+        if(maimingUnit) {
+            Matter.Events.trigger(maimingUnit, 'condemn', {
+                maimedUnit: unit,
+                maimingUnit: maimingUnit
+            });
+        }
     },
     condemn: function(options) {
         options = options || {};
@@ -2097,8 +2106,9 @@ var UnitBase = {
             };
         }
 
+        var buffAlreadyExists = false;
         if (unit.buffs[name]) {
-            var buffAlreadyExists = true;
+            buffAlreadyExists = true;
         }
         if (!unit.buffs[name]) {
             var buffObj = {
@@ -2207,8 +2217,8 @@ var UnitBase = {
             spritesheetName: 'UtilityAnimations2',
             animationName: 'buffcreate',
             // reverse: true,
-            speed: 1.5,
-            transform: [unit.position.x, unit.position.y, 1.0, 1.0]
+            speed: 1.00,
+            transform: [unit.position.x, unit.position.y, 1.1, 1.1]
         });
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
         graphicsUtils.addGleamToSprite({
@@ -2255,8 +2265,10 @@ var UnitBase = {
             if (!cleanUpOptions.preserveImage) {
                 realizedBuff.removeBuffImage(cleanUpOptions);
             }
+
             //remove associated events
             removeAllHandlers();
+
             //remove changes
             options.removeChanges();
         };

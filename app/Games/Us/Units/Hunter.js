@@ -343,7 +343,7 @@ export default function Hunter(options) {
                                         speed: 0.8,
                                         transform: [position.x + Math.random()*8, position.y + Math.random()*8, 0.35, 0.35]
                                     });
-                                    target.maim(1000);
+                                    target.maim({duration: 1000});
                                     graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                                     bloodAnimation.play();
                                     hitSound.play();
