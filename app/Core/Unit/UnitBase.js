@@ -1751,7 +1751,7 @@ var UnitBase = {
         });
 
         if(maimingUnit) {
-            Matter.Events.trigger(maimingUnit, 'condemn', {
+            Matter.Events.trigger(maimingUnit, 'maim', {
                 maimedUnit: unit,
                 maimingUnit: maimingUnit
             });

@@ -751,6 +751,7 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;

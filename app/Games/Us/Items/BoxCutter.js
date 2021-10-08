@@ -52,8 +52,7 @@ var manipulations = {
                         graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                     }
                 }, 50);
-            }
-        },
+            }},
         maim: {
             callback: function(event) {
                 let maimedUnit = event.maimedUnit;
