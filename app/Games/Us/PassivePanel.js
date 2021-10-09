@@ -64,7 +64,6 @@ ConfigPanel.prototype.initialize = function() {
     var passiveMax = {x: this.unitPanelRef.passiveCenterX + 22, y: gameUtils.getCanvasHeight()};
     $('body').on('mousemove.unitPassivePanel', function(event) {
         var mousePoint = mathArrayUtils.clonePosition(mousePosition);
-        // gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= passiveMax.x && mousePoint.x >= passiveMin.x && mousePoint.y <= passiveMax.y && mousePoint.y >= passiveMin.y) {
             if(this.showButton.state == 'lowered') {
                 //(enlarge)
@@ -235,7 +234,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.actionBox.on('mouseover', function(event) {
                 if(!passive.isEquipped) {
                     passive.border.alpha = 1;
-                    passive.border.scale = {x: 1.1, y: 1.1};
+                    graphicsUtils.makeSpriteSize(passive.border, 38);
                     hoverAugmentSound.play();
                 }
             });

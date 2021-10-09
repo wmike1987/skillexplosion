@@ -156,6 +156,7 @@ var Dialogue = function Dialogue(options) {
             });
             this.realizedText.position.y += (options.yOffset || 0);
             this.realizedText.position.x = (gameUtils.getPlayableWidth() / 2 - this.realizedText.width / 2);
+            mathArrayUtils.roundPositionToWholeNumbers(this.realizedText.position);
             this.fullTextWidth = this.realizedText.width;
             this.fullTextHeight = this.realizedText.height;
         } else /*we are a main piece of text*/ {
@@ -170,6 +171,7 @@ var Dialogue = function Dialogue(options) {
                 }
             });
             this.realizedText.position.y += (options.yOffset || 0);
+            mathArrayUtils.roundPositionToWholeNumbers(this.realizedText.position);
             this.fullTextWidth = this.realizedText.width;
             this.fullTextHeight = this.realizedText.height;
             this.realizedActorText = graphicsUtils.createDisplayObject("TEX+:", {
@@ -185,6 +187,7 @@ var Dialogue = function Dialogue(options) {
             if (this.actorTint) {
                 this.realizedActorText.tint = this.actorTint;
             }
+            mathArrayUtils.roundPositionToWholeNumbers(this.realizedActorText.position);
         }
 
         //create action text if specified
@@ -206,6 +209,7 @@ var Dialogue = function Dialogue(options) {
                     y: 0
                 }
             });
+            mathArrayUtils.roundPositionToWholeNumbers(this.realizedActionText.position);
             this.realizedActionText.alpha = 0;
             this.realizedActionText.position.y += (options.yOffset || 0);
             this.fullActionTextWidth = this.realizedActionText.width;
@@ -215,6 +219,7 @@ var Dialogue = function Dialogue(options) {
 
         if (this.picture) {
             var picPosition = mathArrayUtils.clonePosition(this.picturePosition, this.pictureOffset);
+            mathArrayUtils.roundPositionToWholeNumbers(picPosition);
             this.realizedPicture = graphicsUtils.createDisplayObject(this.picture, {
                 alpha: 0,
                 position: picPosition,

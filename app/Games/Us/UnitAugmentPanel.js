@@ -222,7 +222,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                     augment.actionBox.on('mouseover', function(event) {
                         if(!ability.isAugmentEnabled(augment)) {
                             augment.border.alpha = 1;
-                            augment.border.scale = {x: 1.1, y: 1.1};
+                            graphicsUtils.makeSpriteSize(augment.border, 38);
                             augment.icon.tint = 0xc6c6c6;
                             hoverAugmentSound.play();
                         }

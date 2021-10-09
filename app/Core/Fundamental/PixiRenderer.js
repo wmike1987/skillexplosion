@@ -239,7 +239,7 @@ var renderer = function(engine, options) {
             height: options.height + options.unitPanelHeight,
             backgroundAlpha: 0,
         });
-        PIXI.settings.ROUND_PIXELS = true;
+        // PIXI.settings.ROUND_PIXELS = true;
         this.canvasEl = this.pixiApp.renderer.view;
 
         var worldWidth = 1400;

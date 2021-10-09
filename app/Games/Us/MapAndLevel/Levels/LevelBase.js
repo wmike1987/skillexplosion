@@ -365,10 +365,10 @@ var levelBase = {
                 x: 0,
                 y: 18
             },
-            position: options.position || {
+            position: options.position || mathArrayUtils.roundPositionToWholeNumbers({
                 x: gameUtils.getCanvasCenter().x + 130,
                 y: gameUtils.getCanvasCenter().y - 150
-            }
+            })
         });
         this.mapTable = mapTable;
         scene.add(mapTable);

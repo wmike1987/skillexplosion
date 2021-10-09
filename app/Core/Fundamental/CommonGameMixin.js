@@ -194,6 +194,7 @@ var common = {
                 x: this.canvas.width / 2,
                 y: this.canvas.height * 3 / 4
             });
+            mathArrayUtils.roundPositionToWholeNumbers(this.splashScreenText.position);
             titleScene.add(this.splashScreenText);
             titleScene.initializeScene();
             loadingScreenShowingDeferred.resolve();
