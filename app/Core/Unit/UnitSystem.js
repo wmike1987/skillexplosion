@@ -9,7 +9,8 @@ import {
 } from '@utils/UtilityMenu.js';
 import {
     globals,
-    keyStates
+    keyStates,
+    mousePosition
 } from '@core/Fundamental/GlobalState.js';
 import {
     PathingSystem
@@ -451,11 +452,7 @@ var UnitSystem = function(properties) {
         $('body').on('mousedown.unitSystem', function(event) {
             if (!this.active) return;
 
-            var canvasPoint = {
-                x: 0,
-                y: 0
-            };
-            gameUtils.pixiPositionToPoint(canvasPoint, event);
+            var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
 
             //Left click, used for both establishing a pending body and for attack-moving and dispatching events
             if (event.which == 1) {
@@ -716,11 +713,7 @@ var UnitSystem = function(properties) {
                 }
 
                 this.box.active = true;
-                var newPoint = {
-                    x: 0,
-                    y: 0
-                };
-                gameUtils.pixiPositionToPoint(newPoint, event);
+                var newPoint = mathArrayUtils.clonePosition(mousePosition);
                 this.sizeBox(this.forcedBoxFinalPoint || newPoint);
             }
         }.bind(this));
@@ -764,7 +757,7 @@ var UnitSystem = function(properties) {
                     x: 0,
                     y: 0
                 };
-                gameUtils.pixiPositionToPoint(this.forcedBoxFinalPoint, event);
+                this.forcedBoxFinalPoint = mathArrayUtils.clonePosition(mousePosition);
             }
         }.bind(this));
 

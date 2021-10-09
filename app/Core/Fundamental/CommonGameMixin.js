@@ -163,15 +163,16 @@ var common = {
             is(value);
         }.bind(this);
 
-        this.addEventListener('mousemove', function(event) {
+        $('body').on('mousemove', function(event) {
             var rect = this.canvasEl.getBoundingClientRect();
-            this.mousePosition.x = event.clientX - rect.left;
-            this.mousePosition.y = event.clientY - rect.top;
+            this.mousePosition.x = (event.clientX - rect.left);
+            this.mousePosition.y = (event.clientY - rect.top);
+            // console.info(this.mousePosition.x + '-' + this.mousePosition.y);
             this.debugObj.playableCenterOffset = {
                 x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
                 y: this.mousePosition.y - gameUtils.getPlayableCenter().y
             };
-        }.bind(this), true, false);
+        }.bind(this));
     },
 
     showLoadingScreen: function() {
@@ -986,6 +987,8 @@ var common = {
 
         //destroy mousedown priority listener
         $('body').off("mousedown.priority");
+
+        $('body').off('mousemove');
 
         //re-enable default click
         $('#gameTheater').off('mousedown.prevent');

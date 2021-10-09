@@ -63,8 +63,8 @@ ConfigPanel.prototype.initialize = function() {
     var passiveMin = {x: this.unitPanelRef.passiveCenterX - 22, y: gameUtils.getPlayableHeight() - 40};
     var passiveMax = {x: this.unitPanelRef.passiveCenterX + 22, y: gameUtils.getCanvasHeight()};
     $('body').on('mousemove.unitPassivePanel', function(event) {
-        var mousePoint = {x: 0, y: 0};
-        gameUtils.pixiPositionToPoint(mousePoint, event);
+        var mousePoint = mathArrayUtils.clonePosition(mousePosition);
+        // gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= passiveMax.x && mousePoint.x >= passiveMin.x && mousePoint.y <= passiveMax.y && mousePoint.y >= passiveMin.y) {
             if(this.showButton.state == 'lowered') {
                 //(enlarge)
@@ -80,8 +80,8 @@ ConfigPanel.prototype.initialize = function() {
     }.bind(this));
 
     $('body').on('mousedown.unitPassivePanel', function(event) {
-        var mousePoint = {x: 0, y: 0};
-        gameUtils.pixiPositionToPoint(mousePoint, event);
+        var mousePoint = mathArrayUtils.clonePosition(mousePosition);
+        // gameUtils.pixiPositionToPoint(mousePoint, event);
         if(mousePoint.x <= passiveMax.x && mousePoint.x >= passiveMin.x && mousePoint.y <= passiveMax.y && mousePoint.y >= passiveMin.y) {
             if(this.showButton.state == 'lowered') {
                 this.showForUnit(this.unitPanelRef.prevailingUnit);

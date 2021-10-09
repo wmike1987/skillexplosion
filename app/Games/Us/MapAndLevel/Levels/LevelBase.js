@@ -306,11 +306,7 @@ var levelBase = {
         var gunrackClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
             if (self.campLikeActive || !keyStates.Control) return;
             if (event.which == 3) return; //don't allow right clicks
-            var canvasPoint = {
-                x: 0,
-                y: 0
-            };
-            gameUtils.pixiPositionToPoint(canvasPoint, event);
+            var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
 
             if (Matter.Vertices.contains(self.gunrack.body.vertices, canvasPoint) && !this.mapActive) {
                 gunrackSprite.tint = 0xFFFFFF;
@@ -391,11 +387,7 @@ var levelBase = {
         var mapClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
             if (event.which == 3) return; //don't allow right clicks
             if (!self.mapTableActive) return;
-            var canvasPoint = {
-                x: 0,
-                y: 0
-            };
-            gameUtils.pixiPositionToPoint(canvasPoint, event);
+            var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
 
             if (Matter.Vertices.contains(mapTable.body.vertices, canvasPoint) && !this.mapActive) {
                 this.unitSystem.pause();
