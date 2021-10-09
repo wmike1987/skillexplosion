@@ -17,7 +17,7 @@ import {
 } from '@games/Us/Items/ItemClasses.js';
 
 var hoverTick = gameUtils.getSound('augmenthover.wav', {
-    volume: 0.03,
+    volume: 0.01,
     rate: 1
 });
 var clickTokenSound2 = gameUtils.getSound('clickbattletoken2.wav', {
