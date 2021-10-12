@@ -1939,166 +1939,145 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }.bind(this));
         });
 
-        //We have three options here...
-        //1. continue only (used for tutorial)
-        //2. loss (essentially continue only)
-        //3. victory (generate pill choice)
-        if (options.onlyContinueAllowed) {
-            //space to continue
-            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
-                where: 'hudText',
-                style: styles.escapeToContinueStyle,
-                anchor: {
-                    x: 0.5,
-                    y: 1
-                },
-                position: {
-                    x: gameUtils.getPlayableWidth() - 210,
-                    y: gameUtils.getCanvasHeight() - 20
-                }
-            });
-            scene.add(this.spaceToContinue);
-            this.spaceToContinue.visible = false;
-            Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                this.spaceToContinue.visible = true;
-            });
-        } else {
-            if (!isVictory) {
-                var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
-                var pauseTime = adrenalineGained ? 1000 : 0;
+        if (!isVictory) {
+            var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
+            var pauseTime = adrenalineGained ? 1000 : 0;
+            gameUtils.doSomethingAfterDuration(() => {
+                //get adrenaline lost during an outing
                 gameUtils.doSomethingAfterDuration(() => {
-                    //get adrenaline lost during an outing
-                    gameUtils.doSomethingAfterDuration(() => {
 
-                        if (adrenalineGained) {
-                            for (var x = 0; x < adrenalineGained; x++) {
-                                globals.currentGame.map.removeAdrenalineBlock();
-                            }
-                            globals.currentGame.soundPool.negativeSound.play();
-                            var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }), {
-                                where: 'hudTwo',
-                                style: styles.adrenalineTextLarge,
-                                speed: 6,
-                                duration: 800
-                            });
-                            graphicsUtils.addGleamToSprite({
-                                sprite: adrText,
-                                gleamWidth: 50,
-                                duration: 500
-                            });
+                    if (adrenalineGained) {
+                        for (var x = 0; x < adrenalineGained; x++) {
+                            globals.currentGame.map.removeAdrenalineBlock();
                         }
-                    }, pauseTime);
+                        globals.currentGame.soundPool.negativeSound.play();
+                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: 800
+                        });
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }
+                }, pauseTime);
 
-                    //present items if we've completed nodes
-                    if (globals.currentGame.map.completedNodes.length > 0) {
-                        $('body').off('keydown.uskeydownendscreen');
-                        gameUtils.doSomethingAfterDuration(() => {
-                            //float supply drop text
-                            globals.currentGame.soundPool.positiveSoundFast.play();
-                            var txt = 'Supply drop en route!';
-                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }), {
-                                where: 'hudTwo',
-                                style: styles.rewardTextLarge,
-                                speed: 6,
-                                duration: rewardDuration * 2.0
-                            });
-                            graphicsUtils.flashSprite({
-                                sprite: sdText,
-                                times: 2,
-                                toColor: 0x82020d
-                            });
+                //present items if we've completed nodes
+                if (globals.currentGame.map.completedNodes.length > 0) {
+                    $('body').off('keydown.uskeydownendscreen');
+                    gameUtils.doSomethingAfterDuration(() => {
+                        //float supply drop text
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        var txt = 'Supply drop en route...';
+                        var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.rewardTextLarge,
+                            speed: 6,
+                            duration: rewardDuration * 2.0
+                        });
+                        graphicsUtils.flashSprite({
+                            sprite: sdText,
+                            times: 2,
+                            toColor: 0xff6c52,
+                            duration: 200,
+                        });
 
-                            //then present items
-                            gameUtils.doSomethingAfterDuration(() => {
-                                presentItems({
-                                    done: options.done
-                                });
-                            }, 1200);
-                        }, pauseTime + rewardDuration);
-                    } else {
-                        //else we'll have space to continue show up
+                        //then present items
                         gameUtils.doSomethingAfterDuration(() => {
-                            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
-                                where: 'hudText',
-                                style: styles.escapeToContinueStyle,
-                                anchor: {
-                                    x: 0.5,
-                                    y: 1
-                                },
-                                position: {
-                                    x: gameUtils.getPlayableWidth() - 210,
-                                    y: gameUtils.getCanvasHeight() - 35
-                                }
+                            presentItems({
+                                done: options.done
                             });
-                            scene.add(this.spaceToContinue);
-                            this.spaceToContinue.visible = true;
-                        }, pauseTime + rewardDuration);
+                        }, 1600);
+                    }, pauseTime + rewardDuration);
+                } else {
+                    //else we'll have space to continue show up
+                    gameUtils.doSomethingAfterDuration(() => {
+                        this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                            where: 'hudText',
+                            style: styles.escapeToContinueStyle,
+                            anchor: {
+                                x: 0.5,
+                                y: 1
+                            },
+                            position: {
+                                x: gameUtils.getPlayableWidth() - 210,
+                                y: gameUtils.getCanvasHeight() - 35
+                            }
+                        });
+                        this.spaceFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
+                        globals.currentGame.soundPool.positiveSound.play();
+                        scene.add(this.spaceToContinue);
+                        this.spaceToContinue.visible = true;
+                    }, pauseTime + rewardDuration);
+                }
+
+            }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
+
+        } else if (isVictory) {
+            //show +1 adrenaline
+            Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
+                gameUtils.doSomethingAfterDuration(() => {
+                    if (!adrenalineIsFull) {
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: rewardDuration
+                        });
+                        graphicsUtils.addGleamToSprite({
+                            sprite: adrText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                        scene.add(adrText);
                     }
 
-                }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
-
-            } else if (isVictory) {
-                //show +1 adrenaline
-                Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                    var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
                     gameUtils.doSomethingAfterDuration(() => {
-                        if (!adrenalineIsFull) {
-                            globals.currentGame.soundPool.positiveSoundFast.play();
-                            var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }), {
-                                where: 'hudTwo',
-                                style: styles.adrenalineTextLarge,
-                                speed: 6,
-                                duration: rewardDuration
-                            });
-                            graphicsUtils.addGleamToSprite({
-                                sprite: adrText,
-                                gleamWidth: 50,
-                                duration: 500
-                            });
-                            scene.add(adrText);
-                        }
+                        //float supply drop text
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        var txt = 'Supply drop en route...';
+                        var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.rewardTextLarge,
+                            speed: 6,
+                            duration: rewardDuration * 2.0
+                        });
+                        graphicsUtils.flashSprite({
+                            sprite: sdText,
+                            times: 2,
+                            toColor: 0xff6c52,
+                            duration: 200,
+                        });
 
+                        //then present items
                         gameUtils.doSomethingAfterDuration(() => {
-                            //float supply drop text
-                            globals.currentGame.soundPool.positiveSoundFast.play();
-                            var txt = 'Supply drop en route!';
-                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }), {
-                                where: 'hudTwo',
-                                style: styles.rewardTextLarge,
-                                speed: 6,
-                                duration: rewardDuration * 2.0
+                            presentItems({
+                                done: options.done
                             });
-                            graphicsUtils.flashSprite({
-                                sprite: sdText,
-                                times: 2,
-                                toColor: 0xa7082a
-                            });
-
-                            //then present items
-                            gameUtils.doSomethingAfterDuration(() => {
-                                presentItems({
-                                    done: options.done
-                                });
-                            }, 1200);
-                        }, rewardDuration);
-                    }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
-                });
-            }
-
-            Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                if (this.spaceToContinue) {
-                    this.spaceToContinue.visible = true;
-                }
+                        }, 1600);
+                    }, rewardDuration);
+                }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
             });
         }
+
+        Matter.Events.on(scene, 'sceneFadeInDone', () => {
+            if (this.spaceToContinue) {
+                this.spaceToContinue.visible = true;
+            }
+        });
 
         scene.initializeScene();
         return scene;

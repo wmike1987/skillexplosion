@@ -323,7 +323,7 @@ var campLevel = function() {
         if(unitTest) {
             var unitT = UnitMenu.createUnit('Gargoyle', {
                 team: game.playerTeam,
-                noIdle: false
+                idleCancel: false
             });
 
             unitT.position = {x: 500, y: 400};

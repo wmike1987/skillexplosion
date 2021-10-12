@@ -4,7 +4,8 @@ import * as PIXI from 'pixi.js';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import Tooltip from '@core/Tooltip.js';
 import {
@@ -124,7 +125,7 @@ var map = function(specs) {
         let offset = 18;
         let newBlock = graphicsUtils.createDisplayObject('TintableSquare', {
             position: {
-                x: 48 + this.adrenaline * offset,
+                x: 47.5 + this.adrenaline * offset,
                 y: 645.5
             },
             where: "hudNOne",
@@ -517,6 +518,7 @@ var map = function(specs) {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
+                unitUtils.pauseIdlingAndResumeUponNewScene();
 
                 //show +1 adrenaline
                 var t = "Excellent";
@@ -612,13 +614,6 @@ var map = function(specs) {
         }));
 
         var node = this.lastNode;
-        if(this.outingInProgress) {
-            node = this.preOutingNode;
-            this.inProgressOutingNodes.forEach((node) => {
-
-            });
-        }
-
         this.currentNode = node;
         Matter.Events.trigger(globals.currentGame, "TravelReset", {
             resetToNode: node

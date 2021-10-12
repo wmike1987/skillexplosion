@@ -141,7 +141,7 @@ function IsoSpriteManager(options) {
 	}
 
 	this.idle = function() {
-		if(this.unit.noIdle) return;
+		if(this.unit.idleCancel) return;
 
 		var self = this;
 		var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1);

@@ -8,7 +8,8 @@ import {
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import TileMapper from '@core/TileMapper.js';
 import {
@@ -433,14 +434,14 @@ var levelBase = {
             game.removeTickCallback(lossCondition);
         };
 
-        //to-be called upon the win/loss conditions being fulfilled
+        //to-be called upon the win conditions being fulfilled
         var winAndContinueTasks = function(options) {
             removeCurrentConditions.call(this);
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
             this.spawner.cleanUp();
 
-            //wait second then add space to continue button
+            //wait a second then add space to continue button
             gameUtils.doSomethingAfterDuration(() => {
                 this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
                     where: 'hudText',
@@ -475,14 +476,16 @@ var levelBase = {
         }.bind(this);
 
         //to-be called upon the win/loss conditions being fulfilled
-        var commonWinLossTasks = function() {
+        var commonLossTasks = function() {
+            globals.currentGame.itemSystem.removeAllItemsOnGround(true);
             globals.currentGame.unitSystem.pause();
-            gameUtils.setCursorStyle('None');
             removeCurrentConditions.call(this);
+            gameUtils.setCursorStyle('None');
             game.unitsInPlay.forEach((unit) => {
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
             });
+            unitUtils.pauseIdlingAndResumeUponNewScene();
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
         }.bind(this);
@@ -530,6 +533,7 @@ var levelBase = {
                     removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
+                    unitUtils.pauseIdlingAndResumeUponNewScene();
                     winAndContinueTasks({
                         onContinue: function() {
                             gameUtils.doSomethingAfterDuration(() => {
@@ -539,7 +543,6 @@ var levelBase = {
                                 Matter.Events.trigger(this, 'endLevelActions');
                                 var sc = game.transitionToBlankScene();
                                 game.map.show();
-                                gameUtils.setCursorStyle('Main');
                                 game.unitsInPlay.forEach((unit) => {
                                     gameUtils.moveUnitOffScreen(unit);
                                 });
@@ -566,14 +569,12 @@ var levelBase = {
                                 Matter.Events.trigger(this, 'endLevelActions', {
                                     endLevelScene: sc
                                 });
-                                gameUtils.setCursorStyle('Main');
                             }, 0);
                         }.bind(this)
                     });
                 }
             }
         }.bind(this));
-
 
         /*
          * Loss condition
@@ -586,19 +587,17 @@ var levelBase = {
                 if (stillAlive) return;
                 this.endDelayInProgress = true;
 
-                commonWinLossTasks({
-                    result: lossResult
-                });
-                game.itemSystem.removeAllItemsOnGround(true);
+                commonLossTasks();
+
                 gameUtils.doSomethingAfterDuration(() => {
                     if (this.gotoMapOnWin) {
+                        gameUtils.setCursorStyle('Main');
                         Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
                             result: lossResult
                         });
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.removeAllLevelLocalEntities();
                         let enemies = gameUtils.getUnitEnemies(game.shane);
-                        gameUtils.setCursorStyle('Main');
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });
@@ -615,7 +614,6 @@ var levelBase = {
                         game.unitsInPlay.forEach((unit) => {
                             unit.endLevelPosition = mathArrayUtils.clonePosition(unit.isDead ? unit.deathPosition : unit.position);
                         });
-                        var continueOnly = game.map.lastNode.type == 'camp' ? true : false;
                         Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
                             result: lossResult
                         });
@@ -625,8 +623,7 @@ var levelBase = {
                             collectors: {
                                 shane: game.shaneCollector.getLastCollector(),
                                 ursula: game.ursulaCollector.getLastCollector()
-                            },
-                            continueOnly: continueOnly
+                            }
                         });
                     }
                 }, 500);

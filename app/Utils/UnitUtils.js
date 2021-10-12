@@ -129,6 +129,18 @@ var unitUtils = {
             times: 4
         });
         graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
+    },
+
+    pauseIdlingAndResumeUponNewScene: function() {
+        var game = globals.currentGame;
+        game.unitsInPlay.forEach((unit) => {
+            unit.idleCancel = true;
+        });
+        gameUtils.matterOnce(game.currentScene, 'sceneFadeOutBegin', function() {
+            game.unitsInPlay.forEach((unit) => {
+                unit.idleCancel = false;
+            });
+        });
     }
 };
 

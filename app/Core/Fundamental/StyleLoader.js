@@ -28,6 +28,7 @@ var load = function() {
     importantStyles.push(styles.unitDefenseAdditionsStyle);
     importantStyles.push(styles.unitGeneralEnergyStyle);
     importantStyles.push(styles.adrenalineTextLarge);
+    importantStyles.push(styles.rewardTextMedium);
     importantStyles.push(styles.rewardTextLarge);
     importantStyles.push(styles.statScreenDefeatTitleStyle);
     importantStyles.push(styles.statScreenVictoryTitleStyle);
