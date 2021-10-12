@@ -238,6 +238,7 @@ var renderer = function(engine, options) {
             width: options.width,
             height: options.height + options.unitPanelHeight,
             backgroundAlpha: 0,
+            antialias: true
         });
         // PIXI.settings.ROUND_PIXELS = true;
         this.canvasEl = this.pixiApp.renderer.view;

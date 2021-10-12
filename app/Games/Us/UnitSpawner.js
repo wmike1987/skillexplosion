@@ -107,8 +107,8 @@ var unitSpawner = function(options) {
                             if (giveItem) {
                                 ItemUtils.giveUnitItem({
                                     gamePrefix: 'Us',
-                                    className: enemy.item.className,
-                                    typeName: enemy.item.typeName,
+                                    itemClass: enemy.item.itemClass,
+                                    itemType: enemy.item.itemType,
                                     unit: newUnit
                                 });
                                 itemsToGive--;

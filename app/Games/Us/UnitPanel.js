@@ -561,8 +561,8 @@ var unitPanel = function(options) {
     this.spItemXSpacing = 30;
 
     //backpack item variables
-    this.bpItemCenterX = this.centerX + 402;
-    this.bpItemCenterY = this.centerY + 20;
+    this.bpItemCenterX = this.centerX + 401.5;
+    this.bpItemCenterY = this.centerY + 20.5;
     this.bpItemXSpacing = 30;
 
     //create frame

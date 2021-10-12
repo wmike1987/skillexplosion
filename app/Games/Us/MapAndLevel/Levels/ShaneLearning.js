@@ -39,7 +39,7 @@ var shaneLearning = function(options) {
         scene.add(podDoodad);
 
         this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", className: 'worn', itemType: 'item', unit: this.box, immortal: true});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemClass: 'worn', itemType: 'item', unit: this.box, immortal: true});
         globals.currentGame.addUnit(this.box);
         this.box.position = {x: 750, y: 300};
 

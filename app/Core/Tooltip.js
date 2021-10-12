@@ -306,7 +306,12 @@ Tooltip.prototype.display = function(position, options) {
         graphicsUtils.resizeBorderSprite(this.baseBorder);
     }
     this.baseBorder.visible = true;
-    var borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
+
+    //set the border position
+    var borderPosition = this.base.position;
+    if(!options.middleAnchor) {
+        borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
+    }
     this.baseBorder.position = borderPosition;
 
     Matter.Events.trigger(this.dobj, 'tooltipShown');

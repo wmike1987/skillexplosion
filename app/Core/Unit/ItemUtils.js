@@ -47,17 +47,17 @@ var initiateBlinkDeath = function(options) {
     gameUtils.deathPact(item, t);
 };
 
-var getRandomItemFromClass = function(className, typeName) {
-    return mathArrayUtils.getRandomElementOfArray(ItemClasses[className][typeName].items);
+var getRandomItemFromClass = function(itemClass, itemType) {
+    return mathArrayUtils.getRandomElementOfArray(ItemClasses[itemClass][itemType].items);
 };
 
-var getRandomItemsFromClass = function(className, typeName, amount) {
+var getRandomItemsFromClass = function(itemClass, itemType, amount) {
     var returnItems = [];
     var collision = false;
     var chosenItem = null;
     do {
         collision = true;
-        chosenItem = mathArrayUtils.getRandomElementOfArray(ItemClasses[className][typeName].items);
+        chosenItem = mathArrayUtils.getRandomElementOfArray(ItemClasses[itemClass][itemType].items);
         if(!returnItems.includes(chosenItem)) {
             collision = false;
             returnItems.push(chosenItem);
@@ -135,8 +135,8 @@ var createItemAndGrasp = function(options) {
 /*
  *
  * options {
- *   className: string
- *   typeName: string
+ *   itemClass: string
+ *   itemType: string
  *   OR
  *   itemName: [string]
  * }
@@ -146,10 +146,10 @@ var resolveItemInformation = function(options) {
     var chosenItem = null;
     var chosenClassKey = 'noClass';
     var chosenTypeKey = 'item';
-    if(options.className) {
+    if(options.itemClass) {
         //if we've specified the item class name, choose a random item from within
-        chosenClassKey = options.className || chosenClassKey;
-        chosenTypeKey = options.typeName || chosenTypeKey;
+        chosenClassKey = options.itemClass || chosenClassKey;
+        chosenTypeKey = options.itemType || chosenTypeKey;
         chosenItem = getRandomItemFromClass(chosenClassKey, chosenTypeKey);
     } else {
         //if we've provided a list, randomly choose one

@@ -363,6 +363,8 @@ var map = function(specs) {
             }
         });
 
+        this.adrenalineText.tooltipObj.hide();
+
         //Clear the outing if we're in progress
         this.clearOuting();
 

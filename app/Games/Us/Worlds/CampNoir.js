@@ -42,7 +42,10 @@ var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x7848ee];
 var acceptableOrnamentTints = [0xffab7a, 0xfb4a9a];
 var acceptableFlowerTints = [0xf78d8d, 0x600028];
-var ambientLightTints = [[0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x000000, 0x550000], [0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303]];
+var ambientLightTints = [
+    [0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x000000, 0x550000],
+    [0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303]
+];
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -75,11 +78,9 @@ var camp = {
         this.enterMusic = globals.currentGame.soundPool.campVamp;
     },
 
-    initSounds: function() {
-    },
+    initSounds: function() {},
 
-    cleanUpSounds: function() {
-    },
+    cleanUpSounds: function() {},
 
     getPossibleTrees: function() {
         return possibleTrees;
@@ -859,7 +860,10 @@ var phaseTwo = function(options) {
                                         x: 200,
                                         y: 120
                                     }),
-                                    item: ['BasicMicrochip', 'Book'],
+                                    item: ['BasicMicrochip', 'Book', {
+                                        itemClass: 'worn',
+                                        itemType: 'specialtyItem'
+                                    }],
                                     special: true
                                 });
                                 globals.currentGame.dustAndItemBox({
@@ -868,9 +872,9 @@ var phaseTwo = function(options) {
                                         y: 50
                                     }),
                                     item: [{
-                                        className: 'worn'
+                                        itemClass: 'worn'
                                     }, {
-                                        className: 'stimulant'
+                                        itemClass: 'stimulant'
                                     }]
                                 });
                                 gameUtils.doSomethingAfterDuration(() => {
@@ -886,6 +890,54 @@ var phaseTwo = function(options) {
                     }
                 });
                 chain.play();
+            } else {
+                //give the first specialty item
+                var s1 = new Dialogue({
+                    actor: "MacMurray",
+                    text: "Things look dire. I'm sending over a specialty item to help. Good luck...",
+                    pauseAfterWord: {
+                        duration: 1000,
+                        word: 'help.'
+                    },
+                    letterSpeed: 45,
+                    backgroundBox: true,
+                    delayAfterEnd: 4500
+                });
+
+                s1.onFullyShown = function() {
+                    globals.currentGame.flyover(() => {
+                        globals.currentGame.dustAndItemBox({
+                            location: gameUtils.getPlayableCenterPlus({
+                                x: 200,
+                                y: 120
+                            }),
+                            item: [{
+                                itemClass: 'worn',
+                                itemType: 'specialtyItem'
+                            }],
+                            special: true
+                        });
+                    });
+                };
+
+                var s2 = new Dialogue({
+                    text: "Specialty items are either red or green. Red specialty items are equippable by Shane.",
+                    isInfo: true,
+                    backgroundBox: true
+                });
+
+                var s3 = new Dialogue({
+                    text: "Green specialty items are equippable by Ursula.",
+                    isInfo: true,
+                    backgroundBox: true,
+                    delayAfterEnd: 4500
+                });
+
+                var schain = new DialogueChain([s1, s2, s3], {
+                    startDelay: 1500,
+                    cleanUpOnDone: true,
+                });
+                schain.play();
             }
         }
     });

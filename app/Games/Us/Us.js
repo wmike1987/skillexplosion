@@ -933,10 +933,11 @@ var game = {
         });
 
         items.forEach((item) => {
-            if (item.className) {
+            if (item.itemClass) {
                 ItemUtils.giveUnitItem({
                     gamePrefix: "Us",
-                    className: item.className,
+                    itemClass: item.itemClass,
+                    itemType: item.itemType,
                     unit: box,
                     immortal: true
                 });

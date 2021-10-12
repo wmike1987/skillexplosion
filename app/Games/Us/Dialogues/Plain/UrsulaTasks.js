@@ -32,9 +32,9 @@ var UrsulaTasks = function(scene) {
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
     this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
-    ItemUtils.giveUnitItem({gamePrefix: "Us", className: ["stimulant"], unit: this.box, immortal: true});
+    ItemUtils.giveUnitItem({gamePrefix: "Us", itemClass: ["stimulant"], unit: this.box, immortal: true});
     globals.currentGame.addUnit(this.box);
-    this.box.position = {x: 900, y: 300};
+    this.box.position = {x: 950, y: 400};
 
     var a1 = new Dialogue({actor: "Task", text: "Use your mouse to select Ursula.", isTask: true, backgroundBox: true});
     var a2 = new Dialogue({actor: "Task", text: "Right click to move Ursula to the beacon.", isTask: true, backgroundBox: true });
@@ -46,10 +46,11 @@ var UrsulaTasks = function(scene) {
     var a5b = new Dialogue({actor: "Task", text: "Move next to the box then press 'F' to lay a mine.", isTask: true, backgroundBox: true});
     var a5c = new Dialogue({actor: "Task", text: "Pick up your item", isInfo: true, backgroundBox: true});
     var a5d = new Dialogue({actor: "Task", text: "This item is consumable. Read its description and consume it.", isTask: true, backgroundBox: true});
-    var a6 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
-    var a7 = new Dialogue({text: "You can also lay a mine while vanishing.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
+    var a6 = new Dialogue({text: "With both units selected, you can press 'tab' to switch the focused unit.", newBreak: true, isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
+    var a7 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
+    var a8 = new Dialogue({text: "You can also lay a mine while vanishing.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
 
-    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a5d, a6, a7], {startDelay: 200, done: function() {
+    var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a5d, a6, a7, a8], {startDelay: 200, done: function() {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             transitionChain.play();
@@ -185,9 +186,12 @@ var UrsulaTasks = function(scene) {
 
     a6.onStart = function() {
         globals.currentGame.shane.isSelectable = true;
+    };
+
+    a7.onStart = function() {
         gameUtils.matterOnce(globals.currentGame.shane, 'knifeMine', (event) => {
             achieve.play();
-            completeTaskAndRelease(a6);
+            completeTaskAndRelease(a7);
         });
     };
 
@@ -201,13 +205,13 @@ var UrsulaTasks = function(scene) {
     });
 
     var b1 = new Dialogue({actor: "MacMurray", text: "Great. Those who've come before you have lived and died by their wits.", pauseAfterWord: {word: 'Great.', duration: 1000}, backgroundBox: true, letterSpeed: 40});
-    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 40, continuation: true, preventAutoEnd: true});
+    var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip and a book. Learn to use them.", isTask: false, backgroundBox: true, letterSpeed: 40, continuation: true, preventAutoEnd: true, delayAfterEnd: 100});
 
     var transitionChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
         transitionChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             microchipChain.play();
-        }, 250);
+        }, 50);
     }});
 
     b2.onFullyShown = function() {
