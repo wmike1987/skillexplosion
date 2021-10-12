@@ -893,10 +893,7 @@ export default function Medic(options) {
 
                 graphicsUtils.graduallyTint(maimArea, 0x000000, 0x65002d, 500);
 
-                graphicsUtils.makeSpriteSize({
-                    sprite: maimArea,
-                    size: blastRadius
-                });
+                graphicsUtils.makeSpriteSize(maimArea, blastRadius);
                 graphicsUtils.fadeSpriteOverTime({
                     sprite: maimArea,
                     duration: 11000,
