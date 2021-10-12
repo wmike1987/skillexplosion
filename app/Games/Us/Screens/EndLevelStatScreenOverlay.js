@@ -97,6 +97,8 @@ var presentItems = function(options) {
         var currentNode = globals.currentGame.map.completedNodes[nodeIndex];
         nodeIndex += 1;
 
+        //float supply drop text
+
         //Show the choose item text
         globals.currentGame.soundPool.positiveSoundFast.play();
         var t = numberOfChoices == 1 ? 'Take your item!' : 'Choose an item!';
@@ -105,7 +107,7 @@ var presentItems = function(options) {
             y: 300
         }), {
             where: 'hudTwo',
-            style: styles.rewardTextLarge,
+            style: styles.rewardTextMedium,
             speed: 6,
             duration: rewardDuration
         });
@@ -1993,9 +1995,29 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                     if (globals.currentGame.map.completedNodes.length > 0) {
                         $('body').off('keydown.uskeydownendscreen');
                         gameUtils.doSomethingAfterDuration(() => {
-                            presentItems({
-                                done: options.done
+                            //float supply drop text
+                            globals.currentGame.soundPool.positiveSoundFast.play();
+                            var txt = 'Supply drop en route!';
+                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.rewardTextLarge,
+                                speed: 6,
+                                duration: rewardDuration * 2.0
                             });
+                            graphicsUtils.flashSprite({
+                                sprite: sdText,
+                                times: 2,
+                                toColor: 0x82020d
+                            });
+
+                            //then present items
+                            gameUtils.doSomethingAfterDuration(() => {
+                                presentItems({
+                                    done: options.done
+                                });
+                            }, 1200);
                         }, pauseTime + rewardDuration);
                     } else {
                         //else we'll have space to continue show up
@@ -2043,9 +2065,29 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                         }
 
                         gameUtils.doSomethingAfterDuration(() => {
-                            presentItems({
-                                done: options.done
+                            //float supply drop text
+                            globals.currentGame.soundPool.positiveSoundFast.play();
+                            var txt = 'Supply drop en route!';
+                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.rewardTextLarge,
+                                speed: 6,
+                                duration: rewardDuration * 2.0
                             });
+                            graphicsUtils.flashSprite({
+                                sprite: sdText,
+                                times: 2,
+                                toColor: 0xa7082a
+                            });
+
+                            //then present items
+                            gameUtils.doSomethingAfterDuration(() => {
+                                presentItems({
+                                    done: options.done
+                                });
+                            }, 1200);
                         }, rewardDuration);
                     }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
                 });

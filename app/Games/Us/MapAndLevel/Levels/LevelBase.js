@@ -275,7 +275,7 @@ var levelBase = {
         scene.add(this.gunrack);
 
         //add text
-        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Ctrl+Click to activate augment panel', {style: styles.abilityText, where: 'hudTwo'});
+        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Ctrl+Click to activate augment panel (-1 adrenaline)', {style: styles.abilityText, where: 'hudTwo'});
         controlClickText.position = mathArrayUtils.clonePosition(this.gunrack.position, {y: 40});
         mathArrayUtils.roundPositionToWholeNumbers(controlClickText.position);
         controlClickText.visible = false;
@@ -319,7 +319,7 @@ var levelBase = {
                     x: gunrackSprite.position.x,
                     y: gunrackSprite.position.y -25
                 }, {
-                    style: styles.critHitText,
+                    style: styles.adrenalineTextMedium,
                     where: 'hudThree',
                     speed: 2,
                     duration: 2000

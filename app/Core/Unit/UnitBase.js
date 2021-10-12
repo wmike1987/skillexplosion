@@ -715,7 +715,7 @@ var UnitBase = {
                 }
                 this._maxHealth = value;
                 let diffToGive = this._maxHealth * currentPercentage - this.currentHealth;
-                this.giveHealth(diffToGive, null, {immediateChange: true});
+                this.giveHealth(diffToGive, null, {immediateChange: true, invisible: true});
             }
         });
 
@@ -731,7 +731,7 @@ var UnitBase = {
                 }
                 this._maxEnergy = value;
                 let diffToGive = this._maxEnergy * currentPercentage - this.currentEnergy;
-                this.giveEnergy(diffToGive, null, {immediateChange: true});
+                this.giveEnergy(diffToGive, null, {immediateChange: true, invisible: true});
             }
         });
 
@@ -1066,8 +1066,8 @@ var UnitBase = {
                 this.renderlings.healthbarfade.alpha = 1.0;
 
                 if (this.renderlings.healthbarbackground) {
-                    if (this.healthBarFadeTimer) {
-                        this.healthBarFadeTimer.invalidate();
+                    if (this.healthLossBarFadeTimer) {
+                        this.healthLossBarFadeTimer.invalidate();
                     }
 
                     var percentage = startingAmount / this.maxHealth;
@@ -1077,7 +1077,7 @@ var UnitBase = {
                             y: barScaleY
                         };
                     }
-                    this.healthBarFadeTimer = graphicsUtils.fadeSpriteOverTimeLegacy(this.renderlings.healthbarfade, fadeDuration, fadeIn, done, true);
+                    this.healthLossBarFadeTimer = graphicsUtils.fadeSpriteOverTimeLegacy(this.renderlings.healthbarfade, fadeDuration, fadeIn, done, true);
                 }
             }
         };
@@ -1140,8 +1140,8 @@ var UnitBase = {
 
                 this.renderlings.energybarfade.alpha = 1.0;
                 if (this.renderlings.energybarbackground) {
-                    if (this.energyBarFadeTimer) {
-                        this.energyBarFadeTimer.invalidate();
+                    if (this.energyLossBarFadeTimer) {
+                        this.energyLossBarFadeTimer.invalidate();
                     }
 
                     let percentage = startingAmount / this.maxEnergy;
@@ -1151,7 +1151,7 @@ var UnitBase = {
                             y: barScaleY
                         };
                     }
-                    this.energyBarFadeTimer = graphicsUtils.fadeSpriteOverTimeLegacy(this.renderlings.energybarfade, fadeDuration, fadeIn, done, true);
+                    this.energyLossBarFadeTimer = graphicsUtils.fadeSpriteOverTimeLegacy(this.renderlings.energybarfade, fadeDuration, fadeIn, done, true);
                 }
             }
         };
@@ -1180,8 +1180,8 @@ var UnitBase = {
                 this.healthFadeBars.forEach((bar) => {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
-                if (this.healthBarFadeTimer) {
-                    this.healthBarFadeTimer.skipToEnd = true;
+                if (this.healthLossBarFadeTimer) {
+                    this.healthLossBarFadeTimer.skipToEnd = true;
                 }
             }
 
@@ -1226,8 +1226,8 @@ var UnitBase = {
                 this.energyFadeBars.forEach((bar) => {
                     graphicsUtils.removeSomethingFromRenderer(bar);
                 });
-                if (this.energyBarFadeTimer) {
-                    this.energyBarFadeTimer.skipToEnd = true;
+                if (this.energyLossBarFadeTimer) {
+                    this.energyLossBarFadeTimer.skipToEnd = true;
                 }
             }
             var percentage = amount / this.maxEnergy;

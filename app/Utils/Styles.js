@@ -430,12 +430,38 @@ export default {
         strokeThickness: 1
     }),
 
+    adrenalineTextMedium: new PIXI.TextStyle({
+        name: 'adrenalineTextMedium',
+        fill: "#fb13f4",
+        fillGradientType: 1,
+        fontFamily: "Tahoma, Geneva, sans-serif",
+        fontSize: 30,
+        fontStyle: "italic",
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        strokeThickness: 5,
+        padding: 11,
+    }),
+
     adrenalineTextLarge: new PIXI.TextStyle({
         name: 'adrenalineTextLarge',
         fill: "#fb13f4",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
         fontSize: 48,
+        fontStyle: "italic",
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        strokeThickness: 5,
+        padding: 11,
+    }),
+
+    rewardTextMedium: new PIXI.TextStyle({
+        name: 'rewardTextMedium',
+        fill: "#16f6db",
+        fillGradientType: 1,
+        fontFamily: "Tahoma, Geneva, sans-serif",
+        fontSize: 36,
         fontStyle: "italic",
         fontVariant: "small-caps",
         lineJoin: "bevel",
