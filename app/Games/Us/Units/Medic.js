@@ -881,6 +881,10 @@ export default function Medic(options) {
                     }
                 }.bind(this));
 
+                Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {
+                    entity: scorchedAreaBody
+                });
+
                 var maimArea = graphicsUtils.createDisplayObject('ScorchedArea', {
                     alpha: 1.0,
                     tint: 0x340606

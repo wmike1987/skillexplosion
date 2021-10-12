@@ -141,6 +141,18 @@ var unitUtils = {
                 unit.idleCancel = false;
             });
         });
+    },
+
+    pauseTargetingAndResumeUponNewLevel: function() {
+        var game = globals.currentGame;
+        game.unitsInPlay.forEach((unit) => {
+            unit.isTargetable = false;
+        });
+        gameUtils.matterOnce(game, 'EnterLevel', function() {
+            game.unitsInPlay.forEach((unit) => {
+                unit.isTargetable = true;
+            });
+        });
     }
 };
 

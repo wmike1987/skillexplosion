@@ -519,6 +519,7 @@ var map = function(specs) {
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
                 unitUtils.pauseIdlingAndResumeUponNewScene();
+                unitUtils.pauseTargetingAndResumeUponNewLevel();
 
                 //show +1 adrenaline
                 var t = "Excellent";

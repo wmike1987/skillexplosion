@@ -886,7 +886,7 @@ var common = {
 
     removeBody: function(body, hardRemove) {
 
-        //just in case?
+        //just in case
         if (body.hasBeenRemoved) return;
 
         body.isSleeping = false;
