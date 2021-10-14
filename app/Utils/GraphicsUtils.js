@@ -773,7 +773,7 @@ var graphicsUtils = {
                 alpha: options.alpha
             });
             border.borderOptions = options;
-            border.sortYOffset = -1;
+            border.sortYOffset = -10000;
             border.tint = options.tint;
             gameUtils.matterOnce(sprite, 'destroy', () => {
                 graphicsUtils.removeSomethingFromRenderer(border);

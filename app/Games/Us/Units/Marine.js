@@ -1383,127 +1383,93 @@ export default function Marine(options) {
                     speed: 100
                 });
 
-                //bullet emitter
-                var emitter = gameUtils.createParticleEmitter({
-                    where: globals.currentGame.renderer.stages.stage,
-                    config: {
-                        "alpha": {
-                            "start": 1,
-                            "end": 1
-                        },
-                        "scale": {
-                            "start": 0.3,
-                            "end": 0.2,
-                            "minimumScaleMultiplier": 1
-                        },
-                        "color": {
-                            "start": "#ffd21f",
-                            "end": "#fff23d"
-                        },
-                        "speed": {
-                            "start": 200,
-                            "end": 200,
-                            "minimumSpeedMultiplier": 1
-                        },
-                        "acceleration": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "maxSpeed": 0,
-                        "startRotation": {
-                            "min": 0,
-                            "max": 360
-                        },
-                        "noRotation": false,
-                        "rotationSpeed": {
-                            "min": 0,
-                            "max": 0
-                        },
-                        "lifetime": {
-                            "min": 0.02,
-                            "max": 0.02
-                        },
-                        "blendMode": "normal",
-                        "frequency": 0.3 / 3,
-                        "emitterLifetime": 0.3,
-                        "maxParticles": 3,
-                        "pos": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "addAtBack": false,
-                        "spawnType": "circle",
-                        "spawnCircle": {
-                            "x": 0,
-                            "y": 0,
-                            "r": 8
-                        }
-                    },
-                    texture: PIXI.Texture.from('Textures/bulletParticle.png')
-                });
-                emitter.updateSpawnPos(target.position.x, target.position.y);
-                emitter.playOnceAndDestroy();
+                if(target.organic) {
+                    var variance = Math.random() * 0.25;
+                    var bloodAnimation1 = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'rifleSlash',
+                        speed: 0.24,
+                        transform: [target.position.x, target.position.y, 0.2 + variance, 0.2 + variance]
+                    });
+                    bloodAnimation1.play();
+                    bloodAnimation1.rotation = Math.random() * Math.PI;
+                    graphicsUtils.addSomethingToRenderer(bloodAnimation1, 'foreground');
 
-                //blood emitter
-                var bloodEmitter = gameUtils.createParticleEmitter({
-                    where: globals.currentGame.renderer.stages.stage,
-                    config: {
-                        "alpha": {
-                            "start": 1,
-                            "end": 1
+                    var bloodAnimation2 = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'rifleSlash',
+                        speed: 0.15,
+                        transform: [target.position.x, target.position.y, 0.1 + variance, 0.1 + variance]
+                    });
+                    bloodAnimation2.play();
+                    bloodAnimation2.rotation = Math.random() * Math.PI;
+                    graphicsUtils.addSomethingToRenderer(bloodAnimation2, 'foreground');
+                }
+
+                if(true) {
+                    //bullet emitter
+                    var emitter = gameUtils.createParticleEmitter({
+                        where: globals.currentGame.renderer.stages.stage,
+                        config: {
+                            "alpha": {
+                                "start": 1,
+                                "end": 1.0
+                            },
+                            "scale": {
+                                "start": 0.2,
+                                "end": 0.1,
+                                "minimumScaleMultiplier": 1
+                            },
+                            "color": {
+                                "start": "#ffd21f",
+                                "end": "#fff23d"
+                            },
+                            "speed": {
+                                "start": 200,
+                                "end": 200,
+                                "minimumSpeedMultiplier": 1
+                            },
+                            "acceleration": {
+                                "x": 0,
+                                "y": 0
+                            },
+                            "maxSpeed": 0,
+                            "startRotation": {
+                                "min": 0,
+                                "max": 360
+                            },
+                            "noRotation": false,
+                            "rotationSpeed": {
+                                "min": 0,
+                                "max": 0
+                            },
+                            "lifetime": {
+                                "min": 0.02,
+                                "max": 0.02
+                            },
+                            "blendMode": "normal",
+                            "frequency": 0.3 / 3,
+                            "emitterLifetime": 0.3,
+                            "maxParticles": 3,
+                            "pos": {
+                                "x": 0,
+                                "y": 0
+                            },
+                            "addAtBack": false,
+                            "spawnType": "circle",
+                            "spawnCircle": {
+                                "x": 0,
+                                "y": 0,
+                                "r": 8
+                            }
                         },
-                        "scale": {
-                            "start": 0.1 * crit,
-                            "end": 0.01,
-                            "minimumScaleMultiplier": 1
-                        },
-                        "color": {
-                            "start": "#ff0000",
-                            "end": "#ff0000"
-                        },
-                        "speed": {
-                            "start": 0,
-                            "end": 0,
-                            "minimumSpeedMultiplier": 1
-                        },
-                        "acceleration": {
-                            "x": 0,
-                            "y": 1800
-                        },
-                        "maxSpeed": 0,
-                        "startRotation": {
-                            "min": 0,
-                            "max": 0
-                        },
-                        "noRotation": false,
-                        "rotationSpeed": {
-                            "min": 0,
-                            "max": 0
-                        },
-                        "lifetime": {
-                            "min": 0.25,
-                            "max": 0.3
-                        },
-                        "blendMode": "normal",
-                        "frequency": 0.01,
-                        "emitterLifetime": 0.2,
-                        "maxParticles": 2 * (Math.pow(crit, 3)),
-                        "pos": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "addAtBack": false,
-                        "spawnType": "circle",
-                        "spawnCircle": {
-                            "x": 0,
-                            "y": 0,
-                            "r": 20
-                        }
-                    },
-                    texture: PIXI.Texture.from('Textures/particle.png')
-                });
-                bloodEmitter.updateSpawnPos(target.position.x, target.position.y);
-                bloodEmitter.playOnceAndDestroy();
+                        texture: PIXI.Texture.from('Textures/bulletParticle.png')
+                    });
+                    emitter.updateSpawnPos(target.position.x, target.position.y);
+                    emitter.playOnceAndDestroy();
+                }
+
+
             },
         },
     });

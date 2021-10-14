@@ -52,7 +52,7 @@ commonAirDropStation.initExtension = function() {
     this.entrySound = entrySound;
     this.isAirDrop = true;
     this.nodeTitle = "Air Drop Station";
-    this.tooltipDescription = 'Subtract 6% fatigue and receive supply drop.';
+    this.tooltipDescription = 'Subtract 4% fatigue and receive supply drop.';
     this.mode = this.possibleModes.CUSTOM;
     this.noZones = [{
         center: {
@@ -207,7 +207,7 @@ var airDropStation = function(options) {
         //alter fatigue
         gameUtils.doSomethingAfterDuration(() => {
             globals.currentGame.soundPool.positiveSoundFast.play();
-            var fatText = graphicsUtils.floatText('-6% fatigue', gameUtils.getPlayableCenterPlus({
+            var fatText = graphicsUtils.floatText('-4% fatigue', gameUtils.getPlayableCenterPlus({
                 y: 300
             }), {
                 where: 'hudTwo',
@@ -223,7 +223,7 @@ var airDropStation = function(options) {
         }, 1500);
 
         //subtract fatigue
-        globals.currentGame.map.startingFatigue -= 6;
+        globals.currentGame.map.startingFatigue -= 4;
         if(globals.currentGame.map.startingFatigue < 0) {
             globals.currentGame.map.startingFatigue = 0;
         }

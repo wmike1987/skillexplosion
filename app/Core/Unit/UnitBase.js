@@ -91,6 +91,7 @@ var UnitBase = {
     gritMult: 1,
     additions: {},
     level: 1,
+    organic: true,
     currentExperience: 0,
     nextLevelExp: 100,
     lastLevelExp: 0,
@@ -1785,6 +1786,15 @@ var UnitBase = {
                     if (condemningUnit.isDead) {
                         return;
                     }
+
+                    var deathanim = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'crossslash',
+                        speed: 0.65,
+                        transform: [condemned.position.x, condemned.position.y, 0.3, 0.3]
+                    });
+                    deathanim.play();
+                    graphicsUtils.addSomethingToRenderer(deathanim, 'foreground');
 
                     //spawn projectile
                     var combospiritAnimation = gameUtils.getAnimation({

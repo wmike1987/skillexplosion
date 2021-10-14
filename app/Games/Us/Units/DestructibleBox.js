@@ -82,6 +82,7 @@ export default function DestructibleBox(options) {
         hitboxYOffset: 5,
         itemsEnabled: true,
         disregardItemBuffs: true,
+        organic: false,
         portrait: graphicsUtils.createDisplayObject('BoxPortrait'),
         wireframe: graphicsUtils.createDisplayObject('BoxGroupPortrait'),
         team: options.team || 49,
