@@ -74,27 +74,35 @@ var unitUtils = {
     },
 
     applyEnergyGainAnimationToUnit: function(unit) {
-        var tint = 0xff00c7;
-        var anim = this.applyGainAnimationToUnit(unit, tint);
-        graphicsUtils.flashSprite({
-            sprite: anim,
-            duration: 75,
-            times: 4,
-            fromColor: tint,
-            toColor: 0xe461ff
-        });
+        var fun = function() {
+            var tint = 0xff00c7;
+            var anim = this.applyGainAnimationToUnit(unit, tint);
+            graphicsUtils.flashSprite({
+                sprite: anim,
+                duration: 75,
+                times: 3,
+                fromColor: tint,
+                toColor: 0xe461ff
+            });
+        }.bind(this);
+
+        globals.currentGame.debounceFunction(fun.bind(this), 'energyGain');
     },
 
     applyHealthGainAnimationToUnit: function(unit) {
-        var tint = 0xff0000;
-        var anim = this.applyGainAnimationToUnit(unit, tint);
-        graphicsUtils.flashSprite({
-            sprite: anim,
-            duration: 75,
-            times: 4,
-            fromColor: tint,
-            toColor: 0xf95e5e
-        });
+        var fun = function() {
+            var tint = 0xff0000;
+            var anim = this.applyGainAnimationToUnit(unit, tint);
+            graphicsUtils.flashSprite({
+                sprite: anim,
+                duration: 75,
+                times: 3,
+                fromColor: tint,
+                toColor: 0xf95e5e
+            });
+        }.bind(this);
+
+        globals.currentGame.debounceFunction(fun.bind(this), 'healthGain');
     },
 
     showBlockGraphic: function(options) {

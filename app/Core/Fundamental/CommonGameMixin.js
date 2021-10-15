@@ -58,7 +58,6 @@ var common = {
     neutralTeam: 49,
     lagCompensation: 2,
     pixiPaused: false,
-    currentSong: {},
     commonAssets: [{
         name: "CommonGameTextures",
         target: "Textures/CommonGameTextures.json"
@@ -121,6 +120,8 @@ var common = {
             sl: 0
         };
         this.unitsByTeam = {};
+        this.currentSong = {};
+        this.debouncedCalls = {};
         var is = this['incr' + 'ement' + 'Sco' + 're'].bind(this);
 
         //We'll attach a mousedown listener here which will execute before other listeners
@@ -235,6 +236,11 @@ var common = {
             // Create new item system
             this.itemSystem = new ItemSystem();
         }
+
+        //clear debounced calls every frame
+        this.addTickCallback(function() {
+            this.debouncedCalls = {};
+        }.bind(this), true, 'beforeTick');
 
         //track previous frame positions and attributes
         this.addTickCallback(function() {
@@ -1158,6 +1164,16 @@ var common = {
             if (timer && !clearPersistables && timer.persists) return;
             this.invalidateTimer(timer);
         }.bind(this));
+    },
+
+    debounceFunction: function(func, id) {
+        id = id || func;
+        if(this.debouncedCalls[id]) {
+            return;
+        }
+
+        this.debouncedCalls[id] = true;
+        func();
     },
 
     addLives: function(numberOfLives) {

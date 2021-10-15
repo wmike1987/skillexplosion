@@ -1389,7 +1389,7 @@ export default function Marine(options) {
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'rifleSlash',
                         speed: 0.24,
-                        transform: [target.position.x, target.position.y, 0.2 + variance, 0.2 + variance]
+                        transform: [target.position.x, target.position.y, 0.22 + variance, 0.22 + variance]
                     });
                     bloodAnimation1.play();
                     bloodAnimation1.rotation = Math.random() * Math.PI;
@@ -1398,7 +1398,7 @@ export default function Marine(options) {
                     var bloodAnimation2 = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'rifleSlash',
-                        speed: 0.15,
+                        speed: 0.18,
                         transform: [target.position.x, target.position.y, 0.1 + variance, 0.1 + variance]
                     });
                     bloodAnimation2.play();

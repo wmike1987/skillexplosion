@@ -58,6 +58,7 @@ var Loop = function(options) {
 
     var tick = function gameloopTick(time) {
         frame++;
+
         this.frameRequestId = _requestAnimationFrame(tick);
 
         if(!this.lastTime) { //initial frame

@@ -4,14 +4,15 @@ import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 var healAmount = 1.0;
 
 var manipulations = {
-    healAddition: healAmount
+    healAddition: healAmount,
+    range: 25
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Steady Syringe",
-        description: "Increase heal amount by " + healAmount + ".",
+        description: ["Increase heal amount by " + healAmount + ".", "Increase healing range."],
         icon: 'SteadySyringe',
         type: 'Medic',
         fontType: 'ursula'

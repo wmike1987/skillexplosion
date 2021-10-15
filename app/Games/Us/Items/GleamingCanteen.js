@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    maxHealth: 25,
+    maxHealth: 35,
 };
 
 export default function(options) {

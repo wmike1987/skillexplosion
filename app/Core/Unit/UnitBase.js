@@ -91,6 +91,7 @@ var UnitBase = {
     gritMult: 1,
     additions: {},
     level: 1,
+    fatigueReduction: 0,
     organic: true,
     currentExperience: 0,
     nextLevelExp: 100,
@@ -223,12 +224,12 @@ var UnitBase = {
             amountDone: damageReducedByArmor
         });
 
-        //killing blow dodge
+        //killing blow block
         if (this.currentHealth - alteredDamage <= 0) {
             if (this.hasGritDodge) {
                 this.giveGritDodge(false);
                 this.gritDodgeTimer.reset();
-                Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {
+                Matter.Events.trigger(this, 'killingBlowBlock', {
                     performingUnit: this
                 });
                 //display a miss graphic
@@ -366,6 +367,10 @@ var UnitBase = {
             });
         }
 
+        if(options.showGainAnimation) {
+            unitUtils.applyHealthGainAnimationToUnit(this);
+        }
+
         if (!options.invisible) {
             this.showLifeBar(true);
             if (!this.barTimer) {
@@ -417,6 +422,10 @@ var UnitBase = {
                     amount: energySnapshot
                 });
             });
+        }
+
+        if(options.showGainAnimation) {
+            unitUtils.applyEnergyGainAnimationToUnit(this);
         }
 
         if (!options.invisible) {
@@ -1666,6 +1675,27 @@ var UnitBase = {
         });
 
         return completeSet.concat(this.emptySlots);
+    },
+
+    boostSpeed: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount;
+
+        var self = this;
+
+        let id = mathArrayUtils.getId();
+        this.applyBuff({
+            name: "speedBoost" + id,
+            textureName: 'SpeedBuff',
+            duration: duration,
+            applyChanges: function() {
+                self.moveSpeed += amount;
+            },
+            removeChanges: function() {
+                self.moveSpeed -= amount;
+            }
+        });
     },
 
     petrify: function(options) {

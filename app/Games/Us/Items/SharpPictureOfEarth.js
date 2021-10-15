@@ -8,7 +8,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Sharp Picture Of Earth",
-        description: "Add +" + manipulations.maxEnergy + " to maximum energy.",
+        description: "Add " + manipulations.maxEnergy + " to maximum energy.",
         icon: 'SharpPictureOfEarth'
     }, options);
     return new ic(item);

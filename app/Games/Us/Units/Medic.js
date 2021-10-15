@@ -348,7 +348,7 @@ export default function Medic(options) {
         rate: 1.75
     });
     var dodgeSound = gameUtils.getSound('ursula_dodge.mp3', {
-        volume: 0.3,
+        volume: 0.38,
         rate: 1.3
     });
 

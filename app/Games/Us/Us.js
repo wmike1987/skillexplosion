@@ -678,77 +678,26 @@ var game = {
         this.shane = s;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BearMedallion"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MedalOfMoxie"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["LeatherGlove"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenTipCartridge"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["VioletTipCartridge"], unit: this.shane});
-        // ItemUtils.giveUnitItem({
-        //     gamePrefix: "Us",
-        //     itemName: ["AwarenessTonic"],
-        //     unit: this.shane
-        // });
-        // ItemUtils.giveUnitItem({
-        //     gamePrefix: "Us",
-        //     itemName: ["SereneStar"],
-        //     unit: this.shane
-        // });
-        // ItemUtils.giveUnitItem({
-        //     gamePrefix: "Us",
-        //     itemName: ["TechnologyKey"],
-        //     unit: this.shane
-        // });
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AjaMicrochip"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GreenMicrochip"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JaggedMicrochip"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["MaskOfRage"], unit: this.shane});
-        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
-        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
-        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
-        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
-        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
-        // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
 
         gameUtils.moveUnitOffScreen(this.shane);
         s.position = gameUtils.getPlayableCenter();
-        // this.shane.damage = 10000;
-
-        // var u = this.createUnit('Ghost');
-        // this.addUnit(u);
-        // var p = this.createUnit('DestructibleBox', this.neutralTeam);
-        //
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: p});
-        // this.addUnit(p);
-        // u.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {x: 100});
-        // p.position = {x: 300, y: 300};
 
         return s;
     },
 
     createUrsula: function() {
-        // this.ursula = Eruptlet({team: this.playerTeam, name: 'Ursula', dropItemsOnDeath: false});
         this.ursula = Medic({
             team: this.playerTeam,
             name: 'Ursula',
             dropItemsOnDeath: false
         });
-
-
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PepPill"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({
-        //     gamePrefix: "Us",
-        //     itemName: ["TechnologyKey"],
-        //     unit: this.ursula
-        // });
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["TechnologyKey"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SteadySyringe"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenLocket"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeLocket"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["DiamondLocket"], unit: this.ursula});
+        this.ursula.grit = 100;
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SharpPictureOfTheMoon"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.ursula});
         // this.ursula.idleCancel = true;
         gameUtils.moveUnitOffScreen(this.ursula);
@@ -814,8 +763,8 @@ var game = {
 
         //apply fatigue
         if (options.applyFatigue && unit.fatigue) {
-            var healthPenalty = unit.fatigue * unit.maxHealth / 100;
-            var energyPenalty = unit.fatigue * unit.maxEnergy / 100;
+            var healthPenalty = (unit.fatigue - unit.fatigueReduction) * unit.maxHealth / 100;
+            var energyPenalty = (unit.fatigue - unit.fatigueReduction) * unit.maxEnergy / 100;
             unit.setHealth(unit.currentHealth - healthPenalty);
             unit.setEnergy(unit.currentEnergy - energyPenalty);
         }
