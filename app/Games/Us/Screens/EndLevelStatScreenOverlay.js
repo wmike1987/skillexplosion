@@ -772,7 +772,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 4);
         });
 
-        var shaneDamageTaken = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageTaken, {
+        var shaneDamageTaken = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageTaken.toFixed(1), {
             position: shanePosition(reg),
             style: statStyle,
             where: "hudText",
@@ -842,7 +842,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 5);
         });
 
-        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageReducedByArmor.toFixed(2), {
+        var shaneDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageReducedByArmor.toFixed(1), {
             position: shanePosition(reg),
             style: statStyle,
             where: "hudText",
@@ -982,7 +982,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 7);
         });
 
-        var shaneHealingDone = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.healingDone, {
+        var shaneHealingDone = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.healingDone.toFixed(1), {
             position: shanePosition(reg),
             style: statStyle,
             where: "hudText",
@@ -1521,7 +1521,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 4);
         });
 
-        var ursulaDamageTaken = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageTaken, {
+        var ursulaDamageTaken = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageTaken.toFixed(1), {
             position: ursulaPosition(reg),
             style: statStyle,
             where: "hudText",
@@ -1588,7 +1588,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 5);
         });
 
-        var ursulaDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageReducedByArmor.toFixed(2), {
+        var ursulaDamageReducedByAmor = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.damageReducedByArmor.toFixed(1), {
             position: ursulaPosition(reg),
             style: statStyle,
             where: "hudText",
@@ -1722,7 +1722,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 7);
         });
 
-        var ursulaHealingDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.healingDone, {
+        var ursulaHealingDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.healingDone.toFixed(1), {
             position: ursulaPosition(reg),
             style: statStyle,
             where: "hudText",

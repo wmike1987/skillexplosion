@@ -560,6 +560,7 @@ export default function Marine(options) {
     });
     marine.knifeSpeed = 22;
     marine.knifeDamage = 15;
+    marine.trueKnife = false;
     var throwKnife = function(destination, commandObj, childKnife) {
         //get augments
         var thisAbility = this.getAbilityByName('Throw Knife');
@@ -686,12 +687,17 @@ export default function Marine(options) {
                             poisonAnimation.rotation = Math.random() * Math.PI * 2;
                             graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
-                            otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self);
+                            otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self, {
+                                dodgeable: false
+                            });
                         }
                     });
                 }
 
-                otherUnit.sufferAttack(marine.knifeDamage, self); //we can make the assumption that a body is part of a unit if it's attackable
+                otherUnit.sufferAttack(marine.knifeDamage, self, {
+                    dodgeable: !self.trueKnife,
+                    ignoreArmor: self.trueKnife
+                }); //we can make the assumption that a body is part of a unit if it's attackable
                 if (otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
                     Matter.Events.trigger(globals.currentGame, 'knifeKill', {
@@ -983,11 +989,15 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            attackingUnit.maim({duration: 6000});
+            attackingUnit.maim({
+                duration: 6000
+            });
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
-            targetUnit.maim({duration: 6000});
+            targetUnit.maim({
+                duration: 6000
+            });
         },
     });
 
@@ -1383,7 +1393,7 @@ export default function Marine(options) {
                     speed: 100
                 });
 
-                if(target.organic) {
+                if (target.organic) {
                     var variance = Math.random() * 0.25;
                     var bloodAnimation1 = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
@@ -1406,7 +1416,7 @@ export default function Marine(options) {
                     graphicsUtils.addSomethingToRenderer(bloodAnimation2, 'foreground');
                 }
 
-                if(true) {
+                if (true) {
                     //bullet emitter
                     var emitter = gameUtils.createParticleEmitter({
                         where: globals.currentGame.renderer.stages.stage,

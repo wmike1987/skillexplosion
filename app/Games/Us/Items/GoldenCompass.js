@@ -1,8 +1,8 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    fatigueReduction: 16,
-    maxEnergy: 8
+    fatigueReduction: 15,
+    maxEnergy: 6
 };
 
 export default function(options) {
@@ -10,7 +10,7 @@ export default function(options) {
         manipulations: manipulations,
         name: "Compass",
         description: ["Reduce fatigue applied by " + manipulations.fatigueReduction + "%.", "Add " + manipulations.maxEnergy + " to maximum energy."],
-        icon: 'Compass'
+        icon: 'GoldenCompass'
     }, options);
     return new ic(item);
 }

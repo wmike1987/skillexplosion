@@ -814,7 +814,8 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
-                    enemyDefList: ['basic', 'basic', 'basic']
+                    enemyDefList: ['basic', 'basic', 'basic'],
+                    itemClass: 'worn',
                 }
             });
             // world.map.addMapNode('easySentinels', {
@@ -984,7 +985,8 @@ var phaseThree = function() {
     this.map.addMapNode('basic');
     this.map.addMapNode('airDropStation', {
         levelOptions: {
-            // prereqCount: 0
+            itemClass: 'worn',
+            itemType: 'item'
         }
     });
     this.map.addMapNode('basic');
@@ -1022,7 +1024,9 @@ var phaseThree = function() {
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: ['outerBasic', 'easyGargs', 'outerBasic']
+            enemyDefList: ['outerBasic', 'easyGargs', 'outerBasic'],
+            itemClass: 'rugged',
+            itemType: 'microchip'
         }
     });
 };

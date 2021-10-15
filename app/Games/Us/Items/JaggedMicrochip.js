@@ -3,12 +3,14 @@ import * as Matter from 'matter-js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
+var amount = 4;
+
 export default function(options) {
     var item = Object.assign({
         name: "Jagged Microchip",
-        description: ["Enable a Knife augment.", 'Add +5 to knife damage.'],
+        description: ["Enable a Knife augment.", 'Add ' + amount + ' to knife damage.'],
         poweredByMessage: {text: 'Jagged Microchip', style: 'basicPoweredByStyle'},
-        conditionalPoweredByMessage: {text: '+5 damage.', style: 'basicPoweredByStyle'},
+        conditionalPoweredByMessage: {text: '+ ' + amount + ' damage.', style: 'basicPoweredByStyle'},
         additionCondition: function(augment) {
             return true;
         },
@@ -16,10 +18,10 @@ export default function(options) {
             return ability.name == 'Throw Knife';
         },
         plug: function() {
-            this.owningUnit.knifeDamage += 5;
+            this.owningUnit.knifeDamage += amount;
         },
         unplug: function() {
-            this.owningUnit.knifeDamage -= 5;
+            this.owningUnit.knifeDamage -= amount;
         },
         plugTint: 0xfb5c43,
         systemMessage: "Drop on augment to enable.",

@@ -9,11 +9,11 @@ var ItemClasses = {
         item: {description: 'Worn Item', tint: 0x949494, items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion', 'LeatherBelt',
                                        'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup', 'SilverLocket', 'PictureOfTheMoon']},
         microchip: {description: 'Microchip', tint: 0xf59a87, items: ['BasicMicrochip'], gleamAnimation: "MicrochipGleam"},
-        specialtyItem: {description: 'Worn Specialty Item', tint: 0x7ffcea, items: ['LeatherGlove', 'SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar', 'PillBottle', 'SkyMedallion']},
+        specialtyItem: {description: 'Worn Specialty Item', tint: 0x7ffcea, items: ['LeatherGlove', 'RoseRing', 'SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar', 'PillBottle', 'SkyMedallion']},
     },
 
     rugged: {
-        item: {description: 'Rugged Item', tint: 0xffffff, items: ['LightBoots', 'Compass', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']},
+        item: {description: 'Rugged Item', tint: 0xffffff, items: ['LightBoots', 'CamoflaugeGlove', 'Compass', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']},
         microchip: {description: 'Rugged Microchip', tint: 0xa77e16, items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip']},
         specialtyItem: {description: 'Rugged Specialty Item', tint: 0x1e9489, items: ['GreenTipCartridge']},
     },

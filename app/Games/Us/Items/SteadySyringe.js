@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
-var healAmount = 1.0;
+var healAmount = 0.5;
 
 var manipulations = {
     healAddition: healAmount,

@@ -472,7 +472,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"RuggedCanteen.png":
+"RoseRing.png":
 {
 	"frame": {"x":647,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -480,7 +480,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SereneStar.png":
+"RuggedCanteen.png":
 {
 	"frame": {"x":681,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -488,7 +488,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SharpPictureOfEarth.png":
+"SereneStar.png":
 {
 	"frame": {"x":681,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -496,7 +496,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SharpPictureOfTheMoon.png":
+"SharpPictureOfEarth.png":
 {
 	"frame": {"x":681,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -504,7 +504,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"ShinyBoot.png":
+"SharpPictureOfTheMoon.png":
 {
 	"frame": {"x":715,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -512,7 +512,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SilverMedalCircle1.png":
+"ShinyBoot.png":
 {
 	"frame": {"x":715,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -520,7 +520,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SilverMedalCircle2.png":
+"SilverMedalCircle1.png":
 {
 	"frame": {"x":715,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -528,7 +528,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SilverMedalCircle3.png":
+"SilverMedalCircle2.png":
 {
 	"frame": {"x":749,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -536,7 +536,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SilverMedalCircle4.png":
+"SilverMedalCircle3.png":
 {
 	"frame": {"x":749,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -544,7 +544,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SilverMedalDiamond1.png":
+"SilverMedalCircle4.png":
 {
 	"frame": {"x":749,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -552,7 +552,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SilverMedalDiamond2.png":
+"SilverMedalDiamond1.png":
 {
 	"frame": {"x":783,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -560,7 +560,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SingleBoot1.png":
+"SilverMedalDiamond2.png":
 {
 	"frame": {"x":783,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -568,7 +568,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SingleBoot2.png":
+"SingleBoot1.png":
 {
 	"frame": {"x":783,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -576,7 +576,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SteadySyringe.png":
+"SingleBoot2.png":
 {
 	"frame": {"x":817,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -584,7 +584,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"Steroid.png":
+"SteadySyringe.png":
 {
 	"frame": {"x":817,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -592,7 +592,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SturdyCanteen.png":
+"Steroid.png":
 {
 	"frame": {"x":817,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -600,7 +600,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SugarPill.png":
+"SturdyCanteen.png":
 {
 	"frame": {"x":851,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -608,7 +608,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"TechnologyKey.png":
+"SugarPill.png":
 {
 	"frame": {"x":851,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -616,7 +616,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"ThrowingGlove.png":
+"TechnologyKey.png":
 {
 	"frame": {"x":851,"y":69,"w":32,"h":32},
 	"rotated": false,
@@ -624,7 +624,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VioletTipCartridge.png":
+"ThrowingGlove.png":
 {
 	"frame": {"x":885,"y":1,"w":32,"h":32},
 	"rotated": false,
@@ -632,7 +632,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"WalkieTalkie1.png":
+"VioletTipCartridge.png":
 {
 	"frame": {"x":885,"y":35,"w":32,"h":32},
 	"rotated": false,
@@ -640,9 +640,17 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"YellowSyringe.png":
+"WalkieTalkie1.png":
 {
 	"frame": {"x":885,"y":69,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"YellowSyringe.png":
+{
+	"frame": {"x":919,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -660,8 +668,8 @@
 	"version": "1.0",
 	"image": "Items.png",
 	"format": "RGBA8888",
-	"size": {"w":918,"h":102},
+	"size": {"w":952,"h":102},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:af9c22de1e3aeb260add81c97a6305d5:9f36eb2d85efd17d305cb6a64141cf13:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:be20dd5d374c007ad799b61e820620a9:188787708372fe008142577365b21b58:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

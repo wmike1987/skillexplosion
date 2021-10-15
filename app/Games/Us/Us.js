@@ -677,7 +677,7 @@ var game = {
         });
         this.shane = s;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BearMedallion"], unit: this.shane});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["CamoflaugeGlove"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AjaMicrochip"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
 
@@ -695,8 +695,9 @@ var game = {
         });
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenLocket"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeLocket"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["DiamondLocket"], unit: this.ursula});
-        this.ursula.grit = 100;
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenCompass"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RoseRing"], unit: this.ursula});
+        // this.ursula.grit = 100;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SharpPictureOfTheMoon"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.ursula});
         // this.ursula.idleCancel = true;
@@ -763,8 +764,8 @@ var game = {
 
         //apply fatigue
         if (options.applyFatigue && unit.fatigue) {
-            var healthPenalty = (unit.fatigue - unit.fatigueReduction) * unit.maxHealth / 100;
-            var energyPenalty = (unit.fatigue - unit.fatigueReduction) * unit.maxEnergy / 100;
+            var healthPenalty = Math.max(0, (unit.fatigue - unit.fatigueReduction)) * unit.maxHealth / 100;
+            var energyPenalty = Math.max(0, (unit.fatigue - unit.fatigueReduction)) * unit.maxEnergy / 100;
             unit.setHealth(unit.currentHealth - healthPenalty);
             unit.setEnergy(unit.currentEnergy - energyPenalty);
         }

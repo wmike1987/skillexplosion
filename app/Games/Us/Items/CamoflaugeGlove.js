@@ -4,16 +4,23 @@ import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/Utilit
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    knifeDamage: 4,
-    knifeSpeed: 12
+    knifeDamage: 8,
+    dodgeAddition: 3,
+    ignoreCallback: function(equipped) {
+        if(equipped) {
+            this.trueKnife = true;
+        } else {
+            this.trueKnife = false;
+        }
+    }
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Leather Glove",
-        description: ["Add +4 to knife damage.", "Increase knife speed."],
-        icon: 'ThrowingGlove',
+        name: "Camoflauge Glove",
+        description: ["Add +8 to knife damage.", "Knives ignore armor and cannot be dodged.", "Add 3 to dodge."],
+        icon: 'CamoGlove',
     }, options, shaneOnly);
     return new ic(item);
 }

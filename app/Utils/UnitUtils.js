@@ -86,7 +86,7 @@ var unitUtils = {
             });
         }.bind(this);
 
-        globals.currentGame.debounceFunction(fun.bind(this), 'energyGain');
+        globals.currentGame.debounceFunction(fun.bind(this), 'energyGain' + unit.unitId);
     },
 
     applyHealthGainAnimationToUnit: function(unit) {
@@ -102,7 +102,7 @@ var unitUtils = {
             });
         }.bind(this);
 
-        globals.currentGame.debounceFunction(fun.bind(this), 'healthGain');
+        globals.currentGame.debounceFunction(fun.bind(this), 'healthGain' + unit.unitId);
     },
 
     showBlockGraphic: function(options) {

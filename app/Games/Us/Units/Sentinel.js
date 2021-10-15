@@ -246,6 +246,7 @@ export default function Sentinel(options) {
         health: 35,
         defense: 1,
         energy: 0,
+        dodge: 10,
         energyRegenerationRate: 1,
         hitboxWidth: 40,
         hitboxHeight: 60,

@@ -848,7 +848,7 @@ export default function Medic(options) {
                 if (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {
                     dmg = dmg * 2;
                 }
-                unit.sufferAttack(dmg, medic);
+                unit.sufferAttack(dmg, medic, {dodgeable: false});
                 var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',

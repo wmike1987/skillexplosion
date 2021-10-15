@@ -4,18 +4,19 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    maxHealth: 10,
-    gritAddition: 12,
-    maxEnergy: 10,
-    dodgeAddition: 6,
+    healthRegenerationRate: 1,
+    condemnedLifeGain: 10,
+    maxHealth: 10
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Sky Medallion",
-        description: ["Add 12 to grit.", "Add 10 to maximum health.", "Add 10 to maximum energy.", "Add 6 to dodge"],
-        icon: 'SilverMedalCircle1',
-    }, options, shaneOnly);
+        name: "Rose Ring",
+        description: ["Add 10 to max health.", "Regenerate +1 hp per second.", "Add 10 to life gained from killing a condemned enemy."],
+        icon: 'RoseRing',
+        type: 'Medic',
+        fontType: 'ursula'
+    }, options, ursulaOnly);
     return new ic(item);
 }

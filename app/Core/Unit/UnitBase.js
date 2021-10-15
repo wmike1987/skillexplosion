@@ -93,6 +93,7 @@ var UnitBase = {
     level: 1,
     fatigueReduction: 0,
     organic: true,
+    condemnedLifeGain: 15,
     currentExperience: 0,
     nextLevelExp: 100,
     lastLevelExp: 0,
@@ -157,11 +158,13 @@ var UnitBase = {
         if (this.unitRemoved) return;
 
         options = Object.assign({
-            isProjectile: false
+            isProjectile: false,
+            dodgeable: true
         }, options);
         attackingUnit = attackingUnit || {
             name: 'empty'
         };
+
         var damageObj = {
             damage: damage
         };
@@ -172,7 +175,8 @@ var UnitBase = {
             sufferingUnit: this,
             damageObj: damageObj
         });
-        if (this.attackDodged() || damageObj.manualDodge) {
+
+        if (options.dodgeable && (this.attackDodged() || damageObj.manualDodge)) {
             Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {
                 performingUnit: this
             });
@@ -215,7 +219,8 @@ var UnitBase = {
         damage = damageObj.damage;
 
         //factor in armor
-        var alteredDamage = Math.max(1, (damage - this.getTotalDefense()));
+        var totalDefense = options.ignoreArmor ? 0 : this.getTotalDefense();
+        var alteredDamage = Math.max(1, (damage - totalDefense));
         var damageReducedByArmor = damage - alteredDamage;
 
         Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {
@@ -1790,7 +1795,6 @@ var UnitBase = {
     },
     condemn: function(options) {
         options = options || {};
-        let condemnHealthAmount = 15;
         let duration = options.duration;
         let condemningUnit = options.condemningUnit;
 
@@ -1907,7 +1911,7 @@ var UnitBase = {
                             graphicsUtils.floatSprite(condemnNote3, {
                                 runs: 65
                             });
-                            condemningUnit.giveHealth(condemnHealthAmount, condemningUnit);
+                            condemningUnit.giveHealth(condemningUnit.condemnedLifeGain, condemningUnit);
                             healSound.play();
                             gameUtils.doSomethingAfterDuration(() => {
                                 condemnSound2.play();
