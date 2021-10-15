@@ -169,9 +169,6 @@ var levelBase = {
         //fulfill enemy sets
         if (this.enemyDefs) {
             this.enemySets = EnemySetSpecifier.create(this.enemyDefs);
-
-            //propagate some attrs if defined on the enemyDef
-            this.token = this.enemyDefs.token;
         }
 
         //create the map node

@@ -564,7 +564,6 @@ var enemyDefs = {
         }]
     },
     basicHunter: {
-        token: 'default',
         enemySets: [{
             type: 'Hunter',
             amount: [2],
@@ -578,7 +577,6 @@ var enemyDefs = {
         }]
     },
     basicHard: {
-        token: 'hard',
         enemySets: [{
             type: 'Critter',
             amount: [2, 3, 4],
@@ -799,6 +797,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basicHunter', {
                 levelOptions: {
                     nodeTitle: "Hunter's Camp",
+                    token: 'hard',
                     itemClass: 'worn',
                 }
             });
