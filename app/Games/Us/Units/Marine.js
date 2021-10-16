@@ -465,31 +465,11 @@ export default function Marine(options) {
 
         var defensivePostureGain = 2;
         if (defensivePostureAugment) {
-            marine.applyBuff({
-                name: "defpostbuff",
-                textureName: 'DefensiveBuff',
-                duration: 3000,
-                applyChanges: function() {
-                    self.addDefenseAddition(defensivePostureGain);
-                },
-                removeChanges: function() {
-                    self.removeDefenseAddition(defensivePostureGain);
-                }
-            });
+            marine.applyDefenseBuff({id: 'defpostbuff', duration: 3000, amount: defensivePostureGain});
         }
 
         if (deathWishAugment) {
-            marine.applyBuff({
-                name: "deathwishbuff",
-                textureName: 'DeathWishBuff',
-                duration: 2000,
-                applyChanges: function() {
-                    self.addDamageAddition(3);
-                },
-                removeChanges: function() {
-                    self.removeDamageAddition(3);
-                }
-            });
+            marine.enrage({id: "deathwishbuff", duration: 2000, amount: 3});
         }
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
     };
@@ -841,9 +821,10 @@ export default function Marine(options) {
     var gsADuration = 300;
     var allyArmorDuration = 8000;
     var armorGiven = 2;
+    var allyHeal = 6;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for 4 hp.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 8 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Heal ally for 10% of max hp.'],
         textureName: 'PositiveMindset',
@@ -853,7 +834,7 @@ export default function Marine(options) {
         defenseCooldown: 2000,
         aggressionEventName: 'kill',
         aggressionDuration: gsADuration,
-        aggressionCooldown: 2000,
+        aggressionCooldown: 3000,
         passiveAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
@@ -867,7 +848,7 @@ export default function Marine(options) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
                 if (ally.isDead) return;
-                ally.giveHealth(6, marine);
+                ally.giveHealth(allyHeal, marine);
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
             });
@@ -877,17 +858,7 @@ export default function Marine(options) {
             allies.forEach((ally) => {
                 if (ally.isDead) return;
                 var id = mathArrayUtils.getId();
-                ally.applyBuff({
-                    name: "givingSpiritDefBuff" + id,
-                    textureName: 'DefensiveBuff',
-                    duration: allyArmorDuration,
-                    applyChanges: function() {
-                        ally.addDefenseAddition(armorGiven);
-                    },
-                    removeChanges: function() {
-                        ally.removeDefenseAddition(armorGiven);
-                    }
-                });
+                ally.applyDefenseBuff({duration: allyArmorDuration, amount: armorGiven});
             });
         },
     });
@@ -930,17 +901,7 @@ export default function Marine(options) {
             });
         },
         aggressionAction: function(event) {
-            marine.applyBuff({
-                name: "rushofbloodspeed",
-                textureName: 'SpeedBuff',
-                duration: robADuration,
-                applyChanges: function() {
-                    marine.moveSpeed += 0.6;
-                },
-                removeChanges: function() {
-                    marine.moveSpeed -= 0.6;
-                }
-            });
+            marine.applySpeedBuff({id: rushofbloodspeed, duration: robADuration, amount: 0.6});
         },
     });
 

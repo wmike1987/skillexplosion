@@ -148,7 +148,7 @@ var presentItems = function(options) {
 
                     //show item icon
                     graphicsUtils.addDisplayObjectToRenderer(item.icon);
-                    graphicsUtils.changeDisplayObjectStage(item.icon, 'hudThree');
+                    graphicsUtils.changeDisplayObjectStage(item.icon, 'hudTwo');
                     graphicsUtils.makeSpriteSize(item.icon, 36);
                     item.icon.position = position;
                     graphicsUtils.addBorderToSprite({

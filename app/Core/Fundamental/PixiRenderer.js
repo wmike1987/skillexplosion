@@ -483,9 +483,13 @@ var renderer = function(engine, options) {
                     // console.log("Call to bitmap.from for " + name + "took" + (t1 - t0) + " milliseconds.");
                 }
 
-                return new PIXI.BitmapText(something.substring(something.indexOf(bitmapTextId) + 5), {
-                    fontName: name,
+                var newBMText = new PIXI.BitmapText(something.substring(something.indexOf(bitmapTextId) + 5), {
+                    fontName: name
                 });
+
+                newBMText.roundPixels = true;
+
+                return newBMText;
             }
 
             //Attempt to load from preloaded texture or spine asset

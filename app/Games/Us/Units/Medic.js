@@ -1204,12 +1204,15 @@ export default function Medic(options) {
         },
     });
 
+    var dodgeGain = 3;
+    var allyDodgeGain = 20;
+    var totalDodgeGained = 0;
     var slADuration = 3000;
     var slyLogic = new Passive({
         title: 'Sly Logic',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies 25 dodge for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain 5 dodge for length of round.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 25% of current dodge for length of round.'],
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain ' + dodgeGain + ' dodge (up to 21) for length of outing.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 25% of current dodge for length of outing.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
@@ -1227,8 +1230,12 @@ export default function Medic(options) {
             }
         },
         defenseAction: function(event) {
+            if(totalDodgeGained > 21) {
+                return;
+            }
+            totalDodgeGained += 3;
             event.damageObj.manualDodge = true;
-            medic.addDodgeAddition(5);
+            medic.addDodgeAddition(dodgeGain);
             var dodgeUp = graphicsUtils.addSomethingToRenderer("DodgeBuff", {
                 where: 'stageTwo',
                 position: medic.position
@@ -1241,23 +1248,14 @@ export default function Medic(options) {
                 runs: 50
             });
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                medic.removeDodgeAddition(5);
+                medic.removeDodgeAddition(dodgeGain);
+                totalDodgeGained = 0;
             });
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(medic);
             allies.forEach((ally) => {
-                ally.applyBuff({
-                    name: "slyLogicDodgeBuff",
-                    textureName: 'DodgeBuff',
-                    duration: slADuration,
-                    applyChanges: function() {
-                        ally.addDodgeAddition(25);
-                    },
-                    removeChanges: function() {
-                        ally.removeDodgeAddition(25);
-                    }
-                });
+                ally.applyDodgeBuff({duration: slADuration, amount: allyDodgeGain});
             });
         },
     });

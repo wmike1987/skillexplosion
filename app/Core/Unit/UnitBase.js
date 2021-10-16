@@ -1682,23 +1682,91 @@ var UnitBase = {
         return completeSet.concat(this.emptySlots);
     },
 
-    boostSpeed: function(options) {
+    applyDefenseBuff: function(options) {
         options = options || {};
         let duration = options.duration;
         let amount = options.amount;
+        let callback = options.callback;
+        let id = options.id;
 
-        var self = this;
+        var unit = this;
+        unit.applyBuff({
+            name: id || ("DefensiveBuff" + mathArrayUtils.getId()),
+            textureName: 'DefensiveBuff',
+            duration: duration,
+            applyChanges: function() {
+                unit.addDefenseAddition(amount);
+            },
+            removeChanges: function() {
+                if(callback) {
+                    callback();
+                }
+                unit.removeDefenseAddition(amount);
+            }
+        });
+    },
 
-        let id = mathArrayUtils.getId();
+    enrage: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount;
+        let callback = options.callback;
+        let id = options.id;
+
+        var unit = this;
+        unit.applyBuff({
+            name: id || ("EnrageBuff" + mathArrayUtils.getId()),
+            textureName: 'DeathWishBuff',
+            duration: duration,
+            applyChanges: function() {
+                unit.addDamageAddition(amount);
+            },
+            removeChanges: function() {
+                unit.removeDamageAddition(amount);
+            }
+        });
+    },
+
+    applyDodgeBuff: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount;
+        let callback = options.callback;
+        let id = options.id;
+
+        var unit = this;
+        unit.applyBuff({
+            name: id || "DodgeBuff" + mathArrayUtils.getId(),
+            textureName: 'DodgeBuff',
+            duration: duration,
+            applyChanges: function() {
+                unit.addDodgeAddition(amount);
+            },
+            removeChanges: function() {
+                if(callback) {
+                    callback();
+                }
+                unit.removeDodgeAddition(amount);
+            }
+        });
+    },
+
+    applySpeedBuff: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount;
+        let id = options.id;
+        var unit = this;
+
         this.applyBuff({
-            name: "speedBoost" + id,
+            name: id || "SpeedBuff" + mathArrayUtils.getId(),
             textureName: 'SpeedBuff',
             duration: duration,
             applyChanges: function() {
-                self.moveSpeed += amount;
+                unit.moveSpeed += amount;
             },
             removeChanges: function() {
-                self.moveSpeed -= amount;
+                unit.moveSpeed -= amount;
             }
         });
     },

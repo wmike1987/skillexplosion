@@ -311,8 +311,8 @@ Tooltip.prototype.display = function(position, options) {
     var borderPosition = this.base.position;
     if(!options.middleAnchor) {
         borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
+        this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
     }
-    mathArrayUtils.roundPositionToWholeNumbers(borderPosition);
     this.baseBorder.position = borderPosition;
 
     Matter.Events.trigger(this.dobj, 'tooltipShown');
