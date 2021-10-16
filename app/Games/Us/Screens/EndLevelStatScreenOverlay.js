@@ -97,11 +97,13 @@ var presentItems = function(options) {
         var currentNode = globals.currentGame.map.completedNodes[nodeIndex];
         nodeIndex += 1;
 
-        //float supply drop text
+        //make sure our item class can satisfy this many choices (only applies to book right now)
+        var forcedLength = ItemClasses[currentNode.levelDetails.itemClass][currentNode.levelDetails.itemType].items.length;
+        var localNumberOfChoices = forcedLength < numberOfChoices ? forcedLength : numberOfChoices;
 
         //Show the choose item text
         globals.currentGame.soundPool.positiveSoundFast.play();
-        var t = numberOfChoices == 1 ? 'Take your item!' : 'Choose an item!';
+        var t = localNumberOfChoices == 1 ? 'Take your item!' : 'Choose an item!';
         t = (nodeIndex > 1) ? "Choose another!" : t;
         var rewardText = graphicsUtils.floatText(t, gameUtils.getPlayableCenterPlus({
             y: 300
@@ -120,7 +122,7 @@ var presentItems = function(options) {
         //Display the choices
         var j = 0;
         var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
-            numberOfPositions: numberOfChoices,
+            numberOfPositions: localNumberOfChoices,
             position: gameUtils.getPlayableCenterPlus({
                 x: 0,
                 y: 300
@@ -128,7 +130,7 @@ var presentItems = function(options) {
             spacing: 50
         });
         gameUtils.doSomethingAfterDuration(() => {
-            var selectionOptions = ItemUtils.getRandomItemsFromClass(currentNode.levelDetails.itemClass, currentNode.levelDetails.itemType, numberOfChoices);
+            var selectionOptions = ItemUtils.getRandomItemsFromClass(currentNode.levelDetails.itemClass, currentNode.levelDetails.itemType, localNumberOfChoices);
             selectionOptions.forEach((choice) => {
                 var position = positions[j];
                 j++;
@@ -146,11 +148,12 @@ var presentItems = function(options) {
 
                     //show item icon
                     graphicsUtils.addDisplayObjectToRenderer(item.icon);
-                    graphicsUtils.changeDisplayObjectStage(item.icon, 'hudTwo');
+                    graphicsUtils.changeDisplayObjectStage(item.icon, 'hudThree');
                     graphicsUtils.makeSpriteSize(item.icon, 36);
                     item.icon.position = position;
                     graphicsUtils.addBorderToSprite({
-                        sprite: item.icon
+                        sprite: item.icon,
+                        alpha: 0.75
                     });
                     Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
                         systemMessage: 'Click to receive.'

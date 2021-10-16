@@ -9,7 +9,7 @@ export default function(options) {
         name: "Pep Pill",
         description: "Consume to add 2 to max energy.",
         systemMessage: "Ctrl+Click to consume.",
-        icon: 'RichPepPill',
+        icon: 'Steroid',
         fontType: 'stimulant',
         consume: function(unit) {
             unit.maxEnergy += 2;

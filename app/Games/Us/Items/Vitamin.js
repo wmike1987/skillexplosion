@@ -9,7 +9,7 @@ export default function(options) {
         name: "Vitamin",
         description: "Consume to add 0.2 to armor.",
         systemMessage: "Ctrl+Click to consume.",
-        icon: 'PepPillTwo',
+        icon: 'VitaminOne',
         fontType: 'stimulant',
         consume: function(unit) {
             unit.defense += 0.2;

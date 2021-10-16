@@ -44,6 +44,7 @@ var map = function(specs) {
     this.outingNodes = [];
     this.inProgressOutingNodes = [];
     this.maxOutingLength = 3;
+    this.fatigueIncrement = 4;
 
     //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
@@ -161,7 +162,7 @@ var map = function(specs) {
 
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', function(event) {
         if (event.result == 'victory') {
-            this.startingFatigue += 3;
+            this.startingFatigue += this.fatigueIncrement;
         }
     }.bind(this));
 

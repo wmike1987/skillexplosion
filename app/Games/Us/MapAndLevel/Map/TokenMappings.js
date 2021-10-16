@@ -2,6 +2,7 @@
 var tokenMappings = {
     singles: 'MapGoldBattleToken',
     outerNormal: 'MapDarkGoldBattleToken',
+    outerHard: 'MapOuterHardBattleToken',
     hard: 'MapRedBattleToken',
     boss: 'MapRedBattleToken',
     norevives: 'MapRedBattleToken',

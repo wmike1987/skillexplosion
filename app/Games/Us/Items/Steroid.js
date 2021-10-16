@@ -9,7 +9,7 @@ export default function(options) {
         name: "Steroid",
         description: "Consume to add 2 to grit.",
         systemMessage: "Ctrl+Click to consume.",
-        icon: 'Steroid',
+        icon: 'AlternatePillOne',
         fontType: 'stimulant',
         consume: function(currentUnit) {
             currentUnit.grit += 2;

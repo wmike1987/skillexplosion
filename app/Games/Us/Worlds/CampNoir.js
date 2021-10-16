@@ -590,7 +590,7 @@ var enemyDefs = {
         }, {
             type: 'Gargoyle',
             amount: [2],
-            initialDelay: 8000,
+            initialDelay: 6500,
             atATime: 1,
             hz: 5000
         }]
@@ -605,6 +605,46 @@ var enemyDefs = {
         }, {
             type: 'Sentinel',
             amount: 3,
+            atATime: 1,
+            hz: 4000
+        }]
+    },
+    outerHardOne: {
+        token: 'outerNormal',
+        enemySets: [{
+            type: 'Critter',
+            amount: 12,
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Gargoyle',
+            amount: 3,
+            initialDelay: 3000,
+            atATime: 1,
+            hz: 3500
+        }, {
+            type: 'Sentinel',
+            amount: 1,
+            atATime: 1,
+            hz: 4000
+        }]
+    },
+    outerHardTwo: {
+        token: 'outerNormal',
+        enemySets: [{
+            type: 'Critter',
+            amount: 12,
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Hunter',
+            amount: 2,
+            atATime: 1,
+            initialDelay: 3000,
+            hz: 4500
+        }, {
+            type: 'Sentinel',
+            amount: 1,
             atATime: 1,
             hz: 4000
         }]
@@ -1007,9 +1047,26 @@ var phaseThree = function() {
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('mobs', outerParam);
+    this.map.addMapNode('outerHardTwo', {
+        levelOptions: {
+            outer: true,
+            token: 'outerHard',
+            itemClass: 'stimulant'
+        }
+    });
+    this.map.addMapNode('outerHardOne', {
+        levelOptions: {
+            token: 'outerHard',
+            itemClass: 'book'
+        }
+    });
+    this.map.addMapNode('mobs', {
+        levelOptions: {
+            outer: true,
+            token: 'mobs',
+            itemClass: 'stimulant'
+        }
+    });
     this.map.addMapNode('airDropStation', {
         levelOptions: {
             prereqCount: 3,
