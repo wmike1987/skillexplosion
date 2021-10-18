@@ -1,0 +1,46 @@
+import ic from '@core/Unit/ItemConstructor.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/UtilityMenu.js';
+import * as Matter from 'matter-js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
+
+var armorGainDuration = 6000;
+var armorGain = 2;
+var chargeLength = 2000;
+
+var manipulations = {
+    events: {
+        applyEnrageBuff: {
+            callback: function(event) {
+                var unit = event.equippedUnit;
+                var item = event.item;
+
+                if(unit.polarizedVisorHandler) {
+                    unit.polarizedVisorHandler.removeHandler();
+                }
+
+                unit.polarizedVisorHandler = gameUtils.matterOnce(unit, 'kill', (event) => {
+                    if(unit.enrageCounter > 0) {
+                        unit.grantFreeKnife();
+                    }
+                });
+            }
+        }
+    }
+};
+
+export default function(options) {
+    var item = Object.assign({
+        manipulations: manipulations,
+        name: "Ruby Visor",
+        description: ["Delivering a killing blow while enraged grants Shane a free knife (up to one)."],
+        icon: 'GoldenVisor'
+    }, options, shaneOnly);
+    return new ic(item);
+}

@@ -36,7 +36,7 @@ var ItemClasses = {
         item: {
             description: 'Rugged Item',
             tint: 0xffffff,
-            items: ['LightBoots', 'CamoflaugeGlove', 'Compass', 'GoldPlatedPants', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']
+            items: ['LightBoots', 'Compass', 'GoldPlatedPants', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']
         },
         microchip: {
             description: 'Rugged Microchip',
@@ -46,7 +46,7 @@ var ItemClasses = {
         specialtyItem: {
             description: 'Rugged Specialty Item',
             tint: 0x1e9489,
-            items: ['GreenTipCartridge', 'RoseRing', "JadeRing", "RubyRing"]
+            items: ['GreenTipCartridge', "JadeRing", "RubyRing", "RubyVisor", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove',]
         },
     },
 

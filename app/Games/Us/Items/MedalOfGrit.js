@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    defenseAddition: 1,
+    defenseAddition: 0.75,
     gritAddition: 8,
     maxHealth: 5,
 };

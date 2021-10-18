@@ -524,7 +524,7 @@ export default function Marine(options) {
                 name: 'death wish',
                 icon: graphicsUtils.createDisplayObject('DeathWish'),
                 title: 'Death Wish',
-                description: 'Increase damage by 3 upon dashing for 2 seconds.'
+                description: 'Become enraged (+3 damage) upon dashing for 2 seconds.'
             },
         ],
     });
@@ -559,8 +559,8 @@ export default function Marine(options) {
         }
 
         //look for free knives
-        if (this.freeKinves) {
-            this.buffs['freeKnife' + this.freeKinves].removeBuff({
+        if (this.freeKnives) {
+            this.buffs['freeKnife' + this.freeKnives].removeBuff({
                 detached: true
             });
         }
@@ -905,6 +905,44 @@ export default function Marine(options) {
         },
     });
 
+    marine.grantFreeKnife = function(limit) {
+        if (!marine.freeKnives) {
+            marine.freeKnives = 0;
+        }
+
+        //limit... may need to rethink this
+        if(marine.freeKnives >= 1) {
+            return;
+        }
+
+        marine.applyBuff({
+            name: 'freeKnife' + (marine.freeKnives + 1),
+            textureName: 'FreeKnifeBuff',
+            duration: null,
+            applyChanges: function() {
+                marine.freeKnives += 1;
+
+                if (!marine.freeKinfeBuffs) {
+                    marine.freeKinfeBuffs = [];
+                }
+                marine.freeKinfeBuffs.push('freeKnife' + marine.freeKnives);
+
+                var ss = marine.getAbilityByName('Throw Knife');
+                ss.manuallyEnabled = true;
+                ss.byPassEnergyCost = true;
+            },
+            removeChanges: function() {
+                mathArrayUtils.removeObjectFromArray('freeKnife' + marine.freeKnives, marine.freeKinfeBuffs);
+                marine.freeKnives -= 1;
+                if (marine.freeKnives == 0) {
+                    var ss = marine.getAbilityByName('Throw Knife');
+                    ss.manuallyEnabled = false;
+                    ss.byPassEnergyCost = false;
+                }
+            }
+        });
+    };
+
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6 seconds.'],
@@ -917,36 +955,7 @@ export default function Marine(options) {
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 5000,
         passiveAction: function(event) {
-            if (!marine.freeKinves) {
-                marine.freeKinves = 0;
-            }
-
-            marine.applyBuff({
-                name: 'freeKnife' + (marine.freeKinves + 1),
-                textureName: 'FreeKnifeBuff',
-                duration: null,
-                applyChanges: function() {
-                    marine.freeKinves += 1;
-
-                    if (!marine.freeKinfeBuffs) {
-                        marine.freeKinfeBuffs = [];
-                    }
-                    marine.freeKinfeBuffs.push('freeKnife' + marine.freeKinves);
-
-                    var ss = marine.getAbilityByName('Throw Knife');
-                    ss.manuallyEnabled = true;
-                    ss.byPassEnergyCost = true;
-                },
-                removeChanges: function() {
-                    mathArrayUtils.removeObjectFromArray('freeKnife' + marine.freeKinves, marine.freeKinfeBuffs);
-                    marine.freeKinves -= 1;
-                    if (marine.freeKinves == 0) {
-                        var ss = marine.getAbilityByName('Throw Knife');
-                        ss.manuallyEnabled = false;
-                        ss.byPassEnergyCost = false;
-                    }
-                }
-            });
+            marine.grantFreeKnife();
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;

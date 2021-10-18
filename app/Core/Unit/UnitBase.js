@@ -147,6 +147,7 @@ var UnitBase = {
     eventKeyStateGathering: {},
     buffs: {},
     orderedBuffs: [],
+    enrageCounter: 0,
     currentItems: [null, null, null, null, null, null],
     currentSpecialtyItems: [null, null, null, null, null, null],
     currentBackpack: [null, null, null],
@@ -205,6 +206,15 @@ var UnitBase = {
             sufferingUnit: this,
             damageObj: damageObj
         });
+
+        if(attackingUnit) {
+            Matter.Events.trigger(attackingUnit, 'preLevyAttack', {
+                performingUnit: attackingUnit,
+                sufferingUnit: this,
+                damageObj: damageObj
+            });
+        }
+
         if (options.isProjectile) {
             Matter.Events.trigger(this, 'sufferProjectile', {
                 performingUnit: attackingUnit,
@@ -1726,9 +1736,11 @@ var UnitBase = {
             textureName: 'DeathWishBuff',
             duration: duration,
             applyChanges: function() {
+                unit.enrageCounter++;
                 unit.addDamageAddition(amount);
             },
             removeChanges: function() {
+                unit.enrageCounter--;
                 unit.removeDamageAddition(amount);
             }
         });
