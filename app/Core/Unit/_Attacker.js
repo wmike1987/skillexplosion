@@ -16,6 +16,7 @@ export default {
     honableTargets: null, //this prevents the need for honing sensor (which can have a negative performance impact). This may not be relevant anymore
     specifiedAttackTarget: null,
     attackAutocast: true,
+    holdPositionId: 1,
 
     //default
     attack: function(target) {
@@ -244,6 +245,16 @@ export default {
     },
 
     holdPosition: function() {
+
+        //generate a hold position id
+        if(!this.isHoldingPosition) {
+            if(this.holdPositionId > 99999) {
+                this.holdPositionId = 1;
+            } else {
+                this.holdPositionId += 1;
+            }
+        }
+
         if(this.isMoving) {
             this.stop(null, {isHoldingPosition: true});
         }

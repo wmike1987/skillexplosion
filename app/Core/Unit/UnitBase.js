@@ -145,6 +145,8 @@ var UnitBase = {
     eventClickStateGathering: {},
     eventKeyMappings: {},
     eventKeyStateGathering: {},
+    buffs: {},
+    orderedBuffs: [],
     currentItems: [null, null, null, null, null, null],
     currentSpecialtyItems: [null, null, null, null, null, null],
     currentBackpack: [null, null, null],
@@ -1687,11 +1689,11 @@ var UnitBase = {
         let duration = options.duration;
         let amount = options.amount;
         let callback = options.callback;
-        let id = options.id;
+        let id = options.id || "DefenseBuff" + mathArrayUtils.getId();
 
         var unit = this;
         unit.applyBuff({
-            name: id || ("DefensiveBuff" + mathArrayUtils.getId()),
+            name: id,
             textureName: 'DefensiveBuff',
             duration: duration,
             applyChanges: function() {
@@ -1704,6 +1706,11 @@ var UnitBase = {
                 unit.removeDefenseAddition(amount);
             }
         });
+
+        Matter.Events.trigger(this, 'applyDefenseBuff', {
+            targetUnit: this,
+            id: id
+        });
     },
 
     enrage: function(options) {
@@ -1711,11 +1718,11 @@ var UnitBase = {
         let duration = options.duration;
         let amount = options.amount;
         let callback = options.callback;
-        let id = options.id;
+        let id = options.id || "EnrageBuff" + mathArrayUtils.getId();
 
         var unit = this;
         unit.applyBuff({
-            name: id || ("EnrageBuff" + mathArrayUtils.getId()),
+            name: id,
             textureName: 'DeathWishBuff',
             duration: duration,
             applyChanges: function() {
@@ -1725,6 +1732,11 @@ var UnitBase = {
                 unit.removeDamageAddition(amount);
             }
         });
+
+        Matter.Events.trigger(this, 'applyEnrageBuff', {
+            targetUnit: this,
+            id: id
+        });
     },
 
     applyDodgeBuff: function(options) {
@@ -1732,11 +1744,11 @@ var UnitBase = {
         let duration = options.duration;
         let amount = options.amount;
         let callback = options.callback;
-        let id = options.id;
+        let id = options.id || "DodgeBuff" + mathArrayUtils.getId();
 
         var unit = this;
         unit.applyBuff({
-            name: id || "DodgeBuff" + mathArrayUtils.getId(),
+            name: id,
             textureName: 'DodgeBuff',
             duration: duration,
             applyChanges: function() {
@@ -1749,17 +1761,22 @@ var UnitBase = {
                 unit.removeDodgeAddition(amount);
             }
         });
+
+        Matter.Events.trigger(this, 'applyDodgeBuff', {
+            targetUnit: this,
+            id: id
+        });
     },
 
     applySpeedBuff: function(options) {
         options = options || {};
         let duration = options.duration;
         let amount = options.amount;
-        let id = options.id;
+        let id = options.id || "SpeedBuff" + mathArrayUtils.getId();
         var unit = this;
 
         this.applyBuff({
-            name: id || "SpeedBuff" + mathArrayUtils.getId(),
+            name: id,
             textureName: 'SpeedBuff',
             duration: duration,
             applyChanges: function() {
@@ -1768,6 +1785,11 @@ var UnitBase = {
             removeChanges: function() {
                 unit.moveSpeed -= amount;
             }
+        });
+
+        Matter.Events.trigger(this, 'applySpeedBuff', {
+            targetUnit: this,
+            id: id
         });
     },
 
@@ -2208,15 +2230,6 @@ var UnitBase = {
         var originalyOffset = -this.buffYOffset || -65;
         var playSound = options.playSound;
         var buffDuration = options.duration;
-        if (!unit.buffs) {
-            unit.buffs = {};
-            unit.orderedBuffs = [];
-            unit.removeAllBuffs = function() {
-                unit.buffs.forEach((buff) => {
-                    buff.removeBuffImage();
-                });
-            };
-        }
 
         var buffAlreadyExists = false;
         if (unit.buffs[name]) {
@@ -2315,11 +2328,6 @@ var UnitBase = {
                     };
                     attachmentTick.offset = buff.offset;
                 });
-            };
-
-            //also create method to remove all buffs
-            unit.removeAllBuffs = function() {
-
             };
         }
         unit.reorderBuffs();

@@ -25,6 +25,7 @@ var baseItem = {
                 $.each(value, function(k, v) {
                     this.eventFunctions[k] = function(event) {
                         event.equippedUnit = unit;
+                        event.item = this;
                         $.each(v, function(kk, vv) {
                             if (kk == 'callback') {
                                 vv(event);
@@ -32,11 +33,11 @@ var baseItem = {
                                 unit[kk] += vv;
                             }
                         });
-                    };
+                    }.bind(this);
                     Matter.Events.on(unit, k, this.eventFunctions[k]);
                 }.bind(this));
             } else if (value instanceof Function) {
-                value.call(unit, true);
+                value.call(unit, true, this);
             } else {
                 if (unit['add' + capitalizeFirstLetter(key)] instanceof Function) {
                     unit['add' + capitalizeFirstLetter(key)](value);
@@ -57,7 +58,7 @@ var baseItem = {
                     Matter.Events.off(unit, k, this.eventFunctions[k]);
                 }.bind(this));
             } else if (value instanceof Function) {
-                value.call(unit, false);
+                value.call(unit, false, this);
             } else {
                 if (unit['remove' + capitalizeFirstLetter(key)] instanceof Function) {
                     unit['remove' + capitalizeFirstLetter(key)](value);
@@ -112,6 +113,7 @@ var ic = function(options) {
     var newItem = $.extend({}, baseItem, options);
     newItem.isItem = true;
     newItem.id = mathArrayUtils.uuidv4();
+    newItem.customColor = 0;
     newItem.eventFunctions = {};
 
     newItem.icon = graphicsUtils.createDisplayObject(newItem.icon, {
@@ -120,8 +122,60 @@ var ic = function(options) {
     graphicsUtils.makeSpriteSize(newItem.icon, 27);
     newItem.icon.interactive = true;
 
+    newItem.chargeThenActivate = (options) => {
+        if(newItem.isCharging || newItem.isActive) {
+            return;
+        }
+        options = options || {};
+        newItem.isCharging = true;
+        var activateWrapper = () => {
+            newItem.isCharging = false;
+            if(!options.activateFunction()) {
+
+                return;
+            }
+            newItem.showAsActive(true);
+            gameUtils.doSomethingAfterDuration(() => {
+                newItem.showAsActive(false);
+            }, options.activeDuration);
+        };
+
+        var chargeTimes = 2.5;
+        newItem.chargingTimer = graphicsUtils.flashSprite({
+            sprite: newItem.icon,
+            duration: options.chargeDuration/(chargeTimes*2),
+            times: chargeTimes,
+            toColor: 0x03d1d1,
+            onEnd: activateWrapper
+        });
+
+        newItem.cancelCharge = function() {
+            this.chargingTimer.invalidate();
+            this.isCharging = false;
+        };
+
+        options.setupCancel();
+    };
+
+    newItem.invalidateCharge = function() {
+        newItem.chargingTimer.invalidate();
+    };
+
+    newItem.showAsActive = (bool) => {
+        newItem.isActive = bool;
+        if(bool) {
+            newItem.icon.tint = 0x28d005;
+        } else {
+            newItem.customColor--;
+        }
+    };
+
     //mouse hover event
     newItem.hoverListener = globals.currentGame.addTickCallback(function() {
+
+        if (newItem.isCharging || newItem.isActive) {
+            return;
+        }
 
         //reset everything assuming we're not hovering anymore, or if we're the grabbed item
         newItem.icon.tint = 0xFFFFFF;
@@ -146,9 +200,9 @@ var ic = function(options) {
         newItem.icon.on('mousedown', function(event) {
             if (newItem.notGrabbable) return;
             if (globals.currentGame.itemSystem.isGrabbing() || newItem.manuallyManaged) return;
-            if(newItem.grabPredicate) {
+            if (newItem.grabPredicate) {
                 var ret = newItem.grabPredicate();
-                if(!ret) {
+                if (!ret) {
                     return;
                 }
             }
@@ -178,15 +232,15 @@ var ic = function(options) {
         });
 
         var style = styles.regularItemName;
-        if(newItem.fontType == 'shane') {
+        if (newItem.fontType == 'shane') {
             style = styles.shaneItemName;
-        } else if(newItem.fontType == 'ursula') {
+        } else if (newItem.fontType == 'ursula') {
             style = styles.ursulaItemName;
-        } else if(newItem.fontType == 'stimulant') {
+        } else if (newItem.fontType == 'stimulant') {
             style = styles.stimulantItemName;
-        } else if(newItem.fontType == 'microchip') {
+        } else if (newItem.fontType == 'microchip') {
             style = styles.microchipItemName;
-        } else if(newItem.fontType == 'book') {
+        } else if (newItem.fontType == 'book') {
             style = styles.bookItemName;
         }
 
@@ -262,10 +316,10 @@ var ic = function(options) {
             var dropAnimationName = item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll';
             if (item.classInformation.itemClass == 'book') {
                 dropAnimationName = 'BookDrop';
-            } else if(item.classInformation.itemClass == 'stimulant') {
+            } else if (item.classInformation.itemClass == 'stimulant') {
                 dropAnimationName = 'StimulantDrop';
                 shadowYScale = 0.0;
-            } else if(item.classInformation.itemClass == 'lightStimulant') {
+            } else if (item.classInformation.itemClass == 'lightStimulant') {
                 dropAnimationName = 'PillDrop';
                 shadowYScale = 0.0;
             }
@@ -293,11 +347,11 @@ var ic = function(options) {
                     var dropSound = itemDropSound;
                     if (item.classInformation.itemType == 'microchip') {
                         dropSound = microchipDropSound;
-                    }else if (item.classInformation.itemClass == 'book') {
+                    } else if (item.classInformation.itemClass == 'book') {
                         dropSound = bookDropSound;
-                    } else if(item.classInformation.itemClass == 'stimulant') {
+                    } else if (item.classInformation.itemClass == 'stimulant') {
                         dropSound = stimulantDropSound;
-                    } else if(item.classInformation.itemClass == 'lightStimulant') {
+                    } else if (item.classInformation.itemClass == 'lightStimulant') {
                         dropSound = pillDropSound;
                     }
                     dropSound.play();

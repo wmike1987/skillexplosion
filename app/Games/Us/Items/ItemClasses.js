@@ -16,7 +16,7 @@ var ItemClasses = {
             description: 'Worn Item',
             tint: 0x949494,
             items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion', 'LeatherBelt',
-                'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup', 'SilverLocket', 'PictureOfTheMoon'
+                'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup', 'SilverLocket', 'PictureOfTheMoon', 'PlatedPants'
             ]
         },
         microchip: {
@@ -36,7 +36,7 @@ var ItemClasses = {
         item: {
             description: 'Rugged Item',
             tint: 0xffffff,
-            items: ['LightBoots', 'CamoflaugeGlove', 'Compass', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']
+            items: ['LightBoots', 'CamoflaugeGlove', 'Compass', 'GoldPlatedPants', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']
         },
         microchip: {
             description: 'Rugged Microchip',

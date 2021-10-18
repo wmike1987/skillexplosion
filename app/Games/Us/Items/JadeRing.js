@@ -9,11 +9,13 @@ var manipulations = {
         dodgeAttack: {
             callback: function(event) {
                 var dodgingUnit = event.performingUnit;
-                if(!dodgingUnit.jadeRingApplied) {
+                var item = event.item;
+
+                if(!item.applied) {
                     dodgingUnit.applyDodgeBuff({duration: 3000, amount: 15, callback: function() {
-                        dodgingUnit.jadeRingApplied = false;
+                        item.applied = false;
                     }});
-                    dodgingUnit.jadeRingApplied = true;
+                    item.applied = true;
                 }
             }
         }

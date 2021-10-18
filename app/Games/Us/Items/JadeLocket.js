@@ -12,11 +12,13 @@ var manipulations = {
                 blockingUnit.giveHealth(amount, null, {showGainAnimation: true});
                 blockingUnit.giveEnergy(amount, null, {showGainAnimation: true});
 
-                if(!blockingUnit.jadeLocketApplied) {
-                    blockingUnit.applyDodgeBuff({duration: 3000, amount: dodgeGain, callback: function() {
-                        blockingUnit.jadeLocketApplied = false;
+                var item = event.item;
+
+                if(!item.applied) {
+                    blockingUnit.applyDodgeBuff({duration: 3000, amount: dodgeGain, callback: () => {
+                        item.applied = false;
                     }});
-                    blockingUnit.jadeLocketApplied = true;
+                    item.applied = true;
                 }
             }
         }
