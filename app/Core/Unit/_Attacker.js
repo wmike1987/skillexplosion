@@ -1,8 +1,15 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 
 export default {
     //private
@@ -20,15 +27,17 @@ export default {
 
     //default
     attack: function(target) {
-        var attackManipulations = {delay: 0};
-        if(this.attackExtension) {
+        var attackManipulations = {
+            delay: 0
+        };
+        if (this.attackExtension) {
             var ret = this.attackExtension(target);
-            if(ret) {
+            if (ret) {
                 attackManipulations = ret;
             }
         }
         gameUtils.doSomethingAfterDuration(function() {
-            if(this.isAttacking) {
+            if (this.isAttacking) {
                 var damageAmount = this.damage + this.getDamageAdditionSum();
                 target.sufferAttack(damageAmount, this);
             }
@@ -62,7 +71,7 @@ export default {
             this.attackMoving = false;
             this.isHoldingPosition = false;
             var moveInfo = originalMove.call(this, destination, commandObj);
-            if(!moveInfo.moveCancelled) {
+            if (!moveInfo.moveCancelled) {
                 this._becomePeaceful();
             }
         };
@@ -82,24 +91,38 @@ export default {
             this.isHoning = false;
             this.attackMoveDestination = null;
             this.attackMoving = false;
-            if(options.isHoldingPosition) {
+            if (options.isHoldingPosition) {
                 this.isHoldingPosition = true;
             } else {
                 this.isHoldingPosition = false;
             }
-            if(options.peaceful) {
+            if (options.peaceful) {
                 //nothing
                 this._becomePeaceful();
             } else {
                 this._becomeOnAlert();
             }
-            if(commandObj) {
+            if (commandObj) {
                 commandObj.command.done();
             }
         };
 
+        //hold position setting
+        this._isHoldingPosition = false;
+        Object.defineProperty(this, 'isHoldingPosition', {
+            get: function() {
+                return this._isHoldingPosition;
+            },
+            set: function(value) {
+                this._isHoldingPosition = value;
+                Matter.Events.trigger(this, 'changeHoldPosition', {
+                    newValue: value
+                });
+            }
+        });
+
         Matter.Events.on(this, 'death', function() {
-            if(this.specifiedAttackTarget) {
+            if (this.specifiedAttackTarget) {
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             }
             this.specifiedAttackTarget = null;
@@ -109,8 +132,8 @@ export default {
         this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;
 
         this.eventClickMappings[this.commands.attack.key] = function(target, commandObj) {
-            if(commandObj.command.targetType == 'unit') {
-                if(target.isDead) {
+            if (commandObj.command.targetType == 'unit') {
+                if (target.isDead) {
                     commandObj.command.done();
                 }
                 this.attackSpecificTarget(target.position, target, commandObj);
@@ -128,16 +151,16 @@ export default {
     },
 
     _attack: function(target) {
-        if(!this.canAttackPredicate(target)) {
+        if (!this.canAttackPredicate(target)) {
             return;
         }
 
-        if(this.canAttackExtension && !this.canAttackExtension(target)) {
+        if (this.canAttackExtension && !this.canAttackExtension(target)) {
             return;
         }
 
         if (this.attackReady && this.attack) {
-            if(!this.canAttackAndMove) {
+            if (!this.canAttackAndMove) {
                 this.rawStop();
                 //set state
                 Matter.Sleeping.set(this.body, true);
@@ -159,7 +182,7 @@ export default {
 
             //call attack
             this.attack(target);
-        } else if(!this.attackReady && !this.isAttacking) {
+        } else if (!this.attackReady && !this.isAttacking) {
             //if we're on cooldown and not already attacking
             this.rawStop();
             //trigger the attack event
@@ -190,7 +213,9 @@ export default {
 
         //move unit, rawly
         this.rawMove(this.attackMoveDestination, commandObj, options);
-        Matter.Events.trigger(this, 'attackMove', {destination: destination});
+        Matter.Events.trigger(this, 'attackMove', {
+            destination: destination
+        });
 
         //become alert to nearby enemies
         this._becomeOnAlert(commandObj);
@@ -199,8 +224,11 @@ export default {
     //this assumes _moveable is mixed in
     attackSpecificTarget: function(destination, target, commandObj) {
 
-        if(!this.canTargetUnit(target)) {
-            this.attackMove({x: target.position.x, y: target.position.y}); //I think we need to pass the unit's position object
+        if (!this.canTargetUnit(target)) {
+            this.attackMove({
+                x: target.position.x,
+                y: target.position.y
+            }); //I think we need to pass the unit's position object
             return;
         }
 
@@ -212,16 +240,16 @@ export default {
             //always do this
             this.specifiedAttackTarget = null;
 
-            if(!this.isAttacking) {
-                if(!commandObj.command.queue.hasNext()) {
+            if (!this.isAttacking) {
+                if (!commandObj.command.queue.hasNext()) {
                     this.stop();
                 }
                 commandObj.command.done();
             } else {
                 gameUtils.doSomethingAfterDuration(() => {
                     //if we're still "attacking" but don't have a current target nor current hone, aka we're begging to stop
-                    if(this.isAttacking && !this.currentTarget && !this.currentHone) {
-                        if(!commandObj.command.queue.hasNext()) {
+                    if (this.isAttacking && !this.currentTarget && !this.currentHone) {
+                        if (!commandObj.command.queue.hasNext()) {
                             this.stop();
                         }
                         commandObj.command.done();
@@ -233,7 +261,7 @@ export default {
 
         //But if we are removed (from the game) first, remove the onremove listener
         gameUtils.deathPact(this, function() {
-            if(this.specifiedAttackTarget)
+            if (this.specifiedAttackTarget)
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
         }.bind(this), 'removeSpecifiedAttackTarget');
 
@@ -247,16 +275,18 @@ export default {
     holdPosition: function() {
 
         //generate a hold position id
-        if(!this.isHoldingPosition) {
-            if(this.holdPositionId > 99999) {
+        if (!this.isHoldingPosition) {
+            if (this.holdPositionId > 99999) {
                 this.holdPositionId = 1;
             } else {
                 this.holdPositionId += 1;
             }
         }
 
-        if(this.isMoving) {
-            this.stop(null, {isHoldingPosition: true});
+        if (this.isMoving) {
+            this.stop(null, {
+                isHoldingPosition: true
+            });
         }
 
         this.isHoldingPosition = true;
@@ -282,13 +312,13 @@ export default {
         }
         //unless we have a target, move towards currentHone
         this.attackHoneTick = globals.currentGame.addTickCallback(function() {
-            if(this.attackerDisabled || this.isHoldingPosition) return;
+            if (this.attackerDisabled || this.isHoldingPosition) return;
 
             //initiate a raw move towards the honed object. If we switch hones, we will initiate a new raw move (note the commented out part, not sure why i had that here, but we should want to hone a specified target)
-            if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) {// && !this.specifiedAttackTarget) {
+            if (this.currentHone && (this.lastHone != this.currentHone || !this.isMoving) && !this.currentTarget && this.attackReady) { // && !this.specifiedAttackTarget) {
 
                 //if we have an additional attack predicate, make sure this passes before we hone on our target
-                if(this.canAttackExtension && !this.canAttackExtension(this.currentHone)) {
+                if (this.canAttackExtension && !this.canAttackExtension(this.currentHone)) {
                     return;
                 }
 
@@ -296,7 +326,9 @@ export default {
                 this.isHoning = true;
                 this.rawMove(this.currentHone.position);
             }
-        }.bind(this), {runImmediately: true});
+        }.bind(this), {
+            runImmediately: true
+        });
         gameUtils.deathPact(this, this.attackHoneTick, 'attackHoneTick');
 
         /*
@@ -307,18 +339,20 @@ export default {
         }
         //if we have a target, attack it
         this.attackTick = globals.currentGame.addTickCallback(function() {
-            if(this.attackerDisabled) return;
+            if (this.attackerDisabled) return;
 
             if (this.currentTarget) {
                 this.lastHone = null; //if we're attacking something, reset the lastHoned unit
                 this._attack(this.currentTarget);
             }
-        }.bind(this), {runImmediately: true});
+        }.bind(this), {
+            runImmediately: true
+        });
         gameUtils.deathPact(this, this.attackTick, 'attackTick');
     },
 
     setupHoneAndTargetSensing: function(commandObj) {
-        if(this.honeAndTargetSensorCallback)
+        if (this.honeAndTargetSensorCallback)
             globals.currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
 
         var sensingFunction = function(options) {
@@ -328,15 +362,15 @@ export default {
             var currentAttackDistance = null;
 
             gameUtils.applyToUnitsByTeam(function(team) {
-                if(this.attackHoneTeamPredicate)
+                if (this.attackHoneTeamPredicate)
                     return this.attackHoneTeamPredicate(team);
-                else if(!this.specifiedAttackTarget){
+                else if (!this.specifiedAttackTarget) {
                     return this.team != team && globals.currentGame.neutralTeam != team;
                 } else {
                     return team == this.specifiedAttackTarget.team;
                 }
             }.bind(this), function(unit) {
-                if(unit) {
+                if (unit) {
                     return this.canTargetUnit(unit);
                 } else {
                     return false;
@@ -389,12 +423,12 @@ export default {
             }.bind(this));
 
             //If we're from the immediate call, stop here
-            if(options.onlySense) {
+            if (options.onlySense) {
                 return;
             }
 
             //If we were attacking but no longer have a target
-            if(!this.currentTarget && this.attackReady && this.isAttacking) {
+            if (!this.currentTarget && this.attackReady && this.isAttacking) {
                 Matter.Sleeping.set(this.body, false);
                 this.isAttacking = false;
             }
@@ -406,14 +440,14 @@ export default {
             //If we were given a "specific target" to attack, we only want to naturally stop if we can no longer attack it
             if (!this.currentHone && !this.currentTarget) {
                 //given attack move, reissue the attack move
-                if(this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
+                if (this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
                     this.attackMove(this.attackMoveDestination, commandObj);
-                //we were still, let's stop
-                } else if(!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {
-                        this.stop();
-                //else let's check to see if our specified attack target can still be targeted
-                } else if(this.specifiedAttackTarget) {
-                    if(!this.canTargetUnit(this.specifiedAttackTarget)) {
+                    //we were still, let's stop
+                } else if (!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {
+                    this.stop();
+                    //else let's check to see if our specified attack target can still be targeted
+                } else if (this.specifiedAttackTarget) {
+                    if (!this.canTargetUnit(this.specifiedAttackTarget)) {
                         this.stop();
                     } else {
                         //else this specifiedAttackTarget is no longer with us, let's attack move to it
@@ -423,7 +457,12 @@ export default {
             }
         }.bind(this);
 
-        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction, {runImmediately: true, immediateOptions: {onlySense: true}});
+        this.honeAndTargetSensorCallback = globals.currentGame.addTickCallback(sensingFunction, {
+            runImmediately: true,
+            immediateOptions: {
+                onlySense: true
+            }
+        });
         gameUtils.deathPact(this, this.honeAndTargetSensorCallback, 'honeAndTargetSensorCallback');
     },
 
@@ -439,7 +478,7 @@ export default {
 
         this.attackMoving = false;
 
-        if(this.honeAndTargetSensorCallback)
+        if (this.honeAndTargetSensorCallback)
             globals.currentGame.removeTickCallback(this.honeAndTargetSensorCallback);
 
         if (this.attackTick) {

@@ -1,4 +1,5 @@
 import ic from '@core/Unit/ItemConstructor.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';
@@ -7,21 +8,19 @@ import {
     graphicsUtils,
     mathArrayUtils
 } from '@utils/UtilityMenu.js';
-import * as Matter from 'matter-js';
 
-var armorGainDuration = 6000;
-var armorGain = 2;
+var gainDuration = 4000;
 var chargeLength = 2000;
 
 var manipulations = {
-    gritAddition: 5,
+    gritAddition: 10,
     genericEquip: function(equipped, item) {
         if(!equipped) {
             if(item.chargeHandler) {
                 item.cancelCharge();
                 item.chargeHandler.removeHandler();
                 item.isActive = false;
-                var buff = this.buffs["DefensiveBuff" + item.id];
+                var buff = this.buffs["RangeBuff" + item.id];
                 if(buff) {
                     buff.removeBuff();
                 }
@@ -47,13 +46,14 @@ var manipulations = {
                         });
                     },
                     chargeDuration: chargeLength,
-                    activeDuration: armorGainDuration,
+                    activeDuration: gainDuration,
                     activateFunction: () => {
+                        var gainAmount = unit.range * 2.0;
                         if (unit.holdPositionId == hpId && unit.isHoldingPosition) {
-                            unit.applyDefenseBuff({
-                                id: "DefensiveBuff" + item.id,
-                                duration: armorGainDuration,
-                                amount: armorGain
+                            unit.applyRangeBuff({
+                                id: "RangeBuff" + item.id,
+                                duration: gainDuration,
+                                amount: gainAmount
                             });
                             return true;
                         } else {
@@ -69,9 +69,11 @@ var manipulations = {
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Plated Pants",
-        description: ["Add 5 grit.", "Gain " + armorGain + " armor for 6 seconds by holding position for 2 seconds."],
-        icon: 'Pants1'
-    }, options);
+        name: "Silver Yin Yang",
+        description: ["Double heal range for 4 seconds by holding position for 2 seconds."],
+        icon: 'SilverYinYang',
+        type: 'Medic',
+        fontType: 'ursula'
+    }, options, ursulaOnly);
     return new ic(item);
 }

@@ -28,7 +28,7 @@ var ItemClasses = {
         specialtyItem: {
             description: 'Worn Specialty Item',
             tint: 0x7ffcea,
-            items: ['LeatherGlove', 'RoseRing', 'SteadySyringe', 'BlackTipCartridge', 'BoxCutter', 'SereneStar', 'PillBottle', 'SkyMedallion']
+            items: ['LeatherGlove', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'BlackTipCartridge', 'SereneStar', 'PillBottle', 'SkyMedallion']
         },
     },
 
@@ -46,7 +46,7 @@ var ItemClasses = {
         specialtyItem: {
             description: 'Rugged Specialty Item',
             tint: 0x1e9489,
-            items: ['GreenTipCartridge', "JadeRing", "RubyRing", "RubyVisor", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove',]
+            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "RubyVisor", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove', ]
         },
     },
 

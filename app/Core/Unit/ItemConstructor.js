@@ -145,7 +145,7 @@ var ic = function(options) {
             sprite: newItem.icon,
             duration: options.chargeDuration/(chargeTimes*2),
             times: chargeTimes,
-            toColor: 0x03d1d1,
+            toColor: 0x9f1bc7,
             onEnd: activateWrapper
         });
 
@@ -164,7 +164,7 @@ var ic = function(options) {
     newItem.showAsActive = (bool) => {
         newItem.isActive = bool;
         if(bool) {
-            newItem.icon.tint = 0x28d005;
+            newItem.icon.tint = 0x95009d;
         } else {
             newItem.customColor--;
         }

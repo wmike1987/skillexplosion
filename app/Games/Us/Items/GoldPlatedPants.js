@@ -40,8 +40,10 @@ var manipulations = {
                         if(item.chargeHandler) {
                             item.chargeHandler.removeHandler();
                         }
-                        item.chargeHandler = gameUtils.matterOnce(unit, 'unitMove stop', function() {
-                            item.cancelCharge();
+                        item.chargeHandler = gameUtils.matterOnce(unit, 'changeHoldPosition', function(event) {
+                            if(!event.value) {
+                                item.cancelCharge();
+                            }
                         });
                     },
                     chargeDuration: chargeLength,

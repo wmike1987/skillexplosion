@@ -44,7 +44,7 @@ var map = function(specs) {
     this.outingNodes = [];
     this.inProgressOutingNodes = [];
     this.maxOutingLength = 3;
-    this.fatigueIncrement = 4;
+    this.fatigueIncrement = 5;
 
     //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {

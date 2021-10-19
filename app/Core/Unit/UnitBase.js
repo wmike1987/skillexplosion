@@ -1780,6 +1780,28 @@ var UnitBase = {
         });
     },
 
+    applyRangeBuff: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount;
+        let id = options.id || "RangeBuff" + mathArrayUtils.getId();
+        var unit = this;
+
+        unit.applyBuff({
+            name: id,
+            textureName: 'KeenEyeBuff',
+            duration: duration,
+            applyChanges: function() {
+                unit.honeRange += amount;
+                unit.range += amount;
+            },
+            removeChanges: function() {
+                unit.honeRange -= amount;
+                unit.range -= amount;
+            }
+        });
+    },
+
     applySpeedBuff: function(options) {
         options = options || {};
         let duration = options.duration;

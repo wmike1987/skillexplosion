@@ -854,15 +854,10 @@ var phaseTwo = function(options) {
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
                     enemyDefList: ['basic', 'basic', 'basic'],
-                    itemClass: 'worn',
+                    itemClass: 'stimulant',
                 }
             });
-            // world.map.addMapNode('easySentinels', {
-            //     levelOptions: {
-            //         token: 'hard'
-            //     }
-            // });
-            // world.map.addMapNode('airDropStation');
+
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
                     prereqCount: 1,
@@ -1024,8 +1019,8 @@ var phaseThree = function() {
     this.map.addMapNode('basic');
     this.map.addMapNode('airDropStation', {
         levelOptions: {
-            itemClass: 'worn',
-            itemType: 'item'
+            prereqCount: 2,
+            itemClass: 'worn'
         }
     });
     this.map.addMapNode('basic');
@@ -1033,6 +1028,7 @@ var phaseThree = function() {
     this.map.addMapNode('easySentinels');
     this.map.addMapNode('airDropStation', {
         levelOptions: {
+            outer: true
             // prereqCount: 0
         }
     });
@@ -1071,6 +1067,17 @@ var phaseThree = function() {
         levelOptions: {
             prereqCount: 3,
             itemClass: 'worn',
+            itemType: 'specialtyItem',
+            regularTokenName: 'AirDropSpecialToken',
+            specialTokenName: 'AirDropSpecialTokenGleam'
+        }
+    });
+
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            outer: true,
+            prereqCount: 3,
+            itemClass: 'rugged',
             itemType: 'specialtyItem',
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'

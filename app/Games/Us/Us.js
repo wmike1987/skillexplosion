@@ -694,8 +694,8 @@ var game = {
             name: 'Ursula',
             dropItemsOnDeath: false
         });
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenLocket"], unit: this.ursula});
-        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeLocket"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SilverYinYang"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenYinYang"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenCompass"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RoseRing"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RubyRing"], unit: this.ursula});

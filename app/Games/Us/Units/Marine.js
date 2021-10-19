@@ -985,37 +985,15 @@ export default function Marine(options) {
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
         passiveAction: function(event) {
-            marine.applyBuff({
-                name: "keenEye",
-                textureName: 'KeenEyeBuff',
-                duration: 8000,
-                applyChanges: function() {
-                    marine.honeRange = marine.honeRange * 2;
-                    marine.range = marine.range * 2;
-                },
-                removeChanges: function() {
-                    marine.honeRange = marine.honeRange / 2;
-                    marine.range = marine.range / 2;
-                }
-            });
+            var currentRange = marine.range;
+            marine.applyRangeBuff({duration: 8000, amount: currentRange});
         },
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
         },
         aggressionAction: function(event) {
-            marine.applyBuff({
-                name: "keenEye",
-                textureName: 'KeenEyeBuff',
-                duration: cpADuration,
-                applyChanges: function() {
-                    marine.honeRange = marine.honeRange * 2;
-                    marine.range = marine.range * 2;
-                },
-                removeChanges: function() {
-                    marine.honeRange = marine.honeRange / 2;
-                    marine.range = marine.range / 2;
-                }
-            });
+            var currentRange = marine.range;
+            marine.applyRangeBuff({duration: cpADuration, amount: currentRange});
         },
     });
 
