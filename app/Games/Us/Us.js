@@ -369,7 +369,7 @@ var game = {
             this.map.newPhase = true;
         }
         let campNode = this.map.findNodeById('camp');
-        campNode.nightsLeft = 3;
+        campNode.nightsLeft = 1;
     },
 
     initShane: function() {

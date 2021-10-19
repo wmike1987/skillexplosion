@@ -86,13 +86,13 @@ export default {
                 this.specifiedAttackTarget = null;
             }
             originalStop.call(this);
-            Matter.Sleeping.set(this.body, false);
             this.isAttacking = false;
             this.isHoning = false;
             this.attackMoveDestination = null;
             this.attackMoving = false;
             if (options.isHoldingPosition) {
                 this.isHoldingPosition = true;
+                Matter.Sleeping.set(this.body, true);
             } else {
                 this.isHoldingPosition = false;
             }
@@ -268,12 +268,14 @@ export default {
         //move unit
         this.rawMove(destination);
 
+        //cancel any hold position
+        this.isHoldingPosition = false;
+
         //become alert to nearby enemies, but since we have a specific target, other targets won't be considered
         this._becomeOnAlert();
     },
 
     holdPosition: function() {
-
         //generate a hold position id
         if (!this.isHoldingPosition) {
             if (this.holdPositionId > 99999) {
@@ -290,6 +292,10 @@ export default {
         }
 
         this.isHoldingPosition = true;
+
+        if(this.holdPositionSound) {
+            this.holdPositionSound.play();
+        }
 
         Matter.Events.trigger(this, 'holdPosition');
 
@@ -389,8 +395,8 @@ export default {
                 var dist = mathArrayUtils.distanceBetweenBodies(this.body, unit.body);
                 //we're outside the larger distance, don't go further...
                 if (dist > this.honeRange) {
-                    //unless we have a specific target
-                    if (this.specifiedAttackTarget) {
+                    //unless we have a specific target and aren't holding position
+                    if (this.specifiedAttackTarget && !this.isHoldingPosition) {
                         this.currentHone = unit;
                     }
                     return;
@@ -429,7 +435,10 @@ export default {
 
             //If we were attacking but no longer have a target
             if (!this.currentTarget && this.attackReady && this.isAttacking) {
-                Matter.Sleeping.set(this.body, false);
+                //let us keep sleeping if we're holding position
+                if(!this.isHoldingPosition) {
+                    Matter.Sleeping.set(this.body, false);
+                }
                 this.isAttacking = false;
             }
 
@@ -447,8 +456,8 @@ export default {
                     this.stop();
                     //else let's check to see if our specified attack target can still be targeted
                 } else if (this.specifiedAttackTarget) {
-                    if (!this.canTargetUnit(this.specifiedAttackTarget)) {
-                        this.stop();
+                    if (!this.canTargetUnit(this.specifiedAttackTarget) || this.isHoldingPosition) {
+                        this.stop(null, {isHoldingPosition: this.isHoldingPosition});
                     } else {
                         //else this specifiedAttackTarget is no longer with us, let's attack move to it
                         this.attackSpecificTarget(this.specifiedAttackTarget.position, this.specifiedAttackTarget);

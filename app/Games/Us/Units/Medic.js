@@ -348,8 +348,13 @@ export default function Medic(options) {
         rate: 1.75
     });
     var dodgeSound = gameUtils.getSound('ursula_dodge.mp3', {
-        volume: 0.38,
+        volume: 0.4,
         rate: 1.3
+    });
+
+    var holdPositionSound = gameUtils.getSound('ursula_dodge.mp3', {
+        volume: 0.4,
+        rate: 1.15
     });
 
     var combospiritinit = gameUtils.getSound('combospiritinit.wav', {
@@ -1530,6 +1535,7 @@ export default function Medic(options) {
         adjustHitbox: false,
         itemsEnabled: true,
         dodgeSound: dodgeSound,
+        holdPositionSound: holdPositionSound,
         damageLabel: "Heal: ",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
@@ -1675,7 +1681,7 @@ export default function Medic(options) {
         radius: rad,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [healSound, dodgeSound, manaHealSound, blockSound, criticalHitSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
+        slaves: [healSound, dodgeSound, holdPositionSound, manaHealSound, blockSound, criticalHitSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
             moveSpeed: 2.35,

@@ -455,7 +455,7 @@ var campLevel = function() {
                 globals.currentGame.closeMap();
             },
             init: function() {
-                this.nightsLeft = 3;
+                this.nightsLeft = 1;
                 Matter.Events.on(globals.currentGame, 'TravelStarted', function(event) {
                     if (event.node == this) {
                         this.nightsLeft -= 1;

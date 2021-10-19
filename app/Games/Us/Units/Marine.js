@@ -371,6 +371,10 @@ export default function Marine(options) {
         volume: 0.4,
         rate: 1
     });
+    var holdPositionSound = gameUtils.getSound('shane_dodge.mp3', {
+        volume: 0.4,
+        rate: 0.8
+    });
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {
         volume: 0.01,
         rate: 0.6
@@ -901,7 +905,7 @@ export default function Marine(options) {
             });
         },
         aggressionAction: function(event) {
-            marine.applySpeedBuff({id: 'rushofbloodspeedBuff', duration: robADuration, amount: 0.7});
+            marine.applySpeedBuff({id: 'rushofbloodspeedBuff', duration: robADuration, amount: 0.6});
         },
     });
 
@@ -1142,6 +1146,7 @@ export default function Marine(options) {
         team: options.team || 4,
         priority: 10,
         dodgeSound: dodgeSound,
+        holdPositionSound: holdPositionSound,
         consumeSound: yeahsound,
         hitboxWidth: 30,
         hitboxHeight: 58,
@@ -1274,7 +1279,7 @@ export default function Marine(options) {
         radius: options.radius || 25,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [dashSound, dodgeSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
+        slaves: [dashSound, dodgeSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
             poisonSound, criticalHitSound, yeahsound, unitProperties.wireframe, unitProperties.portrait
         ],
         unit: unitProperties,

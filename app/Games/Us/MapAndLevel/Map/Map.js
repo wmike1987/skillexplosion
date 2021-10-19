@@ -422,9 +422,15 @@ var map = function(specs) {
             this.allowKeyEvents(true);
 
             this.inProgressOutingNodes.forEach((node) => {
+                if(node.getOutingCompatibleNode) {
+                    node = node.getOutingCompatibleNode();
+                }
                 node.levelDetails.customWinBehavior = null;
             });
             this.outingNodes.forEach((node) => {
+                if(node.getOutingCompatibleNode) {
+                    node = node.getOutingCompatibleNode();
+                }
                 node.levelDetails.customWinBehavior = null;
             });
             this.outingNodes = [];
@@ -509,7 +515,7 @@ var map = function(specs) {
                 return;
             }
 
-            //sometimes we need to get the right "sub node" for the node we have here
+            //sometimes we need to get the right "sub node" for the node (multi level)
             if(myNode.getOutingCompatibleNode) {
                 myNode = myNode.getOutingCompatibleNode();
             }
