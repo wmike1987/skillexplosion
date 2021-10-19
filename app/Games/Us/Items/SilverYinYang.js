@@ -10,7 +10,8 @@ import {
 } from '@utils/UtilityMenu.js';
 
 var gainDuration = 8000;
-var chargeLength = 3000;
+var chargeLength = 2000;
+var gainAmount = 1;
 
 var manipulations = {
     genericEquip: function(equipped, item) {
@@ -19,7 +20,7 @@ var manipulations = {
                 item.cancelCharge();
                 item.chargeHandler.removeHandler();
                 item.isActive = false;
-                var buff = this.buffs["RangeBuff" + item.id];
+                var buff = this.buffs["EnrageBuff" + item.id];
                 if(buff) {
                     buff.removeBuff();
                 }
@@ -47,10 +48,9 @@ var manipulations = {
                     chargeDuration: chargeLength,
                     activeDuration: gainDuration,
                     activateFunction: () => {
-                        var gainAmount = unit.range * 2.0;
                         if (unit.holdPositionId == hpId && unit.isHoldingPosition) {
-                            unit.applyRangeBuff({
-                                id: "RangeBuff" + item.id,
+                            unit.enrage({
+                                id: "EnrageBuff" + item.id,
                                 duration: gainDuration,
                                 amount: gainAmount
                             });
@@ -69,7 +69,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Silver Yin Yang",
-        description: ["Double heal range for 8 seconds by holding position for 3 seconds."],
+        description: ["Become enraged (+1 heal) for 8 seconds by holding position for 2 seconds."],
         icon: 'SilverYinYang',
         type: 'Medic',
         fontType: 'ursula'

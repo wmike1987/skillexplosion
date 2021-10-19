@@ -1729,21 +1729,38 @@ var UnitBase = {
         let amount = options.amount;
         let callback = options.callback;
         let id = options.id || "EnrageBuff" + mathArrayUtils.getId();
-
         var unit = this;
-        unit.applyBuff({
-            name: id,
-            textureName: 'DeathWishBuff',
-            duration: duration,
-            applyChanges: function() {
-                unit.enrageCounter++;
-                unit.addDamageAddition(amount);
-            },
-            removeChanges: function() {
-                unit.enrageCounter--;
-                unit.removeDamageAddition(amount);
-            }
-        });
+
+        if(unit.damageAdditionType) {
+            unit.applyBuff({
+                name: id,
+                textureName: 'DeathWishBuff',
+                duration: duration,
+                applyChanges: function() {
+                    unit.enrageCounter++;
+                    unit.addAddition(unit.damageAdditionType, amount);
+                },
+                removeChanges: function() {
+                    unit.enrageCounter--;
+                    unit.removeAddition(unit.damageAdditionType, amount);
+                }
+            });
+        } else {
+            unit.applyBuff({
+                name: id,
+                textureName: 'DeathWishBuff',
+                duration: duration,
+                applyChanges: function() {
+                    unit.enrageCounter++;
+                    unit.addDamageAddition(amount);
+                },
+                removeChanges: function() {
+                    unit.enrageCounter--;
+                    unit.removeDamageAddition(amount);
+                }
+            });
+        }
+
 
         Matter.Events.trigger(this, 'applyEnrageBuff', {
             targetUnit: this,

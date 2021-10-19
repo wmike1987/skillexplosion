@@ -21,7 +21,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Sky Medallion",
-        description: ["Add " + gritAddition + " to grit.", "Add " + maxHealth + " to maximum health.", "Add " + maxEnergy + " to maximum energy.", "Add " + dodgeAddition + " to dodge"],
+        description: ["Add " + manipulations.gritAddition + " to grit.", "Add " + manipulations.maxHealth + " to maximum health.", "Add " + manipulations.maxEnergy + " to maximum energy.", "Add " + manipulations.dodgeAddition + " to dodge"],
         icon: 'SilverMedalCircle1',
     }, options, shaneOnly);
     return new ic(item);

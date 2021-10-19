@@ -11,7 +11,7 @@ import {
 
 var gainDuration = 8000;
 var gainAmount = 1999;
-var chargeLength = 3000;
+var chargeLength = 2000;
 
 var manipulations = {
     genericEquip: function(equipped, item) {
@@ -69,7 +69,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Golden Yin Yang",
-        description: ["Gain infinite heal range for 8 seconds by holding position for 3 seconds."],
+        description: ["Gain infinite heal range for 8 seconds by holding position for 2 seconds."],
         icon: 'GoldenYinYang',
         type: 'Medic',
         fontType: 'ursula'

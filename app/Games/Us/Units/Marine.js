@@ -901,7 +901,7 @@ export default function Marine(options) {
             });
         },
         aggressionAction: function(event) {
-            marine.applySpeedBuff({id: 'rushofbloodspeedBuff', duration: robADuration, amount: 0.6});
+            marine.applySpeedBuff({id: 'rushofbloodspeedBuff', duration: robADuration, amount: 0.7});
         },
     });
 
