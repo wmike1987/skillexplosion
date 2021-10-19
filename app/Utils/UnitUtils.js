@@ -161,6 +161,39 @@ var unitUtils = {
                 unit.isTargetable = true;
             });
         });
+    },
+
+    showExpandingCircleAnimation: function(options) {
+        options = options || {};
+        var unit = options.unit;
+        var speed = options.speed || 0.4;
+        var tint = options.tint || 0xffffff;
+        var play = options.play;
+
+        let anim = gameUtils.getAnimation({
+            spritesheetName: 'BaseUnitAnimations1',
+            animationName: 'PassiveReady',
+            speed: speed,
+        });
+        anim.tint = tint;
+        anim.scale = {
+            x: 0.4,
+            y: 0.4
+        };
+        gameUtils.moveSpriteOffScreen(anim);
+        graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
+        gameUtils.attachSomethingToBody({
+            something: anim,
+            body: unit.body,
+            offset: unit.body.renderlings.selected.offset,
+            deathPactSomething: true
+        });
+
+        if(play) {
+            anim.play();
+        }
+
+        return anim;
     }
 };
 

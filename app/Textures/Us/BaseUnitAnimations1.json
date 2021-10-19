@@ -1,5 +1,21 @@
 {"frames": {
 
+"holdposition1.png":
+{
+	"frame": {"x":365,"y":95,"w":25,"h":14},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":5,"w":25,"h":14},
+	"sourceSize": {"w":25,"h":25}
+},
+"holdposition2.png":
+{
+	"frame": {"x":365,"y":95,"w":25,"h":14},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":5,"w":25,"h":14},
+	"sourceSize": {"w":25,"h":25}
+},
 "IsometricSelectedPending1.png":
 {
 	"frame": {"x":1,"y":1,"w":64,"h":32},
@@ -98,7 +114,7 @@
 },
 "PassiveReady1.png":
 {
-	"frame": {"x":1,"y":103,"w":42,"h":22},
+	"frame": {"x":47,"y":103,"w":42,"h":22},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":11,"y":5,"w":42,"h":22},
@@ -106,7 +122,7 @@
 },
 "PassiveReady2.png":
 {
-	"frame": {"x":259,"y":101,"w":50,"h":26},
+	"frame": {"x":381,"y":101,"w":50,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":3,"w":50,"h":26},
@@ -130,7 +146,7 @@
 },
 "PassiveReady5.png":
 {
-	"frame": {"x":415,"y":101,"w":44,"h":24},
+	"frame": {"x":1,"y":103,"w":44,"h":24},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":10,"y":4,"w":44,"h":24},
@@ -138,7 +154,7 @@
 },
 "PassiveReady6.png":
 {
-	"frame": {"x":311,"y":101,"w":50,"h":26},
+	"frame": {"x":259,"y":101,"w":50,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":3,"w":50,"h":26},
@@ -162,7 +178,7 @@
 },
 "PassiveReady9.png":
 {
-	"frame": {"x":363,"y":101,"w":50,"h":26},
+	"frame": {"x":311,"y":101,"w":50,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":3,"w":50,"h":26},
@@ -226,7 +242,8 @@
 }},
 "animations": {
 	"IsometricSelectedPending": ["IsometricSelectedPending1.png","IsometricSelectedPending2.png","IsometricSelectedPending3.png","IsometricSelectedPending4.png","IsometricSelectedPending5.png","IsometricSelectedPending6.png","IsometricSelectedPending7.png","IsometricSelectedPending8.png","IsometricSelectedPending9.png","IsometricSelectedPending10.png","IsometricSelectedPending11.png"],
-	"PassiveReady": ["PassiveReady0.png","PassiveReady1.png","PassiveReady2.png","PassiveReady3.png","PassiveReady4.png","PassiveReady5.png","PassiveReady6.png","PassiveReady7.png","PassiveReady8.png","PassiveReady9.png","PassiveReady10.png","PassiveReady11.png","PassiveReady12.png","PassiveReady13.png","PassiveReady14.png","PassiveReady15.png","PassiveReady16.png"]
+	"PassiveReady": ["PassiveReady0.png","PassiveReady1.png","PassiveReady2.png","PassiveReady3.png","PassiveReady4.png","PassiveReady5.png","PassiveReady6.png","PassiveReady7.png","PassiveReady8.png","PassiveReady9.png","PassiveReady10.png","PassiveReady11.png","PassiveReady12.png","PassiveReady13.png","PassiveReady14.png","PassiveReady15.png","PassiveReady16.png"],
+	"holdposition": ["holdposition1.png","holdposition2.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
@@ -235,6 +252,6 @@
 	"format": "RGBA8888",
 	"size": {"w":498,"h":128},
 	"scale": "0.5",
-	"smartupdate": "$TexturePacker:SmartUpdate:3120ccb35fc7dd092db45dafed33a378:518229a5b8b908f4931b2e2bfd1c54bc:ad5476d3cfc5c04dc7d8bb093457e803$"
+	"smartupdate": "$TexturePacker:SmartUpdate:8f276625fe08476918af9bc0455b3bb6:900f84cc23ad080720c9d8c879c2610b:ad5476d3cfc5c04dc7d8bb093457e803$"
 }
 }

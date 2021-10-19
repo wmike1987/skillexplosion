@@ -796,6 +796,12 @@ var UnitBase = {
             }
         });
 
+        Object.defineProperty(this, 'footPosition', {
+            get: function() {
+                return mathArrayUtils.clonePosition(this.position, this.body.renderlings.selected.offset);
+            },
+        });
+
         Object.defineProperty(this, 'emptySlots', {
             get: function() {
                 return this.emptyRegularSlots.concat(this.emptySpecialtySlots).concat(this.emptyBackpackSlots);
@@ -927,47 +933,11 @@ var UnitBase = {
         }.bind(this));
 
         Matter.Events.on(this, "attackPassiveCharged", function() {
-            let anim = gameUtils.getAnimation({
-                spritesheetName: 'BaseUnitAnimations1',
-                animationName: 'PassiveReady',
-                speed: 0.4,
-            });
-            anim.tint = 0xff3333;
-            anim.scale = {
-                x: 0.4,
-                y: 0.4
-            };
-            gameUtils.moveSpriteOffScreen(anim);
-            graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
-            gameUtils.attachSomethingToBody({
-                something: anim,
-                body: this.body,
-                offset: this.body.renderlings.selected.offset,
-                deathPactSomething: true
-            });
-            anim.play();
+            unitUtils.showExpandingCircleAnimation({unit: this, tint: 0xff3333, play: true});
         }.bind(this));
 
         Matter.Events.on(this, "defensePassiveCharged", function() {
-            let anim = gameUtils.getAnimation({
-                spritesheetName: 'BaseUnitAnimations1',
-                animationName: 'PassiveReady',
-                speed: 0.4,
-            });
-            anim.tint = 0x479cff;
-            anim.scale = {
-                x: 0.4,
-                y: 0.4
-            };
-            gameUtils.moveSpriteOffScreen(anim);
-            graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');
-            gameUtils.attachSomethingToBody({
-                something: anim,
-                body: this.body,
-                offset: this.body.renderlings.selected.offset,
-                deathPactSomething: true
-            });
-            anim.play();
+            unitUtils.showExpandingCircleAnimation({unit: this, tint: 0x479cff, play: true});
         }.bind(this));
 
         var resetPassiveOrder = function() {
@@ -977,6 +947,46 @@ var UnitBase = {
         gameUtils.deathPact(this, () => {
             Matter.Events.off(globals.currentGame, "VictoryDefeatSceneFadeIn", resetPassiveOrder);
         });
+
+        Matter.Events.on(this, "changeHoldPosition", function(event) {
+            if(this.holdPositionMarker) {
+                graphicsUtils.removeSomethingFromRenderer(this.holdPositionMarker);
+            }
+            if(!event.newValue) {
+                return;
+            }
+
+            this.holdPositionMarker = graphicsUtils.addSomethingToRenderer('HoldPositionRook', {
+                where: 'stageOne',
+                rotate: 'none',
+                position: mathArrayUtils.roundPositionToWholeNumbers(mathArrayUtils.clonePosition(this.position)),
+                scale: {x: 1.0, y: 1.0},
+                alpha: 1.0
+            });
+
+            graphicsUtils.fadeSpriteOverTimeLegacy(this.holdPositionMarker, 250, true);
+            var timer1 = gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.addGleamToSprite({
+                    sprite: this.holdPositionMarker,
+                    duration: 750,
+                    gleamWidth: 20
+                });
+            }, 250);
+            var timer2 = gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteOverTimeLegacy(this.holdPositionMarker, 250, false);
+            }, 1750);
+
+            this.holdPositionMarker.tint = 0xdb8d25;
+
+            graphicsUtils.graduallyTint(this.holdPositionMarker, 0x393939, 0xffffff, 1000, null, null, 1);
+
+            Matter.Events.on(this.holdPositionMarker, 'destroy', () => {
+                timer1.invalidate();
+                timer2.invalidate();
+            });
+
+        }.bind(this));
+
 
         //hover Method
         this.hover = function() {
