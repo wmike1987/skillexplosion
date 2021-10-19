@@ -9,12 +9,11 @@ import {
     mathArrayUtils
 } from '@utils/UtilityMenu.js';
 
-var gainDuration = 5000;
+var gainDuration = 8000;
 var gainAmount = 1999;
 var chargeLength = 3000;
 
 var manipulations = {
-    gritAddition: 10,
     genericEquip: function(equipped, item) {
         if(!equipped) {
             if(item.chargeHandler) {
@@ -70,7 +69,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Golden Yin Yang",
-        description: ["Gain infinite heal range for 5 seconds by holding position for 3 seconds."],
+        description: ["Gain infinite heal range for 8 seconds by holding position for 3 seconds."],
         icon: 'GoldenYinYang',
         type: 'Medic',
         fontType: 'ursula'

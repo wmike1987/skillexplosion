@@ -241,7 +241,7 @@ export default function Gargoyle(options) {
     var unitProperties = $.extend({
         unitType: 'Gargoyle',
         health: 25,
-        defense: 3,
+        defense: 2,
         energy: 0,
         energyRegenerationRate: 0,
         healthRegenerationRate: 2,
@@ -359,7 +359,7 @@ export default function Gargoyle(options) {
             honeRange: 300,
             range: options.radius*2,
             isMelee: true,
-            damage: 10,
+            damage: 9,
             attackExtension: function(target) {
                 var bloodAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',

@@ -476,7 +476,7 @@ var camp = {
         }
 
         //debug setting
-        if (true) {
+        if (false) {
             this.mapTableActive = true;
             // gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
             //     graphicsUtils.removeSomethingFromRenderer(arrow);
