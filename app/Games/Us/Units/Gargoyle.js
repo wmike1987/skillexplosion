@@ -241,7 +241,7 @@ export default function Gargoyle(options) {
     var unitProperties = $.extend({
         unitType: 'Gargoyle',
         health: 25,
-        defense: 2,
+        defense: 3,
         energy: 0,
         energyRegenerationRate: 0,
         healthRegenerationRate: 2,
