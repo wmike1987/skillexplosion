@@ -26,10 +26,10 @@
 },
 "DeathWishBuff.png":
 {
-	"frame": {"x":1,"y":103,"w":28,"h":20},
+	"frame": {"x":1,"y":103,"w":28,"h":18},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
+	"spriteSourceSize": {"x":2,"y":7,"w":28,"h":18},
 	"sourceSize": {"w":32,"h":32}
 },
 "DefensivePosture.png":
@@ -74,10 +74,10 @@
 },
 "KeenEyeBuff.png":
 {
-	"frame": {"x":31,"y":103,"w":28,"h":20},
+	"frame": {"x":31,"y":103,"w":28,"h":18},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
+	"spriteSourceSize": {"x":2,"y":7,"w":28,"h":18},
 	"sourceSize": {"w":32,"h":32}
 },
 "KillerInstinct.png":
@@ -247,6 +247,6 @@
 	"format": "RGBA8888",
 	"size": {"w":661,"h":128},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:1361695b929f4c98b833b462f1749099:5565401be2ff6614aca624afc7ea411f:1b146a7d1a1c5cd95f0c69a03767d9cf$"
+	"smartupdate": "$TexturePacker:SmartUpdate:9164971a69b4feb72ed0a730eab8a716:81b437c72086da328b052962bc65a65a:1b146a7d1a1c5cd95f0c69a03767d9cf$"
 }
 }
