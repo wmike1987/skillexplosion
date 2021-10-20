@@ -567,8 +567,8 @@ var map = function(specs) {
                         //get the next node and trigger the mouse down behavior
                         var mapnode = this.outingNodes.shift();
                         this.inProgressOutingNodes.push(mapnode);
-                        mapnode.onMouseDownBehavior({systemTriggered: true});
-                    }, 2000);
+                        mapnode.onMouseDownBehavior({systemTriggered: true, keepCurrentCollector: true});
+                    }, 1500);
                 }, 2500);
             };
         });

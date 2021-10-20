@@ -220,7 +220,8 @@ var MapLevelNode = function(options) {
                                 node: behavior.nodeToEnter
                             });
                             behavior.nodeToEnter.levelDetails.enterLevel({
-                                enteredByTraveling: true
+                                enteredByTraveling: true,
+                                keepCurrentCollector: mouseDownOptions.keepCurrentCollector
                             });
                             behavior.nodeToEnter.untintNode();
                             this.displayObject.tooltipObj.enable();

@@ -42,7 +42,7 @@ var multiLevel = function(options) {
                     this.spawner.cleanUp();
                     nextLevel.scene = this.scene;
                     globals.currentGame.setCurrentLevel(nextLevel, {immediatePool: true});
-                    nextLevel.startLevelSpawn({keepCurrentCollector: true});
+                    nextLevel.startLevelSpawn({startNewCollector: false});
                 };
             } else {
 

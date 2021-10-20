@@ -37,6 +37,10 @@ var levelBase = {
             enteredByTraveling: options.enteredByTraveling
         };
 
+        if(options.keepCurrentCollector) {
+            this.enteredState.startNewCollector = false;
+        }
+
         //set our random seed for terrain decoration
         mathArrayUtils.setRandomizerSeed(this.seed || null);
 
@@ -73,7 +77,7 @@ var levelBase = {
         if (options.customEnterLevel) {
             options.customEnterLevel(this);
         } else {
-            this.mode.enter.call(this, scene);
+            this.mode.enter.call(this, scene, this.enteredState);
         }
 
         if (this.enterLevelExtension) {
@@ -85,6 +89,7 @@ var levelBase = {
 
     startLevelSpawn: function(options) {
         options = options || {};
+        options = Object.assign({startNewCollector: true}, options);
         var level = this;
         var game = globals.currentGame;
 
@@ -116,7 +121,7 @@ var levelBase = {
             });
             game.heartbeat.play();
 
-            if (!options.keepCurrentCollector) {
+            if (options.startNewCollector) {
                 game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
                 game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
             }
@@ -631,7 +636,8 @@ var levelBase = {
 
 var modes = {
     SPAWN: {
-        enter: function(scene) {
+        enter: function(scene, options) {
+            options = options || {};
             var game = globals.currentGame;
             var level = this;
             //create new scene
@@ -655,7 +661,7 @@ var modes = {
                     moveToCenter: true,
                     applyFatigue: true
                 });
-                level.startLevelSpawn();
+                level.startLevelSpawn(options);
                 level.onLevelPlayable(scene);
             });
 
