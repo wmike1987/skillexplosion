@@ -348,15 +348,15 @@ var map = function(specs) {
         this.isShown = false;
         Matter.Events.trigger(this, 'hideMap', {});
 
-        this.mapSprite.visible = false;
+        graphicsUtils.hideDisplayObject(this.mapSprite);
         this.graph.forEach(node => {
-            node.displayObject.visible = this.mapSprite.visible;
+            graphicsUtils.hideDisplayObject(node.displayObject);
             if (node.displayObject.tooltipObj) {
                 node.displayObject.tooltipObj.hide();
             }
             if (node.manualTokens) {
                 node.manualTokens.forEach((token) => {
-                    token.visible = this.mapSprite.visible;
+                    graphicsUtils.hideDisplayObject(token);
                 });
             }
             if (node.isFocused) {

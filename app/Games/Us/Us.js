@@ -685,10 +685,10 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RubyVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BlueVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PolarizedVisor"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PictureOfTheMoon"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PlatedPants"], unit: this.shane});
-        this.shane.dodge = 40;
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PictureOfTheMoon"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PlatedPants"], unit: this.shane});
+        // this.shane.dodge = 40;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AjaMicrochip"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
 
@@ -717,17 +717,17 @@ var game = {
             name: 'Ursula',
             dropItemsOnDeath: false
         });
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SilverYinYang"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenYinYang"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SilverYinYang"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenYinYang"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenCompass"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RoseRing"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeLocket"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RoseLocket"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeLocket"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RoseLocket"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RubyRing"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeRing"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeRing"], unit: this.ursula});
         // this.ursula.grit = 100;
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SharpPictureOfTheMoon"], unit: this.ursula});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SharpPictureOfTheMoon"], unit: this.ursula});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.ursula});
         // this.ursula.idleCancel = true;
 
         this.ursulaCollector = new StatCollector({

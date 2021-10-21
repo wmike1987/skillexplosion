@@ -113,6 +113,14 @@ var MapLevelNode = function(options) {
     });
     this.displayObject.tooltipObj.isNodeTooltip = true;
 
+    //create the supply drop indicator
+    if(this.levelDetails.isSupplyDropEligible) {
+        var indicator = graphicsUtils.createDisplayObject(ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].mapNodeIndicator, {where: 'hud', scale: {x: 0.75, y: 0.75}});
+        graphicsUtils.addBorderToSprite({sprite: indicator, tint: 0xcdcdcd, thickness: 1});
+        this.displayObject.iconIdicator = indicator;
+        graphicsUtils.latchDisplayObjectOnto({child: indicator, parent: this.displayObject, positionUponShow: true, positionOffset: {x: -20, y: -20}});
+    }
+
     //Establish event handlers
     this.displayObject.on('mouseover', function(event) {
         if (!this.mapRef.mouseEventsAllowed) return;
@@ -245,8 +253,8 @@ var MapLevelNode = function(options) {
 };
 
 MapLevelNode.prototype.deactivateToken = function() {
-    this.displayObject.tint = 0x002404;
-    this.displayObject.alpha = 0.5;
+    this.displayObject.tint = 0x00630b;
+    this.displayObject.alpha = 0.75;
 };
 
 MapLevelNode.prototype.complete = function() {
@@ -267,6 +275,14 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     var node = this;
     node.isSpinning = true;
     node.sizeNode();
+
+    if(this.displayObject.iconIdicator) {
+        this.displayObject.iconIdicator.tint = 0x00630b;
+        this.displayObject.iconIdicator.alpha = 0.8;
+        this.displayObject.iconIdicator.addedBorder.alpha = 0.00;
+        this.displayObject.iconIdicator.addedBorder.tint = 0xffffff;
+    }
+
     var times = lesser ? 6 : 10;
     if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
@@ -312,14 +328,18 @@ MapLevelNode.prototype.playSpawnAnimation = function(lesser) {
                 graphicsUtils.addGleamToSprite({
                     sprite: token,
                     gleamWidth: 20,
-                    duration: 750
+                    duration: 700,
+                    power: 0.9,
+                    red: 2.0
                 });
             });
         } else {
             graphicsUtils.addGleamToSprite({
                 sprite: this.displayObject,
                 gleamWidth: 20,
-                duration: 750
+                duration: 700,
+                power: 0.9,
+                red: 2.0
             });
         }
     }, this.position.x - leftMostX + 100);

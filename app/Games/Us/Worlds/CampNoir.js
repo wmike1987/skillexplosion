@@ -16,7 +16,6 @@ import {
     Dialogue,
     DialogueChain
 } from '@core/Dialogue.js';
-import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
 import {
@@ -747,7 +746,8 @@ var phaseOne = function() {
     var learningNode = this.map.addMapNode('shaneLearning', {
         position: firstLevelPosition,
         levelOptions: {
-            levelId: 'shaneLearning'
+            levelId: 'shaneLearning',
+            isSupplyDropEligible: false
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -765,7 +765,8 @@ var phaseOne = function() {
         levelOptions: {
             levelId: 'learning1',
             gotoMapOnWin: true,
-            trainingLevel: true
+            trainingLevel: true,
+            isSupplyDropEligible: false
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -779,7 +780,8 @@ var phaseOne = function() {
         levelOptions: {
             levelId: 'learning2',
             gotoMapOnWin: true,
-            trainingLevel: true
+            trainingLevel: true,
+            isSupplyDropEligible: false
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -792,7 +794,8 @@ var phaseOne = function() {
         }),
         levelOptions: {
             gotoMapOnWin: true,
-            trainingLevel: true
+            trainingLevel: true,
+            isSupplyDropEligible: false
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -841,11 +844,6 @@ var phaseTwo = function(options) {
                     itemClass: 'worn',
                 }
             });
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');

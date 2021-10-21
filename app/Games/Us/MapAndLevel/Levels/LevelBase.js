@@ -179,17 +179,18 @@ var levelBase = {
         }
 
         //create the map node
-        var mapNode = this.createMapNode(options.mapNodeOptions);
-        this.mapNode = mapNode; //add back reference
-
-        var position = options.mapNodeOptions.position;
-        if (this.manualNodePosition) {
-            var returnedPosition = this.manualNodePosition(position);
-            if (returnedPosition) {
-                mapNode.setPosition(returnedPosition);
+        if(!options.mapNodeOptions.bypassNodeCreation) {
+            var mapNode = this.createMapNode(options.mapNodeOptions);
+            this.mapNode = mapNode; //add back reference
+            var position = options.mapNodeOptions.position;
+            if (this.manualNodePosition) {
+                var returnedPosition = this.manualNodePosition(position);
+                if (returnedPosition) {
+                    mapNode.setPosition(returnedPosition);
+                }
+            } else {
+                mapNode.setPosition(position);
             }
-        } else {
-            mapNode.setPosition(position);
         }
 
         if (this.manualAddToGraph) {

@@ -9,6 +9,9 @@ export default `
     uniform float gleamWidth;
     uniform bool alphaIncluded;
     uniform float power;
+    uniform float red;
+    uniform float green;
+    uniform float blue;
 
     void main()
     {
@@ -78,7 +81,7 @@ export default `
             fg.a *= (1.0 + lightProgress);
         }
 
-        vec4 gleamColor = vec4(fg.r*lightMagnifier, fg.g*lightMagnifier, fg.b*lightMagnifier, fg.a);
+        vec4 gleamColor = vec4(fg.r*lightMagnifier*red, fg.g*lightMagnifier*green, fg.b*lightMagnifier*blue, fg.a);
 
         if(inGleam) {
             gl_FragColor = gleamColor;

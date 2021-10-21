@@ -303,7 +303,7 @@ Tooltip.prototype.display = function(position, options) {
     if(!this.baseBorder) {
         this.baseBorder = graphicsUtils.addBorderToSprite({sprite: this.base, thickness: 2, tint: 0xa2a2a2, alpha: 0.75});
     } else {
-        graphicsUtils.resizeBorderSprite(this.baseBorder);
+        graphicsUtils.resizeBorder(this.base);
     }
     this.baseBorder.visible = true;
 

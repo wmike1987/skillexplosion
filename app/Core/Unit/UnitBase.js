@@ -961,15 +961,18 @@ var UnitBase = {
                 rotate: 'none',
                 position: mathArrayUtils.roundPositionToWholeNumbers(mathArrayUtils.clonePosition(this.position)),
                 scale: {x: 1.0, y: 1.0},
-                alpha: 1.0
+                alpha: 1.0,
+                tint: 0x838383
             });
 
             graphicsUtils.fadeSpriteOverTimeLegacy(this.holdPositionMarker, 250, true);
             var timer1 = gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.addGleamToSprite({
                     sprite: this.holdPositionMarker,
-                    duration: 750,
-                    gleamWidth: 20
+                    duration: 800,
+                    gleamWidth: 20,
+                    power: 0.5,
+                    red: 1000.0
                 });
             }, 250);
             var timer2 = gameUtils.doSomethingAfterDuration(() => {

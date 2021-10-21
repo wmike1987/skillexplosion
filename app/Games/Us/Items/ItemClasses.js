@@ -17,18 +17,21 @@ var ItemClasses = {
             tint: 0x949494,
             items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion', 'LeatherBelt',
                 'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup', 'SilverLocket', 'PictureOfTheMoon', 'PlatedPants'
-            ]
+            ],
+            mapNodeIndicator: 'SturdyCanteen'
         },
         microchip: {
             description: 'Microchip',
             tint: 0xf59a87,
             items: ['BasicMicrochip'],
-            gleamAnimation: "MicrochipGleam"
+            gleamAnimation: "MicrochipGleam",
+            mapNodeIndicator: 'BasicMicrochip'
         },
         specialtyItem: {
             description: 'Worn Specialty Item',
             tint: 0x7ffcea,
-            items: ['LeatherGlove', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'BlackTipCartridge', 'SereneStar', 'PillBottle', 'SkyMedallion']
+            items: ['LeatherGlove', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'BlackTipCartridge', 'SereneStar', 'PillBottle', 'SkyMedallion'],
+            mapNodeIndicator: 'RoseRing'
         },
     },
 
@@ -36,24 +39,28 @@ var ItemClasses = {
         item: {
             description: 'Rugged Item',
             tint: 0xffffff,
-            items: ['LightBoots', 'Compass', 'GoldPlatedPants', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit']
+            items: ['LightBoots', 'Compass', 'GoldPlatedPants', 'RuggedCanteen', 'RoseLocket', 'SharpPictureOfEarth', 'SharpPictureOfTheMoon', 'MedalOfGrit', 'MedalOfMerit'],
+            mapNodeIndicator: 'RuggedCanteen'
         },
         microchip: {
             description: 'Rugged Microchip',
             tint: 0xa77e16,
-            items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip']
+            items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip'],
+            mapNodeIndicator: 'GreenMicrochip'
         },
         specialtyItem: {
             description: 'Rugged Specialty Item',
             tint: 0x1e9489,
-            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove', ]
+            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove'],
+            mapNodeIndicator: 'JadeRing'
         },
     },
 
     gleaming: {
         item: {
             tint: 0xfce558,
-            items: ['GleamingCanteen', 'GoldenCompass', 'FruitCake', 'JadeLocket', 'DiamondLocket', 'GleamingCoffeeCup']
+            items: ['GleamingCanteen', 'GoldenCompass', 'FruitCake', 'JadeLocket', 'DiamondLocket', 'GleamingCoffeeCup'],
+            mapNodeIndicator: 'GleamingCanteen'
         },
         microchip: {
             tint: 0xa73cc2,
@@ -61,7 +68,8 @@ var ItemClasses = {
         },
         specialtyItem: {
             tint: 0x810587,
-            items: ['VioletTipCartridge',  "RubyVisor"]
+            items: ['VioletTipCartridge',  "RubyVisor"],
+            mapNodeIndicator: 'VioletTipCartridge'
         },
     },
 
@@ -85,7 +93,8 @@ var ItemClasses = {
             description: 'Pill',
             tint: 0x80ffbb,
             items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill', 'Vitamin'],
-            gleamAnimation: 'PillGleam'
+            gleamAnimation: 'PillGleam',
+            mapNodeIndicator: 'VitaminOne'
         },
     },
 
@@ -94,7 +103,8 @@ var ItemClasses = {
             description: 'Stimulant',
             tint: 0x80ffbb,
             items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic'],
-            gleamAnimation: "StimulantGleam"
+            gleamAnimation: "StimulantGleam",
+            mapNodeIndicator: 'BlackSyringe'
         },
     },
 
@@ -103,7 +113,8 @@ var ItemClasses = {
             description: 'Book',
             tint: 0x1169de,
             items: ['Book'],
-            gleamAnimation: 'BookGleam'
+            gleamAnimation: 'BookGleam',
+            mapNodeIndicator: 'BlueBook'
         }
     },
 

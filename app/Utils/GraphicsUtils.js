@@ -98,6 +98,11 @@ var graphicsUtils = {
         Matter.Events.trigger(displayObject, 'addOrShowDisplayObject');
     },
 
+    hideDisplayObject: function(displayObject) {
+        displayObject.visible = false;
+        Matter.Events.trigger(displayObject, 'hideDisplayObject');
+    },
+
     makeSpriteSize: function(sprite, size) {
         if (!sprite.texture) return;
         var scaleX = null;
@@ -178,6 +183,33 @@ var graphicsUtils = {
             globals.currentGame.renderer.removeFromPixiStage(something, where);
             Matter.Events.trigger(something, 'destroy');
         }
+    },
+
+    latchDisplayObjectOnto: function(options) {
+        options = Object.assign({
+            positionUponShow: false,
+            positionOffset: {
+                x: 0,
+                y: 0
+            }
+        }, options);
+        var child = options.child;
+        var parent = options.parent;
+
+        gameUtils.matterOnce(parent, 'destroy', () => {
+            graphicsUtils.removeSomethingFromRenderer(child);
+        });
+
+        Matter.Events.on(parent, 'addOrShowDisplayObject', () => {
+            if (options.positionUponShow) {
+                child.position = mathArrayUtils.clonePosition(parent.position, options.positionOffset);
+            }
+            graphicsUtils.addOrShowDisplayObject(child);
+        });
+
+        Matter.Events.on(parent, 'hideDisplayObject', () => {
+            graphicsUtils.hideDisplayObject(child);
+        });
     },
 
     //https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors - with some modifications
@@ -275,8 +307,7 @@ var graphicsUtils = {
         if (fadeIn) {
             finalAlpha = startingAlpha;
             sprite.alpha = 0;
-        } else {
-        }
+        } else {}
         if (makeVisible) {
             sprite.visible = true;
         }
@@ -287,7 +318,7 @@ var graphicsUtils = {
             runs: 1,
             killsSelf: true,
             tickCallback: function() {
-                if(fadeIn) {
+                if (fadeIn) {
                     sprite.alpha = this.percentDone * finalAlpha;
                 } else {
                     sprite.alpha = startingAlpha - (this.percentDone * startingAlpha);
@@ -767,27 +798,34 @@ var graphicsUtils = {
         let sprite = options.sprite;
 
         var border = options.existingBorder;
-        if(!border) {
+        if (!border) {
             border = graphicsUtils.addSomethingToRenderer('TintableSquare', {
                 where: options.where || sprite.where,
-                position: sprite.position,
-                alpha: options.alpha
+                alpha: options.alpha,
             });
             border.borderOptions = options;
             border.sortYOffset = -1;
+            border.isBorder = true;
             border.tint = options.tint;
+            border.visible = sprite.parent && sprite.visible;
 
-            gameUtils.matterOnce(sprite, 'destroy', () => {
-                graphicsUtils.removeSomethingFromRenderer(border);
-            });
+            graphicsUtils.latchDisplayObjectOnto({child: border, parent: sprite, positionUponShow: true});
+
+            sprite.addedBorder = border;
         }
-        graphicsUtils.makeSpriteSize(border, {x: sprite.width + options.thickness*2, y: sprite.height + options.thickness*2});
+        graphicsUtils.makeSpriteSize(border, {
+            x: sprite.width + options.thickness * 2,
+            y: sprite.height + options.thickness * 2
+        });
+        border.position = sprite.position;
 
         return border;
     },
 
-    resizeBorderSprite: function(borderSprite) {
-        this.addBorderToSprite(Object.assign({existingBorder: borderSprite}, borderSprite.borderOptions));
+    resizeBorder: function(borderedSprite) {
+        this.addBorderToSprite(Object.assign({
+            existingBorder: borderedSprite.addedBorder
+        }, borderedSprite.addedBorder.borderOptions));
     },
 
     addGleamToSprite: function(options) {
@@ -797,9 +835,13 @@ var graphicsUtils = {
             leanAmount: 10.0,
             gleamWidth: 35.0,
             power: 1.0,
-            alphaIncluded: false
+            alphaIncluded: false,
+            red: 1.0,
+            green: 1.0,
+            blue: 1.0,
         }, options);
-        var power, sprite, duration, pauseDuration, runs, leanAmount, gleamWidth, alphaIncluded;
+
+        var power, sprite, duration, pauseDuration, runs, leanAmount, gleamWidth, alphaIncluded, red, green, blue;
         ({
             power,
             alphaIncluded,
@@ -808,7 +850,10 @@ var graphicsUtils = {
             pauseDuration,
             runs,
             leanAmount,
-            gleamWidth
+            gleamWidth,
+            red,
+            green,
+            blue
         } = options);
 
         //remove previous gleam
@@ -827,6 +872,9 @@ var graphicsUtils = {
             gleamWidth: gleamWidth,
             alphaIncluded: alphaIncluded,
             power: power,
+            red: red,
+            green: green,
+            blue: blue
         });
         sprite.filters = [gShader];
         pauseDuration = pauseDuration || 0;
