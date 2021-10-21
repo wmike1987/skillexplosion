@@ -123,7 +123,9 @@ var levelBase = {
 
             if (options.startNewCollector) {
                 game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
-                game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+                if(game.ursulaCollector) {
+                    game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+                }
             }
             level.initializeWinLossCondition();
         }, 2400);
@@ -440,7 +442,9 @@ var levelBase = {
         var winAndContinueTasks = function(options) {
             removeCurrentConditions.call(this);
             game.shaneCollector.stopCurrentCollector();
-            game.ursulaCollector.stopCurrentCollector();
+            if(game.ursulaCollector) {
+                game.ursulaCollector.stopCurrentCollector();
+            }
             this.spawner.cleanUp();
 
             //wait a second then add space to continue button
@@ -561,11 +565,7 @@ var levelBase = {
                                 });
 
                                 var sc = game.gotoEndLevelScreen({
-                                    result: winResult,
-                                    collectors: {
-                                        shane: game.shaneCollector.getLastCollector(),
-                                        ursula: game.ursulaCollector.getLastCollector()
-                                    },
+                                    result: winResult
                                 });
 
                                 Matter.Events.trigger(this, 'endLevelActions', {
@@ -622,10 +622,6 @@ var levelBase = {
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         var sc = game.gotoEndLevelScreen({
                             result: lossResult,
-                            collectors: {
-                                shane: game.shaneCollector.getLastCollector(),
-                                ursula: game.ursulaCollector.getLastCollector()
-                            }
                         });
                     }
                 }, 500);

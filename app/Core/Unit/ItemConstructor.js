@@ -12,18 +12,45 @@ import ItemUtils from '@core/Unit/ItemUtils.js';
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';
+import {
+    CustomCollector
+} from '@games/Us/StatCollector.js';
 
 var capitalizeFirstLetter = function(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+// var startItemCollectorForUnit = function(item, unit) {
+//     if(globals.currentGame.isOutingInProgress) {
+//         unit.
+//     }
+// };
+
 var baseItem = {
     equip: function(unit) {
         if (!this.manipulations) return;
+        this.isEquipped = true;
+        var capturedUnit = this.owningUnit;
+        if (this.collector) {
+            this.itemCollector = new CustomCollector({
+                predicate: (event) => {
+                    //evaluate predicate based on the equipped unit of the emitted item event, and the unit which corresponded to this particular equip
+                    return event.equippedUnit == capturedUnit;
+                },
+                item: this,
+                eventName: this.collector.eventName,
+                collectorFunction: this.collector.collectorFunction,
+                presentation: this.collector.presentation
+            });
+            this.itemCollector.presentation.iconTextureName = this.textureName;
+            this.owningUnit.statCollector.registerCustomCollector(this.itemCollector);
+        }
         $.each(this.manipulations, function(key, value) {
             if (key == 'events') {
                 $.each(value, function(k, v) {
+                    //main event callback
                     this.eventFunctions[k] = function(event) {
+                        //give the equipped unit and the item
                         event.equippedUnit = unit;
                         event.item = this;
                         $.each(v, function(kk, vv) {
@@ -52,6 +79,11 @@ var baseItem = {
     },
     unequip: function(unit) {
         if (!this.manipulations) return;
+        this.isEquipped = false;
+        if (this.collector) {
+            this.owningUnit.statCollector.deregisterCustomCollector(this.itemCollector);
+            this.itemCollector = null;
+        }
         $.each(this.manipulations, function(key, value) {
             if (key == "events") {
                 $.each(value, function(k, v) {
@@ -116,6 +148,7 @@ var ic = function(options) {
     newItem.customColor = 0;
     newItem.eventFunctions = {};
 
+    newItem.textureName = newItem.icon;
     newItem.icon = graphicsUtils.createDisplayObject(newItem.icon, {
         where: 'hudOne'
     }); //note that this icon will not die upon removing the item
@@ -123,14 +156,14 @@ var ic = function(options) {
     newItem.icon.interactive = true;
 
     newItem.chargeThenActivate = (options) => {
-        if(newItem.isCharging || newItem.isActive) {
+        if (newItem.isCharging || newItem.chargeActive) {
             return;
         }
         options = options || {};
         newItem.isCharging = true;
         var activateWrapper = () => {
             newItem.isCharging = false;
-            if(!options.activateFunction()) {
+            if (!options.activateFunction()) {
 
                 return;
             }
@@ -143,7 +176,7 @@ var ic = function(options) {
         var chargeTimes = 2.5;
         newItem.chargingTimer = graphicsUtils.flashSprite({
             sprite: newItem.icon,
-            duration: options.chargeDuration/(chargeTimes*2),
+            duration: options.chargeDuration / (chargeTimes * 2),
             times: chargeTimes,
             toColor: 0x9f1bc7,
             onEnd: activateWrapper
@@ -162,8 +195,8 @@ var ic = function(options) {
     };
 
     newItem.showAsActive = (bool) => {
-        newItem.isActive = bool;
-        if(bool) {
+        newItem.chargeActive = bool;
+        if (bool) {
             newItem.icon.tint = 0x95009d;
         } else {
             newItem.customColor--;
@@ -173,7 +206,7 @@ var ic = function(options) {
     //mouse hover event
     newItem.hoverListener = globals.currentGame.addTickCallback(function() {
 
-        if (newItem.isCharging || newItem.isActive) {
+        if (newItem.isCharging || newItem.chargeActive) {
             return;
         }
 
@@ -445,6 +478,10 @@ var ic = function(options) {
 
         if (this.onDestroy) {
             this.onDestroy();
+        }
+
+        if (newItem.removeCollectorCallback) {
+            newItem.removeCollectorCallback();
         }
     };
 

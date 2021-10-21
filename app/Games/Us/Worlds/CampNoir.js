@@ -476,7 +476,7 @@ var camp = {
         }
 
         //debug setting
-        if (false) {
+        if (true) {
             this.mapTableActive = true;
             // gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
             //     graphicsUtils.removeSomethingFromRenderer(arrow);
@@ -841,6 +841,12 @@ var phaseTwo = function(options) {
                     itemClass: 'worn',
                 }
             });
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
+            world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');
             world.map.addMapNode('basic');

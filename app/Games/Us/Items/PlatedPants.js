@@ -20,7 +20,7 @@ var manipulations = {
             if(item.chargeHandler) {
                 item.cancelCharge();
                 item.chargeHandler.removeHandler();
-                item.isActive = false;
+                item.chargeActive = false;
                 var buff = this.buffs["DefensiveBuff" + item.id];
                 if(buff) {
                     buff.removeBuff();

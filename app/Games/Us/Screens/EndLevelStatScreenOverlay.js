@@ -46,11 +46,13 @@ var unitGeneralEnergyStyle = styles.unitGeneralEnergyStyle;
 var shaneTitle = "Shane";
 var knivesThrownKilled = "Knife Throws/Kills";
 var dashesPerformed = "Dashes Performed";
+var shaneVisuals = [];
 
 //Ursula titles
 var ursulaTitle = "Ursula";
 var minesLaid = "Mines Laid";
 var secretStepsPerformed = "Vanishes Performed";
+var ursulaVisuals = [];
 
 var rewardDuration = 800;
 
@@ -213,7 +215,7 @@ var presentItems = function(options) {
 };
 
 var capitalizeFirstLetter = function(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 var getAdditionObj = function(unit, additionName, locationRef, style) {
@@ -221,7 +223,7 @@ var getAdditionObj = function(unit, additionName, locationRef, style) {
 
     var additions = null;
     var additionSum = null;
-    if(!unit[additionName]) {
+    if (!unit[additionName]) {
         additions = unit.getAdditions(additionName);
         additionSum = unit.getAdditionSum(additionName);
     } else {
@@ -256,35 +258,10 @@ var getAdditionObj = function(unit, additionName, locationRef, style) {
     return additionObj;
 };
 
-var EndLevelStatScreenOverlay = function(units, statsObj, options) {
+var EndLevelStatScreenOverlay = function(units, options) {
     options = Object.assign({
         type: 'victory'
     }, options);
-    //for troubleshooting victory screen
-    if (true) {
-        units = units || {
-            shane: {},
-            ursula: {}
-        };
-        statsObj = statsObj || {
-            shane: {
-                getStatMap: function() {
-                    return {};
-                }
-            },
-            ursula: {
-                getStatMap: function() {
-                    return {};
-                }
-            }
-        };
-    }
-
-    var shane = units.shane;
-    var ursula = units.ursula;
-
-    var shaneStats = statsObj.shane.getStatMap();
-    var ursulaStats = statsObj.ursula.getStatMap();
 
     //Global vars
     var startY = gameUtils.getCanvasHeight() / 15 * 2;
@@ -313,26 +290,163 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
     //Convience position creators
     var same = 0;
     var title = 22;
+    var iconSpacing = 25;
     var portrait = 55;
     var reg = 15;
     var divider = 25;
 
-    var shaneY = 0;
-    var shanePosition = function(type) {
+    var shaneY = {
+        value: 0
+    };
+    var shanePosition = function(type, baseNumber) {
+        baseNumber = baseNumber || shaneY;
         var r = mathArrayUtils.clonePosition(shaneBasePosition, {
-            y: shaneY
+            y: baseNumber.value
         });
-        shaneY += type;
+        baseNumber.value += type;
         return r;
     };
 
-    var ursulaY = 0;
-    var ursulaPosition = function(type) {
+    var ursulaY = {
+        value: 0
+    };
+    var ursulaPosition = function(type, baseNumber) {
+        baseNumber = baseNumber || ursulaY;
         var r = mathArrayUtils.clonePosition(ursulaBasePosition, {
-            y: ursulaY
+            y: baseNumber.value
         });
-        ursulaY += type;
+        baseNumber.value += type;
         return r;
+    };
+
+    var statsObj;
+
+    //for troubleshooting victory screen
+    if (true) {
+        units = units || {
+            shane: {},
+            ursula: {}
+        };
+        statsObj = statsObj || {
+            shane: {
+                getDefaultStatMap: function() {
+                    return {};
+                }
+            },
+            ursula: {
+                getDefaultStatMap: function() {
+                    return {};
+                }
+            }
+        };
+    }
+
+    var shane = units.shane;
+    var ursula = units.ursula;
+
+    statsObj = {
+        shane: shane.statCollector.getLastCollector(),
+        ursula: ursula.statCollector.getLastCollector()
+    };
+
+    //get default collector (first page)
+    var shaneStats = statsObj.shane.getDefaultStatMap();
+    var ursulaStats = statsObj.ursula.getDefaultStatMap();
+
+    var currentShanePage = 0;
+    var currentUrsulaPage = 0;
+
+    //determine pages
+    var pageSize = 5;
+    var shanePages = [
+        []
+    ];
+    var ursulaPages = [
+        []
+    ];
+
+    var fillPages = function(options) {
+        options = options || {};
+        var unit = options.unit;
+        var currentPage = 1;
+        var pageHolder = options.pageHolder;
+        var pageSize = options.pageSize;
+        var customCollectors = options.unit.statCollector.getLastCollector().getCustomCollectors();
+        var scene = options.scene;
+        var positionFunc = options.positionFunc;
+
+        var p = 0;
+        var startingY = {
+            value: 80
+        };
+        mathArrayUtils.operateOnObjectByKey(customCollectors, function(key, coll) {
+            p++;
+            if (p % pageSize == 0) {
+                startingY = {
+                    value: 0
+                };
+                currentPage++;
+            }
+
+            //create icon
+            var icon = graphicsUtils.createDisplayObject(coll.presentation.iconTextureName, {
+                where: 'hudText',
+                visible: false
+            });
+            icon.position = positionFunc(iconSpacing, startingY);
+            Matter.Events.on(icon, 'addOrShowDisplayObject', () => {
+                icon.border = graphicsUtils.addBorderToSprite({
+                    sprite: icon,
+                    thickness: 1,
+                    tint: 0xbdbdbd,
+                    alpha: 1.0,
+                    where: 'hudText'
+                });
+            });
+
+            //create label
+            var labels = [];
+            coll.presentation.labels.forEach(function(label, index) {
+                var v = coll[coll.presentation.values[index]];
+                var newLabel = graphicsUtils.createDisplayObject("TEX+:" + label + ": " + v, {
+                    position: positionFunc(reg, startingY),
+                    style: titleStyle,
+                    where: "hudText",
+                    anchor: {
+                        x: 0.5,
+                        y: 0.5
+                    },
+                    visible: false
+                });
+                labels.push(newLabel);
+            });
+
+            //create divider
+            var myDivider = graphicsUtils.createDisplayObject('TintableSquare', {
+                where: 'hudText',
+                scale: {
+                    x: 160,
+                    y: 1
+                },
+                alpha: 0.5,
+                visible: false,
+                tint: 0xff0000
+            });
+            myDivider.position = positionFunc(divider, startingY);
+
+            //add elements to current page
+            if (!pageHolder[currentPage]) {
+                pageHolder[currentPage] = [];
+            }
+            pageHolder[currentPage].push(icon);
+            pageHolder[currentPage].push(myDivider);
+            pageHolder[currentPage] = pageHolder[currentPage].concat(labels);
+
+            //add objects to the scene
+            pageHolder[currentPage].forEach(function(item) {
+                scene.add(item);
+            });
+        });
     };
 
     this.shaneStats = [];
@@ -345,6 +459,23 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
         scene.addBlackBackground({
             alpha: 0.75,
             fadeDuration: 500
+        });
+
+        //fill pages shane
+        fillPages({
+            unit: shane,
+            pageSize: pageSize,
+            pageHolder: shanePages,
+            scene: scene,
+            positionFunc: shanePosition
+        });
+        //ursula
+        fillPages({
+            unit: ursula,
+            pageSize: pageSize,
+            pageHolder: ursulaPages,
+            scene: scene,
+            positionFunc: ursulaPosition
         });
 
         var isVictory = options.type == 'victory';
@@ -444,7 +575,13 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
                 });
             }, startFadeTime);
         });
-        var b1 = graphicsUtils.addBorderToSprite({sprite: marinePortraitBorder, thickness: 0, tint: 0x000000, alpha: 1.0, where: 'hud'});
+        var b1 = graphicsUtils.addBorderToSprite({
+            sprite: marinePortraitBorder,
+            thickness: 0,
+            tint: 0x000000,
+            alpha: 1.0,
+            where: 'hud'
+        });
         b1.visible = false;
 
         var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {
@@ -681,6 +818,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 3);
         });
         this.shaneStats.push([shaneKillsTitle, shaneKills, placeholder]);
+        shanePages[0].push(shaneKillsTitle, shaneKills, placeholder);
 
         var shaneDamageTitle = graphicsUtils.createDisplayObject("TEX+:" + damageDone, {
             position: shanePosition(title),
@@ -751,6 +889,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 4);
         });
         this.shaneStats.push([shaneDamageTitle, shaneDamage, placeholder]);
+        shanePages[0].push(shaneDamageTitle, shaneDamage, placeholder);
 
         var shaneDamageTakenTitle = graphicsUtils.createDisplayObject("TEX+:" + damageTaken, {
             position: shanePosition(title),
@@ -821,6 +960,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 5);
         });
         this.shaneStats.push([shaneDamageTakenTitle, shaneDamageTaken, placeholder]);
+        shanePages[0].push(shaneDamageTakenTitle, shaneDamageTaken, placeholder);
 
         var shaneDamageReducedByAmorTitle = graphicsUtils.createDisplayObject("TEX+:" + preventedArmorDamage, {
             position: shanePosition(title),
@@ -891,6 +1031,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 6);
         });
         this.shaneStats.push([shaneDamageReducedByAmorTitle, shaneDamageReducedByAmor, placeholder]);
+        shanePages[0].push(shaneDamageReducedByAmorTitle, shaneDamageReducedByAmor, placeholder);
 
         var shaneDodgedTitle = graphicsUtils.createDisplayObject("TEX+:" + attacksDodged, {
             position: shanePosition(title),
@@ -961,6 +1102,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 7);
         });
         this.shaneStats.push([shaneDodgedTitle, shaneDodgedText, placeholder]);
+        shanePages[0].push(shaneDodgedTitle, shaneDodgedText, placeholder);
 
         var shaneHealingDoneTitle = graphicsUtils.createDisplayObject("TEX+:" + healingDone, {
             position: shanePosition(title),
@@ -1031,6 +1173,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 8);
         });
         this.shaneStats.push([shaneHealingDoneTitle, shaneHealingDone, placeholder]);
+        shanePages[0].push(shaneHealingDoneTitle, shaneHealingDone, placeholder);
 
         var shaneKnifeTitle = graphicsUtils.createDisplayObject("TEX+:" + knivesThrownKilled, {
             position: shanePosition(title),
@@ -1101,6 +1244,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 9);
         });
         this.shaneStats.push([shaneKnifeTitle, shaneKnifeStats, placeholder]);
+        shanePages[0].push(shaneKnifeTitle, shaneKnifeStats, placeholder);
 
         var shaneDashTitle = graphicsUtils.createDisplayObject("TEX+:" + dashesPerformed, {
             position: shanePosition(title),
@@ -1171,6 +1315,95 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 9);
         });
         this.shaneStats.push([shaneDashTitle, shaneDashesPerformed, placeholder]);
+        shanePages[0].push(shaneDashTitle, shaneDashesPerformed, placeholder);
+
+        var shaneArrowPosition = shanePosition(reg);
+        var shaneLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<-', {
+            position: mathArrayUtils.clonePosition(shaneArrowPosition, {
+                x: -50
+            }),
+            style: styles.abilityTitle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        shaneLeftArrow.interactive = true;
+        shaneLeftArrow.on('mousedown', () => {
+            if (currentShanePage == 0) {
+                return;
+            }
+            shanePages[currentShanePage].forEach(function(item) {
+                item.visible = false;
+                if (item.border) {
+                    item.border.visible = false;
+                }
+            });
+            currentShanePage--;
+            shanePages[currentShanePage].forEach(function(item) {
+                graphicsUtils.addOrShowDisplayObject(item);
+            });
+        });
+        scene.add(shaneLeftArrow);
+
+        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneLeftArrow,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
+            }, startFadeTime * 10);
+        });
+
+        var shaneRightArrow = graphicsUtils.createDisplayObject("TEX+:" + '->', {
+            position: mathArrayUtils.clonePosition(shaneArrowPosition, {
+                x: 50
+            }),
+            style: styles.abilityTitle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        shaneRightArrow.interactive = true;
+        shaneRightArrow.on('mousedown', () => {
+            if (currentShanePage == shanePages.length - 1) {
+                return;
+            }
+            shanePages[currentShanePage].forEach(function(item) {
+                item.visible = false;
+                if (item.border) {
+                    item.border.visible = false;
+                }
+            });
+            currentShanePage++;
+            shanePages[currentShanePage].forEach(function(item) {
+                graphicsUtils.addOrShowDisplayObject(item);
+            });
+        });
+        scene.add(shaneRightArrow);
+
+        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: shaneRightArrow,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
+            }, startFadeTime * 10);
+        });
+        this.shaneStats.push([shaneLeftArrow, shaneRightArrow, placeholder]);
 
         //Ursula
         startPos = ursulaPosition(same);
@@ -1198,7 +1431,13 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             visible: false
         });
 
-        var b2 = graphicsUtils.addBorderToSprite({sprite: medicPortraitBorder, thickness: 0, tint: 0x000000, alpha: 1.0, where: 'hud'});
+        var b2 = graphicsUtils.addBorderToSprite({
+            sprite: medicPortraitBorder,
+            thickness: 0,
+            tint: 0x000000,
+            alpha: 1.0,
+            where: 'hud'
+        });
         b2.visible = false;
 
         gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
@@ -1434,6 +1673,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 3);
         });
         this.ursulaStats.push([ursulaKillsTitle, ursulaKills, placeholder]);
+        ursulaPages[0].push(ursulaKillsTitle, ursulaKills, placeholder);
 
         var ursulaDamageTitle = graphicsUtils.createDisplayObject("TEX+:" + damageDone, {
             position: ursulaPosition(title),
@@ -1501,6 +1741,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 4);
         });
         this.ursulaStats.push([ursulaDamageTitle, ursulaDamage, placeholder]);
+        ursulaPages[0].push(ursulaDamageTitle, ursulaDamage, placeholder);
 
         var ursulaDamageTakenTitle = graphicsUtils.createDisplayObject("TEX+:" + damageTaken, {
             position: ursulaPosition(title),
@@ -1568,6 +1809,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 5);
         });
         this.ursulaStats.push([ursulaDamageTakenTitle, ursulaDamageTaken, placeholder]);
+        ursulaPages[0].push(ursulaDamageTakenTitle, ursulaDamageTaken, placeholder);
 
         var ursulaDamageReducedByAmorTitle = graphicsUtils.createDisplayObject("TEX+:" + preventedArmorDamage, {
             position: ursulaPosition(title),
@@ -1635,6 +1877,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 6);
         });
         this.ursulaStats.push([ursulaDamageReducedByAmorTitle, ursulaDamageReducedByAmor, placeholder]);
+        ursulaPages[0].push(ursulaDamageReducedByAmorTitle, ursulaDamageReducedByAmor, placeholder);
 
         var ursulaDodgedTitle = graphicsUtils.createDisplayObject("TEX+:" + attacksDodged, {
             position: ursulaPosition(title),
@@ -1702,6 +1945,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 7);
         });
         this.ursulaStats.push([ursulaDodgedTitle, ursulaDodgedText, placeholder]);
+        ursulaPages[0].push(ursulaDodgedTitle, ursulaDodgedText, placeholder);
 
         var ursulaHealingDoneTitle = graphicsUtils.createDisplayObject("TEX+:" + healingDone, {
             position: ursulaPosition(title),
@@ -1769,6 +2013,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 8);
         });
         this.ursulaStats.push([ursulaHealingDoneTitle, ursulaHealingDone, placeholder]);
+        ursulaPages[0].push(ursulaHealingDoneTitle, ursulaHealingDone, placeholder);
 
         var minesLaidTitle = graphicsUtils.createDisplayObject("TEX+:" + minesLaid, {
             position: ursulaPosition(title),
@@ -1836,6 +2081,7 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 9);
         });
         this.ursulaStats.push([minesLaidTitle, minesLaidDone, placeholder]);
+        ursulaPages[0].push(minesLaidTitle, minesLaidDone, placeholder);
 
         var secretStepsTitle = graphicsUtils.createDisplayObject("TEX+:" + secretStepsPerformed, {
             position: ursulaPosition(title),
@@ -1903,6 +2149,95 @@ var EndLevelStatScreenOverlay = function(units, statsObj, options) {
             }, startFadeTime * 9);
         });
         this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
+        ursulaPages[0].push(secretStepsTitle, secretStepsDone, placeholder);
+
+        var ursulaArrowPosition = ursulaPosition(reg);
+        var ursulaLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<-', {
+            position: mathArrayUtils.clonePosition(ursulaArrowPosition, {
+                x: -50
+            }),
+            style: styles.abilityTitle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        ursulaLeftArrow.interactive = true;
+        ursulaLeftArrow.on('mousedown', () => {
+            if (currentUrsulaPage == 0) {
+                return;
+            }
+            ursulaPages[currentUrsulaPage].forEach(function(item) {
+                item.visible = false;
+                if (item.border) {
+                    item.border.visible = false;
+                }
+            });
+            currentUrsulaPage--;
+            ursulaPages[currentUrsulaPage].forEach(function(item) {
+                graphicsUtils.addOrShowDisplayObject(item);
+            });
+        });
+        scene.add(ursulaLeftArrow);
+
+        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaLeftArrow,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
+            }, startFadeTime * 10);
+        });
+
+        var ursulaRightArrow = graphicsUtils.createDisplayObject("TEX+:" + '->', {
+            position: mathArrayUtils.clonePosition(ursulaArrowPosition, {
+                x: 50
+            }),
+            style: styles.abilityTitle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        ursulaRightArrow.interactive = true;
+        ursulaRightArrow.on('mousedown', () => {
+            if (currentUrsulaPage == ursulaPages.length - 1) {
+                return;
+            }
+            ursulaPages[currentUrsulaPage].forEach(function(item) {
+                item.visible = false;
+                if (item.border) {
+                    item.border.visible = false;
+                }
+            });
+            currentUrsulaPage++;
+            ursulaPages[currentUrsulaPage].forEach(function(item) {
+                graphicsUtils.addOrShowDisplayObject(item);
+            });
+        });
+        scene.add(ursulaRightArrow);
+
+        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: ursulaRightArrow,
+                    duration: 1000,
+                    fadeIn: true,
+                    nokill: true,
+                    makeVisible: true
+                });
+            }, startFadeTime * 10);
+        });
+        this.ursulaStats.push([ursulaLeftArrow, ursulaRightArrow, placeholder]);
 
         //Add everything to the scene
         this.shaneStats.forEach((objArr) => {

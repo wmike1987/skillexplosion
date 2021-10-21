@@ -976,9 +976,7 @@ var UnitBase = {
                 graphicsUtils.fadeSpriteOverTimeLegacy(this.holdPositionMarker, 250, false);
             }, 1750);
 
-            this.holdPositionMarker.tint = 0xdb8d25;
-
-            graphicsUtils.graduallyTint(this.holdPositionMarker, 0x393939, 0xffffff, 1000, null, null, 1);
+            // graphicsUtils.graduallyTint(this.holdPositionMarker, 0x393939, 0xffffff, 1000, null, null, 1);
 
             Matter.Events.on(this.holdPositionMarker, 'destroy', () => {
                 timer1.invalidate();

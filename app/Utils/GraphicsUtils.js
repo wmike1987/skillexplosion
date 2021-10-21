@@ -95,6 +95,7 @@ var graphicsUtils = {
             this.addDisplayObjectToRenderer(displayObject);
         }
         displayObject.visible = true;
+        Matter.Events.trigger(displayObject, 'addOrShowDisplayObject');
     },
 
     makeSpriteSize: function(sprite, size) {

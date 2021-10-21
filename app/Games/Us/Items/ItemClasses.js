@@ -46,7 +46,7 @@ var ItemClasses = {
         specialtyItem: {
             description: 'Rugged Specialty Item',
             tint: 0x1e9489,
-            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "RubyVisor", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove', ]
+            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove', ]
         },
     },
 
@@ -61,7 +61,7 @@ var ItemClasses = {
         },
         specialtyItem: {
             tint: 0x810587,
-            items: ['VioletTipCartridge']
+            items: ['VioletTipCartridge',  "RubyVisor"]
         },
     },
 

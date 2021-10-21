@@ -29,7 +29,9 @@ import {
     campNoir
 } from '@games/Us/Worlds/CampNoir.js';
 import EndLevelScreenOverlay from '@games/Us/Screens/EndLevelStatScreenOverlay.js';
-import StatCollector from '@games/Us/StatCollector.js';
+import {
+    StatCollector
+} from '@games/Us/StatCollector.js';
 import UnitMenu from '@games/Us/UnitMenu.js';
 
 import {
@@ -95,30 +97,6 @@ var game = {
         });
 
         this.levelLocalEntities = [];
-
-        this.shaneCollector = new StatCollector({
-            predicate: function(event) {
-                if (event.performingUnit.name == 'Shane')
-                    return true;
-            },
-            sufferingPredicate: function(event) {
-                if (event.sufferingUnit.name == 'Shane')
-                    return true;
-            }
-        });
-
-        this.ursulaCollector = new StatCollector({
-            predicate: function(event) {
-                if (event.performingUnit.name == 'Ursula') {
-                    return true;
-                }
-            },
-            sufferingPredicate: function(event) {
-                if (event.sufferingUnit.name == 'Ursula') {
-                    return true;
-                }
-            }
-        });
 
         //setup a common sound pool
         this.soundPool = {};
@@ -242,7 +220,7 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            if(!event.node.levelDetails.isLevelNonConfigurable()) {
+            if (!event.node.levelDetails.isLevelNonConfigurable()) {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }
         }.bind(this));
@@ -390,7 +368,7 @@ var game = {
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
 
-        if(false) {
+        if (false) {
             this.showTips = true;
             camp.alreadyIntrod = false;
             camp.completedUrsulaTasks = false;
@@ -406,7 +384,7 @@ var game = {
 
     canShowTip: function(tipName, showTipToo) {
         var ret = this.showTips && !this.showedTips[tipName];
-        if(showTipToo) {
+        if (showTipToo) {
             this.showedTips[tipName] = true;
         }
 
@@ -426,9 +404,8 @@ var game = {
     },
 
     gotoEndLevelScreen: function(options) {
-        var collectors, result, continueOnly;
+        var result, continueOnly;
         ({
-            collectors,
             result,
             continueOnly
         } = options);
@@ -441,7 +418,10 @@ var game = {
         var continueBehavior = function() {
             if (result == 'victory') {
                 this.map.addAdrenalineBlock();
-                this.conquerScene({scene: this.currentScene, fadeIn: true});
+                this.conquerScene({
+                    scene: this.currentScene,
+                    fadeIn: true
+                });
                 this.currentLevel.campLikeActiveSOM = true;
                 this.unitSystem.unitPanel.refreshPassiveButton();
                 vScene.clear();
@@ -466,7 +446,7 @@ var game = {
         var vScreen = new EndLevelScreenOverlay({
             shane: this.shane,
             ursula: this.ursula,
-        }, collectors, {
+        }, {
             type: result,
             done: continueBehavior,
             onlyContinueAllowed: continueOnly
@@ -474,10 +454,18 @@ var game = {
         var vScene = vScreen.initialize({});
         gameUtils.playAsMusic(this.soundPool.winVamp);
 
-        this.shane.setHealth(this.shane.maxHealth, {silent: true});
-        this.shane.setEnergy(this.shane.maxEnergy, {silent: true});
-        this.ursula.setHealth(this.ursula.maxHealth, {silent: true});
-        this.ursula.setEnergy(this.ursula.maxEnergy, {silent: true});
+        this.shane.setHealth(this.shane.maxHealth, {
+            silent: true
+        });
+        this.shane.setEnergy(this.shane.maxEnergy, {
+            silent: true
+        });
+        this.ursula.setHealth(this.ursula.maxHealth, {
+            silent: true
+        });
+        this.ursula.setEnergy(this.ursula.maxEnergy, {
+            silent: true
+        });
 
         return vScene;
     },
@@ -485,8 +473,14 @@ var game = {
     conquerScene: function(options) {
         options = options || {};
         gameUtils.doSomethingAfterDuration(() => {
-            game.shane.revive({health: 1, energy: 1});
-            game.ursula.revive({health: 1, energy: 1});
+            game.shane.revive({
+                health: 1,
+                energy: 1
+            });
+            game.ursula.revive({
+                health: 1,
+                energy: 1
+            });
         }, 500);
 
         var level = this.currentLevel;
@@ -547,7 +541,7 @@ var game = {
 
         var gunrack = level.createAugmentRack(scene);
 
-        if(options.fadeIn) {
+        if (options.fadeIn) {
             graphicsUtils.fadeSpriteOverTime({
                 sprite: mapTable.body.renderlings.mainData0,
                 duration: 1000,
@@ -610,12 +604,20 @@ var game = {
                     });
 
                     gameUtils.doSomethingAfterDuration(() => {
-                        game.shane.revive({health: 1, energy: 1});
-                        game.ursula.revive({health: 1, energy: 1});
+                        game.shane.revive({
+                            health: 1,
+                            energy: 1
+                        });
+                        game.ursula.revive({
+                            health: 1,
+                            energy: 1
+                        });
                     }, 500);
                 }
 
-                game.conquerScene({scene: game.currentScene});
+                game.conquerScene({
+                    scene: game.currentScene
+                });
             },
             mode: 'SIDE',
             transitionLength: 1000,
@@ -643,6 +645,10 @@ var game = {
 
     isCurrentLevelSOMConfigurable: function() {
         return this.currentLevel.campLikeActiveSOM || this.currentLevel.campLikeActive;
+    },
+
+    isOutingInProgress: function() {
+        return this.map.outingInProgress;
     },
 
     makeCurrentLevelConfigurable: function() {
@@ -679,8 +685,24 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RubyVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BlueVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PolarizedVisor"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PictureOfTheMoon"], unit: this.shane});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});
+        this.shane.dodge = 40;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["AjaMicrochip"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
+
+        this.shaneCollector = new StatCollector({
+            predicate: function(event) {
+                if (event.performingUnit.name == 'Shane')
+                    return true;
+            },
+            sufferingPredicate: function(event) {
+                if (event.sufferingUnit.name == 'Shane')
+                    return true;
+            },
+            unit: this.shane
+        });
+        this.shane.statCollector = this.shaneCollector;
 
         gameUtils.moveUnitOffScreen(this.shane);
         s.position = gameUtils.getPlayableCenter();
@@ -698,12 +720,29 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenYinYang"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["GoldenCompass"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RoseRing"], unit: this.ursula});
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PictureOfTheMoon"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["RubyRing"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["JadeRing"], unit: this.ursula});
         // this.ursula.grit = 100;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SharpPictureOfTheMoon"], unit: this.ursula});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BoxCutter"], unit: this.ursula});
         // this.ursula.idleCancel = true;
+
+        this.ursulaCollector = new StatCollector({
+            predicate: function(event) {
+                if (event.performingUnit.name == 'Ursula') {
+                    return true;
+                }
+            },
+            sufferingPredicate: function(event) {
+                if (event.sufferingUnit.name == 'Ursula') {
+                    return true;
+                }
+            },
+            unit: this.ursula
+        });
+        this.ursula.statCollector = this.ursulaCollector;
+
         gameUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;
     },
@@ -779,7 +818,10 @@ var game = {
     },
 
     flyover: function(done, options) {
-        options = Object.assign({speed: 95, quiet: true}, options);
+        options = Object.assign({
+            speed: 95,
+            quiet: true
+        }, options);
         var shadow = Matter.Bodies.circle(-4200, gameUtils.getCanvasHeight() / 2.0, 1, {
             restitution: 0.95,
             frictionAir: 0,
@@ -801,7 +843,7 @@ var game = {
             stage: "foreground",
         }];
 
-        if(options.quiet) {
+        if (options.quiet) {
             this.flyoverSoundQuiet.play();
         } else {
             this.flyoverSound.play();

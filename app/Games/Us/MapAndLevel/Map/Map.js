@@ -579,10 +579,10 @@ var map = function(specs) {
         firstNode.onMouseDownBehavior({systemTriggered: true});
 
         //let everyone know
-        Matter.Events.trigger(globals.currentGame, "EmbarkOnOuting");
+        Matter.Events.trigger(globals.currentGame, 'EmbarkOnOuting');
 
         //upon normal win/loss behavior clear the outing
-        var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, "VictoryOrDefeat", (event) => {
+        var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', (event) => {
             this.outingInProgress = false;
             this.clearOuting();
 
