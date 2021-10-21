@@ -173,6 +173,9 @@ var Collector = {
     value: 0,
     listener: null,
     start: function() {
+        if(this.init) {
+            this.init();
+        }
         var decoratedCollector = function(event) {
             if (this.paused) return;
             this.collectorFunction(event);
@@ -197,6 +200,7 @@ var CustomCollector = function(options) {
     this.isCustomCollector = true;
     this.item = options.item;
     this.name = this.item.name;
+    this.init = options.init;
     this.predicate = options.predicate || function() {
         return true;
     };

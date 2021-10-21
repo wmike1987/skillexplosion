@@ -32,6 +32,7 @@ var load = function() {
     importantStyles.push(styles.rewardTextLarge);
     importantStyles.push(styles.statScreenDefeatTitleStyle);
     importantStyles.push(styles.statScreenVictoryTitleStyle);
+    importantStyles.push(styles.pageArrowStyle);
 
     var killMe = [];
     importantStyles.forEach(function(style) {

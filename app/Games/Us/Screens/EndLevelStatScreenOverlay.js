@@ -89,6 +89,25 @@ var overlayCommonFade = function(sprite, delay) {
     }, delay);
 };
 
+var applyArrowInOut = function(arrow) {
+    arrow.on('mouseover', () => {
+        if(arrow.alpha == 1) {
+            arrow.tint = 0xf02354;
+        }
+    });
+    arrow.on('mouseout', () => {
+        if(arrow.alpha == 1) {
+            arrow.tint = 0xffffff;
+        }
+    });
+    arrow.on('mousedown', () => {
+        if(arrow.alpha == 1) {
+            globals.currentGame.soundPool.keypressSound.play();
+            arrow.tint = 0xffffff;
+        }
+    });
+};
+
 var presentItems = function(options) {
     var nodeIndex = 0;
     var numberOfChoices = globals.currentGame.map.completedNodes.length;
@@ -368,7 +387,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
     var fillPages = function(options) {
         options = options || {};
         var unit = options.unit;
-        var currentPage = 1;
+        var currentPage = 0;
         var pageHolder = options.pageHolder;
         var pageSize = options.pageSize;
         var customCollectors = options.unit.statCollector.getLastCollector().getCustomCollectors();
@@ -380,13 +399,13 @@ var EndLevelStatScreenOverlay = function(units, options) {
             value: 80
         };
         mathArrayUtils.operateOnObjectByKey(customCollectors, function(key, coll) {
-            p++;
             if (p % pageSize == 0) {
                 startingY = {
-                    value: 0
+                    value: 80
                 };
                 currentPage++;
             }
+            p++;
 
             //create icon
             var icon = graphicsUtils.createDisplayObject(coll.presentation.iconTextureName, {
@@ -406,10 +425,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
             //create label
             var labels = [];
+            var last = coll.presentation.labels.length-1;
             coll.presentation.labels.forEach(function(label, index) {
                 var v = coll[coll.presentation.values[index]];
+                var spacing = index == last ? divider : reg;
                 var newLabel = graphicsUtils.createDisplayObject("TEX+:" + label + ": " + v, {
-                    position: positionFunc(reg, startingY),
+                    position: positionFunc(spacing, startingY),
                     style: titleStyle,
                     where: "hudText",
                     anchor: {
@@ -1318,20 +1339,22 @@ var EndLevelStatScreenOverlay = function(units, options) {
         shanePages[0].push(shaneDashTitle, shaneDashesPerformed, placeholder);
 
         var shaneArrowPosition = shanePosition(reg);
-        var shaneLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<-', {
+        var shaneLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<<', {
             position: mathArrayUtils.clonePosition(shaneArrowPosition, {
                 x: -50
             }),
-            style: styles.abilityTitle,
+            style: styles.pageArrowStyle,
             where: "hudText",
             anchor: {
                 x: 0.5,
                 y: 0.5
             },
+            alpha: 0.1,
             visible: false
         });
 
         shaneLeftArrow.interactive = true;
+        applyArrowInOut(shaneLeftArrow);
         shaneLeftArrow.on('mousedown', () => {
             if (currentShanePage == 0) {
                 return;
@@ -1346,6 +1369,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
             shanePages[currentShanePage].forEach(function(item) {
                 graphicsUtils.addOrShowDisplayObject(item);
             });
+
+            //apply some alpha effects
+            shaneRightArrow.alpha = 1.0;
+            if (currentShanePage == 0) {
+                shaneLeftArrow.alpha = 0.1;
+            }
         });
         scene.add(shaneLeftArrow);
 
@@ -1361,11 +1390,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }, startFadeTime * 10);
         });
 
-        var shaneRightArrow = graphicsUtils.createDisplayObject("TEX+:" + '->', {
+        var shaneRightArrow = graphicsUtils.createDisplayObject("TEX+:" + '>>', {
             position: mathArrayUtils.clonePosition(shaneArrowPosition, {
                 x: 50
             }),
-            style: styles.abilityTitle,
+            style: styles.pageArrowStyle,
             where: "hudText",
             anchor: {
                 x: 0.5,
@@ -1374,7 +1403,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
             visible: false
         });
 
+        if(shanePages.length == 1) {
+            shaneRightArrow.alpha = 0.1;
+        }
+
         shaneRightArrow.interactive = true;
+        applyArrowInOut(shaneRightArrow);
         shaneRightArrow.on('mousedown', () => {
             if (currentShanePage == shanePages.length - 1) {
                 return;
@@ -1389,6 +1423,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
             shanePages[currentShanePage].forEach(function(item) {
                 graphicsUtils.addOrShowDisplayObject(item);
             });
+
+            //apply some alpha effects
+            shaneLeftArrow.alpha = 1.0;
+            if (currentShanePage == shanePages.length - 1) {
+                shaneRightArrow.alpha = 0.1;
+            }
         });
         scene.add(shaneRightArrow);
 
@@ -2152,20 +2192,22 @@ var EndLevelStatScreenOverlay = function(units, options) {
         ursulaPages[0].push(secretStepsTitle, secretStepsDone, placeholder);
 
         var ursulaArrowPosition = ursulaPosition(reg);
-        var ursulaLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<-', {
+        var ursulaLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<<', {
             position: mathArrayUtils.clonePosition(ursulaArrowPosition, {
                 x: -50
             }),
-            style: styles.abilityTitle,
+            style: styles.pageArrowStyle,
             where: "hudText",
             anchor: {
                 x: 0.5,
                 y: 0.5
             },
+            alpha: 0.1,
             visible: false
         });
 
         ursulaLeftArrow.interactive = true;
+        applyArrowInOut(ursulaLeftArrow);
         ursulaLeftArrow.on('mousedown', () => {
             if (currentUrsulaPage == 0) {
                 return;
@@ -2180,6 +2222,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
             ursulaPages[currentUrsulaPage].forEach(function(item) {
                 graphicsUtils.addOrShowDisplayObject(item);
             });
+
+            //apply some alpha effects
+            ursulaRightArrow.alpha = 1.0;
+            if (currentUrsulaPage == 0) {
+                ursulaLeftArrow.alpha = 0.1;
+            }
         });
         scene.add(ursulaLeftArrow);
 
@@ -2195,11 +2243,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }, startFadeTime * 10);
         });
 
-        var ursulaRightArrow = graphicsUtils.createDisplayObject("TEX+:" + '->', {
+        var ursulaRightArrow = graphicsUtils.createDisplayObject("TEX+:" + '>>', {
             position: mathArrayUtils.clonePosition(ursulaArrowPosition, {
                 x: 50
             }),
-            style: styles.abilityTitle,
+            style: styles.pageArrowStyle,
             where: "hudText",
             anchor: {
                 x: 0.5,
@@ -2208,7 +2256,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
             visible: false
         });
 
+        if(ursulaPages.length == 1) {
+            ursulaRightArrow.alpha = 0.1;
+        }
+
         ursulaRightArrow.interactive = true;
+        applyArrowInOut(ursulaRightArrow);
         ursulaRightArrow.on('mousedown', () => {
             if (currentUrsulaPage == ursulaPages.length - 1) {
                 return;
@@ -2223,6 +2276,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
             ursulaPages[currentUrsulaPage].forEach(function(item) {
                 graphicsUtils.addOrShowDisplayObject(item);
             });
+
+            //apply some alpha effects
+            ursulaLeftArrow.alpha = 1.0;
+            if (currentUrsulaPage == ursulaPages.length - 1) {
+                ursulaRightArrow.alpha = 0.1;
+            }
         });
         scene.add(ursulaRightArrow);
 

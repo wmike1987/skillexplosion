@@ -8,10 +8,12 @@ import {
     graphicsUtils,
     mathArrayUtils
 } from '@utils/UtilityMenu.js';
+import * as Matter from 'matter-js';
 
 var gainDuration = 8000;
 var gainAmount = 1999;
 var chargeLength = 2000;
+var eventName = 'goldenYinYangTimesActive';
 
 var manipulations = {
     genericEquip: function(equipped, item) {
@@ -49,6 +51,7 @@ var manipulations = {
                     activeDuration: gainDuration,
                     activateFunction: () => {
                         if (unit.holdPositionId == hpId && unit.isHoldingPosition) {
+                            Matter.Events.trigger(globals.currentGame, eventName, event);
                             unit.applyRangeBuff({
                                 id: "RangeBuff" + item.id,
                                 duration: gainDuration,
@@ -72,7 +75,17 @@ export default function(options) {
         description: ["Gain infinite heal range for 8 seconds by holding position for 2 seconds."],
         icon: 'GoldenYinYang',
         type: 'Medic',
-        fontType: 'ursula'
+        fontType: 'ursula',
+        collector: {
+            eventName: eventName,
+            collectorFunction: function(event) {
+                this.value += 1;
+            },
+            presentation: {
+                labels: ["Times activated"],
+                values: ["value"]
+            }
+        }
     }, options, ursulaOnly);
     return new ic(item);
 }

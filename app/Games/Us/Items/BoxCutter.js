@@ -5,13 +5,18 @@ import {
     mathArrayUtils,
     unitUtils
 } from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
+import * as Matter from 'matter-js';
 
 var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
     volume: 0.08,
     rate: 1.6
 });
 var damage = 10;
+var eventName = 'boxCutterDamage';
 
 var manipulations = {
     events: {
@@ -21,6 +26,8 @@ var manipulations = {
 
                 gameUtils.doSomethingAfterDuration(() => {
                     if (!petrifiedUnit.isDead && petrifiedUnit.team != event.equippedUnit.team) {
+                        event.damage = damage;
+                        Matter.Events.trigger(globals.currentGame, eventName, event);
                         petrifiedUnit.sufferAttack(damage, event.equippedUnit);
                         var bloodPierceAnimation = gameUtils.getAnimation({
                             spritesheetName: 'UtilityAnimations1',
@@ -40,6 +47,8 @@ var manipulations = {
 
                 gameUtils.doSomethingAfterDuration(() => {
                     if (!condemnedUnit.isDead && condemnedUnit.team != event.equippedUnit.team) {
+                        event.damage = damage;
+                        Matter.Events.trigger(globals.currentGame, eventName, event);
                         condemnedUnit.sufferAttack(damage, event.equippedUnit);
                         var bloodPierceAnimation = gameUtils.getAnimation({
                             spritesheetName: 'UtilityAnimations1',
@@ -60,6 +69,8 @@ var manipulations = {
                 gameUtils.doSomethingAfterDuration(() => {
                     if (!maimedUnit.isDead && maimedUnit.team != event.equippedUnit.team) {
                         maimedUnit.sufferAttack(damage, event.equippedUnit);
+                        event.damage = damage;
+                        Matter.Events.trigger(globals.currentGame, eventName, event);
                         var bloodPierceAnimation = gameUtils.getAnimation({
                             spritesheetName: 'UtilityAnimations1',
                             animationName: 'pierce',
@@ -84,6 +95,16 @@ export default function(options) {
         icon: 'BoxCutter',
         type: 'Medic',
         fontType: 'ursula',
+        collector: {
+            eventName: eventName,
+            collectorFunction: function(event) {
+                this.value += event.damage;
+            },
+            presentation: {
+                labels: ["Damage dealt"],
+                values: ["value"]
+            }
+        }
     }, options, ursulaOnly);
     return new ic(item);
 }

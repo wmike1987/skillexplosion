@@ -32,16 +32,13 @@ var baseItem = {
         this.isEquipped = true;
         var capturedUnit = this.owningUnit;
         if (this.collector) {
-            this.itemCollector = new CustomCollector({
+            var collectorParams = Object.assign({
                 predicate: (event) => {
                     //evaluate predicate based on the equipped unit of the emitted item event, and the unit which corresponded to this particular equip
                     return event.equippedUnit == capturedUnit;
                 },
-                item: this,
-                eventName: this.collector.eventName,
-                collectorFunction: this.collector.collectorFunction,
-                presentation: this.collector.presentation
-            });
+                item: this}, this.collector);
+            this.itemCollector = new CustomCollector(collectorParams);
             this.itemCollector.presentation.iconTextureName = this.textureName;
             this.owningUnit.statCollector.registerCustomCollector(this.itemCollector);
         }

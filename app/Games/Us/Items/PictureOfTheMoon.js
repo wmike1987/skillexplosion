@@ -17,7 +17,9 @@ var manipulations = {
                 var equippedUnit = event.equippedUnit;
                 var item = event.item;
                 equippedUnit.giveEnergy(amount, null, {showGainAnimation: true});
-                Matter.Events.trigger(globals.currentGame, eventName, {energyGain: amount, equippedUnit: equippedUnit});
+
+                event.energyGain = amount;
+                Matter.Events.trigger(globals.currentGame, eventName, event);
             }
         }
     }

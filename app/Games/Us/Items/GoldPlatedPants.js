@@ -12,6 +12,7 @@ import * as Matter from 'matter-js';
 var armorGainDuration = 11000;
 var armorGain = 5;
 var chargeLength = 2000;
+var eventName = 'goldenPlatedPantsTimesActive';
 
 var manipulations = {
     gritAddition: 10,
@@ -50,6 +51,7 @@ var manipulations = {
                     activeDuration: armorGainDuration,
                     activateFunction: () => {
                         if (unit.holdPositionId == hpId && unit.isHoldingPosition) {
+                            Matter.Events.trigger(globals.currentGame, eventName, event);
                             unit.applyDefenseBuff({
                                 id: "DefensiveBuff" + item.id,
                                 duration: armorGainDuration,
@@ -71,7 +73,17 @@ export default function(options) {
         manipulations: manipulations,
         name: "Gold Plated Pants",
         description: ["Add 10 grit.", "Gain " + armorGain + " armor for 11 seconds by holding position for 2 seconds."],
-        icon: 'Pants2'
+        icon: 'Pants2',
+        collector: {
+            eventName: eventName,
+            collectorFunction: function(event) {
+                this.value += 1;
+            },
+            presentation: {
+                labels: ["Times activated"],
+                values: ["value"]
+            }
+        }
     }, options);
     return new ic(item);
 }
