@@ -856,6 +856,8 @@ export default function Marine(options) {
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
             });
+
+            return {value: allyHeal};
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
@@ -864,7 +866,13 @@ export default function Marine(options) {
                 var id = mathArrayUtils.getId();
                 ally.applyDefenseBuff({duration: allyArmorDuration, amount: armorGiven});
             });
+
+            return {value: allyArmorDuration};
         },
+        collector: {
+            aggressionLabel: 'Total armor duration',
+            defensiveLabel: 'Healing done',
+        }
     });
 
     var robDDuration = 3000;
@@ -903,10 +911,20 @@ export default function Marine(options) {
                     Matter.Events.off(marine, 'preReceiveHeal', f.handler);
                 }
             });
+
+            return {value: robDDuration/1000};
         },
         aggressionAction: function(event) {
             marine.applySpeedBuff({id: 'rushofbloodspeedBuff', duration: robADuration, amount: 0.6});
+
+            return {value: robADuration/1000};
         },
+        collector: {
+            aggressionLabel: 'Duration of increased speed',
+            aggressionSuffix: 'seconds',
+            defensiveLabel: 'Duration of 2x healing',
+            defensiveSuffix: 'seconds',
+        }
     });
 
     marine.grantFreeKnife = function(limit) {
@@ -966,13 +984,21 @@ export default function Marine(options) {
             attackingUnit.maim({
                 duration: 6000
             });
+
+            return {value: 1};
         },
         aggressionAction: function(event) {
             var targetUnit = event.targetUnit;
             targetUnit.maim({
                 duration: 6000
             });
+
+            return {value: 1};
         },
+        collector: {
+            aggressionLabel: 'Targets maimed',
+            defensiveLabel: 'Attackers maimed'
+        }
     });
 
     var cpADuration = 4000;
@@ -994,11 +1020,20 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
+
+            return {value: 1};
         },
         aggressionAction: function(event) {
             var currentRange = marine.range;
             marine.applyRangeBuff({duration: cpADuration, amount: currentRange});
+
+            return {value: cpADuration/1000};
         },
+        collector: {
+            aggressionLabel: 'Duration of increased range',
+            aggressionSuffix: 'seconds',
+            defensiveLabel: 'Knives thrown'
+        }
     });
 
     var ssDDuration = 4000;
@@ -1047,28 +1082,38 @@ export default function Marine(options) {
                     }
                 });
             });
+
+            return {value: ssDDuration/1000};
         },
         aggressionAction: function(event) {
             var f = {};
+            var energyGained = null;
             marine.applyBuff({
                 name: "spiritualStateMatch",
                 duration: ssADuration,
                 textureName: 'SpiritualStateBuff',
                 applyChanges: function() {
                     f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
-                        marine.giveEnergy(event.amountDone);
+                        energyGained = marine.giveEnergy(event.amountDone);
                     });
                 },
                 removeChanges: function() {
                     Matter.Events.off(marine, 'receiveHeal', f.handler);
                 }
             });
+
+            return {value: energyGained};
         },
+        collector: {
+            aggressionLabel: 'Energy gained',
+            defensiveLabel: 'Duration of 2x energy regeneration',
+            defensiveSuffix: 'seconds'
+        }
     });
 
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 8 grit for length of round.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 7 grit for length of round.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 5 grit for length of round.'],
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 10 grit for length of round.'],
         textureName: 'TrueGrit',
@@ -1112,6 +1157,8 @@ export default function Marine(options) {
                     unit.removeGritAddition(5);
                 });
             });
+
+            return {value: 10};
         },
         aggressionAction: function(event) {
             var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {
@@ -1126,11 +1173,17 @@ export default function Marine(options) {
                 direction: 1,
                 runs: 50
             });
-            marine.addGritAddition(5);
+            marine.addGritAddition(7);
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                marine.removeGritAddition(5);
+                marine.removeGritAddition(7);
             });
+
+            return {value: 7};
         },
+        collector: {
+            aggressionLabel: 'Grit gained',
+            defensiveLabel: 'Grit granted'
+        }
     });
 
     var unitProperties = $.extend({

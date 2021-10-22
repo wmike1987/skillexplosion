@@ -59,7 +59,7 @@ var ItemClasses = {
     gleaming: {
         item: {
             tint: 0xfce558,
-            items: ['GleamingCanteen', 'GoldenCompass', 'FruitCake', 'JadeLocket', 'DiamondLocket', 'GleamingCoffeeCup'],
+            items: ['GleamingCanteen', 'GoldenCompass', 'FruitCake', 'EmeraldLocket', 'DiamondLocket', 'GleamingCoffeeCup'],
             mapNodeIndicator: 'GleamingCanteen'
         },
         microchip: {

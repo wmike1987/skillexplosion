@@ -247,7 +247,8 @@ var UnitBase = {
                 this.giveGritDodge(false);
                 this.gritDodgeTimer.reset();
                 Matter.Events.trigger(this, 'killingBlowBlock', {
-                    performingUnit: this
+                    performingUnit: this,
+                    attackingUnit: attackingUnit
                 });
                 //display a miss graphic
                 graphicsUtils.floatText('Block!', {
@@ -418,6 +419,8 @@ var UnitBase = {
                 performingUnit: performingUnit,
                 amountDone: healingDone
             });
+
+            return healingDone;
         }
     },
 
@@ -426,6 +429,11 @@ var UnitBase = {
             invisible: false,
             noFade: false,
         };
+
+        var energyGained = amount;
+        if(energyGained + this.currentEnergy > this.maxEnergy) {
+            energyGained = this.maxEnergy - this.currentEnergy;
+        }
 
         this.currentEnergy += amount;
 
@@ -463,6 +471,8 @@ var UnitBase = {
                 this.energyTimer.reset();
             }
         }
+
+        return energyGained;
     },
 
     _death: function(options) {
@@ -2063,7 +2073,10 @@ var UnitBase = {
                             graphicsUtils.floatSprite(condemnNote3, {
                                 runs: 65
                             });
-                            condemningUnit.giveHealth(condemningUnit.condemnedLifeGain, condemningUnit);
+                            var healthGained = condemningUnit.giveHealth(condemningUnit.condemnedLifeGain, condemningUnit);
+                            if(options.onHealingRecieved) {
+                                options.onHealingRecieved({healingReceived: healthGained});
+                            }
                             healSound.play();
                             gameUtils.doSomethingAfterDuration(() => {
                                 condemnSound2.play();

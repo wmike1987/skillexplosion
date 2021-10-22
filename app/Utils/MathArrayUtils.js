@@ -87,9 +87,27 @@ var mathArrayUtils = {
     operateOnObjectByKey: function(object, operatorFunc) {
         if (!object) return;
         var keys = Object.keys(object);
+        var length = keys.length;
+        var i = 0;
+        var last = false;
         keys.forEach(key => {
-            operatorFunc(key, object[key]);
+            if(i == length - 1) {
+                last = true;
+            }
+            operatorFunc(key, object[key], i, last);
+            i++;
         });
+    },
+
+    convertObjectValuesToArray: function(object) {
+        if (!object) return;
+        var array = [];
+        var keys = Object.keys(object);
+        keys.forEach(key => {
+            array.push(object[key]);
+        });
+
+        return array;
     },
 
     convertToArray: function(object) {

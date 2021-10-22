@@ -15,6 +15,7 @@ import {
 var StatCollector = function(options) {
     this.statHistory = {};
     this.customCollectors = {};
+    this.unit = options.unit;
 
     this.startNewCollector = function(name) {
         //Create a new collector manager
@@ -27,8 +28,10 @@ var StatCollector = function(options) {
 
         this.statHistory[options.name] = this.currentCollectorManager;
         this.currentCollectorManager.startCollecting();
+
         Matter.Events.trigger(globals.currentGame, 'NewCollectorStarted', {
-            unit: this.currentCollectorManager.unit
+            unit: this.unit,
+            newCollectorManager: this.currentCollectorManager
         });
     };
 
@@ -40,11 +43,18 @@ var StatCollector = function(options) {
         }
     };
 
+    this.getCurrentCollector = function() {
+        return this.currentCollectorManager;
+    };
+
     this.registerCustomCollector = function(coll) {
-        if(this.customCollectors[coll.name]) {
+        if (this.customCollectors[coll.name]) {
             this.customCollectors[coll.name].amount++;
         } else {
-            this.customCollectors[coll.name] = {collector: coll, amount: 1};
+            this.customCollectors[coll.name] = {
+                collector: coll,
+                amount: 1
+            };
             if (this.isCollecting()) {
                 this.currentCollectorManager.addCollector(coll.spawnNewCollector(), true);
             }
@@ -53,9 +63,9 @@ var StatCollector = function(options) {
     };
 
     this.deregisterCustomCollector = function(coll) {
-        if(this.customCollectors[coll.name]) {
+        if (this.customCollectors[coll.name]) {
             this.customCollectors[coll.name].amount--;
-            if(this.customCollectors[coll.name].amount == 0) {
+            if (this.customCollectors[coll.name].amount == 0) {
                 delete this.customCollectors[coll.name];
             }
         }
@@ -151,21 +161,35 @@ var CollectorManager = function(options) {
     this.getDefaultStatMap = function() {
         var map = {};
         this.collectors.forEach((collector) => {
-            if(!collector.isCustomCollector) {
+            if (!collector.isCustomCollector) {
                 map[collector.name] = collector.value;
             }
         });
         return map;
     };
 
-    this.getCustomCollectors = function() {
-        var map = {};
+    this.getSortedCustomCollectors = function() {
+        var arr = [];
         this.collectors.forEach((collector) => {
-            if(collector.isCustomCollector) {
-                map[collector.name] = collector;
+            if (collector.isCustomCollector) {
+                arr.push(collector);
             }
         });
-        return map;
+
+        return arr.sort(function(a, b) {
+            return a.priority - b.priority;
+        });
+    };
+
+    this.getCustomCollector = function(name) {
+        var ret = null;
+        this.collectors.forEach((collector) => {
+            if (collector.isCustomCollector && collector.name == name) {
+                ret = collector;
+            }
+        });
+
+        return ret;
     };
 };
 
@@ -173,7 +197,7 @@ var Collector = {
     value: 0,
     listener: null,
     start: function() {
-        if(this.init) {
+        if (this.init) {
             this.init();
         }
         var decoratedCollector = function(event) {
@@ -197,15 +221,24 @@ var Collector = {
 };
 
 var CustomCollector = function(options) {
+    //default predicate
+    options.predicate = options.predicate || function() {
+        return true;
+    };
     this.isCustomCollector = true;
-    this.item = options.item;
-    this.name = this.item.name;
+    this.entity = options.entity;
+    this.name = this.entity.name;
     this.init = options.init;
+    this.priority = options.priority;
     this.predicate = options.predicate || function() {
         return true;
     };
+    
+    this.priority = options.priority || 50;
     this.eventName = options.eventName;
     this.presentation = options.presentation;
+    this.presentation.tint = 0xbdbdbd; //default tint
+
     this.collectorFunction = function(event) {
         if (options.predicate(event))
             options.collectorFunction.call(this, event);

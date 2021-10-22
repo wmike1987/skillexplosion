@@ -1127,6 +1127,8 @@ export default function Medic(options) {
                 maimBlast.play();
                 graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
                 criticalHitSound2.play();
+
+                return {value: grit};
             }
         },
         aggressionAction: function(event) {
@@ -1145,7 +1147,14 @@ export default function Medic(options) {
                     healAbility.healAmount /= 3;
                 }
             });
+
+            return {value: rsADuration/1000};
         },
+        collector: {
+            aggressionLabel: 'Duration of 3x healing',
+            aggressionSuffix: 'seconds',
+            defensiveLabel: 'Damage dealt',
+        }
     });
 
     var wwDDuration = 3000;
@@ -1184,7 +1193,10 @@ export default function Medic(options) {
             if (attackingUnit.condemn) {
                 attackingUnit.condemn({
                     duration: wwDDuration,
-                    condemningUnit: medic
+                    condemningUnit: medic,
+                    onHealingRecieved: function(options) {
+                        Matter.Events.trigger(globals.currentGame, 'WickedWaysCollector', {mode: 'defensePassive', collectorPayload: {value: options.healingReceived}});
+                    }
                 });
             }
         },
@@ -1206,7 +1218,14 @@ export default function Medic(options) {
                     }
                 });
             });
+
+            return {value: wwADuration/1000};
         },
+        collector: {
+            aggressionLabel: 'Duration of 2x regeneration',
+            aggressionSuffix: 'seconds',
+            defensiveLabel: 'Healing from condemned',
+        }
     });
 
     var dodgeGain = 3;
@@ -1256,13 +1275,21 @@ export default function Medic(options) {
                 medic.removeDodgeAddition(dodgeGain);
                 totalDodgeGained = 0;
             });
+
+            return {value: 1};
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(medic);
             allies.forEach((ally) => {
                 ally.applyDodgeBuff({duration: slADuration, amount: allyDodgeGain});
             });
+
+            return {value: allyDodgeGain};
         },
+        collector: {
+            aggressionLabel: 'Dodge granted',
+            defensiveLabel: 'Dodges performed',
+        }
     });
 
     var ffDDuration = 3000;
@@ -1328,6 +1355,8 @@ export default function Medic(options) {
                     medic.moveSpeed -= 0.5;
                 }
             });
+
+            return {value: ffDDuration/1000};
         },
         aggressionAction: function(event) {
             medic.applyBuff({
@@ -1356,7 +1385,14 @@ export default function Medic(options) {
                     }
                 }
             });
+
+            return {value: 1};
         },
+        collector: {
+            aggressionLabel: 'Vanishes gained',
+            defensiveLabel: 'Duration of increase speed',
+            defensiveSuffix: 'seconds',
+        }
     });
 
     var dtDDuration = 3000;
@@ -1413,11 +1449,16 @@ export default function Medic(options) {
                 duration: dtDDuration,
                 petrifyingUnit: medic
             });
+
+            return {value: 1};
         },
         preStart: function(type) {
             var passive = this;
             if (medic.defensePassive) {
-                deepThought.aggressionAction = medic.defensePassive.aggressionAction;
+                deepThought.aggressionAction = function() {
+                    medic.defensePassive.aggressionAction();
+                    return {value: 1};
+                };
                 deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
                 deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
             }
@@ -1426,7 +1467,10 @@ export default function Medic(options) {
                     Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
                     Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
                     // Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
-                    deepThought.aggressionAction = event.passive.aggressionAction;
+                    deepThought.aggressionAction = function() {
+                        event.passive.aggressionAction();
+                        return {value: 1};
+                    };
                     deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
                     deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
                     passive.start('attackPassive');
@@ -1445,6 +1489,10 @@ export default function Medic(options) {
         preStop: function(type) {
             Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
             Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+        },
+        collector: {
+            aggressionLabel: 'Aggression-mode activations',
+            defensiveLabel: 'Mines laid/enemies petrified',
         }
     });
 
@@ -1487,6 +1535,10 @@ export default function Medic(options) {
             }, 200);
 
             var damageObj = event.damageObj;
+            var damageReduced = event.damage - 1;
+            if(damageReduced == 0) {
+                damageReduced = 0;
+            }
             damageObj.damage = 1;
 
             //add block graphic
@@ -1517,11 +1569,19 @@ export default function Medic(options) {
             graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
 
             blockSound.play();
+
+            return {value: damageReduced};
         },
         aggressionAction: function(event) {
             medic.giveEnergy(energyGain);
             unitUtils.applyEnergyGainAnimationToUnit(medic);
             manaHealSound.play();
+
+            return {value: energyGain};
+        },
+        collector: {
+            aggressionLabel: 'Energy gained',
+            defensiveLabel: 'Projectile damage reduced',
         }
     });
 

@@ -11,9 +11,13 @@ import {
 } from '@core/Fundamental/GlobalState.js';
 import * as Matter from 'matter-js';
 import Tooltip from '@core/Tooltip.js';
+import {
+    CustomCollector
+} from '@games/Us/StatCollector.js';
 
 var attackPassive = 'attackPassive';
 var defensePassive = 'defensePassive';
+var unequippedPassive = 'unequippedPassive';
 
 export default function(options) {
     Object.assign(this, options);
@@ -64,6 +68,48 @@ export default function(options) {
     Matter.Events.on(this, 'unlockedSomething', function(event) {
         this.unlocked = true;
         setTooltip("Unlock");
+
+        //register the collector
+        this.collectorEventName = this.title.replace(/\s+/g, '') + 'Collector';
+        this.customCollector = new CustomCollector(Object.assign({
+            eventName: this.collectorEventName,
+            priority: 25,
+            init: function() {
+                this.attackPassive = 0;
+                this.defensePassive = 0;
+                this.presentation.variableLabels = ["none", "none"];
+            },
+            presentation: {
+                tint: 0xc410da,
+                iconTextureName: this.textureName,
+                labels: ["active placeholder", 'defense placeholder'],
+                values: ["attackPassive", "defensePassive"],
+                suffixes: ["", ""]
+            },
+            collectorFunction: function(event) {
+                this[event.mode] += event.collectorPayload.value;
+            },
+            entity: {name: this.title.replace(/\s+/g, '')}
+        }, this.collector));
+
+        //propagate active/passive labels onto the collector
+        if(this.collector.aggressionLabel) {
+            this.customCollector.presentation.labels[0] = this.collector.aggressionLabel;
+        }
+
+        if(this.collector.defensiveLabel) {
+            this.customCollector.presentation.labels[1] = this.collector.defensiveLabel;
+        }
+
+        if(this.collector.aggressionSuffix) {
+            this.customCollector.presentation.suffixes[0] = this.collector.aggressionSuffix;
+        }
+
+        if(this.collector.defensiveSuffix) {
+            this.customCollector.presentation.suffixes[1] = this.collector.defensiveSuffix;
+        }
+
+        this.unit.statCollector.registerCustomCollector(this.customCollector);
     }.bind(this));
 
     Matter.Events.on(this, 'Equip', function(event) {
@@ -76,8 +122,24 @@ export default function(options) {
         });
     }.bind(this));
 
+    Matter.Events.on(globals.currentGame, 'NewCollectorStarted', function(event) {
+        if(!this.activeMode) {
+            return;
+        }
+
+        var collector = event.newCollectorManager.getCustomCollector(this.customCollector.name);
+        if(!collector) {
+            return;
+        }
+        if(this.activeMode == attackPassive) {
+            collector.presentation.variableLabels[0] = this.customCollector.presentation.labels[0];
+        } else {
+            collector.presentation.variableLabels[1] = this.customCollector.presentation.labels[1];
+        }
+    }.bind(this));
+
     Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
-        if (!this.isEquipped && event.level.isLevelNonConfigurable() && this.unlocked) {
+        if (!this.isEquipped && event.level.isBattleLevel() && this.unlocked) {
             var order = ++this.unit.passiveOrder;
             gameUtils.doSomethingAfterDuration(() => {
                 var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {
@@ -109,6 +171,7 @@ export default function(options) {
                 });
                 if (this.passiveAction) {
                     this.passiveAction();
+                    Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: unequippedPassive});
                 }
             }, 1800 + order * 750);
         }
@@ -118,6 +181,17 @@ export default function(options) {
     this.start = function(mode) {
         //stop previous
         this.stop();
+        this.activeMode = mode;
+
+        //if we've started the passive, enable the collector
+        if(this.unit.statCollector.isCollecting()) {
+            var customCollector = this.unit.statCollector.currentCollectorManager.getCustomCollector(this.customCollector.name);
+            if(mode == attackPassive) {
+                customCollector.presentation.variableLabels[0] = this.customCollector.presentation.labels[0];
+            } else {
+                customCollector.presentation.variableLabels[1] = this.customCollector.presentation.labels[1];
+            }
+        }
 
         if (this.preStart) {
             this.preStart(mode);
@@ -135,7 +209,8 @@ export default function(options) {
                 }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
-                this.aggressionAction(event);
+                var collectorPayload = this.aggressionAction(event) || {value: 0};
+                Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: mode, collectorPayload: collectorPayload});
                 Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'attackPassiveActivated', {
                     duration: this.aggressionDuration || 32
                 });
@@ -157,7 +232,8 @@ export default function(options) {
                 }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
-                this.defenseAction(event);
+                var collectorPayload = this.defenseAction(event) || {value: 0};
+                Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: mode, collectorPayload: collectorPayload});
                 Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'defensePassiveActivated', {
                     duration: this.defenseDuration || 32
                 });
@@ -200,6 +276,7 @@ export default function(options) {
         }
         this.active = false;
         this.inProcess = false;
+        this.activeMode = null;
         if (this.clearListener) {
             this.clearListener();
         }

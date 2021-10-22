@@ -309,9 +309,10 @@ var EndLevelStatScreenOverlay = function(units, options) {
     //Convience position creators
     var same = 0;
     var title = 22;
-    var iconSpacing = 25;
+    var iconSpacing = 30;
     var portrait = 55;
     var reg = 15;
+    var anotherLabel = 20;
     var divider = 25;
 
     var shaneY = {
@@ -390,7 +391,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         var currentPage = 0;
         var pageHolder = options.pageHolder;
         var pageSize = options.pageSize;
-        var customCollectors = options.unit.statCollector.getLastCollector().getCustomCollectors();
+        var customCollectors = options.unit.statCollector.getLastCollector().getSortedCustomCollectors();
         var scene = options.scene;
         var positionFunc = options.positionFunc;
 
@@ -398,7 +399,10 @@ var EndLevelStatScreenOverlay = function(units, options) {
         var startingY = {
             value: 80
         };
-        mathArrayUtils.operateOnObjectByKey(customCollectors, function(key, coll) {
+
+        var len = customCollectors.length;
+        customCollectors.forEach(function(coll, index) {
+            var last = index == len-1 ? true : false;
             if (p % pageSize == 0) {
                 startingY = {
                     value: 80
@@ -407,29 +411,47 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }
             p++;
 
+            //if we're the last on a page or the last in the set, don't display the divider
+            var needsDivider = true;
+            if(last || p % pageSize == 0) {
+                needsDivider = false;
+            }
+
             //create icon
             var icon = graphicsUtils.createDisplayObject(coll.presentation.iconTextureName, {
                 where: 'hudText',
                 visible: false
             });
             icon.position = positionFunc(iconSpacing, startingY);
-            Matter.Events.on(icon, 'addOrShowDisplayObject', () => {
-                icon.border = graphicsUtils.addBorderToSprite({
-                    sprite: icon,
-                    thickness: 1,
-                    tint: 0xbdbdbd,
-                    alpha: 1.0,
-                    where: 'hudText'
-                });
+            icon.border = graphicsUtils.addBorderToSprite({
+                sprite: icon,
+                thickness: 1,
+                tint: coll.presentation.tint,
+                alpha: 1.0,
+                where: 'hudText'
             });
 
             //create label
             var labels = [];
-            var last = coll.presentation.labels.length-1;
+            var lastLabel = coll.presentation.labels.length-1;
             coll.presentation.labels.forEach(function(label, index) {
+                //check to see if we're enabled
+                var enabled = true; //default
+                if(coll.presentation.variableLabels) {
+                    enabled = coll.presentation.variableLabels.includes(label);
+                }
+                if(!enabled) {
+                    return;
+                }
+
+                //if so, present the label/value/suffix
                 var v = coll[coll.presentation.values[index]];
-                var spacing = index == last ? divider : reg;
-                var newLabel = graphicsUtils.createDisplayObject("TEX+:" + label + ": " + v, {
+                var suff = "";
+                if(coll.presentation.suffixes) {
+                    suff = coll.presentation.suffixes[index] ? " " + coll.presentation.suffixes[index] : "";
+                }
+                var spacing = index == lastLabel ? reg : anotherLabel;
+                var newLabel = graphicsUtils.createDisplayObject("TEX+:" + label + ": " + v + suff, {
                     position: positionFunc(spacing, startingY),
                     style: titleStyle,
                     where: "hudText",
@@ -442,25 +464,28 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 labels.push(newLabel);
             });
 
-            //create divider
-            var myDivider = graphicsUtils.createDisplayObject('TintableSquare', {
-                where: 'hudText',
-                scale: {
-                    x: 160,
-                    y: 1
-                },
-                alpha: 0.5,
-                visible: false,
-                tint: 0xff0000
-            });
-            myDivider.position = positionFunc(divider, startingY);
-
             //add elements to current page
             if (!pageHolder[currentPage]) {
                 pageHolder[currentPage] = [];
             }
+
+            //create divider if we're not the last on the page
+            if(needsDivider) {
+                var myDivider = graphicsUtils.createDisplayObject('TintableSquare', {
+                    where: 'hudText',
+                    scale: {
+                        x: 190,
+                        y: 1
+                    },
+                    alpha: 0.25,
+                    visible: false,
+                    tint: 0xde3939
+                });
+                myDivider.position = positionFunc(divider, startingY);
+                pageHolder[currentPage].push(myDivider);
+            }
+
             pageHolder[currentPage].push(icon);
-            pageHolder[currentPage].push(myDivider);
             pageHolder[currentPage] = pageHolder[currentPage].concat(labels);
 
             //add objects to the scene
@@ -1356,7 +1381,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         shaneLeftArrow.interactive = true;
         applyArrowInOut(shaneLeftArrow);
         shaneLeftArrow.on('mousedown', () => {
-            if (currentShanePage == 0) {
+            if (currentShanePage == 0 || !shaneLeftArrow.isPressable) {
                 return;
             }
             shanePages[currentShanePage].forEach(function(item) {
@@ -1382,10 +1407,13 @@ var EndLevelStatScreenOverlay = function(units, options) {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({
                     sprite: shaneLeftArrow,
-                    duration: 1000,
+                    duration: 500,
                     fadeIn: true,
                     nokill: true,
-                    makeVisible: true
+                    makeVisible: true,
+                    callback: () => {
+                        shaneRightArrow.isPressable = true;
+                    }
                 });
             }, startFadeTime * 10);
         });
@@ -1410,7 +1438,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         shaneRightArrow.interactive = true;
         applyArrowInOut(shaneRightArrow);
         shaneRightArrow.on('mousedown', () => {
-            if (currentShanePage == shanePages.length - 1) {
+            if (currentShanePage == shanePages.length - 1 || !shaneRightArrow.isPressable) {
                 return;
             }
             shanePages[currentShanePage].forEach(function(item) {
@@ -1436,10 +1464,13 @@ var EndLevelStatScreenOverlay = function(units, options) {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({
                     sprite: shaneRightArrow,
-                    duration: 1000,
+                    duration: 500,
                     fadeIn: true,
                     nokill: true,
-                    makeVisible: true
+                    makeVisible: true,
+                    callback: () => {
+                        shaneRightArrow.isPressable = true;
+                    }
                 });
             }, startFadeTime * 10);
         });
@@ -1460,7 +1491,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     duration: 1000,
                     fadeIn: true,
                     nokill: true,
-                    makeVisible: true
+                    makeVisible: true,
                 });
             }, startFadeTime);
         });
@@ -2209,7 +2240,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         ursulaLeftArrow.interactive = true;
         applyArrowInOut(ursulaLeftArrow);
         ursulaLeftArrow.on('mousedown', () => {
-            if (currentUrsulaPage == 0) {
+            if (currentUrsulaPage == 0 || !ursulaLeftArrow.isPressable) {
                 return;
             }
             ursulaPages[currentUrsulaPage].forEach(function(item) {
@@ -2235,10 +2266,13 @@ var EndLevelStatScreenOverlay = function(units, options) {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({
                     sprite: ursulaLeftArrow,
-                    duration: 1000,
+                    duration: 500,
                     fadeIn: true,
                     nokill: true,
-                    makeVisible: true
+                    makeVisible: true,
+                    callback: () => {
+                        ursulaLeftArrow.isPressable = true;
+                    }
                 });
             }, startFadeTime * 10);
         });
@@ -2263,7 +2297,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         ursulaRightArrow.interactive = true;
         applyArrowInOut(ursulaRightArrow);
         ursulaRightArrow.on('mousedown', () => {
-            if (currentUrsulaPage == ursulaPages.length - 1) {
+            if (currentUrsulaPage == ursulaPages.length - 1 || !ursulaRightArrow.isPressable) {
                 return;
             }
             ursulaPages[currentUrsulaPage].forEach(function(item) {
@@ -2289,10 +2323,13 @@ var EndLevelStatScreenOverlay = function(units, options) {
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.fadeSpriteOverTime({
                     sprite: ursulaRightArrow,
-                    duration: 1000,
+                    duration: 500,
                     fadeIn: true,
                     nokill: true,
-                    makeVisible: true
+                    makeVisible: true,
+                    callback: () => {
+                        ursulaRightArrow.isPressable = true;
+                    }
                 });
             }, startFadeTime * 10);
         });

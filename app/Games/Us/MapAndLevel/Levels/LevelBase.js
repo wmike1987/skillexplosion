@@ -442,10 +442,13 @@ var levelBase = {
         //to-be called upon the win conditions being fulfilled
         var winAndContinueTasks = function(options) {
             removeCurrentConditions.call(this);
+
+            //stop current collectors
             game.shaneCollector.stopCurrentCollector();
             if(game.ursulaCollector) {
                 game.ursulaCollector.stopCurrentCollector();
             }
+
             this.spawner.cleanUp();
 
             //wait a second then add space to continue button
