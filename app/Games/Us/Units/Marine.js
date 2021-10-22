@@ -922,7 +922,7 @@ export default function Marine(options) {
         collector: {
             aggressionLabel: 'Duration of increased speed',
             aggressionSuffix: 'seconds',
-            defensiveLabel: 'Duration of 2x healing',
+            defensiveLabel: 'Duration of 2x heal absorption',
             defensiveSuffix: 'seconds',
         }
     });

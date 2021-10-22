@@ -1390,7 +1390,7 @@ export default function Medic(options) {
         },
         collector: {
             aggressionLabel: 'Vanishes gained',
-            defensiveLabel: 'Duration of increase speed',
+            defensiveLabel: 'Duration of increased speed',
             defensiveSuffix: 'seconds',
         }
     });

@@ -233,11 +233,13 @@ var CustomCollector = function(options) {
     this.predicate = options.predicate || function() {
         return true;
     };
-    
+
     this.priority = options.priority || 50;
     this.eventName = options.eventName;
     this.presentation = options.presentation;
-    this.presentation.tint = 0xbdbdbd; //default tint
+    if(!this.presentation.tint) {
+        this.presentation.tint = 0xbdbdbd; //default tint
+    }
 
     this.collectorFunction = function(event) {
         if (options.predicate(event))

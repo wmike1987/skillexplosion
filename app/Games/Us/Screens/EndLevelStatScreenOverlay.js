@@ -1412,7 +1412,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     nokill: true,
                     makeVisible: true,
                     callback: () => {
-                        shaneRightArrow.isPressable = true;
+                        shaneLeftArrow.isPressable = true;
                     }
                 });
             }, startFadeTime * 10);

@@ -80,7 +80,7 @@ export default function(options) {
                 this.presentation.variableLabels = ["none", "none"];
             },
             presentation: {
-                tint: 0xc410da,
+                tint: 0xbf0a81,
                 iconTextureName: this.textureName,
                 labels: ["active placeholder", 'defense placeholder'],
                 values: ["attackPassive", "defensePassive"],
