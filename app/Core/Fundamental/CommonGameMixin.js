@@ -376,6 +376,8 @@ var common = {
                     // this.addTickCallback(() => {
                     //     spr.position = this.mousePosition;
                     // });
+                    globals.currentGame.myText.position.y += 0.5;
+                    globals.currentGame.myText.position.x += 0.5;
                 }
             }
 

@@ -20,6 +20,7 @@ import styles from '@utils/Styles.js';
 import Scene from '@core/Scene.js';
 import UnitSpawner from '@games/Us/UnitSpawner.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
+import Tooltip from '@core/Tooltip.js';
 
 var levelBase = {
     resetLevel: function() {
@@ -252,7 +253,7 @@ var levelBase = {
             drawWire: false,
             collides: true,
             autoAdd: false,
-            radius: 20,
+            radius: 28,
             texture: [gunrackSprite],
             stage: 'stage',
             scale: {
@@ -281,17 +282,11 @@ var levelBase = {
         scene.add(this.gunrack);
 
         //add text
-        var controlClickText = graphicsUtils.createDisplayObject('TEX+:Ctrl+Click to activate augment panel (-1 adrenaline)', {style: styles.abilityText, where: 'hudTwo'});
-        controlClickText.position = mathArrayUtils.clonePosition(this.gunrack.position, {y: 40});
-        mathArrayUtils.roundPositionToWholeNumbers(controlClickText.position);
-        controlClickText.visible = false;
-        scene.add(controlClickText);
-
-        var persistentTip = false;
-        if(globals.currentGame.canShowTip('gunrackhelp', true)) {
-            controlClickText.visible = true;
-            persistentTip = true;
-        }
+        Tooltip.makeTooltippable(gunrackSprite, {
+            title: 'Augment configuration',
+            description: 'Ctrl+Click to enable augment panel',
+            systemMessage: 'Costs 1 adrenaline'
+        });
 
         var gunrackHoverTick = globals.currentGame.addTickCallback(function(event) {
             if (self.campLikeActive || globals.currentGame.mapActive) {
@@ -299,11 +294,8 @@ var levelBase = {
             }
             if (Matter.Vertices.contains(this.gunrack.body.vertices, mousePosition)) {
                 gunrackSprite.tint = 0xff33cc;
-                controlClickText.visible = true;
-                persistentTip = false;
-            } else if(!persistentTip){
+            } else {
                 gunrackSprite.tint = 0xFFFFFF;
-                controlClickText.visible = false;
             }
         }.bind(this));
 
@@ -314,9 +306,11 @@ var levelBase = {
             if (event.which == 3) return; //don't allow right clicks
             var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
 
+            gunrackSprite.tooltipObj.destroy();
+            globals.currentGame.removeTickCallback(gunrackHoverTick);
+
             if (Matter.Vertices.contains(self.gunrack.body.vertices, canvasPoint) && !this.mapActive) {
                 gunrackSprite.tint = 0xFFFFFF;
-                controlClickText.visible = false;
                 globals.currentGame.makeCurrentLevelConfigurable();
                 globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
                 globals.currentGame.soundPool.unlock1.play();

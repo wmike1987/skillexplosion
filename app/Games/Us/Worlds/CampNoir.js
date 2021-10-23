@@ -484,19 +484,6 @@ var camp = {
             // });
         }
 
-        //We want to nudge the player to the map if we're entering camp noir proper for the first time.
-        //But not during ursula tasks and not quite during the skipped tutorial since we have a slight delay
-        //before we want to nudge the player when they skip
-        if (this.completedUrsulaTasks && !this.skippedTutorial && !this.mapTableNudge) {
-            this.mapTableNudge = true;
-            var arrow = graphicsUtils.pointToSomethingWithArrow(this.mapTable, -20, 0.5);
-            gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
-                graphicsUtils.removeSomethingFromRenderer(arrow);
-                var mapLearning = new MapLearning(scene);
-                mapLearning.play();
-            });
-        }
-
         //If we haven't completed ursula tasks, init ursula's tasks
         if (!this.completedUrsulaTasks) {
             this.mapTableActive = false;
@@ -535,10 +522,31 @@ var enemyDefs = {
             hz: 3500
         }]
     },
+    learningWithUrsula: {
+        enemySets: [{
+            type: 'Critter',
+            amount: 5,
+            atATime: 2,
+            hz: 3500
+        }]
+    },
     learningSentinel: {
         enemySets: [{
             type: 'Critter',
             amount: 1,
+            atATime: 1,
+            hz: 3500
+        }, {
+            type: 'Sentinel',
+            amount: 1,
+            atATime: 1,
+            hz: 4500
+        }]
+    },
+    learningSentinelWithUrsula: {
+        enemySets: [{
+            type: 'Critter',
+            amount: 3,
             atATime: 1,
             hz: 3500
         }, {
@@ -820,6 +828,34 @@ var phaseOne = function() {
     return {
         nextPhase: 'manual',
         bypassMapPhaseBehavior: true
+    };
+};
+
+var phaseOneAndAHalf = function(options) {
+    this.map.setHeadToken('headtoken');
+    let campNode = this.map.findNodeById('camp');
+    this.map.setHeadTokenPosition({
+        node: campNode
+    });
+    this.map.clearAllNodesExcept('camp');
+    var l1 = this.map.addMapNode('learningWithUrsula');
+    var l2 = this.map.addMapNode('learningWithUrsula');
+    var l3 = this.map.addMapNode('learningWithUrsula');
+    var ls1 = this.map.addMapNode('learningSentinelWithUrsula', {levelOptions: {
+        token: 'hard',
+        itemClass: 'book'
+    }});
+
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            prereqCount: 3,
+            itemClass: 'worn',
+            itemType: 'specialtyItem'
+        }
+    });
+
+    return {
+        nextPhase: 'allNodesComplete'
     };
 };
 
@@ -1176,6 +1212,7 @@ var campNoir = {
     phases: [],
     initWorld: function(options) {
         this.phases.push(phaseOne.bind(this));
+        // this.phases.push(phaseOneAndAHalf.bind(this));
         this.phases.push(phaseTwo.bind(this));
         this.phases.push(phaseThree.bind(this));
     },

@@ -74,6 +74,9 @@ var game = {
     showTips: true,
     showedTips: {},
 
+    //debug options
+    goStraightToUrsulaTasks: true,
+
     initExtension: function() {
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
             volume: 0.12,
@@ -295,7 +298,11 @@ var game = {
             var shaneIntro = new ShaneIntro({
                 done: () => {
                     this.initShane();
-                    this.currentWorld.gotoLevelById('shaneLearning');
+                    if(this.goStraightToUrsulaTasks) {
+                        this.currentWorld.gotoLevelById('camp');
+                    } else {
+                        this.currentWorld.gotoLevelById('shaneLearning');
+                    }
                 }
             });
             this.currentScene.transitionToScene(shaneIntro.scene);
@@ -367,12 +374,6 @@ var game = {
         this.showTips = false;
         camp.alreadyIntrod = true;
         camp.completedUrsulaTasks = true;
-
-        if (false) {
-            this.showTips = true;
-            camp.alreadyIntrod = false;
-            camp.completedUrsulaTasks = false;
-        }
 
         this.nextPhase({
             skippedTutorial: true
