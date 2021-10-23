@@ -867,10 +867,11 @@ export default function Marine(options) {
                 ally.applyDefenseBuff({duration: allyArmorDuration, amount: armorGiven});
             });
 
-            return {value: allyArmorDuration};
+            return {value: allyArmorDuration/1000};
         },
         collector: {
             aggressionLabel: 'Total armor duration',
+            aggressionSuffix: 'seconds',
             defensiveLabel: 'Healing done',
         }
     });
