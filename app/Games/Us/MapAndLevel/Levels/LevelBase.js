@@ -495,7 +495,7 @@ var levelBase = {
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
             });
-            unitUtils.pauseIdlingAndResumeUponNewScene();
+            unitUtils.prepareUnitForStationaryDraw();
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
         }.bind(this);
@@ -543,7 +543,7 @@ var levelBase = {
                     removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
-                    unitUtils.pauseIdlingAndResumeUponNewScene();
+                    unitUtils.prepareUnitForStationaryDraw();
                     winAndContinueTasks({
                         onContinue: function() {
                             gameUtils.doSomethingAfterDuration(() => {

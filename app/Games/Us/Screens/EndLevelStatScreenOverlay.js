@@ -1369,7 +1369,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 x: -50
             }),
             style: styles.pageArrowStyle,
-            where: "hudText",
+            where: "hudTwo",
             anchor: {
                 x: 0.5,
                 y: 0.5
@@ -1423,7 +1423,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 x: 50
             }),
             style: styles.pageArrowStyle,
-            where: "hudText",
+            where: "hudTwo",
             anchor: {
                 x: 0.5,
                 y: 0.5
@@ -2228,7 +2228,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 x: -50
             }),
             style: styles.pageArrowStyle,
-            where: "hudText",
+            where: "hudTwo",
             anchor: {
                 x: 0.5,
                 y: 0.5
@@ -2282,7 +2282,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 x: 50
             }),
             style: styles.pageArrowStyle,
-            where: "hudText",
+            where: "hudTwo",
             anchor: {
                 x: 0.5,
                 y: 0.5

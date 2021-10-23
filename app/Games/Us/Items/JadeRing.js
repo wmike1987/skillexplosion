@@ -13,11 +13,11 @@ import {
     ursulaOnly
 } from '@games/Us/Items/SpecialtyValues.js';
 
-var dodgeGain = 20;
+var dodgeGain = 15;
 var eventName = 'jadeRingTimesActive';
 
 var manipulations = {
-    dodgeAddition: 6,
+    dodgeAddition: 4,
     events: {
         dodgeAttack: {
             callback: function(event) {
@@ -44,7 +44,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Jade Ring",
-        description: ["Add " + manipulations.dodgeAddition + " to dodge.", "Add 20 dodge for 3 seconds after dodging attack (does not stack)."],
+        description: ["Add " + manipulations.dodgeAddition + " to dodge.", "Add " + dodgeGain + " dodge for 3 seconds after dodging attack (does not stack)."],
         icon: 'JadeRing',
         type: 'Medic',
         fontType: 'ursula',

@@ -280,7 +280,7 @@ var moveable = {
     avoidCallback: function(pair) {
         //if we're busy with something, don't avoid anything
         var myUnit = this.unit;
-        if (myUnit.isMoving || myUnit.isAttacking || myUnit.isHoning || myUnit.isSleeping) return;
+        if (myUnit.isMoving || myUnit.isAttacking || myUnit.isHoning || myUnit.isSleeping || myUnit.noAvoid) return;
 
         //otherwise, let's avoid the mover
         var otherBody = pair.pair.bodyA == this ? pair.pair.bodyB : pair.pair.bodyA;

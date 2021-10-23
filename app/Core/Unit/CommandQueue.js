@@ -16,7 +16,7 @@ var CommandQueue = function() {
             };
             this.executeCommand(commandObj);
         }
-    },
+    };
 
     queue.next = function(command) {
         //ignore rogue next requests
@@ -32,11 +32,11 @@ var CommandQueue = function() {
             };
             this.executeCommand(commandObj);
         }
-    },
+    };
 
     queue.hasNext = function() {
         return this.queue.length > 1;
-    },
+    };
 
     //Execute the command, and pass the command object as a parameter
     queue.executeCommand = function(commandObj) {
@@ -66,7 +66,7 @@ var CommandQueue = function() {
             commandObj.command.done();
         }
 
-    },
+    };
     queue.clear = function() {
         this.queue = [];
     };

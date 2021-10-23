@@ -209,7 +209,7 @@ var unitPanel = function(options) {
                     value: 'Chance to dodge attack.'
                 };
                 if (this.prevailingUnit) {
-                    result.value = (this.prevailingUnit.dodge + this.prevailingUnit.getDodgeAdditionSum()) + '% chance to dodge attack.';
+                    result.value = (this.prevailingUnit.getTotalDodge()) + '% chance to dodge attack.';
                 }
                 return result;
             }.bind(this)

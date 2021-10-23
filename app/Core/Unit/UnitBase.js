@@ -84,11 +84,13 @@ var UnitBase = {
     defenseAdditions: [],
     dodge: 0,
     dodgeAdditions: [],
+    dodgeMax: 75,
     grit: 0,
     gritAdditions: [],
     gritDodgeTimer: null,
     gritCooldown: 14,
     gritMult: 1,
+    gritMax: 100,
     additions: {},
     level: 1,
     fatigueReduction: 0,
@@ -319,7 +321,7 @@ var UnitBase = {
 
     attackDodged: function() {
         var r = Math.random();
-        var dodgeSum = this.dodge + this.getDodgeAdditionSum();
+        var dodgeSum = this.getTotalDodge();
         return (r < dodgeSum / 100);
     },
 
@@ -2159,7 +2161,7 @@ var UnitBase = {
     },
 
     getTotalDodge: function() {
-        return this.dodge + this.getDodgeAdditionSum();
+        return Math.min(this.dodgeMax, this.dodge + this.getDodgeAdditionSum());
     },
 
     getGritAdditionSum: function() {
@@ -2171,7 +2173,7 @@ var UnitBase = {
     },
 
     getTotalGrit: function() {
-        return this.grit + this.getGritAdditionSum();
+        return Math.min(this.gritMax, this.grit + this.getGritAdditionSum());
     },
 
     giveGritDodge: function(value) {

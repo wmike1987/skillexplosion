@@ -1229,13 +1229,14 @@ export default function Medic(options) {
     });
 
     var dodgeGain = 3;
+    var dodgeMax = 15;
     var allyDodgeGain = 20;
     var totalDodgeGained = 0;
     var slADuration = 3000;
     var slyLogic = new Passive({
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain ' + dodgeGain + ' dodge (up to 21) for length of outing.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain ' + dodgeGain + ' dodge (up to 15) for length of outing.'],
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 25% of current dodge for length of outing.'],
         textureName: 'SlyLogic',
         unit: medic,
@@ -1254,11 +1255,11 @@ export default function Medic(options) {
             }
         },
         defenseAction: function(event) {
-            if(totalDodgeGained > 21) {
+            event.damageObj.manualDodge = true;
+            if(totalDodgeGained > dodgeMax) {
                 return;
             }
             totalDodgeGained += 3;
-            event.damageObj.manualDodge = true;
             medic.addDodgeAddition(dodgeGain);
             var dodgeUp = graphicsUtils.addSomethingToRenderer("DodgeBuff", {
                 where: 'stageTwo',
@@ -1535,7 +1536,7 @@ export default function Medic(options) {
             }, 200);
 
             var damageObj = event.damageObj;
-            var damageReduced = event.damage - 1;
+            var damageReduced = damageObj.damage - 1;
             if(damageReduced == 0) {
                 damageReduced = 0;
             }

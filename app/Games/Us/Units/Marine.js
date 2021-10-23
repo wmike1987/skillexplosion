@@ -1113,15 +1113,15 @@ export default function Marine(options) {
 
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 7 grit for length of round.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Self and allies gain 5 grit for length of round.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 10 grit for length of round.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 5 grit for length of outing.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant allies 5 grit for length of outing.'],
+        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 10 grit for length of outing.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 4000,
+        defenseCooldown: 6000,
         aggressionEventName: 'kill',
-        aggressionCooldown: 4000,
+        aggressionCooldown: 6000,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
@@ -1135,7 +1135,7 @@ export default function Marine(options) {
             });
         },
         defenseAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            var alliesAndSelf = gameUtils.getUnitAllies(marine);
             alliesAndSelf.forEach((unit) => {
                 if (unit.isDead) {
                     return;
@@ -1158,7 +1158,7 @@ export default function Marine(options) {
                 });
             });
 
-            return {value: 10};
+            return {value: 5};
         },
         aggressionAction: function(event) {
             var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {
@@ -1173,12 +1173,12 @@ export default function Marine(options) {
                 direction: 1,
                 runs: 50
             });
-            marine.addGritAddition(7);
+            marine.addGritAddition(5);
             gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                marine.removeGritAddition(7);
+                marine.removeGritAddition(5);
             });
 
-            return {value: 7};
+            return {value: 5};
         },
         collector: {
             aggressionLabel: 'Grit gained',

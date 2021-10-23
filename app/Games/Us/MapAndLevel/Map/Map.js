@@ -56,12 +56,12 @@ var map = function(specs) {
     this.headTokenBody.renderChildren = [{
             id: 'headtoken',
             data: "HeadToken",
-            stage: 'hudNOne',
+            stage: 'hudOne',
         },
         {
             id: 'shaneOnly',
             data: "ShaneHeadToken",
-            stage: 'hudNOne',
+            stage: 'hudOne',
             visible: false
         },
     ];
@@ -78,7 +78,7 @@ var map = function(specs) {
             y: 100
         },
         style: styles.fatigueText,
-        where: "hudNOne"
+        where: "hudOne"
     });
     Matter.Events.on(this, "SetFatigue", function(event) {
         this.fatigueText.alpha = 0.9;
@@ -525,7 +525,7 @@ var map = function(specs) {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
-                unitUtils.pauseIdlingAndResumeUponNewScene();
+                unitUtils.prepareUnitForStationaryDraw();
                 unitUtils.pauseTargetingAndResumeUponNewLevel();
 
                 //show +1 adrenaline

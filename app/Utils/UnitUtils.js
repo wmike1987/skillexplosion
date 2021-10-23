@@ -139,14 +139,17 @@ var unitUtils = {
         graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
     },
 
-    pauseIdlingAndResumeUponNewScene: function() {
+    prepareUnitForStationaryDraw: function() {
         var game = globals.currentGame;
         game.unitsInPlay.forEach((unit) => {
             unit.idleCancel = true;
+            unit.noAvoid = true;
+            unit.commandQueue.clear();
         });
         gameUtils.matterOnce(game.currentScene, 'sceneFadeOutBegin', function() {
             game.unitsInPlay.forEach((unit) => {
                 unit.idleCancel = false;
+                unit.noAvoid = false;
             });
         });
     },
