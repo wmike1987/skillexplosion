@@ -82,6 +82,7 @@ commonAirDropStation.createMapNode = function(options) {
         mapRef: options.mapRef,
         tokenSize: 50,
         largeTokenSize: 60,
+        indicatorOffset: {x: -22, y: -22},
         init: function() {
             this.prereqs = [];
 

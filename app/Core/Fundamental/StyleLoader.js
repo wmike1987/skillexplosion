@@ -33,6 +33,7 @@ var load = function() {
     importantStyles.push(styles.statScreenDefeatTitleStyle);
     importantStyles.push(styles.statScreenVictoryTitleStyle);
     importantStyles.push(styles.pageArrowStyle);
+    importantStyles.push(styles.fatigueTextLarge);
 
     var killMe = [];
     importantStyles.forEach(function(style) {

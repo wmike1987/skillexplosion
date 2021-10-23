@@ -38,6 +38,7 @@ var MapLevelNode = function(options) {
     this.type = this.levelDetails.type;
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
+    this.indicatorOffset = options.indicatorOffset || {x: -18, y: -18};
 
     //Call init() if specified
     if (options.init) {
@@ -115,10 +116,10 @@ var MapLevelNode = function(options) {
 
     //create the supply drop indicator
     if(this.levelDetails.isSupplyDropEligible) {
-        var indicator = graphicsUtils.createDisplayObject(ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].mapNodeIndicator, {where: 'hud', scale: {x: 0.75, y: 0.75}});
+        var indicator = graphicsUtils.createDisplayObject(ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].mapNodeIndicator, {where: 'hudNTwo', scale: {x: 0.75, y: 0.75}});
         graphicsUtils.addBorderToSprite({sprite: indicator, tint: 0xcdcdcd, thickness: 1});
         this.displayObject.iconIdicator = indicator;
-        graphicsUtils.latchDisplayObjectOnto({child: indicator, parent: this.displayObject, positionUponShow: true, positionOffset: {x: -20, y: -20}});
+        graphicsUtils.latchDisplayObjectOnto({child: indicator, parent: this.displayObject, positionUponShow: true, positionOffset: this.indicatorOffset});
     }
 
     //Establish event handlers
