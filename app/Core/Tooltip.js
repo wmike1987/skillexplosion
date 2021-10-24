@@ -194,7 +194,6 @@ Tooltip.prototype.destroy = function(options) {
     });
     this.systemMessages = null;
 
-    //this will also kill the base border
     graphicsUtils.removeSomethingFromRenderer(this.base);
 
     $.each(this.updaters, function(key, updater) {

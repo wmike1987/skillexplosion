@@ -289,104 +289,17 @@ var UrsulaTasks = function(scene) {
     var microchipChain = new DialogueChain([c1, c2, c3, c4, c5, c6], {startDelay: 200, done: function() {
         microchipChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
-            gameUtils.doSomethingAfterDuration(() => {
-                    globals.currentGame.nextPhase();
-                    var arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.currentLevel.mapTableSprite, -20, 0.5);
-                    globals.currentGame.currentLevel.mapTableActive = true;
-                    gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
-                        graphicsUtils.removeSomethingFromRenderer(arrow);
-                        //Enable the map learning section
-                        var mapLearning = new MapLearning(scene);
-                        mapLearning.play();
-                    });
-            }, 1500);
-        }, 250);
+                globals.currentGame.nextPhase();
+                var arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.currentLevel.mapTableSprite, -20, 0.5);
+                globals.currentGame.currentLevel.mapTableActive = true;
+                gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+                    graphicsUtils.removeSomethingFromRenderer(arrow);
+                    //Enable the map learning section
+                    var mapLearning = new MapLearning(scene);
+                    mapLearning.play();
+                });
+        }, 750);
     }});
-    //
-    // var d1 = new Dialogue({text: "Hover over the book to read its description.", isTask: true, backgroundBox: true});
-    // var d2 = new Dialogue({text: "Books cannot be reused like microchips can.", isInfo: true, backgroundBox: true, delayAfterEnd: 1500});
-    // var d3 = new Dialogue({text: "Grab the book and drop it on a state of mind.", isTask: true, backgroundBox: true});
-    // var d4 = new Dialogue({text: "This state of mind is now available to equip.", isInfo: true, backgroundBox: true, delayAfterEnd: 1500});
-    // var d5 = new Dialogue({text: "Each state of mind has two active-modes and an unequipped-mode.", isInfo: true, backgroundBox: true, delayAfterEnd: 1000});
-    // var d6 = new Dialogue({text: "Activate the aggression mode of your learned state of mind. (Click)", isTask: true, backgroundBox: true});
-    // var d7 = new Dialogue({text: "Now switch to the defensive mode. (Ctrl+Click)", isTask: true, backgroundBox: true});
-    // var d8 = new Dialogue({text: "Press 'w' to swap your current states of mind. This can be done at any time.", isTask: true, backgroundBox: true});
-    //
-    // d1.onStart = function() {
-    //     arrow = graphicsUtils.pointToSomethingWithArrow(book, -5, 0.5);
-    //     gameUtils.matterOnce(book.icon, 'tooltipShown', () => {
-    //         graphicsUtils.removeSomethingFromRenderer(arrow);
-    //         achieve.play();
-    //         completeTaskAndRelease(d1);
-    //     });
-    // };
-    //
-    // d3.onStart = function() {
-    //     book.notGrabbable = false;
-    //     gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, "usergrab", function(event) {
-    //         var item = event.item;
-    //         var unit = event.unit;
-    //         if(item == book) {
-    //             globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();
-    //             // arrow = graphicsUtils.pointToSomethingWithArrow(microchip, -5, 0.5);
-    //             gameUtils.matterOnce(globals.currentGame.unitSystem, 'stateOfMindLearned', function() {
-    //                 achieve.play();
-    //                 completeTaskAndRelease(d3);
-    //             });
-    //             return true;
-    //         }
-    //     });
-    // };
-    //
-    // d6.onStart = function() {
-    //     gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'stateOfMindEquipped', function(event) {
-    //         var mode = event.mode;
-    //         if(mode == 'aggression') {
-    //             achieve.play();
-    //             completeTaskAndRelease(d6);
-    //             return true;
-    //         }
-    //     });
-    // };
-    //
-    // d7.onStart = function() {
-    //     gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'stateOfMindEquipped', function(event) {
-    //         var mode = event.mode;
-    //         if(mode == 'defensive') {
-    //             achieve.play();
-    //             completeTaskAndRelease(d7);
-    //             return true;
-    //         }
-    //     });
-    // };
-    //
-    // d8.onStart = function() {
-    //     gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'swapStatesOfMind', function(event) {
-    //         achieve.play();
-    //         completeTaskAndRelease(d8);
-    //         return true;
-    //     });
-    // };
-    //
-    // var bookChain = new DialogueChain([d1, d2, d3, d4, d5, d6, d7, d8], {startDelay: 200, done: function() {
-    //     bookChain.cleanUp();
-    //     gameUtils.doSomethingAfterDuration(() => {
-    //         finalMacMurrayChain.play();
-    //     }, 1000);
-    // }});
-    //
-    // var e6 = new Dialogue({actor: "MacMurray", text: "Shane, Ursula, get some rest. I'll be in touch...", backgroundBox: true, letterSpeed: 40});
-    // var finalMacMurrayChain = new DialogueChain([e6], {startDelay: 200, done: function() {
-    //     finalMacMurrayChain.cleanUp();
-    //     gameUtils.doSomethingAfterDuration(() => {
-    //         globals.currentGame.nextPhase();
-    //     }, 1500);
-    // }});
-    //
-    // //debug
-    // if(false) {
-    //     return finalMacMurrayChain;
-    // }
 
     return chain;
 };

@@ -296,6 +296,7 @@ var campLevel = function() {
         var nextLevelInitiated = false;
     };
 
+    //used to play an opening dialogue scene
     this.hijackEntry = function() {
         var self = this;
         if (!this.alreadyIntrod && this.camp.intro) {
@@ -348,42 +349,37 @@ var campLevel = function() {
             this.camp.onLevelPlayable.call(this, scene);
         }
 
-        //play music
-        // globals.currentGame.soundPool.campMarch.play();
-
-        if(this.alreadyIntrod) {
-
-            //Only reset stuff if we enter by traveling
-            if(!this.enteredState.enteredByTraveling) {
-                return;
-            }
-
-            //reset adrenaline indicator
-            gameUtils.doSomethingAfterDuration(() => {
-                var adrText = graphicsUtils.floatText('Adrenaline reset', gameUtils.getPlayableCenterPlus({
-                    y: 300
-                }), {
-                    where: 'hudThree',
-                    style: styles.adrenalineTextLarge,
-                    speed: 4,
-                    duration: 4000
-                });
-                scene.add(adrText);
-            }, 2500);
-
-            //reset fatigue indicator
-            gameUtils.doSomethingAfterDuration(() => {
-                var fatigueText = graphicsUtils.floatText('Fatigue reset', gameUtils.getPlayableCenterPlus({
-                    y: 300
-                }), {
-                    where: 'hudThree',
-                    style: styles.fatigueTextLarge,
-                    speed: 4,
-                    duration: 4000
-                });
-                scene.add(fatigueText);
-            }, 4000);
+        //Only reset stuff if we enter by traveling
+        if(!this.enteredState.enteredByTraveling || this.oneTimeNoResetIndicator) {
+            this.oneTimeNoResetIndicator = false;
+            return;
         }
+
+        //reset adrenaline indicator
+        gameUtils.doSomethingAfterDuration(() => {
+            var adrText = graphicsUtils.floatText('Adrenaline reset', gameUtils.getPlayableCenterPlus({
+                y: 300
+            }), {
+                where: 'hudThree',
+                style: styles.adrenalineTextLarge,
+                speed: 4,
+                duration: 4000
+            });
+            scene.add(adrText);
+        }, 2500);
+
+        //reset fatigue indicator
+        gameUtils.doSomethingAfterDuration(() => {
+            var fatigueText = graphicsUtils.floatText('Fatigue reset', gameUtils.getPlayableCenterPlus({
+                y: 300
+            }), {
+                where: 'hudThree',
+                style: styles.fatigueTextLarge,
+                speed: 4,
+                duration: 4000
+            });
+            scene.add(fatigueText);
+        }, 4000);
     };
 
     this.manualNodePosition = function() {
@@ -464,6 +460,7 @@ var campLevel = function() {
 
                 Matter.Events.on(this, 'ArrivedAtNode', function() {
                     this.mapRef.startingFatigue = 0;
+                    this.mapRef.clearAllAdrenalineBlocks();
                 }.bind(this));
 
                 Matter.Events.on(this.mapRef, 'showMap', function() {

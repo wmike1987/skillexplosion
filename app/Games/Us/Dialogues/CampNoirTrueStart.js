@@ -19,7 +19,7 @@ import {
     DialogueScene
 } from '@games/Us/Dialogues/DialogueScene.js';
 
-var CampNoirStart = function(options) {
+var CampNoirTrueStart = function(options) {
     this.escape = options.done;
     this.createChain = function() {
         //begin dialogue
@@ -91,7 +91,7 @@ var CampNoirStart = function(options) {
     this.initialize();
 };
 
-CampNoirStart.prototype = DialogueScene;
+CampNoirTrueStart.prototype = DialogueScene;
 export {
-    CampNoirStart
+    CampNoirTrueStart
 };

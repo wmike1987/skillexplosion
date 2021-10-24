@@ -75,7 +75,8 @@ var game = {
     showedTips: {},
 
     //debug options
-    goStraightToUrsulaTasks: true,
+    goStraightToUrsulaTasks: false,
+    mapTableAlwaysActive: false,
 
     initExtension: function() {
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
@@ -186,10 +187,15 @@ var game = {
         Matter.Events.on(this, 'showMap', function(event) {
             //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
             if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
+                if(this.currentPhaseObj.onAllNodesComplete) {
+                    this.currentPhaseObj.onAllNodesComplete();
+                }
+
                 //manually enable the camp
                 let campNode = this.map.findNodeById('camp');
                 campNode.manualEnable = true;
                 campNode.setCampTooltip('Camp available.');
+
 
                 //show arrow and then setup on-enter resets
                 var currentPhaseObj = this.currentPhaseObj;
@@ -201,7 +207,12 @@ var game = {
                     if (currentPhaseObj.onEnterBehavior) {
                         currentPhaseObj.onEnterBehavior();
                     }
-                    globals.currentGame.nextPhase();
+
+                    if(!currentPhaseObj.wrappedNextPhase) {
+                        globals.currentGame.nextPhase();
+                    } else {
+                        currentPhaseObj.wrappedNextPhase();
+                    }
                 };
             }
         }.bind(this));
@@ -348,8 +359,13 @@ var game = {
     },
 
     nextPhase: function(options) {
-        this.currentPhaseObj = this.currentWorld.phases[this.currentPhase++](options);
-        this.currentPhaseObj = this.currentPhaseObj || {};
+        options = options || {};
+        var index = options.index;
+        if(!index) {
+            index = this.currentPhase;
+            this.currentPhase += 1;
+        }
+        this.currentPhaseObj = this.currentWorld.phases[index](options) || {};
         if (!this.currentPhaseObj.bypassMapPhaseBehavior) {
             this.map.newPhase = true;
         }
@@ -376,7 +392,8 @@ var game = {
         camp.completedUrsulaTasks = true;
 
         this.nextPhase({
-            skippedTutorial: true
+            skippedTutorial: true,
+            index: 2
         });
         this.map.setHeadTokenPosition({
             node: this.map.findNodeById('camp')

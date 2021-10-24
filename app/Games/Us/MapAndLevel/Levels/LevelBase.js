@@ -415,8 +415,11 @@ var levelBase = {
         return this.mapTable;
     },
 
-    onLevelPlayable: function() {
-        //to be overridden
+    _onLevelPlayable: function(scene) {
+        Matter.Events.trigger(globals.currentGame, "onLevelPlayable");
+        if(this.onLevelPlayable) {
+            this.onLevelPlayable(scene);
+        }
     },
 
     cleanUp: function() {
@@ -489,7 +492,7 @@ var levelBase = {
                 unit.isSelectable = false;
                 globals.currentGame.unitSystem.deselectUnit(unit);
             });
-            unitUtils.prepareUnitForStationaryDraw();
+            unitUtils.prepareUnitsForStationaryDraw();
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
         }.bind(this);
@@ -537,7 +540,7 @@ var levelBase = {
                     removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
-                    unitUtils.prepareUnitForStationaryDraw();
+                    unitUtils.prepareUnitsForStationaryDraw();
                     winAndContinueTasks({
                         onContinue: function() {
                             gameUtils.doSomethingAfterDuration(() => {
@@ -656,7 +659,7 @@ var modes = {
                     applyFatigue: true
                 });
                 level.startLevelSpawn(options);
-                level.onLevelPlayable(scene);
+                level._onLevelPlayable(scene);
             });
 
             game.level += 1;
@@ -676,7 +679,7 @@ var modes = {
             }
             game.closeMap();
             Matter.Events.on(scene, 'initialize', function() {
-                level.onLevelPlayable(scene);
+                level._onLevelPlayable(scene);
             });
         }
     },

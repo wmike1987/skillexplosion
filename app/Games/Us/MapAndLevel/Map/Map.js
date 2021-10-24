@@ -150,15 +150,13 @@ var map = function(specs) {
         this.adrenaline -= 1;
     };
 
-    Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
-        if (event.level.isCampProper) {
-            this.adrenalineBlocks.forEach((item, i) => {
-                graphicsUtils.removeSomethingFromRenderer(item);
-            });
-            this.adrenaline = 0;
-            this.adrenalineBlocks = [];
-        }
-    }.bind(this));
+    this.clearAllAdrenalineBlocks = function() {
+        this.adrenalineBlocks.forEach((item, i) => {
+            graphicsUtils.removeSomethingFromRenderer(item);
+        });
+        this.adrenaline = 0;
+        this.adrenalineBlocks = [];
+    };
 
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', function(event) {
         if (event.result == 'victory') {
@@ -178,6 +176,7 @@ var map = function(specs) {
 
     //setup other properties
     this.mouseEventsAllowed = true;
+    this.clicksAllowed = true;
     this.keyEventsAllowed = true;
 
     this.addMapNode = function(levelType, options) {
@@ -390,6 +389,10 @@ var map = function(specs) {
         this.keyEventsAllowed = value;
     };
 
+    this.allowClickEvents = function(value) {
+        this.clicksAllowed = value;
+    };
+
     this.addNodeToOuting = function(node) {
         this.outingNodes.push(node);
         this.updateOutingEngagement();
@@ -462,8 +465,8 @@ var map = function(specs) {
                     y: 1
                 },
                 position: {
-                    x: gameUtils.getPlayableWidth() - 210,
-                    y: gameUtils.getPlayableHeight() - 20
+                    x: gameUtils.getPlayableWidth() - 220,
+                    y: gameUtils.getPlayableHeight() - 50
                 }
             });
             this.spaceFlashTimer = graphicsUtils.graduallyTint(this.engageText, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
@@ -525,7 +528,7 @@ var map = function(specs) {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
-                unitUtils.prepareUnitForStationaryDraw();
+                unitUtils.prepareUnitsForStationaryDraw();
                 unitUtils.pauseTargetingAndResumeUponNewLevel();
 
                 //show +1 adrenaline

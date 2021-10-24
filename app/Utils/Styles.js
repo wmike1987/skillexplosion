@@ -676,7 +676,9 @@ export default {
         fill: "#b40000",
         fontFamily: "\"Lucida Console\", Monaco, monospace",
         fontSize: 40,
-        miterLimit: 0
+        miterLimit: 0,
+        stroke: "#000000",
+        strokeThickness: 4
     }),
 
     passiveDStyle: new PIXI.TextStyle({

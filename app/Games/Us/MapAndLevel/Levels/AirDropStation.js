@@ -184,6 +184,9 @@ var airDropStation = function(options) {
     this.tileSize = 225.0;
     this.itemClass = options.itemClass;
     this.itemType = options.itemType;
+    this.customIntroDialog = options.customIntroDialog;
+    this.delayLastDialogDuration = options.delayLastDialogDuration;
+    this.pauseAfterWord = options.pauseAfterWord || {word: "noword...", duration: 0};
 
     this.onLevelPlayable = function(scene) {
         var game = globals.currentGame;
@@ -239,23 +242,29 @@ var airDropStation = function(options) {
         });
         var a1 = new Dialogue({
             actor: "MacMurray",
-            text: "Supply drop is en route. What do you need?",
+            text: this.customIntroDialog || "Air drop is en route. What do you need?",
+            pauseAfterWord: this.pauseAfterWord,
             backgroundBox: true,
-            letterSpeed: 30,
-            delayAfterEnd: 250,
+            letterSpeed: 30
         });
-        var self = this;
-        var chain = new DialogueChain([title, a1], {
-            startDelay: 2250,
-            done: function() {
+
+        a1.onFullyShown = () => {
+            gameUtils.doSomethingAfterDuration(() => {
                 selection.presentChoices({
                     numberOfChoices: 3,
                     itemClass: self.itemClass,
-                    itemType: self.itemType
+                    itemType: self.itemType,
+                    onChoice: () => {
+                        chain.cleanUp();
+                    }
                 });
                 stimulantRevealSound.play();
-                chain.cleanUp();
-            }
+            }, 750);
+        };
+
+        var self = this;
+        var chain = new DialogueChain([title, a1], {
+            startDelay: 1750
         });
         scene.add(chain);
         chain.play();
@@ -296,6 +305,7 @@ var selectionMechanism = {
                 });
                 graphicsUtils.addBorderToSprite({
                     sprite: item.icon,
+                    thickness: 3,
                     tint: item.borderTint || 0xffffff
                 });
                 Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
@@ -356,6 +366,8 @@ var selectionMechanism = {
             // }
         });
 
+        this.onChoice();
+
         globals.currentGame.flyover(() => {
             globals.currentGame.dustAndItemBox({
                 location: gameUtils.getPlayableCenterPlus({
@@ -372,6 +384,7 @@ var selectionMechanism = {
     presentChoices: function(options) {
         this.itemClass = options.itemClass;
         this.itemType = options.itemType;
+        this.onChoice = options.onChoice;
 
         this._chooseRandomItems();
 

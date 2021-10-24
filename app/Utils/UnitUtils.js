@@ -139,7 +139,7 @@ var unitUtils = {
         graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
     },
 
-    prepareUnitForStationaryDraw: function() {
+    prepareUnitsForStationaryDraw: function() {
         var game = globals.currentGame;
         game.unitsInPlay.forEach((unit) => {
             unit.idleCancel = true;
@@ -159,7 +159,7 @@ var unitUtils = {
         game.unitsInPlay.forEach((unit) => {
             unit.isTargetable = false;
         });
-        gameUtils.matterOnce(game, 'EnterLevel', function() {
+        gameUtils.matterOnce(game, 'onLevelPlayable', function() {
             game.unitsInPlay.forEach((unit) => {
                 unit.isTargetable = true;
             });

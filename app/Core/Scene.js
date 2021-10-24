@@ -50,12 +50,12 @@ Scene.prototype.hide = function() {
 Scene.prototype.addBlackBackground = function(options) {
     options = options || {};
     var background = graphicsUtils.createDisplayObject('TintableSquare', {where: options.where || 'hudTwo', anchor: {x: 0, y: 0}});
+    background.tint = 0x000000;
 
     background.alpha = options.alpha || 1;
     if(options.fadeDuration) {
         graphicsUtils.fadeSpriteOverTime({fadeIn: true, sprite: background, time: options.fadeDuration, noKill: true, makeVisible: true});
     }
-    background.tint = 0x000000;
     graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
     background.hideImmune = true;
     this.add(background);

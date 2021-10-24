@@ -10,7 +10,8 @@ import {
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import {
     Dialogue,
@@ -28,8 +29,8 @@ import {
     CampNoirIntro
 } from '@games/Us/Dialogues/CampNoirIntro.js';
 import {
-    CampNoirStart
-} from '@games/Us/Dialogues/CampNoirStart.js';
+    CampNoirTrueStart
+} from '@games/Us/Dialogues/CampNoirTrueStart.js';
 import {
     UrsulaTasks
 } from '@games/Us/Dialogues/Plain/UrsulaTasks.js';
@@ -475,7 +476,7 @@ var camp = {
         }
 
         //debug setting
-        if (true) {
+        if (globals.currentGame.mapTableAlwaysActive) {
             this.mapTableActive = true;
             // gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
             //     graphicsUtils.removeSomethingFromRenderer(arrow);
@@ -525,8 +526,8 @@ var enemyDefs = {
     learningWithUrsula: {
         enemySets: [{
             type: 'Critter',
-            amount: 5,
-            atATime: 2,
+            amount: 1,
+            atATime: 1,
             hz: 3500
         }]
     },
@@ -832,11 +833,16 @@ var phaseOne = function() {
 };
 
 var phaseOneAndAHalf = function(options) {
-    this.map.setHeadToken('headtoken');
+
+    Matter.Events.off(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
+
     let campNode = this.map.findNodeById('camp');
+    this.map.setHeadToken('headtoken');
     this.map.setHeadTokenPosition({
         node: campNode
     });
+    campNode.manualDisable = false;
+    campNode.manualEnable = false;
     this.map.clearAllNodesExcept('camp');
     var l1 = this.map.addMapNode('learningWithUrsula');
     var l2 = this.map.addMapNode('learningWithUrsula');
@@ -846,30 +852,45 @@ var phaseOneAndAHalf = function(options) {
         itemClass: 'book'
     }});
 
-    this.map.addMapNode('airDropStation', {
-        levelOptions: {
-            prereqCount: 3,
-            itemClass: 'worn',
-            itemType: 'specialtyItem'
-        }
-    });
-
     return {
-        nextPhase: 'allNodesComplete'
+        nextPhase: 'allNodesComplete',
+        onAllNodesComplete: function() {
+            campNode.levelDetails.oneTimeNoResetIndicator = true;
+        },
+        onEnterBehavior: function() {
+            var a1 = new Dialogue({
+                actor: "MacMurray",
+                text: "Get some rest, I'll be in touch...",
+                backgroundBox: true,
+                letterSpeed: 50,
+                delayAfterEnd: 2500,
+            });
+            var chain = new DialogueChain([a1], {
+                startDelay: 1000,
+                cleanUpOnDone: true
+            });
+            globals.currentGame.currentScene.add(chain);
+            chain.play();
+        },
+        wrappedNextPhase: function() {
+            unitUtils.prepareUnitsForStationaryDraw();
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.nextPhase();
+            }, 4000);
+        }
     };
 };
 
 //phase two is the "first" phase, it includes the starting dialog
 var phaseTwo = function(options) {
     globals.currentGame.map.setHeadToken('headtoken');
-    Matter.Events.off(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
     let campNode = this.map.findNodeById('camp');
     campNode.activeCampTooltipOverride = null;
     campNode.manualDisable = false;
     campNode.manualEnable = false;
     options = options || {};
     var world = this;
-    var startDialogue = new CampNoirStart({
+    var startDialogue = new CampNoirTrueStart({
         done: () => {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
@@ -950,7 +971,13 @@ var phaseTwo = function(options) {
                                         itemClass: 'worn'
                                     }, {
                                         itemClass: 'stimulant'
-                                    }]
+                                    }, {
+                                        itemClass: 'lightStimulant'
+                                    }, {
+                                        itemClass: 'lightStimulant'
+                                    }, {
+                                        itemClass: 'lightStimulant'
+                                    }, ]
                                 });
                                 gameUtils.doSomethingAfterDuration(() => {
                                     campLevel.mapTableFalseOverride = false;
@@ -998,7 +1025,8 @@ var phaseTwo = function(options) {
                 var s2 = new Dialogue({
                     text: "Specialty items are either red or green. Red specialty items are equippable by Shane.",
                     isInfo: true,
-                    backgroundBox: true
+                    backgroundBox: true,
+                    delayAfterEnd: 500
                 });
 
                 var s3 = new Dialogue({
@@ -1212,7 +1240,7 @@ var campNoir = {
     phases: [],
     initWorld: function(options) {
         this.phases.push(phaseOne.bind(this));
-        // this.phases.push(phaseOneAndAHalf.bind(this));
+        this.phases.push(phaseOneAndAHalf.bind(this));
         this.phases.push(phaseTwo.bind(this));
         this.phases.push(phaseThree.bind(this));
     },

@@ -38,7 +38,10 @@ var MapLevelNode = function(options) {
     this.type = this.levelDetails.type;
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
-    this.indicatorOffset = options.indicatorOffset || {x: -18, y: -18};
+    this.indicatorOffset = options.indicatorOffset || {
+        x: -18,
+        y: -18
+    };
 
     //Call init() if specified
     if (options.init) {
@@ -96,9 +99,7 @@ var MapLevelNode = function(options) {
     var enemyDescriptions = [];
     var enemyIcons = [];
     var self = this;
-    // if (this.levelDetails.enemySets.length > 0) {
-    //     this.isBattleNode = true;
-    // }
+
     this.levelDetails.enemySets.forEach(set => {
         enemyDescriptions.push(' x ' + set.spawn.total);
         enemyIcons.push(set.icon);
@@ -112,14 +113,31 @@ var MapLevelNode = function(options) {
         descriptionIcons: enemyIcons,
         systemMessage: supplyDropMessage
     });
-    this.displayObject.tooltipObj.isNodeTooltip = true;
+    this.displayObject.tooltipObj.tooltipContext = {
+        levelDetails: this.levelDetails
+    };
 
     //create the supply drop indicator
-    if(this.levelDetails.isSupplyDropEligible) {
-        var indicator = graphicsUtils.createDisplayObject(ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].mapNodeIndicator, {where: 'hudNTwo', scale: {x: 0.75, y: 0.75}});
-        graphicsUtils.addBorderToSprite({sprite: indicator, tint: 0xcdcdcd, thickness: 1});
+    if (this.levelDetails.isSupplyDropEligible) {
+        var indicator = graphicsUtils.createDisplayObject(ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].mapNodeIndicator, {
+            where: 'hudNTwo',
+            scale: {
+                x: 0.75,
+                y: 0.75
+            }
+        });
+        graphicsUtils.addBorderToSprite({
+            sprite: indicator,
+            tint: 0xcdcdcd,
+            thickness: 1
+        });
         this.displayObject.iconIdicator = indicator;
-        graphicsUtils.latchDisplayObjectOnto({child: indicator, parent: this.displayObject, positionUponShow: true, positionOffset: this.indicatorOffset});
+        graphicsUtils.latchDisplayObjectOnto({
+            child: indicator,
+            parent: this.displayObject,
+            positionUponShow: true,
+            positionOffset: this.indicatorOffset
+        });
     }
 
     //Establish event handlers
@@ -166,6 +184,10 @@ var MapLevelNode = function(options) {
 
     this.onMouseDownBehavior = function(mouseDownOptions) {
         mouseDownOptions = mouseDownOptions || {};
+        
+        if (!this.mapRef.clicksAllowed) {
+            return;
+        }
         if (!this.mapRef.mouseEventsAllowed && !mouseDownOptions.systemTriggered) return;
 
         if (!self.isCompleted) {
@@ -204,7 +226,7 @@ var MapLevelNode = function(options) {
                             unclickTokenSound.play();
                         } else {
                             //If we trying to add a fourth, just ignore this request
-                            if(this.mapRef.isOutingFull()) {
+                            if (this.mapRef.isOutingFull()) {
                                 return;
                             }
                             if (behavior.flash) {
@@ -277,7 +299,7 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     node.isSpinning = true;
     node.sizeNode();
 
-    if(this.displayObject.iconIdicator) {
+    if (this.displayObject.iconIdicator) {
         this.displayObject.iconIdicator.tint = 0x00630b;
         this.displayObject.iconIdicator.alpha = 0.8;
         this.displayObject.iconIdicator.addedBorder.alpha = 0.00;
@@ -411,7 +433,7 @@ MapLevelNode.prototype.showNodeInOuting = function(options) {
     if (!this.isSpinning && !this.isCompleted) {
         this.isFocused = true;
 
-        if(!this.outingFocusCircle) {
+        if (!this.outingFocusCircle) {
             this.outingFocusCircle = graphicsUtils.addSomethingToRenderer('MapNodeFocusCircle', {
                 where: 'hudNTwo',
                 alpha: 1.0,
@@ -426,7 +448,7 @@ MapLevelNode.prototype.showNodeInOuting = function(options) {
                 speed: 20
             });
             // if (this.manualTokens) {
-                //     this.manualTokens.forEach((token) => {
+            //     this.manualTokens.forEach((token) => {
             //         graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
             //     });
             // }
