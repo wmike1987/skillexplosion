@@ -528,7 +528,7 @@ var map = function(specs) {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
-                unitUtils.prepareUnitsForStationaryDraw();
+                // unitUtils.prepareUnitsForStationaryDraw();
                 unitUtils.pauseTargetingAndResumeUponNewLevel();
 
                 //show +1 adrenaline

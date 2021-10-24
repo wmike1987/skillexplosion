@@ -107,37 +107,40 @@ function IsoSpriteManager(options) {
 	}
 
 	this.switchAnimation = function(animation, options) {
-		options = options || {};
+		//change the visibility of the given animation after 'renderWorld' to avoid any side effects of drawing to a renderTexture
+		gameUtils.oneTimeCallbackAtEvent(() => {
+			options = options || {};
 
-		//if we're no longer idling, kill idler
-		if(!options.idle) {
-			globals.currentGame.invalidateTimer(this.idleTimer);
-			this.idleTimer = null;
-		}
+			//if we're no longer idling, kill idler
+			if(!options.idle) {
+				globals.currentGame.invalidateTimer(this.idleTimer);
+				this.idleTimer = null;
+			}
 
-		//turn them all off, except those that intentionally avoid this manager
-		$.each(this.unit.renderlings, function(name, renderling){
-			if(!renderling.avoidIsoMgr)
+			//turn them all off, except those that intentionally avoid this manager
+			$.each(this.unit.renderlings, function(name, renderling){
+				if(!renderling.avoidIsoMgr)
 				renderling.visible = false;
-		}.bind(this));
+			}.bind(this));
 
-		//turn one on
-		this.currentAnimation = animation;
-		this.visibleIsoSprite = animation;
-		animation.isStopped = false;
-		animation.visible = true; //this triggers the spine obj to become visible too
+			//turn one on
+			this.currentAnimation = animation;
+			this.visibleIsoSprite = animation;
+			animation.isStopped = false;
+			animation.visible = true; //this triggers the spine obj to become visible too
 
-		Matter.Events.trigger(this.unit, 'animationVisible', {animation: animation});
+			Matter.Events.trigger(this.unit, 'animationVisible', {animation: animation});
 
-		if(options.stop) {
-			animation.stop();
-		} else {
-			animation.play();
-		}
+			if(options.stop) {
+				animation.stop();
+			} else {
+				animation.play();
+			}
 
-		//ensure the current animation has the current iso properties
-		animation.alpha = mathArrayUtils.isFalseNotZero(this.unit.isoManagedAlpha) ? 1 : this.unit.isoManagedAlpha;
-		animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
+			//ensure the current animation has the current iso properties
+			animation.alpha = mathArrayUtils.isFalseNotZero(this.unit.isoManagedAlpha) ? 1 : this.unit.isoManagedAlpha;
+			animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
+		}, 'beforeRenderWorld');
 	}
 
 	this.idle = function(options) {
@@ -166,7 +169,7 @@ function IsoSpriteManager(options) {
 			if(self.unit.idleCancel || self.unit.isDead) {
 				return;
 			}
-			var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1)
+			var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1);
 			self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {stop: true, idle: true});
 		}})
 		gameUtils.deathPact(this.unit, this.idleTimer, this.idleTimer.name);

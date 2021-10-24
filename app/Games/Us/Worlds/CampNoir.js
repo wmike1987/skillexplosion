@@ -873,7 +873,6 @@ var phaseOneAndAHalf = function(options) {
             chain.play();
         },
         wrappedNextPhase: function() {
-            unitUtils.prepareUnitsForStationaryDraw();
             gameUtils.doSomethingAfterDuration(() => {
                 globals.currentGame.nextPhase();
             }, 4000);
