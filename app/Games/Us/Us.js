@@ -355,15 +355,20 @@ var game = {
         this.currentWorld = this.worlds[this.currentWorldIndex++];
         this.currentWorld.initWorld();
         this.map = this.currentWorld.initializeMap();
-        this.nextPhase();
+        this.nextPhase({index: 0});
     },
 
     nextPhase: function(options) {
         options = options || {};
+
         var index = options.index;
-        if(!index) {
-            index = this.currentPhase;
+        if(mathArrayUtils.isFalseNotZero(options.index)) {
+            //if no index is given, goto next phase
             this.currentPhase += 1;
+            index = this.currentPhase;
+        } else {
+            //else, go to specific phase
+            this.currentPhase = index;
         }
         this.currentPhaseObj = this.currentWorld.phases[index](options) || {};
         if (!this.currentPhaseObj.bypassMapPhaseBehavior) {
