@@ -459,7 +459,7 @@ var common = {
                 //call tickback
                 if (value.tickCallback) value.tickCallback(event.deltaTime);
 
-                //call immediately, possibly with a delay
+                //call immediately (by setting timeElapsed to be 100%), possibly with a delay
                 if (value.immediateStart) {
                     var immediateDelay = value.immediateDelay || 0;
                     value.timeElapsed = value.activeTimeLimit - immediateDelay;
