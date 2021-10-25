@@ -302,12 +302,12 @@ export default function Rammian(options) {
     ];
 
     var attackSound = gameUtils.getSound('critterhit.wav', {
-        volume: 0.15,
-        rate: 1
+        volume: 0.18,
+        rate: 0.8
     });
     var deathSound = gameUtils.getSound('critterdeath.wav', {
         volume: 0.08,
-        rate: 1.5
+        rate: 1.4
     });
 
     var unitProperties = $.extend({
@@ -341,6 +341,7 @@ export default function Rammian(options) {
                 persists: true,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
+            anim.tint = 0xff9090;
             graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             deathSound.play();
@@ -348,7 +349,7 @@ export default function Rammian(options) {
             graphicsUtils.flashSprite({
                 sprite: anim,
                 duration: 500,
-                times: 5 + Math.ceil(Math.random() * 3),
+                times: 1 + Math.ceil(Math.random() * 3),
                 onEnd: () => {
                     graphicsUtils.flashSprite({
                         sprite: anim,
@@ -364,7 +365,7 @@ export default function Rammian(options) {
                                 speed: 2.8,
                                 transform: [self.deathPosition.x, self.deathPosition.y, 2.0, 2.0]
                             });
-                            var blastRadius = 150;
+                            var blastRadius = 225;
                             graphicsUtils.makeSpriteSize(mineExplosionAnimation, {
                                 x: blastRadius * 2,
                                 y: blastRadius * 2
@@ -441,17 +442,27 @@ export default function Rammian(options) {
             $.each(this.body.renderlings, function(key, renderling) {
                 if (renderling.skeleton) {
                     $.each(renderling.skeleton.slots, function(i, slot) {
-                        if (slot.currentSprite) {
-                            if (slot.currentSpriteName.includes('1---4') ||
-                                (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length - 1) == '1') ||
-                                (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
-                                slot.currentSpriteName.includes('1---3') ||
-                                slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
-                                slot.currentSpriteName.includes('North_0003_Layer-1---5')) {
+                        if(!slot.attachment) {
+                            return;
+                        }
+                        slot.customColor = {
+                            r: mathArrayUtils.flipCoin() ? 0.6 : 0.8,
+                            g: 0.2,
+                            b: 0.2,
+                            a: 1.0
+                        };
+                        if(slot.currentSprite) {
+                            if(slot.currentSpriteName.includes('1---4') ||
+                              (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length-1) == '1') ||
+                              (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
+                              slot.currentSpriteName.includes('1---3') ||
+                              slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
+                              slot.currentSpriteName.includes('North_0003_Layer-1---5'))
+                            {
                                 slot.customColor = {
-                                    r: 0.8,
-                                    g: 0.2,
-                                    b: 0.2,
+                                    r: 1.0,
+                                    g: 1.0,
+                                    b: 1.0,
                                     a: 1.0
                                 };
                             }
@@ -471,10 +482,6 @@ export default function Rammian(options) {
                         this.enrageAvailable = true;
                     }, this.enrageCooldown + this.enrageLength);
 
-                    this.enrage({
-                        duration: this.enrageLength,
-                        amount: 3
-                    });
                     this.applySpeedBuff({
                         duration: this.enrageLength,
                         amount: 2.0
@@ -507,8 +514,8 @@ export default function Rammian(options) {
                 var bloodAnimation = gameUtils.getAnimation({
                     spritesheetName: 'UtilityAnimations1',
                     animationName: 'GenericHit',
-                    speed: 1.0,
-                    transform: [target.position.x + Math.random() * 8, target.position.y + Math.random() * 8, 0.25, 0.25]
+                    speed: 0.4,
+                    transform: [target.position.x + Math.random() * 8, target.position.y + Math.random() * 8, 0.5, 0.5]
                 });
                 graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                 bloodAnimation.play();

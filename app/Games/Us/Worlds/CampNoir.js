@@ -661,14 +661,8 @@ var enemyDefs = {
             atATime: 1,
             hz: 3000
         }, {
-            type: 'Gargoyle',
-            amount: 2,
-            initialDelay: 17000,
-            atATime: 1,
-            hz: 3500
-        }, {
             type: 'Rammian',
-            amount: 3,
+            amount: 5,
             initialDelay: 3500,
             atATime: 1,
             hz: 5000

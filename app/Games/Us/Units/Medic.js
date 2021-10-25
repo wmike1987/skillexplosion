@@ -1115,7 +1115,7 @@ export default function Medic(options) {
                 var attacker = event.performingUnit;
                 if (!attacker || attacker.isDead || !attacker.isMelee) return;
 
-                attacker.sufferAttack(grit, medic);
+                attacker.sufferAttack(grit, medic, {dodgeable: false});
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
@@ -1521,7 +1521,7 @@ export default function Medic(options) {
                 var attacker = event.performingUnit;
                 if (attacker.isDead) return;
 
-                attacker.sufferAttack(5, medic);
+                attacker.sufferAttack(5, medic, {dodgeable: false});
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',

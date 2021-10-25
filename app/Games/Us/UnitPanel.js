@@ -846,7 +846,8 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
 
     //clear passives
     this.updateUnitPassives({
-        clear: true
+        clear: true,
+        transitioningUnits: options.transitioningUnits
     });
 
     //clear commands
@@ -1233,6 +1234,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
 
 unitPanel.prototype.displayUnitPassives = function(options) {
     options = options || {};
+    var unit = this.prevailingUnit;
 
     //clear last passive
     if (this.currentDefensePassive) {
@@ -1260,14 +1262,15 @@ unitPanel.prototype.displayUnitPassives = function(options) {
         return;
     }
 
-    var unit = this.prevailingUnit;
-
     if (unit.defensePassive) {
         if (!unit.defensePassive.activeIcon) {
             unit.defensePassive.activeIcon = graphicsUtils.createDisplayObject(unit.defensePassive.textureName, {
                 where: 'hudOne'
             });
         }
+
+        this.defensePassiveMeter.visible = true;
+
         //retooltip this
         if (unit.defensePassive.activeIcon.tooltipObj) {
             unit.defensePassive.activeIcon.tooltipObj.destroy();
@@ -1319,6 +1322,9 @@ unitPanel.prototype.displayUnitPassives = function(options) {
                 where: 'hudOne'
             });
         }
+
+        this.attackPassiveMeter.visible = true;
+
         //retooltip this
         if (unit.attackPassive.activeIcon.tooltipObj) {
             unit.attackPassive.activeIcon.tooltipObj.destroy();
