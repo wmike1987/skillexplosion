@@ -347,11 +347,11 @@ var common = {
                     //     this.unitSystem.selectedUnit.giveEnergy(10);
                     // }
                     // this.map.addAdrenalineBlock();
-                    unitUtils.applyHealthGainAnimationToUnit(this.shane);
-                    unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    globals.currentGame.nextPhase();
-
-                    this.shane.dodgeSound.play();
+                    // unitUtils.applyHealthGainAnimationToUnit(this.shane);
+                    // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
+                    // globals.currentGame.nextPhase();
+                    //
+                    // this.shane.dodgeSound.play();
 
 
                     // if (this.gameState == 'paused') {

@@ -15,14 +15,22 @@
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":82,"h":90},
 	"sourceSize": {"w":90,"h":90}
+},
+"RammianPortrait.png":
+{
+	"frame": {"x":177,"y":1,"w":82,"h":90},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":82,"h":90},
+	"sourceSize": {"w":90,"h":90}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Critter.png",
 	"format": "RGBA8888",
-	"size": {"w":176,"h":92},
+	"size": {"w":260,"h":92},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:12405832987f815b1b4ff86e54a6bdf5:ceecbe933ed77fefb2305de9081cf491:d96c0ddfb255ac4766beb8f514496b3a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:bed95f12e0217c278e4a0006fff2b995:4004464d11e88d4d64979afce294131b:d96c0ddfb255ac4766beb8f514496b3a$"
 }
 }

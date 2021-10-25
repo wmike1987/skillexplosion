@@ -322,7 +322,7 @@ var campLevel = function() {
         //unit tester
         var unitTest = false;
         if(unitTest) {
-            var unitT = UnitMenu.createUnit('Gargoyle', {
+            var unitT = UnitMenu.createUnit('Rammian', {
                 team: game.playerTeam,
                 idleCancel: false
             });

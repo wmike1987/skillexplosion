@@ -603,6 +603,14 @@ var enemyDefs = {
             hz: 5000
         }]
     },
+    rammians: {
+        enemySets: [{
+            type: 'Rammian',
+            amount: [8, 9, 10],
+            atATime: 1,
+            hz: 2500
+        }]
+    },
     outerBasic: {
         token: 'outerNormal',
         enemySets: [{
@@ -612,6 +620,34 @@ var enemyDefs = {
             hz: 4000
         }, {
             type: 'Sentinel',
+            amount: 4,
+            atATime: 1,
+            hz: 4000
+        }]
+    },
+    outerBasicTwo: {
+        token: 'outerNormal',
+        enemySets: [{
+            type: 'Critter',
+            amount: 12,
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Hunter',
+            amount: 3,
+            atATime: 1,
+            hz: 4000
+        }]
+    },
+    outerBasicThree: {
+        token: 'outerNormal',
+        enemySets: [{
+            type: 'Critter',
+            amount: 12,
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Rammian',
             amount: 3,
             atATime: 1,
             hz: 4000
@@ -621,20 +657,27 @@ var enemyDefs = {
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
-            amount: 12,
-            atATime: 2,
-            hz: 4000
+            amount: 6,
+            atATime: 1,
+            hz: 3000
         }, {
             type: 'Gargoyle',
-            amount: 3,
-            initialDelay: 3000,
+            amount: 2,
+            initialDelay: 15000,
             atATime: 1,
             hz: 3500
         }, {
-            type: 'Sentinel',
-            amount: 1,
+            type: 'Rammian',
+            amount: 3,
+            initialDelay: 500,
             atATime: 1,
-            hz: 4000
+            hz: 5000
+        }, {
+            type: 'Hunter',
+            amount: 2,
+            initialDelay: 15000,
+            atATime: 2,
+            hz: 5000
         }]
     },
     outerHardTwo: {
@@ -911,6 +954,7 @@ var phaseTwo = function(options) {
                     itemClass: 'worn',
                 }
             });
+
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
                     enemyDefList: ['basic', 'basic', 'basic'],
@@ -1108,8 +1152,8 @@ var phaseThree = function() {
     };
     this.map.addMapNode('outerBasic', outerParam);
     this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('outerBasic', outerParam);
+    this.map.addMapNode('outerBasicTwo', outerParam);
+    this.map.addMapNode('outerBasicThree', outerParam);
     this.map.addMapNode('outerHardTwo', {
         levelOptions: {
             outer: true,
@@ -1154,12 +1198,93 @@ var phaseThree = function() {
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: ['outerBasic', 'easyGargs', 'outerBasic'],
+            enemyDefList: ['rammians', 'easyGargs', 'outerBasic'],
             itemClass: 'rugged',
             itemType: 'microchip'
         }
     });
 };
+
+// var phaseThree = function() {
+//     this.map.clearAllNodesExcept('camp');
+//     this.map.addMapNode('basic');
+//     this.map.addMapNode('basic');
+//     this.map.addMapNode('airDropStation', {
+//         levelOptions: {
+//             prereqCount: 2,
+//             itemClass: 'worn'
+//         }
+//     });
+//     this.map.addMapNode('basic');
+//     this.map.addMapNode('basic');
+//     this.map.addMapNode('easySentinels');
+//     this.map.addMapNode('airDropStation', {
+//         levelOptions: {
+//             outer: true
+//             // prereqCount: 0
+//         }
+//     });
+//
+//     //outer
+//     let outerParam = {
+//         levelOptions: {
+//             outer: true,
+//         }
+//     };
+//     this.map.addMapNode('outerBasic', outerParam);
+//     this.map.addMapNode('outerBasic', outerParam);
+//     this.map.addMapNode('outerBasic', outerParam);
+//     this.map.addMapNode('outerBasic', outerParam);
+//     this.map.addMapNode('outerHardTwo', {
+//         levelOptions: {
+//             outer: true,
+//             token: 'outerHard',
+//             itemClass: 'stimulant'
+//         }
+//     });
+//     this.map.addMapNode('outerHardOne', {
+//         levelOptions: {
+//             token: 'outerHard',
+//             itemClass: 'book'
+//         }
+//     });
+//     this.map.addMapNode('mobs', {
+//         levelOptions: {
+//             outer: true,
+//             token: 'mobs',
+//             itemClass: 'stimulant'
+//         }
+//     });
+//     this.map.addMapNode('airDropStation', {
+//         levelOptions: {
+//             prereqCount: 3,
+//             itemClass: 'worn',
+//             itemType: 'specialtyItem',
+//             regularTokenName: 'AirDropSpecialToken',
+//             specialTokenName: 'AirDropSpecialTokenGleam'
+//         }
+//     });
+//
+//     this.map.addMapNode('airDropStation', {
+//         levelOptions: {
+//             outer: true,
+//             prereqCount: 3,
+//             itemClass: 'rugged',
+//             itemType: 'specialtyItem',
+//             regularTokenName: 'AirDropSpecialToken',
+//             specialTokenName: 'AirDropSpecialTokenGleam'
+//         }
+//     });
+//
+//     this.map.addMapNode('multiLevel', {
+//         levelOptions: {
+//             outer: true,
+//             enemyDefList: ['outerBasic', 'easyGargs', 'outerBasic'],
+//             itemClass: 'rugged',
+//             itemType: 'microchip'
+//         }
+//     });
+// };
 
 //this defines the camp noir world
 var campNoir = {

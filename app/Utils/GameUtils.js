@@ -86,14 +86,16 @@ var gameUtils = {
             }.bind(this);
         } else {
             anim.onComplete = function() { //default onComplete function
-                graphicsUtils.removeSomethingFromRenderer(anim);
-                gameUtils.detachSomethingFromBody(anim); //in case we're attached
+                if(!anim.persists) {
+                    graphicsUtils.removeSomethingFromRenderer(anim);
+                    gameUtils.detachSomethingFromBody(anim); //in case we're attached
+                }
                 if (options.onCompleteExtension) {
                     options.onCompleteExtension();
                 }
             }.bind(this);
         }
-        // anim.persists = true;
+        anim.persists = options.persists;
         anim.setTransform.apply(anim, options.transform || [-1000, -1000]);
         anim.animationSpeed = options.speed;
         anim.loop = (options.playThisManyTimes == 'loop') || (options.loop && !options.loopPause);

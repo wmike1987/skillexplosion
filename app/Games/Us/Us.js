@@ -186,7 +186,7 @@ var game = {
         //next phase detector
         Matter.Events.on(this, 'showMap', function(event) {
             //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
-            if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted()) {
+            if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
                 if(this.currentPhaseObj.onAllNodesComplete) {
                     this.currentPhaseObj.onAllNodesComplete();
                 }
@@ -195,13 +195,15 @@ var game = {
                 let campNode = this.map.findNodeById('camp');
                 campNode.manualEnable = true;
                 campNode.setCampTooltip('Camp available.');
-
+                this.currentPhaseObj.alreadyClosed = true;
 
                 //show arrow and then setup on-enter resets
                 var currentPhaseObj = this.currentPhaseObj;
                 let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
-                campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
+                gameUtils.matterOnce(this, 'hideMap', function(event) {
                     graphicsUtils.removeSomethingFromRenderer(arrow);
+                });
+                campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
                     campNode.manualEnable = false;
                     campNode.activeCampTooltipOverride = null;
                     if (currentPhaseObj.onEnterBehavior) {

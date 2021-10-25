@@ -346,6 +346,7 @@ var map = function(specs) {
     this.hide = function() {
         this.isShown = false;
         Matter.Events.trigger(this, 'hideMap', {});
+        Matter.Events.trigger(globals.currentGame, 'hideMap', {});
 
         graphicsUtils.hideDisplayObject(this.mapSprite);
         this.graph.forEach(node => {

@@ -226,9 +226,10 @@ export default function Gargoyle(options) {
         offset: {x: 0, y: yOffset}
     },{
         id: 'shadow',
-        data: 'IsoShadowBlurred',
+        data: 'IsoShadowBlurredWhite',
         scale: {x: 0.55, y: 0.55},
         visible: true,
+        tint: 0x000546,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
