@@ -79,11 +79,15 @@ export default function(options) {
                 this.defensePassive = 0;
                 this.presentation.variableLabels = ["none", "none"];
             },
+            canPresent: function() {
+                return !(this.presentation.variableLabels[0] == "none" && this.presentation.variableLabels[1] == "none");
+            },
             presentation: {
                 tint: 0xbf0a81,
                 iconTextureName: this.textureName,
                 labels: ["active placeholder", 'defense placeholder'],
                 values: ["attackPassive", "defensePassive"],
+                formats: [null, null],
                 suffixes: ["", ""]
             },
             collectorFunction: function(event) {
@@ -105,8 +109,16 @@ export default function(options) {
             this.customCollector.presentation.suffixes[0] = this.collector.aggressionSuffix;
         }
 
+        if(this.collector.aggressionFormat) {
+            this.customCollector.presentation.formats[0] = this.collector.aggressionFormat;
+        }
+
         if(this.collector.defensiveSuffix) {
             this.customCollector.presentation.suffixes[1] = this.collector.defensiveSuffix;
+        }
+
+        if(this.collector.defensiveFormat) {
+            this.customCollector.presentation.formats[1] = this.collector.defensiveFormat;
         }
 
         this.unit.statCollector.registerCustomCollector(this.customCollector);
@@ -171,7 +183,7 @@ export default function(options) {
                 });
                 if (this.passiveAction) {
                     this.passiveAction();
-                    Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: unequippedPassive});
+                    // Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: unequippedPassive});
                 }
             }, 1800 + order * 750);
         }

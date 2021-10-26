@@ -365,10 +365,14 @@ var UnitBase = {
         });
         amount = healingObj.amount;
 
-        this.currentHealth += amount;
+        var healthDiff = this.maxHealth - this.currentHealth;
         var healingDone = amount;
+        if(healthDiff < amount) {
+            healingDone = healthDiff;
+        }
+
+        this.currentHealth += amount;
         if (this.currentHealth >= this.maxHealth) {
-            healingDone -= (this.currentHealth - this.maxHealth);
             Matter.Events.trigger(this, 'healedFully', {
                 performingUnit: performingUnit
             });
@@ -432,9 +436,10 @@ var UnitBase = {
             noFade: false,
         };
 
+        var energyDiff = this.maxEnergy - this.currentEnergy;
         var energyGained = amount;
-        if(energyGained + this.currentEnergy > this.maxEnergy) {
-            energyGained = this.maxEnergy - this.currentEnergy;
+        if(energyDiff < amount) {
+            energyGained = energyDiff;
         }
 
         this.currentEnergy += amount;

@@ -237,6 +237,9 @@ var CustomCollector = function(options) {
     this.priority = options.priority || 50;
     this.eventName = options.eventName;
     this.presentation = options.presentation;
+    this.canPresent = options.canPresent || function() {
+        return true;
+    };
     if(!this.presentation.tint) {
         this.presentation.tint = 0xbdbdbd; //default tint
     }

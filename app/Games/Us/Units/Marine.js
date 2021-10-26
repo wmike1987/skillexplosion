@@ -779,6 +779,9 @@ export default function Marine(options) {
     });
 
     //Main Attack
+    var hpCollectorEventName = 'hoodedPeepCollector';
+    var fullAutoCollectorEventName = 'fullAutoCollector';
+    var firstAidCollectorEventName = 'firstAidCollector';
     var gunAbility = new Ability({
         name: 'Rifle',
         manualDispatch: true,
@@ -805,18 +808,35 @@ export default function Marine(options) {
             },
             {
                 name: 'hooded peep',
-                chance: 0.2,
+                chance: 0.18,
                 multiplier: 2,
                 icon: graphicsUtils.createDisplayObject('HoodedPeepIcon'),
                 title: 'Hooded Peep',
-                description: 'Gain a 20% chance to deal 2x damage.'
+                description: 'Gain a 18% chance to deal 2x damage.',
+                collector: {
+                    eventName: hpCollectorEventName,
+                    presentation: {
+                        labels: ["Critical hits"],
+                        values: ["value"]
+                    }
+                }
             },
             {
                 name: 'first aid pouch',
-                healAmount: 3,
+                healAmount: 2,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
-                description: 'Heal self and nearby allies for 3 hp after firing rifle.'
+                description: 'Heal self and nearby allies for 2 hp after firing rifle.',
+                collector: {
+                    eventName: firstAidCollectorEventName,
+                    presentation: {
+                        labels: ["Healing done"],
+                        values: ["value"],
+                        formats: [function(v) {
+                            return v.toFixed(1);
+                        }]
+                    }
+                }
             },
         ],
     });
@@ -850,14 +870,15 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
+            var healthGiven = 0;
             allies.forEach((ally) => {
                 if (ally.isDead) return;
-                ally.giveHealth(allyHeal, marine);
+                healthGiven += ally.giveHealth(allyHeal, marine);
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
             });
 
-            return {value: allyHeal};
+            return {value: healthGiven};
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
@@ -873,6 +894,9 @@ export default function Marine(options) {
             aggressionLabel: 'Total armor duration',
             aggressionSuffix: 'seconds',
             defensiveLabel: 'Healing done',
+            defensiveFormat: function(v) {
+                return v.toFixed(1);
+            }
         }
     });
 
@@ -1375,13 +1399,15 @@ export default function Marine(options) {
                         self.firstAidPouchAdditions.forEach((addition) => {
                             sum += addition;
                         });
-                        unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
+                        var amountHealed = unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
+                        Matter.Events.trigger(globals.currentGame, firstAidCollectorEventName, {value: amountHealed});
                     });
                 }
 
                 var dTotal = this.damage + this.getDamageAdditionSum();
                 target.sufferAttack(dTotal * crit, this);
                 if (critActive) {
+                    Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {value: 1});
                     fireSound.play();
                     criticalHitSound.play();
                     var chText = graphicsUtils.floatText(dTotal * crit + '!', {

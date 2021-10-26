@@ -156,11 +156,19 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             augment.currentAugmentBorder.visible = true;
                             augment.currentAugmentBorder.tint = microchipContext.plugTint || 0xFFFFFF;
                             augment.icon.tint = 0xFFFFFF;
+
+                            //enable us
                             ability.enableAugment(augment);
 
-                            //equip the augment itself if we're not currently equipped
+                            //run any equip method itself if we're not currently equipped
+                            //(if we're already equipped, leave it equipped)
                             if(augment.equip && !augment.currentMicrochip) {
                                 augment.equip(this.prevailingUnit);
+                            }
+
+                            //create and register the collector (if there is one)
+                            if(augment.customCollector) {
+                                this.prevailingUnit.statCollector.registerCustomCollector(augment.customCollector);
                             }
 
                             //signal that we've unlocked something
@@ -181,6 +189,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             let ar1 = mathArrayUtils.convertToArray(augment.systemMessage);
                             let ar2 = mathArrayUtils.convertToArray(microchipContext.poweredByMessage);
                             var ar3 = [];
+
                             if(additionConditionMet && microchipContext.conditionalPoweredByMessage) {
                                 if(microchipContext.plug) {
                                     microchipContext.plug(ability);
@@ -215,6 +224,12 @@ ConfigPanel.prototype.showAugments = function(unit) {
                             augment.currentMicrochip = null;
                             augment.currentMicrochipName = null;
                             ability.disableAugment(augment);
+
+                            //deregister the collector
+                            if(augment.customCollector) {
+                                this.prevailingUnit.statCollector.deregisterCustomCollector(augment.customCollector);
+                            }
+
                             unequip.play();
                             this.unitPanelRef.updateUnitAbilities();
                         }

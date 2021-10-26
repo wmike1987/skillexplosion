@@ -402,6 +402,10 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
         var len = customCollectors.length;
         customCollectors.forEach(function(coll, index) {
+            if(!coll.canPresent()) {
+                return;
+            }
+
             var last = index == len-1 ? true : false;
             if (p % pageSize == 0) {
                 startingY = {
@@ -446,6 +450,13 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
                 //if so, present the label/value/suffix
                 var v = coll[coll.presentation.values[index]];
+
+                //call any given formatters
+                var formatters = coll.presentation.formats;
+                if(formatters && formatters[index]) {
+                    v = coll.presentation.formats[index](v);
+                }
+
                 var suff = "";
                 if(coll.presentation.suffixes) {
                     suff = coll.presentation.suffixes[index] ? " " + coll.presentation.suffixes[index] : "";

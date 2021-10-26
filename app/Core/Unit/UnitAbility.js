@@ -1,4 +1,7 @@
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    CustomCollector
+} from '@games/Us/StatCollector.js';
 
 export default function(options) {
     this.costs = [];
@@ -13,6 +16,25 @@ export default function(options) {
     if(options.augments) {
         options.augments.forEach(augment => {
             augment.ability = this;
+            if(augment.collector) {
+                augment.customCollector = new CustomCollector({
+                    eventName: augment.collector.eventName,
+                    priority: 10,
+                    init: augment.collector.init,
+                    presentation: {
+                        tint: 0x15c5e4,
+                        iconTextureName: augment.icon.creationTextureName,
+                        labels: augment.collector.presentation.labels,
+                        values: augment.collector.presentation.values,
+                        formats: augment.collector.presentation.formats || [],
+                        suffixes: ["", ""]
+                    },
+                    collectorFunction: function(event) {
+                        this[event.valueName || 'value'] += event.value;
+                    },
+                    entity: augment
+                });
+            }
             if(augment.systemMessage) {
                 // augment.systemMessage = [augment.systemMessage, 'Click to equip'];
             } else {
