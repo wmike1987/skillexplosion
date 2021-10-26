@@ -130,10 +130,10 @@
 },
 "HoldPositionRook.png":
 {
-	"frame": {"x":526,"y":96,"w":18,"h":23},
+	"frame": {"x":526,"y":96,"w":20,"h":23},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":7,"y":5,"w":18,"h":23},
+	"spriteSourceSize": {"x":6,"y":5,"w":20,"h":23},
 	"sourceSize": {"w":32,"h":32}
 },
 "IsometricSelected.png":
@@ -242,7 +242,7 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":546,"y":96,"w":20,"h":20},
+	"frame": {"x":548,"y":96,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
@@ -257,6 +257,6 @@
 	"format": "RGBA8888",
 	"size": {"w":571,"h":126},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:e23a1243b7b4b44341c046e7cca9c5e0:f18e5bf3c76d93a495217487c6764f90:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:4d82edec956f773e46b2bb26aefa9273:6dffa3cae5fd8ce69bb1b8e4259ebef4:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

@@ -974,7 +974,7 @@ var UnitBase = {
                 position: mathArrayUtils.roundPositionToWholeNumbers(mathArrayUtils.clonePosition(this.position)),
                 scale: {x: 1.0, y: 1.0},
                 alpha: 1.0,
-                tint: 0x838383
+                tint: 0xb8b8b8
             });
 
             graphicsUtils.fadeSpriteOverTimeLegacy(this.holdPositionMarker, 250, true);
