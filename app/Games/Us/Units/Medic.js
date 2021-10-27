@@ -449,11 +449,16 @@ export default function Medic(options) {
             globals.currentGame.unitSystem.selectedUnit = this;
         }
 
-        var secretStepSpeed = fleetFeetAugment ? 22 : 10;
+        var secretStepSpeed = fleetFeetAugment ? 20 : 10;
         gameUtils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
         Matter.Events.trigger(globals.currentGame, 'secretStep', {
             performingUnit: this
         });
+
+        //send collector events
+        if(fleetFeetAugment) {
+            Matter.Events.trigger(globals.currentGame, fleetFeetCollEventName, {value: fleetFeetAugment.energyReduction});
+        }
 
         //play smoke animation
         //play animation
@@ -525,6 +530,8 @@ export default function Medic(options) {
                         duration: ghostAugment.duration,
                         petrifyingUnit: medic
                     });
+
+                    Matter.Events.trigger(globals.currentGame, petCollEventName, {value: 1});
                 }
             }
         });
@@ -588,12 +595,16 @@ export default function Medic(options) {
                 if (softLandingAugment) {
                     var duration = softLandingAugment.duration;
                     this.becomeHidden(duration);
+                    Matter.Events.trigger(globals.currentGame, slCollEventName, {value: duration/1000});
                 }
             }
         }.bind(this));
         gameUtils.deathPact(shadow, removeSelf);
     };
 
+    var fleetFeetCollEventName = "ffCollectorEventName";
+    var slCollEventName = "slCollectorEventName";
+    var petCollEventName = "petCollectorEventName";
     var secretStepAbility = new Ability({
         name: 'Vanish',
         key: 'd',
@@ -612,12 +623,19 @@ export default function Medic(options) {
                 name: 'fleet feet',
                 icon: graphicsUtils.createDisplayObject('FleetFeet'),
                 title: 'Fleet Feet',
-                description: 'Increase vanishing speed and reduce energy cost by 2.',
+                energyReduction: 3,
+                description: 'Increase vanishing speed and reduce energy cost by 3.',
                 equip: function(unit) {
-                    unit.getAbilityByName('Vanish').energyCost -= 2;
+                    unit.getAbilityByName('Vanish').energyCost -= this.energyReduction;
                 },
                 unequip: function(unit) {
-                    unit.getAbilityByName('Vanish').energyCost += 2;
+                    unit.getAbilityByName('Vanish').energyCost += this.energyReduction;
+                },
+                collector: {
+                    eventName: fleetFeetCollEventName,
+                    presentation: {
+                        labels: ["Energy saved"]
+                    }
                 }
             }, {
                 name: 'ghost',
@@ -625,14 +643,26 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('Petrify'),
                 title: 'Ghost',
                 description: ['Petrify units for 3 seconds by vanishing through them.'],
-                // systemMessage: 'Petrified units cannot move, attack, nor be targeted by normal attacks.'
+                collector: {
+                    eventName: petCollEventName,
+                    presentation: {
+                        labels: ["Enemies petrified"]
+                    }
+                }
             },
             {
                 name: 'soft landing',
                 icon: graphicsUtils.createDisplayObject('SoftLanding'),
                 title: 'Soft Landing',
                 duration: 3000,
-                description: 'Become hidden for 3 seconds after vanishing.'
+                description: 'Become hidden for 3 seconds after vanishing.',
+                collector: {
+                    eventName: slCollEventName,
+                    presentation: {
+                        labels: ["Time spent hidden"],
+                        suffixes: ["seconds"]
+                    }
+                }
             }
         ]
     });
@@ -883,6 +913,7 @@ export default function Medic(options) {
                             duration: scorchAugment.duration,
                             maimingUnit: medic
                         });
+                        Matter.Events.trigger(globals.currentGame, scorchEventName, {value: 1});
                     }
                 }.bind(this));
 
@@ -944,6 +975,7 @@ export default function Medic(options) {
         }
     };
 
+    var scorchEventName = 'scorchCollEvent';
     var mineAbility = new Ability({
         name: 'Mine',
         key: 'f',
@@ -960,7 +992,12 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('Maim'),
                 title: 'Scorch',
                 description: 'Leave an explosion area which maims enemy units for 10 seconds.',
-                // systemMessage: 'Maimed enemies are slowed and suffer -1 armor.'
+                collector: {
+                    eventName: scorchEventName,
+                    presentation: {
+                        labels: ["Enemies maimed"]
+                    }
+                }
             },
             {
                 name: 'pressure plate',
@@ -977,6 +1014,8 @@ export default function Medic(options) {
         ]
     });
 
+    var ppCollEventName = 'ppCollEvent';
+    var sacCollEventName = 'sacCollEvent';
     var healAbility = new Ability({
         name: 'Heal',
         icon: graphicsUtils.createDisplayObject('HealIcon'),
@@ -999,6 +1038,12 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
                 description: 'Reduce healing cost to 0 when target\'s life is below 75%.',
+                collector: {
+                    eventName: ppCollEventName,
+                    presentation: {
+                        labels: ["Healing done for free"]
+                    }
+                }
             },
             {
                 name: 'lightest touch',
@@ -1024,6 +1069,7 @@ export default function Medic(options) {
                 description: ['Fire replenishment missile upon death.', 'Halve time to revive.'],
                 equip: function(unit) {
                     unit.sacrificeFunction = function(event) {
+                        Matter.Events.trigger(globals.currentGame, sacCollEventName, {value: 1});
                         gameUtils.applyToUnitsByTeam(function(team) {
                             return unit.team == team;
                         }, function(teamUnit) {
@@ -1077,6 +1123,12 @@ export default function Medic(options) {
                 unequip: function(unit) {
                     Matter.Events.off(unit, 'death', unit.sacrificeFunction);
                     unit.reviveTime *= 1 / this.reviveMultiplier;
+                },
+                collector: {
+                    eventName: sacCollEventName,
+                    presentation: {
+                        labels: ["Times activated"]
+                    }
                 }
             }
         ]
@@ -1444,7 +1496,7 @@ export default function Medic(options) {
             });
         },
         defensePredicate: function(event) {
-            return event.attackContext.isProjectile;;
+            return event.attackContext.isProjectile;
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
@@ -1580,7 +1632,7 @@ export default function Medic(options) {
             return {value: damageReduced};
         },
         aggressionPredicate: function(event) {
-            return event.attackContext.isProjectile;;
+            return event.attackContext.isProjectile;
         },
         aggressionAction: function(event) {
             medic.giveEnergy(energyGain);
@@ -1794,12 +1846,15 @@ export default function Medic(options) {
                 healAnimation.play();
                 graphicsUtils.addSomethingToRenderer(healAnimation, 'stageOne');
 
+                var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
+                var actualHealingAmount = target.giveHealth(healAmount, this);
+
                 if (!ppBypass) {
                     this.spendEnergy(thisAbility.energyCost);
+                } else {
+                    //we've healed at no cost, send the collector event
+                    Matter.Events.trigger(globals.currentGame, ppCollEventName, {value: actualHealingAmount});
                 }
-
-                var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
-                target.giveHealth(healAmount, this);
             },
             attackHoneTeamPredicate: function(team) {
                 return this.team == team;

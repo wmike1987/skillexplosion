@@ -27,7 +27,7 @@ export default function(options) {
                         labels: augment.collector.presentation.labels,
                         values: augment.collector.presentation.values || ["value"],
                         formats: augment.collector.presentation.formats || [],
-                        suffixes: ["", ""]
+                        suffixes: augment.collector.presentation.suffixes || []
                     },
                     collectorFunction: function(event) {
                         this.presentation.values.forEach(function(value) {
@@ -36,6 +36,13 @@ export default function(options) {
                     },
                     entity: augment
                 });
+
+                //convenience for fixed formatter
+                if(augment.collector.presentation.formats == "fixed1") {
+                    augment.customCollector.presentation.formats = [function(v) {
+                        return v.toFixed(1);
+                    }];
+                }
             }
             if(augment.systemMessage) {
                 // augment.systemMessage = [augment.systemMessage, 'Click to equip'];

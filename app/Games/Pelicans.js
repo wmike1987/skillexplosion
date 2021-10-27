@@ -187,7 +187,7 @@ var game = {
             bird.render.sprite.tint = parseInt(this.colorCycle[tint].replace(/^#/, ''), 16);
         else {
             bird.timerBird = true;
-            bird.render.sprite.tint = parseInt('870101', 16);;
+            bird.render.sprite.tint = parseInt('870101', 16);
         }
 
         //calculate and set position then flip the bird if it's moving left to right

@@ -469,17 +469,25 @@ export default function Marine(options) {
 
         var defensivePostureGain = 2;
         if (defensivePostureAugment) {
-            marine.applyDefenseBuff({id: 'defpostbuff', duration: 3000, amount: defensivePostureGain});
-            Matter.Events.trigger(globals.currentGame, dPostureEventName, {value: 1});
+            marine.applyDefenseBuff({
+                id: 'defpostbuff',
+                duration: 3000,
+                amount: defensivePostureGain
+            });
+            Matter.Events.trigger(globals.currentGame, dPostureEventName, {
+                value: 1
+            });
         }
 
         if (deathWishAugment) {
-            if(marine.deathWishListener) {
+            if (marine.deathWishListener) {
                 marine.deathWishCollectorTurnOffTimer.invalidate();
             } else {
                 marine.deathWishListener = Matter.Events.on(marine, 'dealDamage', (event) => {
-                    if(event.attackContext.id == 'rifle') {
-                        Matter.Events.trigger(globals.currentGame, deathWishEventName, {value: deathWishAugment.damageIncrease});
+                    if (event.attackContext.id == 'rifle') {
+                        Matter.Events.trigger(globals.currentGame, deathWishEventName, {
+                            value: deathWishAugment.damageIncrease
+                        });
                     }
                 });
             }
@@ -488,7 +496,11 @@ export default function Marine(options) {
                 marine.deathWishListener = null;
             }, 2000);
 
-            marine.enrage({id: "deathwishbuff", duration: 2000, amount: deathWishAugment.damageIncrease});
+            marine.enrage({
+                id: "deathwishbuff",
+                duration: 2000,
+                amount: deathWishAugment.damageIncrease
+            });
         }
 
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
@@ -531,7 +543,10 @@ export default function Marine(options) {
                     };
 
                     this.vitalReserveDashProxy = Matter.Events.on(marine, 'dash', () => {
-                        Matter.Events.trigger(globals.currentGame, vitalReservesEventName, {healthSpent: vrHpCost, energySaved: vrECost});
+                        Matter.Events.trigger(globals.currentGame, vitalReservesEventName, {
+                            healthSpent: vrHpCost,
+                            energySaved: vrECost
+                        });
                     });
                 },
                 unequip: function(unit) {
@@ -628,7 +643,8 @@ export default function Marine(options) {
             restitution: 0.95,
             frictionAir: 0,
             mass: options.mass || 5,
-            isSensor: true
+            isSensor: true,
+            isChildKnife: childKnife
         });
 
         if (pierceAugment) {
@@ -725,10 +741,16 @@ export default function Marine(options) {
                             poisonAnimation.rotation = Math.random() * Math.PI * 2;
                             graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
-                            otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self, {
+                            var poisonRet = otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self, {
                                 dodgeable: false,
+                                ignoreArmor: true,
                                 id: 'poison'
                             });
+                            if (poisonRet.attackLanded) {
+                                Matter.Events.trigger(globals.currentGame, poisonKnifeCollectorEventName, {
+                                    value: poisonRet.damageDone
+                                });
+                            }
                         }
                     });
                 }
@@ -739,6 +761,12 @@ export default function Marine(options) {
                     id: 'knife',
                     knife: knife
                 }); //we can make the assumption that a body is part of a unit if it's attackable
+
+                if(damageRet.attackLanded && knife.isChildKnife && !knife.alreadyHitPrimary) {
+                    Matter.Events.trigger(globals.currentGame, multiThrowCollectorEventName, {
+                        value: damageRet.damageDone
+                    });
+                }
 
                 if (otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
@@ -757,8 +785,10 @@ export default function Marine(options) {
                 bloodPierceAnimation.rotation = mathArrayUtils.pointInDirection(knife.position, knife.destination, 'east');
                 graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                 if (pierceAugment) {
-                    if(damageRet.attackLanded && knife.alreadyHitPrimary) {
-                        Matter.Events.trigger(globals.currentGame, piercingKnifeCollectorEventName, {value: damageRet.damageDone});
+                    if (damageRet.attackLanded && knife.alreadyHitPrimary) {
+                        Matter.Events.trigger(globals.currentGame, piercingKnifeCollectorEventName, {
+                            value: damageRet.damageDone
+                        });
                     }
                     knife.alreadyHitPrimary = true;
                     knife.lives -= 1;
@@ -838,14 +868,28 @@ export default function Marine(options) {
                 damage: 30,
                 icon: graphicsUtils.createDisplayObject('PoisonTip'),
                 title: 'Poison Tip',
-                description: 'Deal an additional 30 damage over 5 seconds.'
+                description: 'Deal an additional 30 damage over 5 seconds.',
+                collector: {
+                    eventName: poisonKnifeCollectorEventName,
+                    presentation: {
+                        labels: ["Poison damage"],
+                        formats: "fixed1"
+                    }
+                }
             },
             {
                 name: 'multi throw',
                 knives: 3,
                 icon: graphicsUtils.createDisplayObject('MultiShot'),
                 title: 'Multi-throw',
-                description: 'Throw multiple knives in a fan.'
+                description: 'Throw multiple knives in a fan.',
+                collector: {
+                    eventName: multiThrowCollectorEventName,
+                    presentation: {
+                        labels: ["Auxiliary knife damage"],
+                        formats: "fixed1"
+                    }
+                }
             },
         ],
     });
@@ -950,17 +994,24 @@ export default function Marine(options) {
                 healsound.play();
             });
 
-            return {value: healthGiven};
+            return {
+                value: healthGiven
+            };
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
                 if (ally.isDead) return;
                 var id = mathArrayUtils.getId();
-                ally.applyDefenseBuff({duration: allyArmorDuration, amount: armorGiven});
+                ally.applyDefenseBuff({
+                    duration: allyArmorDuration,
+                    amount: armorGiven
+                });
             });
 
-            return {value: allyArmorDuration/1000};
+            return {
+                value: allyArmorDuration / 1000
+            };
         },
         collector: {
             aggressionLabel: 'Total armor duration',
@@ -1009,12 +1060,20 @@ export default function Marine(options) {
                 }
             });
 
-            return {value: robDDuration/1000};
+            return {
+                value: robDDuration / 1000
+            };
         },
         aggressionAction: function(event) {
-            marine.applySpeedBuff({id: 'rushofbloodspeedBuff', duration: robADuration, amount: 0.6});
+            marine.applySpeedBuff({
+                id: 'rushofbloodspeedBuff',
+                duration: robADuration,
+                amount: 0.6
+            });
 
-            return {value: robADuration/1000};
+            return {
+                value: robADuration / 1000
+            };
         },
         collector: {
             aggressionLabel: 'Duration of increased speed',
@@ -1030,7 +1089,7 @@ export default function Marine(options) {
         }
 
         //limit... may need to rethink this
-        if(marine.freeKnives >= 1) {
+        if (marine.freeKnives >= 1) {
             return;
         }
 
@@ -1082,7 +1141,9 @@ export default function Marine(options) {
                 duration: 6000
             });
 
-            return {value: 1};
+            return {
+                value: 1
+            };
         },
         aggressionAction: function(event) {
             var targetUnit = event.sufferingUnit;
@@ -1090,7 +1151,9 @@ export default function Marine(options) {
                 duration: 6000
             });
 
-            return {value: 1};
+            return {
+                value: 1
+            };
         },
         collector: {
             aggressionLabel: 'Targets maimed',
@@ -1113,7 +1176,10 @@ export default function Marine(options) {
         aggressionDuration: cpADuration,
         passiveAction: function(event) {
             var currentRange = marine.range;
-            marine.applyRangeBuff({duration: 8000, amount: currentRange});
+            marine.applyRangeBuff({
+                duration: 8000,
+                amount: currentRange
+            });
         },
         defensePredicate: function(event) {
             return event.attackContext.isProjectile;
@@ -1121,13 +1187,20 @@ export default function Marine(options) {
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
 
-            return {value: 1};
+            return {
+                value: 1
+            };
         },
         aggressionAction: function(event) {
             var currentRange = marine.range;
-            marine.applyRangeBuff({duration: cpADuration, amount: currentRange});
+            marine.applyRangeBuff({
+                duration: cpADuration,
+                amount: currentRange
+            });
 
-            return {value: cpADuration/1000};
+            return {
+                value: cpADuration / 1000
+            };
         },
         collector: {
             aggressionLabel: 'Duration of increased range',
@@ -1169,7 +1242,7 @@ export default function Marine(options) {
         },
         defensePredicate: function(event) {
             return event.attackContext.isProjectile;
-      attackContext: options
+            attackContext: options
         },
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
@@ -1187,7 +1260,9 @@ export default function Marine(options) {
                 });
             });
 
-            return {value: ssDDuration/1000};
+            return {
+                value: ssDDuration / 1000
+            };
         },
         aggressionAction: function(event) {
             var f = {};
@@ -1206,7 +1281,9 @@ export default function Marine(options) {
                 }
             });
 
-            return {value: energyGained};
+            return {
+                value: energyGained
+            };
         },
         collector: {
             aggressionLabel: 'Energy gained',
@@ -1262,7 +1339,9 @@ export default function Marine(options) {
                 });
             });
 
-            return {value: 5};
+            return {
+                value: 5
+            };
         },
         aggressionAction: function(event) {
             var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {
@@ -1282,7 +1361,9 @@ export default function Marine(options) {
                 marine.removeGritAddition(5);
             });
 
-            return {value: 5};
+            return {
+                value: 5
+            };
         },
         collector: {
             aggressionLabel: 'Grit gained',
@@ -1479,14 +1560,20 @@ export default function Marine(options) {
                             sum += addition;
                         });
                         var amountHealed = unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
-                        Matter.Events.trigger(globals.currentGame, firstAidCollectorEventName, {value: amountHealed});
+                        Matter.Events.trigger(globals.currentGame, firstAidCollectorEventName, {
+                            value: amountHealed
+                        });
                     });
                 }
 
                 var dTotal = this.damage + this.getDamageAdditionSum();
-                target.sufferAttack(dTotal * crit, this, {id: 'rifle'});
+                target.sufferAttack(dTotal * crit, this, {
+                    id: 'rifle'
+                });
                 if (critActive) {
-                    Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {value: 1});
+                    Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {
+                        value: 1
+                    });
                     fireSound.play();
                     criticalHitSound.play();
                     var chText = graphicsUtils.floatText(dTotal * crit + '!', {

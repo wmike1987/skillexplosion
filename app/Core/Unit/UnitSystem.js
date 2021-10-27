@@ -1089,7 +1089,7 @@ var UnitSystem = function(properties) {
                     if (this.selectedUnit) {
                         ItemUtils.createItemAndGrasp({
                             gamePrefix: "Us",
-                            itemName: ["Book"],
+                            itemName: ["BasicMicrochip"],
                             unit: this.selectedUnit
                         });
                     }
