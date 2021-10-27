@@ -719,7 +719,15 @@ export default function Marine(options) {
         Matter.Events.on(knife, 'onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
-            if (otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
+
+            var damageRet = otherUnit.sufferAttack(marine.knifeDamage, self, {
+                dodgeable: !self.trueKnife,
+                ignoreArmor: self.trueKnife,
+                id: 'knife',
+                knife: knife
+            }); //we can make the assumption that a body is part of a unit if it's attackable
+
+            if (damageRet.attackLanded && otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
                 if (poisonTipAugment) {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
@@ -754,13 +762,6 @@ export default function Marine(options) {
                         }
                     });
                 }
-
-                var damageRet = otherUnit.sufferAttack(marine.knifeDamage, self, {
-                    dodgeable: !self.trueKnife,
-                    ignoreArmor: self.trueKnife,
-                    id: 'knife',
-                    knife: knife
-                }); //we can make the assumption that a body is part of a unit if it's attackable
 
                 if(damageRet.attackLanded && knife.isChildKnife && !knife.alreadyHitPrimary) {
                     Matter.Events.trigger(globals.currentGame, multiThrowCollectorEventName, {
