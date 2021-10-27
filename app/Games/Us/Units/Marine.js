@@ -720,14 +720,18 @@ export default function Marine(options) {
             var otherBody = pair.pair.bodyB == knife ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
 
-            var damageRet = otherUnit.sufferAttack(marine.knifeDamage, self, {
-                dodgeable: !self.trueKnife,
-                ignoreArmor: self.trueKnife,
-                id: 'knife',
-                knife: knife
-            }); //we can make the assumption that a body is part of a unit if it's attackable
+            if (otherUnit && otherUnit != this && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
+                var damageRet = otherUnit.sufferAttack(marine.knifeDamage, self, {
+                    dodgeable: !self.trueKnife,
+                    ignoreArmor: self.trueKnife,
+                    id: 'knife',
+                    knife: knife
+                }); //we can make the assumption that a body is part of a unit if it's attackable
 
-            if (damageRet.attackLanded && otherUnit != this && otherUnit && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
+                if(!damageRet.attackLanded) {
+                    return;
+                }
+
                 if (poisonTipAugment) {
                     knife.poisonTimer = globals.currentGame.addTimer({
                         name: 'poisonTimer' + knife.id,
@@ -763,7 +767,7 @@ export default function Marine(options) {
                     });
                 }
 
-                if(damageRet.attackLanded && knife.isChildKnife && !knife.alreadyHitPrimary) {
+                if(knife.isChildKnife && !knife.alreadyHitPrimary) {
                     Matter.Events.trigger(globals.currentGame, multiThrowCollectorEventName, {
                         value: damageRet.damageDone
                     });
@@ -786,7 +790,7 @@ export default function Marine(options) {
                 bloodPierceAnimation.rotation = mathArrayUtils.pointInDirection(knife.position, knife.destination, 'east');
                 graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                 if (pierceAugment) {
-                    if (damageRet.attackLanded && knife.alreadyHitPrimary) {
+                    if (knife.alreadyHitPrimary) {
                         Matter.Events.trigger(globals.currentGame, piercingKnifeCollectorEventName, {
                             value: damageRet.damageDone
                         });

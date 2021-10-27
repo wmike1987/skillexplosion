@@ -1277,6 +1277,9 @@ export default function Medic(options) {
             aggressionLabel: 'Duration of 2x regeneration',
             aggressionSuffix: 'seconds',
             defensiveLabel: 'Healing from condemned',
+            defensiveFormat: function(v) {
+                return v.toFixed(1);
+            }
         }
     });
 
