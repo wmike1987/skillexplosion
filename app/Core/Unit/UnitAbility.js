@@ -25,12 +25,14 @@ export default function(options) {
                         tint: 0x15c5e4,
                         iconTextureName: augment.icon.creationTextureName,
                         labels: augment.collector.presentation.labels,
-                        values: augment.collector.presentation.values,
+                        values: augment.collector.presentation.values || ["value"],
                         formats: augment.collector.presentation.formats || [],
                         suffixes: ["", ""]
                     },
                     collectorFunction: function(event) {
-                        this[event.valueName || 'value'] += event.value;
+                        this.presentation.values.forEach(function(value) {
+                            this[value] += event[value];
+                        }.bind(this));
                     },
                     entity: augment
                 });

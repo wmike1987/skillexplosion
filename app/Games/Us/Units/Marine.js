@@ -470,16 +470,35 @@ export default function Marine(options) {
         var defensivePostureGain = 2;
         if (defensivePostureAugment) {
             marine.applyDefenseBuff({id: 'defpostbuff', duration: 3000, amount: defensivePostureGain});
+            Matter.Events.trigger(globals.currentGame, dPostureEventName, {value: 1});
         }
 
         if (deathWishAugment) {
-            marine.enrage({id: "deathwishbuff", duration: 2000, amount: 3});
+            if(marine.deathWishListener) {
+                marine.deathWishCollectorTurnOffTimer.invalidate();
+            } else {
+                marine.deathWishListener = Matter.Events.on(marine, 'dealDamage', (event) => {
+                    if(event.attackContext.id == 'rifle') {
+                        Matter.Events.trigger(globals.currentGame, deathWishEventName, {value: deathWishAugment.damageIncrease});
+                    }
+                });
+            }
+            marine.deathWishCollectorTurnOffTimer = gameUtils.doSomethingAfterDuration(() => {
+                Matter.Events.off(marine, 'dealDamage', marine.deathWishListener);
+                marine.deathWishListener = null;
+            }, 2000);
+
+            marine.enrage({id: "deathwishbuff", duration: 2000, amount: deathWishAugment.damageIncrease});
         }
+
         gameUtils.deathPact(this, self.dashTimer, 'dashDoneTimer');
     };
 
-    var vrHpCost = 2.5;
+    var vrHpCost = 2;
     var vrECost = 1;
+    var vitalReservesEventName = 'vitalReservesCollector';
+    var deathWishEventName = 'deathWishCollector';
+    var dPostureEventName = 'defensivePostureCollector';
     var dashAbility = new Ability({
         name: 'Dash',
         key: 'd',
@@ -510,25 +529,60 @@ export default function Marine(options) {
                         var thisAbilityCost = marine.getAbilityByName('Dash').energyCost;
                         return 'HP: ' + vrHpCost + ' and E: ' + thisAbilityCost;
                     };
+
+                    this.vitalReserveDashProxy = Matter.Events.on(marine, 'dash', () => {
+                        Matter.Events.trigger(globals.currentGame, vitalReservesEventName, {healthSpent: vrHpCost, energySaved: vrECost});
+                    });
                 },
                 unequip: function(unit) {
                     this.ability.energyCost += vrECost;
                     this.ability.enablers.splice(this.ability.enablers.indexOf(this.ability.hpEnable), 1);
                     this.ability.costs.splice(this.ability.costs.indexOf(this.ability.hpCost), 1);
                     this.ability.customCostTextUpdater = null;
+
+                    Matter.Events.off(marine, 'dash', this.vitalReserveDashProxy);
+                    this.vitalReserveDashProxy = null;
+                },
+                collector: {
+                    eventName: vitalReservesEventName,
+                    init: function() {
+                        this.energySaved = 0;
+                        this.healthSpent = 0;
+                    },
+                    collectorFunction: function(event) {
+                        this.energySaved = event.energySaved;
+                        this.healthSpent = event.healthSpent;
+                    },
+                    presentation: {
+                        labels: ["Energy saved", "Health spent"],
+                        values: ["energySaved", "healthSpent"],
+                    }
                 }
             },
             {
                 name: 'defensive posture',
                 icon: graphicsUtils.createDisplayObject('DefensivePosture'),
                 title: 'Defensive Posture',
-                description: 'Gain 2 defense upon dashing for 3 seconds.'
+                description: 'Gain 2 defense upon dashing for 3 seconds.',
+                collector: {
+                    eventName: dPostureEventName,
+                    presentation: {
+                        labels: ["Times activated"]
+                    }
+                }
             },
             {
                 name: 'death wish',
                 icon: graphicsUtils.createDisplayObject('DeathWish'),
                 title: 'Death Wish',
-                description: 'Become enraged (+3 damage) upon dashing for 2 seconds.'
+                description: 'Become enraged upon dashing for 2 seconds.',
+                damageIncrease: 3,
+                collector: {
+                    eventName: deathWishEventName,
+                    presentation: {
+                        labels: ["Addtl. damage from death wish"]
+                    }
+                }
             },
         ],
     });
@@ -672,16 +726,20 @@ export default function Marine(options) {
                             graphicsUtils.addSomethingToRenderer(poisonAnimation, 'stageOne');
                             poisonAnimation.play();
                             otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self, {
-                                dodgeable: false
+                                dodgeable: false,
+                                id: 'poison'
                             });
                         }
                     });
                 }
 
-                otherUnit.sufferAttack(marine.knifeDamage, self, {
+                var damageRet = otherUnit.sufferAttack(marine.knifeDamage, self, {
                     dodgeable: !self.trueKnife,
-                    ignoreArmor: self.trueKnife
+                    ignoreArmor: self.trueKnife,
+                    id: 'knife',
+                    knife: knife
                 }); //we can make the assumption that a body is part of a unit if it's attackable
+
                 if (otherUnit.isDead) {
                     Matter.Events.trigger(this, 'knifeKill');
                     Matter.Events.trigger(globals.currentGame, 'knifeKill', {
@@ -699,6 +757,10 @@ export default function Marine(options) {
                 bloodPierceAnimation.rotation = mathArrayUtils.pointInDirection(knife.position, knife.destination, 'east');
                 graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
                 if (pierceAugment) {
+                    if(damageRet.attackLanded && knife.alreadyHitPrimary) {
+                        Matter.Events.trigger(globals.currentGame, piercingKnifeCollectorEventName, {value: damageRet.damageDone});
+                    }
+                    knife.alreadyHitPrimary = true;
                     knife.lives -= 1;
                     if (knife.lives == 0) {
                         globals.currentGame.removeBody(knife);
@@ -731,6 +793,10 @@ export default function Marine(options) {
         });
         Matter.Events.trigger(this, 'knifeThrow');
     };
+
+    var piercingKnifeCollectorEventName = 'piercingKnifeCollector';
+    var poisonKnifeCollectorEventName = 'poisonKnifeCollector';
+    var multiThrowCollectorEventName = 'multiThrowKnifeCollector';
     var knifeAbility = new Ability({
         name: 'Throw Knife',
         key: 'f',
@@ -758,7 +824,13 @@ export default function Marine(options) {
                 lives: 4,
                 icon: graphicsUtils.createDisplayObject('PiercingKnife'),
                 title: 'Piercing Blow',
-                description: 'Pierce 4 enemies with a single knife.'
+                description: 'Pierce 4 enemies with a single knife.',
+                collector: {
+                    eventName: piercingKnifeCollectorEventName,
+                    presentation: {
+                        labels: ["Knife damage after piercing primary target"],
+                    }
+                }
             },
             {
                 name: 'poison tip',
@@ -823,10 +895,10 @@ export default function Marine(options) {
             },
             {
                 name: 'first aid pouch',
-                healAmount: 2,
+                healAmount: 1,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
-                description: 'Heal self and nearby allies for 2 hp after firing rifle.',
+                description: 'Heal self and nearby allies for 1 hp after firing rifle.',
                 collector: {
                     eventName: firstAidCollectorEventName,
                     presentation: {
@@ -1013,7 +1085,7 @@ export default function Marine(options) {
             return {value: 1};
         },
         aggressionAction: function(event) {
-            var targetUnit = event.targetUnit;
+            var targetUnit = event.sufferingUnit;
             targetUnit.maim({
                 duration: 6000
             });
@@ -1034,7 +1106,7 @@ export default function Marine(options) {
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Double rifle range for 8 seconds.'],
         textureName: 'ClearPerspective',
         unit: marine,
-        defenseEventName: 'sufferProjectile',
+        defenseEventName: 'preSufferAttack',
         defenseCooldown: 9000,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 4000,
@@ -1042,6 +1114,9 @@ export default function Marine(options) {
         passiveAction: function(event) {
             var currentRange = marine.range;
             marine.applyRangeBuff({duration: 8000, amount: currentRange});
+        },
+        defensePredicate: function(event) {
+            return event.attackContext.isProjectile;
         },
         defenseAction: function(event) {
             marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
@@ -1070,7 +1145,7 @@ export default function Marine(options) {
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies rengerate energy at x2 rate for 3 seconds.'],
         textureName: 'SpiritualState',
         unit: marine,
-        defenseEventName: 'sufferProjectile',
+        defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
         defenseDuration: ssDDuration,
         aggressionEventName: 'holdPosition',
@@ -1091,6 +1166,10 @@ export default function Marine(options) {
                     }
                 });
             });
+        },
+        defensePredicate: function(event) {
+            return event.attackContext.isProjectile;
+      attackContext: options
         },
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
@@ -1405,7 +1484,7 @@ export default function Marine(options) {
                 }
 
                 var dTotal = this.damage + this.getDamageAdditionSum();
-                target.sufferAttack(dTotal * crit, this);
+                target.sufferAttack(dTotal * crit, this, {id: 'rifle'});
                 if (critActive) {
                     Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {value: 1});
                     fireSound.play();

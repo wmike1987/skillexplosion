@@ -106,13 +106,13 @@ var unitUtils = {
     },
 
     showBlockGraphic: function(options) {
-        var attackOptions = options.attackOptions;
+        var attackContext = options.attackContext;
         var attackingUnit = options.attackingUnit;
         var unit = options.unit;
 
         //add block graphic
         let offset = 40;
-        let attackLocation = attackOptions.isProjectile ? attackOptions.projectileData.startLocation : attackingUnit.position;
+        let attackLocation = attackContext.isProjectile ? attackContext.projectileData.startLocation : attackingUnit.position;
         let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(unit.position, attackLocation, offset);
         let attachmentOffset = Matter.Vector.sub(offsetLocation, unit.position);
         let block = graphicsUtils.addSomethingToRenderer('Block', {

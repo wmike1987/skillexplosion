@@ -25,7 +25,7 @@ var manipulations = {
                     unit.rubyVisorHandler.removeHandler();
                 }
 
-                unit.rubyVisorHandler = gameUtils.matterOnce(unit, 'preLevyAttack', (event) => {
+                unit.rubyVisorHandler = gameUtils.matterOnce(unit, 'dealNonLethalDamage', (event) => {
                     var target = event.sufferingUnit;
                     target.condemn({duration: 3000, condemningUnit: unit});
                 });

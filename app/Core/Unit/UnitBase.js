@@ -164,8 +164,10 @@ var UnitBase = {
 
         options = Object.assign({
             isProjectile: false,
-            dodgeable: true
+            dodgeable: true,
+            ignoreArmor: false
         }, options);
+
         attackingUnit = attackingUnit || {
             name: 'empty'
         };
@@ -178,7 +180,8 @@ var UnitBase = {
         Matter.Events.trigger(this, 'preDodgeSufferAttack', {
             performingUnit: attackingUnit,
             sufferingUnit: this,
-            damageObj: damageObj
+            damageObj: damageObj,
+            attackContext: options
         });
 
         if (options.dodgeable && (this.attackDodged() || damageObj.manualDodge)) {
@@ -187,7 +190,8 @@ var UnitBase = {
             });
             Matter.Events.trigger(this, 'dodgeAttack', {
                 performingUnit: this,
-                damageObj: damageObj
+                damageObj: damageObj,
+                attackContext: options
             });
             //display a miss graphic
             graphicsUtils.floatText('Dodge!', {
@@ -196,37 +200,44 @@ var UnitBase = {
             }, {
                 style: styles.dodgeText
             });
-            unitUtils.showBlockGraphic({attackOptions: options, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
+            unitUtils.showBlockGraphic({attackContext: options, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
             this.dodgeSound.play();
 
             returnInformation.attackLanded = false;
             return returnInformation;
         }
 
+        //killing blow block
+        if (this.currentHealth - alteredDamage <= 0) {
+            if (this.hasGritDodge) {
+                this.giveGritDodge(false);
+                this.gritDodgeTimer.reset();
+                Matter.Events.trigger(this, 'killingBlowBlock', {
+                    performingUnit: this,
+                    attackingUnit: attackingUnit,
+                    attackContext: options
+                });
+                //display a miss graphic
+                graphicsUtils.floatText('Block!', {
+                    x: this.position.x,
+                    y: this.position.y - 25
+                }, {
+                    style: styles.dodgeKillingBlowText
+                });
+
+                unitUtils.showBlockGraphic({attackContext: options, attackingUnit: attackingUnit, unit: this, tint: 0xd55812});
+                killingBlowBlock.play();
+
+                returnInformation.attackLanded = false;
+                return returnInformation;
+            }
+        }
+
         Matter.Events.trigger(this, 'preSufferAttack', {
             performingUnit: attackingUnit,
             sufferingUnit: this,
-            damageObj: damageObj
-        });
-
-        if(attackingUnit) {
-            Matter.Events.trigger(attackingUnit, 'preLevyAttack', {
-                performingUnit: attackingUnit,
-                sufferingUnit: this,
-                damageObj: damageObj
-            });
-        }
-
-        if (options.isProjectile) {
-            Matter.Events.trigger(this, 'sufferProjectile', {
-                performingUnit: attackingUnit,
-                sufferingUnit: this,
-                damageObj: damageObj,
-                projectileData: options.projectileData
-            });
-        }
-        Matter.Events.trigger(attackingUnit, 'dealDamage', {
-            targetUnit: this
+            damageObj: damageObj,
+            attackContext: options,
         });
 
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
@@ -240,33 +251,9 @@ var UnitBase = {
         Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {
             performingUnit: attackingUnit,
             sufferingUnit: this,
-            amountDone: damageReducedByArmor
+            amountDone: damageReducedByArmor,
+            attackContext: options
         });
-
-        //killing blow block
-        if (this.currentHealth - alteredDamage <= 0) {
-            if (this.hasGritDodge) {
-                this.giveGritDodge(false);
-                this.gritDodgeTimer.reset();
-                Matter.Events.trigger(this, 'killingBlowBlock', {
-                    performingUnit: this,
-                    attackingUnit: attackingUnit
-                });
-                //display a miss graphic
-                graphicsUtils.floatText('Block!', {
-                    x: this.position.x,
-                    y: this.position.y - 25
-                }, {
-                    style: styles.dodgeKillingBlowText
-                });
-
-                unitUtils.showBlockGraphic({attackOptions: options, attackingUnit: attackingUnit, unit: this, tint: 0xd55812});
-                killingBlowBlock.play();
-
-                returnInformation.attackLanded = false;
-                return returnInformation;
-            }
-        }
 
         this.fadeLifeAmount(this.currentHealth);
         this.currentHealth -= alteredDamage;
@@ -278,20 +265,24 @@ var UnitBase = {
             });
             if (attackingUnit) {
                 Matter.Events.trigger(attackingUnit, 'kill', {
-                    killedUnit: this
+                    killedUnit: this,
+                    attackContext: options
                 });
                 Matter.Events.trigger(globals.currentGame, 'performKill', {
-                    performingUnit: attackingUnit
+                    performingUnit: attackingUnit,
+                    attackContext: options
                 });
             }
         } else {
             Matter.Events.trigger(attackingUnit, 'dealNonLethalDamage', {
-                targetUnit: this
+                sufferingUnit: this,
+                attackContext: options
             });
             Matter.Events.trigger(this, 'sufferNonLethalAttack', {
                 performingUnit: attackingUnit,
                 sufferingUnit: this,
-                amountDone: alteredDamage
+                amountDone: alteredDamage,
+                attackContext: options
             });
             this.showLifeBar(true);
             if (!this.barTimer) {
@@ -313,9 +304,17 @@ var UnitBase = {
         Matter.Events.trigger(globals.currentGame, 'sufferAttack', {
             performingUnit: attackingUnit,
             sufferingUnit: this,
-            amountDone: alteredDamage
+            amountDone: alteredDamage,
+            attackContext: options
         });
 
+        Matter.Events.trigger(attackingUnit, 'dealDamage', {
+            sufferingUnit: this,
+            amountDone: alteredDamage,
+            attackContext: options
+        });
+
+        returnInformation.damageDone = alteredDamage;
         return returnInformation;
     },
 

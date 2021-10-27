@@ -1407,7 +1407,7 @@ export default function Medic(options) {
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain a free mine.'],
         textureName: 'DeepThought',
         unit: medic,
-        defenseEventName: 'sufferProjectile',
+        defenseEventName: 'preSufferAttack',
         defenseCooldown: 6000,
         aggressionEventName: 'kill',
         aggressionCooldown: 8000,
@@ -1442,6 +1442,9 @@ export default function Medic(options) {
                     }
                 }
             });
+        },
+        defensePredicate: function(event) {
+            return event.attackContext.isProjectile;;
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
@@ -1507,13 +1510,16 @@ export default function Medic(options) {
         unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 15 energy.'],
         textureName: 'ElegantForm',
         unit: medic,
-        defenseEventName: 'sufferProjectile',
+        defenseEventName: 'preSufferAttack',
         defenseCooldown: efDDuration,
-        aggressionEventName: 'sufferProjectile',
+        aggressionEventName: 'preSufferAttack',
         aggressionCooldown: efADuration,
         passiveAction: function(event) {
             medic.giveEnergy(15);
             unitUtils.applyEnergyGainAnimationToUnit(medic);
+        },
+        defensePredicate: function(event) {
+            return event.attackContext.isProjectile;
         },
         defenseAction: function(event) {
             //delay the attack for a second
@@ -1544,7 +1550,7 @@ export default function Medic(options) {
 
             //add block graphic
             let offset = 40;
-            let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(medic.position, event.projectileData.startLocation, offset);
+            let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(medic.position, event.attackContext.projectileData.startLocation, offset);
             let attachmentOffset = Matter.Vector.sub(offsetLocation, medic.position);
             let block = graphicsUtils.addSomethingToRenderer('Block', {
                 where: 'stageOne',
@@ -1572,6 +1578,9 @@ export default function Medic(options) {
             blockSound.play();
 
             return {value: damageReduced};
+        },
+        aggressionPredicate: function(event) {
+            return event.attackContext.isProjectile;;
         },
         aggressionAction: function(event) {
             medic.giveEnergy(energyGain);

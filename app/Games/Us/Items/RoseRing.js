@@ -5,7 +5,7 @@ import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     healthRegenerationRate: 1.5,
-    maxHealth: 15
+    maxHealth: 20
 };
 
 export default function(options) {

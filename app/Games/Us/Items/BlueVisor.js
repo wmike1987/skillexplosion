@@ -25,7 +25,7 @@ var manipulations = {
                     unit.violetVisorHandler.removeHandler();
                 }
 
-                unit.violetVisorHandler = gameUtils.matterOnce(unit, 'preLevyAttack', (event) => {
+                unit.violetVisorHandler = gameUtils.matterOnce(unit, 'dealNonLethalDamage', (event) => {
                     var target = event.sufferingUnit;
                     target.condemn({duration: 3000, condemningUnit: globals.currentGame.ursula});
                 });
