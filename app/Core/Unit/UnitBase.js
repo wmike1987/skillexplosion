@@ -95,7 +95,7 @@ var UnitBase = {
     level: 1,
     fatigueReduction: 0,
     organic: true,
-    condemnedLifeGain: 15,
+    condemnedLifeGain: 10,
     currentExperience: 0,
     nextLevelExp: 100,
     lastLevelExp: 0,

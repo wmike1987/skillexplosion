@@ -728,7 +728,7 @@ export default function Marine(options) {
                     knife: knife
                 }); //we can make the assumption that a body is part of a unit if it's attackable
 
-                if(!damageRet.attackLanded) {
+                if(damageRet && !damageRet.attackLanded) {
                     return;
                 }
 

@@ -152,6 +152,18 @@ var CollectorManager = function(options) {
     };
 
     this.addCollector = function(collector, start) {
+        //dedup
+        var foundDupe = false;
+        this.collectors.forEach((existingCollector) => {
+            if(existingCollector.name == collector.name) {
+                foundDupe = true;
+            }
+        });
+
+        if(foundDupe) {
+            return;
+        }
+
         this.collectors.push(collector);
         if (start) {
             collector.start();

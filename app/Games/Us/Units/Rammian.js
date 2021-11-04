@@ -290,7 +290,7 @@ export default function Rammian(options) {
                 y: 0.55
             },
             visible: true,
-            tint: 0x2f0000,
+            tint: 0x3b0101,
             avoidIsoMgr: true,
             rotate: 'none',
             stage: "stageNTwo",
@@ -365,12 +365,12 @@ export default function Rammian(options) {
                                 speed: 2.8,
                                 transform: [self.deathPosition.x, self.deathPosition.y, 2.0, 2.0]
                             });
-                            var blastRadius = 225;
+                            var blastRadius = 180;
                             graphicsUtils.makeSpriteSize(mineExplosionAnimation, {
                                 x: blastRadius * 2,
                                 y: blastRadius * 2
                             });
-                            mineExplosionAnimation.tint = 0xf64200;
+                            mineExplosionAnimation.tint = 0xe2391b;
                             mineExplosionAnimation.play();
 
                             mineExplosionSound.play();
@@ -512,11 +512,13 @@ export default function Rammian(options) {
             damage: 25,
             attackExtension: function(target) {
                 var bloodAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'UtilityAnimations1',
-                    animationName: 'GenericHit',
-                    speed: 0.4,
-                    transform: [target.position.x + Math.random() * 8, target.position.y + Math.random() * 8, 0.5, 0.5]
+                    spritesheetName: 'UtilityAnimations3',
+                    animationName: 'hit3',
+                    speed: 1.0,
+                    transform: [target.position.x + Math.random() * 8, target.position.y + Math.random() * 8, 1.25, 1.25]
                 });
+                bloodAnimation.rotation = Math.random();
+                graphicsUtils.graduallyTint(bloodAnimation, 0xff2f2f, 0x540000, 500, null, null, 1);
                 graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                 bloodAnimation.play();
                 attackSound.play();
