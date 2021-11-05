@@ -1054,7 +1054,13 @@ export default function Medic(options) {
                 },
                 equip: function(unit) {
                     this.hpGivenTally = 0;
+                    this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
+                        this.hpGivenTally = 0;
+                    });
                 },
+                unequip: function(unit) {
+                    Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
+                }
             },
             {
                 name: 'lightest touch',
