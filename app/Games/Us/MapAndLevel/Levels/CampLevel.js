@@ -320,7 +320,7 @@ var campLevel = function() {
         var game = globals.currentGame;
 
         //unit tester
-        var unitTest = true;
+        var unitTest = false;
         if(unitTest) {
             var unitT = UnitMenu.createUnit('Eruptlet', {
                 team: game.playerTeam,

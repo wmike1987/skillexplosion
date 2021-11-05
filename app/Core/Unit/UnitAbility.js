@@ -31,7 +31,8 @@ export default function(options) {
                     },
                     collectorFunction: function(event) {
                         this.presentation.values.forEach(function(value) {
-                            this[value] += event[value];
+                            var safeValue = event[value] || 0;
+                            this[value] += safeValue;
                         }.bind(this));
                     },
                     entity: augment

@@ -564,10 +564,6 @@ export default function Marine(options) {
                         this.energySaved = 0;
                         this.healthSpent = 0;
                     },
-                    collectorFunction: function(event) {
-                        this.energySaved = event.energySaved;
-                        this.healthSpent = event.healthSpent;
-                    },
                     presentation: {
                         labels: ["Energy saved", "Health spent"],
                         values: ["energySaved", "healthSpent"],

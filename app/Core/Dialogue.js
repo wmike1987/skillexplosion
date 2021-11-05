@@ -447,6 +447,11 @@ var Dialogue = function Dialogue(options) {
 
                     d.done = true;
                     gameUtils.doSomethingAfterDuration(() => {
+                        //if we're cleaned up in the delay after end, don't continue
+                        if(d.chain && d.chain.isDone) {
+                            return;
+                        }
+
                         if (d.fadeOutAfterDone && !d.isContinuing) {
                             d.realizedText.alpha = 0.5;
                             d.realizedActorText.alpha = 0.5;
@@ -574,7 +579,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 }.bind(this));
             } else {
                 if (this.done) {
-                    this.isDone = true;
+                    currentDia.chain = this;
                     currentDia.deferred.done(this.done);
                 }
 
@@ -617,10 +622,7 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
             dialogue.cleanUp();
         });
 
-        if (!this.isDone && this.done) {
-            this.isDone = true;
-            this.done();
-        }
+        this.isDone = true;
 
         $('body').off('keydown.' + 'speedUpChain:' + this.id);
         $('body').off('keydown.' + 'escapeChain:' + this.id);

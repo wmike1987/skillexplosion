@@ -1016,6 +1016,8 @@ export default function Medic(options) {
 
     var ppCollEventName = 'ppCollEvent';
     var sacCollEventName = 'sacCollEvent';
+    var continuousHealthNeeded = 15;
+    var enragePPTime = 2000;
     var healAbility = new Ability({
         name: 'Heal',
         icon: graphicsUtils.createDisplayObject('HealIcon'),
@@ -1035,15 +1037,24 @@ export default function Medic(options) {
         augments: [{
                 name: 'pure priorities',
                 hpThreshold: 0.75,
+                hpGivenTally: 0,
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: 'Reduce healing cost to 0 when target\'s life is below 75%.',
+                description: ['Reduce healing cost to 0 when ally\'s life is below 75%.', 'Enrage ally for 2 seconds upon giving 15 health.'],
                 collector: {
                     eventName: ppCollEventName,
+                    init: function() {
+                        this.freeHealing = 0;
+                        this.enragesGranted = 0;
+                    },
                     presentation: {
-                        labels: ["Healing done for free"]
+                        labels: ["Healing done for free", "Times enrage granted"],
+                        values: ["freeHealing", "enragesGranted"],
                     }
-                }
+                },
+                equip: function(unit) {
+                    this.hpGivenTally = 0;
+                },
             },
             {
                 name: 'lightest touch',
@@ -1051,7 +1062,7 @@ export default function Medic(options) {
                 healDelta: 1.5,
                 icon: graphicsUtils.createDisplayObject('LightestTouch'),
                 title: 'Lightest Touch',
-                description: 'Increase healing range and healing amount.',
+                description: ['Increase healing amount.', 'Increase healing range.'],
                 equip: function(unit) {
                     unit.range += this.rangeDelta;
                     unit.getAbilityByName('Heal').healAmount += this.healDelta;
@@ -1852,11 +1863,20 @@ export default function Medic(options) {
                 var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
                 var actualHealingAmount = target.giveHealth(healAmount, this);
 
+                if(ppAugment) {
+                    ppAugment.hpGivenTally += actualHealingAmount;
+                    if(ppAugment.hpGivenTally > continuousHealthNeeded) {
+                        ppAugment.hpGivenTally -= continuousHealthNeeded;
+                        target.enrage({duration: enragePPTime, amount: 3});
+                        Matter.Events.trigger(globals.currentGame, ppCollEventName, {enragesGranted: 1});
+                    }
+                }
+
                 if (!ppBypass) {
                     this.spendEnergy(thisAbility.energyCost);
                 } else {
                     //we've healed at no cost, send the collector event
-                    Matter.Events.trigger(globals.currentGame, ppCollEventName, {value: actualHealingAmount});
+                    Matter.Events.trigger(globals.currentGame, ppCollEventName, {freeHealing: actualHealingAmount});
                 }
             },
             attackHoneTeamPredicate: function(team) {
