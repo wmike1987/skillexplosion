@@ -11,7 +11,7 @@ import {
 import * as Matter from 'matter-js';
 
 var gainDuration = 8000;
-var chargeLength = 2000;
+var chargeLength = 1000;
 var gainAmount = 1;
 var eventName = 'silverYinYangTimesActive';
 
@@ -72,7 +72,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Silver Yin Yang",
-        description: ["Become enraged (+1 heal) for 8 seconds by holding position for 2 seconds."],
+        description: ["Become enraged (+1 heal) for 8 seconds by holding position for 1 second."],
         icon: 'SilverYinYang',
         type: 'Medic',
         fontType: 'ursula',

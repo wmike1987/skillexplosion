@@ -12,7 +12,7 @@ export default function Eruptlet(options) {
     var eruptlet = {};
 
     options = options || {};
-    $.extend(options, {radius: 25}, options);
+    $.extend(options, {radius: 15}, options);
 
     //animation settings
     var runSpeed = 0.6;
@@ -247,6 +247,7 @@ export default function Eruptlet(options) {
         hitboxWidth: 25,
         hitboxHeight: 25,
         hitboxYOffset: 10,
+        buffYOffset: 28,
         itemsEnabled: true,
         // adjustHitbox: true,
         portrait: graphicsUtils.createDisplayObject('EruptletPortrait'),
@@ -254,7 +255,7 @@ export default function Eruptlet(options) {
         team: options.team || 4,
         priority: 50,
         name: options.name,
-        heightAnimation: 'up',
+        manualUnitHeight: 1,
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {

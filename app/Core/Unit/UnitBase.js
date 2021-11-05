@@ -1365,7 +1365,10 @@ var UnitBase = {
             }
 
             //establish the height of the unit
-            if (this.heightAnimation) {
+            if(this.manualUnitHeight) {
+                this.unitHeight = this.manualUnitHeight;
+            }
+            else if(this.heightAnimation) {
                 this.unitHeight = this.renderlings[this.heightAnimation].height;
             }
             else {
