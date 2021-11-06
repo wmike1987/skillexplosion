@@ -588,8 +588,8 @@ var gameUtils = {
         var bodyHalfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
         var bodyHalfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
         if (neatly) {
-            var Xtile = this.getIntBetween(0, XRange - 1);
-            var Ytile = this.getIntBetween(0, YRange - 1);
+            var Xtile = mathArrayUtils.getIntBetween(0, XRange - 1);
+            var Ytile = mathArrayUtils.getIntBetween(0, YRange - 1);
             placement.x = Xtile * bodyWidth + bodyHalfWidth;
             placement.y = Ytile * bodyHeight + bodyHalfHeight;
         } else {
@@ -836,7 +836,7 @@ var gameUtils = {
         } else if (!options.style) {
             options.style = styles.praiseStyle;
         }
-        var praiseWord = praiseWords[this.getIntBetween(0, praiseWords.length - 1)] + "!";
+        var praiseWord = praiseWords[mathArrayUtils.getIntBetween(0, praiseWords.length - 1)] + "!";
         this.floatText(praiseWord, options.position || this.getCanvasCenter(), options);
     },
 

@@ -19,6 +19,7 @@ import {
 } from '@core/Dialogue.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
+import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import {
     Doodad
 } from '@utils/Doodad.js';
@@ -39,7 +40,8 @@ import {
 } from '@games/Us/Dialogues/Plain/MapLearning.js';
 
 var tileSize = 225;
-var acceptableTileTints = [0xff9e9e, 0x7848ee];
+var acceptableTileTints = [0xff9e9e, 0x7848ee]; //0xe59ab6
+var rockTints = [0xffcccc, 0xe59ab6];
 var acceptableOrnamentTints = [0xffab7a, 0xfb4a9a];
 var acceptableFlowerTints = [0xf78d8d, 0x600028];
 var ambientLightTints = [
@@ -478,11 +480,6 @@ var camp = {
         //debug setting
         if (globals.currentGame.mapTableAlwaysActive) {
             this.mapTableActive = true;
-            // gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
-            //     graphicsUtils.removeSomethingFromRenderer(arrow);
-            //     var mapLearning = new MapLearning(scene);
-            //     mapLearning.play();
-            // });
         }
 
         //If we haven't completed ursula tasks, init ursula's tasks
@@ -946,6 +943,7 @@ var phaseTwo = function(options) {
                     nodeTitle: 'Mega Den',
                     token: 'hard',
                     itemClass: 'worn',
+                    outer: true
                 }
             });
 
@@ -1352,6 +1350,22 @@ var campNoir = {
 
             var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.2);
             scene.add(l1);
+
+            //Add rocks to non camp levels
+            var numberOfRocks = 3;
+
+            var createRock = function() {
+                var rock = SceneryUtils.createRock({tint: rockTints[tIndex]});
+                scene.add(rock);
+            };
+
+            var createRock2 = function() {
+                var rock = SceneryUtils.createRock({names: ['Rock2', 'Rock5'], tint: rockTints[tIndex]});
+                scene.add(rock);
+            };
+
+            mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
+            mathArrayUtils.repeatXTimes(createRock2, numberOfRocks);
         }
     },
 

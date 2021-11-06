@@ -4,18 +4,18 @@ import * as PIXI from 'pixi.js';
 import UC from '@core/Unit/UnitConstructor.js';
 import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
-import style from '@utils/Styles.js';
+import styles from '@utils/Styles.js';
 import {globals} from '@core/Fundamental/GlobalState';
 import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
 
-export default function Eruptlet(options) {
-    var eruptlet = {};
+export default function FlySwarm(options) {
+    var flySwarm = {};
 
     options = options || {};
-    $.extend(options, {radius: 20}, options);
+    $.extend(options, {radius: 25}, options);
 
     //animation settings
-    var runSpeed = 0.6;
+    var runSpeed = 0.9;
     var runSpeedBonus = 0.25;
     var shootSpeed = 1;
 
@@ -28,61 +28,60 @@ export default function Eruptlet(options) {
     var spineNorthWest = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['critterNW'].spineData);
     var spineNorthEast = new PIXI.spine.Spine(globals.currentGame.renderer.texturePool['critterNW'].spineData);
 
-    var animationSpeed = 1.0;
     var runAnimations = {
         up: gameUtils.getSpineAnimation({
             spine: spineNorth,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         upRight: gameUtils.getSpineAnimation({
             spine: spineNorthEast,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         right: gameUtils.getSpineAnimation({
             spine: spineEast,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         downRight: gameUtils.getSpineAnimation({
             spine: spineSouthEast,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         down: gameUtils.getSpineAnimation({
             spine: spineSouth,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         downLeft: gameUtils.getSpineAnimation({
             spine: spineSouthWest,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         left: gameUtils.getSpineAnimation({
             spine: spineWest,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
         upLeft: gameUtils.getSpineAnimation({
             spine: spineNorthWest,
             animationName: 'run',
-            speed: animationSpeed,
+            speed: 1.5,
             loop: true,
             canInterruptSelf: false
         }),
@@ -139,16 +138,19 @@ export default function Eruptlet(options) {
         }),
     };
 
-    var scale = 0.06;
-    var sc = {x: scale, y: scale};
-    var adjustedUpDownsc = {x: scale, y: scale};
+    var otherAnimations = {
+
+    };
+
+    var sc = {x: 0.1, y: 0.1};
+    var adjustedUpDownsc = {x: 0.1, y: 0.1};
     var flipsc = {x: -1 * sc.x, y: sc.y};
     var yOffset = 22;
     var rc = [
     {
         id: 'selected',
         data: 'IsometricSelected',
-        scale: {x: 0.6, y: 0.6},
+        scale: {x: 0.55, y: 0.55},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -158,7 +160,7 @@ export default function Eruptlet(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.34, y: 0.34},
+        scale: {x: 0.35, y: 0.35},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -228,105 +230,88 @@ export default function Eruptlet(options) {
     },{
         id: 'shadow',
         data: 'IsoShadowBlurred',
-        scale: {x: 0.5, y: 0.5},
+        scale: {x: 0.55, y: 0.55},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',
         stage: "stageNTwo",
         offset: {x: 0, y: 22}}];
 
-    var burstSound = gameUtils.getSound('eruptletburst.wav', {volume: 0.08, rate: 1});
+    var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
+    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: 0.08, rate: 1.5});
+
+    // var meText = graphicsUtils.addSomethingToRenderer('TEX+:IsoShadowBlurred', {where: 'stage', style: styles.unitDamageStyle, position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 22})});
 
     var unitProperties = $.extend({
-        unitType: 'Eruptlet',
+        unitType: 'Critter',
         health: 20,
-        defense: 2,
+        defense: 1,
         energy: 0,
         energyRegenerationRate: 0,
         experienceWorth: 20,
-        hitboxWidth: 25,
-        hitboxHeight: 25,
-        hitboxYOffset: 10,
-        buffYOffset: 28,
+        hitboxWidth: 40,
+        hitboxHeight: 40,
+        hitboxYOffset: 5,
+        buffYOffset: 40,
         itemsEnabled: true,
-        // adjustHitbox: true,
-        portrait: graphicsUtils.createDisplayObject('EruptletPortrait'),
-        wireframe: graphicsUtils.createDisplayObject('EruptletGroupPortrait'),
+        portrait: graphicsUtils.createDisplayObject('CritterPortrait'),
+        wireframe: graphicsUtils.createDisplayObject('CritterGroupPortrait'),
         team: options.team || 4,
         priority: 50,
         name: options.name,
-        manualUnitHeight: 1,
+        heightAnimation: 'up',
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            if(!this.alreadyAttacked) {
-                this.attack();
-            }
-            globals.currentGame.removeUnit(this);
-        },
-        _afterAddInit: function() {
-            $.each(this.body.renderlings, function(key, renderling) {
-                if(renderling.skeleton) {
-                    $.each(renderling.skeleton.slots, function(i, slot) {
-                        if(slot.currentSprite) {
-                            if(slot.currentSpriteName.includes('1---4') ||
-                              (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length-1) == '1') ||
-                              (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
-                              slot.currentSpriteName.includes('1---3') ||
-                              slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
-                              slot.currentSpriteName.includes('North_0003_Layer-1---5'))
-                            {
-                                slot.customColor = {r: 0.2, g: 1.0, b: 0.2, a: 1.0};
-                            }
-                        }
-                    });
-                }
+            var self = this;
+            var anim = gameUtils.getAnimation({
+                spritesheetName: 'CritterAnimations1',
+                animationName: 'critterdeath',
+                speed: 0.25,
+                fadeAway: true,
+                fadeTime: 8000,
+                transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
-        },
-    }, options);
+            graphicsUtils.addSomethingToRenderer(anim);
+            anim.play();
+            deathSound.play();
+
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
+            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
+            graphicsUtils.addSomethingToRenderer(shadow);
+            globals.currentGame.removeUnit(this);
+            return [shadow, anim];
+        }}, options);
 
     return UC({
-        givenUnitObj: eruptlet,
-        renderChildren: rc,
-        radius: options.radius,
-        mass: options.mass || 8,
-        mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [burstSound, unitProperties.portrait, unitProperties.wireframe],
-        unit: unitProperties,
-        moveable: {
-            moveSpeed: 1.5,
-            walkAnimations: runAnimations,
-        },
-        attacker: {
-            attackAnimations: attackAnimations,
-            cooldown: 650,
-            honeRange: 300,
-            range: options.radius*2.25,
-            damage: 14,
-            attack: function(target) {
-                var deathAnimation = gameUtils.getAnimation({
-                    spritesheetName: 'EruptletAnimations1',
-                    animationName: 'eruptletExplode',
-                    speed: 1,
-                    transform: [this.position.x, this.position.y, 1.5, 1.5]
-                });
-
-                deathAnimation.rotation = Math.random() * Math.PI;
-                deathAnimation.play();
-                burstSound.play();
-                graphicsUtils.addSomethingToRenderer(deathAnimation, 'stageOne');
-
-                var blastRadius = 70;
-                var bodiesToDamage = [];
-                gameUtils.applyToUnitsByTeam(function(team) {return this.team != team;}.bind(this), function(unit) {
-                    return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable);
-                }.bind(this), function(unit) {
-                    unit.sufferAttack(this.damage, this);
-                }.bind(this));
-                this.alreadyAttacked = true;
-                if(!this.isDead)
-                    this.sufferAttack(10000);
-            }
-        },
+            givenUnitObj: critter,
+            renderChildren: rc,
+            radius: options.radius,
+            mass: options.mass || 8,
+            mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+            slaves: [attackSound, /*meText,*/ deathSound, unitProperties.portrait, unitProperties.wireframe],
+            unit: unitProperties,
+            moveable: {
+                moveSpeed: 3.00,
+                walkAnimations: runAnimations,
+            }, attacker: {
+                attackAnimations: attackAnimations,
+                cooldown: 650,
+                honeRange: 300,
+                isMelee: true,
+                range: options.radius*2+10,
+                damage: 6,
+                attackExtension: function(target) {
+                    var bloodAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'GenericHit',
+                        speed: 1.0,
+                        transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.25, 0.25]
+                    });
+                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                    bloodAnimation.play();
+                    attackSound.play();
+                },
+            },
     });
 }

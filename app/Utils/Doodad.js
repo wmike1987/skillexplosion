@@ -61,6 +61,7 @@ var Doodad = function(options) {
         var offset = options.offset || {x: 0, y: 0};
         var scale = item.scale || options.scale || {x: 1, y: 1};
         var stage = item.where || options.stage || 'foreground';
+        var tint = options.tint || 0xffffff;
         if(item.doodadData) {
             data = item.doodadData;
             offset = item.offset || offset;
@@ -74,6 +75,7 @@ var Doodad = function(options) {
             rotate: 'none',
             scale: scale,
             stage: stage,
+            tint: tint,
             sortYOffset: options.sortYOffset || 0,
         });
     });

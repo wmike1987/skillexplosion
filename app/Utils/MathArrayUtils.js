@@ -99,6 +99,12 @@ var mathArrayUtils = {
         });
     },
 
+    repeatXTimes: function(func, times) {
+        for(var i = 0; i < times; i++) {
+            func();
+        }
+    },
+
     convertObjectValuesToArray: function(object) {
         if (!object) return;
         var array = [];
