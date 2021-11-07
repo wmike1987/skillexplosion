@@ -365,7 +365,7 @@ export default function Rammian(options) {
                                 speed: 2.8,
                                 transform: [self.deathPosition.x, self.deathPosition.y, 2.0, 2.0]
                             });
-                            var blastRadius = 180;
+                            var blastRadius = 140;
                             graphicsUtils.makeSpriteSize(mineExplosionAnimation, {
                                 x: blastRadius * 2,
                                 y: blastRadius * 2

@@ -1341,13 +1341,13 @@ var campNoir = {
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
-                                alpha: 0.25 + Math.random() * 0.5,
+                                alpha: 0.35,
                                 offset: {
                                     x: 0,
                                     y: 10
                                 },
                                 size: {
-                                    x: 18,
+                                    x: 24,
                                     y: 5
                                 }
                             });
@@ -1369,13 +1369,13 @@ var campNoir = {
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
-                                alpha: 0.25 + Math.random() * 0.5,
+                                alpha: 0.35,
                                 offset: {
                                     x: 0,
                                     y: 10
                                 },
                                 size: {
-                                    x: 18,
+                                    x: 24,
                                     y: 5
                                 }
                             })
