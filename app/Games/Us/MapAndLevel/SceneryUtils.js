@@ -71,34 +71,53 @@ var sceneryUtils = {
         options = Object.assign({
             where: 'stage'
         }, options);
-        var possibleRocks = ['Rock1', 'Rock3', 'Rock4'];
-        var decorRocks = ['Rock2', 'Rock5'];
 
-        possibleRocks = possibleRocks.concat(decorRocks);
-        if(options.names) {
-            possibleRocks = options.names;
-        }
         var rockDetails = {
             Rock1: {
                 radius: 5
             },
             Rock3: {
-                radius: 12,
-                offset: {x: 4, y: 0}
+                radius: 4,
+                offset: {x: 10, y: 0},
+                bodyScale: {x: 2, y: 1}
             },
             Rock4: {
                 scale: {x: 1.5, y: 1.5},
                 radius: 5
             },
+            Rock6: {
+                scale: {x: 1.0, y: 1.0},
+                radius: 4,
+                bodyScale: {x: 2, y: 1},
+                offset: {x: 0, y: 5},
+            },
+            Rock7: {
+                scale: {x: 1.0, y: 1.0},
+                radius: 4,
+                offset: {x: 0, y: 8},
+                bodyScale: {x: 2, y: 1}
+            },
             Rock2: {
                 collides: false
             },
-            Rock5: {
+            Rock2a: {
                 textureName: 'Rock1',
                 collides: false,
                 scale: {x: 0.35, y: 0.35}
-            }
+            },
+            Rock2b: {
+                textureName: 'Rock5',
+                scale: {x: 1.0, y: 1.0},
+                collides: false
+            },
         };
+
+        var possibleRocks = Object.keys(rockDetails);
+
+        if(options.names) {
+            possibleRocks = options.names;
+        }
+
         var randomRockName = mathArrayUtils.getRandomElementOfArray(possibleRocks);
 
         //mixin the default options
@@ -106,6 +125,7 @@ var sceneryUtils = {
             collides: true,
             offset: {x: 0, y: 0},
             scale: {x: 1, y: 1},
+            bodyScale: null,
             textureName: randomRockName
         }, rockDetails[randomRockName]);
         var rock = new Doodad({
@@ -118,6 +138,7 @@ var sceneryUtils = {
             tint: options.tint,
             scale: myDetails.scale,
             offset: myDetails.offset,
+            bodyScale: myDetails.bodyScale,
             sortYOffset: 0,
             shadowIcon: 'IsoTreeShadow1',
             shadowScale: {

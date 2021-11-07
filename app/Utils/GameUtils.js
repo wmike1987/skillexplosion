@@ -942,7 +942,7 @@ var gameUtils = {
             callback();
             globals.currentGame.removeTickCallback(fun);
         };
-        globals.currentGame.addTickCallback(fun, false, event);
+        return globals.currentGame.addTickCallback(fun, false, event);
     },
 
     doSomethingAfterDuration: function(callback, duration, options) {

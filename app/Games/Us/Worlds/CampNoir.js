@@ -881,10 +881,12 @@ var phaseOneAndAHalf = function(options) {
     var l1 = this.map.addMapNode('learningWithUrsula');
     var l2 = this.map.addMapNode('learningWithUrsula');
     var l3 = this.map.addMapNode('learningWithUrsula');
-    var ls1 = this.map.addMapNode('learningSentinelWithUrsula', {levelOptions: {
-        token: 'hard',
-        itemClass: 'book'
-    }});
+    var ls1 = this.map.addMapNode('learningSentinelWithUrsula', {
+        levelOptions: {
+            token: 'hard',
+            itemClass: 'book'
+        }
+    });
 
     return {
         nextPhase: 'allNodesComplete',
@@ -1292,7 +1294,7 @@ var campNoir = {
             var tIndex = acceptableTileTints.indexOf(tint);
             var ornamentTiles = [];
             var ornamentTint = acceptableOrnamentTints[tIndex];
-            for (var i = 0; i <= 7; i++) {
+            for (var i = 0; i <= 5; i++) {
                 ornamentTiles.push('FrollGround/DesertFlower' + i);
             }
             this.ornamentMap = TileMapper.produceTileMap({
@@ -1309,9 +1311,11 @@ var campNoir = {
 
             var flowerTint = acceptableFlowerTints[acceptableTileTints.indexOf(tint)];
             var animationOrnamentTiles = [];
-            for (var j = 0; j < 6; j++) {
+            for (var j = 0; j < 8; j++) {
 
-                let randomSpeed = 0.02 + Math.random() * 0.07;
+                let randomSpeed = 0.15 + Math.random() * 0.2;
+                let randomScale = 0.75 + Math.random() * 0.25;
+                let randomGrassSpeed = 0.02 + Math.random() * 0.07;
                 let r = 'a';
                 if (j > 1) {
                     r = 'b';
@@ -1322,14 +1326,86 @@ var campNoir = {
                 animationOrnamentTiles.push({
                     animationName: 'grassanim' + r,
                     spritesheetName: 'TerrainAnimations',
-                    speed: randomSpeed
+                    speed: randomGrassSpeed
                 });
+
+                if (Math.random() > 0.30) {
+                    animationOrnamentTiles.push({
+                        animationName: 'FlowerAnimsOrange',
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                        decorate: function(anim) {
+                            graphicsUtils.addShadowToSprite({
+                                sprite: anim,
+                                alpha: 0.25 + Math.random() * 0.5,
+                                offset: {
+                                    x: 0,
+                                    y: 10
+                                },
+                                size: {
+                                    x: 18,
+                                    y: 5
+                                }
+                            });
+                        }
+                    });
+                }
+
+
+
+                if (Math.random() > 0.5) {
+                    animationOrnamentTiles.push({
+                        animationName: 'FlowerAnimsBlue',
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                        decorate: function(anim) {
+                            graphicsUtils.addShadowToSprite({
+                                sprite: anim,
+                                alpha: 0.25 + Math.random() * 0.5,
+                                offset: {
+                                    x: 0,
+                                    y: 10
+                                },
+                                size: {
+                                    x: 18,
+                                    y: 5
+                                }
+                            })
+                        }
+                    });
+                }
 
                 if (Math.random() > 0.3) {
                     animationOrnamentTiles.push({
-                        animationName: 'floweranim' + r,
+                        animationName: 'GrassAnimsRed',
                         spritesheetName: 'TerrainAnimations',
-                        speed: randomSpeed
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                        // decorate: function(anim) {
+                        //     graphicsUtils.addShadowToSprite({
+                        //         sprite: anim,
+                        //         alpha: 0.5,
+                        //         offset: {
+                        //             x: 0,
+                        //             y: 12
+                        //         },
+                        //         scale: {
+                        //             x: 0.5,
+                        //             y: 0.25
+                        //         }
+                        //     })
+                        // }
                     });
                 }
             }
@@ -1337,7 +1413,7 @@ var campNoir = {
                 possibleTextures: animationOrnamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 0.15,
+                hz: 0.2,
                 where: 'stage',
                 r: 1,
                 tileTint: flowerTint,
@@ -1352,20 +1428,41 @@ var campNoir = {
             scene.add(l1);
 
             //Add rocks to non camp levels
-            var numberOfRocks = 3;
+            if (!this.isCampProper) {
+                var numberOfRocks = 4;
 
-            var createRock = function() {
-                var rock = SceneryUtils.createRock({tint: rockTints[tIndex]});
-                scene.add(rock);
-            };
+                var createRock = function() {
+                    var rock = SceneryUtils.createRock({
+                        tint: rockTints[tIndex]
+                    });
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds(80));
+                    scene.add(rock);
+                };
 
-            var createRock2 = function() {
-                var rock = SceneryUtils.createRock({names: ['Rock2', 'Rock5'], tint: rockTints[tIndex]});
-                scene.add(rock);
-            };
+                var createRock2 = function() {
+                    var rock = SceneryUtils.createRock({
+                        names: ['Rock2', 'Rock2a', 'Rock2b'],
+                        tint: rockTints[tIndex]
+                    });
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds(80));
+                    scene.add(rock);
+                };
 
-            mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
-            mathArrayUtils.repeatXTimes(createRock2, numberOfRocks);
+                mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
+                mathArrayUtils.repeatXTimes(createRock2, numberOfRocks);
+            } else {
+                var numberOfRocks2 = 6;
+                var createRock3 = function() {
+                    var rock = SceneryUtils.createRock({
+                        names: ['Rock2', 'Rock2a', 'Rock2b'],
+                        tint: rockTints[tIndex]
+                    });
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds(80));
+                    scene.add(rock);
+                };
+
+                mathArrayUtils.repeatXTimes(createRock3, numberOfRocks2);
+            }
         }
     },
 

@@ -788,6 +788,26 @@ var graphicsUtils = {
         });
     },
 
+    addShadowToSprite: function(options) {
+        options = Object.assign({
+            alpha: 1.0,
+            offset: {x: 0, y: options.sprite.height/2.0}
+        }, options);
+
+        let sprite = options.sprite;
+        var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', position: mathArrayUtils.clonePosition(sprite.position, options.offset)});
+        shadow.alpha = options.alpha;
+        if(options.size) {
+            graphicsUtils.makeSpriteSize(shadow, options.size);
+        } else if(options.scale) {
+            shadow.scale = options.scale;
+        } else {
+            graphicsUtils.makeSpriteSize(shadow, sprite.width);
+        }
+        graphicsUtils.latchDisplayObjectOnto({child: shadow, parent: sprite});
+        mathArrayUtils.roundPositionToWholeNumbers(shadow.position);
+    },
+
     //supports an existing border, calling this again will resize the border
     addBorderToSprite: function(options) {
         options = Object.assign({

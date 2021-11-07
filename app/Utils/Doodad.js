@@ -117,6 +117,11 @@ var Doodad = function(options) {
     this.rebuild = function() {
         return new Doodad(this.rebuildOptions);
     };
+
+    this.setPosition = function(position) {
+        Matter.Body.setPosition(this.body, position);
+        this.position = this.body.position;
+    };
 };
 
 export {Doodad};

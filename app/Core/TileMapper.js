@@ -69,7 +69,10 @@ tileMapper.produceTileMap = function(options) {
                 }
 
                 var randomnessX = ((Math.random() * 200) - 100) * r;
+                randomnessX = Math.floor(randomnessX);
+
                 var randomnessY = ((Math.random() * 200) - 100) * r;
+                randomnessY = Math.floor(randomnessY);
 
                 var randomTexture = mathArrayUtils.getRandomElementOfArray(textureArray);
                 var newDO = null;
@@ -80,8 +83,11 @@ tileMapper.produceTileMap = function(options) {
                         animationName: randomTexture.animationName,
                         speed: randomTexture.speed || 1.0,
                         loop: true,
-                        transform: [x + randomnessX,y + yOffset + randomnessY, randomTexture.scale.x, randomTexture.scale.y]
+                        transform: [x + randomnessX, y + yOffset + randomnessY, randomTexture.scale.x, randomTexture.scale.y]
                     });
+                    if(randomTexture.decorate) {
+                        randomTexture.decorate(newDO);
+                    }
                     newDO.play();
                 } else {
                     newDO = graphicsUtils.createDisplayObject(randomTexture, {

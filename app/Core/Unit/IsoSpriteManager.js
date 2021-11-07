@@ -99,8 +99,16 @@ function IsoSpriteManager(options) {
 	}
 
 	this.stopCurrentAnimation = function() {
-		if(this.currentAnimation)
+		if(this.currentAnimation) {
 			this.currentAnimation.stop();
+		}
+
+		//In rare cases, we could stop in the same frame that we switch animations. in this case, let's cancel the pending switch animation call
+		if(this.pendingAnimationCallback) {
+			globals.currentGame.removeTickCallback(this.pendingAnimationCallback);
+			this.pendingAnimationCallback = false;
+		}
+
 		this.currentAnimation = null;
 		if(!this.idleTimer)
 			this.idle({direction: this.currentDirection});
@@ -108,7 +116,11 @@ function IsoSpriteManager(options) {
 
 	this.switchAnimation = function(animation, options) {
 		//change the visibility of the given animation after 'renderWorld' to avoid any side effects of drawing to a renderTexture
-		gameUtils.oneTimeCallbackAtEvent(() => {
+		if(this.pendingAnimationCallback) {
+			globals.currentGame.removeTickCallback(this.pendingAnimationCallback);
+			this.pendingAnimationCallback = false;
+		}
+		this.pendingAnimationCallback = gameUtils.oneTimeCallbackAtEvent(() => {
 			options = options || {};
 
 			//if we're no longer idling, kill idler

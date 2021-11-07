@@ -376,7 +376,16 @@ var common = {
                     // this.addTickCallback(() => {
                     //     spr.position = this.mousePosition;
                     // });
-                    globals.currentGame.currentLevel.mapTableActive = true;
+
+                    if(!this.whoaSprite) {
+                        this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', style: styles.abilityText});
+                        this.whoaSprite.position = {x: 950.2222, y: 200.25};
+                        this.whoaSprite.scale = {x: 0.9, y: 0.1}
+                    } else {
+                        this.whoaSprite.position.y += 0.5;
+                    }
+
+                    globals.currentGame.whoaSprite = this.whoaSprite;
                 }
             }
 
