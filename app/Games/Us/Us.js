@@ -76,7 +76,7 @@ var game = {
 
     //debug options
     goStraightToUrsulaTasks: false,
-    mapTableAlwaysActive: false,
+    mapTableAlwaysActive: true,
 
     initExtension: function() {
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
@@ -521,9 +521,20 @@ var game = {
         level.mapTableActive = true;
 
         //Decorate complete level with doodads
+        // var flag2 = gameUtils.getAnimation({
+        //     spritesheetName: 'UtilityAnimations2',
+        //     animationName: 'FlagAnim',
+        //     speed: 0.15,
+        //     loop: true,
+        //     transform: [0, 0, 1, 1]
+        // });
+        // flag2.position = gameUtils.getCanvasCenter();
+        // graphicsUtils.addSomethingToRenderer(flag2);
+
+        //Decorate complete level with doodads
         var flag = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations2',
-            animationName: 'wflag',
+            animationName: 'FlagAnim',
             speed: 0.2,
             loop: true,
             transform: [0, 0, 1, 1]
@@ -540,15 +551,16 @@ var game = {
         var flagD = new Doodad({
             collides: true,
             autoAdd: false,
-            radius: 20,
+            radius: 5,
+            drawWire: false,
             texture: [flag],
             stage: 'stage',
             scale: {
-                x: 1,
-                y: 1
+                x: 0.1,
+                y: 0.1
             },
             shadowOffset: {
-                x: 0,
+                x: -10,
                 y: 30
             },
             shadowScale: {
@@ -556,10 +568,10 @@ var game = {
                 y: 0.7
             },
             offset: {
-                x: 0,
-                y: 0
+                x: -0,
+                y: -40
             },
-            sortYOffset: 35,
+            sortYOffset: 70,
             position: flag.position
         });
         scene.add(flagD);

@@ -470,7 +470,7 @@ export default {
 
     rewardTextMedium: new PIXI.TextStyle({
         name: 'rewardTextMedium',
-        fill: "#16f6db",
+        fill: "#FFFFFF",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
         fontSize: 36,
@@ -483,7 +483,7 @@ export default {
 
     rewardTextLarge: new PIXI.TextStyle({
         name: 'rewardTextLarge',
-        fill: "#16f6db",
+        fill: "#FFFFFF",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
         fontSize: 48,

@@ -4,7 +4,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/Utilit
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    knifeDamage: 8,
+    knifeDamage: 5,
     dodgeAddition: 3,
     ignoreCallback: function(equipped) {
         if(equipped) {
@@ -19,7 +19,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Camoflauge Glove",
-        description: ["Add +8 to knife damage.", "Knives ignore armor and cannot be dodged.", "Add 3 to dodge."],
+        description: ["Add +5 to knife damage.", "Knives ignore armor and cannot be dodged.", "Add 3 to dodge."],
         icon: 'CamoGlove',
     }, options, shaneOnly);
     return new ic(item);

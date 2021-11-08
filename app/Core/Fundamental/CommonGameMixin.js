@@ -353,7 +353,6 @@ var common = {
                     //
                     // this.shane.dodgeSound.play();
 
-
                     // if (this.gameState == 'paused') {
                     //     this.togglePause();
                     // } else {
@@ -361,6 +360,25 @@ var common = {
                     //         this.togglePause();
                     //     });
                     // }
+
+                    var self = this;
+                    if(this.tmIndex == null) {
+                        this.tmIndex = 0;
+                    } else {
+                        this.tmIndex++;
+                    }
+                    this.currentScene.objects.forEach(function(obj, index) {
+                        if(obj.tiles) {
+                            if(self.tmIndex == index) {
+                                obj.tiles.forEach(function(tile) {
+                                    tile.visible = false;
+                                    gameUtils.doSomethingAfterDuration(() => {
+                                        tile.visible = true;
+                                    }, 1250);
+                                });
+                            }
+                        }
+                    });
                 }
             }
 
@@ -377,15 +395,17 @@ var common = {
                     //     spr.position = this.mousePosition;
                     // });
 
-                    if(!this.whoaSprite) {
-                        this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', style: styles.abilityText});
-                        this.whoaSprite.position = {x: 950.2222, y: 200.25};
-                        this.whoaSprite.scale = {x: 0.9, y: 0.1}
-                    } else {
-                        this.whoaSprite.position.y += 0.5;
-                    }
-
-                    globals.currentGame.whoaSprite = this.whoaSprite;
+                    var self = this;
+                    this.currentScene.objects.forEach(function(obj, index) {
+                        if(self.tmIndex != index) {
+                            return;
+                        }
+                        if(obj.tiles) {
+                            obj.tiles.forEach(function(tile) {
+                                tile.tint = self.debugTint;
+                            });
+                        }
+                    });
                 }
             }
 

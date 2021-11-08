@@ -302,8 +302,8 @@ export default function Rammian(options) {
     ];
 
     var attackSound = gameUtils.getSound('critterhit.wav', {
-        volume: 0.18,
-        rate: 0.8
+        volume: 0.2,
+        rate: 0.7
     });
     var deathSound = gameUtils.getSound('critterdeath.wav', {
         volume: 0.08,
@@ -354,6 +354,7 @@ export default function Rammian(options) {
                     graphicsUtils.flashSprite({
                         sprite: anim,
                         duration: 100,
+                        fromColor: anim.tint,
                         times: 6,
                         onEnd: () => {
                             graphicsUtils.removeSomethingFromRenderer(anim);
@@ -401,7 +402,7 @@ export default function Rammian(options) {
                                     }
                                 }, unit.body) <= (blastRadius + unit.body.circleRadius) && unit.canTakeAbilityDamage);
                             }.bind(this), function(unit) {
-                                var dmg = 15;
+                                var dmg = 40;
                                 unit.sufferAttack(dmg, null, {
                                     dodgeable: false
                                 });

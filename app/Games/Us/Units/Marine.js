@@ -961,7 +961,7 @@ export default function Marine(options) {
     var gsDDuration = 300;
     var gsADuration = 300;
     var allyArmorDuration = 8000;
-    var armorGiven = 2;
+    var armorGiven = 1.5;
     var allyHeal = 6;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
@@ -1011,12 +1011,11 @@ export default function Marine(options) {
             });
 
             return {
-                value: allyArmorDuration / 1000
+                value: armorGiven
             };
         },
         collector: {
-            aggressionLabel: 'Total armor duration',
-            aggressionSuffix: 'seconds',
+            aggressionLabel: 'Total armor granted',
             defensiveLabel: 'Healing done',
             defensiveFormat: function(v) {
                 return v.toFixed(1);

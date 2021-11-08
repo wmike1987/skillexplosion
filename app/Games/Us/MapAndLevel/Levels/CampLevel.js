@@ -89,24 +89,29 @@ var campLevel = function() {
         //Init common doodads
         var flag = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations2',
-            animationName: 'wflag',
+            animationName: 'FlagAnim',
             speed: 0.2,
             loop: true,
             transform: [0, 0, 1, 1]
         });
+
+        //add flag
+        let x = 150;
+        let y = 150;
         flag.play();
         var flagD = new Doodad({
             collides: true,
             autoAdd: false,
-            radius: 20,
+            radius: 5,
+            drawWire: false,
             texture: [flag],
             stage: 'stage',
             scale: {
-                x: 1,
-                y: 1
+                x: 0.1,
+                y: 0.1
             },
             shadowOffset: {
-                x: 0,
+                x: -10,
                 y: 30
             },
             shadowScale: {
@@ -114,10 +119,10 @@ var campLevel = function() {
                 y: 0.7
             },
             offset: {
-                x: 0,
-                y: 0
+                x: -0,
+                y: -40
             },
-            sortYOffset: 35,
+            sortYOffset: 70,
             position: {
                 x: gameUtils.getCanvasCenter().x + 50,
                 y: gameUtils.getCanvasCenter().y - 175

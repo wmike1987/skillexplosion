@@ -88,7 +88,14 @@ tileMapper.produceTileMap = function(options) {
                     if(randomTexture.decorate) {
                         randomTexture.decorate(newDO);
                     }
-                    newDO.play();
+                    if(randomTexture.playDelay) {
+                        let myDO = newDO;
+                        gameUtils.doSomethingAfterDuration(function() {
+                            myDO.play();
+                        }, randomTexture.playDelay)
+                    } else {
+                        newDO.play();
+                    }
                 } else {
                     newDO = graphicsUtils.createDisplayObject(randomTexture, {
                         position: {

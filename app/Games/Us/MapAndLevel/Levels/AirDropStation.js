@@ -61,6 +61,9 @@ commonAirDropStation.initExtension = function() {
         },
         radius: 30
     }];
+    this.airDropLocation = gameUtils.getPlayableCenterPlus({
+        y: -100
+    });
 };
 commonAirDropStation.fillLevelSceneExtension = function(scene) {
     this.createMapTable(scene, {
@@ -69,6 +72,17 @@ commonAirDropStation.fillLevelSceneExtension = function(scene) {
             y: gameUtils.getCanvasCenter().y - 0
         }
     });
+
+    var h = graphicsUtils.createDisplayObject('H', {
+        position: this.airDropLocation,
+        where: 'stageNTwo',
+        sortYOffset: -1000,
+        scale: {
+            x: 0.8,
+            y: 0.8
+        },
+    });
+    scene.add(h);
 };
 
 commonAirDropStation.cleanUp = function() {
@@ -370,12 +384,10 @@ var selectionMechanism = {
 
         globals.currentGame.flyover(() => {
             globals.currentGame.dustAndItemBox({
-                location: gameUtils.getPlayableCenterPlus({
-                    y: -100
-                }),
+                location: this.level.airDropLocation,
                 item: [item.itemName],
                 special: true,
-                autoDestroyBox: true
+                autoDestroyBox: false
             });
             this.level.mapTableActive = true;
         });

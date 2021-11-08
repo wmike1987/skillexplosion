@@ -40,10 +40,10 @@ import {
 } from '@games/Us/Dialogues/Plain/MapLearning.js';
 
 var tileSize = 225;
-var acceptableTileTints = [0xff9e9e, 0x7848ee]; //0xe59ab6
+var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
 var rockTints = [0xffcccc, 0xe59ab6];
-var acceptableOrnamentTints = [0xffab7a, 0xfb4a9a];
-var acceptableFlowerTints = [0xf78d8d, 0x600028];
+var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
+var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
 var ambientLightTints = [
     [0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x000000, 0x550000],
     [0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303]
@@ -1314,7 +1314,7 @@ var campNoir = {
             for (var j = 0; j < 8; j++) {
 
                 let randomSpeed = 0.15 + Math.random() * 0.2;
-                let randomScale = 0.75 + Math.random() * 0.25;
+                let randomScale = 0.75 + Math.random() * 0.30;
                 let randomGrassSpeed = 0.02 + Math.random() * 0.07;
                 let r = 'a';
                 if (j > 1) {
@@ -1333,6 +1333,7 @@ var campNoir = {
                     animationOrnamentTiles.push({
                         animationName: 'FlowerAnimsOrange',
                         spritesheetName: 'TerrainAnimations',
+                        playDelay: Math.random() * 400,
                         speed: randomSpeed,
                         scale: {
                             x: randomScale,
@@ -1348,7 +1349,7 @@ var campNoir = {
                                 },
                                 size: {
                                     x: 24,
-                                    y: 5
+                                    y: 8
                                 }
                             });
                         }
@@ -1357,11 +1358,12 @@ var campNoir = {
 
 
 
-                if (Math.random() > 0.5) {
+                if (Math.random() > 0.4) {
                     animationOrnamentTiles.push({
                         animationName: 'FlowerAnimsBlue',
                         spritesheetName: 'TerrainAnimations',
                         speed: randomSpeed,
+                        playDelay: Math.random() * 400,
                         scale: {
                             x: randomScale,
                             y: randomScale
@@ -1376,7 +1378,7 @@ var campNoir = {
                                 },
                                 size: {
                                     x: 24,
-                                    y: 5
+                                    y: 8
                                 }
                             })
                         }

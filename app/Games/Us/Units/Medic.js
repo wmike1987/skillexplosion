@@ -1237,7 +1237,7 @@ export default function Medic(options) {
         textureName: 'WickedWays',
         unit: medic,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 3000,
+        defenseCooldown: 5000,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 3000,
         aggressionDuration: wwADuration,

@@ -494,10 +494,18 @@ var graphicsUtils = {
                 if (!options.stationary) {
                     floatedText.position.y -= (delta * (options.speed / 100 || 0.03));
                 }
-                floatedText.alpha = alphaBuffer - this.percentDone * alphaBuffer;
+
+                //if we're going to persist at end, don't fade anything
+                if(!options.persistAtEnd) {
+                    floatedText.alpha = alphaBuffer - this.percentDone * alphaBuffer;
+                }
             },
             totallyDoneCallback: function() {
-                graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
+                //if we are to persist at the end, don't remove the sprite
+                if(!options.persistAtEnd) {
+                    graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
+                }
+                
                 if (options.deferred) {
                     options.deferred.resolve();
                 }

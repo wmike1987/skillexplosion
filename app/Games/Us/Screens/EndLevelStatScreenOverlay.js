@@ -55,6 +55,7 @@ var secretStepsPerformed = "Vanishes Performed";
 var ursulaVisuals = [];
 
 var rewardDuration = 800;
+var rewardPauseDuration = 1400;
 
 var createContainer = function() {
     var container = new PIXI.Container();
@@ -127,16 +128,18 @@ var presentItems = function(options) {
         var t = localNumberOfChoices == 1 ? 'Take your item!' : 'Choose an item!';
         t = (nodeIndex > 1) ? "Choose another!" : t;
         var rewardText = graphicsUtils.floatText(t, gameUtils.getPlayableCenterPlus({
-            y: 300
+            y: 290
         }), {
             where: 'hudTwo',
             style: styles.rewardTextMedium,
             speed: 6,
-            duration: rewardDuration
+            duration: rewardDuration,
+            persistAtEnd: true
         });
+        rewardText.tint = 0x08d491;
         graphicsUtils.addGleamToSprite({
             sprite: rewardText,
-            gleamWidth: 50,
+            gleamWidth: 25,
             duration: 500
         });
 
@@ -199,6 +202,7 @@ var presentItems = function(options) {
             choices.push(item.itemName);
             item.icon.tooltipObj.hide();
             globals.currentGame.soundPool.itemChoose.play();
+            graphicsUtils.removeSomethingFromRenderer(rewardText);
 
             //hide all icons, remove the click handlers, then destory the items
             items.forEach((i) => {
@@ -2386,7 +2390,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
         if (!isVictory) {
             var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
-            var pauseTime = adrenalineGained ? 1000 : 0;
+            var pauseTime = adrenalineGained ? rewardPauseDuration : 0;
             gameUtils.doSomethingAfterDuration(() => {
                 //get adrenaline lost during an outing
                 gameUtils.doSomethingAfterDuration(() => {
@@ -2402,12 +2406,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             where: 'hudTwo',
                             style: styles.adrenalineTextLarge,
                             speed: 6,
-                            duration: 800
+                            duration: rewardDuration * 2.0
                         });
                         graphicsUtils.addGleamToSprite({
                             sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
+                            gleamWidth: 30,
+                            duration: 1000
                         });
                     }
                 }, pauseTime);
@@ -2416,10 +2420,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 if (globals.currentGame.map.completedNodes.length > 0) {
                     $('body').off('keydown.uskeydownendscreen');
                     gameUtils.doSomethingAfterDuration(() => {
-                        //float supply drop text
+                        //float levels completed text
                         globals.currentGame.soundPool.positiveSoundFast.play();
-                        var txt = 'Supply drop en route...';
-                        var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                        var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
+                        var txt = levelsCompletedText;
+                        var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
                             y: 300
                         }), {
                             where: 'hudTwo',
@@ -2427,20 +2432,41 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             speed: 6,
                             duration: rewardDuration * 2.0
                         });
-                        graphicsUtils.flashSprite({
-                            sprite: sdText,
-                            times: 2,
-                            toColor: 0xff6c52,
-                            duration: 200,
+                        lText.tint = 0x08d491;
+                        graphicsUtils.addGleamToSprite({
+                            sprite: lText,
+                            gleamWidth: 30,
+                            duration: 1000
                         });
+
+                        //show supply drop message
+                        gameUtils.doSomethingAfterDuration(() => {
+                            globals.currentGame.soundPool.positiveSoundFast.play();
+                            var txt = 'Supply drop en route...';
+                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.rewardTextLarge,
+                                speed: 6,
+                                duration: rewardDuration * 2.0
+                            });
+                            graphicsUtils.flashSprite({
+                                sprite: sdText,
+                                times: 4,
+                                fromColor: 0x01cd46,
+                                toColor: 0xc39405,
+                                duration: 200,
+                            });
+                        }, rewardPauseDuration);
 
                         //then present items
                         gameUtils.doSomethingAfterDuration(() => {
                             presentItems({
                                 done: options.done
                             });
-                        }, 1600);
-                    }, pauseTime + rewardDuration);
+                        }, 3200);
+                    }, pauseTime + rewardPauseDuration);
                 } else {
                     //else we'll have space to continue show up
                     gameUtils.doSomethingAfterDuration(() => {
@@ -2478,21 +2504,21 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             where: 'hudTwo',
                             style: styles.adrenalineTextLarge,
                             speed: 6,
-                            duration: rewardDuration
+                            duration: rewardDuration * 2.0
                         });
                         graphicsUtils.addGleamToSprite({
                             sprite: adrText,
-                            gleamWidth: 50,
-                            duration: 500
+                            gleamWidth: 30,
+                            duration: 1000
                         });
-                        scene.add(adrText);
                     }
 
                     gameUtils.doSomethingAfterDuration(() => {
-                        //float supply drop text
+                        //float levels completed text
                         globals.currentGame.soundPool.positiveSoundFast.play();
-                        var txt = 'Supply drop en route...';
-                        var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                        var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
+                        var txt = levelsCompletedText;
+                        var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
                             y: 300
                         }), {
                             where: 'hudTwo',
@@ -2500,20 +2526,41 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             speed: 6,
                             duration: rewardDuration * 2.0
                         });
-                        graphicsUtils.flashSprite({
-                            sprite: sdText,
-                            times: 2,
-                            toColor: 0xff6c52,
-                            duration: 200,
+                        lText.tint = 0x08d491;
+                        graphicsUtils.addGleamToSprite({
+                            sprite: lText,
+                            gleamWidth: 30,
+                            duration: 1000
                         });
+
+                        //show supply drop message
+                        gameUtils.doSomethingAfterDuration(() => {
+                            globals.currentGame.soundPool.positiveSoundFast.play();
+                            var txt = 'Supply drop en route...';
+                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }), {
+                                where: 'hudTwo',
+                                style: styles.rewardTextLarge,
+                                speed: 6,
+                                duration: rewardDuration * 2.0
+                            });
+                            graphicsUtils.flashSprite({
+                                sprite: sdText,
+                                times: 4,
+                                fromColor: 0x01cd46,
+                                toColor: 0xc39405,
+                                duration: 200,
+                            });
+                        }, rewardPauseDuration);
 
                         //then present items
                         gameUtils.doSomethingAfterDuration(() => {
                             presentItems({
                                 done: options.done
                             });
-                        }, 1600);
-                    }, rewardDuration);
+                        }, 3200);
+                    }, rewardPauseDuration);
                 }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
             });
         }
