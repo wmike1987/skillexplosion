@@ -8,6 +8,9 @@ import Iso from '@core/Unit/IsoSpriteManager.js';
 import UnitBase from '@core/Unit/UnitBase.js';
 import EmptySlot from '@core/Unit/EmptySlot.js';
 
+
+var flyingBodyCollisionCategory = 0x0010;
+
 /*
  *  This module aims to assemble all the fundamental pieces of a unit. It creates a new object, mixes the specific unit-options with the UnitBase, then:
  *	Creates a physics body and extends the basic unit functionality, moveable (optional), and attacking (optional) behavior.
@@ -120,11 +123,16 @@ function UnitConstructor(options) {
     });
     // body.drawWire = true;
     body.collisionFilter.mask -= 0x0002;
-    if(unitObj.noWall) {
+    if(newUnit.noWall) {
         body.collisionFilter.mask -= 0x0004;
     }
     body.unit = newUnit; //reference to parent
     body.isCollisionBody = true;
+
+    if(newUnit.flying) {
+        body.collisionFilter.category = flyingBodyCollisionCategory;
+        body.collisionFilter.mask -= 0x0001;
+    }
 
     //**************************************************************
     // create selection body, or use the collision body if specified

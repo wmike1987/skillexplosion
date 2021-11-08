@@ -566,6 +566,12 @@ var enemyDefs = {
             amount: [1, 2],
             atATime: 1,
             hz: 4500
+        },
+        {
+            type: 'DamageFlySwarm',
+            amount: [5],
+            atATime: 2,
+            hz: 4500
         }]
     },
     basicHunter: {

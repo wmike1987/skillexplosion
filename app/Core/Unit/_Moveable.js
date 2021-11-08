@@ -19,6 +19,7 @@ var moveable = {
     smallerBodyCollisionCategory: 0x4000,
     noProgressBuffer: 15, //pixels
     canMove: true,
+    canStop: true,
 
     //user defined
     moveSpeed: null,
@@ -198,6 +199,9 @@ var moveable = {
         return {moveCancelled: false};
     },
     stop: function() {
+        if(!this.canStop) {
+            return;
+        }
 
         //stop the unit
         Matter.Body.setVelocity(this.body, {
@@ -257,7 +261,8 @@ var moveable = {
     constantlySetVelocityTowardsDestination: function(event, options) {
         options = options || {};
 
-        if (!this.isMoving || this.isAttacking) {
+        //if we can stop, and we aren't moving nor attacking, cease this callback
+        if (this.canStop && (!this.isMoving || this.isAttacking)) {
             return;
         }
 

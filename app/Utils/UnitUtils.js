@@ -197,6 +197,15 @@ var unitUtils = {
         }
 
         return anim;
+    },
+
+    createUnitRanOffStageListener: function(unit, callback) {
+        var myTicker = globals.currentGame.addTickCallback(function() {
+            if(gameUtils.bodyRanOffStage(unit.body)) {
+                callback();
+                globals.currentGame.removeTickCallback(myTicker);
+            }
+        });
     }
 };
 

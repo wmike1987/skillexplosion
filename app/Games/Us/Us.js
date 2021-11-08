@@ -1123,6 +1123,10 @@ game.assets = [{
         name: "Cinematic",
         target: "Textures/Us/Cinematic.json"
     },
+    {
+        name: "FlySwarmAnimations",
+        target: "Textures/Us/FlySwarmAnimations.json"
+    },
 
     //terrain and doodads
     {

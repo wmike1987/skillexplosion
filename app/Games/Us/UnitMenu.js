@@ -11,6 +11,7 @@ import Rammian from '@games/Us/Units/Rammian.js';
 import Scout from '@games/Us/Units/Scout.js';
 import Ghost from '@games/Us/Units/Ghost.js';
 import DestructibleBox from '@games/Us/Units/DestructibleBox.js';
+import DamageFlySwarm from '@games/Us/Units/DamageFlySwarm.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 var unitMenu = {};
@@ -27,6 +28,7 @@ unitMenu.Rammian = {c: Rammian, p: 'RammianPortrait'};
 unitMenu.Scout = {c: Scout, p: 'GargoylePortrait'};
 unitMenu.Ghost = {c: Ghost, p: 'GargoylePortrait'};
 unitMenu.DestructibleBox = {c: DestructibleBox, p: 'GargoylePortrait'};
+unitMenu.DamageFlySwarm = {c: DamageFlySwarm, p: 'GargoylePortrait'};
 
 unitMenu.createUnit = function(constructor, options) {
     var unit = this[constructor].c(options);

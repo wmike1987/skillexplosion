@@ -80,6 +80,9 @@ export default {
         this.rawStop = this.stop;
         var originalStop = this.stop;
         this.stop = function(commandObj, options) {
+            if(!this.canStop) {
+                return;
+            }
             options = options || {};
             if (this.specifiedAttackTarget) {
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
@@ -451,6 +454,11 @@ export default {
             //If we are "still" and no longer have a target or a hone, let's stop.
             //If we were given a "specific target" to attack, we only want to naturally stop if we can no longer attack it
             if (!this.currentHone && !this.currentTarget) {
+                //perform some behavior if we've lost our target
+                if(this.loseTargetExtension) {
+                    this.loseTargetExtension();
+                }
+
                 //given attack move, reissue the attack move
                 if (this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
                     this.attackMove(this.attackMoveDestination, commandObj);

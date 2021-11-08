@@ -327,7 +327,8 @@ var campLevel = function() {
         //unit tester
         var unitTest = false;
         if(unitTest) {
-            var unitT = UnitMenu.createUnit('Eruptlet', {
+            var unitT = UnitMenu.createUnit('DamageFlySwarm', {
+                // team: game.enemyTeam,
                 team: game.playerTeam,
                 idleCancel: false
             });

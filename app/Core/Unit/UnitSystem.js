@@ -976,7 +976,7 @@ var UnitSystem = function(properties) {
                 }.bind(this));
 
                 if (!this.attackMove && !this.abilityDispatch) {
-                    if (units.length > 0) {
+                    if (lastChosenUnit) {
                         gameUtils.setCursorStyle('server:OverUnitCursor.png', '16 16');
                     } else if (gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
                         gameUtils.setCursorStyle('server:MainCursor.png');
