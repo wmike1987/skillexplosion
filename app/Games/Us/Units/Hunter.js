@@ -294,6 +294,13 @@ export default function Hunter(options) {
                                 slot.customColor = {r: 1.0, g: 0.25, b: 0.5, a: 1.0};
                             }
                         }
+
+                        if(slot.data) {
+                            if(slot.data.name.includes('Gun'))
+                            {
+                                slot.customColor = {r: 1.0, g: 0.25, b: 0.5, a: 1.0};
+                            }
+                        }
                     });
                 }
             });

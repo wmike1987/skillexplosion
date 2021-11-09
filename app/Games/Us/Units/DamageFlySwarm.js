@@ -16,26 +16,26 @@ import {
 } from '@utils/UtilityMenu.js';
 
 var attackSound1 = gameUtils.getSound('buzz1.mp3', {
-    volume: 0.1,
+    volume: 0.08,
     rate: 1
 });
 var attackSound2 = gameUtils.getSound('buzz1.mp3', {
-    volume: 0.1,
+    volume: 0.08,
     rate: 1.1
 });
 var attackSound3 = gameUtils.getSound('buzz1.mp3', {
-    volume: 0.1,
+    volume: 0.08,
     rate: 0.9
 });
 var attackSound4 = gameUtils.getSound('buzz1.mp3', {
-    volume: 0.1,
+    volume: 0.08,
     rate: 0.8
 });
 var attackSound5 = gameUtils.getSound('buzz1.mp3', {
-    volume: 0.1,
+    volume: 0.08,
     rate: 1.2
 });
-var attackSounds = [attackSound1, attackSound2, attackSound3, attackSound4, attackSound5];
+var attackSounds = [attackSound1, attackSound2, attackSound3];
 var deathSound = gameUtils.getSound('buzzdeath.mp3', {
     volume: 0.1,
     rate: 1.00
@@ -50,6 +50,7 @@ export default function DamageFlySwarm(options) {
     }, options);
 
     var randomFlyNumber = mathArrayUtils.getRandomIntInclusive(1, 10);
+    var randomFlyNumber2 = mathArrayUtils.getRandomIntInclusive(1, 10);
 
     var flyAnim = gameUtils.getAnimation({
         spritesheetName: 'FlySwarmAnimations',
@@ -58,7 +59,18 @@ export default function DamageFlySwarm(options) {
         loop: true,
     });
 
-    flyAnim.tint = 0x360809;
+    var blackFlyScale = 0.6;
+    var blackFlyAnim = gameUtils.getAnimation({
+        spritesheetName: 'FlySwarmAnimations',
+        animationName: 'Swarm_' + randomFlyNumber2,
+        speed: 0.3,
+        loop: true,
+    });
+    blackFlyAnim.scale = {x: blackFlyScale, y: blackFlyScale};
+    blackFlyAnim.alpha = 0.8;
+    blackFlyAnim.tint = 0x000000;
+
+    flyAnim.tint = 0x6c0303;
     flyAnim.originalTint = flyAnim.tint;
     flyAnim.originalSpeed = flyAnim.animationSpeed;
 
@@ -118,6 +130,17 @@ export default function DamageFlySwarm(options) {
             id: 'main',
             data: flyAnim,
             stage: 'stageOne',
+            rotate: 'continuous',
+            visible: true,
+            offset: {
+                x: 0,
+                y: 0
+            },
+            sortYOffset: 0,
+        }, {
+            id: 'main2',
+            data: blackFlyAnim,
+            stage: 'stageOne',
             rotate: 'none',
             visible: true,
             offset: {
@@ -132,7 +155,7 @@ export default function DamageFlySwarm(options) {
                 x: 2.0,
                 y: 2.0
             },
-            alpha: 0.3,
+            alpha: 0.35,
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
@@ -184,6 +207,12 @@ export default function DamageFlySwarm(options) {
             });
 
             graphicsUtils.fadeSpriteOverTime({
+                sprite: blackFlyAnim,
+                duration: 300,
+                nokill: true
+            });
+
+            graphicsUtils.fadeSpriteOverTime({
                 sprite: self.renderlings.shadow,
                 duration: 300,
                 nokill: true
@@ -197,7 +226,7 @@ export default function DamageFlySwarm(options) {
             });
         },
         _afterAddInit: function() {
-            this.moveSpeed = 1.0 + Math.random() * 0.5;
+            this.moveSpeed = 0.6 + Math.random() * 0.3;
             var currentPosition = this.position;
 
             var attackPosX = Math.random() * gameUtils.getPlayableWidth();
@@ -210,11 +239,32 @@ export default function DamageFlySwarm(options) {
 
             this.move(amPosition);
             flyAnim.play();
+            blackFlyAnim.play();
             unitUtils.createUnitRanOffStageListener(this, function() {
                 globals.currentGame.removeUnit(this);
             }.bind(this));
 
             var self = this;
+
+            var expandOut = true;
+            this.innerFlyExpandTimer = globals.currentGame.addTimer({
+                name: 'gritDodgeTimer' + this.unitId,
+                timeLimit: 3000,
+                runs: 1,
+                tickCallback: function() {
+                    var alternateAmount = 1 - blackFlyScale;
+                    if(expandOut) {
+                        blackFlyAnim.scale = {x: blackFlyScale + (alternateAmount * this.percentDone), y: blackFlyScale + (alternateAmount * this.percentDone)};
+                    } else {
+                        blackFlyAnim.scale = {x: 1 - (alternateAmount * this.percentDone), y: 1 - (alternateAmount * this.percentDone)};
+                    }
+                },
+                totallyDoneCallback: function() {
+                    this.timeLimit = 3000 + Math.random() * 1000;
+                    expandOut = !expandOut;
+                    this.reset();
+                }
+            });
 
             var cooldown = 200;
             var damage = 3;
@@ -243,7 +293,7 @@ export default function DamageFlySwarm(options) {
                         graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                         bloodAnimation.play();
                         attacked = true;
-                    });
+                    }.bind(this));
 
                     if(attacked) {
                         flyAnim.animationSpeed = 0.5;
@@ -252,6 +302,7 @@ export default function DamageFlySwarm(options) {
                 }.bind(this)
             });
             gameUtils.deathPact(this, this.attackTimer);
+            gameUtils.deathPact(this, this.innerFlyExpandTimer);
         }
     }, options);
 
