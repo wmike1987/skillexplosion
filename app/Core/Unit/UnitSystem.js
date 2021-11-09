@@ -29,6 +29,10 @@ var UnitSystem = function(properties) {
     }, properties);
 
     this.initialize = function() {
+
+        this.flyingBodyCollisionCategory = 0x0010;
+        this.projectileCollisionCategory = 0x0800;
+
         //just in case
         if (this.box)
             this.cleanUp();

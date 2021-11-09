@@ -104,6 +104,7 @@ var levelBase = {
                 style: styles.titleOneStyle
             });
             game.heartbeat.play();
+            game.battleInProgress = true;
         }, 800);
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {
@@ -507,7 +508,7 @@ var levelBase = {
              * See if our enemy sets have been fulfilled
              */
             var fulfilled = this.enemySets.every((eset) => {
-                return eset.fulfilled;
+                return eset.fulfilled || eset.trivial;
             });
 
             //if they have been fulfilled, see if enemy units still exist
@@ -517,8 +518,10 @@ var levelBase = {
             if (!globals.currentGame.manualWin) {
                 if (!fulfilled) return;
 
-                if (game.unitsByTeam[game.enemyTeam] && game.unitsByTeam[game.enemyTeam].length > 0) {
-                    unitsOfOpposingTeamExist = true;
+                if(game.unitsByTeam[game.enemyTeam]) {
+                    unitsOfOpposingTeamExist = game.unitsByTeam[game.enemyTeam].some(function(unit) {
+                        return !unit.hazard;
+                    });
                 }
             }
 
@@ -535,6 +538,18 @@ var levelBase = {
             if (winConditional()) {
                 globals.currentGame.manualWin = false;
                 this.endDelayInProgress = true;
+                game.battleInProgress = false;
+
+                //remove hazard units when we're transitioning to the next scene
+                gameUtils.matterOnce(globals.currentGame.currentScene, 'sceneFadeOutBegin', function() {
+                    let enemies = gameUtils.getUnitEnemies(game.shane);
+                    enemies.forEach((enemy) => {
+                        if(enemy.hazard) {
+                            this.spawner.cleanUp();
+                            game.removeUnit(enemy);
+                        }
+                    });
+                }.bind(this));
 
                 if (this.customWinBehavior) { //custom win behavior
                     removeCurrentConditions();
@@ -550,9 +565,13 @@ var levelBase = {
                                 Matter.Events.trigger(this, 'endLevelActions');
                                 var sc = game.transitionToBlankScene();
                                 game.map.show();
+
+                                //move shane/urs off screen
                                 game.unitsInPlay.forEach((unit) => {
                                     gameUtils.moveUnitOffScreen(unit);
                                 });
+
+                                //remove level local entities
                                 game.removeAllLevelLocalEntities();
                             }, 32);
                         }.bind(this)

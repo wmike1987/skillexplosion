@@ -101,6 +101,9 @@ var MapLevelNode = function(options) {
     var self = this;
 
     this.levelDetails.enemySets.forEach(set => {
+        if(set.trivial) {
+            return;
+        }
         enemyDescriptions.push(' x ' + set.spawn.total);
         enemyIcons.push(set.icon);
     });
@@ -184,7 +187,7 @@ var MapLevelNode = function(options) {
 
     this.onMouseDownBehavior = function(mouseDownOptions) {
         mouseDownOptions = mouseDownOptions || {};
-        
+
         if (!this.mapRef.clicksAllowed) {
             return;
         }

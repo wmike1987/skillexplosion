@@ -745,7 +745,18 @@ var UnitBase = {
         this.swappingStatesOfMind = false;
     },
 
+    applyUnitStates: function() {
+        if(this.hazard) {
+            this.isTargetable = false;
+            this.isSelectable = false;
+            this.hideLifeBar = true;
+            this.hideEnergyBar = true;
+        }
+    },
+
     initUnit: function() {
+        this.applyUnitStates();
+
         Object.defineProperty(this, 'maxHealth', {
             get: function() {
                 return this._maxHealth || 0;
@@ -1355,13 +1366,13 @@ var UnitBase = {
                 healthBarYOffset = energyBarYOffset;
             }
 
-            if (this._afterAddInit) {
-                this._afterAddInit();
-            }
-
             //start unit as idling upon add - do we need this
             if (this.stop) {
                 this.stop();
+            }
+
+            if (this._afterAddInit) {
+                this._afterAddInit();
             }
 
             //establish the height of the unit

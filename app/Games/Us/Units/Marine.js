@@ -642,6 +642,8 @@ export default function Marine(options) {
             isSensor: true,
             isChildKnife: childKnife
         });
+        knife.collisionFilter.category = globals.currentGame.unitSystem.projectileCollisionCategory;
+        // knife.collisionFilter.mask += globals.currentGame.unitSystem.flyingBodyCollisionCategory;
 
         if (pierceAugment) {
             knife.lives = pierceAugment.lives;

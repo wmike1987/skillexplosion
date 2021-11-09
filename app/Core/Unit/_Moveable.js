@@ -199,10 +199,6 @@ var moveable = {
         return {moveCancelled: false};
     },
     stop: function() {
-        if(!this.canStop) {
-            return;
-        }
-
         //stop the unit
         Matter.Body.setVelocity(this.body, {
             x: 0.0,
@@ -262,7 +258,7 @@ var moveable = {
         options = options || {};
 
         //if we can stop, and we aren't moving nor attacking, cease this callback
-        if (this.canStop && (!this.isMoving || this.isAttacking)) {
+        if (!this.isMoving || this.isAttacking) {
             return;
         }
 

@@ -73,7 +73,7 @@ commonAirDropStation.fillLevelSceneExtension = function(scene) {
         }
     });
 
-    var h = graphicsUtils.createDisplayObject('H', {
+    var h = graphicsUtils.createDisplayObject('X_sign', {
         position: this.airDropLocation,
         where: 'stageNTwo',
         sortYOffset: -1000,

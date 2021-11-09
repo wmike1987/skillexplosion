@@ -7,9 +7,9 @@ import Attacker from '@core/Unit/_Attacker.js';
 import Iso from '@core/Unit/IsoSpriteManager.js';
 import UnitBase from '@core/Unit/UnitBase.js';
 import EmptySlot from '@core/Unit/EmptySlot.js';
-
-
-var flyingBodyCollisionCategory = 0x0010;
+import {
+    globals
+} from '@core/Fundamental/GlobalState';
 
 /*
  *  This module aims to assemble all the fundamental pieces of a unit. It creates a new object, mixes the specific unit-options with the UnitBase, then:
@@ -130,8 +130,12 @@ function UnitConstructor(options) {
     body.isCollisionBody = true;
 
     if(newUnit.flying) {
-        body.collisionFilter.category = flyingBodyCollisionCategory;
+        body.collisionFilter.group = -1;
+        body.collisionFilter.category = globals.currentGame.unitSystem.flyingBodyCollisionCategory;
         body.collisionFilter.mask -= 0x0001;
+        // body.collisionFilter.mask += globals.currentGame.unitSystem.projectileCollisionCategory;
+        // body.noWire = false;
+        // body.drawWire = true;
     }
 
     //**************************************************************

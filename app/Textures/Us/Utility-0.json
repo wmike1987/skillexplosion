@@ -336,14 +336,6 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":54,"h":56},
 	"sourceSize": {"w":54,"h":56}
 },
-"H.png":
-{
-	"frame": {"x":1,"y":1285,"w":446,"h":238},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":14,"y":28,"w":446,"h":238},
-	"sourceSize": {"w":477,"h":293}
-},
 "HeadToken.png":
 {
 	"frame": {"x":1968,"y":1438,"w":44,"h":24},
@@ -655,6 +647,14 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":84},
 	"sourceSize": {"w":28,"h":84}
+},
+"X_sign.png":
+{
+	"frame": {"x":1,"y":1285,"w":446,"h":238},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":14,"y":28,"w":446,"h":238},
+	"sourceSize": {"w":477,"h":293}
 }},
 "animations": {
 	"AmbientLight": ["AmbientLight1.png","AmbientLight2.png","AmbientLight3.png"]
@@ -666,6 +666,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2019,"h":1580},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:01237c5518913c5e41b5543093495687:e29c893324c9b5365575702252af1f5e:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:c0e8bb455beaea05888c9b2762f9a9d2:5296f8f7310ecf7415f190215f70dcf3:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

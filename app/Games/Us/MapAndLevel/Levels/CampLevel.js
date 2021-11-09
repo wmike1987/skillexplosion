@@ -328,8 +328,8 @@ var campLevel = function() {
         var unitTest = false;
         if(unitTest) {
             var unitT = UnitMenu.createUnit('DamageFlySwarm', {
-                // team: game.enemyTeam,
-                team: game.playerTeam,
+                team: game.enemyTeam,
+                // team: game.playerTeam,
                 idleCancel: false
             });
 

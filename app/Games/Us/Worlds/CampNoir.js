@@ -511,6 +511,34 @@ var camp = {
     }
 };
 
+
+var easyFlyObj = {
+    type: 'DamageFlySwarm',
+    amount: [2],
+    trivial: true,
+    atATime: 2,
+    initialDelay: 0.1,
+    hz: 1500
+};
+
+var generalFlyObj = {
+    type: 'DamageFlySwarm',
+    amount: [5],
+    trivial: true,
+    atATime: 2,
+    initialDelay: 0.1,
+    hz: 1500
+};
+
+var hardFlyObj = {
+    type: 'DamageFlySwarm',
+    amount: [10],
+    trivial: true,
+    atATime: 2,
+    initialDelay: 0.1,
+    hz: 1500
+};
+
 var enemyDefs = {
     learning: {
         enemySets: [{
@@ -557,35 +585,33 @@ var enemyDefs = {
     basic: {
         token: 'default',
         enemySets: [{
-            type: 'Critter',
-            amount: [2, 3, 4],
-            atATime: 2,
-            hz: 4000
-        }, {
-            type: 'Sentinel',
-            amount: [1, 2],
-            atATime: 1,
-            hz: 4500
-        },
-        {
-            type: 'DamageFlySwarm',
-            amount: [5],
-            atATime: 2,
-            hz: 4500
-        }]
+                type: 'Critter',
+                amount: [2, 3, 4],
+                atATime: 2,
+                hz: 4000
+            }, {
+                type: 'Sentinel',
+                amount: [1, 2],
+                atATime: 1,
+                hz: 4500
+            },
+            easyFlyObj
+        ]
     },
     basicHunter: {
         enemySets: [{
-            type: 'Hunter',
-            amount: [2],
-            atATime: 2,
-            hz: 4000
-        }, {
-            type: 'Critter',
-            amount: [3, 4],
-            atATime: 1,
-            hz: 3000
-        }]
+                type: 'Hunter',
+                amount: [2],
+                atATime: 2,
+                hz: 4000
+            }, {
+                type: 'Critter',
+                amount: [3, 4],
+                atATime: 1,
+                hz: 3000
+            },
+            easyFlyObj
+        ]
     },
     basicHard: {
         enemySets: [{
@@ -604,7 +630,7 @@ var enemyDefs = {
             initialDelay: 6500,
             atATime: 1,
             hz: 5000
-        }]
+        }, generalFlyObj]
     },
     rammians: {
         enemySets: [{
@@ -612,7 +638,7 @@ var enemyDefs = {
             amount: [8, 9, 10],
             atATime: 1,
             hz: 2500
-        }]
+        }, hardFlyObj]
     },
     outerBasic: {
         token: 'outerNormal',
@@ -626,7 +652,7 @@ var enemyDefs = {
             amount: 4,
             atATime: 1,
             hz: 4000
-        }]
+        }, hardFlyObj]
     },
     outerBasicTwo: {
         token: 'outerNormal',
@@ -640,7 +666,7 @@ var enemyDefs = {
             amount: 3,
             atATime: 1,
             hz: 4000
-        }]
+        }, hardFlyObj]
     },
     outerBasicThree: {
         token: 'outerNormal',
@@ -654,7 +680,7 @@ var enemyDefs = {
             amount: 3,
             atATime: 1,
             hz: 4000
-        }]
+        }, hardFlyObj]
     },
     outerHardOne: {
         token: 'outerNormal',
@@ -675,7 +701,7 @@ var enemyDefs = {
             initialDelay: 17000,
             atATime: 2,
             hz: 5000
-        }]
+        }, hardFlyObj]
     },
     outerHardTwo: {
         token: 'outerNormal',
@@ -695,7 +721,7 @@ var enemyDefs = {
             amount: 1,
             atATime: 1,
             hz: 4000
-        }]
+        }, hardFlyObj]
     },
     easyGargs: {
         token: 'hard',
@@ -726,7 +752,7 @@ var enemyDefs = {
             initialDelay: 5000,
             atATime: 1,
             hz: 6000
-        }]
+        }, hardFlyObj]
     },
     outerMobs: {
         enemySets: [{
