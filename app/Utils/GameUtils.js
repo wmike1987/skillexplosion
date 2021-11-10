@@ -129,7 +129,10 @@ var gameUtils = {
             anim.onManyComplete = anim.onComplete; //default to remove the animation
             anim.onComplete = function() { //override onComplete to countdown the specified number of times
                 gameUtils.doSomethingAfterDuration(() => {
-                    anim.gotoAndPlay(0);
+                    //make sure the animation wasn't destroyed in the meantime
+                    if(!anim._destroyed) {
+                        anim.gotoAndPlay(0);
+                    }
                 }, anim.loopPause);
             };
         }
