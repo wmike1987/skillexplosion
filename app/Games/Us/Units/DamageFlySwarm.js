@@ -240,7 +240,7 @@ export default function DamageFlySwarm(options) {
             this.move(amPosition);
             flyAnim.play();
             blackFlyAnim.play();
-            unitUtils.createUnitRanOffStageListener(this, function() {
+            var myRunOffListener = unitUtils.createUnitRanOffStageListener(this, function() {
                 globals.currentGame.removeUnit(this);
             }.bind(this));
 

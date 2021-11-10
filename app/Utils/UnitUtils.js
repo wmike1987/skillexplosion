@@ -206,6 +206,8 @@ var unitUtils = {
                 globals.currentGame.removeTickCallback(myTicker);
             }
         });
+
+        gameUtils.deathPact(unit, myTicker);
     }
 };
 

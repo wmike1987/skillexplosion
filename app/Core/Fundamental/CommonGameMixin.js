@@ -468,9 +468,9 @@ var common = {
                     value.runs = null;
                     value.gogogo = true;
                 }
-                if (!value.runs) {
-                    value.runs = 1;
-                }
+                // if (!value.runs) {
+                //     value.runs = 1;
+                // }
 
                 //determine the active time limit
                 if (value.skipToEnd) {
@@ -1117,6 +1117,7 @@ var common = {
     addTimer: function(timer) {
         this.timers[timer.name] = timer;
         timer.isTimer = true;
+        timer.runs = timer.runs || 1;
         timer.originalRuns = timer.runs;
 
         //add a reset method to the timer

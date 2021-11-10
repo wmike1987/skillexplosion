@@ -2369,24 +2369,24 @@ var EndLevelStatScreenOverlay = function(units, options) {
         };
 
         //continue-only key listeners
-        Matter.Events.on(scene, 'sceneFadeInDone', () => {
-            Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
-            $('body').on('keydown.uskeydownendscreen', function(event) {
-                if (!this.spaceToContinue || isVictory) {
-                    return;
-                }
-                var key = event.key.toLowerCase();
-                if (key == ' ') {
-                    globals.currentGame.soundPool.sceneContinue.play();
-                    $('body').off('keydown.uskeydownendscreen');
-                    graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
-                        if (options.done) {
-                            options.done();
-                        }
-                    });
-                }
-            }.bind(this));
-        });
+        var campsCompleted = globals.currentGame.map.completedNodes.length;
+        if (this.spaceToContinue || campsCompleted == 0) {
+            Matter.Events.on(scene, 'sceneFadeInDone', () => {
+                Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
+                $('body').on('keydown.uskeydownendscreen', function(event) {
+                    var key = event.key.toLowerCase();
+                    if (key == ' ') {
+                        globals.currentGame.soundPool.sceneContinue.play();
+                        $('body').off('keydown.uskeydownendscreen');
+                        graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                            if (options.done) {
+                                options.done();
+                            }
+                        });
+                    }
+                }.bind(this));
+            });
+        }
 
         if (!isVictory) {
             var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
@@ -2418,11 +2418,10 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
                 //present items if we've completed nodes
                 if (globals.currentGame.map.completedNodes.length > 0) {
-                    $('body').off('keydown.uskeydownendscreen');
                     gameUtils.doSomethingAfterDuration(() => {
                         //float levels completed text
                         globals.currentGame.soundPool.positiveSoundFast.play();
-                        var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
+                        var levelsCompletedText = campsCompleted == 1 ? "1 camp completed!" : campsCompleted + " camps completed!";
                         var txt = levelsCompletedText;
                         var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
                             y: 300
