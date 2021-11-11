@@ -24,7 +24,9 @@ import {
     DialogueChain
 } from '@core/Dialogue.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
-import {ItemClasses} from '@games/Us/Items/ItemClasses.js';
+import {
+    ItemClasses
+} from '@games/Us/Items/ItemClasses.js';
 
 var entrySound = gameUtils.getSound('enterairdrop1.wav', {
     volume: 0.04,
@@ -96,7 +98,10 @@ commonAirDropStation.createMapNode = function(options) {
         mapRef: options.mapRef,
         tokenSize: 50,
         largeTokenSize: 60,
-        indicatorOffset: {x: -22, y: -22},
+        indicatorOffset: {
+            x: -22,
+            y: -22
+        },
         init: function() {
             this.prereqs = [];
 
@@ -104,16 +109,21 @@ commonAirDropStation.createMapNode = function(options) {
             var count = 0;
             var prereqDistanceLimit = 200;
             do {
-                if (count > 30) {
+                if (count > 3) {
                     count = 0;
-                    prereqDistanceLimit += 100;
+                    prereqDistanceLimit += 20;
                 }
                 var node = mathArrayUtils.getRandomElementOfArray(this.mapRef.graph);
-                if (node.canBePrereq() && node.levelDetails.isBattleLevel() && !node.chosenAsPrereq && mathArrayUtils.distanceBetweenPoints(options.position, node.position) < prereqDistanceLimit) {
-                    node.chosenAsPrereq = true;
-                    node.master = this;
-                    this.prereqs.push(node);
-                }
+                if (node.canBePrereq() &&
+                    node.levelDetails.isBattleLevel() &&
+                    !node.chosenAsPrereq &&
+                    ((!this.levelDetails.bridge && this.levelDetails.outer == node.levelDetails.outer) || (this.levelDetails.bridge && (this.levelDetails.outer != node.levelDetails.outer))) &&
+                    mathArrayUtils.distanceBetweenPoints(options.position, node.position) < prereqDistanceLimit)
+                    {
+                        node.chosenAsPrereq = true;
+                        node.master = this;
+                        this.prereqs.push(node);
+                    }
                 count++;
             } while (this.prereqs.length < this.levelDetails.prereqCount);
         },
@@ -200,7 +210,10 @@ var airDropStation = function(options) {
     this.itemType = options.itemType;
     this.customIntroDialog = options.customIntroDialog;
     this.delayLastDialogDuration = options.delayLastDialogDuration;
-    this.pauseAfterWord = options.pauseAfterWord || {word: "noword...", duration: 0};
+    this.pauseAfterWord = options.pauseAfterWord || {
+        word: "noword...",
+        duration: 0
+    };
 
     this.onLevelPlayable = function(scene) {
         var game = globals.currentGame;
@@ -242,7 +255,7 @@ var airDropStation = function(options) {
 
         //subtract fatigue
         globals.currentGame.map.startingFatigue -= 4;
-        if(globals.currentGame.map.startingFatigue < 0) {
+        if (globals.currentGame.map.startingFatigue < 0) {
             globals.currentGame.map.startingFatigue = 0;
         }
 

@@ -349,7 +349,7 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    // globals.currentGame.nextPhase();
+                    globals.currentGame.nextPhase();
                     //
                     // this.shane.dodgeSound.play();
 
@@ -361,24 +361,24 @@ var common = {
                     //     });
                     // }
 
-                    var self = this;
-                    if(this.tmIndex == null) {
-                        this.tmIndex = 0;
-                    } else {
-                        this.tmIndex++;
-                    }
-                    this.currentScene.objects.forEach(function(obj, index) {
-                        if(obj.tiles) {
-                            if(self.tmIndex == index) {
-                                obj.tiles.forEach(function(tile) {
-                                    tile.visible = false;
-                                    gameUtils.doSomethingAfterDuration(() => {
-                                        tile.visible = true;
-                                    }, 1250);
-                                });
-                            }
-                        }
-                    });
+                    // var self = this;
+                    // if(this.tmIndex == null) {
+                    //     this.tmIndex = 0;
+                    // } else {
+                    //     this.tmIndex++;
+                    // }
+                    // this.currentScene.objects.forEach(function(obj, index) {
+                    //     if(obj.tiles) {
+                    //         if(self.tmIndex == index) {
+                    //             obj.tiles.forEach(function(tile) {
+                    //                 tile.visible = false;
+                    //                 gameUtils.doSomethingAfterDuration(() => {
+                    //                     tile.visible = true;
+                    //                 }, 1250);
+                    //             });
+                    //         }
+                    //     }
+                    // });
                 }
             }
 

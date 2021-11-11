@@ -184,6 +184,7 @@ var map = function(specs) {
         var genericOptions = options || {};
         genericOptions.levelOptions = genericOptions.levelOptions || {};
         genericOptions.mapNodeOptions = genericOptions.mapNodeOptions || {};
+        genericOptions.positionOptions = genericOptions.positionOptions || {};
 
         //Determine position unless otherwise specified
         var position = genericOptions.position;
@@ -191,6 +192,10 @@ var map = function(specs) {
         var nodeBuffer = 100;
         var radius = genericOptions.levelOptions.outer ? 1000 : 200;
         var minRadius = genericOptions.levelOptions.outer ? 400 : 0;
+        var minX = genericOptions.positionOptions.minX;
+        var maxX = genericOptions.positionOptions.maxX;
+        var minY = genericOptions.positionOptions.minY;
+        var maxY = genericOptions.positionOptions.maxY;
         var tries = 0;
         if (!position) {
             do {
@@ -199,7 +204,16 @@ var map = function(specs) {
                     radius += 100;
                 }
                 collision = false;
-                position = gameUtils.getRandomPositionWithinRadiusAroundPoint(gameUtils.getPlayableCenter(), radius, 40, minRadius);
+                position = gameUtils.getRandomPositionWithinRadiusAroundPoint({
+                    point: gameUtils.getPlayableCenter(),
+                    radius: radius,
+                    buffer: 40,
+                    minRadius: minRadius,
+                    minX: minX,
+                    maxX: maxX,
+                    minY: minY,
+                    maxY: maxY
+                });
                 if (!gameUtils.isPositionWithinPlayableBounds(position)) {
                     outOfBounds = true;
                 }
@@ -216,10 +230,12 @@ var map = function(specs) {
         genericOptions.mapNodeOptions.mapRef = this;
 
         //create the level
-        var level = levelFactory.create(levelType, this.worldSpecs, Object.assign(genericOptions, {mapRef: this}));
+        var level = levelFactory.create(levelType, this.worldSpecs, Object.assign(genericOptions, {
+            mapRef: this
+        }));
 
         //add to map graph if not handled manually
-        if(!level.manualAddToGraph) {
+        if (!level.manualAddToGraph) {
             this.graph.push(level.mapNode);
         }
 
@@ -263,7 +279,7 @@ var map = function(specs) {
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = 0.3;
 
-        if(!this.outingInProgress) {
+        if (!this.outingInProgress) {
             this.allowMouseEvents(true);
         }
 
@@ -271,7 +287,7 @@ var map = function(specs) {
         openmapSound2.play();
         openmapSound3.play();
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
-        if(this.newPhase) {
+        if (this.newPhase) {
             this.newPhase = false;
             openmapNewPhase.play();
         }
@@ -333,9 +349,12 @@ var map = function(specs) {
             });
         });
 
-        if(this.outingInProgress) {
+        if (this.outingInProgress) {
             this.outingNodeMemory.forEach((node, index) => {
-                node.showNodeInOuting({number: index, defaultSize: true});
+                node.showNodeInOuting({
+                    number: index,
+                    defaultSize: true
+                });
             });
         }
 
@@ -421,18 +440,18 @@ var map = function(specs) {
         graphicsUtils.removeSomethingFromRenderer(this.engageText);
 
         //if our outing is not in progress, clear any state related to the configured outing
-        if(!this.outingInProgress) {
+        if (!this.outingInProgress) {
             this.allowMouseEvents(true);
             this.allowKeyEvents(true);
 
             this.inProgressOutingNodes.forEach((node) => {
-                if(node.getOutingCompatibleNode) {
+                if (node.getOutingCompatibleNode) {
                     node = node.getOutingCompatibleNode();
                 }
                 node.levelDetails.customWinBehavior = null;
             });
             this.outingNodes.forEach((node) => {
-                if(node.getOutingCompatibleNode) {
+                if (node.getOutingCompatibleNode) {
                     node = node.getOutingCompatibleNode();
                 }
                 node.levelDetails.customWinBehavior = null;
@@ -453,11 +472,13 @@ var map = function(specs) {
 
         //refresh the graphics
         this.outingNodes.forEach((node, index) => {
-            node.showNodeInOuting({number: index});
+            node.showNodeInOuting({
+                number: index
+            });
         });
 
         //create the space to embark text
-        if(this.outingNodes.length > 0 && this.engageText == null) {
+        if (this.outingNodes.length > 0 && this.engageText == null) {
             this.engageText = graphicsUtils.addSomethingToRenderer("TEX+:Space to embark", {
                 where: 'hudText',
                 style: styles.escapeToContinueStyle,
@@ -487,7 +508,7 @@ var map = function(specs) {
                     }.bind(this));
                 }
             }.bind(this));
-        } else if(this.outingNodes.length == 0) {
+        } else if (this.outingNodes.length == 0) {
             $('body').off('keydown.engagespace');
             graphicsUtils.removeSomethingFromRenderer(this.engageText);
             this.engageText = null;
@@ -508,19 +529,19 @@ var map = function(specs) {
         this.allowMouseEvents(false);
         this.allowKeyEvents(false);
 
-        var finalNode = this.outingNodes[this.outingNodes.length-1];
+        var finalNode = this.outingNodes[this.outingNodes.length - 1];
 
         //Change the win behavior of every node except the final node
         this.outingNodes.forEach((node) => {
             var myNode = node;
 
             //don't change the final node's behavior
-            if(myNode == finalNode) {
+            if (myNode == finalNode) {
                 return;
             }
 
             //sometimes we need to get the right "sub node" for the node (multi level)
-            if(myNode.getOutingCompatibleNode) {
+            if (myNode.getOutingCompatibleNode) {
                 myNode = myNode.getOutingCompatibleNode();
             }
 
@@ -540,7 +561,9 @@ var map = function(specs) {
                     t = '+1 adrenaline!';
                 }
 
-                Matter.Events.trigger(globals.currentGame, 'OutingLevelCompleted', {result: 'victory'});
+                Matter.Events.trigger(globals.currentGame, 'OutingLevelCompleted', {
+                    result: 'victory'
+                });
 
                 //disable the cursor
                 gameUtils.setCursorStyle('None');
@@ -571,7 +594,10 @@ var map = function(specs) {
                         //get the next node and trigger the mouse down behavior
                         var mapnode = this.outingNodes.shift();
                         this.inProgressOutingNodes.push(mapnode);
-                        mapnode.onMouseDownBehavior({systemTriggered: true, keepCurrentCollector: true});
+                        mapnode.onMouseDownBehavior({
+                            systemTriggered: true,
+                            keepCurrentCollector: true
+                        });
                     }, 1500);
                 }, 2500);
             };
@@ -580,7 +606,9 @@ var map = function(specs) {
         //start the first node which will kick off the whole process
         var firstNode = this.outingNodes.shift();
         this.inProgressOutingNodes.push(firstNode);
-        firstNode.onMouseDownBehavior({systemTriggered: true});
+        firstNode.onMouseDownBehavior({
+            systemTriggered: true
+        });
 
         //let everyone know
         Matter.Events.trigger(globals.currentGame, 'EmbarkOnOuting');
@@ -591,7 +619,7 @@ var map = function(specs) {
             this.clearOuting();
 
             //if we've won, add the finalNode to the completed node list
-            if(event.result == 'victory') {
+            if (event.result == 'victory') {
                 this.completedNodes.push(finalNode);
             }
         });

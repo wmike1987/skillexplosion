@@ -1163,12 +1163,6 @@ var phaseThree = function() {
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
     this.map.addMapNode('easySentinels');
-    this.map.addMapNode('airDropStation', {
-        levelOptions: {
-            outer: true
-            // prereqCount: 0
-        }
-    });
 
     //outer
     let outerParam = {
@@ -1176,30 +1170,70 @@ var phaseThree = function() {
             outer: true,
         }
     };
-    this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('outerBasic', outerParam);
-    this.map.addMapNode('outerBasicTwo', outerParam);
-    this.map.addMapNode('outerBasicThree', outerParam);
+
+    //right levels
+    this.map.addMapNode('outerBasic', Object.assign(outerParam, {
+        positionOptions: {
+            minX: gameUtils.getCanvasCenter().x
+        }
+    }));
+    this.map.addMapNode('outerBasic', Object.assign(outerParam, {
+        positionOptions: {
+            minX: gameUtils.getCanvasCenter().x
+        }
+    }));
+    this.map.addMapNode('outerBasicTwo', Object.assign(outerParam, {
+        positionOptions: {
+            minX: gameUtils.getCanvasCenter().x
+        }
+    }));
+
+    //left levels
+    this.map.addMapNode('outerBasicThree', Object.assign(outerParam, {
+        positionOptions: {
+            maxX: gameUtils.getCanvasCenter().x
+        }
+    }));
     this.map.addMapNode('outerHardTwo', {
         levelOptions: {
             outer: true,
             token: 'outerHard',
-            itemClass: 'stimulant'
-        }
-    });
-    this.map.addMapNode('outerHardOne', {
-        levelOptions: {
-            token: 'outerHard',
-            itemClass: 'book'
+            itemClass: 'stimulant',
+        },
+        positionOptions: {
+            maxX: gameUtils.getCanvasCenter().x
         }
     });
     this.map.addMapNode('mobs', {
         levelOptions: {
             outer: true,
             token: 'mobs',
-            itemClass: 'stimulant'
+            itemClass: 'stimulant',
+            positionOptions: {
+                maxX: gameUtils.getCanvasCenter().x
+            }
         }
     });
+
+    this.map.addMapNode('outerHardOne', {
+        levelOptions: {
+            token: 'outerHard',
+            itemClass: 'book'
+        }
+    });
+
+    //air drops
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            outer: true,
+            bridge: true
+            // prereqCount: 0
+        },
+        positionOptions: {
+            maxX: gameUtils.getCanvasCenter().x
+        }
+    });
+
     this.map.addMapNode('airDropStation', {
         levelOptions: {
             prereqCount: 3,
@@ -1207,7 +1241,7 @@ var phaseThree = function() {
             itemType: 'specialtyItem',
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
-        }
+        },
     });
 
     this.map.addMapNode('airDropStation', {
@@ -1218,6 +1252,11 @@ var phaseThree = function() {
             itemType: 'specialtyItem',
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
+        },
+        positionOptions: {
+            minX: gameUtils.getCanvasCenter().x,
+            maxY: gameUtils.getCanvasCenter().y + 50,
+            minY: gameUtils.getCanvasCenter().y - 50,
         }
     });
 

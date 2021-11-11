@@ -458,24 +458,43 @@ var gameUtils = {
         return placement;
     },
 
-    getRandomPositionWithinRadiusAroundPoint: function(point, radius, buffer, minRadius) {
+    getRandomPositionWithinRadiusAroundPoint: function(options) {
+        var point, radius, buffer, minRadius, maxRadius, maxX, minX, maxY, minY;
+        ({
+            point,
+            radius,
+            buffer,
+            minRadius,
+            maxRadius,
+            maxX,
+            minX,
+            maxY,
+            minY
+        } = options);
+
         var position = {
             x: 0,
             y: 0
         };
-        buffer = buffer || 0;
         radius = radius - buffer;
+        buffer = buffer || 0;
         minRadius = minRadius || 0;
+        maxRadius = maxRadius || 999999;
+        maxX = maxX || gameUtils.getPlayableWidth() - buffer;
+        minX = minX || 0 + buffer;
+        maxY = maxY || gameUtils.getPlayableHeight() - buffer;
+        minY = minY || 0 + buffer;
 
         do {
             position.x = point.x - radius + (Math.random() * (radius * 2));
             position.y = point.y - radius + (Math.random() * (radius * 2));
 
-        } while (position.y > this.getPlayableHeight() - buffer ||
-            position.y < 0 + buffer ||
-            position.x > this.getPlayableWidth() - buffer ||
-            position.x < 0 + buffer ||
-            mathArrayUtils.distanceBetweenPoints(position, point) < minRadius);
+        } while (position.y > maxY ||
+            position.y < minY ||
+            position.x > maxX ||
+            position.x < minX ||
+            mathArrayUtils.distanceBetweenPoints(position, point) < minRadius ||
+            mathArrayUtils.distanceBetweenPoints(position, point) > maxRadius);
 
         return mathArrayUtils.roundPositionToWholeNumbers(position);
     },
