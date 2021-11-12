@@ -71,6 +71,11 @@ var mathArrayUtils = {
         return Math.floor(Math.random() * (high - low + 1) + low);
     },
 
+    //(0.75, 1.00) returns any decimal between the two values, inclusive
+    getRandomNumberBetween: function(low, high) {
+        return low + Math.random() * (high-low);
+    },
+
     getRandomElementOfArray: function(array) {
         if (array && array.length > 0) {
             return array[this.getRandomIntInclusive(0, array.length - 1)];

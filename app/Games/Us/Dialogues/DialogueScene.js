@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {Dialogue, DialogueChain} from '@core/Dialogue.js';
 import {globals, keyStates} from '@core/Fundamental/GlobalState.js';
-import Scene from '@core/Scene.js';
+import {Scene} from '@core/Scene.js';
 import styles from '@utils/Styles.js';
 
 var DialogueScene = {

@@ -283,7 +283,7 @@ export default function DamageFlySwarm(options) {
                         if(!globals.currentGame.battleInProgress) {
                             return;
                         }
-                        target.sufferAttack(damage, this, {ignoreAmor: true});
+                        target.sufferAttack(damage, this, {ignoreArmor: true});
                         var bloodAnimation = gameUtils.getAnimation({
                             spritesheetName: 'UtilityAnimations1',
                             animationName: 'GenericHit',

@@ -14,7 +14,7 @@ import {
     UnitSystem,
     UnitSystemAssets
 } from '@core/Unit/UnitSystem.js';
-import Scene from '@core/Scene.js';
+import {Scene} from '@core/Scene.js';
 import ItemSystem from '@core/Unit/ItemSystem.js';
 import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js';
 import {

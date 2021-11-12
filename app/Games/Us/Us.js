@@ -21,7 +21,7 @@ import {
     Doodad
 } from '@utils/Doodad.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
-import Scene from '@core/Scene.js';
+import {Scene} from '@core/Scene.js';
 import UnitPanel from '@games/Us/UnitPanel.js';
 import UnitSpawner from '@games/Us/UnitSpawner.js';
 import styles from '@utils/Styles.js';

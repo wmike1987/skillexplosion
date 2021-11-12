@@ -13,7 +13,7 @@ import {
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';
-import Scene from '@core/Scene.js';
+import {Scene} from '@core/Scene.js';
 import styles from '@utils/Styles.js';
 import {
     DialogueScene

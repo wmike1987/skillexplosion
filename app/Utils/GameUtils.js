@@ -86,7 +86,7 @@ var gameUtils = {
             }.bind(this);
         } else {
             anim.onComplete = function() { //default onComplete function
-                if(!anim.persists) {
+                if (!anim.persists) {
                     graphicsUtils.removeSomethingFromRenderer(anim);
                     gameUtils.detachSomethingFromBody(anim); //in case we're attached
                 }
@@ -130,7 +130,7 @@ var gameUtils = {
             anim.onComplete = function() { //override onComplete to countdown the specified number of times
                 gameUtils.doSomethingAfterDuration(() => {
                     //make sure the animation wasn't destroyed in the meantime
-                    if(!anim._destroyed) {
+                    if (!anim._destroyed) {
                         anim.gotoAndPlay(0);
                     }
                 }, anim.loopPause);
@@ -441,7 +441,16 @@ var gameUtils = {
         return placement;
     },
 
-    getRandomPlacementWithinPlayableBounds: function(buffer) {
+    getRandomPlacementWithinPlayableBounds: function(options) {
+        var buffer, noZones;
+        ({
+            buffer,
+            noZones
+        } = options);
+
+        if(noZones) {
+            noZones = mathArrayUtils.convertToArray(noZones);
+        }
         if (buffer && !buffer.x) {
             buffer = {
                 x: buffer,
@@ -453,8 +462,22 @@ var gameUtils = {
             y: 0
         };
         var placement = {};
-        placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x * 2));
-        placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y * 2));
+
+        var conflictFound = function(position) {
+            if(!noZones) {
+                return false;
+            }
+            var conflict = noZones.some((nz) => {
+                return mathArrayUtils.distanceBetweenPoints(nz.center, position) < nz.radius;
+            });
+
+            return conflict;
+        };
+
+        do {
+            placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x * 2));
+            placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y * 2));
+        } while (conflictFound(placement));
         return placement;
     },
 

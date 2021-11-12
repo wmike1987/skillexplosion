@@ -16,10 +16,11 @@ import {
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
+import TileMap from '@core/TileMap';
 import {
     Doodad
 } from '@utils/Doodad.js';
-import Scene from '@core/Scene.js';
+import {Scene, SceneContainer} from '@core/Scene.js';
 
 /* options
  * start {x: , y: }
@@ -156,6 +157,143 @@ var sceneryUtils = {
         });
 
         return rock;
+    },
+
+    decorateTerrain: function(options) {
+        var container = new SceneContainer();
+        var textureArray = options.possibleTextures;
+        var bounds = options.bounds || gameUtils.getCanvasWH();
+        var tileWidth = options.tileWidth;
+        var tileHeight = tileWidth / 2;
+        var realTileWidth = options.realTileWidth;
+        var realTileHeight = options.realTileHeight;
+        var tileStart = options.tileStart || {
+            x: 0,
+            y: 0
+        };
+        var tint = options.tint;
+        var where = options.where || 'background';
+        var alpha = options.alpha || 1;
+        var frequency = options.hz || 1;
+        var maxNumber = options.maxNumber || null;
+        var nonTilePosition = options.nonTilePosition || false;
+        if(maxNumber) {
+            nonTilePosition = true;
+        }
+        var groupings = options.groupings || {hz: 0};
+        var unique = options.unique;
+        var r = options.r || 0; //r is 0-1 (random scale)
+        var scale = options.scale;
+        var noZones = options.noZones || [];
+        noZones = mathArrayUtils.convertToArray(noZones);
+
+        var column = 0;
+        var hits = 0;
+        for (var x = tileStart.x; x <= bounds.x + tileWidth;) {
+
+            //alter the y when we're on an odd column
+            var yOffset = 0;
+            if (column % 2 != 0) {
+                yOffset = tileHeight / 2;
+            }
+
+            //draw columns
+            for (var y = tileStart.y; y <= bounds.y + tileHeight / 2;) {
+                if (Math.random() < frequency) {
+                    var randomnessX = ((Math.random() * 200) - 100) * r;
+                    randomnessX = Math.floor(randomnessX);
+
+                    var randomnessY = ((Math.random() * 200) - 100) * r;
+                    randomnessY = Math.floor(randomnessY);
+
+                    var finalXPosition = x + randomnessX;
+                    var finalYPosition = y + yOffset + randomnessY;
+
+                    if(nonTilePosition) {
+                        var position = gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 30});
+                        finalXPosition = position.x;
+                        finalYPosition = position.y;
+                    }
+
+                    //no zones
+                    var skip = false;
+                    if(noZones) {
+                        noZones.forEach((nz) => {
+                            if(mathArrayUtils.distanceBetweenPoints(nz.center, {x: finalXPosition, y: finalYPosition}) < nz.radius) {
+                                skip = true;
+                            }
+                        });
+                    }
+                    if(skip) {
+                        y += tileHeight;
+                        continue;
+                    }
+
+                    if(maxNumber && hits == maxNumber) {
+                        y += tileHeight;
+                        continue;
+                    }
+
+                    hits += 1;
+
+                    var randomTexture = mathArrayUtils.getRandomElementOfArray(textureArray);
+                    if(unique) {
+                        mathArrayUtils.removeObjectFromArray(randomTexture, textureArray);
+                    }
+                    var newDO = null;
+                    if(randomTexture.animationName) {
+                        randomTexture.scale = randomTexture.scale || {x: 1.0, y: 1.0};
+                        newDO = gameUtils.getAnimation({
+                            spritesheetName: randomTexture.spritesheetName,
+                            animationName: randomTexture.animationName,
+                            speed: randomTexture.speed || 1.0,
+                            loop: true,
+                            transform: [finalXPosition, finalYPosition, randomTexture.scale.x, randomTexture.scale.y]
+                        });
+                        if(randomTexture.decorate) {
+                            randomTexture.decorate(newDO);
+                        }
+                        if(randomTexture.playDelay) {
+                            let myDO = newDO;
+                            myDO.sceneInit = function() {
+                                var self = this;
+                                gameUtils.doSomethingAfterDuration(function() {
+                                    if(!self._destroyed) {
+                                        self.play();
+                                    }
+                                }, randomTexture.playDelay);
+                            };
+                        } else {
+                            newDO.play();
+                        }
+                    } else {
+                        newDO = graphicsUtils.createDisplayObject(randomTexture, {
+                            position: {
+                                x: finalXPosition,
+                                y: finalYPosition
+                            },
+                            alpha: alpha,
+                            where: where,
+                            scale: {
+                                // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
+                                x: scale ? scale.x : 1,
+                                y: scale ? scale.y : 1
+                            }
+                        });
+                    }
+
+                    if (tint) {
+                        newDO.tint = tint;
+                    }
+
+                    container.addObject(newDO);
+                }
+                y += tileHeight;
+            }
+            x += tileWidth / 2;
+            column++;
+        }
+        return container;
     }
 };
 

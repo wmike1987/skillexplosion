@@ -11,7 +11,6 @@ import sideSwipeShader from '@shaders/SideSwipeShader.js';
  * This module represents a scene.
  * A scene is simply a collection of game objects that are grouped together because they exist together
  */
-
 var Scene = function() {
     this.id = mathArrayUtils.uuidv4();
     this.objects = [];
@@ -257,4 +256,31 @@ Scene.prototype.transitionToScene = function(options) {
     Matter.Events.trigger(newScene, 'afterSnapshotRender', {});
 };
 
-export default Scene;
+var SceneContainer = function() {
+    this.list = [];
+
+    this.addObject = function(obj) {
+        this.list.push(obj);
+    };
+
+    this.removeObject = function(obj) {
+        mathArrayUtils.removeObjectFromArray(obj, this.list);
+    };
+
+    this.initialize = function() {
+        this.list.forEach(function(obj) {
+            graphicsUtils.addSomethingToRenderer(obj);
+            if(obj.sceneInit) {
+                obj.sceneInit();
+            }
+        });
+    };
+
+    this.cleanUp = function() {
+        this.list.forEach(function(obj) {
+            graphicsUtils.removeSomethingFromRenderer(obj);
+        });
+    };
+};
+
+export {Scene, SceneContainer};

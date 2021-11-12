@@ -17,7 +17,7 @@ import {
 } from '@utils/Doodad.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
-import Scene from '@core/Scene.js';
+import {Scene} from '@core/Scene.js';
 import UnitSpawner from '@games/Us/UnitSpawner.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 import Tooltip from '@core/Tooltip.js';

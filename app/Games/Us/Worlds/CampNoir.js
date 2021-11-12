@@ -18,12 +18,11 @@ import {
     DialogueChain
 } from '@core/Dialogue.js';
 import valueShader from '@shaders/ValueShader.js';
-import TileMapper from '@core/TileMapper.js';
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import {
     Doodad
 } from '@utils/Doodad.js';
-import Scene from '@core/Scene.js';
+import {Scene} from '@core/Scene.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Map from '@games/Us/MapAndLevel/Map/Map.js';
 import {
@@ -45,7 +44,7 @@ var rockTints = [0xffcccc, 0xe59ab6];
 var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
 var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
 var ambientLightTints = [
-    [0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x550000, 0x000000, 0x000000, 0x550000],
+    [0x000000, 0x163c1b, 0x000000, 0x06300f, 0x000000, 0x550000, 0x000000, 0x06300f, 0x550000],
     [0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303]
 ];
 var getLevelTiles = function() {
@@ -1365,28 +1364,49 @@ var campNoir = {
             var tIndex = acceptableTileTints.indexOf(tint);
             var ornamentTiles = [];
             var ornamentTint = acceptableOrnamentTints[tIndex];
+
+            //desert flower map
             for (var i = 0; i <= 5; i++) {
                 ornamentTiles.push('FrollGround/DesertFlower' + i);
             }
-            this.ornamentMap = TileMapper.produceTileMap({
+            this.desertFlowerMap = SceneryUtils.decorateTerrain({
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
-                noScale: true,
-                hz: 0.4,
+                scale: {x: mathArrayUtils.getRandomNumberBetween(0.75, 1), y: mathArrayUtils.getRandomNumberBetween(0.75, 1)},
+                hz: 0.25,
                 where: 'stage',
                 r: 1,
-                tileTint: ornamentTint,
+                tint: ornamentTint,
                 noZones: this.noZones,
-                seed: this.ornamentMap ? this.ornamentMap.seed : null
+                seed: this.desertFlowerMap ? this.desertFlowerMap.seed : null
             });
 
+            //crag map
+            ornamentTiles = [];
+            for (i = 1; i <= 4; i++) {
+                ornamentTiles.push('FrollGround/Ornament' + i);
+            }
+            this.cragMap = SceneryUtils.decorateTerrain({
+                possibleTextures: ornamentTiles,
+                tileWidth: tileSize,
+                scale: {x: 0.75, y: 0.75},
+                maxNumber: 2,
+                unique: true,
+                where: 'stageNOne',
+                r: 1,
+                tint: 0x4f2b00,
+                noZones: this.noZones,
+                seed: this.cragMap ? this.cragMap.seed : null
+            });
+
+            //animated stuff map
             var flowerTint = acceptableFlowerTints[acceptableTileTints.indexOf(tint)];
             var animationOrnamentTiles = [];
             for (var j = 0; j < 8; j++) {
 
-                let randomSpeed = 0.15 + Math.random() * 0.2;
-                let randomScale = 0.75 + Math.random() * 0.30;
-                let randomGrassSpeed = 0.02 + Math.random() * 0.07;
+                let randomSpeed = mathArrayUtils.getRandomNumberBetween(0.15, 0.35);
+                let randomScale = mathArrayUtils.getRandomNumberBetween(0.65, 1);
+                let randomGrassSpeed = mathArrayUtils.getRandomNumberBetween(0.02, 0.09);
                 let r = 'a';
                 if (j > 1) {
                     r = 'b';
@@ -1413,10 +1433,10 @@ var campNoir = {
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
-                                alpha: 0.35,
+                                alpha: 0.5,
                                 offset: {
                                     x: 0,
-                                    y: 10
+                                    y: 10 * randomScale
                                 },
                                 size: {
                                     x: 24,
@@ -1442,10 +1462,60 @@ var campNoir = {
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
-                                alpha: 0.35,
+                                alpha: 0.5,
                                 offset: {
                                     x: 0,
-                                    y: 10
+                                    y: 10 * randomScale
+                                },
+                                size: {
+                                    x: 24,
+                                    y: 8
+                                }
+                            });
+                        }
+                    });
+                }
+
+                if (Math.random() > 0.3) {
+                    animationOrnamentTiles.push({
+                        animationName: 'GrassAnimsBlue',
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                    });
+                }
+
+                if (Math.random() > 0.3) {
+                    animationOrnamentTiles.push({
+                        animationName: 'GrassAnimsOrange',
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                    });
+                }
+
+                if (Math.random() > 0.3) {
+                    animationOrnamentTiles.push({
+                        animationName: 'FlowerAnimsTeal',
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                        decorate: function(anim) {
+                            graphicsUtils.addShadowToSprite({
+                                sprite: anim,
+                                alpha: 0.5,
+                                offset: {
+                                    x: 0,
+                                    y: 10 * randomScale
                                 },
                                 size: {
                                     x: 24,
@@ -1458,49 +1528,52 @@ var campNoir = {
 
                 if (Math.random() > 0.3) {
                     animationOrnamentTiles.push({
-                        animationName: 'GrassAnimsRed',
+                        animationName: 'FlowerAnimsYellow',
                         spritesheetName: 'TerrainAnimations',
                         speed: randomSpeed,
                         scale: {
                             x: randomScale,
                             y: randomScale
                         },
-                        // decorate: function(anim) {
-                        //     graphicsUtils.addShadowToSprite({
-                        //         sprite: anim,
-                        //         alpha: 0.5,
-                        //         offset: {
-                        //             x: 0,
-                        //             y: 12
-                        //         },
-                        //         scale: {
-                        //             x: 0.5,
-                        //             y: 0.25
-                        //         }
-                        //     })
-                        // }
+                        decorate: function(anim) {
+                            graphicsUtils.addShadowToSprite({
+                                sprite: anim,
+                                alpha: 0.5,
+                                offset: {
+                                    x: 0,
+                                    y: 10 * randomScale
+                                },
+                                size: {
+                                    x: 24,
+                                    y: 8
+                                }
+                            })
+                        }
                     });
                 }
             }
-            this.animatedOrnamentMap = TileMapper.produceTileMap({
+            this.animatedOrnamentMap = SceneryUtils.decorateTerrain({
                 possibleTextures: animationOrnamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 0.2,
+                hz: 0.6,
+                groupings: {hz: 0.3, size: [3, 4]},
                 where: 'stage',
                 r: 1,
-                tileTint: flowerTint,
+                tint: flowerTint,
                 noZones: this.noZones,
                 seed: this.animatedOrnamentMap ? this.animatedOrnamentMap.seed : null
             });
 
-            scene.add(this.ornamentMap);
+            scene.add(this.desertFlowerMap);
+            scene.add(this.cragMap);
             scene.add(this.animatedOrnamentMap);
 
-            var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.2);
+            var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.20);
             scene.add(l1);
 
             //Add rocks to non camp levels
+            var noZones = this.noZones;
             if (!this.isCampProper) {
                 var numberOfRocks = 4;
 
@@ -1508,7 +1581,7 @@ var campNoir = {
                     var rock = SceneryUtils.createRock({
                         tint: rockTints[tIndex]
                     });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds(80));
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones}));
                     scene.add(rock);
                 };
 
@@ -1517,7 +1590,7 @@ var campNoir = {
                         names: ['Rock2', 'Rock2a', 'Rock2b'],
                         tint: rockTints[tIndex]
                     });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds(80));
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones}));
                     scene.add(rock);
                 };
 
@@ -1530,7 +1603,7 @@ var campNoir = {
                         names: ['Rock2', 'Rock2a', 'Rock2b'],
                         tint: rockTints[tIndex]
                     });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds(80));
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones}));
                     scene.add(rock);
                 };
 
