@@ -1535,6 +1535,7 @@ export default function Medic(options) {
                     medic.defensePassive.aggressionAction();
                     return {value: 1};
                 };
+                deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
                 deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
                 deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
             }
@@ -1545,6 +1546,7 @@ export default function Medic(options) {
                     // Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
                     deepThought.aggressionAction = function() {
                         event.passive.aggressionAction();
+                        deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
                         return {value: 1};
                     };
                     deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
@@ -1555,6 +1557,7 @@ export default function Medic(options) {
                     Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
                     Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
                     deepThought.aggressionAction = null;
+                    deepThought.aggressionPredicate = null;
                     deepThought.aggressionDescription = deepThought.originalAggressionDescription;
                     passive.start('attackPassive');
                 });
