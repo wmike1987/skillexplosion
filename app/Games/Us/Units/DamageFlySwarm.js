@@ -129,28 +129,28 @@ export default function DamageFlySwarm(options) {
         }, {
             id: 'main',
             data: flyAnim,
-            stage: 'stageOne',
+            stage: 'stage',
             rotate: 'continuous',
             visible: true,
             offset: {
                 x: 0,
                 y: 0
             },
-            sortYOffset: 0,
+            sortYOffset: 60,
         }, {
             id: 'main2',
             data: blackFlyAnim,
-            stage: 'stageOne',
+            stage: 'stage',
             rotate: 'none',
             visible: true,
             offset: {
                 x: 0,
                 y: 0
             },
-            sortYOffset: 0,
+            sortYOffset: 60,
         }, {
             id: 'shadow',
-            data: 'IsoShadowBlurred',
+            data: 'IsoTreeShadow1',
             scale: {
                 x: 2.0,
                 y: 2.0
@@ -226,7 +226,7 @@ export default function DamageFlySwarm(options) {
             });
         },
         _afterAddInit: function() {
-            this.moveSpeed = 0.6 + Math.random() * 0.3;
+            this.moveSpeed = 0.4;// + Math.random() * 0.3;
             var currentPosition = this.position;
 
             var attackPosX = Math.random() * gameUtils.getPlayableWidth();
@@ -316,6 +316,7 @@ export default function DamageFlySwarm(options) {
         unit: unitProperties,
         moveable: {
             moveSpeed: 2.0,
+            alwaysTry: true
         }
     });
 }

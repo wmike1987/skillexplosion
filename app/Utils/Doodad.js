@@ -22,7 +22,15 @@ import {globals} from '@core/Fundamental/GlobalState.js';
 */
 var Doodad = function(options) {
     this.rebuildOptions = Object.assign({}, options);
-    options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true}, options);
+    options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true, scale: {x: 1, y: 1}}, options);
+    if(!options.scale.x) {
+        options.scale = {x: options.scale, y: options.scale};
+    }
+    if(options.randomHFlip) {
+        if(mathArrayUtils.flipCoin()) {
+            options.scale.x *= -1;
+        }
+    }
 
     // create body
     this.body = Matter.Bodies.circle(-5000, -5000, options.radius, {
@@ -59,9 +67,10 @@ var Doodad = function(options) {
     options.texture.forEach((item, i) => {
         var data = item;
         var offset = options.offset || {x: 0, y: 0};
-        var scale = item.scale || options.scale || {x: 1, y: 1};
+        var scale = item.scale || options.scale;
         var stage = item.where || options.stage || 'foreground';
         var tint = options.tint || 0xffffff;
+        var alpha = options.alpha || 1;
         if(item.doodadData) {
             data = item.doodadData;
             offset = item.offset || offset;
@@ -72,6 +81,7 @@ var Doodad = function(options) {
             id: item.name || 'mainData' + i,
             data: data,
             offset: offset,
+            alpha: alpha,
             rotate: 'none',
             scale: scale,
             stage: stage,

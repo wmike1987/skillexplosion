@@ -157,6 +157,9 @@ var moveable = {
             gogogo: true,
             timeLimit: 550,
             callback: function() {
+                if(this.alwaysTry) {
+                    return;
+                }
                 if (this.lastPosition && this.isMoving && !this.isHoning && !this.isAttacking) {
                     if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                         if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {

@@ -28,7 +28,7 @@ var shaneLearning = function(options) {
     this.initExtension = function() {
         this.completeUponEntry = true;
         this.mode = this.possibleModes.CUSTOM;
-        this.noZones = {center: podPosition, radius: 250};
+        this.noZones = [{center: podPosition, radius: 250}];
     };
 
     this.fillLevelSceneExtension = function(scene) {

@@ -1360,6 +1360,8 @@ var campNoir = {
         outerTintIndexes: [1],
         levelTiles: getLevelTiles(),
         possibleTrees: possibleTrees,
+
+        //gets applied per level
         decorateTerrain: function(scene, tint) {
             var tIndex = acceptableTileTints.indexOf(tint);
             var ornamentTiles = [];
@@ -1391,7 +1393,7 @@ var campNoir = {
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
                 scale: {x: 0.75, y: 0.75},
-                maxNumber: 2,
+                maxNumber: 3,
                 unique: true,
                 where: 'stageNOne',
                 r: 1,
@@ -1585,8 +1587,8 @@ var campNoir = {
             var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.20);
             scene.add(l1);
 
-            //Add rocks to non camp levels
-            var noZones = this.noZones;
+            //Add doodads to non camp levels
+            var noZones = this.noZones || [];
             if (!this.isCampProper) {
                 var numberOfRocks = 4;
 
@@ -1608,7 +1610,19 @@ var campNoir = {
                 };
 
                 mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
-                mathArrayUtils.repeatXTimes(createRock2, numberOfRocks);
+                mathArrayUtils.repeatXTimes(createRock2, numberOfRocks + 3);
+
+                //create trees
+                var createTree1 = function() {
+                    var tree = SceneryUtils.createTree();
+                    var centerNoZone = [{
+                        center: gameUtils.getPlayableCenter(),
+                        radius: 80
+                    }];
+                    tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones.concat(centerNoZone)}));
+                    scene.add(tree);
+                };
+                mathArrayUtils.repeatXTimes(createTree1, 2);
             } else {
                 var numberOfRocks2 = 6;
                 var createRock3 = function() {

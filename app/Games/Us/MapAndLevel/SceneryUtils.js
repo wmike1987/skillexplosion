@@ -73,7 +73,8 @@ var sceneryUtils = {
 
     createRock: function(options) {
         options = Object.assign({
-            where: 'stage'
+            where: 'stage',
+            randomHFlip: true,
         }, options);
 
         var rockDetails = {
@@ -179,6 +180,7 @@ var sceneryUtils = {
             texture: 'Doodads/' + myDetails.textureName,
             stage: options.where,
             tint: options.tint,
+            randomHFlip: options.randomHFlip,
             scale: myDetails.scale,
             offset: myDetails.offset,
             bodyScale: myDetails.bodyScale,
@@ -199,6 +201,138 @@ var sceneryUtils = {
         });
 
         return rock;
+    },
+
+    createTree: function(options) {
+        options = Object.assign({
+            where: 'stage',
+            randomHFlip: true
+        }, options);
+
+        var randomScale = mathArrayUtils.getRandomNumberBetween(0.9, 1.1);
+        var treeDetails = {
+            avdeadtree1: {
+                radius: 10 * randomScale,
+                scale: 0.5 * randomScale,
+                alpha: 0.8,
+                offset: {
+                    x: 0,
+                    y: -130 * randomScale
+                },
+                shadowScale: {
+                    x: 2.0 * randomScale,
+                    y: 2.0 * randomScale
+                },
+                shadowOffset: {
+                    x: 0,
+                    y: 18 * randomScale
+                },
+                sortYOffset: 130 * randomScale
+            },
+            avdeadtree2: {
+                radius: 10 * randomScale,
+                scale: 0.5 * randomScale,
+                alpha: 0.8,
+                offset: {
+                    x: 0,
+                    y: -85 * randomScale
+                },
+                shadowScale: {
+                    x: 1.0 * randomScale,
+                    y: 1.0 * randomScale
+                },
+                shadowOffset: {
+                    x: 0,
+                    y: 18 * randomScale
+                },
+                sortYOffset: 90 * randomScale
+            },
+            avgoldtree4: {
+                radius: 5 * randomScale,
+                scale: 0.8 * randomScale,
+                alpha: 0.7,
+                offset: {
+                    x: -4,
+                    y: -70 * randomScale
+                },
+                shadowScale: {
+                    x: 1.0 * randomScale,
+                    y: 1.0 * randomScale
+                },
+                shadowOffset: {
+                    x: -4,
+                    y: 0 * randomScale
+                },
+                sortYOffset: 90 * randomScale
+            },
+            avpinktree2: {
+                radius: 8 * randomScale,
+                scale: 0.8 * randomScale,
+                alpha: 0.7,
+                offset: {
+                    x: 2,
+                    y: -50 * randomScale
+                },
+                shadowScale: {
+                    x: 1.0 * randomScale,
+                    y: 1.0 * randomScale
+                },
+                shadowOffset: {
+                    x: 2,
+                    y: 0 * randomScale
+                },
+                sortYOffset: 90 * randomScale
+            },
+        };
+
+        var possibleTrees = Object.keys(treeDetails);
+
+        if (options.names) {
+            possibleTrees = options.names;
+        }
+
+        var randomTreeName = mathArrayUtils.getRandomElementOfArray(possibleTrees);
+
+        //mixin the default options
+        var myDetails = Object.assign({
+            collides: true,
+            offset: {
+                x: 0,
+                y: 0
+            },
+            scale: {
+                x: 1,
+                y: 1
+            },
+            bodyScale: null,
+            textureName: randomTreeName
+        }, treeDetails[randomTreeName]);
+        var tree = new Doodad({
+            collides: myDetails.collides,
+            autoAdd: false,
+            radius: myDetails.radius || 1,
+            // drawWire: true,
+            texture: 'Doodads/' + myDetails.textureName,
+            stage: options.where,
+            tint: options.tint,
+            alpha: myDetails.alpha || 1.0,
+            randomHFlip: options.randomHFlip,
+            scale: myDetails.scale,
+            offset: myDetails.offset,
+            bodyScale: myDetails.bodyScale,
+            sortYOffset: myDetails.sortYOffset || 0,
+            shadowIcon: 'IsoTreeShadow1',
+            shadowScale: myDetails.shadowScale || {
+                x: 1,
+                y: 1
+            },
+            shadowOffset: myDetails.shadowOffset || {
+                x: -6,
+                y: 20
+            },
+        });
+
+        return tree;
     },
 
     decorateTerrain: function(options) {
@@ -255,7 +389,7 @@ var sceneryUtils = {
                         var position = gameUtils.getRandomPlacementWithinPlayableBounds({
                             buffer: 30
                         });
-                        positionY = position.x;
+                        positionX = position.x;
                         positionY = position.y;
                     }
 
