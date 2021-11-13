@@ -17,6 +17,7 @@ var Scene = function() {
     this.cleanUpTasks = [];
     this.isScene = true;
     this.initialized = false;
+    globals.currentGame.upcomingScene = this;
 };
 
 var _exectuteObject = function(obj) {
@@ -66,9 +67,11 @@ Scene.prototype.add = function(objOrArray) {
         objOrArray = objOrArray.objects;
     }
 
+    //convert to array
     if(!$.isArray(objOrArray)) {
         objOrArray = [objOrArray];
     }
+
     $.merge(this.objects, objOrArray);
 
     //if our scene is already in play, execute the added object(s)
@@ -106,6 +109,23 @@ Scene.prototype.clear = function() {
     //there was a chain of scenes held together by the bound 'this'. Aka a memory leak.
     this.fadeTimer = null;
 };
+
+Scene.prototype.getNoZones = function(options) {
+    options = options || {};
+    var noZones = [];
+
+    this.objects.forEach((obj) => {
+        if(obj.getNoZone) {
+            var noZ = obj.getNoZone();
+            if(noZ) {
+                noZones.push(noZ);
+            }
+        }
+    });
+
+    return noZones;
+};
+
 
 var SceneModes = {
     BLACK: 'BLACK',

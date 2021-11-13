@@ -451,6 +451,11 @@ var gameUtils = {
         if(noZones) {
             noZones = mathArrayUtils.convertToArray(noZones);
         }
+
+        if(options.useUpcomingSceneNoZones) {
+            noZones = noZones.concat(globals.currentGame.upcomingScene.getNoZones());
+        }
+
         if (buffer && !buffer.x) {
             buffer = {
                 x: buffer,
@@ -474,10 +479,15 @@ var gameUtils = {
             return conflict;
         };
 
+        var collisionPosition;
         do {
             placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x * 2));
             placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y * 2));
-        } while (conflictFound(placement));
+            collisionPosition = placement;
+            if(options.selfNoZone) {
+                collisionPosition = Matter.Vector.add(placement, options.selfNoZone.offset);
+            }
+        } while (conflictFound(collisionPosition));
         return placement;
     },
 

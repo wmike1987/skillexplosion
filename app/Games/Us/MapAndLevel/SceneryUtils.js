@@ -215,6 +215,13 @@ var sceneryUtils = {
                 radius: 10 * randomScale,
                 scale: 0.5 * randomScale,
                 alpha: 0.8,
+                noZone: {
+                    offset: {
+                        x: 0,
+                        y: 15 * randomScale
+                    },
+                    radius: 50
+                },
                 offset: {
                     x: 0,
                     y: -130 * randomScale
@@ -233,6 +240,13 @@ var sceneryUtils = {
                 radius: 10 * randomScale,
                 scale: 0.5 * randomScale,
                 alpha: 0.8,
+                noZone: {
+                    offset: {
+                        x: 0,
+                        y: 10 * randomScale
+                    },
+                    radius: 50
+                },
                 offset: {
                     x: 0,
                     y: -85 * randomScale
@@ -251,6 +265,13 @@ var sceneryUtils = {
                 radius: 5 * randomScale,
                 scale: 0.8 * randomScale,
                 alpha: 0.7,
+                noZone: {
+                    offset: {
+                        x: 0,
+                        y: 10 * randomScale
+                    },
+                    radius: 25
+                },
                 offset: {
                     x: -4,
                     y: -70 * randomScale
@@ -261,7 +282,7 @@ var sceneryUtils = {
                 },
                 shadowOffset: {
                     x: -4,
-                    y: 0 * randomScale
+                    y: 3 * randomScale
                 },
                 sortYOffset: 90 * randomScale
             },
@@ -269,6 +290,13 @@ var sceneryUtils = {
                 radius: 8 * randomScale,
                 scale: 0.8 * randomScale,
                 alpha: 0.7,
+                noZone: {
+                    offset: {
+                        x: 0,
+                        y: 10 * randomScale
+                    },
+                    radius: 25
+                },
                 offset: {
                     x: 2,
                     y: -50 * randomScale
@@ -279,7 +307,7 @@ var sceneryUtils = {
                 },
                 shadowOffset: {
                     x: 2,
-                    y: 0 * randomScale
+                    y: 10 * randomScale
                 },
                 sortYOffset: 90 * randomScale
             },
@@ -315,6 +343,7 @@ var sceneryUtils = {
             texture: 'Doodads/' + myDetails.textureName,
             stage: options.where,
             tint: options.tint,
+            noZone: myDetails.noZone,
             alpha: myDetails.alpha || 1.0,
             randomHFlip: options.randomHFlip,
             scale: myDetails.scale,
@@ -350,6 +379,7 @@ var sceneryUtils = {
         var alpha = options.alpha || 1;
         var frequency = options.hz || 1;
         var maxNumber = options.maxNumber || null;
+        var sortYOffset = options.sortYOffset || 0;
         var nonTilePosition = options.nonTilePosition || false;
         if (maxNumber) {
             nonTilePosition = true;
@@ -360,7 +390,10 @@ var sceneryUtils = {
         var unique = options.unique;
         var r = options.r || 0; //r is 0-1 (random scale)
         var scale = options.scale;
-        var noZones = options.noZones || [];
+
+        //build no zones
+        var sceneNoZones = options.scene || globals.currentGame.upcomingScene.getNoZones();
+        var noZones = sceneNoZones.concat(options.noZones || []);
         noZones = mathArrayUtils.convertToArray(noZones);
 
         var column = 0;
@@ -474,6 +507,7 @@ var sceneryUtils = {
                                     y: positionY
                                 },
                                 alpha: alpha,
+                                sortYOffset: sortYOffset,
                                 where: where,
                                 scale: {
                                     // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width

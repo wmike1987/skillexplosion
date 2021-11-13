@@ -1,35 +1,60 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 
 //This module represents a doodad (a physical, non-unit body, which can have properties)
 /*
-*   options = {
-*       collides: boolean (default false)
-*       bodyScale: {x, y}
-*       bodyRotate: float (degrees)
-*       pathingBlocker: boolean (default true)
-*       radius: float
-*       sightBlocker: boolean (default false)
-*       texture: texture to be used
-*       position: {x, y} (default: random placement within canvas bounds)
-*       scale: {x, y}
-*       shadowScale: {x, y}
-*       shadowOffset: {x, y}
-*       autoAdd: boolean (default true)
-*   }
-*/
+ *   options = {
+ *       collides: boolean (default false)
+ *       bodyScale: {x, y}
+ *       bodyRotate: float (degrees)
+ *       pathingBlocker: boolean (default true)
+ *       radius: float
+ *       sightBlocker: boolean (default false)
+ *       texture: texture to be used
+ *       position: {x, y} (default: random placement within canvas bounds)
+ *       scale: {x, y}
+ *       shadowScale: {x, y}
+ *       shadowOffset: {x, y}
+ *       autoAdd: boolean (default true)
+ *   }
+ */
 var Doodad = function(options) {
     this.rebuildOptions = Object.assign({}, options);
-    options = Object.assign({pathingBlocker: true, autoAdd: true, sightBlocker: false, collides: true, scale: {x: 1, y: 1}}, options);
-    if(!options.scale.x) {
-        options.scale = {x: options.scale, y: options.scale};
+    this.isDoodad = true;
+    options = Object.assign({
+        pathingBlocker: true,
+        autoAdd: true,
+        sightBlocker: false,
+        collides: true,
+        scale: {
+            x: 1,
+            y: 1
+        },
+        noZone: null
+    }, options);
+    if (!options.scale.x) {
+        options.scale = {
+            x: options.scale,
+            y: options.scale
+        };
     }
-    if(options.randomHFlip) {
-        if(mathArrayUtils.flipCoin()) {
+    if (options.randomHFlip) {
+        if (mathArrayUtils.flipCoin()) {
             options.scale.x *= -1;
         }
+    }
+
+    //create noZone
+    if (options.noZone) {
+        this.noZone = options.noZone;
     }
 
     // create body
@@ -37,12 +62,12 @@ var Doodad = function(options) {
         isStatic: true,
     });
 
-    if(options.bodyScale) {
+    if (options.bodyScale) {
         Matter.Body.scale(this.body, options.bodyScale.x || 1, options.bodyScale.y || 1);
     }
 
     //default position
-    if(!options.position) {
+    if (!options.position) {
         options.position = gameUtils.calculateRandomPlacementForBodyWithinCanvasBounds(this.body, true);
     }
 
@@ -50,28 +75,31 @@ var Doodad = function(options) {
     this.position = this.body.position;
     this.rebuildOptions.position = this.position;
 
-    if(options.bodyRotate) {
+    if (options.bodyRotate) {
         Matter.Body.rotate(this.body, options.bodyRotate);
     }
 
-    if(options.drawWire) {
+    if (options.drawWire) {
         this.body.drawWire = true;
     }
 
     //get textures
     var rchildren = [];
-    if(!Array.isArray(options.texture)) {
+    if (!Array.isArray(options.texture)) {
         options.texture = [options.texture];
     }
 
     options.texture.forEach((item, i) => {
         var data = item;
-        var offset = options.offset || {x: 0, y: 0};
+        var offset = options.offset || {
+            x: 0,
+            y: 0
+        };
         var scale = item.scale || options.scale;
         var stage = item.where || options.stage || 'foreground';
         var tint = options.tint || 0xffffff;
         var alpha = options.alpha || 1;
-        if(item.doodadData) {
+        if (item.doodadData) {
             data = item.doodadData;
             offset = item.offset || offset;
             scale = item.scale || scale;
@@ -90,23 +118,29 @@ var Doodad = function(options) {
         });
     });
 
-    if(!options.noShadow) {
+    if (!options.noShadow) {
         rchildren.push({
             id: 'shadow',
             data: options.shadowIcon || 'IsoShadowBlurred',
-            scale: options.shadowScale || {x: 1, y: 1},
+            scale: options.shadowScale || {
+                x: 1,
+                y: 1
+            },
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
             stage: "stageNTwo",
-            offset: options.shadowOffset || {x: 0, y: 0}
+            offset: options.shadowOffset || {
+                x: 0,
+                y: 0
+            }
         });
     }
 
     this.body.renderChildren = rchildren;
 
     // make non-colliding body
-    if(!options.collides) {
+    if (!options.collides) {
         this.body.collisionFilter.category = 0;
     }
 
@@ -116,7 +150,7 @@ var Doodad = function(options) {
     };
 
     //automatically add if specified
-    if(options.autoAdd) {
+    if (options.autoAdd) {
         this.initialize();
     }
 
@@ -134,4 +168,20 @@ var Doodad = function(options) {
     };
 };
 
-export {Doodad};
+Doodad.prototype.getNoZone = function() {
+    if (this.noZone) {
+        return {
+            center: Matter.Vector.add(this.position, this.noZone.offset),
+            radius: this.noZone.radius
+        };
+    } else {
+        return {
+            center: Matter.Vector.add(this.position, this.offset || {x: 0, y: 0}),
+            radius: this.loneNZRadius || 60
+        };
+    }
+};
+
+export {
+    Doodad
+};

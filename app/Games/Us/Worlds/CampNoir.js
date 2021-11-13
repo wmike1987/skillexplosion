@@ -22,7 +22,9 @@ import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 import {
     Doodad
 } from '@utils/Doodad.js';
-import {Scene} from '@core/Scene.js';
+import {
+    Scene
+} from '@core/Scene.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import Map from '@games/Us/MapAndLevel/Map/Map.js';
 import {
@@ -1363,6 +1365,74 @@ var campNoir = {
 
         //gets applied per level
         decorateTerrain: function(scene, tint) {
+            //Add doodads to non camp levels
+            var noZones = this.noZones || [];
+            if (!this.isCampProper) {
+                var numberOfRocks = 4;
+
+                var createRock = function() {
+                    var rock = SceneryUtils.createRock({
+                        tint: rockTints[tIndex]
+                    });
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                        buffer: 80,
+                        useUpcomingSceneNoZones: true,
+                        noZones: noZones
+                    }));
+                    scene.add(rock);
+                };
+
+                var createRock2 = function() {
+                    var rock = SceneryUtils.createRock({
+                        names: ['Rock2', 'Rock2a', 'Rock2b'],
+                        tint: rockTints[tIndex]
+                    });
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                        buffer: 80,
+                        useUpcomingSceneNoZones: true,
+                        noZones: noZones
+                    }));
+                    scene.add(rock);
+                };
+
+                mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
+                mathArrayUtils.repeatXTimes(createRock2, numberOfRocks + 8);
+
+                //create trees
+                var createTree1 = function() {
+                    var tree = SceneryUtils.createTree();
+                    var centerNoZone = [{
+                        center: gameUtils.getPlayableCenter(),
+                        radius: 80
+                    }];
+                    tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                        buffer: 80,
+                        useUpcomingSceneNoZones: true,
+                        noZones: noZones.concat(centerNoZone),
+                        selfNoZone: tree.noZone
+                    }));
+                    scene.add(tree);
+                };
+                mathArrayUtils.repeatXTimes(createTree1, 2);
+            } else {
+                var numberOfRocks2 = 6;
+                var createRock3 = function() {
+                    var rock = SceneryUtils.createRock({
+                        names: ['Rock2', 'Rock2a', 'Rock2b'],
+                        tint: rockTints[tIndex]
+                    });
+                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                        buffer: 80,
+                        useUpcomingSceneNoZones: true,
+                        noZones: noZones
+                    }));
+                    scene.add(rock);
+                };
+
+                mathArrayUtils.repeatXTimes(createRock3, numberOfRocks2);
+            }
+
+            //various tints
             var tIndex = acceptableTileTints.indexOf(tint);
             var ornamentTiles = [];
             var ornamentTint = acceptableOrnamentTints[tIndex];
@@ -1374,10 +1444,16 @@ var campNoir = {
             this.desertFlowerMap = SceneryUtils.decorateTerrain({
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
-                scale: {x: mathArrayUtils.getRandomNumberBetween(0.75, 1), y: mathArrayUtils.getRandomNumberBetween(0.75, 1)},
+                scale: {
+                    x: mathArrayUtils.getRandomNumberBetween(0.75, 1),
+                    y: mathArrayUtils.getRandomNumberBetween(0.75, 1)
+                },
                 hz: 0.25,
                 where: 'stage',
-                groupings: {hz: 0.1, possibleAmounts: [2, 3]},
+                groupings: {
+                    hz: 0.1,
+                    possibleAmounts: [2, 3]
+                },
                 r: 1,
                 tint: ornamentTint,
                 noZones: this.noZones,
@@ -1392,9 +1468,13 @@ var campNoir = {
             this.cragMap = SceneryUtils.decorateTerrain({
                 possibleTextures: ornamentTiles,
                 tileWidth: tileSize,
-                scale: {x: 0.75, y: 0.75},
+                scale: {
+                    x: 0.75,
+                    y: 0.75
+                },
                 maxNumber: 3,
                 unique: true,
+                sortYOffset: -100,
                 where: 'stageNOne',
                 r: 1,
                 tint: 0x4f2b00,
@@ -1571,8 +1651,12 @@ var campNoir = {
                 possibleTextures: animationOrnamentTiles,
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 0.5,
-                groupings: {hz: 0.25, possibleAmounts: [2, 4, 5, 6], scalar: 20},
+                hz: 0.3,
+                groupings: {
+                    hz: 0.25,
+                    possibleAmounts: [2, 4, 5, 6],
+                    scalar: 20
+                },
                 where: 'stage',
                 r: 1,
                 tint: flowerTint,
@@ -1586,56 +1670,6 @@ var campNoir = {
 
             var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.20);
             scene.add(l1);
-
-            //Add doodads to non camp levels
-            var noZones = this.noZones || [];
-            if (!this.isCampProper) {
-                var numberOfRocks = 4;
-
-                var createRock = function() {
-                    var rock = SceneryUtils.createRock({
-                        tint: rockTints[tIndex]
-                    });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones}));
-                    scene.add(rock);
-                };
-
-                var createRock2 = function() {
-                    var rock = SceneryUtils.createRock({
-                        names: ['Rock2', 'Rock2a', 'Rock2b'],
-                        tint: rockTints[tIndex]
-                    });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones}));
-                    scene.add(rock);
-                };
-
-                mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
-                mathArrayUtils.repeatXTimes(createRock2, numberOfRocks + 3);
-
-                //create trees
-                var createTree1 = function() {
-                    var tree = SceneryUtils.createTree();
-                    var centerNoZone = [{
-                        center: gameUtils.getPlayableCenter(),
-                        radius: 80
-                    }];
-                    tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones.concat(centerNoZone)}));
-                    scene.add(tree);
-                };
-                mathArrayUtils.repeatXTimes(createTree1, 2);
-            } else {
-                var numberOfRocks2 = 6;
-                var createRock3 = function() {
-                    var rock = SceneryUtils.createRock({
-                        names: ['Rock2', 'Rock2a', 'Rock2b'],
-                        tint: rockTints[tIndex]
-                    });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 80, noZones: noZones}));
-                    scene.add(rock);
-                };
-
-                mathArrayUtils.repeatXTimes(createRock3, numberOfRocks2);
-            }
         }
     },
 
