@@ -177,7 +177,7 @@ Doodad.prototype.getNoZone = function() {
     } else {
         return {
             center: Matter.Vector.add(this.position, this.offset || {x: 0, y: 0}),
-            radius: this.loneNZRadius || 60
+            radius: this.collides ? this.loneNZRadius || 60 : 0
         };
     }
 };

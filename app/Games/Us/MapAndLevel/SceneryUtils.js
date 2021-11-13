@@ -261,7 +261,7 @@ var sceneryUtils = {
                 },
                 sortYOffset: 90 * randomScale
             },
-            avgoldtree4: {
+            avgoldtree1: {
                 radius: 5 * randomScale,
                 scale: 0.8 * randomScale,
                 alpha: 0.7,
@@ -274,7 +274,7 @@ var sceneryUtils = {
                 },
                 offset: {
                     x: -4,
-                    y: -70 * randomScale
+                    y: -125 * randomScale
                 },
                 shadowScale: {
                     x: 1.0 * randomScale,
@@ -284,7 +284,7 @@ var sceneryUtils = {
                     x: -4,
                     y: 3 * randomScale
                 },
-                sortYOffset: 90 * randomScale
+                sortYOffset: 128 * randomScale
             },
             avpinktree2: {
                 radius: 8 * randomScale,

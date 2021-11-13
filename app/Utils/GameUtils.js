@@ -596,6 +596,17 @@ var gameUtils = {
         return lights;
     },
 
+    createAmbientLightBorder: function(tint, where, intensity) {
+        var l = graphicsUtils.createDisplayObject("AmbientBorder1", {
+            position: this.getPlayableCenter(),
+            tint: tint,
+            where: where || 'backgroundOne',
+            alpha: intensity || 0.25
+        });
+        graphicsUtils.makeSpriteSize(l, this.getPlayableWH());
+        return l;
+    },
+
     //apply something to bodies by team
     applyToUnitsByTeam: function(teamPredicate, unitPredicate, f) {
         teamPredicate = teamPredicate || function(team) {

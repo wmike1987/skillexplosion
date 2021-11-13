@@ -42,6 +42,7 @@ import {
 
 var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
+var borderTints = [0x0FCB0F, 0xBB5633];
 var rockTints = [0xffcccc, 0xe59ab6];
 var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
 var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
@@ -1365,6 +1366,11 @@ var campNoir = {
 
         //gets applied per level
         decorateTerrain: function(scene, tint) {
+            //various tints
+            var tIndex = acceptableTileTints.indexOf(tint);
+            var ornamentTiles = [];
+            var ornamentTint = acceptableOrnamentTints[tIndex];
+
             //Add doodads to non camp levels
             var noZones = this.noZones || [];
             if (!this.isCampProper) {
@@ -1431,11 +1437,6 @@ var campNoir = {
 
                 mathArrayUtils.repeatXTimes(createRock3, numberOfRocks2);
             }
-
-            //various tints
-            var tIndex = acceptableTileTints.indexOf(tint);
-            var ornamentTiles = [];
-            var ornamentTint = acceptableOrnamentTints[tIndex];
 
             //desert flower map
             for (var i = 0; i <= 5; i++) {
@@ -1669,7 +1670,9 @@ var campNoir = {
             scene.add(this.animatedOrnamentMap);
 
             var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.20);
+            var lborder = gameUtils.createAmbientLightBorder(borderTints[tIndex], 'backgroundOne', 0.65);
             scene.add(l1);
+            scene.add(lborder);
         }
     },
 
