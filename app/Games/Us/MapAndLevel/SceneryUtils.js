@@ -20,7 +20,10 @@ import TileMap from '@core/TileMap';
 import {
     Doodad
 } from '@utils/Doodad.js';
-import {Scene, SceneContainer} from '@core/Scene.js';
+import {
+    Scene,
+    SceneContainer
+} from '@core/Scene.js';
 
 /* options
  * start {x: , y: }
@@ -79,24 +82,51 @@ var sceneryUtils = {
             },
             Rock3: {
                 radius: 4,
-                offset: {x: 10, y: 0},
-                bodyScale: {x: 2, y: 1}
+                offset: {
+                    x: 10,
+                    y: 0
+                },
+                bodyScale: {
+                    x: 2,
+                    y: 1
+                }
             },
             Rock4: {
-                scale: {x: 1.5, y: 1.5},
+                scale: {
+                    x: 1.5,
+                    y: 1.5
+                },
                 radius: 5
             },
             Rock6: {
-                scale: {x: 1.0, y: 1.0},
+                scale: {
+                    x: 1.0,
+                    y: 1.0
+                },
                 radius: 4,
-                bodyScale: {x: 2, y: 1},
-                offset: {x: 0, y: 5},
+                bodyScale: {
+                    x: 2,
+                    y: 1
+                },
+                offset: {
+                    x: 0,
+                    y: 5
+                },
             },
             Rock7: {
-                scale: {x: 1.0, y: 1.0},
+                scale: {
+                    x: 1.0,
+                    y: 1.0
+                },
                 radius: 4,
-                offset: {x: 0, y: 8},
-                bodyScale: {x: 2, y: 1}
+                offset: {
+                    x: 0,
+                    y: 8
+                },
+                bodyScale: {
+                    x: 2,
+                    y: 1
+                }
             },
             Rock2: {
                 collides: false
@@ -104,18 +134,24 @@ var sceneryUtils = {
             Rock2a: {
                 textureName: 'Rock1',
                 collides: false,
-                scale: {x: 0.35, y: 0.35}
+                scale: {
+                    x: 0.35,
+                    y: 0.35
+                }
             },
             Rock2b: {
                 textureName: 'Rock5',
-                scale: {x: 1.0, y: 1.0},
+                scale: {
+                    x: 1.0,
+                    y: 1.0
+                },
                 collides: false
             },
         };
 
         var possibleRocks = Object.keys(rockDetails);
 
-        if(options.names) {
+        if (options.names) {
             possibleRocks = options.names;
         }
 
@@ -124,8 +160,14 @@ var sceneryUtils = {
         //mixin the default options
         var myDetails = Object.assign({
             collides: true,
-            offset: {x: 0, y: 0},
-            scale: {x: 1, y: 1},
+            offset: {
+                x: 0,
+                y: 0
+            },
+            scale: {
+                x: 1,
+                y: 1
+            },
             bodyScale: null,
             textureName: randomRockName
         }, rockDetails[randomRockName]);
@@ -165,8 +207,6 @@ var sceneryUtils = {
         var bounds = options.bounds || gameUtils.getCanvasWH();
         var tileWidth = options.tileWidth;
         var tileHeight = tileWidth / 2;
-        var realTileWidth = options.realTileWidth;
-        var realTileHeight = options.realTileHeight;
         var tileStart = options.tileStart || {
             x: 0,
             y: 0
@@ -177,10 +217,12 @@ var sceneryUtils = {
         var frequency = options.hz || 1;
         var maxNumber = options.maxNumber || null;
         var nonTilePosition = options.nonTilePosition || false;
-        if(maxNumber) {
+        if (maxNumber) {
             nonTilePosition = true;
         }
-        var groupings = options.groupings || {hz: 0};
+        var groupings = options.groupings || {
+            hz: 0
+        };
         var unique = options.unique;
         var r = options.r || 0; //r is 0-1 (random scale)
         var scale = options.scale;
@@ -206,87 +248,118 @@ var sceneryUtils = {
                     var randomnessY = ((Math.random() * 200) - 100) * r;
                     randomnessY = Math.floor(randomnessY);
 
-                    var finalXPosition = x + randomnessX;
-                    var finalYPosition = y + yOffset + randomnessY;
+                    var positionX = x + randomnessX;
+                    var positionY = y + yOffset + randomnessY;
 
-                    if(nonTilePosition) {
-                        var position = gameUtils.getRandomPlacementWithinPlayableBounds({buffer: 30});
-                        finalXPosition = position.x;
-                        finalYPosition = position.y;
+                    if (nonTilePosition) {
+                        var position = gameUtils.getRandomPlacementWithinPlayableBounds({
+                            buffer: 30
+                        });
+                        positionY = position.x;
+                        positionY = position.y;
                     }
 
                     //no zones
                     var skip = false;
-                    if(noZones) {
+                    if (noZones) {
                         noZones.forEach((nz) => {
-                            if(mathArrayUtils.distanceBetweenPoints(nz.center, {x: finalXPosition, y: finalYPosition}) < nz.radius) {
+                            if (mathArrayUtils.distanceBetweenPoints(nz.center, {
+                                    x: positionX,
+                                    y: positionY
+                                }) < nz.radius) {
                                 skip = true;
                             }
                         });
                     }
-                    if(skip) {
+                    if (skip) {
                         y += tileHeight;
                         continue;
                     }
 
-                    if(maxNumber && hits == maxNumber) {
+                    if (maxNumber && hits == maxNumber) {
                         y += tileHeight;
                         continue;
                     }
 
+                    //record our hits
                     hits += 1;
 
-                    var randomTexture = mathArrayUtils.getRandomElementOfArray(textureArray);
-                    if(unique) {
-                        mathArrayUtils.removeObjectFromArray(randomTexture, textureArray);
-                    }
-                    var newDO = null;
-                    if(randomTexture.animationName) {
-                        randomTexture.scale = randomTexture.scale || {x: 1.0, y: 1.0};
-                        newDO = gameUtils.getAnimation({
-                            spritesheetName: randomTexture.spritesheetName,
-                            animationName: randomTexture.animationName,
-                            speed: randomTexture.speed || 1.0,
-                            loop: true,
-                            transform: [finalXPosition, finalYPosition, randomTexture.scale.x, randomTexture.scale.y]
-                        });
-                        if(randomTexture.decorate) {
-                            randomTexture.decorate(newDO);
+                    //comprehend groupings
+                    var doGrouping = Math.random() < groupings.hz;
+                    var numberInGrouping = doGrouping ? mathArrayUtils.getRandomElementOfArray(groupings.possibleAmounts) : 1;
+                    var possibleAngles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+
+                    for (var j = 0; j < numberInGrouping; j++) {
+                        if (j > 0) {
+                            var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
+                            mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
+                            var newPosition = mathArrayUtils.addScalarToVectorAtAngle({
+                                x: positionX,
+                                y: positionY
+                            }, angle, groupings.scalar || 30);
+                            positionX = newPosition.x;
+                            positionY = newPosition.y;
                         }
-                        if(randomTexture.playDelay) {
-                            let myDO = newDO;
-                            myDO.sceneInit = function() {
-                                var self = this;
-                                gameUtils.doSomethingAfterDuration(function() {
-                                    if(!self._destroyed) {
-                                        self.play();
-                                    }
-                                }, randomTexture.playDelay);
+                        let randomTexture = mathArrayUtils.getRandomElementOfArray(textureArray);
+                        if (unique) {
+                            mathArrayUtils.removeObjectFromArray(randomTexture, textureArray);
+                        }
+                        let newDO = null;
+                        if (randomTexture.animationName) {
+                            randomTexture.scale = randomTexture.scale || {
+                                x: 1.0,
+                                y: 1.0
                             };
-                        } else {
-                            newDO.play();
-                        }
-                    } else {
-                        newDO = graphicsUtils.createDisplayObject(randomTexture, {
-                            position: {
-                                x: finalXPosition,
-                                y: finalYPosition
-                            },
-                            alpha: alpha,
-                            where: where,
-                            scale: {
-                                // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
-                                x: scale ? scale.x : 1,
-                                y: scale ? scale.y : 1
+                            newDO = gameUtils.getAnimation({
+                                spritesheetName: randomTexture.spritesheetName,
+                                animationName: randomTexture.animationName,
+                                speed: randomTexture.speed || 1.0,
+                                loop: true,
+                                transform: [positionX, positionY, randomTexture.scale.x, randomTexture.scale.y]
+                            });
+                            if (randomTexture.decorate) {
+                                randomTexture.decorate(newDO);
                             }
-                        });
-                    }
+                            if (randomTexture.playDelay) {
+                                let myDO = newDO;
+                                myDO.sceneInit = function() {
+                                    var self = this;
+                                    gameUtils.doSomethingAfterDuration(function() {
+                                        if (!self._destroyed) {
+                                            self.play();
+                                        }
+                                    }, randomTexture.playDelay);
+                                };
+                            } else {
+                                newDO.play();
+                            }
+                        } else {
+                            newDO = graphicsUtils.createDisplayObject(randomTexture, {
+                                position: {
+                                    x: positionX,
+                                    y: positionY
+                                },
+                                alpha: alpha,
+                                where: where,
+                                scale: {
+                                    // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
+                                    x: scale ? scale.x : 1,
+                                    y: scale ? scale.y : 1
+                                }
+                            });
+                        }
 
-                    if (tint) {
-                        newDO.tint = tint;
-                    }
+                        if (tint) {
+                            newDO.tint = tint;
+                            // if(j > 0) {
+                            //     newDO.tint = 0x000000;
+                            // } else {
+                            //     newDO.tint = 0xffffff;
+                            // }
+                        }
 
-                    container.addObject(newDO);
+                        container.addObject(newDO);
+                    }
                 }
                 y += tileHeight;
             }

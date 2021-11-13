@@ -207,6 +207,14 @@ var mathArrayUtils = {
         return Matter.Vector.add(start, scaled);
     },
 
+    //return new position
+    addScalarToVectorAtAngle: function(start, angle, scalar) {
+        var opposite = Math.sin(angle);
+        var adjacent = Math.cos(angle);
+        var destinationPoint = Matter.Vector.add(start, {x: adjacent, y: opposite});
+        return this.addScalarToVectorTowardDestination(start, destinationPoint, scalar);
+    },
+
     //return angle to rotate something facing an original direction, towards a point
     pointInDirection: function(origin, destination, orientation) {
         orientation = orientation || 'north';

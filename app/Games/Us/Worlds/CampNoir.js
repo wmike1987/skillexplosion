@@ -1375,6 +1375,7 @@ var campNoir = {
                 scale: {x: mathArrayUtils.getRandomNumberBetween(0.75, 1), y: mathArrayUtils.getRandomNumberBetween(0.75, 1)},
                 hz: 0.25,
                 where: 'stage',
+                groupings: {hz: 0.4, possibleAmounts: [2, 3]},
                 r: 1,
                 tint: ornamentTint,
                 noZones: this.noZones,
@@ -1502,6 +1503,18 @@ var campNoir = {
 
                 if (Math.random() > 0.3) {
                     animationOrnamentTiles.push({
+                        animationName: 'GrassAnimsPink',
+                        spritesheetName: 'TerrainAnimations',
+                        speed: randomSpeed,
+                        scale: {
+                            x: randomScale,
+                            y: randomScale
+                        },
+                    });
+                }
+
+                if (Math.random() > 0.3) {
+                    animationOrnamentTiles.push({
                         animationName: 'FlowerAnimsTeal',
                         spritesheetName: 'TerrainAnimations',
                         speed: randomSpeed,
@@ -1547,7 +1560,7 @@ var campNoir = {
                                     x: 24,
                                     y: 8
                                 }
-                            })
+                            });
                         }
                     });
                 }
@@ -1557,7 +1570,7 @@ var campNoir = {
                 tileWidth: tileSize,
                 noScale: true,
                 hz: 0.6,
-                groupings: {hz: 0.3, size: [3, 4]},
+                groupings: {hz: 0.2, possibleAmounts: [2, 2, 2, 2, 2, 2, 3, 3, 4], scalar: 20},
                 where: 'stage',
                 r: 1,
                 tint: flowerTint,
