@@ -289,7 +289,7 @@ var SceneContainer = function() {
 
     this.initialize = function() {
         this.list.forEach(function(obj) {
-            graphicsUtils.addSomethingToRenderer(obj);
+            _exectuteObject(obj);
             if(obj.sceneInit) {
                 obj.sceneInit();
             }
@@ -298,7 +298,11 @@ var SceneContainer = function() {
 
     this.cleanUp = function() {
         this.list.forEach(function(obj) {
-            graphicsUtils.removeSomethingFromRenderer(obj);
+            if(obj.cleanUp) {
+                obj.cleanUp();
+            } else {
+                graphicsUtils.removeSomethingFromRenderer(obj);
+            }
         });
     };
 };

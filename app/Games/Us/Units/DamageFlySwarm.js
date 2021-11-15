@@ -199,6 +199,8 @@ export default function DamageFlySwarm(options) {
         },
         death: function() {
             var self = this;
+            this.isTargetable = false;
+            this.canTakeAbilityDamage = false;
             deathSound.play();
             graphicsUtils.fadeSpriteOverTime({
                 sprite: flyAnim,

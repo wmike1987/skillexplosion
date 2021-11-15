@@ -42,8 +42,9 @@ import {
 
 var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
-var borderTints = [0x0FCB0F, 0xBB5633];
+var borderTints = [0xFC00FF, 0xBB5633];
 var rockTints = [0xffcccc, 0xe59ab6];
+var treeTints = [0xF6D3BD, 0xC398FB];
 var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
 var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
 var ambientLightTints = [
@@ -1387,26 +1388,55 @@ var campNoir = {
                     }));
                     scene.add(rock);
                 };
+                mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
 
-                var createRock2 = function() {
-                    var rock = SceneryUtils.createRock({
-                        names: ['Rock2', 'Rock2a', 'Rock2b'],
-                        tint: rockTints[tIndex]
-                    });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
-                        buffer: 80,
-                        useUpcomingSceneNoZones: true,
-                        noZones: noZones
-                    }));
-                    scene.add(rock);
+                //create rock and desert flower map
+                let rock1 = SceneryUtils.createRock({
+                    names: ['Rock2'],
+                    tint: rockTints[tIndex]
+                });
+                let rock2 = SceneryUtils.createRock({
+                    names: ['Rock2a'],
+                    tint: rockTints[tIndex]
+                });
+                let rock3 = SceneryUtils.createRock({
+                    names: ['Rock2b'],
+                    tint: rockTints[tIndex]
+                });
+
+                //desert flower map
+                for (let i = 0; i <= 5; i++) {
+                    ornamentTiles.push('FrollGround/DesertFlower' + i);
+                }
+                var decoratedTiles = {
+                    tint: ornamentTint,
+                    scale: {
+                        x: mathArrayUtils.getRandomNumberBetween(0.75, 1),
+                        y: mathArrayUtils.getRandomNumberBetween(0.75, 1)
+                    },
+                    possibleTextures: ornamentTiles
                 };
 
-                mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
-                mathArrayUtils.repeatXTimes(createRock2, numberOfRocks + 8);
+                var rockContainer = SceneryUtils.decorateTerrain({
+                    possibleDoodads: [rock1, rock2, rock3, rock1, rock2, rock3],
+                    possibleTextures: decoratedTiles,
+                    tileWidth: tileSize,
+                    hz: 0.2,
+                    where: 'stage',
+                    groupings: {
+                        hz: 0.5,
+                        possibleAmounts: [3, 4]
+                    },
+                    r: 1,
+                    noZones: this.noZones,
+                });
+                scene.add(rockContainer);
 
                 //create trees
                 var createTree1 = function() {
-                    var tree = SceneryUtils.createTree();
+                    var tree = SceneryUtils.createTree({
+                        tint: treeTints[tIndex]
+                    });
                     var centerNoZone = [{
                         center: gameUtils.getPlayableCenter(),
                         radius: 80
@@ -1438,49 +1468,52 @@ var campNoir = {
                 mathArrayUtils.repeatXTimes(createRock3, numberOfRocks2);
             }
 
-            //desert flower map
-            for (var i = 0; i <= 5; i++) {
-                ornamentTiles.push('FrollGround/DesertFlower' + i);
-            }
-            this.desertFlowerMap = SceneryUtils.decorateTerrain({
-                possibleTextures: ornamentTiles,
-                tileWidth: tileSize,
-                scale: {
-                    x: mathArrayUtils.getRandomNumberBetween(0.75, 1),
-                    y: mathArrayUtils.getRandomNumberBetween(0.75, 1)
-                },
-                hz: 0.25,
-                where: 'stage',
-                groupings: {
-                    hz: 0.1,
-                    possibleAmounts: [2, 3]
-                },
-                r: 1,
-                tint: ornamentTint,
-                noZones: this.noZones,
-                seed: this.desertFlowerMap ? this.desertFlowerMap.seed : null
-            });
+            // //desert flower map
+            // for (var i = 0; i <= 5; i++) {
+            //     ornamentTiles.push('FrollGround/DesertFlower' + i);
+            // }
+            // this.desertFlowerMap = SceneryUtils.decorateTerrain({
+            //     possibleTextures: ornamentTiles,
+            //     tileWidth: tileSize,
+            //     scale: {
+            //         x: mathArrayUtils.getRandomNumberBetween(0.75, 1),
+            //         y: mathArrayUtils.getRandomNumberBetween(0.75, 1)
+            //     },
+            //     hz: 0.25,
+            //     where: 'stage',
+            //     groupings: {
+            //         hz: 0.1,
+            //         possibleAmounts: [2, 3]
+            //     },
+            //     r: 1,
+            //     tint: ornamentTint,
+            //     noZones: this.noZones,
+            //     seed: this.desertFlowerMap ? this.desertFlowerMap.seed : null
+            // });
 
             //crag map
             ornamentTiles = [];
-            for (i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 4; i++) {
                 ornamentTiles.push('FrollGround/Ornament' + i);
             }
-            this.cragMap = SceneryUtils.decorateTerrain({
+            var decoratedCrag = {
                 possibleTextures: ornamentTiles,
-                tileWidth: tileSize,
+                tint: 0x4f2b00,
                 scale: {
                     x: 0.75,
                     y: 0.75
                 },
-                maxNumber: 3,
-                unique: true,
                 sortYOffset: -100,
+                unique: true,
+            };
+
+            this.cragMap = SceneryUtils.decorateTerrain({
+                possibleTextures: decoratedCrag,
+                tileWidth: tileSize,
+                maxNumber: 3,
                 where: 'stageNOne',
                 r: 1,
-                tint: 0x4f2b00,
                 noZones: this.noZones,
-                seed: this.cragMap ? this.cragMap.seed : null
             });
 
             //animated stuff map
@@ -1530,8 +1563,6 @@ var campNoir = {
                         }
                     });
                 }
-
-
 
                 if (Math.random() > 0.4) {
                     animationOrnamentTiles.push({
@@ -1665,11 +1696,17 @@ var campNoir = {
                 seed: this.animatedOrnamentMap ? this.animatedOrnamentMap.seed : null
             });
 
-            scene.add(this.desertFlowerMap);
+            // scene.add(this.desertFlowerMap);
             scene.add(this.cragMap);
             scene.add(this.animatedOrnamentMap);
 
-            var l1 = gameUtils.createAmbientLights(ambientLightTints[tIndex >= 0 ? tIndex : 0], 'backgroundOne', 0.20);
+            var l1 = gameUtils.createAmbientLights({
+                hexColorArray: ambientLightTints[tIndex >= 0 ? tIndex : 0],
+                where: 'backgroundOne',
+                intensity: 0.20,
+                rotate: !this.isCampProper,
+                rotateSpeed: 3
+            });
             var lborder = gameUtils.createAmbientLightBorder(borderTints[tIndex], 'backgroundOne', 0.65);
             scene.add(l1);
             scene.add(lborder);

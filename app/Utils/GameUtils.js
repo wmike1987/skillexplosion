@@ -448,11 +448,11 @@ var gameUtils = {
             noZones
         } = options);
 
-        if(noZones) {
+        if (noZones) {
             noZones = mathArrayUtils.convertToArray(noZones);
         }
 
-        if(options.useUpcomingSceneNoZones) {
+        if (options.useUpcomingSceneNoZones) {
             noZones = noZones.concat(globals.currentGame.upcomingScene.getNoZones());
         }
 
@@ -469,7 +469,7 @@ var gameUtils = {
         var placement = {};
 
         var conflictFound = function(position) {
-            if(!noZones) {
+            if (!noZones) {
                 return false;
             }
             var conflict = noZones.some((nz) => {
@@ -484,7 +484,7 @@ var gameUtils = {
             placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x * 2));
             placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y * 2));
             collisionPosition = placement;
-            if(options.selfNoZone) {
+            if (options.selfNoZone) {
                 collisionPosition = Matter.Vector.add(placement, options.selfNoZone.offset);
             }
         } while (conflictFound(collisionPosition));
@@ -576,7 +576,17 @@ var gameUtils = {
         return position;
     },
 
-    createAmbientLights: function(hexColorArray, where, intensity, doOptions) {
+    createAmbientLights: function(options) {
+        options = options || {};
+        var hexColorArray, where, intensity, rotate, rotateSpeed;
+        ({
+            hexColorArray,
+            where,
+            intensity,
+            rotate,
+            rotateSpeed
+        } = options);
+
         var numberOfLights = hexColorArray.length;
         var spacing = gameUtils.getCanvasWidth() / (numberOfLights * 2);
         var lights = [];
@@ -590,7 +600,14 @@ var gameUtils = {
                 where: where || 'backgroundOne',
                 alpha: intensity || 0.25
             });
-            Object.assign(l, doOptions);
+            // Object.assign(l, doOptions);
+
+            //rotate the lights if specified
+            if (options.rotate) {
+                graphicsUtils.rotateSprite(l, {
+                    speed: options.rotateSpeed || 5
+                });
+            }
             lights.push(l);
         }.bind(this));
         return lights;
@@ -603,7 +620,14 @@ var gameUtils = {
             where: where || 'backgroundOne',
             alpha: intensity || 0.25
         });
+
         graphicsUtils.makeSpriteSize(l, this.getPlayableWH());
+        if (mathArrayUtils.flipCoin()) {
+            l.scale.x *= -1;
+        }
+        if (mathArrayUtils.flipCoin()) {
+            l.scale.y *= -1;
+        }
         return l;
     },
 

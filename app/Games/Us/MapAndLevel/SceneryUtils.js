@@ -366,7 +366,11 @@ var sceneryUtils = {
 
     decorateTerrain: function(options) {
         var container = new SceneContainer();
-        var textureArray = options.possibleTextures;
+        var doodadArray = options.possibleDoodads || [];
+
+        var textureArray = options.possibleTextures || [];
+        textureArray = mathArrayUtils.convertToArray(textureArray);
+
         var bounds = options.bounds || gameUtils.getCanvasWH();
         var tileWidth = options.tileWidth;
         var tileHeight = tileWidth / 2;
@@ -374,12 +378,14 @@ var sceneryUtils = {
             x: 0,
             y: 0
         };
-        var tint = options.tint;
+        var globalScale = options.scale;
+        var globalTint = options.tint;
+        var globalAlpha = options.alpha;
+        var globalSortYOffset = options.sortYOffset;
+        var globalUnique = options.unique;
         var where = options.where || 'background';
-        var alpha = options.alpha || 1;
         var frequency = options.hz || 1;
         var maxNumber = options.maxNumber || null;
-        var sortYOffset = options.sortYOffset || 0;
         var nonTilePosition = options.nonTilePosition || false;
         if (maxNumber) {
             nonTilePosition = true;
@@ -387,9 +393,7 @@ var sceneryUtils = {
         var groupings = options.groupings || {
             hz: 0
         };
-        var unique = options.unique;
         var r = options.r || 0; //r is 0-1 (random scale)
-        var scale = options.scale;
 
         //build no zones
         var sceneNoZones = options.scene || globals.currentGame.upcomingScene.getNoZones();
@@ -409,6 +413,8 @@ var sceneryUtils = {
             //draw columns
             for (var y = tileStart.y; y <= bounds.y + tileHeight / 2;) {
                 if (Math.random() < frequency) {
+
+                    //determine a position
                     var randomnessX = ((Math.random() * 200) - 100) * r;
                     randomnessX = Math.floor(randomnessX);
 
@@ -426,7 +432,7 @@ var sceneryUtils = {
                         positionY = position.y;
                     }
 
-                    //no zones
+                    //test for no zones
                     var skip = false;
                     if (noZones) {
                         noZones.forEach((nz) => {
@@ -451,11 +457,15 @@ var sceneryUtils = {
                     //record our hits
                     hits += 1;
 
+                    //combine our things
+                    var arrayOfThings = doodadArray.concat(textureArray);
+
                     //comprehend groupings
                     var doGrouping = Math.random() < groupings.hz;
                     var numberInGrouping = doGrouping ? mathArrayUtils.getRandomElementOfArray(groupings.possibleAmounts) : 1;
                     var possibleAngles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
 
+                    //process groupings
                     for (var j = 0; j < numberInGrouping; j++) {
                         if (j > 0) {
                             var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
@@ -467,63 +477,98 @@ var sceneryUtils = {
                             positionX = newPosition.x;
                             positionY = newPosition.y;
                         }
-                        let randomTexture = mathArrayUtils.getRandomElementOfArray(textureArray);
-                        if (unique) {
-                            mathArrayUtils.removeObjectFromArray(randomTexture, textureArray);
-                        }
-                        let newDO = null;
-                        if (randomTexture.animationName) {
-                            randomTexture.scale = randomTexture.scale || {
-                                x: 1.0,
-                                y: 1.0
-                            };
-                            newDO = gameUtils.getAnimation({
-                                spritesheetName: randomTexture.spritesheetName,
-                                animationName: randomTexture.animationName,
-                                speed: randomTexture.speed || 1.0,
-                                loop: true,
-                                transform: [positionX, positionY, randomTexture.scale.x, randomTexture.scale.y]
-                            });
-                            if (randomTexture.decorate) {
-                                randomTexture.decorate(newDO);
-                            }
-                            if (randomTexture.playDelay) {
-                                let myDO = newDO;
-                                myDO.sceneInit = function() {
-                                    var self = this;
-                                    gameUtils.doSomethingAfterDuration(function() {
-                                        if (!self._destroyed) {
-                                            self.play();
-                                        }
-                                    }, randomTexture.playDelay);
-                                };
-                            } else {
-                                newDO.play();
-                            }
-                        } else {
-                            newDO = graphicsUtils.createDisplayObject(randomTexture, {
-                                position: {
-                                    x: positionX,
-                                    y: positionY
-                                },
-                                alpha: alpha,
-                                sortYOffset: sortYOffset,
-                                where: where,
-                                scale: {
-                                    // if realTileWidth is provided, this is needed when the tile doesn't span the whole texture width
-                                    x: scale ? scale.x : 1,
-                                    y: scale ? scale.y : 1
-                                }
-                            });
-                        }
 
-                        if (tint) {
-                            newDO.tint = tint;
-                            // if(j > 0) {
-                            //     newDO.tint = 0x000000;
-                            // } else {
-                            //     newDO.tint = 0xffffff;
-                            // }
+                        //expand possible things for proportional choosing of objects
+                        let expandedThings = [];
+                        arrayOfThings.forEach(function(thing) {
+                            if(thing.possibleTextures) {
+                                thing.possibleTextures.forEach(function(t) {
+                                    expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
+                                })
+                            } else {
+                                expandedThings.push(thing);
+                            }
+                        });
+                        let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
+
+                        let newDO = null;
+
+                        //handle doodads
+                        if (randomThing.isDoodad) {
+                            newDO = randomThing.clone();
+                            newDO.setPosition({
+                                x: positionX,
+                                y: positionY
+                            });
+                        } else {
+                            //assume our random thing is a texture name, but it could be a grouping of sub textures with explicit tints
+                            let resolvedThing = null;
+                            let localTint = null;
+                            let localScale = null;
+                            let localSortYOffset = null;
+                            let localAlpha = null;
+
+                            //check if we are a grouping of textures with their own tints etc
+                            if (randomThing.possibleTextures) {
+                                resolvedThing = mathArrayUtils.getRandomElementOfArray(randomThing.possibleTextures);
+                                if (globalUnique || resolvedThing.unique) {
+                                    mathArrayUtils.removeObjectFromArray(resolvedThing, randomThing.possibleTextures);
+                                }
+
+                            } else { //else we have something else (either a string of an animation object)
+                                resolvedThing = randomThing;
+                                if (globalUnique || resolvedThing.unique) {
+                                    mathArrayUtils.removeObjectFromArray(resolvedThing, arrayOfThings);
+                                }
+                            }
+
+                            localTint = randomThing.tint || globalTint || 0xFFFFFF;
+                            localScale = randomThing.scale || globalScale || {x: 1, y: 1};
+                            localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
+                            localAlpha = randomThing.alpha || globalAlpha || 1;
+
+                            //if our thing is an animation object
+                            if (resolvedThing.animationName) {
+                                newDO = gameUtils.getAnimation({
+                                    spritesheetName: resolvedThing.spritesheetName,
+                                    animationName: resolvedThing.animationName,
+                                    speed: resolvedThing.speed || 1.0,
+                                    loop: true,
+                                    transform: [positionX, positionY, localScale.x, localScale.y]
+                                });
+                                if (resolvedThing.decorate) {
+                                    resolvedThing.decorate(newDO);
+                                }
+                                if (resolvedThing.playDelay) {
+                                    let myDO = newDO;
+                                    myDO.sceneInit = function() {
+                                        var self = this;
+                                        gameUtils.doSomethingAfterDuration(function() {
+                                            if (!self._destroyed) {
+                                                self.play();
+                                            }
+                                        }, resolvedThing.playDelay);
+                                    };
+                                } else {
+                                    newDO.play();
+                                }
+                            } else { //else we have a straight texture name
+                                newDO = graphicsUtils.createDisplayObject(resolvedThing, {
+                                    position: {
+                                        x: positionX,
+                                        y: positionY
+                                    },
+                                    where: where,
+                                    scale: {
+                                        x: localScale.x,
+                                        y: localScale.y
+                                    }
+                                });
+                            }
+
+                            newDO.tint = localTint;
+                            newDO.sortYOffset = localSortYOffset;
+                            newDO.alpha = localAlpha;
                         }
 
                         container.addObject(newDO);

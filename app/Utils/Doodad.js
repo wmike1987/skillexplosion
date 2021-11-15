@@ -174,12 +174,16 @@ Doodad.prototype.getNoZone = function() {
             center: Matter.Vector.add(this.position, this.noZone.offset),
             radius: this.noZone.radius
         };
-    } else {
+    } else if(this.collides) {
         return {
             center: Matter.Vector.add(this.position, this.offset || {x: 0, y: 0}),
-            radius: this.collides ? this.loneNZRadius || 60 : 0
+            radius: this.loneNZRadius || 60
         };
     }
+};
+
+Doodad.prototype.clone = function() {
+    return new Doodad(this.rebuildOptions);
 };
 
 export {
