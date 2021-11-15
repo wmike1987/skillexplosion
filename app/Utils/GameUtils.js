@@ -129,7 +129,10 @@ var gameUtils = {
             anim.onManyComplete = anim.onComplete; //default to remove the animation
             anim.onComplete = function() { //override onComplete to countdown the specified number of times
                 gameUtils.doSomethingAfterDuration(() => {
-                    //make sure the animation wasn't destroyed in the meantime
+                    //make sure the animation wasn't destroyed in the meantime. This is a phenomenon where
+                    //the animation gets destroyed, but we play it anyway, then if the game is nuked, the destroyed animation
+                    //will be playing (and will not get get redestroyed upon render.clear()) but will have its underlying texture
+                    //pulled from it and will result in a null pointer
                     if (!anim._destroyed) {
                         anim.gotoAndPlay(0);
                     }

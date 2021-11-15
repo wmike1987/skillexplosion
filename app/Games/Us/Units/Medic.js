@@ -931,16 +931,18 @@ export default function Medic(options) {
                     stage: 'stageNOne',
                 }];
 
-                graphicsUtils.graduallyTint(maimArea, 0x000000, 0x65002d, 500);
+                graphicsUtils.graduallyTint(maimArea, 0x000000, 0x65002d, 500, null, 250);
 
                 graphicsUtils.makeSpriteSize(maimArea, blastRadius);
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: maimArea,
-                    duration: 11000,
-                    callback: function() {
-                        globals.currentGame.removeBody(scorchedAreaBody);
-                    }
-                });
+                gameUtils.doSomethingAfterDuration(() => {
+                    graphicsUtils.fadeSpriteOverTime({
+                        sprite: maimArea,
+                        duration: 300,
+                        callback: function() {
+                            globals.currentGame.removeBody(scorchedAreaBody);
+                        }
+                    });
+                }, scorchAugment.duration);
             }
 
             if (shrapnelAugment) {
