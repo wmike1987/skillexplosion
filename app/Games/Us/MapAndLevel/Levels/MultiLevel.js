@@ -32,6 +32,26 @@ var multiLevel = function(options) {
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
             newOptions.mapNodeOptions.bypassNodeCreation = false;
             this.chain.push(newLevel);
+
+            Object.defineProperty(newLevel, 'campLikeActiveSOM', {
+                get: function() {
+                    return newOptions.levelOptions.campLikeActiveSOM;
+                },
+
+                set: function(value) {
+                    newOptions.levelOptions.campLikeActiveSOM = value;
+                }
+            });
+
+            Object.defineProperty(newLevel, 'campLikeActive', {
+                get: function() {
+                    return newOptions.levelOptions.campLikeActive;
+                },
+
+                set: function(value) {
+                    newOptions.levelOptions.campLikeActive = value;
+                }
+            });
         });
 
         //modify the each level to comprehend that it's part of a chain
@@ -43,6 +63,7 @@ var multiLevel = function(options) {
                 level.customWinBehavior = function() {
                     this.spawner.cleanUp();
                     nextLevel.scene = this.scene;
+                    Matter.Events.trigger(globals.currentGame, 'MultiLevelCampComplete', {level: this});
                     globals.currentGame.setCurrentLevel(nextLevel, {immediatePool: true});
                     nextLevel.startLevelSpawn({startNewCollector: false});
                 };

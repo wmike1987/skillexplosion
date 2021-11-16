@@ -150,7 +150,7 @@ export default function(options) {
         }
     }.bind(this));
 
-    Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
+    Matter.Events.on(globals.currentGame, 'EnterLevel MultiLevelCampComplete', function(event) {
         if (!this.isEquipped && event.level.isBattleLevel() && this.unlocked) {
             var order = ++this.unit.passiveOrder;
             gameUtils.doSomethingAfterDuration(() => {

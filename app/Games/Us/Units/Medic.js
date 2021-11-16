@@ -1159,7 +1159,7 @@ export default function Medic(options) {
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies gain 25% of current grit for length of round.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of outing.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1170,7 +1170,7 @@ export default function Medic(options) {
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
-                var addedGrit = Math.floor(unit.getTotalGrit() / 3.0);
+                var addedGrit = 4; //Math.floor(unit.getTotalGrit() / 3.0);
                 if (addedGrit > 0) {
                     unit.addGritAddition(addedGrit);
                     gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
@@ -1234,7 +1234,7 @@ export default function Medic(options) {
         title: 'Wicked Ways',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 5 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
         passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
         textureName: 'WickedWays',
         unit: medic,
@@ -1311,7 +1311,7 @@ export default function Medic(options) {
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain ' + dodgeGain + ' dodge (up to 15) for length of outing.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 25% of current dodge for length of outing.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 3 dodge for length of outing.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
@@ -1320,7 +1320,7 @@ export default function Medic(options) {
         aggressionCooldown: 3000,
         aggressionDuration: slADuration,
         passiveAction: function(event) {
-            var addedDodge = Math.floor(medic.getTotalDodge() / 4.0);
+            var addedDodge = 3; //Math.floor(medic.getTotalDodge() / 4.0);
             if (addedDodge > 0) {
                 medic.addDodgeAddition(addedDodge);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
@@ -1372,7 +1372,7 @@ export default function Medic(options) {
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
         defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain a free vanish.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free vanish.'],
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1478,7 +1478,7 @@ export default function Medic(options) {
         originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain a free mine.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free mine.'],
         textureName: 'DeepThought',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1584,7 +1584,7 @@ export default function Medic(options) {
         title: 'Precise Posture',
         aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain ' + energyGain + ' energy.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal 5 damage to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level entry)', 'Gain 15 energy.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 15 energy.'],
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'preSufferAttack',

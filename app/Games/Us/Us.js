@@ -448,7 +448,11 @@ var game = {
                     scene: this.currentScene,
                     fadeIn: true
                 });
-                this.currentLevel.campLikeActiveSOM = true;
+                if(this.currentLevel.levelRedirect) {
+                    this.currentLevel.levelRedirect.campLikeActiveSOM = true;
+                } else {
+                    this.currentLevel.campLikeActiveSOM = true;
+                }
                 this.unitSystem.unitPanel.refreshPassiveButton();
                 vScene.clear();
             } else {
