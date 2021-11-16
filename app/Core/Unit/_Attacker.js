@@ -254,7 +254,7 @@ export default {
             } else {
                 gameUtils.doSomethingAfterDuration(() => {
                     //if we're still "attacking" but don't have a current target nor current hone, aka we're begging to stop
-                    if (this.isAttacking && !this.currentTarget && !this.currentHone) {
+                    if (this.isAttacking && !this.isHoldingPosition && !this.currentTarget && !this.currentHone) {
                         if (!commandObj.command.queue.hasNext()) {
                             this.stop();
                         }
@@ -291,6 +291,7 @@ export default {
             }
         }
 
+        this.attackMoveDestination = null;
         if (this.isMoving) {
             this.stop(null, {
                 isHoldingPosition: true
