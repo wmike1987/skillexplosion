@@ -6,9 +6,9 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Apollo Microchip",
-        description: ["Enable a Rifle augment.", 'Add +1 hp to first aid pouch.'],
+        description: ["Enable a Rifle augment.", 'Add 0.5 hp to first aid pouch.'],
         poweredByMessage: {text: 'Apollo Microchip', style: 'basicPoweredByStyle'},
-        conditionalPoweredByMessage: {text: '+1 hp per attack.', style: 'basicPoweredByStyle'},
+        conditionalPoweredByMessage: {text: '+0.5 hp per attack.', style: 'basicPoweredByStyle'},
         additionCondition: function(augment) {
             return augment.name == 'first aid pouch';
         },
@@ -16,10 +16,10 @@ export default function(options) {
             return ability.name == 'Rifle';
         },
         plug: function() {
-            this.owningUnit.firstAidPouchAdditions.push(1);
+            this.owningUnit.firstAidPouchAdditions.push(0.5);
         },
         unplug: function() {
-            mathArrayUtils.removeObjectFromArray(1, this.owningUnit.firstAidPouchAdditions);
+            mathArrayUtils.removeObjectFromArray(0.5, this.owningUnit.firstAidPouchAdditions);
         },
         plugTint: 0xffab08,
         systemMessage: "Drop on augment to enable.",

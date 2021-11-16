@@ -505,7 +505,7 @@ var graphicsUtils = {
                 if(!options.persistAtEnd) {
                     graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
                 }
-                
+
                 if (options.deferred) {
                     options.deferred.resolve();
                 }
@@ -851,6 +851,9 @@ var graphicsUtils = {
     },
 
     resizeBorder: function(borderedSprite) {
+        if(!borderedSprite.addedBorder) {
+            return;
+        }
         this.addBorderToSprite(Object.assign({
             existingBorder: borderedSprite.addedBorder
         }, borderedSprite.addedBorder.borderOptions));

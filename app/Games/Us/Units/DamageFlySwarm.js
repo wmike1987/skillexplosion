@@ -44,9 +44,11 @@ var deathSound = gameUtils.getSound('buzzdeath.mp3', {
 export default function DamageFlySwarm(options) {
     var flies = {};
 
+    var sizeScale = 1.0;
+
     options = options || {};
     $.extend(options, {
-        radius: 40
+        radius: 50 * sizeScale
     }, options);
 
     var randomFlyNumber = mathArrayUtils.getRandomIntInclusive(1, 10);
@@ -55,11 +57,11 @@ export default function DamageFlySwarm(options) {
     var flyAnim = gameUtils.getAnimation({
         spritesheetName: 'FlySwarmAnimations',
         animationName: 'Swarm_' + randomFlyNumber,
-        speed: 0.3 + Math.random() * 0.1,
+        speed: 0.4 + Math.random() * 0.1,
         loop: true,
     });
 
-    var blackFlyScale = 0.6;
+    var blackFlyScale = 0.6 * sizeScale;
     var blackFlyAnim = gameUtils.getAnimation({
         spritesheetName: 'FlySwarmAnimations',
         animationName: 'Swarm_' + randomFlyNumber2,
@@ -70,9 +72,10 @@ export default function DamageFlySwarm(options) {
     blackFlyAnim.alpha = 0.8;
     blackFlyAnim.tint = 0x000000;
 
-    flyAnim.tint = 0x6c0303;
+    flyAnim.tint = 0xde3c3c;
     flyAnim.originalTint = flyAnim.tint;
     flyAnim.originalSpeed = flyAnim.animationSpeed;
+    flyAnim.scale = {x: sizeScale, y: sizeScale};
 
     flies.tintMe = function(tint) {
         flyAnim.tint = tint;
@@ -150,19 +153,19 @@ export default function DamageFlySwarm(options) {
             sortYOffset: 60,
         }, {
             id: 'shadow',
-            data: 'IsoTreeShadow1',
+            data: 'IsoShadowBlurred',
             scale: {
-                x: 2.0,
-                y: 2.0
+                x: 2.0 * sizeScale,
+                y: 2.0 * sizeScale
             },
-            alpha: 0.35,
+            alpha: 0.5,
             visible: true,
             avoidIsoMgr: true,
             rotate: 'none',
             stage: "stageNTwo",
             offset: {
                 x: 0,
-                y: 20
+                y: 20 * sizeScale
             }
         }
     ];
@@ -254,7 +257,7 @@ export default function DamageFlySwarm(options) {
                 timeLimit: 3000,
                 runs: 1,
                 tickCallback: function() {
-                    var alternateAmount = 1 - blackFlyScale;
+                    var alternateAmount = sizeScale - blackFlyScale;
                     if(expandOut) {
                         blackFlyAnim.scale = {x: blackFlyScale + (alternateAmount * this.percentDone), y: blackFlyScale + (alternateAmount * this.percentDone)};
                     } else {

@@ -1330,7 +1330,7 @@ export default function Medic(options) {
         },
         defenseAction: function(event) {
             event.damageObj.manualDodge = true;
-            if(totalDodgeGained > dodgeMax) {
+            if(totalDodgeGained >= dodgeMax) {
                 return;
             }
             totalDodgeGained += 3;

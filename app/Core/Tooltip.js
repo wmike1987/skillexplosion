@@ -98,7 +98,7 @@ var Tooltip = function(options) {
 
     this.noDelay = options.noDelay;
 
-    this.updaters = options.updaters || {};
+    this.updaters = {};
     var self = this;
     if(options.updaters) {
         var tt = this;
@@ -115,7 +115,10 @@ var Tooltip = function(options) {
                     }
                     if(result.index != null) {
                         var iKey = result.key || key;
-                        tt[iKey][result.index].text = result.value;
+                        if(tt[iKey][result.index].text != result.value) {
+                            tt[iKey][result.index].text = result.value;
+                            self.sizeBase();
+                        }
                     } else if(tt[key].text != result) {
                         tt[key].text = result;
                         self.sizeBase();
@@ -171,6 +174,7 @@ Tooltip.prototype.sizeBase = function() {
     var width = Math.max(titleWidth, descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
     var height = this.title.height + buffer/2 + descriptionHeight + buffer + systemMessageHeight + (this.systemMessages.length ? buffer : 0) + buffer;
     graphicsUtils.makeSpriteSize(this.base, {w: width, h: height});
+    this.resizeAndPositionBorder();
 };
 
 Tooltip.prototype.destroy = function(options) {
@@ -308,7 +312,7 @@ Tooltip.prototype.display = function(position, options) {
 
     //set the border position
     var borderPosition = this.base.position;
-    if(!options.middleAnchor) {
+    if(this.base.anchor != {x: 0.5, y: 0.5}) {
         borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
         this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
     }
@@ -316,6 +320,24 @@ Tooltip.prototype.display = function(position, options) {
 
     Matter.Events.trigger(this.dobj, 'tooltipShown');
     Matter.Events.trigger(globals.currentGame, 'tooltipShown', {tooltip: this});
+};
+
+Tooltip.prototype.resizeAndPositionBorder = function() {
+    if(!this.baseBorder) {
+        return;
+    } else {
+        //resize border
+        graphicsUtils.resizeBorder(this.base);
+        this.baseBorder.visible = true;
+
+        //position border
+        var borderPosition = this.base.position;
+        if(this.base.anchor != {x: 0.5, y: 0.5}) {
+            borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
+            this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
+        }
+        this.baseBorder.position = borderPosition;
+    }
 };
 
 Tooltip.prototype.disable = function() {

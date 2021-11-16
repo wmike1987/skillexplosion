@@ -333,6 +333,7 @@ var campLevel = function() {
                 idleCancel: false
             });
 
+            unitT.body.drawWire = true;
             unitT.position = {x: 500, y: 400};
             globals.currentGame.addUnit(unitT);
             globals.currentGame.newUnitTest = unitT;

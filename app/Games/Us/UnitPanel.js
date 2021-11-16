@@ -1176,7 +1176,8 @@ unitPanel.prototype.displayUnitAbilities = function() {
                     });
                     Tooltip.makeTooltippable(augment.smallerIcon, {
                         title: augment.title,
-                        description: augment.description
+                        description: augment.description,
+                        updaters: augment.updaters
                     });
                     augment.smallerBorder = graphicsUtils.addSomethingToRenderer('AugmentBorder', {
                         where: 'hudOne'

@@ -854,10 +854,10 @@ export default function Marine(options) {
         }.bind(this)],
         augments: [{
                 name: 'pierce',
-                lives: 4,
+                lives: 3,
                 icon: graphicsUtils.createDisplayObject('PiercingKnife'),
                 title: 'Piercing Blow',
-                description: 'Pierce 4 enemies with a single knife.',
+                description: 'Pierce 3 enemies with a single knife.',
                 collector: {
                     eventName: piercingKnifeCollectorEventName,
                     presentation: {
@@ -945,7 +945,14 @@ export default function Marine(options) {
                 healAmount: 1,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
-                description: 'Heal self and nearby allies for 1 hp after firing rifle.',
+                description: '',
+                updaters: {descriptions: function() {
+                    var sum = 1;
+                    var addition = marine.firstAidPouchAdditions.forEach((addition) => {
+                        sum += addition;
+                    });
+                    return {index: 0, value: 'Heal self and nearby allies for ' + sum + ' hp after firing rifle.'};
+                }},
                 collector: {
                     eventName: firstAidCollectorEventName,
                     presentation: {
