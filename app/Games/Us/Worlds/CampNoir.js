@@ -645,10 +645,15 @@ var enemyDefs = {
     },
     hardGargs: {
         enemySets: [{
-            type: 'Gargoyle',
-            amount: [7],
+            type: 'Critter',
+            amount: 20,
             atATime: 2,
-            hz: 3000
+            hz: 4000
+        },{
+            type: 'Gargoyle',
+            amount: [2],
+            atATime: 2,
+            hz: 7000
         }, hardFlyObj]
     },
     outerBasic: {

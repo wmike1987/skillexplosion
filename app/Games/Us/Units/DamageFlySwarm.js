@@ -231,7 +231,7 @@ export default function DamageFlySwarm(options) {
             });
         },
         _afterAddInit: function() {
-            this.moveSpeed = 0.4 + Math.random() * 0.4;
+            this.moveSpeed = 0.4 + Math.random() * 0.7;
             var currentPosition = this.position;
 
             var attackPosX = Math.random() * gameUtils.getPlayableWidth();
