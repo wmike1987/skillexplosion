@@ -269,7 +269,7 @@ export default function Critter(options) {
                 animationName: 'critterdeath',
                 speed: 0.25,
                 fadeAway: true,
-                fadeTime: 8000,
+                fadeTime: globals.currentGame.unitCorpseTime,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
             graphicsUtils.addSomethingToRenderer(anim);
@@ -277,7 +277,7 @@ export default function Critter(options) {
             deathSound.play();
 
             var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
-            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
+            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, globals.currentGame.unitCorpseTime);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
             return [shadow, anim];

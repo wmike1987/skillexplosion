@@ -327,13 +327,13 @@ var campLevel = function() {
         //unit tester
         var unitTest = false;
         if(unitTest) {
-            var unitT = UnitMenu.createUnit('DamageFlySwarm', {
+            var unitT = UnitMenu.createUnit('Rammian', {
                 // team: game.enemyTeam,
                 team: game.playerTeam,
                 idleCancel: false
             });
 
-            unitT.body.drawWire = true;
+            // unitT.body.drawWire = true;
             unitT.position = {x: 500, y: 400};
             globals.currentGame.addUnit(unitT);
             globals.currentGame.newUnitTest = unitT;

@@ -207,6 +207,20 @@ var UnitBase = {
             return returnInformation;
         }
 
+        Matter.Events.trigger(this, 'preSufferAttack', {
+            performingUnit: attackingUnit,
+            sufferingUnit: this,
+            damageObj: damageObj,
+            attackContext: options,
+        });
+
+        //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
+        damage = damageObj.damage;
+
+        //factor in armor
+        var totalDefense = options.ignoreArmor ? 0 : this.getTotalDefense();
+        var alteredDamage = Math.max(1, (damage - totalDefense));
+
         //killing blow block
         if (this.currentHealth - alteredDamage <= 0) {
             if (this.hasGritDodge) {
@@ -233,21 +247,7 @@ var UnitBase = {
             }
         }
 
-        Matter.Events.trigger(this, 'preSufferAttack', {
-            performingUnit: attackingUnit,
-            sufferingUnit: this,
-            damageObj: damageObj,
-            attackContext: options,
-        });
-
-        //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
-        damage = damageObj.damage;
-
-        //factor in armor
-        var totalDefense = options.ignoreArmor ? 0 : this.getTotalDefense();
-        var alteredDamage = Math.max(1, (damage - totalDefense));
         var damageReducedByArmor = damage - alteredDamage;
-
         Matter.Events.trigger(globals.currentGame, 'damageReducedByArmor', {
             performingUnit: attackingUnit,
             sufferingUnit: this,

@@ -638,9 +638,17 @@ var enemyDefs = {
     rammians: {
         enemySets: [{
             type: 'Rammian',
-            amount: [8, 9, 10],
+            amount: [8, 9],
             atATime: 1,
             hz: 2500
+        }, hardFlyObj]
+    },
+    hardGargs: {
+        enemySets: [{
+            type: 'Gargoyle',
+            amount: [7],
+            atATime: 2,
+            hz: 3000
         }, hardFlyObj]
     },
     outerBasic: {
@@ -1271,88 +1279,92 @@ var phaseThree = function() {
             itemType: 'microchip'
         }
     });
+
+    return {
+        nextPhase: 'allNodesComplete',
+        onEnterBehavior: function() {
+            var a1 = new Dialogue({
+                actor: "MacMurray",
+                text: "Final wave incoming...",
+                backgroundBox: true,
+                letterSpeed: 30,
+                delayAfterEnd: 1000,
+            });
+            var self = this;
+            var chain = new DialogueChain([a1], {
+                startDelay: 750,
+                cleanUpOnDone: true
+            });
+            globals.currentGame.currentScene.add(chain);
+            chain.play();
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.flyover(() => {
+                    globals.currentGame.dustAndItemBox({
+                        location: gameUtils.getPlayableCenterPlus({
+                            x: 200,
+                            y: 120
+                        }),
+                        item: ['Book', 'Book'],
+                        special: true
+                    });
+                });
+            }, 2000);
+        }
+    };
 };
 
-// var phaseThree = function() {
-//     this.map.clearAllNodesExcept('camp');
-//     this.map.addMapNode('basic');
-//     this.map.addMapNode('basic');
-//     this.map.addMapNode('airDropStation', {
-//         levelOptions: {
-//             prereqCount: 2,
-//             itemClass: 'worn'
-//         }
-//     });
-//     this.map.addMapNode('basic');
-//     this.map.addMapNode('basic');
-//     this.map.addMapNode('easySentinels');
-//     this.map.addMapNode('airDropStation', {
-//         levelOptions: {
-//             outer: true
-//             // prereqCount: 0
-//         }
-//     });
-//
-//     //outer
-//     let outerParam = {
-//         levelOptions: {
-//             outer: true,
-//         }
-//     };
-//     this.map.addMapNode('outerBasic', outerParam);
-//     this.map.addMapNode('outerBasic', outerParam);
-//     this.map.addMapNode('outerBasic', outerParam);
-//     this.map.addMapNode('outerBasic', outerParam);
-//     this.map.addMapNode('outerHardTwo', {
-//         levelOptions: {
-//             outer: true,
-//             token: 'outerHard',
-//             itemClass: 'stimulant'
-//         }
-//     });
-//     this.map.addMapNode('outerHardOne', {
-//         levelOptions: {
-//             token: 'outerHard',
-//             itemClass: 'book'
-//         }
-//     });
-//     this.map.addMapNode('mobs', {
-//         levelOptions: {
-//             outer: true,
-//             token: 'mobs',
-//             itemClass: 'stimulant'
-//         }
-//     });
-//     this.map.addMapNode('airDropStation', {
-//         levelOptions: {
-//             prereqCount: 3,
-//             itemClass: 'worn',
-//             itemType: 'specialtyItem',
-//             regularTokenName: 'AirDropSpecialToken',
-//             specialTokenName: 'AirDropSpecialTokenGleam'
-//         }
-//     });
-//
-//     this.map.addMapNode('airDropStation', {
-//         levelOptions: {
-//             outer: true,
-//             prereqCount: 3,
-//             itemClass: 'rugged',
-//             itemType: 'specialtyItem',
-//             regularTokenName: 'AirDropSpecialToken',
-//             specialTokenName: 'AirDropSpecialTokenGleam'
-//         }
-//     });
-//
-//     this.map.addMapNode('multiLevel', {
-//         levelOptions: {
-//             outer: true,
-//             enemyDefList: ['outerBasic', 'easyGargs', 'outerBasic'],
-//             itemClass: 'rugged',
-//             itemType: 'microchip'
-//         }
-//     });
-// };
+var finalPhase = function() {
+    this.map.clearAllNodesExcept('camp');
+    this.map.addMapNode('basic');
+    this.map.addMapNode('basic');
+
+    var decision = mathArrayUtils.flipCoin();
+    var positionOp = {
+        minX: gameUtils.getCanvasCenter().x
+    };
+    var otherPositionOp = {
+        maxX: gameUtils.getCanvasCenter().x
+    };
+    if (decision) {
+        positionOp = {
+            maxX: gameUtils.getCanvasCenter().x
+        };
+        otherPositionOp = {
+            minX: gameUtils.getCanvasCenter().x
+        };
+    }
+
+    //air drops
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            outer: true,
+            bridge: true
+            // prereqCount: 0
+        },
+        positionOptions: {
+            maxX: gameUtils.getCanvasCenter().x
+        }
+    });
+
+    this.map.addMapNode('multiLevel', {
+        levelOptions: {
+            outer: true,
+            enemyDefList: ['rammians', 'hardGargs', 'mobs'],
+            itemClass: 'worn',
+            itemType: 'microchip',
+        },
+        positionOptions: positionOp
+    });
+
+    this.map.addMapNode('multiLevel', {
+        levelOptions: {
+            outer: true,
+            enemyDefList: ['outerHardTwo', 'outerHardTwo', 'outerHardTwo'],
+            itemClass: 'book',
+        },
+        positionOptions: otherPositionOp
+    });
+};
 
 //this defines the camp noir world
 var campNoir = {
@@ -1719,6 +1731,7 @@ var campNoir = {
         this.phases.push(phaseOneAndAHalf.bind(this));
         this.phases.push(phaseTwo.bind(this));
         this.phases.push(phaseThree.bind(this));
+        this.phases.push(finalPhase.bind(this));
     },
 
     getLevelById: function(id) {

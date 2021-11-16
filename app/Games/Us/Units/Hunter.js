@@ -265,7 +265,7 @@ export default function Hunter(options) {
                 animationName: 'sentineldeath',
                 speed: 0.22,
                 fadeAway: true,
-                fadeTime: 8000,
+                fadeTime: globals.currentGame.unitCorpseTime,
                 transform: [this.deathPosition.x + 25, this.deathPosition.y, 1.3, 1.3]
             });
             graphicsUtils.addSomethingToRenderer(anim);
@@ -273,7 +273,7 @@ export default function Hunter(options) {
             deathSound.play();
 
             var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(this.deathPosition, {y: 22})});
-            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 1500);
+            graphicsUtils.fadeSpriteOverTimeLegacy(shadow, globals.currentGame.unitCorpseTime);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
             return [shadow, anim];

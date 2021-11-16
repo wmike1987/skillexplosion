@@ -349,6 +349,7 @@ export default function Rammian(options) {
             graphicsUtils.flashSprite({
                 sprite: anim,
                 duration: 500,
+                fromColor: anim.tint,
                 times: 1 + Math.ceil(Math.random() * 3),
                 onEnd: () => {
                     graphicsUtils.flashSprite({

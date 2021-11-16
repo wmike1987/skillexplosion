@@ -73,6 +73,7 @@ var game = {
     currentScene: null,
     showTips: true,
     showedTips: {},
+    unitCorpseTime: 60000,
 
     //debug options
     goStraightToUrsulaTasks: false,

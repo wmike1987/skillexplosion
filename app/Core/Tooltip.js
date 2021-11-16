@@ -328,7 +328,7 @@ Tooltip.prototype.resizeAndPositionBorder = function() {
     } else {
         //resize border
         graphicsUtils.resizeBorder(this.base);
-        this.baseBorder.visible = true;
+        this.baseBorder.visible = this.base.visible;
 
         //position border
         var borderPosition = this.base.position;
