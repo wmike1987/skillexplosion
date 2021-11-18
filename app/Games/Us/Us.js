@@ -21,7 +21,9 @@ import {
     Doodad
 } from '@utils/Doodad.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
-import {Scene} from '@core/Scene.js';
+import {
+    Scene
+} from '@core/Scene.js';
 import UnitPanel from '@games/Us/UnitPanel.js';
 import UnitSpawner from '@games/Us/UnitSpawner.js';
 import styles from '@utils/Styles.js';
@@ -33,7 +35,6 @@ import {
     StatCollector
 } from '@games/Us/StatCollector.js';
 import UnitMenu from '@games/Us/UnitMenu.js';
-
 import {
     ShaneIntro
 } from '@games/Us/Dialogues/ShaneIntro.js';
@@ -41,6 +42,9 @@ import {
     Dialogue,
     DialogueChain
 } from '@core/Dialogue.js';
+import {
+    RewardManager,
+} from '@games/Us/RewardManager.js';
 
 var targetScore = 1;
 
@@ -188,7 +192,7 @@ var game = {
         Matter.Events.on(this, 'showMap', function(event) {
             //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
             if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
-                if(this.currentPhaseObj.onAllNodesComplete) {
+                if (this.currentPhaseObj.onAllNodesComplete) {
                     this.currentPhaseObj.onAllNodesComplete();
                 }
 
@@ -211,7 +215,7 @@ var game = {
                         currentPhaseObj.onEnterBehavior();
                     }
 
-                    if(!currentPhaseObj.wrappedNextPhase) {
+                    if (!currentPhaseObj.wrappedNextPhase) {
                         globals.currentGame.nextPhase();
                     } else {
                         currentPhaseObj.wrappedNextPhase();
@@ -312,7 +316,7 @@ var game = {
             var shaneIntro = new ShaneIntro({
                 done: () => {
                     this.initShane();
-                    if(this.goStraightToUrsulaTasks) {
+                    if (this.goStraightToUrsulaTasks) {
                         this.currentWorld.gotoLevelById('camp');
                     } else {
                         this.currentWorld.gotoLevelById('shaneLearning');
@@ -325,6 +329,21 @@ var game = {
             this.skipTutorial();
             this.currentWorld.gotoLevelById('camp');
         }
+
+        //create the reward manager
+        this.rewardManager = new RewardManager();
+
+        //setup unit collector events
+        Matter.Events.on(this, 'BeginPrimaryBattle', () => {
+            this.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
+            if(this.ursulaCollector) {
+                this.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
+            }
+        });
+
+        Matter.Events.on(this, 'BeginLevel', () => {
+            this.rewardManager.startNewRewardCollector();
+        });
     },
 
     getLoadingScreen: function() {
@@ -358,14 +377,16 @@ var game = {
         this.currentWorld = this.worlds[this.currentWorldIndex++];
         this.currentWorld.initWorld();
         this.map = this.currentWorld.initializeMap();
-        this.nextPhase({index: 0});
+        this.nextPhase({
+            index: 0
+        });
     },
 
     nextPhase: function(options) {
         options = options || {};
 
         var index = options.index;
-        if(mathArrayUtils.isFalseNotZero(options.index)) {
+        if (mathArrayUtils.isFalseNotZero(options.index)) {
             //if no index is given, goto next phase
             this.currentPhase += 1;
             index = this.currentPhase;
@@ -443,12 +464,11 @@ var game = {
         //determine continue behavior
         var continueBehavior = function() {
             if (result == 'victory') {
-                this.map.addAdrenalineBlock();
                 this.conquerScene({
                     scene: this.currentScene,
                     fadeIn: true
                 });
-                if(this.currentLevel.levelRedirect) {
+                if (this.currentLevel.levelRedirect) {
                     this.currentLevel.levelRedirect.campLikeActiveSOM = true;
                 } else {
                     this.currentLevel.campLikeActiveSOM = true;

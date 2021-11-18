@@ -496,18 +496,22 @@ var graphicsUtils = {
                 }
 
                 //if we're going to persist at end, don't fade anything
-                if(!options.persistAtEnd) {
+                if (!options.persistAtEnd) {
                     floatedText.alpha = alphaBuffer - this.percentDone * alphaBuffer;
                 }
             },
             totallyDoneCallback: function() {
                 //if we are to persist at the end, don't remove the sprite
-                if(!options.persistAtEnd) {
+                if (!options.persistAtEnd) {
                     graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
                 }
 
                 if (options.deferred) {
                     options.deferred.resolve();
+                }
+
+                if (options.onDone) {
+                    options.onDone();
                 }
             }.bind(this)
         });
@@ -521,6 +525,48 @@ var graphicsUtils = {
         });
 
         return floatedText;
+    },
+
+    createFloatingTextChain: function(options) {
+        var chain = {
+            chain: [],
+            lastAdded: null,
+            nowPlaying: 0,
+            onDone: options.onDone,
+            add: function(options) {
+                //by default start the next float after the previous float finishes
+                if (this.lastAdded && !this.lastAdded.additionalOptions.startNextAfter) {
+                    this.lastAdded.additionalOptions.onDone = function() {
+                        this._playNext();
+                    }.bind(this);
+                }
+                this.chain.push(options);
+                this.lastAdded = options;
+            },
+            play: function() {
+                var lastEvent = this.chain[this.chain.length-1].additionalOptions.onDone = this.onDone;
+                this._playNext();
+            },
+            _playNext: function() {
+                var options = this.chain[this.nowPlaying];
+
+                //if we've specified a 'startNextAfter', start the next float after that duration
+                if(options.additionalOptions.startNextAfter) {
+                    gameUtils.doSomethingAfterDuration(() => {
+                        this._playNext();
+                    }, options.additionalOptions.startNextAfter);
+                }
+                var myText = graphicsUtils.floatText(options.text, options.position, options.additionalOptions);
+
+                if(options.additionalOptions.onStart) {
+                    options.additionalOptions.onStart(myText);
+                }
+
+                this.nowPlaying++;
+            }
+        };
+
+        return chain;
     },
 
     //https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
@@ -799,20 +845,29 @@ var graphicsUtils = {
     addShadowToSprite: function(options) {
         options = Object.assign({
             alpha: 1.0,
-            offset: {x: 0, y: options.sprite.height/2.0}
+            offset: {
+                x: 0,
+                y: options.sprite.height / 2.0
+            }
         }, options);
 
         let sprite = options.sprite;
-        var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', position: mathArrayUtils.clonePosition(sprite.position, options.offset)});
+        var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {
+            where: 'stageNTwo',
+            position: mathArrayUtils.clonePosition(sprite.position, options.offset)
+        });
         shadow.alpha = options.alpha;
-        if(options.size) {
+        if (options.size) {
             graphicsUtils.makeSpriteSize(shadow, options.size);
-        } else if(options.scale) {
+        } else if (options.scale) {
             shadow.scale = options.scale;
         } else {
             graphicsUtils.makeSpriteSize(shadow, sprite.width);
         }
-        graphicsUtils.latchDisplayObjectOnto({child: shadow, parent: sprite});
+        graphicsUtils.latchDisplayObjectOnto({
+            child: shadow,
+            parent: sprite
+        });
         mathArrayUtils.roundPositionToWholeNumbers(shadow.position);
     },
 
@@ -837,7 +892,11 @@ var graphicsUtils = {
             border.tint = options.tint;
             border.visible = sprite.parent && sprite.visible;
 
-            graphicsUtils.latchDisplayObjectOnto({child: border, parent: sprite, positionUponShow: true});
+            graphicsUtils.latchDisplayObjectOnto({
+                child: border,
+                parent: sprite,
+                positionUponShow: true
+            });
 
             sprite.addedBorder = border;
         }
@@ -851,7 +910,7 @@ var graphicsUtils = {
     },
 
     resizeBorder: function(borderedSprite) {
-        if(!borderedSprite.addedBorder) {
+        if (!borderedSprite.addedBorder) {
             return;
         }
         this.addBorderToSprite(Object.assign({

@@ -301,6 +301,7 @@ var UnitBase = {
                 this.barTimer.reset();
             }
         }
+        
         Matter.Events.trigger(globals.currentGame, 'sufferAttack', {
             performingUnit: attackingUnit,
             sufferingUnit: this,

@@ -123,11 +123,10 @@ var levelBase = {
             });
             game.heartbeat.play();
 
-            if (options.startNewCollector) {
-                game.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
-                if(game.ursulaCollector) {
-                    game.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
-                }
+            Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {level: level});
+
+            if(!options.continuation) {
+                Matter.Events.trigger(globals.currentGame, 'BeginLevel', {level: level});
             }
             level.initializeWinLossCondition();
         }, 2400);

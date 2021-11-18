@@ -220,7 +220,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 15 * randomScale
                     },
-                    radius: 50
+                    radius: 80 * randomScale
                 },
                 offset: {
                     x: 0,

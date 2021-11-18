@@ -19,14 +19,17 @@ var StatCollector = function(options) {
 
     this.startNewCollector = function(name) {
         //Create a new collector manager
-        this.currentCollectorManager = new CollectorManager(Object.assign({}, options));
+        this.currentCollectorManager = new CollectorManager(Object.assign({useDefaultCollectors: true}, options));
 
         //Add any item collectors to the manager
         mathArrayUtils.operateOnObjectByKey(this.customCollectors, function(key, coll) {
             this.currentCollectorManager.addCollector(coll.collector.spawnNewCollector());
         }.bind(this));
 
+        //keep history of past managers
         this.statHistory[options.name] = this.currentCollectorManager;
+
+        //start collector manager
         this.currentCollectorManager.startCollecting();
 
         Matter.Events.trigger(globals.currentGame, 'NewCollectorStarted', {
@@ -94,22 +97,24 @@ var StatCollector = function(options) {
  */
 var CollectorManager = function(options) {
     options = options || {};
-    var damageCollector = new DamageCollector(options);
-    var healingCollector = new HealCollector(options);
-    var killCollector = new KillCollector(options);
-    var damageTakenCollector = new DamageTakenCollector(options);
-    var damageReducedByArmorCollector = new DamageReducedByArmorCollector(options);
-    var knivesThrownCollector = new KnivesThrownCollector(options);
-    var knifeKillsCollector = new KnifeKillsCollector(options);
-    var dashCollector = new DashCollector(options);
-    var mineCollector = new MineCollector(options);
-    var secretStepCollector = new SecretStepCollector(options);
-    var dodgeCollector = new DodgeCollector(options);
     this.collectors = [];
 
-    if (options.collectors) {
+    if (!options.useDefaultCollectors) {
+        //don't create anything by default
+    } else {
+        /*Subscribe to everything*/
+        var damageCollector = new DamageCollector(options);
+        var healingCollector = new HealCollector(options);
+        var killCollector = new KillCollector(options);
+        var damageTakenCollector = new DamageTakenCollector(options);
+        var damageReducedByArmorCollector = new DamageReducedByArmorCollector(options);
+        var knivesThrownCollector = new KnivesThrownCollector(options);
+        var knifeKillsCollector = new KnifeKillsCollector(options);
+        var dashCollector = new DashCollector(options);
+        var mineCollector = new MineCollector(options);
+        var secretStepCollector = new SecretStepCollector(options);
+        var dodgeCollector = new DodgeCollector(options);
 
-    } else /*Subscribe to everything*/ {
         this.collectors.push(damageCollector);
         this.collectors.push(healingCollector);
         this.collectors.push(killCollector);
@@ -203,6 +208,17 @@ var CollectorManager = function(options) {
 
         return ret;
     };
+
+    this.getCollectorByName = function(name) {
+        var ret = null;
+        this.collectors.forEach((collector) => {
+            if (collector.name == name) {
+                ret = collector;
+            }
+        });
+
+        return ret;
+    };
 };
 
 var Collector = {
@@ -239,7 +255,7 @@ var CustomCollector = function(options) {
     };
     this.isCustomCollector = true;
     this.entity = options.entity;
-    this.name = this.entity.name;
+    this.name = options.name || this.entity.name;
     this.init = options.init;
     this.priority = options.priority;
     this.predicate = options.predicate || function() {
@@ -248,7 +264,7 @@ var CustomCollector = function(options) {
 
     this.priority = options.priority || 50;
     this.eventName = options.eventName;
-    this.presentation = options.presentation;
+    this.presentation = options.presentation || {};
     this.canPresent = options.canPresent || function() {
         return true;
     };

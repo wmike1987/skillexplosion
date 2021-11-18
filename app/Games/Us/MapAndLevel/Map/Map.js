@@ -118,26 +118,39 @@ var map = function(specs) {
         return this.adrenaline == this.adrenalineMax;
     };
 
-    this.addAdrenalineBlock = function() {
-        if (this.adrenaline >= this.adrenalineMax) {
-            return;
-        }
-        this.adrenaline += 1;
-        let offset = 18;
-        let newBlock = graphicsUtils.createDisplayObject('TintableSquare', {
-            position: {
-                x: 47.5 + this.adrenaline * offset,
-                y: 645.5
-            },
-            where: "hudNOne",
-            tint: 0xd72e75,
-            scale: {
-                x: 7,
-                y: 7
+    this.addAdrenalineBlock = function(amount) {
+        amount = amount || 1;
+        var amountGained = 0;
+        do {
+            if (this.adrenaline >= this.adrenalineMax) {
+                //do nothing if we're already at the limit
+                amount = 0;
+                continue;
             }
-        });
-        newBlock.justAdded = true;
-        this.adrenalineBlocks.push(newBlock);
+            this.adrenaline += 1;
+            amountGained++;
+            if (this.adrenaline >= this.adrenalineMax) {
+                this.adrenaline = this.adrenalineMax;
+            }
+            let offset = 18;
+            let newBlock = graphicsUtils.createDisplayObject('TintableSquare', {
+                position: {
+                    x: 47.5 + this.adrenaline * offset,
+                    y: 645.5
+                },
+                where: "hudNOne",
+                tint: 0xd72e75,
+                scale: {
+                    x: 7,
+                    y: 7
+                }
+            });
+            newBlock.justAdded = true;
+            this.adrenalineBlocks.push(newBlock);
+            amount--;
+        } while (amount);
+
+        return amountGained;
     };
 
     this.removeAdrenalineBlock = function() {
@@ -550,16 +563,28 @@ var map = function(specs) {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
-                // unitUtils.prepareUnitsForStationaryDraw();
                 unitUtils.pauseTargetingAndResumeUponNewLevel();
 
-                //show +1 adrenaline
+                //show + adrenaline text
                 var t = "Excellent";
+
+                //default to +1 adrenaline
+                var addedAdrenaline = 1;
+                var rewardText = '';
                 if (!this.isAdrenalineFull()) {
-                    this.addAdrenalineBlock();
-                    this.outingAdrenalineGained += 1;
                     t = '+1 adrenaline!';
                 }
+
+                //check for +2 reward
+                if (globals.currentGame.rewardManager.checkExtraAdrenalineReward()) {
+                    addedAdrenaline = 2;
+                    rewardText = 'Efficient clearance!';
+                    t = '+2 adrenaline!';
+                }
+
+                //add the adrenaline
+                var actualAmountGained = this.addAdrenalineBlock(addedAdrenaline);
+                this.outingAdrenalineGained += actualAmountGained;
 
                 Matter.Events.trigger(globals.currentGame, 'OutingLevelCompleted', {
                     result: 'victory'
@@ -568,38 +593,81 @@ var map = function(specs) {
                 //disable the cursor
                 gameUtils.setCursorStyle('None');
 
-                gameUtils.doSomethingAfterDuration(() => {
-                    globals.currentGame.soundPool.positiveSoundFast.play();
-                    var adrText = graphicsUtils.floatText(t, gameUtils.getPlayableCenterPlus({
-                        y: 300
-                    }), {
-                        where: 'hudTwo',
-                        style: styles.adrenalineTextLarge,
-                        speed: 6,
-                        duration: 1500
-                    });
-                    graphicsUtils.addGleamToSprite({
-                        sprite: adrText,
-                        gleamWidth: 50,
-                        duration: 500
-                    });
-                }, 1000);
+                var nextSceneWaitTime = 2500;
+                if (rewardText) {
+                    nextSceneWaitTime += 1000;
+                }
 
-                //show the map and trigger a travel to the next node
                 gameUtils.doSomethingAfterDuration(() => {
-                    Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
-                    globals.currentGame.transitionToBlankScene();
-                    this.show();
-                    gameUtils.doSomethingAfterDuration(() => {
-                        //get the next node and trigger the mouse down behavior
-                        var mapnode = this.outingNodes.shift();
-                        this.inProgressOutingNodes.push(mapnode);
-                        mapnode.onMouseDownBehavior({
-                            systemTriggered: true,
-                            keepCurrentCollector: true
+                    var adrenalineWaitTime = 0;
+
+                    //create text chain
+                    var textChain = graphicsUtils.createFloatingTextChain({
+                        onDone: function() {
+                            Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
+                            globals.currentGame.transitionToBlankScene();
+                            this.show();
+                            gameUtils.doSomethingAfterDuration(() => {
+                                //get the next node and trigger the mouse down behavior
+                                var mapnode = this.outingNodes.shift();
+                                this.inProgressOutingNodes.push(mapnode);
+                                mapnode.onMouseDownBehavior({
+                                    systemTriggered: true,
+                                    keepCurrentCollector: true
+                                });
+                            }, 1500);
+                        }.bind(this),
+                    });
+
+                    //optionally show reward
+                    if (rewardText) {
+                        textChain.add({
+                            text: rewardText,
+                            position: gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }),
+                            additionalOptions: {
+                                where: 'hudTwo',
+                                style: styles.adrenalineTextLarge,
+                                speed: 6,
+                                duration: 1500,
+                                startNextAfter: 1000,
+                                onStart: (myText) => {
+                                    globals.currentGame.soundPool.positiveSoundFast.play();
+                                    graphicsUtils.addGleamToSprite({
+                                        sprite: myText,
+                                        gleamWidth: 50,
+                                        duration: 500
+                                    });
+                                }
+                            }
                         });
-                    }, 1500);
-                }, 2500);
+                    }
+
+                    //add the adrenaline text
+                    textChain.add({
+                        text: t,
+                        position: gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }),
+                        additionalOptions: {
+                            where: 'hudTwo',
+                            style: styles.adrenalineTextLarge,
+                            speed: 6,
+                            duration: 1500,
+                            onStart: (myText) => {
+                                globals.currentGame.soundPool.positiveSoundFast.play();
+                                graphicsUtils.addGleamToSprite({
+                                    sprite: myText,
+                                    gleamWidth: 50,
+                                    duration: 500
+                                });
+                            }
+                        }
+                    });
+
+                    textChain.play();
+                }, 1000);
             };
         });
 
@@ -612,6 +680,9 @@ var map = function(specs) {
 
         //let everyone know
         Matter.Events.trigger(globals.currentGame, 'EmbarkOnOuting');
+        gameUtils.matterOnce(globals.currentGame, 'BeginLevel', () => {
+            Matter.Events.trigger(globals.currentGame, 'BeginPrimaryBattle');
+        });
 
         //upon normal win/loss behavior clear the outing
         var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', (event) => {

@@ -11,7 +11,9 @@ import {
     globals
 } from '@core/Fundamental/GlobalState.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
-import {Scene} from '@core/Scene.js';
+import {
+    Scene
+} from '@core/Scene.js';
 import styles from '@utils/Styles.js';
 import {
     ItemClasses
@@ -92,17 +94,17 @@ var overlayCommonFade = function(sprite, delay) {
 
 var applyArrowInOut = function(arrow) {
     arrow.on('mouseover', () => {
-        if(arrow.alpha == 1) {
+        if (arrow.alpha == 1) {
             arrow.tint = 0xf02354;
         }
     });
     arrow.on('mouseout', () => {
-        if(arrow.alpha == 1) {
+        if (arrow.alpha == 1) {
             arrow.tint = 0xffffff;
         }
     });
     arrow.on('mousedown', () => {
-        if(arrow.alpha == 1) {
+        if (arrow.alpha == 1) {
             globals.currentGame.soundPool.keypressSound.play();
             arrow.tint = 0xffffff;
         }
@@ -406,11 +408,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
         var len = customCollectors.length;
         customCollectors.forEach(function(coll, index) {
-            if(!coll.canPresent()) {
+            if (!coll.canPresent()) {
                 return;
             }
 
-            var last = index == len-1 ? true : false;
+            var last = index == len - 1 ? true : false;
             if (p % pageSize == 0) {
                 startingY = {
                     value: 80
@@ -421,7 +423,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
             //if we're the last on a page or the last in the set, don't display the divider
             var needsDivider = true;
-            if(last || p % pageSize == 0) {
+            if (last || p % pageSize == 0) {
                 needsDivider = false;
             }
 
@@ -441,14 +443,14 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
             //create label
             var labels = [];
-            var lastLabel = coll.presentation.labels.length-1;
+            var lastLabel = coll.presentation.labels.length - 1;
             coll.presentation.labels.forEach(function(label, index) {
                 //check to see if we're enabled
                 var enabled = true; //default
-                if(coll.presentation.variableLabels) {
+                if (coll.presentation.variableLabels) {
                     enabled = coll.presentation.variableLabels.includes(label);
                 }
-                if(!enabled) {
+                if (!enabled) {
                     return;
                 }
 
@@ -457,12 +459,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
                 //call any given formatters
                 var formatters = coll.presentation.formats;
-                if(formatters && formatters[index]) {
+                if (formatters && formatters[index]) {
                     v = coll.presentation.formats[index](v);
                 }
 
                 var suff = "";
-                if(coll.presentation.suffixes) {
+                if (coll.presentation.suffixes) {
                     suff = coll.presentation.suffixes[index] ? " " + coll.presentation.suffixes[index] : "";
                 }
                 var spacing = index == lastLabel ? reg : anotherLabel;
@@ -485,7 +487,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }
 
             //create divider if we're not the last on the page
-            if(needsDivider) {
+            if (needsDivider) {
                 var myDivider = graphicsUtils.createDisplayObject('TintableSquare', {
                     where: 'hudText',
                     scale: {
@@ -1446,7 +1448,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             visible: false
         });
 
-        if(shanePages.length == 1) {
+        if (shanePages.length == 1) {
             shaneRightArrow.alpha = 0.1;
         }
 
@@ -2305,7 +2307,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             visible: false
         });
 
-        if(ursulaPages.length == 1) {
+        if (ursulaPages.length == 1) {
             ursulaRightArrow.alpha = 0.1;
         }
 
@@ -2491,75 +2493,132 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
 
         } else if (isVictory) {
-            //show +1 adrenaline
+            //show + adrenaline text
             Matter.Events.on(scene, 'sceneFadeInDone', () => {
                 var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
                 gameUtils.doSomethingAfterDuration(() => {
-                    if (!adrenalineIsFull) {
-                        globals.currentGame.soundPool.positiveSoundFast.play();
-                        var adrText = graphicsUtils.floatText('+1 adrenaline!', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: rewardDuration * 2.0
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 30,
-                            duration: 1000
-                        });
+                    //default to +1 adrenaline
+                    var addedAdrenaline = 1;
+                    var rewardText = '';
+                    var t = '+1 adrenaline!';
+
+                    //check for +2 reward
+                    if (globals.currentGame.rewardManager.checkExtraAdrenalineReward()) {
+                        addedAdrenaline = 2;
+                        rewardText = 'Efficient clearance!';
+                        t = '+2 adrenaline!';
                     }
 
-                    gameUtils.doSomethingAfterDuration(() => {
-                        //float levels completed text
-                        globals.currentGame.soundPool.positiveSoundFast.play();
-                        var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
-                        var txt = levelsCompletedText;
-                        var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.rewardTextLarge,
-                            speed: 6,
-                            duration: rewardDuration * 2.0
-                        });
-                        lText.tint = 0x08d491;
-                        graphicsUtils.addGleamToSprite({
-                            sprite: lText,
-                            gleamWidth: 30,
-                            duration: 1000
-                        });
-
-                        //show supply drop message
-                        gameUtils.doSomethingAfterDuration(() => {
-                            globals.currentGame.soundPool.positiveSoundFast.play();
-                            var txt = 'Supply drop en route...';
-                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }), {
-                                where: 'hudTwo',
-                                style: styles.rewardTextLarge,
-                                speed: 6,
-                                duration: rewardDuration * 2.0
-                            });
-                            graphicsUtils.flashSprite({
-                                sprite: sdText,
-                                times: 4,
-                                fromColor: 0x01cd46,
-                                toColor: 0xc39405,
-                                duration: 200,
-                            });
-                        }, rewardPauseDuration);
-
-                        //then present items
-                        gameUtils.doSomethingAfterDuration(() => {
+                    //create text chain
+                    var textChain = graphicsUtils.createFloatingTextChain({
+                        onDone: function() {
                             presentItems({
                                 done: options.done
                             });
-                        }, 3200);
-                    }, rewardPauseDuration);
+                        },
+                    });
+
+                    //show reward...maybe
+                    if (rewardText && !adrenalineIsFull) {
+                        textChain.add({
+                            text: rewardText,
+                            position: gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }),
+                            additionalOptions: {
+                                where: 'hudTwo',
+                                style: styles.adrenalineTextLarge,
+                                speed: 6,
+                                duration: rewardDuration * 2.0,
+                                startNextAfter: 1000,
+                                onStart: (myText) => {
+                                    globals.currentGame.soundPool.positiveSoundFast.play();
+                                    graphicsUtils.addGleamToSprite({
+                                        sprite: myText,
+                                        gleamWidth: 50,
+                                        duration: 500
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    //add the adrenaline text
+                    if(!adrenalineIsFull) {
+                        textChain.add({
+                            text: t,
+                            position: gameUtils.getPlayableCenterPlus({
+                                y: 300
+                            }),
+                            additionalOptions: {
+                                where: 'hudTwo',
+                                style: styles.adrenalineTextLarge,
+                                speed: 6,
+                                duration: rewardDuration * 2.0,
+                                startNextAfter: 1500,
+                                onStart: (myText) => {
+                                    globals.currentGame.map.addAdrenalineBlock(addedAdrenaline);
+                                    globals.currentGame.soundPool.positiveSoundFast.play();
+                                    graphicsUtils.addGleamToSprite({
+                                        sprite: myText,
+                                        gleamWidth: 50,
+                                        duration: 500
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    //add the camp clearance text
+                    var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
+                    textChain.add({
+                        text: levelsCompletedText,
+                        position: gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }),
+                        additionalOptions: {
+                            where: 'hudTwo',
+                            style: styles.rewardTextLarge,
+                            speed: 6,
+                            duration: rewardDuration * 2.0,
+                            startNextAfter: 1000,
+                            onStart: (myText) => {
+                                myText.tint = 0x08d491;
+                                globals.currentGame.soundPool.positiveSoundFast.play();
+                                graphicsUtils.addGleamToSprite({
+                                    sprite: myText,
+                                    gleamWidth: 50,
+                                    duration: 500
+                                });
+                            }
+                        }
+                    });
+
+                    //add the supply drop text
+                    textChain.add({
+                        text: 'Supply drop en route...',
+                        position: gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }),
+                        additionalOptions: {
+                            where: 'hudTwo',
+                            style: styles.rewardTextLarge,
+                            speed: 6,
+                            duration: rewardDuration * 2.0,
+                            onStart: (myText) => {
+                                globals.currentGame.soundPool.positiveSoundFast.play();
+                                graphicsUtils.flashSprite({
+                                    sprite: myText,
+                                    times: 2,
+                                    fromColor: 0x01cd46,
+                                    toColor: 0xc900c7,
+                                    duration: 150,
+                                });
+                            }
+                        }
+                    });
+
+                    textChain.play();
                 }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
             });
         }
