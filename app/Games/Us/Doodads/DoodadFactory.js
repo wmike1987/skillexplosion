@@ -25,15 +25,20 @@ var doodadMenu = {
 var DoodadFactory = {
     createDoodad: function(options) {
         var originalOptions = options;
+
+        //if we're pulling from a menu
         if (options.menuItem) {
+            //get the options from the menu
             options = doodadMenu[options.menuItem];
             if(options.initialize) {
                 options.initialize();
             }
 
+            //and remix in the given options (in case of overrided)
             options = Object.assign(options, originalOptions);
         }
 
+        //specify default options
         var defaultOptions = {
             textureName: null,
             radius: 8,
@@ -50,8 +55,11 @@ var DoodadFactory = {
                 y: 0
             }
         };
+
+        //build final options object
         options = Object.assign(defaultOptions, options);
 
+        //create the doodad
         var doodad = new Doodad({
             collides: true,
             autoAdd: false,
@@ -66,6 +74,7 @@ var DoodadFactory = {
             offset: options.offset,
             bodyScale: options.bodyScale,
             sortYOffset: options.sortYOffset,
+            loneNZRadius: options.loneNZRadius,
             noShadow: true,
         });
 

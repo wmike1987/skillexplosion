@@ -10,9 +10,10 @@ import {
  * options
  */
 var rockPit = {
-    textureName: ['RockFirePit', null],
+    textureName: [null, null],
     radius: 8,
     where: 'stage',
+    loneNZRadius: 40,
     tint: 0xffffff,
     randomHFlip: true,
     sortYOffset: 0,
@@ -25,6 +26,9 @@ var rockPit = {
         y: 0
     },
     initialize: function() {
+        var possiblePits = ['RockFirePit', 'RockFirePit2', 'RockFirePit3'];
+        this.textureName[0] = mathArrayUtils.getRandomElementOfArray(possiblePits);
+
         var smokeAnimation = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations3',
             animationName: 'smokepitsmoke',
@@ -35,9 +39,9 @@ var rockPit = {
         smokeAnimation.alpha = 0.5;
         smokeAnimation.offset = {
             x: 0,
-            y: -1
+            y: -3
         };
-        smokeAnimation.where = 'stage';
+        smokeAnimation.where = 'stageOne';
         smokeAnimation.play();
         this.textureName[1] = smokeAnimation;
     }

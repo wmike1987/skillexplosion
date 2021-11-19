@@ -1474,13 +1474,29 @@ var campNoir = {
 
                 //add smokey pit
                 var rockPitDoodad = DoodadFactory.createDoodad({menuItem: 'rockPit', tint: rockTints[tIndex]});
-                scene.add(rockPitDoodad);
-                rockPitDoodad.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
-                    buffer: 80,
-                    useUpcomingSceneNoZones: true,
+                rockPitDoodad.unique = true;
+                // scene.add(rockPitDoodad);
+                // rockPitDoodad.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                //     buffer: 80,
+                //     useUpcomingSceneNoZones: true,
+                //     noZones: noZones.concat(centerNoZone),
+                //     doodad: rockPitDoodad
+                // }));
+
+                this.pit = SceneryUtils.decorateTerrain({
+                    possibleDoodads: [rockPitDoodad, rock1, rock2, rock3],
+                    tileWidth: tileSize,
+                    maxNumber: 1,
+                    nonTilePosition: true,
+                    buffer: 100,
+                    hz: 1.0,
+                    groupings: {center: rockPitDoodad, hz: 1.0, possibleAmounts: [6], scalar: {min: 50, max: 75}},
+                    where: 'stageNOne',
+                    r: 1,
                     noZones: noZones.concat(centerNoZone),
-                    doodad: rockPitDoodad
-                }));
+                });
+
+                scene.add(this.pit);
 
             } else {
                 var numberOfRocks2 = 10;

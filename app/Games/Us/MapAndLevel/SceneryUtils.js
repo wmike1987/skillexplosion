@@ -390,6 +390,7 @@ var sceneryUtils = {
         if (maxNumber) {
             nonTilePosition = true;
         }
+        var buffer = options.buffer || 30;
         var groupings = options.groupings || {
             hz: 0
         };
@@ -426,7 +427,7 @@ var sceneryUtils = {
 
                     if (nonTilePosition) {
                         var position = gameUtils.getRandomPlacementWithinPlayableBounds({
-                            buffer: 30
+                            buffer: buffer
                         });
                         positionX = position.x;
                         positionY = position.y;
@@ -440,17 +441,28 @@ var sceneryUtils = {
                     var numberInGrouping = doGrouping ? mathArrayUtils.getRandomElementOfArray(groupings.possibleAmounts) : 1;
                     var possibleAngles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
 
-                    //process groupings
+                    //check max
+                    if (maxNumber && hits == maxNumber) {
+                        y += tileHeight;
+                        break;
+                    }
+
+                    //process groupings (always at least 1)
+                    var hit = false;
                     for (var j = 0; j < numberInGrouping; j++) {
+                        var myPosition = {x: positionX, y: positionY};
                         if (j > 0) {
+                            var myScalar = groupings.scalar || 30;
+                            if(myScalar.min) {
+                                myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
+                            }
                             var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
                             mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
                             var newPosition = mathArrayUtils.addScalarToVectorAtAngle({
                                 x: positionX,
                                 y: positionY
-                            }, angle, groupings.scalar || 30);
-                            positionX = newPosition.x;
-                            positionY = newPosition.y;
+                            }, angle, myScalar);
+                            myPosition = {x: newPosition.x, y: newPosition.y};
                         }
 
                         //expand possible things for proportional choosing of objects
@@ -466,6 +478,12 @@ var sceneryUtils = {
                         });
                         let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
 
+                        //force the center
+                        if(groupings.center) {
+                            randomThing = groupings.center;
+                            groupings.center = null;
+                        }
+
                         //test for no zones
                         var nzOffset = {
                             x: 0,
@@ -477,10 +495,7 @@ var sceneryUtils = {
                         var skip = false;
                         if (noZones) {
                             noZones.forEach((nz) => {
-                                if (mathArrayUtils.distanceBetweenPoints(nz.center, Matter.Vector.add({
-                                        x: positionX,
-                                        y: positionY
-                                    }, nzOffset)) < nz.radius) {
+                                if (mathArrayUtils.distanceBetweenPoints(nz.center, Matter.Vector.add(myPosition, nzOffset)) < nz.radius) {
                                     skip = true;
                                 }
                             });
@@ -488,25 +503,21 @@ var sceneryUtils = {
                         if (skip) {
                             y += tileHeight;
                             break;
+                        } else {
+                            //record our hits
+                            hit = true;
                         }
-
-                        if (maxNumber && hits == maxNumber) {
-                            y += tileHeight;
-                            break;
-                        }
-
-                        //record our hits
-                        hits += 1;
 
                         let newDO = null;
 
                         //handle doodads
                         if (randomThing.isDoodad) {
                             newDO = randomThing.clone();
-                            newDO.setPosition({
-                                x: positionX,
-                                y: positionY
-                            });
+                            newDO.setPosition(mathArrayUtils.clonePosition(myPosition));
+                            if (randomThing.unique) {
+                                mathArrayUtils.removeObjectFromArray(randomThing, arrayOfThings);
+                            }
+                            noZones.push(newDO.getNoZone());
                         } else {
                             //assume our random thing is a texture name, but it could be a grouping of sub textures with explicit tints
                             let resolvedThing = null;
@@ -547,7 +558,7 @@ var sceneryUtils = {
                                     animationName: resolvedThing.animationName,
                                     speed: resolvedThing.speed || 1.0,
                                     loop: true,
-                                    transform: [positionX, positionY, localScale.x, localScale.y]
+                                    transform: [myPosition.x, myPosition.y, localScale.x, localScale.y]
                                 });
                                 if (resolvedThing.decorate) {
                                     resolvedThing.decorate(newDO);
@@ -567,10 +578,7 @@ var sceneryUtils = {
                                 }
                             } else { //else we have a straight texture name
                                 newDO = graphicsUtils.createDisplayObject(resolvedThing, {
-                                    position: {
-                                        x: positionX,
-                                        y: positionY
-                                    },
+                                    position: mathArrayUtils.clonePosition(myPosition),
                                     where: where,
                                     scale: {
                                         x: localScale.x,
@@ -585,6 +593,10 @@ var sceneryUtils = {
                         }
 
                         container.addObject(newDO);
+                    }
+
+                    if (hit) {
+                        hits++;
                     }
                 }
                 y += tileHeight;

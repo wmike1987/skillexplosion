@@ -43,6 +43,7 @@ var Doodad = function(options) {
     if(options.collides) {
         this.collides = true;
     }
+    this.loneNZRadius = options.loneNZRadius;
     if (!options.scale.x) {
         options.scale = {
             x: options.scale,
@@ -140,7 +141,7 @@ var Doodad = function(options) {
     }
 
     //for debugging
-    
+
     // if(options.noZone) {
     //     rchildren.push({
     //         id: 'shadow2',
