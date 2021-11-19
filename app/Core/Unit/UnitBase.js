@@ -301,7 +301,7 @@ var UnitBase = {
                 this.barTimer.reset();
             }
         }
-        
+
         Matter.Events.trigger(globals.currentGame, 'sufferAttack', {
             performingUnit: attackingUnit,
             sufferingUnit: this,
@@ -971,9 +971,9 @@ var UnitBase = {
         var resetPassiveOrder = function() {
             this.passiveOrder = 0;
         }.bind(this);
-        Matter.Events.on(globals.currentGame, "VictoryDefeatSceneFadeIn", resetPassiveOrder);
+        Matter.Events.on(globals.currentGame, "VictoryDefeatSceneFadeIn MultiLevelCampComplete", resetPassiveOrder);
         gameUtils.deathPact(this, () => {
-            Matter.Events.off(globals.currentGame, "VictoryDefeatSceneFadeIn", resetPassiveOrder);
+            Matter.Events.off(globals.currentGame, "VictoryDefeatSceneFadeIn MultiLevelCampComplete", resetPassiveOrder);
         });
 
         Matter.Events.on(this, "changeHoldPosition", function(event) {

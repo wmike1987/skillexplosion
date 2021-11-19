@@ -1251,7 +1251,6 @@ export default function Marine(options) {
         },
         defensePredicate: function(event) {
             return event.attackContext.isProjectile;
-            attackContext: options
         },
         defenseAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
@@ -1283,19 +1282,19 @@ export default function Marine(options) {
                 applyChanges: function() {
                     f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
                         energyGained = marine.giveEnergy(event.amountDone);
+                        Matter.Events.trigger(globals.currentGame, 'SpiritualStateCollector', {mode: 'attackPassive', collectorPayload: {value: energyGained}});
                     });
                 },
                 removeChanges: function() {
                     Matter.Events.off(marine, 'receiveHeal', f.handler);
                 }
             });
-
-            return {
-                value: energyGained
-            };
         },
         collector: {
             aggressionLabel: 'Energy gained',
+            aggressionFormat: function(v) {
+                return v.toFixed(1);
+            },
             defensiveLabel: 'Duration of 2x energy regeneration',
             defensiveSuffix: 'seconds'
         }

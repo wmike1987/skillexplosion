@@ -87,6 +87,7 @@ export default {
             if (this.specifiedAttackTarget) {
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
                 this.specifiedAttackTarget = null;
+                this.specifiedCallback = null;
             }
             originalStop.call(this);
             this.isAttacking = false;
@@ -129,6 +130,7 @@ export default {
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             }
             this.specifiedAttackTarget = null;
+            this.specifiedCallback = null;
         }.bind(this));
 
         this.eventKeyMappings[this.commands.stop.key] = this.stop;
@@ -209,6 +211,7 @@ export default {
         if (this.specifiedAttackTarget) {
             Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             this.specifiedAttackTarget = null;
+            this.specifiedCallback = null;
         }
 
         //set state
@@ -245,6 +248,7 @@ export default {
         this.specifiedCallback = function() {
             //always do this
             this.specifiedAttackTarget = null;
+            this.specifiedCallback = null;
 
             if (!this.isAttacking) {
                 if (!commandObj.command.queue.hasNext()) {
@@ -490,6 +494,7 @@ export default {
         if (this.specifiedAttackTarget) {
             Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             this.specifiedAttackTarget = null;
+            this.specifiedCallback = null;
         }
 
         this.attackMoving = false;

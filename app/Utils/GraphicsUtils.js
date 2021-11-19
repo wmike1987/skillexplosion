@@ -544,7 +544,11 @@ var graphicsUtils = {
                 this.lastAdded = options;
             },
             play: function() {
-                var lastEvent = this.chain[this.chain.length-1].additionalOptions.onDone = this.onDone;
+                //default the last entity to trigger the onDone callback when the float is done
+                var lastEl = this.chain[this.chain.length-1];
+                if(!lastEl.additionalOptions.endAfter) {
+                    lastEl.additionalOptions.onDone = this.onDone;
+                }
                 this._playNext();
             },
             _playNext: function() {
@@ -555,6 +559,10 @@ var graphicsUtils = {
                     gameUtils.doSomethingAfterDuration(() => {
                         this._playNext();
                     }, options.additionalOptions.startNextAfter);
+                } else if(options.additionalOptions.endAfter) {
+                    gameUtils.doSomethingAfterDuration(() => {
+                        this.onDone();
+                    }, options.additionalOptions.endAfter);
                 }
                 var myText = graphicsUtils.floatText(options.text, options.position, options.additionalOptions);
 

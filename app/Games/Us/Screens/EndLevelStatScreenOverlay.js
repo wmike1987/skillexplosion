@@ -2497,18 +2497,6 @@ var EndLevelStatScreenOverlay = function(units, options) {
             Matter.Events.on(scene, 'sceneFadeInDone', () => {
                 var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
                 gameUtils.doSomethingAfterDuration(() => {
-                    //default to +1 adrenaline
-                    var addedAdrenaline = 1;
-                    var rewardText = '';
-                    var t = '+1 adrenaline!';
-
-                    //check for +2 reward
-                    if (globals.currentGame.rewardManager.checkExtraAdrenalineReward()) {
-                        addedAdrenaline = 2;
-                        rewardText = 'Efficient clearance!';
-                        t = '+2 adrenaline!';
-                    }
-
                     //create text chain
                     var textChain = graphicsUtils.createFloatingTextChain({
                         onDone: function() {
@@ -2517,57 +2505,6 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             });
                         },
                     });
-
-                    //show reward...maybe
-                    if (rewardText && !adrenalineIsFull) {
-                        textChain.add({
-                            text: rewardText,
-                            position: gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }),
-                            additionalOptions: {
-                                where: 'hudTwo',
-                                style: styles.adrenalineTextLarge,
-                                speed: 6,
-                                duration: rewardDuration * 2.0,
-                                startNextAfter: 1000,
-                                onStart: (myText) => {
-                                    globals.currentGame.soundPool.positiveSoundFast.play();
-                                    graphicsUtils.addGleamToSprite({
-                                        sprite: myText,
-                                        gleamWidth: 50,
-                                        duration: 500
-                                    });
-                                }
-                            }
-                        });
-                    }
-
-                    //add the adrenaline text
-                    if(!adrenalineIsFull) {
-                        textChain.add({
-                            text: t,
-                            position: gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }),
-                            additionalOptions: {
-                                where: 'hudTwo',
-                                style: styles.adrenalineTextLarge,
-                                speed: 6,
-                                duration: rewardDuration * 2.0,
-                                startNextAfter: 1500,
-                                onStart: (myText) => {
-                                    globals.currentGame.map.addAdrenalineBlock(addedAdrenaline);
-                                    globals.currentGame.soundPool.positiveSoundFast.play();
-                                    graphicsUtils.addGleamToSprite({
-                                        sprite: myText,
-                                        gleamWidth: 50,
-                                        duration: 500
-                                    });
-                                }
-                            }
-                        });
-                    }
 
                     //add the camp clearance text
                     var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
@@ -2619,7 +2556,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     });
 
                     textChain.play();
-                }, (adrenalineIsFull ? 0 : (startFadeTime * 9 + 300)));
+                }, startFadeTime * 9 + 300);
             });
         }
 

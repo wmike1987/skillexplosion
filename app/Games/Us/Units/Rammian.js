@@ -346,13 +346,13 @@ export default function Rammian(options) {
             anim.play();
             deathSound.play();
 
-            graphicsUtils.flashSprite({
+            this.deathTimer = graphicsUtils.flashSprite({
                 sprite: anim,
                 duration: 500,
                 fromColor: anim.tint,
                 times: 1 + Math.ceil(Math.random() * 3),
                 onEnd: () => {
-                    graphicsUtils.flashSprite({
+                    this.deathTimer = graphicsUtils.flashSprite({
                         sprite: anim,
                         duration: 100,
                         fromColor: anim.tint,
@@ -401,7 +401,7 @@ export default function Rammian(options) {
                                         x: self.deathPosition.x,
                                         y: self.deathPosition.y
                                     }
-                                }, unit.body) <= (blastRadius + unit.body.circleRadius) && unit.canTakeAbilityDamage);
+                                }, unit.body) <= (blastRadius + unit.body.circleRadius) && unit.isTargetable && unit.canTakeAbilityDamage);
                             }.bind(this), function(unit) {
                                 var dmg = 40;
                                 unit.sufferAttack(dmg, null, {
@@ -424,6 +424,12 @@ export default function Rammian(options) {
                     });
                 }
             });
+
+            gameUtils.matterOnce(globals.currentGame, "CurrentLevelWinConditionMet", function() {
+                if(this.deathTimer) {
+                    this.deathTimer.invalidate();
+                }
+            }.bind(this));
 
             var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {
                 where: 'stageNTwo',

@@ -17,7 +17,9 @@ import {
 } from '@utils/Doodad.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
-import {Scene} from '@core/Scene.js';
+import {
+    Scene
+} from '@core/Scene.js';
 import UnitSpawner from '@games/Us/UnitSpawner.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 import Tooltip from '@core/Tooltip.js';
@@ -38,7 +40,7 @@ var levelBase = {
             enteredByTraveling: options.enteredByTraveling
         };
 
-        if(options.keepCurrentCollector) {
+        if (options.keepCurrentCollector) {
             this.enteredState.startNewCollector = false;
         }
 
@@ -90,7 +92,9 @@ var levelBase = {
 
     startLevelSpawn: function(options) {
         options = options || {};
-        options = Object.assign({startNewCollector: true}, options);
+        options = Object.assign({
+            startNewCollector: true
+        }, options);
         var level = this;
         var game = globals.currentGame;
 
@@ -123,10 +127,14 @@ var levelBase = {
             });
             game.heartbeat.play();
 
-            Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {level: level});
+            Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
+                level: level
+            });
 
-            if(!options.continuation) {
-                Matter.Events.trigger(globals.currentGame, 'BeginLevel', {level: level});
+            if (!options.continuation) {
+                Matter.Events.trigger(globals.currentGame, 'BeginLevel', {
+                    level: level
+                });
             }
             level.initializeWinLossCondition();
         }, 2400);
@@ -180,7 +188,7 @@ var levelBase = {
         }
 
         //create the map node
-        if(!options.mapNodeOptions.bypassNodeCreation) {
+        if (!options.mapNodeOptions.bypassNodeCreation) {
             var mapNode = this.createMapNode(options.mapNodeOptions);
             this.mapNode = mapNode; //add back reference
             var position = options.mapNodeOptions.position;
@@ -317,7 +325,7 @@ var levelBase = {
                 globals.currentGame.map.removeAdrenalineBlock();
                 graphicsUtils.floatText('-1 adrenaline', {
                     x: gunrackSprite.position.x,
-                    y: gunrackSprite.position.y -25
+                    y: gunrackSprite.position.y - 25
                 }, {
                     style: styles.adrenalineTextMedium,
                     where: 'hudThree',
@@ -417,13 +425,118 @@ var levelBase = {
 
     _onLevelPlayable: function(scene) {
         Matter.Events.trigger(globals.currentGame, "onLevelPlayable");
-        if(this.onLevelPlayable) {
+        if (this.onLevelPlayable) {
             this.onLevelPlayable(scene);
         }
     },
 
     cleanUp: function() {
 
+    },
+
+    showAdrenalineReward: function(options) {
+        var onDone = options.onDone;
+        var onAdrenalineAdd = options.onAdrenalineAdd;
+        var artificialWait = options.artificialWait || 1000;
+        var endAfter = options.endAfter;
+
+        //default to +1 adrenaline
+        var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
+        var addedAdrenaline = 1;
+        var rewardText = '';
+        var t = '+1 adrenaline!';
+
+        //check for +2 reward
+        if (globals.currentGame.rewardManager.checkExtraAdrenalineReward()) {
+            addedAdrenaline = 2;
+            rewardText = 'Efficient clearance!';
+            t = '+2 adrenaline!';
+        }
+
+        //create text chain
+        var textChain = graphicsUtils.createFloatingTextChain({
+            onDone: onDone
+        });
+
+        //show reward...maybe
+        if (rewardText && !adrenalineIsFull) {
+            textChain.add({
+                text: rewardText,
+                position: gameUtils.getPlayableCenterPlus({
+                    y: 300
+                }),
+                additionalOptions: {
+                    where: 'hudTwo',
+                    style: styles.adrenalineTextLarge,
+                    speed: 6,
+                    duration: 1600,
+                    startNextAfter: 1000,
+                    onStart: (myText) => {
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        graphicsUtils.addGleamToSprite({
+                            sprite: myText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }
+                }
+            });
+        }
+
+        //add the adrenaline text
+        if (!adrenalineIsFull) {
+            textChain.add({
+                text: t,
+                position: gameUtils.getPlayableCenterPlus({
+                    y: 300
+                }),
+                additionalOptions: {
+                    where: 'hudTwo',
+                    style: styles.adrenalineTextLarge,
+                    speed: 6,
+                    duration: 1600,
+                    endAfter: endAfter,
+                    onStart: (myText) => {
+                        var actualAdrenalineAdded = globals.currentGame.map.addAdrenalineBlock(addedAdrenaline);
+                        if (options.onAdrenalineAdd) {
+                            options.onAdrenalineAdd(actualAdrenalineAdded);
+                        }
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        graphicsUtils.addGleamToSprite({
+                            sprite: myText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }
+                }
+            });
+        } else {
+            textChain.add({
+                text: 'Excellent',
+                position: gameUtils.getPlayableCenterPlus({
+                    y: 300
+                }),
+                additionalOptions: {
+                    where: 'hudTwo',
+                    style: styles.adrenalineTextLarge,
+                    speed: 6,
+                    duration: 1600,
+                    endAfter: endAfter,
+                    onStart: (myText) => {
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        graphicsUtils.addGleamToSprite({
+                            sprite: myText,
+                            gleamWidth: 50,
+                            duration: 500
+                        });
+                    }
+                }
+            });
+        }
+
+        gameUtils.doSomethingAfterDuration(() => {
+            textChain.play();
+        }, artificialWait);
     },
 
     initializeWinLossCondition: function() {
@@ -442,7 +555,7 @@ var levelBase = {
 
             //stop current collectors
             game.shaneCollector.stopCurrentCollector();
-            if(game.ursulaCollector) {
+            if (game.ursulaCollector) {
                 game.ursulaCollector.stopCurrentCollector();
             }
 
@@ -517,7 +630,7 @@ var levelBase = {
             if (!globals.currentGame.manualWin) {
                 if (!fulfilled) return;
 
-                if(game.unitsByTeam[game.enemyTeam]) {
+                if (game.unitsByTeam[game.enemyTeam]) {
                     unitsOfOpposingTeamExist = game.unitsByTeam[game.enemyTeam].some(function(unit) {
                         return !unit.hazard;
                     });
@@ -538,12 +651,13 @@ var levelBase = {
                 globals.currentGame.manualWin = false;
                 this.endDelayInProgress = true;
                 game.battleInProgress = false;
+                Matter.Events.trigger(globals.currentGame, "CurrentLevelWinConditionMet");
 
                 //remove hazard units when we're transitioning to the next scene
                 gameUtils.matterOnce(globals.currentGame.currentScene, 'sceneFadeOutBegin', function() {
                     let enemies = gameUtils.getUnitEnemies(game.shane);
                     enemies.forEach((enemy) => {
-                        if(enemy.hazard) {
+                        if (enemy.hazard) {
                             this.spawner.cleanUp();
                             game.removeUnit(enemy);
                         }
@@ -554,7 +668,6 @@ var levelBase = {
                     removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
-                    // unitUtils.prepareUnitsForStationaryDraw();
                     winAndContinueTasks({
                         onContinue: function() {
                             gameUtils.doSomethingAfterDuration(() => {
@@ -576,22 +689,27 @@ var levelBase = {
                         }.bind(this)
                     });
                 } else { //else do the default win behavior
-                    winAndContinueTasks({
-                        onContinue: function() {
-                            gameUtils.doSomethingAfterDuration(() => {
-                                Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
-                                    result: winResult
-                                });
+                    this.showAdrenalineReward({
+                        onDone: () => {
+                            winAndContinueTasks({
+                                onContinue: function() {
+                                    gameUtils.doSomethingAfterDuration(() => {
+                                        Matter.Events.trigger(globals.currentGame, "VictoryOrDefeat", {
+                                            result: winResult
+                                        });
 
-                                var sc = game.gotoEndLevelScreen({
-                                    result: winResult
-                                });
+                                        var sc = game.gotoEndLevelScreen({
+                                            result: winResult
+                                        });
 
-                                Matter.Events.trigger(this, 'endLevelActions', {
-                                    endLevelScene: sc
-                                });
-                            }, 0);
-                        }.bind(this)
+                                        Matter.Events.trigger(this, 'endLevelActions', {
+                                            endLevelScene: sc
+                                        });
+                                    }, 0);
+                                }.bind(this)
+                            });
+                        },
+                        endAfter: 1
                     });
                 }
             }

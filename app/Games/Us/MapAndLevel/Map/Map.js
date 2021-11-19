@@ -559,32 +559,12 @@ var map = function(specs) {
             }
 
             //define custom win behavior
+            var level = myNode.levelDetails;
             myNode.levelDetails.customWinBehavior = () => {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
                 unitUtils.pauseTargetingAndResumeUponNewLevel();
-
-                //show + adrenaline text
-                var t = "Excellent";
-
-                //default to +1 adrenaline
-                var addedAdrenaline = 1;
-                var rewardText = '';
-                if (!this.isAdrenalineFull()) {
-                    t = '+1 adrenaline!';
-                }
-
-                //check for +2 reward
-                if (globals.currentGame.rewardManager.checkExtraAdrenalineReward()) {
-                    addedAdrenaline = 2;
-                    rewardText = 'Efficient clearance!';
-                    t = '+2 adrenaline!';
-                }
-
-                //add the adrenaline
-                var actualAmountGained = this.addAdrenalineBlock(addedAdrenaline);
-                this.outingAdrenalineGained += actualAmountGained;
 
                 Matter.Events.trigger(globals.currentGame, 'OutingLevelCompleted', {
                     result: 'victory'
@@ -593,81 +573,26 @@ var map = function(specs) {
                 //disable the cursor
                 gameUtils.setCursorStyle('None');
 
-                var nextSceneWaitTime = 2500;
-                if (rewardText) {
-                    nextSceneWaitTime += 1000;
-                }
-
-                gameUtils.doSomethingAfterDuration(() => {
-                    var adrenalineWaitTime = 0;
-
-                    //create text chain
-                    var textChain = graphicsUtils.createFloatingTextChain({
-                        onDone: function() {
-                            Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
-                            globals.currentGame.transitionToBlankScene();
-                            this.show();
-                            gameUtils.doSomethingAfterDuration(() => {
-                                //get the next node and trigger the mouse down behavior
-                                var mapnode = this.outingNodes.shift();
-                                this.inProgressOutingNodes.push(mapnode);
-                                mapnode.onMouseDownBehavior({
-                                    systemTriggered: true,
-                                    keepCurrentCollector: true
-                                });
-                            }, 1500);
-                        }.bind(this),
-                    });
-
-                    //optionally show reward
-                    if (rewardText) {
-                        textChain.add({
-                            text: rewardText,
-                            position: gameUtils.getPlayableCenterPlus({
-                                y: 300
-                            }),
-                            additionalOptions: {
-                                where: 'hudTwo',
-                                style: styles.adrenalineTextLarge,
-                                speed: 6,
-                                duration: 1500,
-                                startNextAfter: 1000,
-                                onStart: (myText) => {
-                                    globals.currentGame.soundPool.positiveSoundFast.play();
-                                    graphicsUtils.addGleamToSprite({
-                                        sprite: myText,
-                                        gleamWidth: 50,
-                                        duration: 500
-                                    });
-                                }
-                            }
-                        });
-                    }
-
-                    //add the adrenaline text
-                    textChain.add({
-                        text: t,
-                        position: gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }),
-                        additionalOptions: {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: 1500,
-                            onStart: (myText) => {
-                                globals.currentGame.soundPool.positiveSoundFast.play();
-                                graphicsUtils.addGleamToSprite({
-                                    sprite: myText,
-                                    gleamWidth: 50,
-                                    duration: 500
-                                });
-                            }
-                        }
-                    });
-
-                    textChain.play();
-                }, 1000);
+                level.showAdrenalineReward({
+                    onAdrenalineAdd: (amount) => {
+                        this.outingAdrenalineGained += amount;
+                    },
+                    onDone: function(options) {
+                        Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
+                        globals.currentGame.transitionToBlankScene();
+                        this.show();
+                        gameUtils.doSomethingAfterDuration(() => {
+                            //get the next node and trigger the mouse down behavior
+                            var mapnode = this.outingNodes.shift();
+                            this.inProgressOutingNodes.push(mapnode);
+                            mapnode.onMouseDownBehavior({
+                                systemTriggered: true,
+                                keepCurrentCollector: true
+                            });
+                        }, 1500);
+                    }.bind(this),
+                    endAfter: null
+                });
             };
         });
 
