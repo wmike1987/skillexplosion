@@ -40,6 +40,9 @@ var Doodad = function(options) {
         },
         noZone: null
     }, options);
+    if(options.collides) {
+        this.collides = true;
+    }
     if (!options.scale.x) {
         options.scale = {
             x: options.scale,
@@ -91,18 +94,17 @@ var Doodad = function(options) {
 
     options.texture.forEach((item, i) => {
         var data = item;
-        var offset = options.offset || {
+        var offset = item.offset || options.offset || {
             x: 0,
             y: 0
         };
         var scale = item.scale || options.scale;
         var stage = item.where || options.stage || 'foreground';
         var tint = options.tint || 0xffffff;
-        var alpha = options.alpha || 1;
+        var alpha = item.alpha || options.alpha || 1;
         if (item.doodadData) {
             data = item.doodadData;
             offset = item.offset || offset;
-            scale = item.scale || scale;
             stage = item.stage || stage;
         }
         rchildren.push({
@@ -136,6 +138,24 @@ var Doodad = function(options) {
             }
         });
     }
+
+    //for debugging
+    
+    // if(options.noZone) {
+    //     rchildren.push({
+    //         id: 'shadow2',
+    //         data: 'MineZero',
+    //         scale: options.shadowScale || {
+    //             x: 1,
+    //             y: 1
+    //         },
+    //         visible: true,
+    //         avoidIsoMgr: true,
+    //         rotate: 'none',
+    //         stage: "hud",
+    //         offset: options.noZone.offset
+    //     });
+    // }
 
     this.body.renderChildren = rchildren;
 
@@ -171,15 +191,33 @@ var Doodad = function(options) {
 Doodad.prototype.getNoZone = function() {
     if (this.noZone) {
         return {
+            offset: this.noZone.offset,
             center: Matter.Vector.add(this.position, this.noZone.offset),
             radius: this.noZone.radius
         };
     } else if(this.collides) {
         return {
+            offset: this.offset || {x: 0, y: 0},
             center: Matter.Vector.add(this.position, this.offset || {x: 0, y: 0}),
             radius: this.loneNZRadius || 60
         };
+    } else {
+        return {
+            offset: this.offset || {x: 0, y: 0},
+            center: Matter.Vector.add(this.position, this.offset || {x: 0, y: 0}),
+            radius: 0
+        };
     }
+};
+
+Doodad.prototype.collidesInTheory = function(myPosition, otherNoZone) {
+    var offset = this.noZone ? this.noZone.offset : this.offset || {x: 0, y: 0};
+    var radius = this.noZone ? this.noZone.radius : this.loneNZRadius || 60;
+    if(!this.collides) {
+        radius = 30;
+    }
+    var theoreticalNoZone = {center: Matter.Vector.add(myPosition, offset), radius: radius};
+    return gameUtils.detectNoZoneCollision(theoreticalNoZone, otherNoZone);
 };
 
 Doodad.prototype.clone = function() {

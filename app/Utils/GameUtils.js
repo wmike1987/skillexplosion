@@ -471,27 +471,39 @@ var gameUtils = {
         };
         var placement = {};
 
-        var conflictFound = function(position) {
+        //this is horrible
+        var conflictFound = function(incomingComparisonObject) {
             if (!noZones) {
                 return false;
             }
             var conflict = noZones.some((nz) => {
-                return mathArrayUtils.distanceBetweenPoints(nz.center, position) < nz.radius;
+                if(incomingComparisonObject.isDoodad) {
+                    return incomingComparisonObject.collidesInTheory(placement, nz);
+                } else {
+                    return gameUtils.detectNoZoneCollision(incomingComparisonObject, nz);
+                }
             });
 
             return conflict;
         };
 
-        var collisionPosition;
+        var doodad = options.doodad;
+        var comparisonThing = null;
         do {
             placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x * 2));
             placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y * 2));
-            collisionPosition = placement;
-            if (options.selfNoZone) {
-                collisionPosition = Matter.Vector.add(placement, options.selfNoZone.offset);
+            if(doodad) {
+                comparisonThing = doodad;
+            } else {
+                comparisonThing = {center: placement, radius: 0};
             }
-        } while (conflictFound(collisionPosition));
+        } while (conflictFound(comparisonThing));
         return placement;
+    },
+
+    detectNoZoneCollision: function(nz1, nz2) {
+        var biggestRadius = Math.max(nz1.radius, nz2.radius);
+        return mathArrayUtils.distanceBetweenPoints(nz1.center, nz2.center) < biggestRadius;
     },
 
     getRandomPositionWithinRadiusAroundPoint: function(options) {

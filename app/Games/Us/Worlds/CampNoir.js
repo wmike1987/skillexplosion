@@ -39,6 +39,9 @@ import {
 import {
     MapLearning
 } from '@games/Us/Dialogues/Plain/MapLearning.js';
+import {
+    DoodadFactory
+} from '@games/Us/Doodads/DoodadFactory.js';
 
 var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
@@ -1449,26 +1452,38 @@ var campNoir = {
                 });
                 scene.add(rockContainer);
 
+                var centerNoZone = [{
+                    center: gameUtils.getPlayableCenter(),
+                    radius: 80
+                }];
+
                 //create trees
                 var createTree1 = function() {
                     var tree = SceneryUtils.createTree({
                         tint: treeTints[tIndex]
                     });
-                    var centerNoZone = [{
-                        center: gameUtils.getPlayableCenter(),
-                        radius: 80
-                    }];
                     tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
                         buffer: 80,
                         useUpcomingSceneNoZones: true,
                         noZones: noZones.concat(centerNoZone),
-                        selfNoZone: tree.noZone
+                        doodad: tree
                     }));
                     scene.add(tree);
                 };
                 mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
+
+                //add smokey pit
+                var rockPitDoodad = DoodadFactory.createDoodad({menuItem: 'rockPit', tint: rockTints[tIndex]});
+                scene.add(rockPitDoodad);
+                rockPitDoodad.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                    buffer: 80,
+                    useUpcomingSceneNoZones: true,
+                    noZones: noZones.concat(centerNoZone),
+                    doodad: rockPitDoodad
+                }));
+
             } else {
-                var numberOfRocks2 = 6;
+                var numberOfRocks2 = 10;
                 var createRock3 = function() {
                     var rock = SceneryUtils.createRock({
                         names: ['Rock2', 'Rock2a', 'Rock2b'],
@@ -1477,7 +1492,8 @@ var campNoir = {
                     rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
                         buffer: 80,
                         useUpcomingSceneNoZones: true,
-                        noZones: noZones
+                        noZones: noZones,
+                        doodad: rock
                     }));
                     scene.add(rock);
                 };

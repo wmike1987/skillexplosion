@@ -267,10 +267,10 @@ var sceneryUtils = {
                 alpha: 0.7,
                 noZone: {
                     offset: {
-                        x: 0,
+                        x: -2,
                         y: 10 * randomScale
                     },
-                    radius: 25
+                    radius: 30
                 },
                 offset: {
                     x: -4,
@@ -396,7 +396,7 @@ var sceneryUtils = {
         var r = options.r || 0; //r is 0-1 (random scale)
 
         //build no zones
-        var sceneNoZones = options.scene || globals.currentGame.upcomingScene.getNoZones();
+        var sceneNoZones = options.scene ? options.scene.getNoZones : globals.currentGame.upcomingScene.getNoZones();
         var noZones = sceneNoZones.concat(options.noZones || []);
         noZones = mathArrayUtils.convertToArray(noZones);
 
@@ -432,31 +432,6 @@ var sceneryUtils = {
                         positionY = position.y;
                     }
 
-                    //test for no zones
-                    var skip = false;
-                    if (noZones) {
-                        noZones.forEach((nz) => {
-                            if (mathArrayUtils.distanceBetweenPoints(nz.center, {
-                                    x: positionX,
-                                    y: positionY
-                                }) < nz.radius) {
-                                skip = true;
-                            }
-                        });
-                    }
-                    if (skip) {
-                        y += tileHeight;
-                        continue;
-                    }
-
-                    if (maxNumber && hits == maxNumber) {
-                        y += tileHeight;
-                        continue;
-                    }
-
-                    //record our hits
-                    hits += 1;
-
                     //combine our things
                     var arrayOfThings = doodadArray.concat(textureArray);
 
@@ -481,7 +456,7 @@ var sceneryUtils = {
                         //expand possible things for proportional choosing of objects
                         let expandedThings = [];
                         arrayOfThings.forEach(function(thing) {
-                            if(thing.possibleTextures) {
+                            if (thing.possibleTextures) {
                                 thing.possibleTextures.forEach(function(t) {
                                     expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
                                 });
@@ -490,6 +465,38 @@ var sceneryUtils = {
                             }
                         });
                         let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
+
+                        //test for no zones
+                        var nzOffset = {
+                            x: 0,
+                            y: 0
+                        };
+                        if (randomThing.isDoodad) {
+                            nzOffset = randomThing.getNoZone().offset;
+                        }
+                        var skip = false;
+                        if (noZones) {
+                            noZones.forEach((nz) => {
+                                if (mathArrayUtils.distanceBetweenPoints(nz.center, Matter.Vector.add({
+                                        x: positionX,
+                                        y: positionY
+                                    }, nzOffset)) < nz.radius) {
+                                    skip = true;
+                                }
+                            });
+                        }
+                        if (skip) {
+                            y += tileHeight;
+                            break;
+                        }
+
+                        if (maxNumber && hits == maxNumber) {
+                            y += tileHeight;
+                            break;
+                        }
+
+                        //record our hits
+                        hits += 1;
 
                         let newDO = null;
 
@@ -523,8 +530,11 @@ var sceneryUtils = {
                             }
 
                             localTint = randomThing.tint || globalTint || 0xFFFFFF;
-                            localScale = randomThing.scale || globalScale || {x: 1, y: 1};
-                            if(randomThing.randomHFlip && mathArrayUtils.flipCoin()) {
+                            localScale = randomThing.scale || globalScale || {
+                                x: 1,
+                                y: 1
+                            };
+                            if (randomThing.randomHFlip && mathArrayUtils.flipCoin()) {
                                 localScale.x *= -1;
                             }
                             localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
