@@ -425,7 +425,7 @@ export default function Rammian(options) {
                 }
             });
 
-            gameUtils.matterOnce(globals.currentGame, "CurrentLevelWinConditionMet", function() {
+            gameUtils.matterOnce(globals.currentGame, "VictoryOrDefeat OutingLevelCompleted", function() {
                 if(this.deathTimer) {
                     this.deathTimer.invalidate();
                 }

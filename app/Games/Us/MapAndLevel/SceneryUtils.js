@@ -484,7 +484,7 @@ var sceneryUtils = {
                             if(thing.possibleTextures) {
                                 thing.possibleTextures.forEach(function(t) {
                                     expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
-                                })
+                                });
                             } else {
                                 expandedThings.push(thing);
                             }
@@ -524,6 +524,9 @@ var sceneryUtils = {
 
                             localTint = randomThing.tint || globalTint || 0xFFFFFF;
                             localScale = randomThing.scale || globalScale || {x: 1, y: 1};
+                            if(randomThing.randomHFlip && mathArrayUtils.flipCoin()) {
+                                localScale.x *= -1;
+                            }
                             localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
                             localAlpha = randomThing.alpha || globalAlpha || 1;
 
