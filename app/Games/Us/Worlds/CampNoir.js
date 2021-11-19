@@ -44,7 +44,7 @@ var tileSize = 225;
 var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
 var borderTints = [0xFC00FF, 0xBB5633];
 var rockTints = [0xffcccc, 0xe59ab6];
-var treeTints = [0xF6D3BD, 0xC398FB];
+var treeTints = [0xC9A771, 0xC398FB];
 var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
 var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
 var ambientLightTints = [
@@ -1466,7 +1466,7 @@ var campNoir = {
                     }));
                     scene.add(tree);
                 };
-                mathArrayUtils.repeatXTimes(createTree1, 2);
+                mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
             } else {
                 var numberOfRocks2 = 6;
                 var createRock3 = function() {
@@ -1485,29 +1485,6 @@ var campNoir = {
                 mathArrayUtils.repeatXTimes(createRock3, numberOfRocks2);
             }
 
-            // //desert flower map
-            // for (var i = 0; i <= 5; i++) {
-            //     ornamentTiles.push('FrollGround/DesertFlower' + i);
-            // }
-            // this.desertFlowerMap = SceneryUtils.decorateTerrain({
-            //     possibleTextures: ornamentTiles,
-            //     tileWidth: tileSize,
-            //     scale: {
-            //         x: mathArrayUtils.getRandomNumberBetween(0.75, 1),
-            //         y: mathArrayUtils.getRandomNumberBetween(0.75, 1)
-            //     },
-            //     hz: 0.25,
-            //     where: 'stage',
-            //     groupings: {
-            //         hz: 0.1,
-            //         possibleAmounts: [2, 3]
-            //     },
-            //     r: 1,
-            //     tint: ornamentTint,
-            //     noZones: this.noZones,
-            //     seed: this.desertFlowerMap ? this.desertFlowerMap.seed : null
-            // });
-
             //crag map
             ornamentTiles = [];
             for (let i = 1; i <= 4; i++) {
@@ -1521,6 +1498,7 @@ var campNoir = {
                     y: 0.75
                 },
                 sortYOffset: -100,
+                randomHFlip: true,
                 unique: true,
             };
 

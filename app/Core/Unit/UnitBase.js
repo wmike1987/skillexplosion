@@ -322,7 +322,7 @@ var UnitBase = {
     attackDodged: function() {
         var r = Math.random();
         var dodgeSum = this.getTotalDodge();
-        return (r < dodgeSum / 100);
+        return (r < (dodgeSum / 100));
     },
 
     setHealth: function(amount, options) {
