@@ -397,7 +397,7 @@ var sceneryUtils = {
         var r = options.r || 0; //r is 0-1 (random scale)
 
         //build no zones
-        var sceneNoZones = options.scene ? options.scene.getNoZones : globals.currentGame.upcomingScene.getNoZones();
+        var sceneNoZones = options.scene ? options.scene.getNoZones() : globals.currentGame.upcomingScene.getNoZones();
         var noZones = sceneNoZones.concat(options.noZones || []);
         noZones = mathArrayUtils.convertToArray(noZones);
 
@@ -447,22 +447,45 @@ var sceneryUtils = {
                         break;
                     }
 
-                    //process groupings (always at least 1)
+                    //variable for if we placed at least something in the group
                     var hit = false;
-                    for (var j = 0; j < numberInGrouping; j++) {
-                        var myPosition = {x: positionX, y: positionY};
-                        if (j > 0) {
-                            var myScalar = groupings.scalar || 30;
-                            if(myScalar.min) {
-                                myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
+
+                    var findGroupingPosition = function(originalPosition) {
+                        var myScalar = groupings.scalar || 30;
+                        if(myScalar.min) {
+                            myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
+                        }
+                        var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
+                        mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
+                        var newPosition = mathArrayUtils.addScalarToVectorAtAngle({
+                            x: originalPosition.x,
+                            y: originalPosition.y
+                        }, angle, myScalar);
+                        return {x: newPosition.x, y: newPosition.y};
+                    };
+
+                    var checkCollision = function(options) {
+                        var doodad = options.doodad;
+                        var myPosition = options.position;
+                        var noZones = options.noZones;
+                        return noZones.some((nz) => {
+                            if(doodad && doodad.isDoodad) {
+                                return doodad.collidesInTheory(myPosition, nz);
+                            } else {
+                                let myNoZone = {center: myPosition, radius: 0};
+                                return gameUtils.detectNoZoneCollision(nz, myNoZone);
                             }
-                            var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
-                            mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
-                            var newPosition = mathArrayUtils.addScalarToVectorAtAngle({
-                                x: positionX,
-                                y: positionY
-                            }, angle, myScalar);
-                            myPosition = {x: newPosition.x, y: newPosition.y};
+                        });
+                    };
+
+                    //process groupings (always at least 1)
+                    var centerPosition = {x: positionX, y: positionY};
+                    for (var j = 0; j < numberInGrouping; j++) {
+                        var myPosition = null;
+                        var placingCenter = false;
+                        if (j == 0) {
+                            myPosition = centerPosition;
+                            placingCenter = true;
                         }
 
                         //expand possible things for proportional choosing of objects
@@ -478,29 +501,34 @@ var sceneryUtils = {
                         });
                         let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
 
-                        //force the center
-                        if(groupings.center) {
+                        //force the center object if specified
+                        if(placingCenter && groupings.center) {
                             randomThing = groupings.center;
-                            groupings.center = null;
                         }
 
-                        //test for no zones
-                        var nzOffset = {
-                            x: 0,
-                            y: 0
-                        };
-                        if (randomThing.isDoodad) {
-                            nzOffset = randomThing.getNoZone().offset;
+                        var wholeSkip = false;
+                        var tries = 0;
+                        var maxTries = 30;
+
+                        if(placingCenter) {
+                            if (noZones) {
+                                wholeSkip = checkCollision({doodad: randomThing, position: myPosition, noZones: noZones})
+                            }
+                        } else {
+                            do {
+                                myPosition = findGroupingPosition(centerPosition);
+                                tries++;
+                            } while(checkCollision({doodad: randomThing, position: myPosition, noZones: noZones}) && tries < maxTries);
                         }
-                        var skip = false;
-                        if (noZones) {
-                            noZones.forEach((nz) => {
-                                if (mathArrayUtils.distanceBetweenPoints(nz.center, Matter.Vector.add(myPosition, nzOffset)) < nz.radius) {
-                                    skip = true;
-                                }
-                            });
+
+                        //if we can't place an auxilary thing, just continue
+                        if(tries >= maxTries) {
+                            y += tileHeight;
+                            continue;
                         }
-                        if (skip) {
+
+                        //if we can't place the center, skip
+                        if (wholeSkip) {
                             y += tileHeight;
                             break;
                         } else {

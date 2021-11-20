@@ -170,6 +170,18 @@ var levelBase = {
             isSupplyDropEligible: true
         }, options.levelOptions || {});
 
+        //default no zones
+        this.noZones = [{
+            center: globals.currentGame.augmentRackPosition,
+            radius: 40
+        }, {
+            center: globals.currentGame.mapTablePosition,
+            radius: 40
+        }, {
+            center: globals.currentGame.flagPosition,
+            radius: 60
+        }];
+
         //set the tile tint
         this.tileTint = options.levelOptions.tileTint || (this.outer ? worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes)] :
             worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes)]);
@@ -282,10 +294,7 @@ var levelBase = {
                 x: -2,
                 y: 15
             },
-            position: {
-                x: gameUtils.getCanvasCenter().x - 180 + 50 / 2.0,
-                y: gameUtils.getPlayableCenter().y - 30 + 50 / 2.0
-            }
+            position: globals.currentGame.augmentRackPosition
         });
         scene.add(this.gunrack);
 
@@ -314,10 +323,9 @@ var levelBase = {
             if (event.which == 3) return; //don't allow right clicks
             var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
 
-            gunrackSprite.tooltipObj.destroy();
-            globals.currentGame.removeTickCallback(gunrackHoverTick);
-
             if (Matter.Vertices.contains(self.gunrack.body.vertices, canvasPoint) && !this.mapActive) {
+                gunrackSprite.tooltipObj.destroy();
+                globals.currentGame.removeTickCallback(gunrackHoverTick);
                 gunrackSprite.tint = 0xFFFFFF;
                 globals.currentGame.makeCurrentLevelConfigurable();
                 globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
@@ -373,10 +381,7 @@ var levelBase = {
                 x: 0,
                 y: 18
             },
-            position: options.position || mathArrayUtils.roundPositionToWholeNumbers({
-                x: gameUtils.getCanvasCenter().x + 130,
-                y: gameUtils.getCanvasCenter().y - 150
-            })
+            position: options.position || globals.currentGame.mapTablePosition
         });
         this.mapTable = mapTable;
         scene.add(mapTable);
@@ -554,9 +559,11 @@ var levelBase = {
             removeCurrentConditions.call(this);
 
             //stop current collectors
-            game.shaneCollector.stopCurrentCollector();
-            if (game.ursulaCollector) {
-                game.ursulaCollector.stopCurrentCollector();
+            if(game.shaneCollector.isCollecting()) {
+                game.shaneCollector.stopCurrentCollector();
+                if (game.ursulaCollector) {
+                    game.ursulaCollector.stopCurrentCollector();
+                }
             }
 
             this.spawner.cleanUp();

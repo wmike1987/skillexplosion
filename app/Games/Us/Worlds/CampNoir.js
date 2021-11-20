@@ -841,7 +841,8 @@ var phaseOne = function() {
         position: firstLevelPosition,
         levelOptions: {
             levelId: 'shaneLearning',
-            isSupplyDropEligible: false
+            isSupplyDropEligible: false,
+            noSmokePit: true,
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -860,7 +861,8 @@ var phaseOne = function() {
             levelId: 'learning1',
             gotoMapOnWin: true,
             trainingLevel: true,
-            isSupplyDropEligible: false
+            isSupplyDropEligible: false,
+            noSmokePit: true,
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -875,7 +877,8 @@ var phaseOne = function() {
             levelId: 'learning2',
             gotoMapOnWin: true,
             trainingLevel: true,
-            isSupplyDropEligible: false
+            isSupplyDropEligible: false,
+            noSmokePit: true,
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -889,7 +892,8 @@ var phaseOne = function() {
         levelOptions: {
             gotoMapOnWin: true,
             trainingLevel: true,
-            isSupplyDropEligible: false
+            isSupplyDropEligible: false,
+            noSmokePit: true,
         },
         mapNodeOptions: {
             noSpawnGleam: true
@@ -1473,31 +1477,25 @@ var campNoir = {
                 mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
 
                 //add smokey pit
-                var rockPitDoodad = DoodadFactory.createDoodad({menuItem: 'rockPit', tint: rockTints[tIndex]});
-                rockPitDoodad.unique = true;
-                // scene.add(rockPitDoodad);
-                // rockPitDoodad.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
-                //     buffer: 80,
-                //     useUpcomingSceneNoZones: true,
-                //     noZones: noZones.concat(centerNoZone),
-                //     doodad: rockPitDoodad
-                // }));
+                if(!this.noSmokePit) {
+                    var rockPitDoodad = DoodadFactory.createDoodad({menuItem: 'rockPit', tint: rockTints[tIndex]});
+                    rockPitDoodad.unique = true;
 
-                this.pit = SceneryUtils.decorateTerrain({
-                    possibleDoodads: [rockPitDoodad, rock1, rock2, rock3],
-                    tileWidth: tileSize,
-                    maxNumber: 1,
-                    nonTilePosition: true,
-                    buffer: 100,
-                    hz: 1.0,
-                    groupings: {center: rockPitDoodad, hz: 1.0, possibleAmounts: [6], scalar: {min: 50, max: 75}},
-                    where: 'stageNOne',
-                    r: 1,
-                    noZones: noZones.concat(centerNoZone),
-                });
+                    this.pit = SceneryUtils.decorateTerrain({
+                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3],
+                        tileWidth: tileSize,
+                        maxNumber: 1,
+                        nonTilePosition: true,
+                        buffer: 100,
+                        hz: 1.0,
+                        groupings: {center: rockPitDoodad, hz: 1.0, possibleAmounts: [6], scalar: {min: 50, max: 75}},
+                        where: 'stageNOne',
+                        r: 1,
+                        noZones: noZones.concat(centerNoZone),
+                    });
 
-                scene.add(this.pit);
-
+                    scene.add(this.pit);
+                }
             } else {
                 var numberOfRocks2 = 10;
                 var createRock3 = function() {

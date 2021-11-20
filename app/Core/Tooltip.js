@@ -312,7 +312,7 @@ Tooltip.prototype.display = function(position, options) {
 
     //set the border position
     var borderPosition = this.base.position;
-    if(this.base.anchor != {x: 0.5, y: 0.5}) {
+    if(this.base.anchor.x != 0.5 && this.base.anchor.y != 0.5) {
         borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
         this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
     }
@@ -332,7 +332,7 @@ Tooltip.prototype.resizeAndPositionBorder = function() {
 
         //position border
         var borderPosition = this.base.position;
-        if(this.base.anchor != {x: 0.5, y: 0.5}) {
+        if(this.base.anchor.x != 0.5 && this.base.anchor.y != 0.5) {
             borderPosition = mathArrayUtils.clonePosition(this.base.position, {x: this.base.width/2 * (this.base.anchor.x ? -1 : 1), y: this.base.height/2 * (this.base.anchor.y ? -1 : 1)});
             this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
         }

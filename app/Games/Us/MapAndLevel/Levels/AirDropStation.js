@@ -56,13 +56,14 @@ commonAirDropStation.initExtension = function() {
     this.nodeTitle = "Air Drop Station";
     this.tooltipDescription = 'Subtract 4% fatigue and receive supply drop.';
     this.mode = this.possibleModes.CUSTOM;
-    this.noZones = [{
+    this.noSmokePit = true;
+    this.noZones.push({
         center: {
             x: -133,
             y: 176
         },
         radius: 30
-    }];
+    });
     this.airDropLocation = gameUtils.getPlayableCenterPlus({
         y: -100
     });

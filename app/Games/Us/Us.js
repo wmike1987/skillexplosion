@@ -107,6 +107,20 @@ var game = {
 
         this.levelLocalEntities = [];
 
+        //conquer coords
+        this.flagPosition = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
+            x: 150,
+            y: 150
+        }),
+        this.augmentRackPosition = {
+            x: gameUtils.getCanvasCenter().x - 180 + 50 / 2.0,
+            y: gameUtils.getPlayableCenter().y - 30 + 50 / 2.0
+        },
+        this.mapTablePosition = mathArrayUtils.roundPositionToWholeNumbers({
+            x: gameUtils.getCanvasCenter().x + 130,
+            y: gameUtils.getCanvasCenter().y - 150
+        }),
+
         //setup a common sound pool
         this.soundPool = {};
         this.soundPool.campMarch = gameUtils.getSound('music/campdiddy.mp3', {
@@ -336,7 +350,7 @@ var game = {
         //setup unit collector events
         Matter.Events.on(this, 'BeginPrimaryBattle', () => {
             this.shaneCollector.startNewCollector("Shane " + mathArrayUtils.getId());
-            if(this.ursulaCollector) {
+            if (this.ursulaCollector) {
                 this.ursulaCollector.startNewCollector("Ursula " + mathArrayUtils.getId());
             }
         });
@@ -546,17 +560,6 @@ var game = {
         level.mapTableActive = true;
 
         //Decorate complete level with doodads
-        // var flag2 = gameUtils.getAnimation({
-        //     spritesheetName: 'UtilityAnimations2',
-        //     animationName: 'FlagAnim',
-        //     speed: 0.15,
-        //     loop: true,
-        //     transform: [0, 0, 1, 1]
-        // });
-        // flag2.position = gameUtils.getCanvasCenter();
-        // graphicsUtils.addSomethingToRenderer(flag2);
-
-        //Decorate complete level with doodads
         var flag = gameUtils.getAnimation({
             spritesheetName: 'UtilityAnimations2',
             animationName: 'FlagAnim',
@@ -565,13 +568,7 @@ var game = {
             transform: [0, 0, 1, 1]
         });
 
-        //add flag
-        let x = 150;
-        let y = 150;
-        flag.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
-            x: x,
-            y: y
-        });
+        flag.position = this.flagPosition;
         flag.play();
         var flagD = new Doodad({
             collides: true,

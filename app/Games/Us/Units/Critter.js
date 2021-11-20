@@ -272,6 +272,9 @@ export default function Critter(options) {
                 fadeTime: globals.currentGame.unitCorpseTime,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
+            if(mathArrayUtils.flipCoin()) {
+                anim.scale.x *= -1;
+            }
             graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             deathSound.play();

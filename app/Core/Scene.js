@@ -110,16 +110,26 @@ Scene.prototype.clear = function() {
     this.fadeTimer = null;
 };
 
+//search through objects and scene containers to get a list of no zones
 Scene.prototype.getNoZones = function(options) {
     options = options || {};
     var noZones = [];
 
     this.objects.forEach((obj) => {
         if(obj.getNoZone) {
-            var noZ = obj.getNoZone();
+            let noZ = obj.getNoZone();
             if(noZ) {
                 noZones.push(noZ);
             }
+        } else if(obj.isSceneContainer) {
+            obj.list.forEach((subObj) => {
+                if(subObj.getNoZone) {
+                    let noZ = subObj.getNoZone();
+                    if(noZ) {
+                        noZones.push(noZ);
+                    }
+                }
+            });
         }
     });
 
@@ -278,6 +288,7 @@ Scene.prototype.transitionToScene = function(options) {
 
 var SceneContainer = function() {
     this.list = [];
+    this.isSceneContainer = true;
 
     this.addObject = function(obj) {
         this.list.push(obj);

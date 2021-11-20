@@ -15,7 +15,7 @@ var rockPit = {
     where: 'stage',
     loneNZRadius: 40,
     tint: 0xffffff,
-    randomHFlip: true,
+    randomHFlip: false,
     sortYOffset: 0,
     scale: {
         x: 1.25,
