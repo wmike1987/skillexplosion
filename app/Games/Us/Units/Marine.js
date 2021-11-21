@@ -969,13 +969,13 @@ export default function Marine(options) {
 
     var gsDDuration = 300;
     var gsADuration = 300;
-    var allyArmorDuration = 8000;
-    var armorGiven = 1.5;
+    var allyArmorDuration = 7000;
+    var armorGiven = 1.0;
     var allyHeal = 6;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
         defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 8 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 7 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Heal ally for 10% of max hp.'],
         textureName: 'PositiveMindset',
         unit: marine,

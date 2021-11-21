@@ -139,6 +139,14 @@ var mathArrayUtils = {
         return (!value && (value !== 0));
     },
 
+    resolveBooleanParam: function(value) {
+        if(value === false || value === null) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
     cloneVertices: function(vertices) {
         var newVertices = [];
         $.each(vertices, function(index, vertice) {
@@ -209,11 +217,16 @@ var mathArrayUtils = {
         return Matter.Vector.add(start, scaled);
     },
 
+    degreesToRadians: function(degrees) {
+        return degrees * (Math.PI/180);
+    },
+
     //return new position
     addScalarToVectorAtAngle: function(start, angle, scalar) {
-        var opposite = Math.sin(angle);
-        var adjacent = Math.cos(angle);
-        var destinationPoint = Matter.Vector.add(start, {x: adjacent, y: opposite});
+        var radians = this.degreesToRadians(angle);
+        var opposite = Math.sin(radians);
+        var adjacent = Math.cos(radians);
+        var destinationPoint = Matter.Vector.add(start, {x: adjacent, y: -opposite});
         return this.addScalarToVectorTowardDestination(start, destinationPoint, scalar);
     },
 

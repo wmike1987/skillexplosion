@@ -114,6 +114,7 @@ var MapLevelNode = function(options) {
         title: options.tooltipTitle || this.levelDetails.nodeTitle || 'Enemy Camp',
         description: options.tooltipDescription || this.levelDetails.tooltipDescription || enemyDescriptions,
         descriptionIcons: enemyIcons,
+        briefDelay: true,
         systemMessage: supplyDropMessage
     });
     this.displayObject.tooltipObj.tooltipContext = {

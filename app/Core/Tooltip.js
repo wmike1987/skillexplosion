@@ -97,6 +97,7 @@ var Tooltip = function(options) {
     this.mainSystemMessage = this.systemMessages[0];
 
     this.noDelay = options.noDelay;
+    this.briefDelay = options.briefDelay;
 
     this.updaters = {};
     var self = this;
@@ -400,6 +401,12 @@ Tooltip.makeTooltippable = function(displayObject, options) {
                 if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
                     displayObject.tooltipObj.display(event.data.global);
                 }
+            } else if(displayObject.tooltipObj.briefDelay) {
+                stopTimeout = setTimeout(function() {
+                    if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
+                        displayObject.tooltipObj.display(event.data.global);
+                    }
+                }.bind(this), 20);
             } else {
                 stopTimeout = setTimeout(function() {
                     if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {

@@ -1481,14 +1481,22 @@ var campNoir = {
                     var rockPitDoodad = DoodadFactory.createDoodad({menuItem: 'rockPit', tint: rockTints[tIndex]});
                     rockPitDoodad.unique = true;
 
+                    var enemyPost = DoodadFactory.createDoodad({menuItem: 'enemyPost1', tint: treeTints[tIndex]});
+                    enemyPost.unique = true;
+                    enemyPost.groupingOptions = {priority: 1};
+
+                    var log1 = DoodadFactory.createDoodad({menuItem: 'sidewaysLog1', tint: treeTints[tIndex]});
+                    log1.unique = true;
+                    log1.groupingOptions = {priority: 0, rotateTowardCenter: true, min: 75, max: 80};
+
                     this.pit = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3],
+                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, log1, log1],
                         tileWidth: tileSize,
                         maxNumber: 1,
                         nonTilePosition: true,
                         buffer: 100,
                         hz: 1.0,
-                        groupings: {center: rockPitDoodad, hz: 1.0, possibleAmounts: [6], scalar: {min: 50, max: 75}},
+                        groupings: {center: rockPitDoodad, hz: 1.0, possibleAmounts: [6], scalar: {min: 75, max: 100}},
                         where: 'stageNOne',
                         r: 1,
                         noZones: noZones.concat(centerNoZone),

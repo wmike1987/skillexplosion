@@ -385,27 +385,32 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
                     // globals.currentGame.nextPhase();
-                    // if(!this.whoaSprite) {
-                    //     this.whoaSprite = graphicsUtils.addSomethingToRenderer('TEX+:wowowowowowow', {where: 'stage', style: styles.abilityText});
-                    //     this.whoaSprite.position = {x: 100, y: 100};
-                    // } else {
-                    //     this.whoaSprite.position.y += 0.5;
-                    // }
+
+
+                    if(!this.whoaSprite) {
+                        this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNOne', style: styles.abilityText});
+                        this.whoaSprite.scale = {x: 1.1, y: 0.2};
+                        this.whoaSprite.rotation = Math.PI/3;
+                        this.whoaSprite.position = {x: 887.76444, y: 237.87845};
+                    } else {
+                        this.whoaSprite.position.y += 0.5;
+                        this.whoaSprite.rotation += Math.PI/50;
+                    }
                     // this.addTickCallback(() => {
                     //     spr.position = this.mousePosition;
                     // });
 
-                    var self = this;
-                    this.currentScene.objects.forEach(function(obj, index) {
-                        if(self.tmIndex != index) {
-                            return;
-                        }
-                        if(obj.tiles) {
-                            obj.tiles.forEach(function(tile) {
-                                tile.tint = self.debugTint;
-                            });
-                        }
-                    });
+                    // var self = this;
+                    // this.currentScene.objects.forEach(function(obj, index) {
+                    //     if(self.tmIndex != index) {
+                    //         return;
+                    //     }
+                    //     if(obj.tiles) {
+                    //         obj.tiles.forEach(function(tile) {
+                    //             tile.tint = self.debugTint;
+                    //         });
+                    //     }
+                    // });
                 }
             }
 

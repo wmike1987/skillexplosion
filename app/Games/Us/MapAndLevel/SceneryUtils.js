@@ -450,8 +450,8 @@ var sceneryUtils = {
                     //variable for if we placed at least something in the group
                     var hit = false;
 
-                    var findGroupingPosition = function(originalPosition) {
-                        var myScalar = groupings.scalar || 30;
+                    var findGroupingPosition = function(originalPosition, scalarOverride) {
+                        var myScalar = scalarOverride || groupings.scalar || 30;
                         if(myScalar.min) {
                             myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
                         }
@@ -465,12 +465,12 @@ var sceneryUtils = {
                     };
 
                     var checkCollision = function(options) {
-                        var doodad = options.doodad;
+                        var myThing = options.myThing;
                         var myPosition = options.position;
                         var noZones = options.noZones;
                         return noZones.some((nz) => {
-                            if(doodad && doodad.isDoodad) {
-                                return doodad.collidesInTheory(myPosition, nz);
+                            if(myThing && myThing.isDoodad) {
+                                return myThing.collidesInTheory(myPosition, nz);
                             } else {
                                 let myNoZone = {center: myPosition, radius: 0};
                                 return gameUtils.detectNoZoneCollision(nz, myNoZone);
@@ -501,9 +501,33 @@ var sceneryUtils = {
                         });
                         let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
 
-                        //force the center object if specified
+                        //find priority grouping items
+                        var priorityItems = expandedThings.filter((item) => {
+                            var groupingOptions = item.groupingOptions;
+                            if(!groupingOptions) {
+                                return false;
+                            } else {
+                                return groupingOptions.priority || groupingOptions.priority === 0;
+                            }
+                        });
+
+                        var sortedPriorityItems = priorityItems.sort((a, b) => {
+                            return a.groupingOptions.priority - b.groupingOptions.priority;
+                        });
+
+                        if(priorityItems.length > 0) {
+                            randomThing = sortedPriorityItems.shift();
+                        }
+
+
+                        //force the center object if specified (this is the ultimate priority item)
                         if(placingCenter && groupings.center) {
                             randomThing = groupings.center;
+                        }
+
+                        var rotateTowardCenter = false;
+                        if(randomThing.groupingOptions && randomThing.groupingOptions.rotateTowardCenter) {
+                            rotateTowardCenter = true;
                         }
 
                         var wholeSkip = false;
@@ -512,13 +536,22 @@ var sceneryUtils = {
 
                         if(placingCenter) {
                             if (noZones) {
-                                wholeSkip = checkCollision({doodad: randomThing, position: myPosition, noZones: noZones})
+                                wholeSkip = checkCollision({myThing: randomThing, position: myPosition, noZones: noZones})
                             }
                         } else {
                             do {
-                                myPosition = findGroupingPosition(centerPosition);
+                                //check scalar overrides
+                                var scalarOverride = null;
+                                if(randomThing.groupingOptions) {
+                                    let min = randomThing.groupingOptions.min;
+                                    let max = randomThing.groupingOptions.max;
+                                    if(min) {
+                                        scalarOverride = mathArrayUtils.getRandomIntInclusive(min, max);
+                                    }
+                                }
+                                myPosition = findGroupingPosition(centerPosition, scalarOverride);
                                 tries++;
-                            } while(checkCollision({doodad: randomThing, position: myPosition, noZones: noZones}) && tries < maxTries);
+                            } while(checkCollision({myThing: randomThing, position: myPosition, noZones: noZones}) && tries < maxTries);
                         }
 
                         //if we can't place an auxilary thing, just continue
@@ -618,6 +651,20 @@ var sceneryUtils = {
                             newDO.tint = localTint;
                             newDO.sortYOffset = localSortYOffset;
                             newDO.alpha = localAlpha;
+                        }
+
+                        if(rotateTowardCenter) {
+                            var rotateAngle = mathArrayUtils.pointInDirection(newDO.position, centerPosition);
+                            if(newDO.isDoodad) {
+                                newDO.body.renderChildren.forEach((child) => {
+                                    child.rotate = rotateAngle;
+                                    if(child.id == 'shadow' &&
+                                    ((newDO.position.x > centerPosition.x && newDO.position.y < centerPosition.y) ||
+                                     (newDO.position.x < centerPosition.x && newDO.position.y > centerPosition.y))) {
+                                        child.offset.x = 0-child.offset.x;
+                                    }
+                                });
+                            }
                         }
 
                         container.addObject(newDO);

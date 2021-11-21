@@ -193,6 +193,7 @@ var renderer = function(engine, options) {
                     if (sprite.behaviorSpecs.rotatePredicate && sprite.behaviorSpecs.rotatePredicate.apply(body.unit || body))
                         sprite.rotation = Math.random();
                 } else if (sprite.behaviorSpecs && sprite.behaviorSpecs.rotate != null) {
+                    //basic case of setting the rotate
                     sprite.rotation = sprite.behaviorSpecs.rotate;
                 } else if (sprite.behaviorSpecs && sprite.behaviorSpecs.rotateFunction) {
                     sprite.behaviorSpecs.rotateFunction(sprite);

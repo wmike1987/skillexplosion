@@ -124,6 +124,7 @@ var Doodad = function(options) {
     if (!options.noShadow) {
         rchildren.push({
             id: 'shadow',
+            alpha: options.shadowAlpha || 1.0,
             data: options.shadowIcon || 'IsoShadowBlurred',
             scale: options.shadowScale || {
                 x: 1,

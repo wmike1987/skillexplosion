@@ -8,6 +8,8 @@ import {
     Doodad
 } from '@utils/Doodad.js';
 import RockPit from '@games/Us/Doodads/RockPit.js';
+import EnemyPost1 from '@games/Us/Doodads/EnemyPost1.js';
+import SidewaysLog1 from '@games/Us/Doodads/SidewaysLog1.js';
 import {
     gameUtils,
     graphicsUtils,
@@ -16,7 +18,9 @@ import {
 } from '@utils/UtilityMenu.js';
 
 var doodadMenu = {
-    rockPit: RockPit
+    rockPit: RockPit,
+    enemyPost1: EnemyPost1,
+    sidewaysLog1: SidewaysLog1
 };
 
 /*
@@ -34,7 +38,7 @@ var DoodadFactory = {
                 options.initialize();
             }
 
-            //and remix in the given options (in case of overrided)
+            //and remix in the given options (in case of overridden values)
             options = Object.assign(options, originalOptions);
         }
 
@@ -53,6 +57,14 @@ var DoodadFactory = {
             offset: {
                 x: 0,
                 y: 0
+            },
+            shadowScale: {
+                x: 1,
+                y: 1
+            },
+            shadowOffset: {
+                x: 0,
+                y: 0
             }
         };
 
@@ -61,7 +73,7 @@ var DoodadFactory = {
 
         //create the doodad
         var doodad = new Doodad({
-            collides: true,
+            collides: mathArrayUtils.resolveBooleanParam(options.collides),
             autoAdd: false,
             position: options.position,
             radius: options.radius,
@@ -70,12 +82,16 @@ var DoodadFactory = {
             stage: options.where,
             tint: options.tint,
             randomHFlip: options.randomHFlip,
+            shadowIcon: options.shadowIcon,
+            shadowAlpha: options.shadowAlpha,
+            shadowScale: options.shadowScale,
+            shadowOffset: options.shadowOffset,
             scale: options.scale,
             offset: options.offset,
             bodyScale: options.bodyScale,
             sortYOffset: options.sortYOffset,
             loneNZRadius: options.loneNZRadius,
-            noShadow: true,
+            noShadow: options.noShadow,
         });
 
         return doodad;

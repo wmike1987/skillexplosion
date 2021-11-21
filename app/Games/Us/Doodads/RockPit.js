@@ -16,6 +16,7 @@ var rockPit = {
     loneNZRadius: 40,
     tint: 0xffffff,
     randomHFlip: false,
+    noShadow: true,
     sortYOffset: 0,
     scale: {
         x: 1.25,
