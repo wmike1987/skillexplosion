@@ -169,6 +169,9 @@ var mathArrayUtils = {
     },
 
     clonePosition: function(vector, offset) {
+        if(!vector) {
+            return null;
+        }
         offset = $.extend({
             x: 0,
             y: 0
@@ -272,6 +275,7 @@ var mathArrayUtils = {
 mathArrayUtils.getIntBetween = mathArrayUtils.getRandomIntInclusive;
 mathArrayUtils.distanceBetweenUnits = mathArrayUtils.distanceBetweenBodies;
 mathArrayUtils.getId = mathArrayUtils.uuidv4;
+mathArrayUtils.cloneVector = mathArrayUtils.clonePosition;
 
 export {
     mathArrayUtils

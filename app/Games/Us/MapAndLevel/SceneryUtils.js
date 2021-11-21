@@ -456,7 +456,9 @@ var sceneryUtils = {
                             myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
                         }
                         var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
-                        mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
+                        if(possibleAngles.length > 1) {
+                            mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
+                        }
                         var newPosition = mathArrayUtils.addScalarToVectorAtAngle({
                             x: originalPosition.x,
                             y: originalPosition.y

@@ -18,10 +18,10 @@ var enemyPost = {
     tint: 0xffffff,
     randomHFlip: true,
     sortYOffset: 0,
-    shadowIcon: 'IsoShadowBlurredThin',
-    shadowAlpha: 0.75,
+    shadowIcon: 'IsoShadowBlurredRectangle',
+    shadowAlpha: 1.0,
     shadowScale: {
-        x: 1.1,
+        x: 1.2,
         y: 1.0
     },
     shadowOffset: {
@@ -39,6 +39,11 @@ var enemyPost = {
     noShadow: false,
     initialize: function() {
         var possibleData = ['Log1', 'Log2', 'Log3'];
+        if(possibleData == 'Log3') {
+            this.shadowScale.x = 0.75;
+        } else {
+            this.shadowScale.x = 1.1;
+        }
         this.textureName[0] = 'CampDoodads/' + mathArrayUtils.getRandomElementOfArray(possibleData);
     }
 };
