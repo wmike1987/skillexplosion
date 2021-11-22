@@ -21,7 +21,7 @@ var enemyPost = {
     shadowIcon: 'IsoShadowBlurredRectangle',
     shadowAlpha: 1.0,
     shadowScale: {
-        x: 1.2,
+        x: 1.0,
         y: 1.0
     },
     shadowOffset: {
@@ -30,7 +30,7 @@ var enemyPost = {
     },
     scale: {
         x: 1.2,
-        y: 1.2
+        y: 1.0
     },
     offset: {
         x: 0,

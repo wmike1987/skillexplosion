@@ -9,22 +9,25 @@ import {
 /*
  * options
  */
-var enemyPost = {
-    textureName: [null],
-    radius: 8,
-    collides: false,
+var enemyTent = {
+    textureName: 'CampDoodads/EnemyTent1',
+    radius: 30,
+    collides: true,
     where: 'stage',
-    loneNZRadius: 40,
+    loneNZRadius: 80,
     tint: 0xffffff,
     randomHFlip: true,
     sortYOffset: 0,
+    shadowIcon: 'IsoShadowBlurred',
+    shadowAlpha: 1.0,
+    bodyScale: {x: 1.75, y: 0.6},
     shadowScale: {
-        x: 0.5,
-        y: 0.5
+        x: 2,
+        y: 2
     },
     shadowOffset: {
-        x: 0,
-        y: 30
+        x: -20,
+        y: 20
     },
     scale: {
         x: 1.0,
@@ -34,10 +37,10 @@ var enemyPost = {
         x: 0,
         y: 0
     },
+    noShadow: true,
     initialize: function() {
-        var possibleData = ['EnemyPost1', 'EnemyPost2', 'EnemyPost3', 'EnemyPost4', 'EnemyPost5'];
-        this.textureName[0] = 'CampDoodads/' + mathArrayUtils.getRandomElementOfArray(possibleData);
+
     }
 };
 
-export default enemyPost;
+export default enemyTent;

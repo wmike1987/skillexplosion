@@ -24,6 +24,9 @@ import {
 } from '@core/Fundamental/GlobalState.js';
 import AssetLoader from '@core/Fundamental/AssetLoader.js';
 import seedrandom from 'seedrandom';
+import {
+    DoodadFactory
+} from '@games/Us/Doodads/DoodadFactory.js';
 
 /*
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -386,16 +389,18 @@ var common = {
                 if (event.key == 'w' || event.key == 'W') {
                     // globals.currentGame.nextPhase();
 
-
-                    if(!this.whoaSprite) {
-                        this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNOne', style: styles.abilityText});
-                        this.whoaSprite.scale = {x: 1.1, y: 0.2};
-                        this.whoaSprite.rotation = Math.PI/3;
-                        this.whoaSprite.position = {x: 887.76444, y: 237.87845};
-                    } else {
-                        this.whoaSprite.position.y += 0.5;
-                        this.whoaSprite.rotation += Math.PI/50;
-                    }
+                    var d = DoodadFactory.createDoodad({menuItem: 'enemyTent1', drawWire: false});
+                    d.setPosition({x: 500, y: 500});
+                    this.currentScene.add(d);
+                    // if(!this.whoaSprite) {
+                    //     this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNOne', style: styles.abilityText});
+                    //     this.whoaSprite.scale = {x: 1.1, y: 0.2};
+                    //     this.whoaSprite.rotation = Math.PI/3;
+                    //     this.whoaSprite.position = {x: 887.76444, y: 237.87845};
+                    // } else {
+                    //     this.whoaSprite.position.y += 0.5;
+                    //     this.whoaSprite.rotation += Math.PI/50;
+                    // }
                     // this.addTickCallback(() => {
                     //     spr.position = this.mousePosition;
                     // });

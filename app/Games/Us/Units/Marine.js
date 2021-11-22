@@ -1146,13 +1146,15 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            attackingUnit.maim({
-                duration: 6000
-            });
+            if(attackingUnit) {
+                attackingUnit.maim({
+                    duration: 6000
+                });
 
-            return {
-                value: 1
-            };
+                return {
+                    value: 1
+                };
+            }
         },
         aggressionAction: function(event) {
             var targetUnit = event.sufferingUnit;

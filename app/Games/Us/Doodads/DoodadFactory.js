@@ -10,6 +10,7 @@ import {
 import RockPit from '@games/Us/Doodads/RockPit.js';
 import EnemyPost1 from '@games/Us/Doodads/EnemyPost1.js';
 import SidewaysLog1 from '@games/Us/Doodads/SidewaysLog1.js';
+import EnemyTent1 from '@games/Us/Doodads/EnemyTent1.js';
 import {
     gameUtils,
     graphicsUtils,
@@ -20,7 +21,8 @@ import {
 var doodadMenu = {
     rockPit: RockPit,
     enemyPost1: EnemyPost1,
-    sidewaysLog1: SidewaysLog1
+    sidewaysLog1: SidewaysLog1,
+    enemyTent1: EnemyTent1,
 };
 
 /*
@@ -81,6 +83,7 @@ var DoodadFactory = {
             texture: mathArrayUtils.convertToArray(options.textureName),
             stage: options.where,
             tint: options.tint,
+            drawWire: options.drawWire,
             randomHFlip: options.randomHFlip,
             shadowIcon: options.shadowIcon,
             shadowAlpha: options.shadowAlpha,
@@ -92,6 +95,7 @@ var DoodadFactory = {
             sortYOffset: options.sortYOffset,
             loneNZRadius: options.loneNZRadius,
             noShadow: options.noShadow,
+            noZone: options.noZone,
         });
 
         return doodad;

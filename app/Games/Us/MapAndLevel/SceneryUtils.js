@@ -439,7 +439,7 @@ var sceneryUtils = {
                     //comprehend groupings
                     var doGrouping = Math.random() < groupings.hz;
                     var numberInGrouping = doGrouping ? mathArrayUtils.getRandomElementOfArray(groupings.possibleAmounts) : 1;
-                    var possibleAngles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+                    var possibleAngles = [12, 32, 63, 95, 122, 150, 192, 219, 240, 270, 286, 330];
 
                     //check max
                     if (maxNumber && hits == maxNumber) {
@@ -538,7 +538,7 @@ var sceneryUtils = {
 
                         if(placingCenter) {
                             if (noZones) {
-                                wholeSkip = checkCollision({myThing: randomThing, position: myPosition, noZones: noZones})
+                                wholeSkip = checkCollision({myThing: randomThing, position: myPosition, noZones: noZones});
                             }
                         } else {
                             do {
@@ -582,12 +582,23 @@ var sceneryUtils = {
                             }
                             noZones.push(newDO.getNoZone());
                         } else {
-                            //assume our random thing is a texture name, but it could be a grouping of sub textures with explicit tints
                             let resolvedThing = null;
-                            let localTint = null;
-                            let localScale = null;
-                            let localSortYOffset = null;
-                            let localAlpha = null;
+
+                            //set some explicitly passed in variables, or use the global values
+                            let localTint = randomThing.tint || globalTint || 0xFFFFFF;
+                            let localScale = randomThing.scale || globalScale || {x: 1, y: 1};
+                            if(randomThing.randomScale) {
+                                let sc = mathArrayUtils.getRandomNumberBetween(randomThing.randomScale.min, randomThing.randomScale.max);
+                                localScale = {x: sc, y: sc};
+                            }
+
+                            if (randomThing.randomHFlip && mathArrayUtils.flipCoin()) {
+                                localScale.x *= -1;
+                            }
+                            let localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
+                            let localAlpha = randomThing.alpha || globalAlpha || 1;
+                            let localWhere = randomThing.where || where;
+                            let localRotate = randomThing.rotate == 'random' ? Math.random() * (2 * Math.PI) : 0;
 
                             //check if we are a grouping of textures with their own tints etc
                             if (randomThing.possibleTextures) {
@@ -595,24 +606,12 @@ var sceneryUtils = {
                                 if (globalUnique || resolvedThing.unique) {
                                     mathArrayUtils.removeObjectFromArray(resolvedThing, randomThing.possibleTextures);
                                 }
-
-                            } else { //else we have something else (either a string of an animation object)
+                            } else { //else we have "something else" TM
                                 resolvedThing = randomThing;
                                 if (globalUnique || resolvedThing.unique) {
                                     mathArrayUtils.removeObjectFromArray(resolvedThing, arrayOfThings);
                                 }
                             }
-
-                            localTint = randomThing.tint || globalTint || 0xFFFFFF;
-                            localScale = randomThing.scale || globalScale || {
-                                x: 1,
-                                y: 1
-                            };
-                            if (randomThing.randomHFlip && mathArrayUtils.flipCoin()) {
-                                localScale.x *= -1;
-                            }
-                            localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
-                            localAlpha = randomThing.alpha || globalAlpha || 1;
 
                             //if our thing is an animation object
                             if (resolvedThing.animationName) {
@@ -623,6 +622,7 @@ var sceneryUtils = {
                                     loop: true,
                                     transform: [myPosition.x, myPosition.y, localScale.x, localScale.y]
                                 });
+                                newDO.where = localWhere;
                                 if (resolvedThing.decorate) {
                                     resolvedThing.decorate(newDO);
                                 }
@@ -639,10 +639,14 @@ var sceneryUtils = {
                                 } else {
                                     newDO.play();
                                 }
-                            } else { //else we have a straight texture name
-                                newDO = graphicsUtils.createDisplayObject(resolvedThing, {
+                            } else { //else we have a straight texture name (or simple object)
+                                var tName = resolvedThing;
+                                if(resolvedThing.textureName) {
+                                    tName = resolvedThing.textureName;
+                                }
+                                newDO = graphicsUtils.createDisplayObject(tName, {
                                     position: mathArrayUtils.clonePosition(myPosition),
-                                    where: where,
+                                    where: localWhere,
                                     scale: {
                                         x: localScale.x,
                                         y: localScale.y
@@ -651,6 +655,7 @@ var sceneryUtils = {
                             }
 
                             newDO.tint = localTint;
+                            newDO.rotation = localRotate;
                             newDO.sortYOffset = localSortYOffset;
                             newDO.alpha = localAlpha;
                         }

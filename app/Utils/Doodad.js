@@ -111,10 +111,10 @@ var Doodad = function(options) {
         rchildren.push({
             id: item.name || 'mainData' + i,
             data: data,
-            offset: offset,
+            offset: mathArrayUtils.cloneVector(offset),
             alpha: alpha,
             rotate: 'none',
-            scale: scale,
+            scale: mathArrayUtils.cloneVector(scale),
             stage: stage,
             tint: tint,
             sortYOffset: options.sortYOffset || 0,
@@ -126,7 +126,7 @@ var Doodad = function(options) {
             id: 'shadow',
             alpha: options.shadowAlpha || 1.0,
             data: options.shadowIcon || 'IsoShadowBlurred',
-            scale: options.shadowScale || {
+            scale: mathArrayUtils.cloneVector(options.shadowScale) || {
                 x: 1,
                 y: 1
             },
@@ -134,7 +134,7 @@ var Doodad = function(options) {
             avoidIsoMgr: true,
             rotate: 'none',
             stage: "stageNTwo",
-            offset: options.shadowOffset || {
+            offset: mathArrayUtils.cloneVector(options.shadowOffset) || {
                 x: 0,
                 y: 0
             }

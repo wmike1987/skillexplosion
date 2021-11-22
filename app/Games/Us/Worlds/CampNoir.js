@@ -652,7 +652,7 @@ var enemyDefs = {
             amount: 24,
             atATime: 3,
             hz: 4000
-        },{
+        }, {
             type: 'Gargoyle',
             amount: [6],
             atATime: 2,
@@ -1477,32 +1477,167 @@ var campNoir = {
                 mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
 
                 //add smokey pit
-                if(!this.noSmokePit) {
-                    var rockPitDoodad = DoodadFactory.createDoodad({menuItem: 'rockPit', tint: rockTints[tIndex]});
+                if (!this.noSmokePit) {
+                    var rockPitDoodad = DoodadFactory.createDoodad({
+                        menuItem: 'rockPit',
+                        tint: rockTints[tIndex]
+                    });
                     rockPitDoodad.unique = true;
 
-                    var enemyPost = DoodadFactory.createDoodad({menuItem: 'enemyPost1', tint: treeTints[tIndex]});
+                    var enemyPost = DoodadFactory.createDoodad({
+                        menuItem: 'enemyPost1',
+                        tint: treeTints[tIndex]
+                    });
                     enemyPost.unique = true;
-                    enemyPost.groupingOptions = {priority: 1};
+                    enemyPost.groupingOptions = {
+                        priority: 1,
+                        min: 70,
+                        max: 90,
+                    };
 
-                    var log1 = DoodadFactory.createDoodad({menuItem: 'sidewaysLog1', tint: treeTints[tIndex]});
+                    var log1 = DoodadFactory.createDoodad({
+                        menuItem: 'sidewaysLog1',
+                        tint: treeTints[tIndex]
+                    });
                     log1.unique = true;
-                    log1.groupingOptions = {priority: 0, rotateTowardCenter: true, min: 75, max: 80};
+                    log1.groupingOptions = {
+                        priority: 0,
+                        rotateTowardCenter: true,
+                        min: 75,
+                        max: 80
+                    };
 
                     this.pit = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, log1, log1],
+                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, log1, log1, {
+                            textureName: 'bullets',
+                            randomHFlip: true,
+                            unique: true,
+                            randomScale: {min: 0.8, max: 1.0}
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint',
+                            randomScale: {min: 0.8, max: 1.0},
+                            groupingOptions: {min: 80, max: 600},
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint2',
+                            randomScale: {min: 0.8, max: 1.0},
+                            groupingOptions: {min: 80, max: 400},
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint3',
+                            randomScale: {min: 0.8, max: 1.0},
+                            groupingOptions: {min: 80, max: 400},
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }],
                         tileWidth: tileSize,
                         maxNumber: 1,
                         nonTilePosition: true,
                         buffer: 100,
                         hz: 1.0,
-                        groupings: {center: rockPitDoodad, hz: 1.0, possibleAmounts: [6], scalar: {min: 75, max: 100}},
+                        groupings: {
+                            center: rockPitDoodad,
+                            hz: 1.0,
+                            possibleAmounts: [16],
+                            scalar: {
+                                min: 75,
+                                max: 100
+                            }
+                        },
                         where: 'stageNOne',
                         r: 1,
                         noZones: noZones.concat(centerNoZone),
                     });
 
                     scene.add(this.pit);
+
+                    var tentDoodad = DoodadFactory.createDoodad({
+                        menuItem: 'enemyTent1',
+                        tint: rockTints[tIndex]
+                    });
+                    tentDoodad.unique = true;
+
+                    var enemyPost2 = DoodadFactory.createDoodad({
+                        menuItem: 'enemyPost1',
+                        tint: treeTints[tIndex]
+                    });
+                    enemyPost2.unique = true;
+                    enemyPost2.groupingOptions = {
+                        priority: 1,
+                        min: 70,
+                        max: 90,
+                    };
+                    this.tent = SceneryUtils.decorateTerrain({
+                        possibleDoodads: [tentDoodad, enemyPost, {
+                            textureName: 'bullets',
+                            randomHFlip: true,
+                            unique: true,
+                            groupingOptions: {
+                                priority: 2
+                            }
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint',
+                            randomScale: {min: 0.8, max: 1.0},
+                            groupingOptions: {min: 200, max: 400},
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint2',
+                            randomScale: {min: 0.8, max: 1.0},
+                            groupingOptions: {min: 80, max: 200},
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/bootprops',
+                            randomScale: {min: 0.8, max: 1.0},
+                            randomHFlip: true,
+                            unique: true,
+                            where: 'stageNOne',
+                            groupingOptions: {
+                                priority: 3,
+                                min: 80,
+                                max: 100
+                            }
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint3',
+                            randomScale: {min: 0.8, max: 1.0},
+                            groupingOptions: {min: 80, max: 200},
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }],
+                        tileWidth: tileSize,
+                        maxNumber: 1,
+                        nonTilePosition: true,
+                        buffer: 180,
+                        hz: 1.0,
+                        groupings: {
+                            center: tentDoodad,
+                            hz: 1.0,
+                            possibleAmounts: [7],
+                            scalar: {
+                                min: 120,
+                                max: 180
+                            }
+                        },
+                        where: 'stageNOne',
+                        r: 1,
+                        noZones: noZones.concat(centerNoZone),
+                    });
+                    scene.add(this.tent);
                 }
             } else {
                 var numberOfRocks2 = 10;
