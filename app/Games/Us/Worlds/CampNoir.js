@@ -80,6 +80,58 @@ var camp = {
                     y: -150
                 }),
                 radius: 200
+            },
+            {
+                center: {x: 840, y: 275},
+                radius: 40
+            },
+            {
+                center: {x: 930, y: 355},
+                radius: 75
+            },
+            {
+                center: {x: 260, y: 300},
+                radius: 45
+            },
+            {
+                center: {x: 100, y: 345},
+                radius: 55
+            },
+            {
+                center: {x: 315, y: 220},
+                radius: 55
+            },
+            {
+                center: {x: 1100, y: 220},
+                radius: 55
+            },
+            {
+                center: {x: 880, y: 136},
+                radius: 35
+            },
+            {
+                center: {x: 770, y: 136},
+                radius: 35
+            },
+            {
+                center: {x: 974, y: 161},
+                radius: 35
+            },
+            {
+                center: {x: 824, y: 146},
+                radius: 35
+            },
+            {
+                center: {x: 925, y: 146},
+                radius: 35
+            },
+            {
+                center: {x: 1034, y: 184},
+                radius: 35
+            },
+            {
+                center: {x: 195, y: 285},
+                radius: 50
             }
         ];
 
@@ -1846,11 +1898,11 @@ var campNoir = {
             }
             this.animatedOrnamentMap = SceneryUtils.decorateTerrain({
                 possibleTextures: animationOrnamentTiles.concat([rock1, rock2, rock3]),
-                tileWidth: tileSize,
+                tileWidth: tileSize/1.2,
                 noScale: true,
-                hz: 0.5,
+                hz: 0.8,
                 groupings: {
-                    hz: 0.25,
+                    hz: 0.4,
                     possibleAmounts: [4, 5, 6],
                     scalar: 20
                 },

@@ -1580,10 +1580,11 @@ export default function Medic(options) {
     var efADuration = 4000;
     var efDDuration = 4000;
     var energyGain = 15;
+    var ppDamage = 12;
     var elegantForm = new Passive({
-        title: 'Precise Posture',
+        title: 'Proper Posture',
         aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain ' + energyGain + ' energy.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal 5 damage to attacker.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 15 energy.'],
         textureName: 'ElegantForm',
         unit: medic,
@@ -1604,7 +1605,7 @@ export default function Medic(options) {
                 var attacker = event.performingUnit;
                 if (attacker.isDead) return;
 
-                attacker.sufferAttack(5, medic, {dodgeable: false});
+                attacker.sufferAttack(ppDamage, medic, {dodgeable: false});
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
@@ -1668,7 +1669,7 @@ export default function Medic(options) {
         },
         collector: {
             aggressionLabel: 'Energy gained',
-            defensiveLabel: 'Projectile damage reduced',
+            defensiveLabel: 'Projectile damage prevented',
         }
     });
 

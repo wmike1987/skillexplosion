@@ -142,7 +142,6 @@ var ic = function(options) {
     var newItem = $.extend({}, baseItem, options);
     newItem.isItem = true;
     newItem.id = mathArrayUtils.uuidv4();
-    newItem.customColor = 0;
     newItem.eventFunctions = {};
 
     newItem.textureName = newItem.icon;
@@ -153,23 +152,39 @@ var ic = function(options) {
     newItem.icon.interactive = true;
 
     newItem.chargeThenActivate = (options) => {
-        if (newItem.isCharging || newItem.chargeActive) {
-            return;
-        }
         options = options || {};
+
+        //if we are already charging, kill the old charger first
+        if(newItem.isCharging) {
+            newItem.chargingTimer.invalidate();
+        }
+
         newItem.isCharging = true;
+
+        //wrap the item's activate behavior
         var activateWrapper = () => {
             newItem.isCharging = false;
-            if (!options.activateFunction()) {
 
+            //call the item's behavior
+            if (!options.activateFunction()) {
                 return;
             }
+
+            //tint the item icon
             newItem.showAsActive(true);
-            gameUtils.doSomethingAfterDuration(() => {
+
+            //invalidate an existing timer
+            if(newItem.activateTimer) {
+                newItem.activateTimer.invalidate();
+            }
+
+            //create the new timer
+            newItem.activateTimer = gameUtils.doSomethingAfterDuration(() => {
                 newItem.showAsActive(false);
             }, options.activeDuration);
         };
 
+        //flash the charge
         var chargeTimes = 2.5;
         newItem.chargingTimer = graphicsUtils.flashSprite({
             sprite: newItem.icon,
@@ -179,9 +194,13 @@ var ic = function(options) {
             onEnd: activateWrapper
         });
 
+        //if we're cancelled, kill the current charge and return the icon tint to the current state
         newItem.cancelCharge = function() {
             this.chargingTimer.invalidate();
             this.isCharging = false;
+
+            //we might already be active
+            this.showAsActive(newItem.chargeActive);
         };
 
         options.setupCancel();
@@ -195,8 +214,6 @@ var ic = function(options) {
         newItem.chargeActive = bool;
         if (bool) {
             newItem.icon.tint = 0x95009d;
-        } else {
-            newItem.customColor--;
         }
     };
 
