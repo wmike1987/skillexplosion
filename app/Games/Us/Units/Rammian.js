@@ -405,7 +405,8 @@ export default function Rammian(options) {
                             }.bind(this), function(unit) {
                                 var dmg = 40;
                                 unit.sufferAttack(dmg, null, {
-                                    dodgeable: false
+                                    dodgeable: false,
+                                    source: {x: self.deathPosition.x, y: self.deathPosition.y}
                                 });
                                 var variation = Math.random() * 0.3;
                                 var maimBlast = gameUtils.getAnimation({

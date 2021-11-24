@@ -112,7 +112,13 @@ var unitUtils = {
 
         //add block graphic
         let offset = 40;
+
+        //resolve attack location
         let attackLocation = attackContext.isProjectile ? attackContext.projectileData.startLocation : attackingUnit.position;
+        if(attackContext.source) {
+            attackLocation = attackContext.source;
+        }
+        
         let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(unit.position, attackLocation, offset);
         let attachmentOffset = Matter.Vector.sub(offsetLocation, unit.position);
         let block = graphicsUtils.addSomethingToRenderer('Block', {

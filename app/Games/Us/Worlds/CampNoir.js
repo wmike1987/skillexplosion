@@ -1896,14 +1896,21 @@ var campNoir = {
                     });
                 }
             }
+
+            var myTileSize = tileSize/1.2;
+            var myHz = 0.75;
+            if(!this.isCampProper) {
+                myTileSize = tileSize;
+                myHz = 0.3;
+            }
             this.animatedOrnamentMap = SceneryUtils.decorateTerrain({
                 possibleTextures: animationOrnamentTiles.concat([rock1, rock2, rock3]),
-                tileWidth: tileSize/1.2,
+                tileWidth: myTileSize,
                 noScale: true,
-                hz: 0.8,
+                hz: myHz,
                 groupings: {
                     hz: 0.4,
-                    possibleAmounts: [4, 5, 6],
+                    possibleAmounts: [2, 3, 4, 5, 6],
                     scalar: 20
                 },
                 where: 'stage',
