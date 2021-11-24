@@ -107,9 +107,12 @@ var mathArrayUtils = {
     repeatXTimes: function(func, times) {
         times = this.convertToArray(times);
         times = this.getRandomElementOfArray(times);
+        var rets = [];
         for(var i = 0; i < times; i++) {
-            func();
+            rets[i] = func();
         }
+
+        return rets;
     },
 
     convertObjectValuesToArray: function(object) {

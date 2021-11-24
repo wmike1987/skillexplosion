@@ -1167,7 +1167,7 @@ var UnitSystem = function(properties) {
             this.attackMove = false;
 
             //if we're s or h, dispatch to all selected units, this is a special case
-            if (this.abilityDispatch == 's' || this.abilityDispatch == 'h') {
+            if (this.abilityDispatch == 's' || this.abilityDispatch == 'h' || this.abilityDispatch == 'g') {
                 $.each(this.selectedUnits, function(key, unit) {
                     var e = {
                         type: 'key',

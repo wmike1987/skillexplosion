@@ -1527,7 +1527,7 @@ unitPanel.prototype.displayCommands = function() {
         });
         Tooltip.makeTooltippable(this.holdPositionIcon, {
             title: 'Hold Position',
-            hotkey: 'H',
+            hotkey: 'G or H',
             description: "Prevent any automatic movement."
         });
     } else {

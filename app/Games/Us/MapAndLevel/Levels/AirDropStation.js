@@ -59,10 +59,10 @@ commonAirDropStation.initExtension = function() {
     this.noSmokePit = true;
     this.noZones.push({
         center: {
-            x: -133,
-            y: 176
+            x: 830,
+            y: 400
         },
-        radius: 30
+        radius: 40
     });
     this.airDropLocation = gameUtils.getPlayableCenterPlus({
         y: -100

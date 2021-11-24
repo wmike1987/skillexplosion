@@ -151,7 +151,8 @@ export default {
         }.bind(this));
 
         this.eventKeyMappings[this.commands.stop.key] = this.stop;
-        this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;
+        this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;;
+        this.eventKeyMappings[this.commands.holdPositionAlternate.key] = this.holdPosition;
 
         this.eventClickMappings[this.commands.attack.key] = function(target, commandObj) {
             if (commandObj.command.targetType == 'unit') {

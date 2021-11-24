@@ -145,6 +145,11 @@ var UnitBase = {
             name: 'holdPosition',
             key: 'h',
             type: 'key'
+        },
+        holdPositionAlternate: {
+            name: 'holdPositionAlternate',
+            key: 'g',
+            type: 'key'
         }
     },
     eventClickMappings: {},
@@ -166,10 +171,11 @@ var UnitBase = {
         var returnInformation = {attackLanded: true};
         if (this.unitRemoved) return;
 
-        options = Object.assign({
+        let attackContext = Object.assign({
             isProjectile: false,
             dodgeable: true,
-            ignoreArmor: false
+            ignoreArmor: false,
+            dodgeRolls: 1,
         }, options);
 
         attackingUnit = attackingUnit || {
@@ -185,17 +191,22 @@ var UnitBase = {
             performingUnit: attackingUnit,
             sufferingUnit: this,
             damageObj: damageObj,
-            attackContext: options
+            attackContext: attackContext
         });
 
-        if (options.dodgeable && (this.attackDodged() || damageObj.manualDodge)) {
+        let dodgeReturnArray = mathArrayUtils.repeatXTimes(this.attackDodged.bind(this), attackContext.dodgeRolls);
+        let attackDodged = dodgeReturnArray.some(function(bool) {
+            return bool;
+        });
+
+        if (attackContext.dodgeable && (attackDodged || attackContext.manualDodge)) {
             Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {
                 performingUnit: this
             });
             Matter.Events.trigger(this, 'dodgeAttack', {
                 performingUnit: this,
                 damageObj: damageObj,
-                attackContext: options
+                attackContext: attackContext
             });
             //display a miss graphic
             graphicsUtils.floatText('Dodge!', {
@@ -204,7 +215,7 @@ var UnitBase = {
             }, {
                 style: styles.dodgeText
             });
-            unitUtils.showBlockGraphic({attackContext: options, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
+            unitUtils.showBlockGraphic({attackContext: attackContext, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
             this.dodgeSound.play();
 
             returnInformation.attackLanded = false;
@@ -215,14 +226,14 @@ var UnitBase = {
             performingUnit: attackingUnit,
             sufferingUnit: this,
             damageObj: damageObj,
-            attackContext: options,
+            attackContext: attackContext,
         });
 
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
 
         //factor in armor
-        var totalDefense = options.ignoreArmor ? 0 : this.getTotalDefense();
+        var totalDefense = attackContext.ignoreArmor ? 0 : this.getTotalDefense();
         var alteredDamage = Math.max(1, (damage - totalDefense));
 
         //killing blow block
@@ -233,7 +244,7 @@ var UnitBase = {
                 Matter.Events.trigger(this, 'killingBlowBlock', {
                     performingUnit: this,
                     attackingUnit: attackingUnit,
-                    attackContext: options
+                    attackContext: attackContext
                 });
                 //display a miss graphic
                 graphicsUtils.floatText('Block!', {
@@ -243,7 +254,7 @@ var UnitBase = {
                     style: styles.dodgeKillingBlowText
                 });
 
-                unitUtils.showBlockGraphic({attackContext: options, attackingUnit: attackingUnit, unit: this, tint: 0xd55812});
+                unitUtils.showBlockGraphic({attackContext: attackContext, attackingUnit: attackingUnit, unit: this, tint: 0xd55812});
                 killingBlowBlock.play();
 
                 returnInformation.attackLanded = false;
@@ -256,7 +267,7 @@ var UnitBase = {
             performingUnit: attackingUnit,
             sufferingUnit: this,
             amountDone: damageReducedByArmor,
-            attackContext: options
+            attackContext: attackContext
         });
 
         this.fadeLifeAmount(this.currentHealth);
@@ -270,23 +281,23 @@ var UnitBase = {
             if (attackingUnit) {
                 Matter.Events.trigger(attackingUnit, 'kill', {
                     killedUnit: this,
-                    attackContext: options
+                    attackContext: attackContext
                 });
                 Matter.Events.trigger(globals.currentGame, 'performKill', {
                     performingUnit: attackingUnit,
-                    attackContext: options
+                    attackContext: attackContext
                 });
             }
         } else {
             Matter.Events.trigger(attackingUnit, 'dealNonLethalDamage', {
                 sufferingUnit: this,
-                attackContext: options
+                attackContext: attackContext
             });
             Matter.Events.trigger(this, 'sufferNonLethalAttack', {
                 performingUnit: attackingUnit,
                 sufferingUnit: this,
                 amountDone: alteredDamage,
-                attackContext: options
+                attackContext: attackContext
             });
             this.showLifeBar(true);
             if (!this.barTimer) {
@@ -310,13 +321,13 @@ var UnitBase = {
             performingUnit: attackingUnit,
             sufferingUnit: this,
             amountDone: alteredDamage,
-            attackContext: options
+            attackContext: attackContext
         });
 
         Matter.Events.trigger(attackingUnit, 'dealDamage', {
             sufferingUnit: this,
             amountDone: alteredDamage,
-            attackContext: options
+            attackContext: attackContext
         });
 
         returnInformation.damageDone = alteredDamage;

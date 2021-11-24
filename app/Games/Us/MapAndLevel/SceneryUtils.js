@@ -92,13 +92,13 @@ var sceneryUtils = {
                     y: 1
                 }
             },
-            Rock4: {
-                scale: {
-                    x: 1.5,
-                    y: 1.5
-                },
-                radius: 5
-            },
+            // Rock4: {
+            //     scale: {
+            //         x: 1.5,
+            //         y: 1.5
+            //     },
+            //     radius: 5
+            // },
             Rock6: {
                 scale: {
                     x: 1.0,
@@ -294,7 +294,7 @@ var sceneryUtils = {
                         x: -2,
                         y: 10 * randomScale
                     },
-                    radius: 30
+                    radius: 50
                 },
                 offset: {
                     x: -4,
@@ -319,7 +319,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 10 * randomScale
                     },
-                    radius: 25
+                    radius: 35
                 },
                 offset: {
                     x: 2,

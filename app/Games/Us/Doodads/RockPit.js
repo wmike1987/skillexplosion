@@ -11,7 +11,7 @@ import {
  */
 var rockPit = function() {
     this.textureName = [null, null];
-    this.radius = 8;
+    this.radius = 12;
     this.where = 'stage';
     this.loneNZRadius = 40;
     this.tint = 0xffffff;
@@ -22,6 +22,8 @@ var rockPit = function() {
         x: 1.25,
         y: 1.25
     };
+    // this.drawWire = true,
+    this.bodyScale = {x: 1.3, y: 0.25};
     this.offset = {
         x: 0,
         y: 0
@@ -40,7 +42,7 @@ var rockPit = function() {
         smokeAnimation.alpha = 0.5;
         smokeAnimation.offset = {
             x: 0,
-            y: -3
+            y: -15
         };
         smokeAnimation.where = 'stageOne';
         smokeAnimation.play();

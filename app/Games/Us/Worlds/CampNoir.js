@@ -701,7 +701,7 @@ var enemyDefs = {
     hardGargs: {
         enemySets: [{
             type: 'Critter',
-            amount: 24,
+            amount: 22,
             atATime: 3,
             hz: 5000
         }, {

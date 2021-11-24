@@ -533,7 +533,7 @@
 	"frame": {"x":1989,"y":395,"w":65,"h":45},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":30,"y":54,"w":65,"h":45},
+	"spriteSourceSize": {"x":32,"y":45,"w":65,"h":45},
 	"sourceSize": {"w":128,"h":128}
 },
 "RockFirePit2.png":
@@ -541,7 +541,7 @@
 	"frame": {"x":1899,"y":1281,"w":65,"h":46},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":30,"y":53,"w":65,"h":46},
+	"spriteSourceSize": {"x":32,"y":45,"w":65,"h":46},
 	"sourceSize": {"w":128,"h":128}
 },
 "RockFirePit3.png":
@@ -549,7 +549,7 @@
 	"frame": {"x":1991,"y":1,"w":64,"h":42},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":31,"y":57,"w":64,"h":42},
+	"spriteSourceSize": {"x":31,"y":47,"w":64,"h":42},
 	"sourceSize": {"w":128,"h":128}
 },
 "ShaneHeadToken.png":
@@ -699,6 +699,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2035,"h":1576},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:08d3ef0df9427a2f0fe8d02b58f6e4c7:920bf90269c6c885e39cd377e7820d5b:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:523c1efe0acfbefad1376175cfc3e4e4:1edd4b86112a89fe7e25440249d9bf50:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

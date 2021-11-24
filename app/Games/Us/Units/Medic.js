@@ -1302,20 +1302,21 @@ export default function Medic(options) {
         }
     });
 
-    var dodgeGain = 3;
-    var dodgeMax = 15;
+    var dodgeGain = 2;
+    var dodgeMax = 10;
     var allyDodgeGain = 20;
     var totalDodgeGained = 0;
     var slADuration = 3000;
+    var addedDodgeRolls = 3;
     var slyLogic = new Passive({
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Dodge attack and gain ' + dodgeGain + ' dodge (up to 15) for length of outing.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to 10) for length of outing.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 3 dodge for length of outing.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
-        defenseCooldown: 6000,
+        defenseCooldown: 7000,
         aggressionEventName: 'performHeal',
         aggressionCooldown: 3000,
         aggressionDuration: slADuration,
@@ -1329,11 +1330,11 @@ export default function Medic(options) {
             }
         },
         defenseAction: function(event) {
-            event.damageObj.manualDodge = true;
+            event.attackContext.dodgeRolls += addedDodgeRolls;
             if(totalDodgeGained >= dodgeMax) {
                 return;
             }
-            totalDodgeGained += 3;
+            totalDodgeGained += dodgeGain;
             medic.addDodgeAddition(dodgeGain);
             var dodgeUp = graphicsUtils.addSomethingToRenderer("DodgeBuff", {
                 where: 'stageTwo',
@@ -1359,10 +1360,11 @@ export default function Medic(options) {
                 ally.applyDodgeBuff({duration: slADuration, amount: allyDodgeGain});
             });
 
-            return {value: allyDodgeGain};
+            return {value: slADuration/1000};
         },
         collector: {
-            aggressionLabel: 'Dodge granted',
+            aggressionLabel: 'Ally\'s duration of increased dodge',
+            aggressionSuffix: 'seconds',
             defensiveLabel: 'Dodges performed',
         }
     });
