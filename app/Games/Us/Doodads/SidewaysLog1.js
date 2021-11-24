@@ -9,35 +9,35 @@ import {
 /*
  * options
  */
-var enemyPost = {
-    textureName: [null],
-    radius: 8,
-    collides: false,
-    where: 'stageNOne',
-    loneNZRadius: 40,
-    tint: 0xffffff,
-    randomHFlip: true,
-    sortYOffset: 0,
-    shadowIcon: 'IsoShadowBlurredRectangle',
-    shadowAlpha: 1.0,
-    shadowScale: {
+var enemyPost = function() {
+    this.textureName = [null];
+    this.radius = 8;
+    this.collides = false;
+    this.where = 'stageNOne';
+    this.loneNZRadius = 40;
+    this.tint = 0xffffff;
+    this.randomHFlip = true;
+    this.sortYOffset = 0;
+    this.shadowIcon = 'IsoShadowBlurredRectangle';
+    this.shadowAlpha = 1.0;
+    this.shadowScale = {
         x: 1.0,
         y: 1.0
-    },
-    shadowOffset: {
+    };
+    this.shadowOffset = {
         x: 2,
         y: 2
-    },
-    scale: {
+    };
+    this.scale = {
         x: 1.2,
         y: 1.0
-    },
-    offset: {
+    };
+    this.offset = {
         x: 0,
         y: 0
-    },
-    noShadow: false,
-    initialize: function() {
+    };
+    this.noShadow = false;
+    this.initialize = function() {
         var possibleData = ['Log1', 'Log2', 'Log3'];
         if(possibleData == 'Log3') {
             this.shadowScale.x = 0.75;
@@ -45,7 +45,7 @@ var enemyPost = {
             this.shadowScale.x = 1.1;
         }
         this.textureName[0] = 'CampDoodads/' + mathArrayUtils.getRandomElementOfArray(possibleData);
-    }
+    };
 };
 
 export default enemyPost;

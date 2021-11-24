@@ -9,24 +9,24 @@ import {
 /*
  * options
  */
-var rockPit = {
-    textureName: [null, null],
-    radius: 8,
-    where: 'stage',
-    loneNZRadius: 40,
-    tint: 0xffffff,
-    randomHFlip: false,
-    noShadow: true,
-    sortYOffset: 0,
-    scale: {
+var rockPit = function() {
+    this.textureName = [null, null];
+    this.radius = 8;
+    this.where = 'stage';
+    this.loneNZRadius = 40;
+    this.tint = 0xffffff;
+    this.randomHFlip = false;
+    this.noShadow = true;
+    this.sortYOffset = 0;
+    this.scale = {
         x: 1.25,
         y: 1.25
-    },
-    offset: {
+    };
+    this.offset = {
         x: 0,
         y: 0
-    },
-    initialize: function() {
+    };
+    this.initialize = function() {
         var possiblePits = ['RockFirePit', 'RockFirePit2', 'RockFirePit3'];
         this.textureName[0] = mathArrayUtils.getRandomElementOfArray(possiblePits);
 
@@ -45,7 +45,7 @@ var rockPit = {
         smokeAnimation.where = 'stageOne';
         smokeAnimation.play();
         this.textureName[1] = smokeAnimation;
-    }
+    };
 };
 
 export default rockPit;

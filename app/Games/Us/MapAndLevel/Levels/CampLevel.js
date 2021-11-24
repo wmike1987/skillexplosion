@@ -325,7 +325,7 @@ var campLevel = function() {
         var game = globals.currentGame;
 
         //unit tester
-        var unitTest = false;
+        var unitTest = true;
         if(unitTest) {
             var unitT = UnitMenu.createUnit('Rammian', {
                 // team: game.enemyTeam,
@@ -333,10 +333,13 @@ var campLevel = function() {
                 idleCancel: false
             });
 
+
             // unitT.body.drawWire = true;
             unitT.position = {x: 500, y: 400};
             globals.currentGame.addUnit(unitT);
             globals.currentGame.newUnitTest = unitT;
+            unitT.maxHealth = 100000;
+            unitT.currentHealth = 100000;
         }
 
         game.setUnit(game.shane, {

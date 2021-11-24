@@ -1101,7 +1101,10 @@ var gameUtils = {
         }
         if (!added) {
             master.slaves.push(slave);
-            slave.masters.push(master);
+
+            if(!slave.noMasterRegistration) {
+                slave.masters.push(master);
+            }
         }
     },
 

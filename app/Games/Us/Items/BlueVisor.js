@@ -10,21 +10,45 @@ import {
 import * as Matter from 'matter-js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
+var eventName = 'blueVisorCollector';
+
 var manipulations = {
+    genericEquip: function(equipped, item) {
+        if(!equipped && this.blueVisorHandler) {
+            this.blueVisorHandler.removeHandler();
+        }
+    },
     events: {
         applyEnrageBuff: {
             callback: function(event) {
                 var unit = event.equippedUnit;
                 var item = event.item;
+                var buffId = event.id;
+                unit.blueVisorBuff = unit.buffs[buffId];
 
-                if(unit.violetVisorHandler) {
-                    unit.violetVisorHandler.removeHandler();
+                if(unit.blueVisorHandler) {
+                    unit.blueVisorHandler.removeHandler();
                 }
 
-                unit.violetVisorHandler = gameUtils.matterOnce(unit, 'dealNonLethalDamage', (event) => {
+                unit.blueVisorHandler = gameUtils.matterOnce(unit, 'dealNonLethalDamage', (event) => {
                     var target = event.sufferingUnit;
-                    target.condemn({duration: 3000, condemningUnit: globals.currentGame.ursula});
+                    event.equippedUnit = unit;
+                    Matter.Events.trigger(globals.currentGame, eventName, event);
+                    target.stun({duration: 1000, stunningUnit: unit});
                 });
+            }
+        },
+        removeBuff: {
+            callback: function(event) {
+                var removedBuff = event.buff;
+                var unit = event.equippedUnit;
+                if(unit.blueVisorBuff) {
+                    if(removedBuff.id == unit.blueVisorBuff.id) {
+                        if(unit.blueVisorHandler) {
+                            unit.blueVisorHandler.removeHandler();
+                        }
+                    }
+                }
             }
         }
     }
@@ -34,8 +58,18 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Blue Visor",
-        description: ["Condemn first target after becoming enraged on behalf of Ursula."],
-        icon: 'BlueVisor'
+        description: ["Stun first target after becoming enraged for 1 second."],
+        icon: 'BlueVisor',
+        collector: {
+            eventName: eventName,
+            collectorFunction: function(event) {
+                this.value += 1;
+            },
+            presentation: {
+                labels: ["Enemies stunned"],
+                values: ["value"]
+            }
+        }
     }, options, shaneOnly);
     return new ic(item);
 }

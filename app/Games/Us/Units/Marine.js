@@ -1056,7 +1056,7 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var f = {};
             marine.applyBuff({
-                name: "rushofbloodabsorb",
+                id: "rushofbloodabsorb",
                 textureName: 'RushOfBloodBuff',
                 duration: robDDuration,
                 applyChanges: function() {
@@ -1103,7 +1103,7 @@ export default function Marine(options) {
         }
 
         marine.applyBuff({
-            name: 'freeKnife' + (marine.freeKnives + 1),
+            id: 'freeKnife' + (marine.freeKnives + 1),
             textureName: 'FreeKnifeBuff',
             duration: null,
             applyChanges: function() {
@@ -1239,7 +1239,7 @@ export default function Marine(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
-                    name: "spiritualStateGain",
+                    id: "spiritualStateGain",
                     textureName: 'SpiritualStateEnergyGainBuff',
                     duration: 3000,
                     applyChanges: function() {
@@ -1258,7 +1258,7 @@ export default function Marine(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
-                    name: "spiritualStateGain",
+                    id: "spiritualStateGain",
                     textureName: 'SpiritualStateEnergyGainBuff',
                     duration: ssDDuration,
                     applyChanges: function() {
@@ -1278,7 +1278,7 @@ export default function Marine(options) {
             var f = {};
             var energyGained = null;
             marine.applyBuff({
-                name: "spiritualStateMatch",
+                id: "spiritualStateMatch",
                 duration: ssADuration,
                 textureName: 'SpiritualStateBuff',
                 applyChanges: function() {

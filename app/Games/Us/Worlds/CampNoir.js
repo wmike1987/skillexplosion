@@ -72,7 +72,7 @@ var camp = {
     initExtension: function() {
         this.noZones = [{
                 center: gameUtils.getPlayableCenter(),
-                radius: 300
+                radius: 150
             },
             {
                 center: gameUtils.getPlayableCenterPlus({
@@ -642,8 +642,8 @@ var enemyDefs = {
         enemySets: [{
             type: 'Rammian',
             amount: [8, 9],
-            atATime: 1,
-            hz: 2500
+            atATime: 2,
+            hz: 8000
         }, hardFlyObj]
     },
     hardGargs: {
@@ -651,12 +651,12 @@ var enemyDefs = {
             type: 'Critter',
             amount: 24,
             atATime: 3,
-            hz: 4000
+            hz: 5000
         }, {
             type: 'Gargoyle',
             amount: [6],
             atATime: 2,
-            hz: 7000
+            hz: 12500
         }, hardFlyObj]
     },
     outerBasic: {
@@ -1398,12 +1398,28 @@ var campNoir = {
 
             //Add doodads to non camp levels
             var noZones = this.noZones || [];
+
+            //create rock doodads
+            let rock1 = SceneryUtils.createRock({
+                names: ['Rock2'],
+                tint: rockTints[tIndex]
+            });
+            let rock2 = SceneryUtils.createRock({
+                names: ['Rock2a'],
+                tint: rockTints[tIndex]
+            });
+            let rock3 = SceneryUtils.createRock({
+                names: ['Rock2b'],
+                tint: rockTints[tIndex]
+            });
+
             if (!this.isCampProper) {
-                var numberOfRocks = 4;
+                var numberOfRocks = 3;
 
                 var createRock = function() {
                     var rock = SceneryUtils.createRock({
-                        tint: rockTints[tIndex]
+                        tint: rockTints[tIndex],
+                        collidableRocks: true,
                     });
                     rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
                         buffer: 80,
@@ -1413,20 +1429,6 @@ var campNoir = {
                     scene.add(rock);
                 };
                 mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
-
-                //create rock and desert flower map
-                let rock1 = SceneryUtils.createRock({
-                    names: ['Rock2'],
-                    tint: rockTints[tIndex]
-                });
-                let rock2 = SceneryUtils.createRock({
-                    names: ['Rock2a'],
-                    tint: rockTints[tIndex]
-                });
-                let rock3 = SceneryUtils.createRock({
-                    names: ['Rock2b'],
-                    tint: rockTints[tIndex]
-                });
 
                 //desert flower map
                 for (let i = 0; i <= 5; i++) {
@@ -1452,14 +1454,9 @@ var campNoir = {
                         possibleAmounts: [3, 4]
                     },
                     r: 1,
-                    noZones: this.noZones,
+                    noZones: noZones
                 });
                 scene.add(rockContainer);
-
-                var centerNoZone = [{
-                    center: gameUtils.getPlayableCenter(),
-                    radius: 80
-                }];
 
                 //create trees
                 var createTree1 = function() {
@@ -1469,7 +1466,7 @@ var campNoir = {
                     tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
                         buffer: 80,
                         useUpcomingSceneNoZones: true,
-                        noZones: noZones.concat(centerNoZone),
+                        noZones: noZones,
                         doodad: tree
                     }));
                     scene.add(tree);
@@ -1554,7 +1551,7 @@ var campNoir = {
                         },
                         where: 'stageNOne',
                         r: 1,
-                        noZones: noZones.concat(centerNoZone),
+                        noZones: noZones
                     });
 
                     scene.add(this.pit);
@@ -1576,7 +1573,7 @@ var campNoir = {
                         max: 90,
                     };
                     this.tent = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [tentDoodad, enemyPost, {
+                        possibleDoodads: [tentDoodad, enemyPost2, {
                             textureName: 'bullets',
                             randomHFlip: true,
                             unique: true,
@@ -1604,7 +1601,7 @@ var campNoir = {
                             randomScale: {min: 0.8, max: 1.0},
                             randomHFlip: true,
                             unique: true,
-                            where: 'stageNOne',
+                            where: 'stage',
                             groupingOptions: {
                                 priority: 3,
                                 min: 80,
@@ -1635,7 +1632,7 @@ var campNoir = {
                         },
                         where: 'stageNOne',
                         r: 1,
-                        noZones: noZones.concat(centerNoZone),
+                        noZones: noZones
                     });
                     scene.add(this.tent);
                 }
@@ -1681,7 +1678,7 @@ var campNoir = {
                 maxNumber: 3,
                 where: 'stageNOne',
                 r: 1,
-                noZones: this.noZones,
+                noZones: noZones
             });
 
             //animated stuff map
@@ -1848,19 +1845,19 @@ var campNoir = {
                 }
             }
             this.animatedOrnamentMap = SceneryUtils.decorateTerrain({
-                possibleTextures: animationOrnamentTiles,
+                possibleTextures: animationOrnamentTiles.concat([rock1, rock2, rock3]),
                 tileWidth: tileSize,
                 noScale: true,
-                hz: 0.3,
+                hz: 0.5,
                 groupings: {
                     hz: 0.25,
-                    possibleAmounts: [2, 4, 5, 6],
+                    possibleAmounts: [4, 5, 6],
                     scalar: 20
                 },
                 where: 'stage',
                 r: 1,
                 tint: flowerTint,
-                noZones: this.noZones,
+                noZones: noZones,
                 seed: this.animatedOrnamentMap ? this.animatedOrnamentMap.seed : null
             });
 

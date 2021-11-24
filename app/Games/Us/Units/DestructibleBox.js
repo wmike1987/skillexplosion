@@ -92,7 +92,7 @@ export default function DestructibleBox(options) {
         idleSpecificAnimation: true,
         abilities: [],
         _init: function() {
-            Matter.Sleeping.set(this.body, true);
+            this.setSleep(true);
         },
         death: function() {
             var self = this;

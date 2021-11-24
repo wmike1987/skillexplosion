@@ -1204,7 +1204,7 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             medic.applyBuff({
-                name: "stakesHealBuff" + mathArrayUtils.getId(),
+                id: "stakesHealBuff" + mathArrayUtils.getId(),
                 duration: rsADuration,
                 textureName: 'RaisedStakesBuff',
                 applyChanges: function() {
@@ -1247,7 +1247,7 @@ export default function Medic(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
-                    name: "wwHealthGain",
+                    id: "wwHealthGain",
                     textureName: 'WickedWaysHealingBuff',
                     duration: 3000,
                     applyChanges: function() {
@@ -1275,7 +1275,7 @@ export default function Medic(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
-                    name: "wwHealthGain",
+                    id: "wwHealthGain",
                     textureName: 'WickedWaysHealingBuff',
                     duration: wwADuration,
                     applyChanges: function() {
@@ -1392,7 +1392,7 @@ export default function Medic(options) {
             }
 
             medic.applyBuff({
-                name: 'freeSecretStep' + (medic.freeSteps + 1),
+                id: 'freeSecretStep' + (medic.freeSteps + 1),
                 textureName: 'SecretStepBuff',
                 duration: null,
                 applyChanges: function() {
@@ -1420,7 +1420,7 @@ export default function Medic(options) {
         },
         defenseAction: function(event) {
             medic.applyBuff({
-                name: 'familiarFaceSpeed',
+                id: 'familiarFaceSpeed',
                 textureName: 'SpeedBuff',
                 duration: ffDDuration,
                 applyChanges: function() {
@@ -1435,7 +1435,7 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             medic.applyBuff({
-                name: 'freeSecretStep' + (medic.freeSteps + 1),
+                id: 'freeSecretStep' + (medic.freeSteps + 1),
                 textureName: 'SecretStepBuff',
                 duration: null,
                 applyChanges: function() {
@@ -1491,7 +1491,7 @@ export default function Medic(options) {
             }
 
             medic.applyBuff({
-                name: 'freeMine' + (medic.freeMines + 1),
+                id: 'freeMine' + (medic.freeMines + 1),
                 textureName: 'MineBuff',
                 duration: null,
                 applyChanges: function() {

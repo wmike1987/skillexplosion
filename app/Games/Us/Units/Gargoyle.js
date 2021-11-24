@@ -312,7 +312,7 @@ export default function Gargoyle(options) {
                     }, this.stoneFormCooldown + this.stoneFormLength);
 
                     transform.play();
-                    this.applyBuff({name: "gargBuff", textureName: 'DefensiveBuff', duration: this.stoneFormLength, applyChanges: function() {
+                    this.applyBuff({id: "gargBuff", textureName: 'DefensiveBuff', duration: this.stoneFormLength, applyChanges: function() {
                         this.stop(null, {peaceful: true}); //stop any movement
                         this.showLifeBar(true);
                         this.barsShowingOverride = true;
@@ -321,7 +321,7 @@ export default function Gargoyle(options) {
                         this.isoManagedTint = 0x4d4d4d;
                         this.isoManagedAlpha = 0;
                         this.healthRegenerationMultiplier = 8;
-                        Matter.Sleeping.set(this.body, true);
+                        this.setSleep(true);
                         this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', sortYOffset: 15, position: this.position});
                         this.defense += 10;
                     }.bind(this), removeChanges: function() {
@@ -334,7 +334,7 @@ export default function Gargoyle(options) {
                         this.defense -= 10;
                         this.isoManagedAlpha = 1;
                         this.stop();
-                        Matter.Sleeping.set(this.body, false);
+                        this.setSleep(false);
                         graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
                     }.bind(this)});
                 }

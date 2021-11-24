@@ -43,6 +43,9 @@ function UnitConstructor(options) {
     //death pact slaves
     if(options.slaves) {
         $.each(options.slaves, function(i, sound) {
+            if(sound._state == 'loaded') {
+                sound.noMasterRegistration = true;
+            }
             gameUtils.deathPact(newUnit, sound);
         });
     }
@@ -137,6 +140,24 @@ function UnitConstructor(options) {
         // body.noWire = false;
         // body.drawWire = true;
     }
+
+    //manage sleep on this body
+    newUnit.sleeperLocks = new Set();
+    newUnit.setSleep = function(value, sleeperLockName) {
+        if(value) {
+            if(sleeperLockName) {
+                this.sleeperLocks.add(sleeperLockName);
+            }
+            Matter.Sleeping.set(body, true);
+        } else {
+            if(sleeperLockName) {
+                this.sleeperLocks.delete(sleeperLockName);
+            }
+            if(this.sleeperLocks.size == 0) {
+                Matter.Sleeping.set(body, false);
+            }
+        }
+    };
 
     //**************************************************************
     // create selection body, or use the collision body if specified

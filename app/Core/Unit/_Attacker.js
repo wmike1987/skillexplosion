@@ -61,6 +61,23 @@ export default {
         });
         gameUtils.deathPact(this, this.cooldownTimer);
 
+        this.canAttackPreventer = 0;
+        Object.defineProperty(this, 'canAttack', {
+            get: function() {
+                return !this.canAttackPreventer;
+            },
+            set: function(value) {
+                if(!value) {
+                    this.canAttackPreventer++;
+                } else {
+                    this.canAttackPreventer--;
+                    if(this.canAttackPreventer < 0) {
+                        this.canAttackPreventer = 0;
+                    }
+                }
+            }
+        });
+
         //extend move to cease attacking
         this.rawMove = this.move;
         var originalMove = this.move;
@@ -96,7 +113,7 @@ export default {
             this.attackMoving = false;
             if (options.isHoldingPosition) {
                 this.isHoldingPosition = true;
-                Matter.Sleeping.set(this.body, true);
+                this.setSleep(true);
             } else {
                 this.isHoldingPosition = false;
             }
@@ -168,7 +185,7 @@ export default {
             if (!this.canAttackAndMove) {
                 this.rawStop();
                 //set state
-                Matter.Sleeping.set(this.body, true);
+                this.setSleep(true);
             }
 
             this.isAttacking = true;
@@ -198,7 +215,7 @@ export default {
                     targetUnit: target,
                     stop: true
                 });
-                Matter.Sleeping.set(this.body, true);
+                this.setSleep(true);
             }
         }
     },
@@ -310,7 +327,7 @@ export default {
 
         Matter.Events.trigger(this, 'holdPosition');
 
-        Matter.Sleeping.set(this.body, true);
+        this.setSleep(true);
     },
 
     _becomeOnAlert: function(commandObj) {
@@ -448,7 +465,7 @@ export default {
             if (!this.currentTarget && this.attackReady && this.isAttacking) {
                 //let us keep sleeping if we're holding position
                 if(!this.isHoldingPosition) {
-                    Matter.Sleeping.set(this.body, false);
+                    this.setSleep(false);
                 }
                 this.isAttacking = false;
             }

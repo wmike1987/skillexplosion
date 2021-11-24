@@ -733,6 +733,11 @@ var game = {
         this.levelLocalEntities = [];
     },
 
+    //debug
+    giveUnitItem: function(unit, itemName) {
+        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: [itemName], unit: unit});
+    },
+
     createShane: function() {
         var s = Marine({
             team: this.playerTeam,
@@ -742,7 +747,7 @@ var game = {
         });
         this.shane = s;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BlueVisor"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BlueVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PolarizedVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PictureOfTheMoon"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["SereneStar"], unit: this.shane});

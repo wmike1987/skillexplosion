@@ -39,7 +39,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Ruby Visor",
-        description: ["Delivering a killing blow while enraged grants Shane a free knife (up to one)."],
+        description: ["Gain a free knife (up to one) after delivering a killing blow while enraged."],
         icon: 'GoldenVisor'
     }, options, shaneOnly);
     return new ic(item);

@@ -35,13 +35,13 @@ var DoodadFactory = {
         //if we're pulling from a menu
         if (options.menuItem) {
             //get the options from the menu
-            options = doodadMenu[options.menuItem];
-            if(options.initialize) {
-                options.initialize();
+            var menuDoodadOptions = new doodadMenu[options.menuItem]();
+            if(menuDoodadOptions.initialize) {
+                menuDoodadOptions.initialize();
             }
 
             //and remix in the given options (in case of overridden values)
-            options = Object.assign(options, originalOptions);
+            options = Object.assign(menuDoodadOptions, originalOptions);
         }
 
         //specify default options
@@ -77,7 +77,7 @@ var DoodadFactory = {
         var doodad = new Doodad({
             collides: mathArrayUtils.resolveBooleanParam(options.collides),
             autoAdd: false,
-            position: mathArrayUtils.cloneVector(options.position),
+            position: options.position,
             radius: options.radius,
             // drawWire: true,
             texture: mathArrayUtils.convertToArray(options.textureName),
@@ -87,11 +87,11 @@ var DoodadFactory = {
             randomHFlip: options.randomHFlip,
             shadowIcon: options.shadowIcon,
             shadowAlpha: options.shadowAlpha,
-            shadowScale: mathArrayUtils.cloneVector(options.shadowScale),
-            shadowOffset: mathArrayUtils.cloneVector(options.shadowOffset),
-            scale: mathArrayUtils.cloneVector(options.scale),
-            offset: mathArrayUtils.cloneVector(options.offset),
-            bodyScale: mathArrayUtils.cloneVector(options.bodyScale),
+            shadowScale: options.shadowScale,
+            shadowOffset: options.shadowOffset,
+            scale: options.scale,
+            offset: options.offset,
+            bodyScale: options.bodyScale,
             sortYOffset: options.sortYOffset,
             loneNZRadius: options.loneNZRadius,
             noShadow: options.noShadow,

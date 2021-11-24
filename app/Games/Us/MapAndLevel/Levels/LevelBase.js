@@ -180,6 +180,9 @@ var levelBase = {
         }, {
             center: globals.currentGame.flagPosition,
             radius: 60
+        }, {
+            center: gameUtils.getPlayableCenter(),
+            radius: 120
         }];
 
         //set the tile tint

@@ -42,6 +42,23 @@ var moveable = {
             }
         });
 
+        this.canMovePreventer = 0;
+        Object.defineProperty(this, 'canMove', {
+            get: function() {
+                return !this.canMovePreventer;
+            },
+            set: function(value) {
+                if(!value) {
+                    this.canMovePreventer++;
+                } else {
+                    this.canMovePreventer--;
+                    if(this.canMovePreventer < 0) {
+                        this.canMovePreventer = 0;
+                    }
+                }
+            }
+        });
+
         this.eventClickMappings[this.commands.move.key] = this.move;
         this.eventClickStateGathering[this.commands.move.key] = function() {
             return {isSoloMover: Object.keys(globals.currentGame.unitSystem.selectedUnits).length == 1};
@@ -212,7 +229,7 @@ var moveable = {
         this.body.oneFrameOverrideInterpolation = true;
 
         //return body to non Sleeping
-        Matter.Sleeping.set(this.body, false);
+        this.setSleep(false);
 
         //remove movement callback
         if(this.moveTick)
@@ -266,7 +283,7 @@ var moveable = {
         }
 
         //return body to non Sleeping
-        Matter.Sleeping.set(this.body, false);
+        this.setSleep(false);
 
         //send body
         gameUtils.sendBodyToDestinationAtSpeed(this.body, this.footDestination, this.moveSpeed, false);

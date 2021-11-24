@@ -53,6 +53,7 @@ var Doodad = function(options) {
     if (options.randomHFlip) {
         if (mathArrayUtils.flipCoin()) {
             options.scale.x *= -1;
+            options.offset.x *= -1;
         }
     }
 

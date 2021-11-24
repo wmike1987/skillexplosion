@@ -150,8 +150,32 @@ var sceneryUtils = {
             },
         };
 
+        //get all rocks
         var possibleRocks = Object.keys(rockDetails);
 
+        //or get rocks based on collision
+        if(options.collidableRocks) {
+            possibleRocks = possibleRocks.filter(function(key, index) {
+                if(rockDetails[key].collides !== false) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        //or get rocks based on collision
+        if(options.nonCollidableRocks) {
+            possibleRocks = possibleRocks.filter(function(key, index) {
+                if(rockDetails[key].collides === false) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        //or the user specified the rocks
         if (options.names) {
             possibleRocks = options.names;
         }
