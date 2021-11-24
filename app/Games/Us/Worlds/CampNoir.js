@@ -708,7 +708,7 @@ var enemyDefs = {
             type: 'Gargoyle',
             amount: [6],
             atATime: 2,
-            hz: 12500
+            hz: 14000
         }, hardFlyObj]
     },
     outerBasic: {
