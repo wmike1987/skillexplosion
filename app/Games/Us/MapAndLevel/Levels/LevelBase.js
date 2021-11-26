@@ -122,7 +122,7 @@ var levelBase = {
             level.spawner.start();
             gameUtils.setCursorStyle('Main');
             let enemiesIncomingText = graphicsUtils.floatText("Enemies incoming", gameUtils.getPlayableCenter(), {
-                duration: 1250,
+                duration: 1750,
                 style: styles.titleOneStyle
             });
             graphicsUtils.flashSprite({sprite: enemiesIncomingText});

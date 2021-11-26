@@ -218,7 +218,8 @@ var campLevel = function() {
         });
         this.treeShader = new PIXI.Filter(null, valueShader, {
             colors: [0.4, 0.4, 2.0],
-            progress: 0.5
+            progress: 0.5,
+            invertProgress: false
         });
         this.treeShader.myName = 'treeShader';
         this.backgroundLightShader.myName = 'campfire';

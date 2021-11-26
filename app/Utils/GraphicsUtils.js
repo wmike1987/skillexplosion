@@ -1042,11 +1042,13 @@ var graphicsUtils = {
 
         game.renderer.layers.background.filters = [vshad];
         game.renderer.layers.backgroundOne.filters = [vshad];
+        game.renderer.layers.stageNOne.filters = [vshad];
         game.renderer.layers.stage.filters = [vshad];
 
         var disableFunction = function() {
             mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.background.filters);
             mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.backgroundOne.filters);
+            mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.stageNOne.filters);
             mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.stage.filters);
         };
 
