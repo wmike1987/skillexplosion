@@ -18,6 +18,7 @@ import {
 import {
     mathArrayUtils
 } from '@utils/MathArrayUtils.js';
+import valueShader from '@shaders/ValueShader.js';
 
 var graphicsUtils = {
 
@@ -545,8 +546,8 @@ var graphicsUtils = {
             },
             play: function() {
                 //default the last entity to trigger the onDone callback when the float is done
-                var lastEl = this.chain[this.chain.length-1];
-                if(!lastEl.additionalOptions.endAfter) {
+                var lastEl = this.chain[this.chain.length - 1];
+                if (!lastEl.additionalOptions.endAfter) {
                     lastEl.additionalOptions.onDone = this.onDone;
                 }
                 this._playNext();
@@ -555,18 +556,18 @@ var graphicsUtils = {
                 var options = this.chain[this.nowPlaying];
 
                 //if we've specified a 'startNextAfter', start the next float after that duration
-                if(options.additionalOptions.startNextAfter) {
+                if (options.additionalOptions.startNextAfter) {
                     gameUtils.doSomethingAfterDuration(() => {
                         this._playNext();
                     }, options.additionalOptions.startNextAfter);
-                } else if(options.additionalOptions.endAfter) {
+                } else if (options.additionalOptions.endAfter) {
                     gameUtils.doSomethingAfterDuration(() => {
                         this.onDone();
                     }, options.additionalOptions.endAfter);
                 }
                 var myText = graphicsUtils.floatText(options.text, options.position, options.additionalOptions);
 
-                if(options.additionalOptions.onStart) {
+                if (options.additionalOptions.onStart) {
                     options.additionalOptions.onStart(myText);
                 }
 
@@ -1017,6 +1018,43 @@ var graphicsUtils = {
             remove.removeHandler();
         });
     },
+
+    enableLighting: function(options) {
+        options = options || {};
+        options = Object.assign({
+            invertProgress: false,
+            r: 1,
+            g: 1,
+            b: 1
+        }, options);
+
+        let r = options.r;
+        let g = options.g;
+        let b = options.b;
+
+        let vshad = new PIXI.Filter(null, valueShader, {
+            colors: [r, g, b],
+            progress: 0.5,
+            invertProgress: options.invertProgress
+        });
+
+        let game = globals.currentGame;
+
+        game.renderer.layers.background.filters = [vshad];
+        game.renderer.layers.backgroundOne.filters = [vshad];
+        game.renderer.layers.stage.filters = [vshad];
+
+        var disableFunction = function() {
+            mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.background.filters);
+            mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.backgroundOne.filters);
+            mathArrayUtils.removeObjectFromArray(vshad, game.renderer.layers.stage.filters);
+        };
+
+        return {
+            shader: vshad,
+            disableFunc: disableFunction
+        };
+    }
 };
 
 export {

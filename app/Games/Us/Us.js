@@ -318,6 +318,25 @@ var game = {
         Matter.Events.on(this, 'travelFinished', function(event) {
             this.invalidateTimer(this.fatigueTimer);
         }.bind(this));
+
+        Matter.Events.on(this, 'enterNight', function(event) {
+            this.isNight = true;
+            gameUtils.matterOnce(this, 'EnterLevel', function(event) {
+                var lightObjs = graphicsUtils.enableLighting({r: 0.2, g: 0.2, b: 1.0, invertProgress: true});
+
+                var progressTimer = globals.currentGame.addTimer({
+                    name: 'nightFadeOutProgressTimer',
+                    runs: 1,
+                    timeLimit: 8000,
+                    tickCallback: function(deltaTime) {
+                        lightObjs.shader.uniforms.progress = this.percentDone;
+                    },
+                    totallyDoneCallback: function() {
+                        lightObjs.disableFunc();
+                    }
+                });
+            }.bind(this));
+        }.bind(this));
     },
 
     play: function(options) {

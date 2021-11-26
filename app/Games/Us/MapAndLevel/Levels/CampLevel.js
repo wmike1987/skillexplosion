@@ -276,6 +276,7 @@ var campLevel = function() {
 
                 this.backgroundLightShader.uniforms.lightRadius = this.lightRadius;
                 this.stageLightShader.uniforms.lightRadius = this.lightRadius;
+                Matter.Events.trigger(globals.currentGame, 'enterNight');
             }.bind(this);
             scene.add(initLight);
         }
@@ -288,10 +289,10 @@ var campLevel = function() {
             var game = globals.currentGame;
             game.invalidateTimer(flameTimer);
             game.invalidateTimer(progressTimer);
-            game.renderer.layers.background.filters = [];
-            game.renderer.layers.backgroundOne.filters = [];
-            game.renderer.layers.stage.filters = [];
-            game.renderer.layers.stageTrees.filters = [];
+            mathArrayUtils.removeObjectFromArray(this.backgroundLightShader, game.renderer.layers.background.filters);
+            mathArrayUtils.removeObjectFromArray(this.backgroundLightShader, game.renderer.layers.backgroundOne.filters);
+            mathArrayUtils.removeObjectFromArray(this.stageLightShader, game.renderer.layers.stage.filters);
+            mathArrayUtils.removeObjectFromArray(this.treeShader, game.renderer.layers.stageTrees.filters);
             game.map.hide();
             this.camp.cleanUpSounds();
             $('body').off('mousedown.map');
