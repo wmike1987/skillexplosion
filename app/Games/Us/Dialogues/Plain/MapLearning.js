@@ -170,7 +170,7 @@ var MapLearning = function(scene) {
         text: "Returning to camp resets fatigue, but also resets adrenaline.",
         isInfo: true,
         backgroundBox: true,
-        delayAfterEnd: 3250
+        delayAfterEnd: 2500
     });
     var a17a = new Dialogue({
         actor: "Info",

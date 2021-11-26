@@ -681,16 +681,16 @@ export default function Marine(options) {
             },
             {
                 id: 'shadow',
-                data: 'IsoShadowBlurred',
+                data: 'IsoShadowBlurredThin',
                 scale: {
-                    x: 1 / 8,
-                    y: 2
+                    x: 1,
+                    y: 0.8
                 },
                 offset: {
                     x: 15,
                     y: 20
                 },
-                rotate: mathArrayUtils.pointInDirection(knife.position, destination),
+                rotate: mathArrayUtils.pointInDirection(knife.position, destination, 'east'),
                 stage: "stageNTwo",
             }
         ];
