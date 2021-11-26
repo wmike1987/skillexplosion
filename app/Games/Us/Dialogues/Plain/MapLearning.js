@@ -153,10 +153,17 @@ var MapLearning = function(scene) {
     });
     var a16 = new Dialogue({
         actor: "Ursula",
-        text: "Travling produces fatigue rapidly, and our starting fatigue increases per camp, so we should manage our routes wisely.",
-        delayAfterEnd: 2000,
+        text: "Traveling produces fatigue rapidly and our starting fatigue increases per enemy camp.",
+        delayAfterEnd: 500,
         backgroundBox: true,
         continuation: true
+    });
+    var a16b = new Dialogue({
+        actor: "Ursula",
+        text: "We'd therefore be wise to plan our routes.",
+        delayAfterEnd: 2000,
+        continuation: true,
+        backgroundBox: true
     });
     var a17 = new Dialogue({
         actor: "Info",
@@ -188,7 +195,7 @@ var MapLearning = function(scene) {
         backgroundBox: true
     });
 
-    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a11a, a12, a13, a14, a15, a16, a17, a17a, a18, a19], {
+    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a11a, a12, a13, a14, a15, a16, a16b, a17, a17a, a18, a19], {
         cleanUpOnDone: true,
         startDelay: 200,
         done: () => {
