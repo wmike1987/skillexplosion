@@ -1559,6 +1559,7 @@ var campNoir = {
                     this.pit = SceneryUtils.decorateTerrain({
                         possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, log1, log1, {
                             textureName: 'bullets',
+                            where: 'backgroundOne',
                             randomHFlip: true,
                             unique: true,
                             randomScale: {min: 0.8, max: 1.0}
@@ -1628,6 +1629,7 @@ var campNoir = {
                         possibleDoodads: [tentDoodad, enemyPost2, {
                             textureName: 'bullets',
                             randomHFlip: true,
+                            where: 'backgroundOne',
                             unique: true,
                             groupingOptions: {
                                 priority: 2

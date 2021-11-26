@@ -327,7 +327,7 @@ var game = {
                 var progressTimer = globals.currentGame.addTimer({
                     name: 'nightFadeOutProgressTimer',
                     runs: 1,
-                    timeLimit: 1200,
+                    timeLimit: 12000,
                     tickCallback: function(deltaTime) {
                         lightObjs.shader.uniforms.progress = this.percentDone;
                     },
