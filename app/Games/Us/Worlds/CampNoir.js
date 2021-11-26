@@ -1009,7 +1009,7 @@ var phaseOneAndAHalf = function(options) {
                 delayAfterEnd: 2500,
             });
             var chain = new DialogueChain([a1], {
-                startDelay: 1000,
+                startDelay: 1500,
                 cleanUpOnDone: true
             });
             globals.currentGame.currentScene.add(chain);
@@ -1018,7 +1018,7 @@ var phaseOneAndAHalf = function(options) {
         wrappedNextPhase: function() {
             gameUtils.doSomethingAfterDuration(() => {
                 globals.currentGame.nextPhase();
-            }, 4000);
+            }, 5500);
         }
     };
 };
@@ -1525,7 +1525,7 @@ var campNoir = {
                 };
                 mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
 
-                //add smokey pit
+                //add smokey pit and tent
                 if (!this.noSmokePit) {
                     var rockPitDoodad = DoodadFactory.createDoodad({
                         menuItem: 'rockPit',

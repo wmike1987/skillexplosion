@@ -275,6 +275,9 @@ export default function DamageFlySwarm(options) {
                 gogogo: true,
                 timeLimit: cooldown,
                 callback: function() {
+                    if(this.isDead) {
+                        return;
+                    }
                     var attacked = false;
                     flyAnim.animationSpeed = flyAnim.originalSpeed;
                     gameUtils.applyToUnitsByTeam(function(team) {

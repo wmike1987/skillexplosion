@@ -121,10 +121,11 @@ var levelBase = {
         gameUtils.doSomethingAfterDuration(() => {
             level.spawner.start();
             gameUtils.setCursorStyle('Main');
-            graphicsUtils.floatText("Begin", gameUtils.getPlayableCenter(), {
-                runs: 15,
+            let enemiesIncomingText = graphicsUtils.floatText("Enemies incoming", gameUtils.getPlayableCenter(), {
+                duration: 1250,
                 style: styles.titleOneStyle
             });
+            graphicsUtils.flashSprite({sprite: enemiesIncomingText});
             game.heartbeat.play();
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {

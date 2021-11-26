@@ -153,7 +153,7 @@ var MapLearning = function(scene) {
     });
     var a16 = new Dialogue({
         actor: "Ursula",
-        text: "Fatigue rapidly accumulates during travel and completing a camp increases our starting fatigue by 5%.",
+        text: "Travling produces fatigue rapidly, and our starting fatigue increases per camp, so we should manage our routes wisely.",
         delayAfterEnd: 2000,
         backgroundBox: true,
         continuation: true
@@ -167,7 +167,7 @@ var MapLearning = function(scene) {
     });
     var a17a = new Dialogue({
         actor: "Info",
-        text: "It's only possible to return to camp once per wave.",
+        text: "It's possible to return to camp once per wave.",
         isInfo: true,
         backgroundBox: true,
         delayAfterEnd: 2500
