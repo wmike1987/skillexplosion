@@ -143,7 +143,8 @@ var campLevel = function() {
         var campfire = new Doodad({
             collides: true,
             autoAdd: false,
-            radius: 40,
+            radius: 20,
+            // drawWire: true,
             bodyScale: {
                 y: 0.5
             },

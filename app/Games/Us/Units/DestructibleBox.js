@@ -15,7 +15,7 @@ export default function DestructibleBox(options) {
     var box = {};
 
     options = options || {};
-    $.extend(options, {radius: 22}, options);
+    $.extend(options, {radius: 12}, options);
 
     var sc = {x: 0.1, y: 0.1};
     var adjustedUpDownsc = {x: 0.1, y: 0.1};

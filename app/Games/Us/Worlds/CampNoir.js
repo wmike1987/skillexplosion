@@ -1544,6 +1544,28 @@ var campNoir = {
                         max: 90,
                     };
 
+                    var enemyPost2 = DoodadFactory.createDoodad({
+                        menuItem: 'enemyPost1',
+                        tint: treeTints[tIndex]
+                    });
+                    enemyPost.unique = true;
+                    enemyPost.groupingOptions = {
+                        priority: 1,
+                        min: 70,
+                        max: 90,
+                    };
+
+                    var enemyPost3 = DoodadFactory.createDoodad({
+                        menuItem: 'enemyPost1',
+                        tint: treeTints[tIndex]
+                    });
+                    enemyPost.unique = true;
+                    enemyPost.groupingOptions = {
+                        priority: 1,
+                        min: 70,
+                        max: 90,
+                    };
+
                     var log1 = DoodadFactory.createDoodad({
                         menuItem: 'sidewaysLog1',
                         tint: treeTints[tIndex]
@@ -1557,7 +1579,7 @@ var campNoir = {
                     };
 
                     this.pit = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, log1, log1, {
+                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, enemyPost2, enemyPost3, log1, log1, {
                             textureName: 'bullets',
                             where: 'backgroundOne',
                             randomHFlip: true,
@@ -1606,8 +1628,18 @@ var campNoir = {
                         r: 1,
                         noZones: noZones
                     });
-
                     scene.add(this.pit);
+
+                    var pitPosition = this.pit.list[0].position;
+                    var l = graphicsUtils.createDisplayObject("CampDoodads/PitTint", {
+                        position: pitPosition,
+                        tint: 0x3b0003,
+                        alpha: 0.25,
+                        scale: {x: 8, y: 8},
+                        where:'backgroundOne'
+                    });
+                    scene.add(l);
+
 
                     var tentDoodad = DoodadFactory.createDoodad({
                         menuItem: 'enemyTent1',
@@ -1615,18 +1647,18 @@ var campNoir = {
                     });
                     tentDoodad.unique = true;
 
-                    var enemyPost2 = DoodadFactory.createDoodad({
+                    var enemyPost4 = DoodadFactory.createDoodad({
                         menuItem: 'enemyPost1',
                         tint: treeTints[tIndex]
                     });
-                    enemyPost2.unique = true;
-                    enemyPost2.groupingOptions = {
+                    enemyPost4.unique = true;
+                    enemyPost4.groupingOptions = {
                         priority: 1,
                         min: 70,
                         max: 90,
                     };
                     this.tent = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [tentDoodad, enemyPost2, {
+                        possibleDoodads: [tentDoodad, enemyPost4, {
                             textureName: 'bullets',
                             randomHFlip: true,
                             where: 'backgroundOne',
@@ -1660,6 +1692,17 @@ var campNoir = {
                                 priority: 3,
                                 min: 80,
                                 max: 100
+                            }
+                        }, {
+                            textureName: 'CampDoodads/Bench1',
+                            randomScale: {min: 0.8, max: 1.0},
+                            randomHFlip: true,
+                            unique: true,
+                            where: 'stage',
+                            groupingOptions: {
+                                priority: 3,
+                                min: 100,
+                                max: 150
                             }
                         }, {
                             textureName: 'CampDoodads/CritterFootprint3',
@@ -1931,7 +1974,7 @@ var campNoir = {
                 where: 'backgroundOne',
                 intensity: 0.20,
                 rotate: !this.isCampProper,
-                rotateSpeed: 3
+                rotateSpeed: 4
             });
             var lborder = gameUtils.createAmbientLightBorder(borderTints[tIndex], 'backgroundOne', 0.65);
             scene.add(l1);

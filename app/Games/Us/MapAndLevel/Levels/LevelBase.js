@@ -364,7 +364,7 @@ var levelBase = {
             drawWire: false,
             collides: true,
             autoAdd: false,
-            radius: 30,
+            radius: 20,
             texture: [this.mapTableSprite],
             stage: 'stage',
             scale: {
