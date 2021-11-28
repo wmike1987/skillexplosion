@@ -242,6 +242,7 @@ var renderer = function(engine, options) {
             antialias: true
         });
         // PIXI.settings.ROUND_PIXELS = true;
+        PIXI.settings.RENDER_OPTIONS.antialias = true;
         this.canvasEl = this.pixiApp.renderer.view;
 
         var worldWidth = 1400;
@@ -401,6 +402,9 @@ var renderer = function(engine, options) {
             }
             if (child.gameFilter) {
                 this.pixiApp.stage.filters = [child.gameFilter];
+            }
+            if(child.roundToNearestHalfPixel) {
+                newSprite.roundToNearestHalfPixel = true;
             }
             if (child.skew) {
                 newSprite.skew = child.skew;

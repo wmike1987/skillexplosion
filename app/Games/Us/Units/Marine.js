@@ -223,14 +223,15 @@ export default function Marine(options) {
     var sortYOffset = 0;
     var rc = [{
             id: 'selected',
-            data: 'IsometricSelected',
+            data: 'IsometricSelectedSmall',
             scale: {
-                x: 0.54,
-                y: 0.54
+                x: 1.0,
+                y: 1.0
             },
             stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
+            roundPixels: true,
             rotate: 'none',
             offset: {
                 x: 0,
@@ -247,6 +248,7 @@ export default function Marine(options) {
             stage: 'stageNOne',
             visible: false,
             avoidIsoMgr: true,
+            roundPixels: true,
             rotate: 'none',
             offset: {
                 x: 0,
@@ -347,10 +349,10 @@ export default function Marine(options) {
             sortYOffset: sortYOffset,
         }, {
             id: 'shadow',
-            data: 'IsoShadowBlurred',
+            data: 'IsoShadowBlurredSmall',
             scale: {
-                x: 0.55,
-                y: 0.55
+                x: 1.0,
+                y: 1.0
             },
             visible: true,
             avoidIsoMgr: true,

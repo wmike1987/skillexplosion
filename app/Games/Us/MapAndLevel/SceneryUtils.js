@@ -487,6 +487,7 @@ var sceneryUtils = {
                             x: originalPosition.x,
                             y: originalPosition.y
                         }, angle, myScalar);
+                        newPosition = mathArrayUtils.roundPositionToWholeNumbers(newPosition);
                         return {x: newPosition.x, y: newPosition.y};
                     };
 

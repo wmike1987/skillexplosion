@@ -146,8 +146,8 @@ export default function Gargoyle(options) {
     var rc = [
     {
         id: 'selected',
-        data: 'IsometricSelected',
-        scale: {x: 0.55, y: 0.55},
+        data: 'IsometricSelectedSmall',
+        scale: {x: 1.1, y: 1.1},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -226,8 +226,8 @@ export default function Gargoyle(options) {
         offset: {x: 0, y: yOffset}
     },{
         id: 'shadow',
-        data: 'IsoShadowBlurredWhite',
-        scale: {x: 0.55, y: 0.55},
+        data: 'IsoShadowBlurredSmall',
+        scale: {x: 1.1, y: 1.1},
         visible: true,
         tint: 0x000546,
         avoidIsoMgr: true,

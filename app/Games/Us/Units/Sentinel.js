@@ -149,8 +149,8 @@ export default function Sentinel(options) {
     var rc = [
     {
         id: 'selected',
-        data: 'IsometricSelected',
-        scale: {x: 0.55, y: 0.55},
+        data: 'IsometricSelectedSmall',
+        scale: {x: 1.0, y: 1.0},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -229,8 +229,8 @@ export default function Sentinel(options) {
         offset: {x: 0, y: yOffset}
     },{
         id: 'shadow',
-        data: 'IsoShadowBlurred',
-        scale: {x: 0.55, y: 0.55},
+        data: 'IsoShadowBlurredSmall',
+        scale: {x: 1.0, y: 1.0},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',

@@ -103,16 +103,16 @@ var levelBase = {
 
         //start enemy spawn
         gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {
-                runs: 15,
+            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({y: 20}), {
+                duration: 1000,
                 style: styles.titleOneStyle
             });
             game.heartbeat.play();
             game.battleInProgress = true;
         }, 800);
         gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenter(), {
-                runs: 15,
+            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({y: 20}), {
+                duration: 1000,
                 style: styles.titleOneStyle
             });
             game.unitSystem.unpause();
@@ -121,8 +121,8 @@ var levelBase = {
         gameUtils.doSomethingAfterDuration(() => {
             level.spawner.start();
             gameUtils.setCursorStyle('Main');
-            let enemiesIncomingText = graphicsUtils.floatText("Enemies incoming", gameUtils.getPlayableCenter(), {
-                duration: 1750,
+            let enemiesIncomingText = graphicsUtils.floatText("Enemies incoming", gameUtils.getPlayableCenterPlus({y: 20}), {
+                duration: 2000,
                 style: styles.titleOneStyle
             });
             graphicsUtils.flashSprite({sprite: enemiesIncomingText});

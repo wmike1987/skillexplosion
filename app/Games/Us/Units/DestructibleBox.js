@@ -24,8 +24,8 @@ export default function DestructibleBox(options) {
     var rc = [
     {
         id: 'selected',
-        data: 'IsometricSelected',
-        scale: {x: 1.1, y: 1.1},
+        data: 'IsometricSelectedSmall',
+        scale: {x: 1.6, y: 1.6},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -35,7 +35,7 @@ export default function DestructibleBox(options) {
     {
         id: 'selectionPending',
         data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.6, y: 0.6},
+        scale: {x: 0.5, y: 0.5},
         stage: 'stageNOne',
         visible: false,
         avoidIsoMgr: true,
@@ -50,8 +50,8 @@ export default function DestructibleBox(options) {
         sortYOffset: 45,
     }, {
         id: 'shadow',
-        data: 'IsoShadowBlurred',
-        scale: {x: 1.2, y: 1.2},
+        data: 'IsoShadowBlurredSmall',
+        scale: {x: 1.6, y: 1.6},
         visible: true,
         avoidIsoMgr: true,
         rotate: 'none',

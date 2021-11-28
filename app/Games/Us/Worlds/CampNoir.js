@@ -609,8 +609,8 @@ var enemyDefs = {
     learningWithUrsula: {
         enemySets: [{
             type: 'Critter',
-            amount: 1,
-            atATime: 1,
+            amount: 5,
+            atATime: 2,
             hz: 3500
         }]
     },
@@ -630,7 +630,7 @@ var enemyDefs = {
     learningSentinelWithUrsula: {
         enemySets: [{
             type: 'Critter',
-            amount: 3,
+            amount: 4,
             atATime: 1,
             hz: 3500
         }, {
@@ -961,7 +961,7 @@ var phaseOne = function() {
                 campNode.manualDisable = false;
                 campNode.manualEnable = true;
                 campNode.activeCampTooltipOverride = 'Camp available.';
-
+                Matter.Events.off(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
             }
         }
     };
@@ -1428,6 +1428,38 @@ var finalPhase = function() {
         },
         positionOptions: otherPositionOp
     });
+
+    return {
+        nextPhase: 'allNodesComplete',
+        onEnterBehavior: function() {
+            var a1 = new Dialogue({
+                actor: "MacMurray",
+                text: "Great job...",
+                backgroundBox: true,
+                letterSpeed: 30,
+                delayAfterEnd: 1000,
+            });
+            var self = this;
+            var chain = new DialogueChain([a1], {
+                startDelay: 750,
+                cleanUpOnDone: true
+            });
+            globals.currentGame.currentScene.add(chain);
+            chain.play();
+            // gameUtils.doSomethingAfterDuration(() => {
+            //     globals.currentGame.flyover(() => {
+            //         globals.currentGame.dustAndItemBox({
+            //             location: gameUtils.getPlayableCenterPlus({
+            //                 x: 200,
+            //                 y: 120
+            //             }),
+            //             item: ['Book', 'Book'],
+            //             special: true
+            //         });
+            //     });
+            // }, 2000);
+        }
+    };
 };
 
 //this defines the camp noir world

@@ -168,10 +168,10 @@ export default function Rammian(options) {
     var yOffset = 22;
     var rc = [{
             id: 'selected',
-            data: 'IsometricSelected',
+            data: 'IsometricSelectedSmall',
             scale: {
-                x: 0.55,
-                y: 0.55
+                x: 1.1,
+                y: 1.1
             },
             stage: 'stageNOne',
             visible: false,
@@ -284,10 +284,10 @@ export default function Rammian(options) {
             }
         }, {
             id: 'shadow',
-            data: 'IsoShadowBlurredWhite',
+            data: 'IsoShadowBlurredSmall',
             scale: {
-                x: 0.55,
-                y: 0.55
+                x: 1.1,
+                y: 1.1
             },
             visible: true,
             tint: 0x3b0101,

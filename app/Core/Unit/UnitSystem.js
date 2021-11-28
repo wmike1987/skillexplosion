@@ -211,7 +211,7 @@ var UnitSystem = function(properties) {
         //prevailing-unit visual indicator
         if (!globals.currentGame.hidePrevailingIndicator) {
             var prevailingTint = 0x86FF1B;
-            this.prevailingUnitCircle = graphicsUtils.addSomethingToRenderer('PrevailingUnitIndicator', 'stageNOne', {
+            this.prevailingUnitCircle = graphicsUtils.addSomethingToRenderer('PrevailingUnitIndicatorSmall', 'stageNOne', {
                 x: -50,
                 y: -50,
                 tint: prevailingTint

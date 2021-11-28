@@ -187,10 +187,10 @@ export default function Medic(options) {
     var yOffset = 22;
     var rc = [{
             id: 'selected',
-            data: 'IsometricSelected',
+            data: 'IsometricSelectedSmall',
             scale: {
-                x: 0.54,
-                y: 0.54
+                x: 1.0,
+                y: 1.0
             },
             stage: 'stageNOne',
             visible: false,
@@ -303,10 +303,10 @@ export default function Medic(options) {
             }
         }, {
             id: 'shadow',
-            data: 'IsoShadowBlurred',
+            data: 'IsoShadowBlurredSmall',
             scale: {
-                x: 0.55,
-                y: 0.55
+                x: 1.0,
+                y: 1.0
             },
             visible: true,
             avoidIsoMgr: true,
