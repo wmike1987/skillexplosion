@@ -259,12 +259,21 @@ export default {
             return;
         }
 
+        //clear previous
+        if(this.specifiedAttackTarget) {
+            Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
+        }
+
         //set the specified target
         this.specifiedAttackTarget = target;
 
         //If the specified unit dies (is removed), stop and reset state.
         this.specifiedCallback = function() {
-            //always do this
+            //turn off for this
+            if(this.specifiedAttackTarget) {
+                Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
+            }
+
             this.specifiedAttackTarget = null;
             this.specifiedCallback = null;
 
@@ -289,8 +298,9 @@ export default {
 
         //But if we are removed (from the game) first, remove the onremove listener
         gameUtils.deathPact(this, function() {
-            if (this.specifiedAttackTarget)
+            if (this.specifiedAttackTarget) {
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
+            }
         }.bind(this), 'removeSpecifiedAttackTarget');
 
         //move unit
