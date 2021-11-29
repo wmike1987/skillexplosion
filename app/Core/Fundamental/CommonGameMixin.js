@@ -27,6 +27,7 @@ import seedrandom from 'seedrandom';
 import {
     DoodadFactory
 } from '@games/Us/Doodads/DoodadFactory.js';
+import UnitMenu from '@games/Us/UnitMenu.js';
 
 /*
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -352,9 +353,9 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    globals.currentGame.nextPhase();
+                    // globals.currentGame.nextPhase();
                     //
-                    // this.shane.dodgeSound.play();
+                    this.shane.dodgeSound.play();
 
                     // if (this.gameState == 'paused') {
                     //     this.togglePause();
@@ -427,6 +428,29 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'm' || event.key == 'M') {
                     console.info(this.mousePosition);
+                }
+            }
+
+            if (keyStates.Alt) {
+                if (event.key == 'u' || event.key == 'U') {
+                    //unit tester
+                    if(true) {
+                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'Eruptlet', {
+                            team: this.enemyTeam,
+                            // team: this.playerTeam,
+                            idleCancel: false
+                        });
+
+
+                        // unitT.body.drawWire = true;
+                        unitT.position = {x: 500, y: 400};
+                        unitT.moveSpeed = 0.0001;
+                        // gameUtils.moveUnitOffScreen(unitT);
+                        this.addUnit(unitT);
+                        this.newUnitTest = unitT;
+                        // unitT.maxHealth = 100000;
+                        // unitT.currentHealth = 100000;
+                    }
                 }
             }
 

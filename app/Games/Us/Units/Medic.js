@@ -1539,7 +1539,9 @@ export default function Medic(options) {
                     medic.defensePassive.aggressionAction();
                     return {value: 1};
                 };
-                deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
+                if(!medic.defensivePassive.deepThoughtBypassAggPredicate) {
+                    deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
+                }
                 deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
                 deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
             }
@@ -1659,6 +1661,7 @@ export default function Medic(options) {
 
             return {value: damageReduced};
         },
+        deepThoughtBypassAggPredicate: true,
         aggressionPredicate: function(event) {
             return event.attackContext.isProjectile;
         },

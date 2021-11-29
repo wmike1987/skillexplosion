@@ -138,10 +138,13 @@ export default {
         this.graveIsFlashing = false;
 
         this.isDead = false;
-        this.isTargetable = true;
-        this.isSelectable = true;
-        this.canAttack = true;
-        this.canMove = true;
+
+        gameUtils.executeSomethingNextFrame(() => {
+            this.isTargetable = true;
+            this.isSelectable = true;
+            this.canAttack = true;
+            this.canMove = true;
+        });
     },
 
     revive: function(options) {
@@ -170,10 +173,14 @@ export default {
 
         var revivingPosition = options.revivingUnit ? mathArrayUtils.addScalarToVectorTowardDestination(options.revivingUnit.position, gameUtils.getCanvasCenter(), 60) : options.gravePosition;
         this.position = revivingPosition;
-        this.isTargetable = true;
-        this.isSelectable = true;
-        this.canAttack = true;
-        this.canMove = true;
+
+
+        gameUtils.executeSomethingNextFrame(() => {
+            this.isTargetable = true;
+            this.isSelectable = true;
+            this.canAttack = true;
+            this.canMove = true;
+        });
 
         this.reviveSound.play();
         var replenAnimation = gameUtils.getAnimation({

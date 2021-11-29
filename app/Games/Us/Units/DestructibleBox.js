@@ -15,7 +15,7 @@ export default function DestructibleBox(options) {
     var box = {};
 
     options = options || {};
-    $.extend(options, {radius: 12}, options);
+    $.extend(options, {radius: 20}, options);
 
     var sc = {x: 0.1, y: 0.1};
     var adjustedUpDownsc = {x: 0.1, y: 0.1};
@@ -83,6 +83,7 @@ export default function DestructibleBox(options) {
         itemsEnabled: true,
         disregardItemBuffs: true,
         organic: false,
+        drawWire: true,
         portrait: graphicsUtils.createDisplayObject('BoxPortrait'),
         wireframe: graphicsUtils.createDisplayObject('BoxGroupPortrait'),
         team: options.team || 49,
