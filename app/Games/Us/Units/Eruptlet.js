@@ -259,9 +259,8 @@ export default function Eruptlet(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            if(!this.alreadyAttacked) {
+            if(!this.alreadyAttacked && !this.isAttacking) {
                 this.attack();
-                    this.attack();
             }
             globals.currentGame.removeUnit(this);
         },
@@ -326,8 +325,9 @@ export default function Eruptlet(options) {
                     unit.sufferAttack(this.damage, this);
                 }.bind(this));
                 this.alreadyAttacked = true;
-                if(!this.isDead)
+                if(!this.isDead) {
                     this.sufferAttack(10000);
+                }
             }
         },
     });
