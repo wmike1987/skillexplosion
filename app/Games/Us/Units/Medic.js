@@ -1539,7 +1539,7 @@ export default function Medic(options) {
                     medic.defensePassive.aggressionAction();
                     return {value: 1};
                 };
-                if(!medic.defensivePassive.deepThoughtBypassAggPredicate) {
+                if(!medic.defensePassive.deepThoughtBypassAggPredicate) {
                     deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
                 }
                 deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
