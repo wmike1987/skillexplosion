@@ -949,7 +949,7 @@ export default function Marine(options) {
                 title: 'First Aid Pouch',
                 description: '',
                 updaters: {descriptions: function() {
-                    var sum = 1;
+                    var sum = 0.25;
                     var addition = marine.firstAidPouchAdditions.forEach((addition) => {
                         sum += addition;
                     });
