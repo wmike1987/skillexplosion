@@ -213,7 +213,7 @@
 	"frame": {"x":824,"y":465,"w":90,"h":53},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":14,"y":17,"w":90,"h":53},
+	"spriteSourceSize": {"x":16,"y":18,"w":90,"h":53},
 	"sourceSize": {"w":121,"h":80}
 },
 "CampDoodads/PitTint.png":
@@ -1117,6 +1117,6 @@
 	"format": "RGBA8888",
 	"size": {"w":986,"h":3697},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:c6851fb0cbdb2f3e8de31653aad7f265:b3285c84397f00b42cc86bc3af26421a:53fe6e4b7af75f0dc83cc65bc0af16d4$"
+	"smartupdate": "$TexturePacker:SmartUpdate:ae9dac3b1f60d37450a80ebac5dc245e:0604c0eef33d3ce1230d58702fd6f85f:53fe6e4b7af75f0dc83cc65bc0af16d4$"
 }
 }
