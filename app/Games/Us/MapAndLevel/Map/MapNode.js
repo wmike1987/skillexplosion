@@ -287,15 +287,11 @@ MapLevelNode.prototype.deactivateToken = function() {
 MapLevelNode.prototype.complete = function() {
     this.isCompleted = true;
     this.justCompleted = true;
+    Matter.Events.trigger(globals.currentGame, 'nodeCompleted', {node: this});
     this.displayObject.tooltipObj.destroy();
     if (this._nodeCompleteExtension) {
         this._nodeCompleteExtension();
     }
-};
-
-MapLevelNode.prototype.completeAndPlayAnimation = function() {
-    this.complete();
-    this.playCompleteAnimation();
 };
 
 MapLevelNode.prototype.playCompleteAnimation = function(lesser) {

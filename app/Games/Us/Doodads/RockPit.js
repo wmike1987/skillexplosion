@@ -23,7 +23,7 @@ var rockPit = function() {
         y: 1.25
     };
     // this.drawWire = true,
-    this.bodyScale = {x: 1.3, y: 0.25};
+    this.bodyScale = {x: 1.3, y: 0.5};
     this.offset = {
         x: 0,
         y: 0

@@ -203,40 +203,44 @@ var game = {
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp];
 
         //next phase detector
-        Matter.Events.on(this, 'showMap', function(event) {
-            //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
+        Matter.Events.on(this, 'nodeCompleted', function(event) {
             if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
-                if (this.currentPhaseObj.onAllNodesComplete) {
-                    this.currentPhaseObj.onAllNodesComplete();
-                }
-
                 //manually enable the camp
                 let campNode = this.map.findNodeById('camp');
                 campNode.manualEnable = true;
                 campNode.setCampTooltip('Camp available.');
                 this.currentPhaseObj.alreadyClosed = true;
 
-                //show arrow and then setup on-enter resets
-                var currentPhaseObj = this.currentPhaseObj;
-                let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
-                gameUtils.matterOnce(this, 'hideMap', function(event) {
-                    graphicsUtils.removeSomethingFromRenderer(arrow);
-                });
-                campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
-                    campNode.manualEnable = false;
-                    campNode.activeCampTooltipOverride = null;
-                    if (currentPhaseObj.onEnterBehavior) {
-                        currentPhaseObj.onEnterBehavior();
+                //show stuff on the subsequent showMap event
+                gameUtils.matterOnce(this, 'showMap', function(event) {
+                    //if the current phase is a 'allNodesComplete' phase, look for this condition upon showMap
+                    if (this.currentPhaseObj.onAllNodesComplete) {
+                        this.currentPhaseObj.onAllNodesComplete();
                     }
 
-                    if (!currentPhaseObj.wrappedNextPhase) {
-                        globals.currentGame.nextPhase();
-                    } else {
-                        currentPhaseObj.wrappedNextPhase();
-                    }
-                };
+                    //show arrow and then setup on-enter resets
+                    var currentPhaseObj = this.currentPhaseObj;
+                    let arrow = graphicsUtils.pointToSomethingWithArrow(campNode, -20, 0.5);
+                    gameUtils.matterOnce(this, 'hideMap', function(event) {
+                        graphicsUtils.removeSomethingFromRenderer(arrow);
+                    });
+                    campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
+                        campNode.manualEnable = false;
+                        campNode.activeCampTooltipOverride = null;
+                        if (currentPhaseObj.onEnterBehavior) {
+                            currentPhaseObj.onEnterBehavior();
+                        }
+
+                        if (!currentPhaseObj.wrappedNextPhase) {
+                            globals.currentGame.nextPhase();
+                        } else {
+                            currentPhaseObj.wrappedNextPhase();
+                        }
+                    };
+                }.bind(this));
             }
         }.bind(this));
+
 
         Matter.Events.on(this, 'LevelLocalEntityCreated', function(event) {
             this.levelLocalEntities.push(event.entity);
