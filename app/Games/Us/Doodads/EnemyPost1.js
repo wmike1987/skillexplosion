@@ -18,6 +18,7 @@ var enemyPost = function() {
     this.tint = 0xffffff;
     this.randomHFlip = true;
     this.sortYOffset = 28;
+    this.shadowAlpha = 0.75;
     this.shadowScale = {
         x: 0.5,
         y: 0.5

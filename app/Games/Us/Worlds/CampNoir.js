@@ -1524,6 +1524,7 @@ var campNoir = {
                         x: mathArrayUtils.getRandomNumberBetween(0.75, 1),
                         y: mathArrayUtils.getRandomNumberBetween(0.75, 1)
                     },
+                    randomHFlip: true,
                     possibleTextures: ornamentTiles
                 };
 
@@ -1531,31 +1532,88 @@ var campNoir = {
                     possibleDoodads: [rock1, rock2, rock3, rock1, rock2, rock3],
                     possibleTextures: decoratedTiles,
                     tileWidth: tileSize,
-                    hz: 0.2,
+                    hz: 0.3,
                     where: 'stage',
                     groupings: {
                         hz: 0.5,
-                        possibleAmounts: [3, 4]
+                        possibleAmounts: [3, 4, 5]
                     },
                     r: 1,
                     noZones: noZones
                 });
                 scene.add(rockContainer);
 
-                //create trees
-                var createTree1 = function() {
-                    var tree = SceneryUtils.createTree({
-                        tint: treeTints[tIndex]
-                    });
-                    tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
-                        buffer: 80,
-                        useUpcomingSceneNoZones: true,
-                        noZones: noZones,
-                        doodad: tree
-                    }));
-                    scene.add(tree);
-                };
-                mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
+                // //create trees
+                // var createTree1 = function() {
+                //     var tree = SceneryUtils.createTree({
+                //         tint: treeTints[tIndex]
+                //     });
+                //     tree.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                //         buffer: 80,
+                //         useUpcomingSceneNoZones: true,
+                //         noZones: noZones,
+                //         doodad: tree
+                //     }));
+                //     scene.add(tree);
+                // };
+                // mathArrayUtils.repeatXTimes(createTree1, [2, 3]);
+
+                //*************
+                var tree = SceneryUtils.createTree({
+                    tint: treeTints[tIndex]
+                });
+                tree.unique = true;
+                this.tree1 = SceneryUtils.decorateTerrain({
+                    possibleDoodads: [tree],
+                    possibleTextures: decoratedTiles,
+                    tileWidth: tileSize,
+                    maxNumber: 1,
+                    nonTilePosition: true,
+                    buffer: 80,
+                    hz: 1.0,
+                    groupings: {
+                        center: tree,
+                        hz: 1.0,
+                        possibleAmounts: [5, 6, 7],
+                        scalar: {
+                            min: 30,
+                            max: 120
+                        }
+                    },
+                    where: 'stage',
+                    r: 1,
+                    noZones: noZones
+                });
+                scene.add(this.tree1);
+
+                var tree2 = SceneryUtils.createTree({
+                    tint: treeTints[tIndex],
+                });
+                tree2.unique = true;
+                this.tree2 = SceneryUtils.decorateTerrain({
+                    possibleDoodads: [tree2],
+                    possibleTextures: decoratedTiles,
+                    tileWidth: tileSize,
+                    maxNumber: 1,
+                    nonTilePosition: true,
+                    buffer: 80,
+                    hz: 1.0,
+                    groupings: {
+                        center: tree2,
+                        hz: 1.0,
+                        possibleAmounts: [5, 6, 7],
+                        scalar: {
+                            min: 30,
+                            max: 120
+                        }
+                    },
+                    where: 'stage',
+                    r: 1,
+                    noZones: noZones
+                });
+                scene.add(this.tree2);
+
+                //*************
 
                 //add smokey pit and tent
                 if (!this.noSmokePit) {
@@ -1736,6 +1794,28 @@ var campNoir = {
                                 min: 100,
                                 max: 150
                             }
+                        },{
+                            textureName: 'CampDoodads/MiniTent1',
+                            randomScale: {min: 0.8, max: 1.0},
+                            randomHFlip: true,
+                            unique: true,
+                            where: 'stage',
+                            groupingOptions: {
+                                priority: 3,
+                                min: 200,
+                                max: 300
+                            }
+                        }, {
+                            textureName: 'CampDoodads/BarrelTrash1',
+                            randomScale: {min: 0.8, max: 1.0},
+                            randomHFlip: true,
+                            unique: true,
+                            where: 'stage',
+                            groupingOptions: {
+                                priority: 3,
+                                min: 100,
+                                max: 150
+                            }
                         }, {
                             textureName: 'CampDoodads/CritterFootprint3',
                             randomScale: {min: 0.8, max: 1.0},
@@ -1753,7 +1833,7 @@ var campNoir = {
                         groupings: {
                             center: tentDoodad,
                             hz: 1.0,
-                            possibleAmounts: [7],
+                            possibleAmounts: [10],
                             scalar: {
                                 min: 120,
                                 max: 180

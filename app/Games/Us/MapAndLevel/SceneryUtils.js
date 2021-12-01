@@ -474,12 +474,19 @@ var sceneryUtils = {
                     //variable for if we placed at least something in the group
                     var hit = false;
 
-                    var findGroupingPosition = function(originalPosition, scalarOverride) {
+                    var lastAngleChosen = null;
+                    var findGroupingPosition = function(originalPosition, scalarOverride, retry) {
                         var myScalar = scalarOverride || groupings.scalar || 30;
                         if(myScalar.min) {
                             myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
                         }
+
+                        if(retry) {
+                            possibleAngles.push(lastAngleChosen);
+                        }
+
                         var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
+                        lastAngleChosen = angle;
                         if(possibleAngles.length > 1) {
                             mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
                         }
@@ -559,7 +566,7 @@ var sceneryUtils = {
 
                         var wholeSkip = false;
                         var tries = 0;
-                        var maxTries = 30;
+                        var maxTries = 60;
 
                         if(placingCenter) {
                             if (noZones) {
@@ -576,13 +583,14 @@ var sceneryUtils = {
                                         scalarOverride = mathArrayUtils.getRandomIntInclusive(min, max);
                                     }
                                 }
-                                myPosition = findGroupingPosition(centerPosition, scalarOverride);
+                                myPosition = findGroupingPosition(centerPosition, scalarOverride, tries != 0);
                                 tries++;
                             } while(checkCollision({myThing: randomThing, position: myPosition, noZones: noZones}) && tries < maxTries);
                         }
 
                         //if we can't place an auxilary thing, just continue
                         if(tries >= maxTries) {
+                            console.info('skipping due to too many tries')
                             y += tileHeight;
                             continue;
                         }

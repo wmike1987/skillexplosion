@@ -121,7 +121,7 @@ var levelBase = {
         gameUtils.doSomethingAfterDuration(() => {
             level.spawner.start();
             gameUtils.setCursorStyle('Main');
-            let enemiesIncomingText = graphicsUtils.floatText("Enemies incoming", gameUtils.getPlayableCenterPlus({y: 20}), {
+            let enemiesIncomingText = graphicsUtils.floatText(level.levelEntryText, gameUtils.getPlayableCenterPlus({y: 20}), {
                 duration: 2000,
                 style: styles.titleOneStyle
             });
@@ -168,6 +168,7 @@ var levelBase = {
             seed: Math.random(),
             itemClass: 'lightStimulant',
             itemType: 'item',
+            levelEntryText: 'Presence detected...',
             isSupplyDropEligible: true
         }, options.levelOptions || {});
 

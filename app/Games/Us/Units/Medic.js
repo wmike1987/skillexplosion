@@ -754,10 +754,10 @@ export default function Medic(options) {
             damage: mineDamage,
             primaryExplosionRadius: primaryExplosionRadius
         };
-        graphicsUtils.addSomethingToRenderer(stateZero, 'stage', {
+        graphicsUtils.addSomethingToRenderer(stateZero, 'stageNOne', {
             position: mineState.position
         });
-        graphicsUtils.addSomethingToRenderer(mineCracks, 'stage', {
+        graphicsUtils.addSomethingToRenderer(mineCracks, 'stageNOne', {
             position: mineState.position
         });
 
@@ -804,10 +804,10 @@ export default function Medic(options) {
                     mine.explode();
                 }
             }.bind(this));
-            graphicsUtils.addSomethingToRenderer(stateOne, 'stage', {
+            graphicsUtils.addSomethingToRenderer(stateOne, 'stageNOne', {
                 position: mineState.position
             });
-            graphicsUtils.addSomethingToRenderer(stateThree, 'stage', {
+            graphicsUtils.addSomethingToRenderer(stateThree, 'stageNOne', {
                 position: mineState.position
             });
             mineTimer = globals.currentGame.addTimer({
@@ -836,21 +836,21 @@ export default function Medic(options) {
                 callback: function() {
                     if (mineState.state === 0) {
                         mineBeep.play();
-                        graphicsUtils.addSomethingToRenderer(stateOne, 'stage', {
+                        graphicsUtils.addSomethingToRenderer(stateOne, 'stageNOne', {
                             position: mineState.position
                         });
                         graphicsUtils.removeSomethingFromRenderer(stateZero);
                         mineState.state += 1;
                     } else if (mineState.state == 1) {
                         mineBeep.play();
-                        graphicsUtils.addSomethingToRenderer(stateTwo, 'stage', {
+                        graphicsUtils.addSomethingToRenderer(stateTwo, 'stageNOne', {
                             position: mineState.position
                         });
                         graphicsUtils.removeSomethingFromRenderer(stateOne);
                         mineState.state += 1;
                     } else if (mineState.state == 2) {
                         mineBeep.play();
-                        graphicsUtils.addSomethingToRenderer(stateThree, 'stage', {
+                        graphicsUtils.addSomethingToRenderer(stateThree, 'stageNOne', {
                             position: mineState.position
                         });
                         graphicsUtils.removeSomethingFromRenderer(stateTwo);

@@ -48,12 +48,22 @@ $(document).ready(async function() {
     Matter.use('matter-collision-events');
 
     var frontDoorLoading = false;
+    var doubleClick;
 
     //anoint button
     $('.game').each((i, gameElement) => {
         let gameName = $(gameElement).attr('name');
         $(gameElement).click(() => {
             if(frontDoorLoading || (globals.currentGame && globals.currentGame.gameState == 'loading')) {
+                return;
+            }
+
+            //safety
+            if(globals.currentGame && globals.currentGame.gameState == 'playing' && !doubleClick) {
+                doubleClick = true;
+                setTimeout(function() {
+                    doubleClick = false;
+                }, 500);
                 return;
             }
 

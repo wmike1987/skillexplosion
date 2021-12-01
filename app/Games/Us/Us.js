@@ -111,15 +111,15 @@ var game = {
         this.flagPosition = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
             x: 150,
             y: 150
-        }),
+        });
         this.augmentRackPosition = {
             x: gameUtils.getCanvasCenter().x - 180 + 50 / 2.0,
             y: gameUtils.getPlayableCenter().y - 30 + 50 / 2.0
-        },
+        };
         this.mapTablePosition = mathArrayUtils.roundPositionToWholeNumbers({
             x: gameUtils.getCanvasCenter().x + 130,
             y: gameUtils.getCanvasCenter().y - 150
-        }),
+        });
 
         //setup a common sound pool
         this.soundPool = {};
@@ -612,7 +612,7 @@ var game = {
                 x: -0,
                 y: -40
             },
-            sortYOffset: 70,
+            sortYOffset: 75,
             position: flag.position
         });
         scene.add(flagD);
