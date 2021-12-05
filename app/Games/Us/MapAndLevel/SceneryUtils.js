@@ -409,11 +409,18 @@ var sceneryUtils = {
         var globalUnique = options.unique;
         var where = options.where || 'background';
         var frequency = options.hz || 1;
+        var globalRotate = options.rotate || null;
+
         var maxNumber = options.maxNumber || null;
         var nonTilePosition = options.nonTilePosition || false;
         if (maxNumber) {
             nonTilePosition = true;
         }
+        var explicitPosition = null;
+        if(nonTilePosition) {
+            explicitPosition = options.explicitPosition;
+        }
+
         var buffer = options.buffer || 30;
         var groupings = options.groupings || {
             hz: 0
@@ -450,7 +457,8 @@ var sceneryUtils = {
                     var positionY = y + yOffset + randomnessY;
 
                     if (nonTilePosition) {
-                        var position = gameUtils.getRandomPlacementWithinPlayableBounds({
+                        var position = explicitPosition instanceof Function ? explicitPosition() : explicitPosition;
+                        position = position || gameUtils.getRandomPlacementWithinPlayableBounds({
                             buffer: buffer
                         });
                         positionX = position.x;
@@ -631,7 +639,7 @@ var sceneryUtils = {
                             let localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
                             let localAlpha = randomThing.alpha || globalAlpha || 1;
                             let localWhere = randomThing.where || where;
-                            let localRotate = randomThing.rotate == 'random' ? Math.random() * (2 * Math.PI) : 0;
+                            let localRotate = (randomThing.rotate || globalRotate) == 'random' ? Math.random() * (2 * Math.PI) : 0;
 
                             //check if we are a grouping of textures with their own tints etc
                             if (randomThing.possibleTextures) {

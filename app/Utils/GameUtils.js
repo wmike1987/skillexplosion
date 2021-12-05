@@ -507,7 +507,7 @@ var gameUtils = {
     },
 
     getRandomPositionWithinRadiusAroundPoint: function(options) {
-        var point, radius, buffer, minRadius, maxRadius, maxX, minX, maxY, minY;
+        var point, radius, buffer, minRadius, maxRadius, maxX, minX, maxY, minY, withinPlayableBounds, playableBoundBuffer;
         ({
             point,
             radius,
@@ -517,17 +517,20 @@ var gameUtils = {
             maxX,
             minX,
             maxY,
-            minY
+            minY,
+            withinPlayableBounds,
+            playableBoundBuffer
         } = options);
 
         var position = {
             x: 0,
             y: 0
         };
-        radius = radius - buffer;
         buffer = buffer || 0;
         minRadius = minRadius || 0;
         maxRadius = maxRadius || 999999;
+        radius = radius || maxRadius;
+        radius = radius - buffer;
         maxX = maxX || gameUtils.getPlayableWidth() - buffer;
         minX = minX || 0 + buffer;
         maxY = maxY || gameUtils.getPlayableHeight() - buffer;
@@ -537,12 +540,13 @@ var gameUtils = {
             position.x = point.x - radius + (Math.random() * (radius * 2));
             position.y = point.y - radius + (Math.random() * (radius * 2));
 
-        } while (position.y > maxY ||
+        } while ((position.y > maxY ||
             position.y < minY ||
             position.x > maxX ||
             position.x < minX ||
             mathArrayUtils.distanceBetweenPoints(position, point) < minRadius ||
-            mathArrayUtils.distanceBetweenPoints(position, point) > maxRadius);
+            mathArrayUtils.distanceBetweenPoints(position, point) > maxRadius) ||
+            (withinPlayableBounds && !this.isPositionWithinPlayableBounds(position, playableBoundBuffer)));
 
         return mathArrayUtils.roundPositionToWholeNumbers(position);
     },
