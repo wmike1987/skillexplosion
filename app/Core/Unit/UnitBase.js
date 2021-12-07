@@ -1729,8 +1729,16 @@ var UnitBase = {
     },
 
     //This returns a representation of the unit's current visible item-set, including visible empty slots
-    getAllItems: function() {
+    getAllItems: function(options) {
+        options = options || {};
         var items = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems);
+
+        if(options.namesOnly) {
+            items = items.map(item => {
+                return item.name;
+            });
+        }
+
         return items;
     },
 

@@ -1114,6 +1114,7 @@ var phaseTwo = function(options) {
                     prereqCount: 3,
                     itemClass: 'worn',
                     itemType: 'specialtyItem',
+                    uniqueItem: true,
                     regularTokenName: 'AirDropSpecialToken',
                     specialTokenName: 'AirDropSpecialTokenGleam'
                 }
@@ -1353,6 +1354,7 @@ var phaseThree = function() {
             prereqCount: 3,
             itemClass: 'worn',
             itemType: 'specialtyItem',
+            uniqueItem: true,
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
         },
@@ -1364,6 +1366,7 @@ var phaseThree = function() {
             prereqCount: 3,
             itemClass: 'rugged',
             itemType: 'specialtyItem',
+            uniqueItem: true,
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
         },
@@ -1920,17 +1923,6 @@ var campNoir = {
                     scene.add(this.pit);
 
                     var pitPosition = this.pit.list[0].position;
-                    var l = graphicsUtils.createDisplayObject("CampDoodads/PitTint", {
-                        position: pitPosition,
-                        tint: 0x3b0003,
-                        alpha: 0.25,
-                        scale: {
-                            x: 8,
-                            y: 8
-                        },
-                        where: 'backgroundOne'
-                    });
-                    scene.add(l);
 
                     //other footprints
                     this.footprints = SceneryUtils.decorateTerrain({
@@ -1944,7 +1936,7 @@ var campNoir = {
                         tileWidth: 150,
                         hz: 0.5,
                         maxNumber: 5,
-                        alpha: 0.75,
+                        alpha: 0.85,
                         where: 'stageNOne',
                         rotate: 'random',
                         r: 1,
@@ -2192,7 +2184,7 @@ var campNoir = {
                 where: 'backgroundOne',
                 intensity: 0.20,
                 rotate: !this.isCampProper,
-                rotateSpeed: 4
+                rotateSpeed: 5
             });
             var lborder = gameUtils.createAmbientLightBorder(borderTints[tIndex], 'backgroundOne', 0.65);
             scene.add(l1);

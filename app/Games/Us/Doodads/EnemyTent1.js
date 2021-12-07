@@ -10,7 +10,17 @@ import {
  * options
  */
 var enemyTent = function() {
-    this.textureName = mathArrayUtils.getRandomElementOfArray(['CampDoodads/EnemyTent1', 'CampDoodads/EnemyTent2', 'CampDoodads/EnemyTent3']);
+    this.textureName = [mathArrayUtils.getRandomElementOfArray(['CampDoodads/EnemyTent1', 'CampDoodads/EnemyTent2', 'CampDoodads/EnemyTent3']), {
+        data: "CampDoodads/PitTint",
+        name: "CampDoodads/PitTint",
+        alpha: 0.15,
+        tint: 0x02D100,
+        where: 'backgroundOne',
+        scale: {
+            x: 18,
+            y: 18
+        }
+    }];
     this.radius = 30;
     this.collides = true;
     this.where = 'stage';
@@ -20,7 +30,10 @@ var enemyTent = function() {
     this.loneNZRadius = 80;
     this.shadowIcon = 'IsoShadowBlurred';
     this.shadowAlpha = 1.0;
-    this.bodyScale = {x: 1.75, y: 0.6};
+    this.bodyScale = {
+        x: 1.75,
+        y: 0.6
+    };
     this.shadowScale = {
         x: 2,
         y: 2

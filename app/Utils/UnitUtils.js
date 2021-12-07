@@ -115,10 +115,10 @@ var unitUtils = {
 
         //resolve attack location
         let attackLocation = attackContext.isProjectile ? attackContext.projectileData.startLocation : attackingUnit.position;
-        if(attackContext.source) {
+        if (attackContext.source) {
             attackLocation = attackContext.source;
         }
-        
+
         let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(unit.position, attackLocation, offset);
         let attachmentOffset = Matter.Vector.sub(offsetLocation, unit.position);
         let block = graphicsUtils.addSomethingToRenderer('Block', {
@@ -198,7 +198,7 @@ var unitUtils = {
             deathPactSomething: true
         });
 
-        if(play) {
+        if (play) {
             anim.play();
         }
 
@@ -207,13 +207,25 @@ var unitUtils = {
 
     createUnitRanOffStageListener: function(unit, callback) {
         var myTicker = globals.currentGame.addTickCallback(function() {
-            if(gameUtils.bodyRanOffStage(unit.body)) {
+            if (gameUtils.bodyRanOffStage(unit.body)) {
                 callback();
                 globals.currentGame.removeTickCallback(myTicker);
             }
         });
 
         gameUtils.deathPact(unit, myTicker);
+    },
+
+    getItemsInPlayByTeam: function(options) {
+        options = options || {};
+        var items = [];
+        gameUtils.applyToUnitsByTeam(function(team) {
+            return options.team == team;
+        }.bind(this), null, function(unit) {
+            items = items.concat(unit.getAllItems({namesOnly: options.namesOnly}));
+        }.bind(this));
+
+        return items;
     }
 };
 

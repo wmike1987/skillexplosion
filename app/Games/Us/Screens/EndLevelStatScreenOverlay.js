@@ -156,7 +156,7 @@ var presentItems = function(options) {
             spacing: 50
         });
         gameUtils.doSomethingAfterDuration(() => {
-            var selectionOptions = ItemUtils.getRandomItemsFromClass(currentNode.levelDetails.itemClass, currentNode.levelDetails.itemType, localNumberOfChoices);
+            var selectionOptions = ItemUtils.getRandomItemsFromClass({itemClass: currentNode.levelDetails.itemClass, itemType: currentNode.levelDetails.itemType, amount: localNumberOfChoices});
             selectionOptions.forEach((choice) => {
                 var position = positions[j];
                 j++;

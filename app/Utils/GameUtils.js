@@ -624,7 +624,7 @@ var gameUtils = {
             //rotate the lights if specified
             if (options.rotate) {
                 graphicsUtils.rotateSprite(l, {
-                    speed: options.rotateSpeed || 5
+                    speed: options.rotateSpeed || 6
                 });
             }
             lights.push(l);

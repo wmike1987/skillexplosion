@@ -10,7 +10,7 @@ import {
  * options
  */
 var rockPit = function() {
-    this.textureName = [null, null];
+    this.textureName = [null, null, null];
     this.radius = 12;
     this.where = 'stage';
     this.loneNZRadius = 40;
@@ -23,7 +23,10 @@ var rockPit = function() {
         y: 1.25
     };
     // this.drawWire = true,
-    this.bodyScale = {x: 1.3, y: 0.5};
+    this.bodyScale = {
+        x: 1.3,
+        y: 0.5
+    };
     this.offset = {
         x: 0,
         y: 0
@@ -47,6 +50,19 @@ var rockPit = function() {
         smokeAnimation.where = 'stageOne';
         smokeAnimation.play();
         this.textureName[1] = smokeAnimation;
+
+
+        this.textureName[2] = {
+            data: "CampDoodads/PitTint",
+            name: "CampDoodads/PitTint",
+            alpha: 0.1,
+            tint: 0xc9c322,
+            where: 'backgroundOne',
+            scale: {
+                x: 8,
+                y: 8
+            }
+        };
     };
 };
 

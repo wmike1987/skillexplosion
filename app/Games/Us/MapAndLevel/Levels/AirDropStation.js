@@ -276,12 +276,14 @@ var airDropStation = function(options) {
             letterSpeed: 30
         });
 
+        var self = this;
         a1.onFullyShown = () => {
             gameUtils.doSomethingAfterDuration(() => {
                 selection.presentChoices({
                     numberOfChoices: 3,
                     itemClass: self.itemClass,
                     itemType: self.itemType,
+                    uniqueItem: self.uniqueItem,
                     onChoice: () => {
                         chain.cleanUp();
                     }
@@ -290,7 +292,6 @@ var airDropStation = function(options) {
             }, 750);
         };
 
-        var self = this;
         var chain = new DialogueChain([title, a1], {
             startDelay: 1750
         });
@@ -302,7 +303,7 @@ airDropStation.prototype = commonAirDropStation;
 
 var selectionMechanism = {
     _chooseRandomItems: function() {
-        this.presentedChoices = ItemUtils.getRandomItemsFromClass(this.itemClass, this.itemType, 3);
+        this.presentedChoices = ItemUtils.getRandomItemsFromClass({itemClass: this.itemClass, itemType: this.itemType, amount: 3, uniqueItem: this.uniqueItem});
     },
 
     _displayChoices: function() {
@@ -411,6 +412,7 @@ var selectionMechanism = {
         this.itemClass = options.itemClass;
         this.itemType = options.itemType;
         this.onChoice = options.onChoice;
+        this.uniqueItem = options.uniqueItem;
 
         this._chooseRandomItems();
 

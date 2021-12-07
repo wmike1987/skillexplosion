@@ -95,14 +95,14 @@ var Doodad = function(options) {
     }
 
     options.texture.forEach((item, i) => {
-        var data = item;
+        var data = item.data || item;
         var offset = item.offset || options.offset || {
             x: 0,
             y: 0
         };
         var scale = item.scale || options.scale;
         var stage = item.where || options.stage || 'foreground';
-        var tint = options.tint || 0xffffff;
+        var tint = item.tint || options.tint || 0xffffff;
         var alpha = item.alpha || options.alpha || 1;
         if (item.doodadData) {
             data = item.doodadData;
