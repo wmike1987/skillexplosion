@@ -5,9 +5,9 @@ import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     energyRegenerationRate: 0.75,
-    maxEnergy: 6,
+    maxEnergy: 8,
     healthRegenerationRate: 0.75,
-    maxHealth: 6
+    maxHealth: 8
 };
 
 export default function(options) {

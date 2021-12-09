@@ -11,9 +11,9 @@ import {
 } from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    maxHealth: 8,
+    maxHealth: 10,
     gritAddition: 10,
-    maxEnergy: 8,
+    maxEnergy: 10,
     dodgeAddition: 5,
 };
 
