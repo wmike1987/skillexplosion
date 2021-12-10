@@ -690,13 +690,14 @@ var UnitBase = {
     equipPassive: function(passive, type) {
         //equip the new passive
         this[type] = passive;
+        passive[type] = true;
+        passive.isEquipped = true;
+        passive.start(type);
+
         Matter.Events.trigger(this, type + 'Equipped', {
             type: type,
             passive: passive
         });
-        passive[type] = true;
-        passive.isEquipped = true;
-        passive.start(type);
 
         Matter.Events.trigger(passive, 'Equip', {
             type: type
@@ -709,10 +710,6 @@ var UnitBase = {
         if (passive.defensePassive) {
             type = 'defensePassive';
         }
-        Matter.Events.trigger(this, type + 'Unequipped', {
-            type: type,
-            passive: passive
-        });
         passive.isEquipped = false;
         if (passive.attackPassive) {
             passive.attackPassive = false;
@@ -722,6 +719,11 @@ var UnitBase = {
             this.defensePassive = null;
         }
         passive.stop();
+
+        Matter.Events.trigger(this, type + 'Unequipped', {
+            type: type,
+            passive: passive
+        });
 
         Matter.Events.trigger(passive, 'Unequip', {
             type: type,

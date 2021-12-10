@@ -1542,7 +1542,7 @@ export default function Medic(options) {
                 if(!medic.defensePassive.deepThoughtBypassAggPredicate) {
                     deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
                 }
-                deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
+                deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
                 deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
             }
             if (type == 'attackPassive') {
@@ -1555,7 +1555,7 @@ export default function Medic(options) {
                         deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
                         return {value: 1};
                     };
-                    deepThought.aggressionDescription = medic.defensePassive.aggressionDescription;
+                    deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
                     deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
                     passive.start('attackPassive');
                 });

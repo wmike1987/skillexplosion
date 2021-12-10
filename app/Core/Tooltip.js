@@ -406,7 +406,7 @@ Tooltip.makeTooltippable = function(displayObject, options) {
                     if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
                         displayObject.tooltipObj.display(event.data.global);
                     }
-                }.bind(this), 20);
+                }.bind(this), 1);
             } else {
                 stopTimeout = setTimeout(function() {
                     if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
