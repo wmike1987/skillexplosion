@@ -8,7 +8,7 @@ var amount = 10;
 var eventName = 'silverLocketEnergyGain';
 
 var manipulations = {
-    defenseAddition: 0.5,
+    defenseAddition: 0.4,
     events: {
         killingBlowBlock: {
             callback: function(event) {
@@ -26,7 +26,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Silver Locket",
-        description: ["Add 0.5 to armor.", "Gain " + amount + " hp after dodging killing blow."],
+        description: ["Add 0.4 to armor.", "Gain " + amount + " hp after dodging killing blow."],
         icon: 'Locket',
         collector: {
             eventName: eventName,

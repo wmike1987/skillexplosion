@@ -150,6 +150,7 @@ var ic = function(options) {
     }); //note that this icon will not die upon removing the item
     graphicsUtils.makeSpriteSize(newItem.icon, 27);
     newItem.icon.interactive = true;
+    newItem.spacelessName = newItem.name.replace(' ', '');
 
     newItem.chargeThenActivate = (options) => {
         options = options || {};
@@ -408,7 +409,7 @@ var ic = function(options) {
             itemSwoosh.play();
             item.isDropping = true;
             this.itemDrop.play();
-            this.itemDrop.tint = item.classInformation.typeInfo.tint;
+            this.itemDrop.tint = item.footprintTint || item.classInformation.typeInfo.tint;
             this.itemDrop.anchor.set(0.5, 0.75);
             graphicsUtils.addSomethingToRenderer(this.itemDrop, 'stage');
 
@@ -436,7 +437,7 @@ var ic = function(options) {
                 transform: [position.x, position.y],
             });
             itemAnim.play();
-            itemAnim.tint = item.classInformation.typeInfo.tint;
+            itemAnim.tint = item.footprintTint || item.classInformation.typeInfo.tint;
 
             newItem.renderChildren = [{
                     id: 'itemFootprint',

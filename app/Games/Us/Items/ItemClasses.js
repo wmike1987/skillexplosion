@@ -29,7 +29,6 @@ var ItemClasses = {
         },
         specialtyItem: {
             description: 'Worn Specialty Item',
-            tint: 0x7ffcea,
             items: ['LeatherGlove', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'BlackTipCartridge', 'SereneStar', 'PillBottle', 'TrustMedallion', 'SkyMedallion', 'Beret'],
             mapNodeIndicator: 'RoseRing'
         },

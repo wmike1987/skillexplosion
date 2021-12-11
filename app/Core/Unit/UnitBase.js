@@ -1737,19 +1737,11 @@ var UnitBase = {
 
         if(options.namesOnly) {
             items = items.map(item => {
-                return item.name;
+                return item.spacelessName;
             });
         }
 
         return items;
-    },
-
-    getAllItemsByName: function(name) {
-        var items = this.getAllItems();
-        var filteredItems = items.filter(item => {
-            return name == item.name;
-        });
-        return filteredItems;
     },
 
     //This returns all item objects a unit possesses, including hidden empty slots
