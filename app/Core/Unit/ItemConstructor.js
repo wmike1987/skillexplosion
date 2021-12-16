@@ -150,7 +150,7 @@ var ic = function(options) {
     }); //note that this icon will not die upon removing the item
     graphicsUtils.makeSpriteSize(newItem.icon, 27);
     newItem.icon.interactive = true;
-    newItem.spacelessName = newItem.name.replace(' ', '');
+    newItem.spacelessName = newItem.name.replaceAll(' ', '');
 
     newItem.chargeThenActivate = (options) => {
         options = options || {};

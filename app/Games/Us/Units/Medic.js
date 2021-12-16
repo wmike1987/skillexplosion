@@ -1373,7 +1373,7 @@ export default function Medic(options) {
     var familiarFace = new Passive({
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Increase movement speed for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Stun attacker and increase movement speed for 3 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free vanish.'],
         textureName: 'FamiliarFace',
         unit: medic,
@@ -1421,6 +1421,9 @@ export default function Medic(options) {
             });
         },
         defenseAction: function(event) {
+            var attacker = event.performingUnit;
+            attacker.stun({duration: ffDDuration});
+
             medic.applyBuff({
                 id: 'familiarFaceSpeed',
                 textureName: 'SpeedBuff',

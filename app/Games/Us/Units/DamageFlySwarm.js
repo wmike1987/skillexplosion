@@ -187,6 +187,7 @@ export default function DamageFlySwarm(options) {
         itemsEnabled: true,
         disregardItemBuffs: true,
         organic: true,
+        stunnable: false,
         flying: true,
         hazard: true,
         portrait: graphicsUtils.createDisplayObject('BoxPortrait'),

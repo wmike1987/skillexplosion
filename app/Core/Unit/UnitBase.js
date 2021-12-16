@@ -30,7 +30,7 @@ var petrifySound = gameUtils.getSound('petrify.wav', {
     rate: 1
 });
 var stunSound = gameUtils.getSound('maimsound.wav', {
-    volume: 0.1,
+    volume: 0.15,
     rate: 1.0
 });
 var maimSound = gameUtils.getSound('maimsound.wav', {
@@ -99,6 +99,7 @@ var UnitBase = {
     level: 1,
     fatigueReduction: 0,
     organic: true,
+    stunnable: true,
     condemnedLifeGain: 10,
     currentExperience: 0,
     nextLevelExp: 100,
@@ -169,7 +170,7 @@ var UnitBase = {
 
     sufferAttack: function(damage, attackingUnit, options) {
         var returnInformation = {attackLanded: true};
-        if (this.unitRemoved) return;
+        if (this.unitRemoved) return {};
 
         let attackContext = Object.assign({
             isProjectile: false,
@@ -1997,7 +1998,7 @@ var UnitBase = {
     stun: function(options) {
         var duration = options.duration;
         var stunningUnit = options.stunningUnit;
-        if (this.isDead || !this.isMoveable) {
+        if (this.isDead || !this.isMoveable || !this.stunnable) {
             return;
         }
 

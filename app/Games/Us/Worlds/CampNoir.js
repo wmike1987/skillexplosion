@@ -732,7 +732,7 @@ var enemyDefs = {
     rammians: {
         enemySets: [{
             type: 'Rammian',
-            amount: [8, 9],
+            amount: [7, 8],
             atATime: 2,
             hz: 8000
         }, hardFlyObj]
@@ -796,19 +796,19 @@ var enemyDefs = {
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
-            amount: 6,
+            amount: [7, 8],
             atATime: 1,
             hz: 3000
         }, {
             type: 'Rammian',
-            amount: 5,
-            initialDelay: 3500,
+            amount: 3,
+            initialDelay: 5000,
             atATime: 1,
             hz: 5000
         }, {
             type: 'Hunter',
             amount: 2,
-            initialDelay: 17000,
+            initialDelay: 15000,
             atATime: 2,
             hz: 5000
         }, hardFlyObj]
@@ -837,9 +837,9 @@ var enemyDefs = {
         token: 'hard',
         enemySets: [{
             type: 'Gargoyle',
-            amount: [4, 5],
+            amount: [5, 6],
             atATime: 1,
-            hz: 2500
+            hz: 2250
         }]
     },
     outerHardened: {
