@@ -428,6 +428,7 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'm' || event.key == 'M') {
                     console.info(this.mousePosition);
+                    this.shane.stun({duration: 1000});
                 }
             }
 
