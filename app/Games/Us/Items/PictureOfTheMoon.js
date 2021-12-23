@@ -29,7 +29,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Picture Of The Moon",
-        description: ["Gain " + amount + " energy after dodging attack."],
+        description: ["Gain " + amount + " energy after dodging an attack."],
         icon: 'PictureOfTheMoon',
         collector: {
             eventName: eventName,

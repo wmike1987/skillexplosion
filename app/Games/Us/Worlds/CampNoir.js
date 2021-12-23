@@ -1723,7 +1723,8 @@ var campNoir = {
                                 priority: 3,
                                 min: 200,
                                 max: 300
-                            }
+                            },
+                            loneNZRadius: 80
                         }, {
                             textureName: 'CampDoodads/BarrelTrash1',
                             randomScale: {

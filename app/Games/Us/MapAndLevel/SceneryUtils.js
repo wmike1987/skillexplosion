@@ -514,7 +514,7 @@ var sceneryUtils = {
                             if(myThing && myThing.isDoodad) {
                                 return myThing.collidesInTheory(myPosition, nz);
                             } else {
-                                let myNoZone = {center: myPosition, radius: 0};
+                                let myNoZone = {center: myPosition, radius: myThing.loneNZRadius || 0};
                                 return gameUtils.detectNoZoneCollision(nz, myNoZone);
                             }
                         });
@@ -598,7 +598,7 @@ var sceneryUtils = {
 
                         //if we can't place an auxilary thing, just continue
                         if(tries >= maxTries) {
-                            console.info('skipping due to too many tries')
+                            // console.info('skipping due to too many tries')
                             y += tileHeight;
                             continue;
                         }

@@ -679,7 +679,6 @@ export default function Medic(options) {
         volume: 0.35,
         rate: 1.7
     });
-    var mineDamage = 25;
     var layMine = function(commandObj) {
         //get current augment
         var thisAbility = this.getAbilityByName('Mine');
@@ -751,7 +750,7 @@ export default function Medic(options) {
             id: mathArrayUtils.uuidv4(),
             position: mine.position,
             blastRadius: blastRadius,
-            damage: mineDamage,
+            damage: this.mineDamage,
             primaryExplosionRadius: primaryExplosionRadius
         };
         graphicsUtils.addSomethingToRenderer(stateZero, 'stageNOne', {
@@ -985,7 +984,15 @@ export default function Medic(options) {
         icon: graphicsUtils.createDisplayObject('MineIcon'),
         method: layMine,
         title: 'Mine',
-        description: 'Lay an explosive mine.',
+        description: '',
+        updaters: {
+            descriptions: function() {
+                return {
+                    index: 0,
+                    value: 'Lay an explosive mine, dealing ' + medic.mineDamage + ' damage.'
+                };
+            }
+        },
         hotkey: 'F',
         energyCost: 15,
         augments: [{
@@ -1019,7 +1026,7 @@ export default function Medic(options) {
     var ppCollEventName = 'ppCollEvent';
     var sacCollEventName = 'sacCollEvent';
     var continuousHealthNeeded = 15;
-    var enragePPTime = 2000;
+    var enragePPTime = 3000;
     var healAbility = new Ability({
         name: 'Heal',
         icon: graphicsUtils.createDisplayObject('HealIcon'),
@@ -1038,11 +1045,11 @@ export default function Medic(options) {
         }.bind(medic),
         augments: [{
                 name: 'pure priorities',
-                hpThreshold: 0.75,
+                hpThreshold: 0.60,
                 hpGivenTally: 0,
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: ['Reduce healing cost to 0 when ally\'s life is below 75%.', 'Enrage ally for 2 seconds upon giving 15 health.'],
+                description: ['Reduce healing cost to 0 when ally\'s life is below 60%.', 'Enrage ally for 3 seconds upon giving 15 health.'],
                 collector: {
                     eventName: ppCollEventName,
                     init: function() {
@@ -1692,6 +1699,7 @@ export default function Medic(options) {
         itemsEnabled: true,
         dodgeSound: dodgeSound,
         holdPositionSound: holdPositionSound,
+        mineDamage: 25,
         damageLabel: "Heal: ",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
