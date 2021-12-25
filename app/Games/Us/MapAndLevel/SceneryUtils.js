@@ -385,6 +385,8 @@ var sceneryUtils = {
             },
         });
 
+        tree.isTree = true;
+
         return tree;
     },
 
@@ -574,7 +576,7 @@ var sceneryUtils = {
 
                         var wholeSkip = false;
                         var tries = 0;
-                        var maxTries = 60;
+                        var maxTries = randomThing.reallyTry ? 150 : 60;
 
                         if(placingCenter) {
                             if (noZones) {
@@ -598,7 +600,7 @@ var sceneryUtils = {
 
                         //if we can't place an auxilary thing, just continue
                         if(tries >= maxTries) {
-                            // console.info('skipping due to too many tries')
+                            console.info('skipping due to too many tries')
                             y += tileHeight;
                             continue;
                         }

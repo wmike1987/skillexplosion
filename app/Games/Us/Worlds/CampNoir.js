@@ -1577,55 +1577,18 @@ var campNoir = {
                     tint: treeTints[tIndex]
                 });
                 tree.unique = true;
-                this.tree1 = SceneryUtils.decorateTerrain({
-                    possibleDoodads: [tree],
-                    possibleTextures: decoratedTiles,
-                    tileWidth: tileSize,
-                    maxNumber: 1,
-                    nonTilePosition: true,
-                    buffer: 80,
-                    hz: 1.0,
-                    groupings: {
-                        center: tree,
-                        hz: 1.0,
-                        possibleAmounts: [5, 6, 7],
-                        scalar: {
-                            min: 30,
-                            max: 120
-                        }
-                    },
-                    where: 'stage',
-                    r: 1,
-                    noZones: noZones
-                });
-                scene.add(this.tree1);
+                tree.groupingOptions = {
+                    priority: 1
+                };
+                tree.reallyTry = true;
 
                 var tree2 = SceneryUtils.createTree({
                     tint: treeTints[tIndex],
                 });
                 tree2.unique = true;
-                this.tree2 = SceneryUtils.decorateTerrain({
-                    possibleDoodads: [tree2],
-                    possibleTextures: decoratedTiles,
-                    tileWidth: tileSize,
-                    maxNumber: 1,
-                    nonTilePosition: true,
-                    buffer: 80,
-                    hz: 1.0,
-                    groupings: {
-                        center: tree2,
-                        hz: 1.0,
-                        possibleAmounts: [5, 6, 7],
-                        scalar: {
-                            min: 30,
-                            max: 120
-                        }
-                    },
-                    where: 'stage',
-                    r: 1,
-                    noZones: noZones
-                });
-                scene.add(this.tree2);
+                tree2.groupingOptions = {
+                    priority: 1
+                };
 
                 //add smokey pit and tent
                 if (!this.noSmokePit) {
@@ -1641,12 +1604,12 @@ var campNoir = {
                     });
                     enemyPost4.unique = true;
                     enemyPost4.groupingOptions = {
-                        priority: 1,
+                        priority: 2,
                         min: 70,
                         max: 90,
                     };
                     this.tent = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [tentDoodad, enemyPost4, {
+                        possibleDoodads: [tentDoodad, enemyPost4, tree, tree2, {
                             textureName: 'bullets',
                             randomHFlip: true,
                             where: 'backgroundOne',
@@ -1756,13 +1719,12 @@ var campNoir = {
                         }],
                         tileWidth: tileSize,
                         maxNumber: 1,
-                        nonTilePosition: true,
                         buffer: 180,
                         hz: 1.0,
                         groupings: {
                             center: tentDoodad,
                             hz: 1.0,
-                            possibleAmounts: [10],
+                            possibleAmounts: [15],
                             scalar: {
                                 min: 120,
                                 max: 180
@@ -1903,7 +1865,7 @@ var campNoir = {
                                 minRadius: 175,
                                 maxRadius: 225,
                                 withinPlayableBounds: true,
-                                playableBoundBuffer: 75
+                                playableBoundBuffer: 90
                             });
                         },
                         buffer: 100,

@@ -944,12 +944,12 @@ export default function Marine(options) {
             },
             {
                 name: 'first aid pouch',
-                healAmount: 1,
+                healAmount: 0.15,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
                 description: '',
                 updaters: {descriptions: function() {
-                    var sum = 0.25;
+                    var sum = 0.15;
                     var addition = marine.firstAidPouchAdditions.forEach((addition) => {
                         sum += addition;
                     });
@@ -986,7 +986,7 @@ export default function Marine(options) {
         defenseCooldown: 2000,
         aggressionEventName: 'kill',
         aggressionDuration: gsADuration,
-        aggressionCooldown: 3000,
+        aggressionCooldown: 4000,
         passiveAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {

@@ -1025,7 +1025,7 @@ export default function Medic(options) {
 
     var ppCollEventName = 'ppCollEvent';
     var sacCollEventName = 'sacCollEvent';
-    var continuousHealthNeeded = 15;
+    var continuousHealthNeeded = 20;
     var enragePPTime = 3000;
     var healAbility = new Ability({
         name: 'Heal',
@@ -1049,7 +1049,7 @@ export default function Medic(options) {
                 hpGivenTally: 0,
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: ['Reduce healing cost to 0 when ally\'s life is below 60%.', 'Enrage ally for 3 seconds upon giving 15 health.'],
+                description: ['Reduce healing cost to 0 when ally\'s life is below 60%.', 'Enrage ally for 3 seconds upon giving ' + continuousHealthNeeded + ' health.'],
                 collector: {
                     eventName: ppCollEventName,
                     init: function() {
