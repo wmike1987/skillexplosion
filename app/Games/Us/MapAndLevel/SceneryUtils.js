@@ -600,7 +600,7 @@ var sceneryUtils = {
 
                         //if we can't place an auxilary thing, just continue
                         if(tries >= maxTries) {
-                            console.info('skipping due to too many tries')
+                            // console.info('skipping due to too many tries');
                             y += tileHeight;
                             continue;
                         }

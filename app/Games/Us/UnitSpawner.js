@@ -38,8 +38,8 @@ var unitSpawner = function(options) {
             var k;
             var locationArray = [];
             var itemRandomFlips = [];
-            this.locationPool[enemy.constructor.name] = locationArray;
-            this.itemRandomFlips[enemy.constructor.name] = itemRandomFlips;
+            this.locationPool[enemy.id] = locationArray;
+            this.itemRandomFlips[enemy.id] = itemRandomFlips;
             for(k = 0; k < enemy.spawn.total; k++) {
                 //locations
                 locationArray.push(gameUtils.getJustOffscreenPosition('random'));
@@ -57,13 +57,13 @@ var unitSpawner = function(options) {
                 runs: enemy.spawn.total,
                 timeLimit: options.immediatePool || (enemy.spawn.hz / (enemy.spawn.atATime || 1)),
                 callback: function() {
-                    this.insertIntoPool(enemy.constructor, enemy.constructor({
+                    this.insertIntoPool(enemy, enemy.constructor({
                         team: globals.currentGame.enemyTeam
                     }));
                 }.bind(this)
             });
             this.timers.push(poolTimer);
-            this.poolTimers[enemy.constructor.name] = poolTimer;
+            this.poolTimers[enemy.id] = poolTimer;
         }.bind(this));
 
         //reset randomness
@@ -91,10 +91,10 @@ var unitSpawner = function(options) {
 
                         //Create unit
                         // var newUnit = enemy.constructor({team: 4});
-                        var newUnit = spawner.getFromPool(enemy.constructor);
+                        var newUnit = spawner.getFromPool(enemy);
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                         newUnit.honeRange = 5000;
-                        Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.constructor.name].shift());
+                        Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.id].shift());
 
                         //Give item to unit if chosen
                         if (itemsToGive > 0) {
@@ -102,7 +102,7 @@ var unitSpawner = function(options) {
                             if (lastUnit) {
                                 giveItem = true;
                             } else {
-                                giveItem = spawner.itemRandomFlips[enemy.constructor.name].shift();
+                                giveItem = spawner.itemRandomFlips[enemy.id].shift();
                             }
                             if (giveItem) {
                                 ItemUtils.giveUnitItem({
@@ -138,15 +138,15 @@ var unitSpawner = function(options) {
         this.pool = null;
     };
 
-    this.getFromPool = function(unitConstructor) {
+    this.getFromPool = function(enemySet) {
         var unit;
-        var newUnits = this.pool[unitConstructor.name];
+        var newUnits = this.pool[enemySet.id];
 
         //force a call to the pool timer if we don't have a unit
         if (!newUnits || newUnits.length == 0) {
-            console.info('force spawning unit ' + unitConstructor.name);
-            this.poolTimers[unitConstructor.name].executeCallbacks();
-            newUnits = this.pool[unitConstructor.name];
+            // console.info('force spawning unit ' + unitConstructor.name);
+            this.poolTimers[enemySet.id].executeCallbacks();
+            newUnits = this.pool[enemySet.id];
         }
         if (newUnits && newUnits.length > 0) {
             unit = newUnits.shift();
@@ -154,11 +154,11 @@ var unitSpawner = function(options) {
         return unit;
     };
 
-    this.insertIntoPool = function(unitConstructor, newUnit) {
-        if (!this.pool[unitConstructor.name]) {
-            this.pool[unitConstructor.name] = [];
+    this.insertIntoPool = function(enemySet, newUnit) {
+        if (!this.pool[enemySet.id]) {
+            this.pool[enemySet.id] = [];
         }
-        this.pool[unitConstructor.name].push(newUnit);
+        this.pool[enemySet.id].push(newUnit);
     };
 };
 export default unitSpawner;

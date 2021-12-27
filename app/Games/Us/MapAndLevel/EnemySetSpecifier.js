@@ -31,6 +31,7 @@ var enemySetSpecifier = {
                 enemyCount = mathArrayUtils.getRandomElementOfArray(enemyCount);
                 var constructor = unitMenu[enemySpec.type];
                 enemySets.push({
+                    id: mathArrayUtils.getId(),
                     constructor: constructor.c,
                     wave: 1,
                     item: enemySpec.item,
