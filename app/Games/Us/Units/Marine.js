@@ -944,12 +944,12 @@ export default function Marine(options) {
             },
             {
                 name: 'first aid pouch',
-                healAmount: 0.15,
+                healAmount: 0.25,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
                 description: '',
                 updaters: {descriptions: function() {
-                    var sum = 0.15;
+                    var sum = 0.25;
                     var addition = marine.firstAidPouchAdditions.forEach((addition) => {
                         sum += addition;
                     });
@@ -1306,9 +1306,9 @@ export default function Marine(options) {
 
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 5 grit for length of outing.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant allies 5 grit for length of outing.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of outing.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 5 grit for length of excursion.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant allies 5 grit for length of excursion.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of excursion.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',

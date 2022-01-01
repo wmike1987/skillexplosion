@@ -32,6 +32,16 @@ var completeTaskAndRelease = function(dialogue) {
 
 var UrsulaTasks = function(scene) {
 
+    var immediateMapTasks = false;
+    if(immediateMapTasks) {
+        globals.currentGame.currentLevel.mapTableActive = true;
+        gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
+            //Enable the map learning section
+            var mapLearning = new MapLearning(scene);
+            mapLearning.play();
+        });
+    }
+
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
 
     this.box = UnitMenu.createUnit('DestructibleBox', {team: this.neutralTeam, isTargetable: false, canTakeAbilityDamage: false});
@@ -51,7 +61,7 @@ var UrsulaTasks = function(scene) {
     var a5d = new Dialogue({actor: "Task", text: "This item is consumable. Read its description and consume it.", isTask: true, backgroundBox: true});
     var a6 = new Dialogue({text: "With both units selected, you can press 'tab' to switch the focused unit.", newBreak: true, isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
     var a7 = new Dialogue({actor: "Task", text: "Lay a mine then trigger it by making Shane throw a knife at it.", isTask: true, backgroundBox: true});
-    var a8 = new Dialogue({text: "You can also lay a mine while vanishing.", isInfo: true, backgroundBox: true, delayAfterEnd: 2500});
+    var a8 = new Dialogue({actor: "Task", text: "Lay a mine while vanishing.", isTask: true, backgroundBox: true});
 
     var chain = new DialogueChain([a1, a2, a3a, a3b, a4a, a4b, a5a, a5b, a5c, a5d, a6, a7, a8], {startDelay: 200, done: function() {
         chain.cleanUp();
@@ -195,6 +205,17 @@ var UrsulaTasks = function(scene) {
         gameUtils.matterOnce(globals.currentGame.shane, 'knifeMine', (event) => {
             achieve.play();
             completeTaskAndRelease(a7);
+        });
+    };
+
+    a8.onStart = function() {
+        gameUtils.matterConditionalOnce(globals.currentGame.ursula, 'layMine', (event) => {
+            if(globals.currentGame.ursula.isVanishing) {
+                achieve.play();
+                completeTaskAndRelease(a8);
+                return true;
+            }
+            return false;
         });
     };
 

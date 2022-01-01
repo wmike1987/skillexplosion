@@ -135,7 +135,7 @@ var MapLevelNode = function(options) {
             tint: 0xcdcdcd,
             thickness: 1
         });
-        this.displayObject.iconIdicator = indicator;
+        this.displayObject.iconIndicator = indicator;
         graphicsUtils.latchDisplayObjectOnto({
             child: indicator,
             parent: this.displayObject,
@@ -299,11 +299,11 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     node.isSpinning = true;
     node.sizeNode();
 
-    if (this.displayObject.iconIdicator) {
-        this.displayObject.iconIdicator.tint = 0x00630b;
-        this.displayObject.iconIdicator.alpha = 0.8;
-        this.displayObject.iconIdicator.addedBorder.alpha = 0.00;
-        this.displayObject.iconIdicator.addedBorder.tint = 0xffffff;
+    if (this.displayObject.iconIndicator) {
+        this.displayObject.iconIndicator.tint = 0x00630b;
+        this.displayObject.iconIndicator.alpha = 0.8;
+        this.displayObject.iconIndicator.addedBorder.alpha = 0.00;
+        this.displayObject.iconIndicator.addedBorder.tint = 0xffffff;
     }
 
     var times = lesser ? 6 : 10;

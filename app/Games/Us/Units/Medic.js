@@ -543,6 +543,7 @@ export default function Medic(options) {
         var originalDistance = Matter.Vector.magnitude(Matter.Vector.sub(destination, this.position));
 
         this.isTargetable = false;
+        this.isVanishing = true;
         gameUtils.moveUnitOffScreen(this);
         this.stop();
 
@@ -564,6 +565,7 @@ export default function Medic(options) {
                     y: y
                 });
                 this.isTargetable = true;
+                this.isVanishing = false;
                 this.shadow = null;
 
                 //save the renderlings from being destroyed
@@ -1166,7 +1168,7 @@ export default function Medic(options) {
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of outing.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of excursion.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1318,8 +1320,8 @@ export default function Medic(options) {
     var slyLogic = new Passive({
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to 10) for length of outing.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 3 dodge for length of outing.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to 10) for length of excursion.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 3 dodge for length of excursion.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',

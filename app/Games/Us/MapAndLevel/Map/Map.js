@@ -492,7 +492,7 @@ var map = function(specs) {
 
         //create the space to embark text
         if (this.outingNodes.length > 0 && this.engageText == null) {
-            this.engageText = graphicsUtils.addSomethingToRenderer("TEX+:Space to embark", {
+            this.engageText = graphicsUtils.addSomethingToRenderer("TEX+:Space to embark (" + this.outingNodes.length + "/3)", {
                 where: 'hudText',
                 style: styles.escapeToContinueStyle,
                 anchor: {
@@ -500,8 +500,8 @@ var map = function(specs) {
                     y: 1
                 },
                 position: {
-                    x: gameUtils.getPlayableWidth() - 220,
-                    y: gameUtils.getPlayableHeight() - 50
+                    x: gameUtils.getPlayableWidth() - 260,
+                    y: gameUtils.getPlayableHeight() - 10
                 }
             });
             this.spaceFlashTimer = graphicsUtils.graduallyTint(this.engageText, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
@@ -525,6 +525,8 @@ var map = function(specs) {
             $('body').off('keydown.engagespace');
             graphicsUtils.removeSomethingFromRenderer(this.engageText);
             this.engageText = null;
+        } else {
+            this.engageText.text = "Space to embark (" + this.outingNodes.length + "/3)";
         }
     };
 

@@ -54,7 +54,7 @@ var MapLearning = function(scene) {
     });
     var a4 = new Dialogue({
         actor: "Ursula",
-        text: "This map is how we'll embark on outings.",
+        text: "This map is how we'll embark on excursions.",
         newBreak: true,
         isTask: false,
         letterSpeed: 45,
@@ -63,25 +63,25 @@ var MapLearning = function(scene) {
     });
     var a5 = new Dialogue({
         actor: "Shane",
-        text: "An... outing?",
+        text: "An... excursion?",
         isTask: false,
         backgroundBox: true
     });
     var a6 = new Dialogue({
         actor: "Ursula",
-        text: "An outing is a series of enemy camps we'll address back-to-back.",
+        text: "An excursion is a series of enemy camps we'll address back-to-back.",
         letterSpeed: 45,
         backgroundBox: true
     });
     var a7 = new Dialogue({
         actor: "Info",
-        text: "Outings can be up to three camps long.",
+        text: "Excursions can be up to three camps long.",
         isInfo: true,
         backgroundBox: true
     });
     var a8 = new Dialogue({
         actor: "Ursula",
-        text: "Longer outings are risky since we can't reconfigure between each camp,",
+        text: "Longer excursion are risky since we can't reconfigure between each camp,",
         letterSpeed: 45,
         backgroundBox: true,
         delayAfterEnd: 0
@@ -107,7 +107,7 @@ var MapLearning = function(scene) {
     });
     var a11 = new Dialogue({
         actor: "Ursula",
-        text: "After an outing, Command will deliver supplies based on the camps we cleared.",
+        text: "After an excursion, Command will deliver supplies based on the camps we cleared.",
         letterSpeed: 45,
         backgroundBox: true,
         delayAfterEnd: 1000
@@ -120,6 +120,23 @@ var MapLearning = function(scene) {
         backgroundBox: true,
         delayAfterEnd: 2500
     });
+
+    a11a.onFullyShown = function() {
+        var itemBoxes = currentGame.map.graph.map(function(node) {
+            var ind = node.displayObject.iconIndicator;
+            if(ind) {
+                return ind;
+            } else {
+                return false;
+            }
+        });
+
+        itemBoxes.forEach((ind) => {
+            if(ind) {
+                graphicsUtils.flashSprite({sprite: ind});
+            }
+        });
+    };
 
     var a12 = new Dialogue({
         actor: "Ursula",
@@ -135,6 +152,14 @@ var MapLearning = function(scene) {
         backgroundBox: true,
         delayAfterEnd: 1500
     });
+
+    a13.onFullyShown = function() {
+        let arrow = graphicsUtils.pointToSomethingWithArrow(currentGame.map.adrenalineText, -10, 0.5);
+        gameUtils.doSomethingAfterDuration(() => {
+            graphicsUtils.removeSomethingFromRenderer(arrow);
+        }, 4000);
+    };
+
     var a14 = new Dialogue({
         actor: "Shane",
         text: "...What? Adrenaline?",
@@ -160,7 +185,7 @@ var MapLearning = function(scene) {
     });
     var a16b = new Dialogue({
         actor: "Ursula",
-        text: "We'd therefore be wise to plan our routes.",
+        text: "It's therefore wise to be thoughtful about our routes.",
         delayAfterEnd: 2000,
         continuation: true,
         backgroundBox: true

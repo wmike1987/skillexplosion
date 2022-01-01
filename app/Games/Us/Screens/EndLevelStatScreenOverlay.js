@@ -2377,7 +2377,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                 Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
                 $('body').on('keydown.uskeydownendscreen', function(event) {
                     var key = event.key.toLowerCase();
-                    if (key == ' ') {
+                    if (key == ' ' && this.spaceToContinue) {
                         globals.currentGame.soundPool.sceneContinue.play();
                         $('body').off('keydown.uskeydownendscreen');
                         graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
