@@ -43,7 +43,10 @@ var Doodad = function(options) {
     if(options.collides) {
         this.collides = true;
     }
-    this.loneNZRadius = options.loneNZRadius;
+
+    //default no zone
+    this.loneNZRadius = options.loneNZRadius || 60;
+
     if (!options.scale.x) {
         options.scale = {
             x: options.scale,
@@ -94,6 +97,9 @@ var Doodad = function(options) {
         options.texture = [options.texture];
     }
 
+    //set default anchor
+    var anchor = options.anchor || {x: 0.5, y: 0.5};
+
     options.texture.forEach((item, i) => {
         var data = item.data || item;
         var offset = item.offset || options.offset || {
@@ -114,6 +120,7 @@ var Doodad = function(options) {
             data: data,
             offset: mathArrayUtils.cloneVector(offset),
             alpha: alpha,
+            anchor: anchor,
             rotate: 'none',
             scale: mathArrayUtils.cloneVector(scale),
             stage: stage,
@@ -132,6 +139,7 @@ var Doodad = function(options) {
                 y: 1
             },
             visible: true,
+            anchor: anchor,
             avoidIsoMgr: true,
             rotate: 'none',
             stage: "stageNTwo",
@@ -202,7 +210,7 @@ Doodad.prototype.getNoZone = function() {
         return {
             offset: this.offset || {x: 0, y: 0},
             center: Matter.Vector.add(this.position, this.offset || {x: 0, y: 0}),
-            radius: this.loneNZRadius || 60
+            radius: this.loneNZRadius
         };
     } else {
         return {
@@ -215,7 +223,7 @@ Doodad.prototype.getNoZone = function() {
 
 Doodad.prototype.collidesInTheory = function(myPosition, otherNoZone) {
     var offset = this.noZone ? this.noZone.offset : this.offset || {x: 0, y: 0};
-    var radius = this.noZone ? this.noZone.radius : this.loneNZRadius || 60;
+    var radius = this.noZone ? this.noZone.radius : this.loneNZRadius;
     if(!this.collides) {
         radius = 30;
     }

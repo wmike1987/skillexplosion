@@ -9,6 +9,7 @@ import {
 } from '@utils/Doodad.js';
 import RockPit from '@games/Us/Doodads/RockPit.js';
 import EnemyPost1 from '@games/Us/Doodads/EnemyPost1.js';
+import EnemyPost2 from '@games/Us/Doodads/EnemyPost2.js';
 import SidewaysLog1 from '@games/Us/Doodads/SidewaysLog1.js';
 import EnemyTent1 from '@games/Us/Doodads/EnemyTent1.js';
 import {
@@ -21,6 +22,7 @@ import {
 var doodadMenu = {
     rockPit: RockPit,
     enemyPost1: EnemyPost1,
+    enemyPost2: EnemyPost2,
     sidewaysLog1: SidewaysLog1,
     enemyTent1: EnemyTent1,
 };
@@ -35,7 +37,7 @@ var DoodadFactory = {
         //if we're pulling from a menu
         if (options.menuItem) {
             //get the options from the menu
-            var menuDoodadOptions = new doodadMenu[options.menuItem]();
+            var menuDoodadOptions = new doodadMenu[options.menuItem](options);
             if(menuDoodadOptions.initialize) {
                 menuDoodadOptions.initialize();
             }
@@ -89,6 +91,7 @@ var DoodadFactory = {
             shadowAlpha: options.shadowAlpha,
             shadowScale: options.shadowScale,
             shadowOffset: options.shadowOffset,
+            anchor: options.anchor,
             scale: options.scale,
             offset: options.offset,
             bodyScale: options.bodyScale,

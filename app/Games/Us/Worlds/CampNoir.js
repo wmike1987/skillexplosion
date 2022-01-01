@@ -1673,7 +1673,7 @@ var campNoir = {
                                 min: 100,
                                 max: 150
                             }
-                        }, {
+                        }, /*{
                             textureName: 'CampDoodads/MiniTent1',
                             randomScale: {
                                 min: 0.8,
@@ -1688,7 +1688,8 @@ var campNoir = {
                                 max: 300
                             },
                             loneNZRadius: 80
-                        }, {
+                        }, */
+                        {
                             textureName: 'CampDoodads/BarrelTrash1',
                             randomScale: {
                                 min: 0.8,
@@ -1756,22 +1757,23 @@ var campNoir = {
                     };
 
                     var enemyPost2 = DoodadFactory.createDoodad({
-                        menuItem: 'enemyPost1',
+                        menuItem: 'enemyPost2',
                         tint: treeTints[tIndex]
                     });
-                    enemyPost.unique = true;
-                    enemyPost.groupingOptions = {
+                    enemyPost2.unique = true;
+                    enemyPost2.groupingOptions = {
                         priority: 1,
                         min: 70,
                         max: 90,
                     };
 
                     var enemyPost3 = DoodadFactory.createDoodad({
-                        menuItem: 'enemyPost1',
-                        tint: treeTints[tIndex]
+                        menuItem: 'enemyPost2',
+                        tint: treeTints[tIndex],
+                        preventDuplicateDoodad: enemyPost2
                     });
-                    enemyPost.unique = true;
-                    enemyPost.groupingOptions = {
+                    enemyPost3.unique = true;
+                    enemyPost3.groupingOptions = {
                         priority: 1,
                         min: 70,
                         max: 90,
