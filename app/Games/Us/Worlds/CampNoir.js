@@ -1605,8 +1605,8 @@ var campNoir = {
                     trough1.unique = true;
                     trough1.groupingOptions = {
                         priority: 1,
-                        min: 90,
-                        max: 140,
+                        min: 110,
+                        max: 150,
                     };
 
                     var trough2 = DoodadFactory.createDoodad({
@@ -1616,8 +1616,8 @@ var campNoir = {
                     trough2.unique = true;
                     trough2.groupingOptions = {
                         priority: 3,
-                        min: 90,
-                        max: 140,
+                        min: 110,
+                        max: 150,
                     };
 
                     var enemyPost4 = DoodadFactory.createDoodad({
