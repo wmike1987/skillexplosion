@@ -1605,8 +1605,19 @@ var campNoir = {
                     trough1.unique = true;
                     trough1.groupingOptions = {
                         priority: 1,
-                        min: 70,
-                        max: 90,
+                        min: 90,
+                        max: 140,
+                    };
+
+                    var trough2 = DoodadFactory.createDoodad({
+                        menuItem: 'waterTrough',
+                        tint: treeTints[tIndex]
+                    });
+                    trough2.unique = true;
+                    trough2.groupingOptions = {
+                        priority: 3,
+                        min: 90,
+                        max: 140,
                     };
 
                     var enemyPost4 = DoodadFactory.createDoodad({
@@ -1620,7 +1631,7 @@ var campNoir = {
                         max: 90,
                     };
                     this.tent = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [tentDoodad, trough1, enemyPost4, tree, tree2, {
+                        possibleDoodads: [tentDoodad, trough1, trough2, enemyPost4, tree, tree2, {
                             textureName: 'bullets',
                             randomHFlip: true,
                             where: 'backgroundOne',
@@ -1739,7 +1750,7 @@ var campNoir = {
                             possibleAmounts: [15],
                             scalar: {
                                 min: 120,
-                                max: 180
+                                max: 200
                             }
                         },
                         where: 'stageNOne',

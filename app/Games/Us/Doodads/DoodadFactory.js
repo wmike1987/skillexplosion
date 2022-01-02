@@ -91,6 +91,7 @@ var DoodadFactory = {
             drawWire: options.drawWire,
             randomHFlip: options.randomHFlip,
             animateOnCollision: options.animateOnCollision,
+            collisionSound: options.collisionSound,
             shadowIcon: options.shadowIcon,
             shadowAlpha: options.shadowAlpha,
             shadowScale: options.shadowScale,

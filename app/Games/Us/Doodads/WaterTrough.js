@@ -9,6 +9,12 @@ import {
 /*
  * options
  */
+
+ var collideSound = gameUtils.getSound('woodburst.wav', {
+     volume: 0.02,
+     rate: 0.8
+ });
+
 var waterTrough = function(options) {
     var possibleTroughs = ['trough_1', 'trough_2', 'trough_3', 'trough_4', 'trough_5'];
     var chosenTrough = mathArrayUtils.getRandomElementOfArray(possibleTroughs);
@@ -25,11 +31,12 @@ var waterTrough = function(options) {
     troughAnimation.tint = options.tint;
     this.textureName = troughAnimation;
     this.radius = 12;
-    this.loneNZRadius = 80;
+    this.loneNZRadius = 100;
     this.isSensor = true;
     // this.drawWire = true;
     this.randomHFlip = true;
     this.animateOnCollision = true;
+    this.collisionSound = collideSound;
     this.noShadow = true;
     this.sortYOffset = 0;
     this.shadowScale = {

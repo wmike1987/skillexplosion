@@ -83,6 +83,9 @@ var Doodad = function(options) {
             var otherUnit = otherBody.unit;
             if (otherUnit != null) {
                 this.body.renderlings.animatedSprite.play();
+                if(options.collisionSound) {
+                    options.collisionSound.play();
+                }
                 options.animateOnCollision = false;
             }
         }.bind(this));
