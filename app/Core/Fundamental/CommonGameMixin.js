@@ -390,9 +390,9 @@ var common = {
                 if (event.key == 'w' || event.key == 'W') {
                     // globals.currentGame.nextPhase();
 
-                    // var d = DoodadFactory.createDoodad({menuItem: 'enemyTent1', drawWire: false});
-                    // d.setPosition({x: 500, y: 500});
-                    // this.currentScene.add(d);
+                    var d = DoodadFactory.createDoodad({menuItem: 'waterTrough', drawWire: true});
+                    d.setPosition({x: 500, y: 500});
+                    this.currentScene.add(d);
 
                     // if(!this.whoaSprite) {
                     //     this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNOne', style: styles.abilityText});
@@ -419,7 +419,7 @@ var common = {
                     //     }
                     // });
 
-                    this.shane.sufferAttack(1, this.ursula);
+                    // this.shane.sufferAttack(1, this.ursula);
                 } else if (event.key == 'y' || event.key == 'Y') {
                     this.giveUnitItem(this.shane, this.debugItemName || 'BasicMicrochip');
                 }

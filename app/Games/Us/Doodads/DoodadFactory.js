@@ -12,6 +12,7 @@ import EnemyPost1 from '@games/Us/Doodads/EnemyPost1.js';
 import EnemyPost2 from '@games/Us/Doodads/EnemyPost2.js';
 import SidewaysLog1 from '@games/Us/Doodads/SidewaysLog1.js';
 import EnemyTent1 from '@games/Us/Doodads/EnemyTent1.js';
+import WaterTrough from '@games/Us/Doodads/WaterTrough.js';
 import {
     gameUtils,
     graphicsUtils,
@@ -25,6 +26,7 @@ var doodadMenu = {
     enemyPost2: EnemyPost2,
     sidewaysLog1: SidewaysLog1,
     enemyTent1: EnemyTent1,
+    waterTrough: WaterTrough,
 };
 
 /*
@@ -75,7 +77,7 @@ var DoodadFactory = {
         //build final options object
         options = Object.assign(defaultOptions, options);
 
-        //create the doodad
+        //create the doodad using the final options object
         var doodad = new Doodad({
             collides: mathArrayUtils.resolveBooleanParam(options.collides),
             autoAdd: false,
@@ -85,8 +87,10 @@ var DoodadFactory = {
             texture: mathArrayUtils.convertToArray(options.textureName),
             stage: options.where,
             tint: options.tint,
+            isSensor: options.isSensor,
             drawWire: options.drawWire,
             randomHFlip: options.randomHFlip,
+            animateOnCollision: options.animateOnCollision,
             shadowIcon: options.shadowIcon,
             shadowAlpha: options.shadowAlpha,
             shadowScale: options.shadowScale,

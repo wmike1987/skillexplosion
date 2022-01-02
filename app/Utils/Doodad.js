@@ -23,6 +23,7 @@ import {
  *       scale: {x, y}
  *       shadowScale: {x, y}
  *       shadowOffset: {x, y}
+ *       animateOnCollision: boolean (default false)
  *       autoAdd: boolean (default true)
  *   }
  */
@@ -34,6 +35,8 @@ var Doodad = function(options) {
         autoAdd: true,
         sightBlocker: false,
         collides: true,
+        isSensor: false,
+        animateOnCollision: false,
         scale: {
             x: 1,
             y: 1
@@ -55,7 +58,7 @@ var Doodad = function(options) {
     }
     if (options.randomHFlip) {
         if (mathArrayUtils.flipCoin()) {
-            options.scale.x *= -1;
+            options.scaleFlip = true;
             options.offset.x *= -1;
         }
     }
@@ -67,8 +70,23 @@ var Doodad = function(options) {
 
     // create body
     this.body = Matter.Bodies.circle(-5000, -5000, options.radius, {
-        isStatic: true,
+        isStatic: !options.isSensor,
+        isSensor: options.isSensor
     });
+
+    if(options.animateOnCollision) {
+        Matter.Events.on(this.body, 'onCollide', function(pair) {
+            if(!options.animateOnCollision) {
+                return;
+            }
+            var otherBody = pair.pair.bodyB == this.body ? pair.pair.bodyA : pair.pair.bodyB;
+            var otherUnit = otherBody.unit;
+            if (otherUnit != null) {
+                this.body.renderlings.animatedSprite.play();
+                options.animateOnCollision = false;
+            }
+        }.bind(this));
+    }
 
     if (options.bodyScale) {
         Matter.Body.scale(this.body, options.bodyScale.x || 1, options.bodyScale.y || 1);
@@ -107,6 +125,9 @@ var Doodad = function(options) {
             y: 0
         };
         var scale = item.scale || options.scale;
+        if(options.scaleFlip) {
+            scale.x *= -1;
+        }
         var stage = item.where || options.stage || 'foreground';
         var tint = item.tint || options.tint || 0xffffff;
         var alpha = item.alpha || options.alpha || 1;
