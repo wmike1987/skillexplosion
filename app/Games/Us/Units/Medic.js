@@ -1431,21 +1431,24 @@ export default function Medic(options) {
         },
         defenseAction: function(event) {
             var attacker = event.performingUnit;
-            attacker.stun({duration: ffDDuration});
 
-            medic.applyBuff({
-                id: 'familiarFaceSpeed',
-                textureName: 'SpeedBuff',
-                duration: ffDDuration,
-                applyChanges: function() {
-                    medic.moveSpeed += 0.5;
-                },
-                removeChanges: function() {
-                    medic.moveSpeed -= 0.5;
-                }
-            });
+            if(!attacker.isPlaceholder) {
+                attacker.stun({duration: ffDDuration});
 
-            return {value: ffDDuration/1000};
+                medic.applyBuff({
+                    id: 'familiarFaceSpeed',
+                    textureName: 'SpeedBuff',
+                    duration: ffDDuration,
+                    applyChanges: function() {
+                        medic.moveSpeed += 0.5;
+                    },
+                    removeChanges: function() {
+                        medic.moveSpeed -= 0.5;
+                    }
+                });
+
+                return {value: ffDDuration/1000};
+            }
         },
         aggressionAction: function(event) {
             medic.applyBuff({
@@ -1489,8 +1492,8 @@ export default function Medic(options) {
     var dtHandler = {};
     var deepThought = new Passive({
         title: 'Deep Thought',
-        originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defense passive\'s aggression mode.'],
+        originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
+        aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free mine.'],
         textureName: 'DeepThought',

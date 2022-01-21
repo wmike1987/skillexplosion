@@ -204,6 +204,14 @@ var levelBase = {
             this.enemySets = EnemySetSpecifier.create(this.enemyDefs);
         }
 
+        this.totalEnemies = this.enemySets.reduce((tally, current) => {
+            if(!current.trivial) {
+                return tally + current.spawn.total;
+            } else {
+                return tally;
+            }
+        }, 0);
+
         //create the map node
         if (!options.mapNodeOptions.bypassNodeCreation) {
             var mapNode = this.createMapNode(options.mapNodeOptions);
@@ -468,7 +476,7 @@ var levelBase = {
             onDone: onDone
         });
 
-        //show reward...maybe
+        //show reward (efficient clearance)... maybe
         if (rewardText && !adrenalineIsFull) {
             textChain.add({
                 text: rewardText,
@@ -479,7 +487,7 @@ var levelBase = {
                     where: 'hudTwo',
                     style: styles.adrenalineTextLarge,
                     speed: 6,
-                    duration: 1600,
+                    duration: 1800,
                     startNextAfter: 1000,
                     onStart: (myText) => {
                         globals.currentGame.soundPool.positiveSoundFast.play();
@@ -504,8 +512,8 @@ var levelBase = {
                     where: 'hudTwo',
                     style: styles.adrenalineTextLarge,
                     speed: 6,
-                    duration: 1600,
-                    endAfter: endAfter,
+                    duration: 1800,
+                    startNextAfter: 1000,
                     onStart: (myText) => {
                         var actualAdrenalineAdded = globals.currentGame.map.addAdrenalineBlock(addedAdrenaline);
                         if (options.onAdrenalineAdd) {
@@ -530,8 +538,8 @@ var levelBase = {
                     where: 'hudTwo',
                     style: styles.adrenalineTextLarge,
                     speed: 6,
-                    duration: 1600,
-                    endAfter: endAfter,
+                    duration: 1800,
+                    startNextAfter: 1000,
                     onStart: (myText) => {
                         globals.currentGame.soundPool.positiveSoundFast.play();
                         graphicsUtils.addGleamToSprite({
@@ -543,6 +551,28 @@ var levelBase = {
                 }
             });
         }
+
+        textChain.add({
+            text: '+ ' + currentGame.map.fatigueIncrement + ' starting fatigue',
+            position: gameUtils.getPlayableCenterPlus({
+                y: 300
+            }),
+            additionalOptions: {
+                where: 'hudTwo',
+                style: styles.fatigueTextLarge,
+                speed: 6,
+                duration: 1800,
+                endAfter: endAfter,
+                onStart: (myText) => {
+                    globals.currentGame.soundPool.negativeSound.play();
+                    graphicsUtils.addGleamToSprite({
+                        sprite: myText,
+                        gleamWidth: 80,
+                        duration: 500
+                    });
+                }
+            }
+        });
 
         gameUtils.doSomethingAfterDuration(() => {
             textChain.play();

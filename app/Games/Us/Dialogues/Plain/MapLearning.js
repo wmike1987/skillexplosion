@@ -199,7 +199,7 @@ var MapLearning = function(scene) {
     });
     var a17a = new Dialogue({
         actor: "Info",
-        text: "It's possible to return to camp once per wave.",
+        text: "It's possible to return to camp once per set of camps.",
         isInfo: true,
         backgroundBox: true,
         delayAfterEnd: 2500

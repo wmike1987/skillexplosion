@@ -1148,7 +1148,7 @@ export default function Marine(options) {
         },
         defenseAction: function(event) {
             var attackingUnit = event.performingUnit;
-            if(attackingUnit) {
+            if(!attackingUnit.isPlaceholder) {
                 attackingUnit.maim({
                     duration: 6000
                 });

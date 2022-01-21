@@ -506,9 +506,9 @@ var game = {
                     fadeIn: true
                 });
                 if (this.currentLevel.levelRedirect) {
-                    this.currentLevel.levelRedirect.campLikeActiveSOM = true;
+                    this.currentLevel.levelRedirect.campLikeActive = true;
                 } else {
-                    this.currentLevel.campLikeActiveSOM = true;
+                    this.currentLevel.campLikeActive = true;
                 }
                 this.unitSystem.unitPanel.refreshPassiveButton();
                 vScene.clear();
@@ -621,7 +621,7 @@ var game = {
         });
         scene.add(flagD);
 
-        var gunrack = level.createAugmentRack(scene);
+        // var gunrack = level.createAugmentRack(scene);
 
         if (options.fadeIn) {
             graphicsUtils.fadeSpriteOverTime({
@@ -632,13 +632,13 @@ var game = {
                 makeVisible: true
             });
 
-            graphicsUtils.fadeSpriteOverTime({
-                sprite: gunrack.body.renderlings.mainData0,
-                duration: 1000,
-                fadeIn: true,
-                nokill: true,
-                makeVisible: true
-            });
+            // graphicsUtils.fadeSpriteOverTime({
+            //     sprite: gunrack.body.renderlings.mainData0,
+            //     duration: 1000,
+            //     fadeIn: true,
+            //     nokill: true,
+            //     makeVisible: true
+            // });
 
             graphicsUtils.fadeSpriteOverTime({
                 sprite: flag,
@@ -662,7 +662,7 @@ var game = {
         this.currentLevel.enterLevel({
             customEnterLevel: function(level) {
                 //set state of mind config only to be active
-                level.campLikeActiveSOM = true;
+                level.campLikeActive = true;
 
                 //set unit positions or revive
                 if (!revive) {

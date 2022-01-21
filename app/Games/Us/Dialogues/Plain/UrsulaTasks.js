@@ -248,7 +248,7 @@ var UrsulaTasks = function(scene) {
     var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", isTask: true, backgroundBox: true});
     var c4 = new Dialogue({text: "Microchips can be reused.", isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 1500});
     var c5 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", isTask: true, backgroundBox: true});
-    var c6 = new Dialogue({actor: "MacMurray", text: "There's a small wave incoming, let's test out what you've learned.", newBreak: true, pauseAfterWord: {word: 'incoming,', duration: 500}, backgroundBox: true, letterSpeed: 40});
+    var c6 = new Dialogue({actor: "MacMurray", text: "We've located several enemy camps, let's test out what you've learned.", newBreak: true, pauseAfterWord: {word: 'incoming,', duration: 500}, backgroundBox: true, letterSpeed: 40});
 
     var microchip = null;
     c1.onStart = function() {

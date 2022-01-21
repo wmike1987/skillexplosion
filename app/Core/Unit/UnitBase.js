@@ -180,7 +180,7 @@ var UnitBase = {
         }, options);
 
         attackingUnit = attackingUnit || {
-            name: 'empty'
+            isPlaceholder: true
         };
 
         var damageObj = {

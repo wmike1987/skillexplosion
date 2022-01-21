@@ -1237,13 +1237,21 @@ var phaseTwo = function(options) {
         onEnterBehavior: function() {
             var a1 = new Dialogue({
                 actor: "MacMurray",
-                text: "Resupply incoming...",
+                text: "You're still alive... Unfortunately it's getting hotter.",
                 backgroundBox: true,
+                letterSpeed: 30,
+            });
+
+            var a2 = new Dialogue({
+                actor: "MacMurray",
+                text: "Radar shows an increased enemy presence... resupply incoming...",
+                backgroundBox: true,
+                continuation: true,
                 letterSpeed: 30,
                 delayAfterEnd: 1000,
             });
             var self = this;
-            var chain = new DialogueChain([a1], {
+            var chain = new DialogueChain([a1, a2], {
                 startDelay: 750,
                 cleanUpOnDone: true
             });
@@ -1391,7 +1399,7 @@ var phaseThree = function() {
         onEnterBehavior: function() {
             var a1 = new Dialogue({
                 actor: "MacMurray",
-                text: "Final wave incoming...",
+                text: "Serious camps have been identified... incoming...",
                 backgroundBox: true,
                 letterSpeed: 30,
                 delayAfterEnd: 1000,
@@ -1620,6 +1628,11 @@ var campNoir = {
                         max: 150,
                     };
 
+                    if(!this.outer) {
+                        trough1 = null;
+                        trough2 = null;
+                    }
+
                     var enemyPost4 = DoodadFactory.createDoodad({
                         menuItem: 'enemyPost1',
                         tint: treeTints[tIndex]
@@ -1747,7 +1760,7 @@ var campNoir = {
                         groupings: {
                             center: tentDoodad,
                             hz: 1.0,
-                            possibleAmounts: [15],
+                            possibleAmounts: [7 + this.totalEnemies],
                             scalar: {
                                 min: 120,
                                 max: 200
@@ -1813,12 +1826,31 @@ var campNoir = {
                         max: 80
                     };
 
+                    var basicPitArray = [rockPitDoodad, rock1, rock2, rock3, enemyPost, enemyPost2, enemyPost3, log1, log1];
+                    if(this.outer) {
+                        var amountOver = Math.min(4, this.totalEnemies - 4);
+                        mathArrayUtils.repeatXTimes(() => {
+                                let ep = DoodadFactory.createDoodad({
+                                    menuItem: 'enemyPost2',
+                                    tint: treeTints[tIndex],
+                                    preventDuplicateDoodad: basicPitArray
+                                });
+                                ep.unique = true;
+                                ep.groupingOptions = {
+                                    priority: 1,
+                                    min: 70,
+                                    max: 115,
+                                };
+                                basicPitArray.push(ep);
+                        }, amountOver);
+                    }
+
                     this.pit = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [rockPitDoodad, rock1, rock2, rock3, enemyPost, enemyPost2, enemyPost3, log1, log1, {
+                        possibleDoodads: basicPitArray.concat([{
                             textureName: 'bullets',
                             where: 'backgroundOne',
                             randomHFlip: true,
-                            unique: true,
+                            // unique: true,
                             randomScale: {
                                 min: 0.8,
                                 max: 1.0
@@ -1879,7 +1911,7 @@ var campNoir = {
                             randomHFlip: true,
                             rotate: 'random',
                             where: 'stageNTwo'
-                        }],
+                        }]),
                         tileWidth: tileSize,
                         maxNumber: 1,
                         nonTilePosition: true,
@@ -1897,10 +1929,10 @@ var campNoir = {
                         groupings: {
                             center: rockPitDoodad,
                             hz: 1.0,
-                            possibleAmounts: [16],
+                            possibleAmounts: [8 + this.totalEnemies * 2],
                             scalar: {
                                 min: 75,
-                                max: 100
+                                max: 115
                             }
                         },
                         where: 'stageNOne',

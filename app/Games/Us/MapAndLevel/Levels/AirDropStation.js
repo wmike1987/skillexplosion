@@ -45,16 +45,18 @@ var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
     rate: 1.0
 });
 
+var fatigueBenefit = 3;
+
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
 commonAirDropStation.initExtension = function() {
-    this.campLikeActiveSOM = true;
+    this.campLikeActive = true;
     this.completeUponEntry = true;
     this.lesserSpin = true;
     this.entrySound = entrySound;
     this.isAirDrop = true;
     this.nodeTitle = "Air Drop Station";
-    this.tooltipDescription = 'Subtract 4% fatigue and receive supply drop.';
+    this.tooltipDescription = 'Subtract ' + fatigueBenefit + '% fatigue and receive supply drop.';
     this.mode = this.possibleModes.CUSTOM;
     this.noSmokePit = true;
     this.noZones.push({
@@ -239,7 +241,7 @@ var airDropStation = function(options) {
         //alter fatigue
         gameUtils.doSomethingAfterDuration(() => {
             globals.currentGame.soundPool.positiveSoundFast.play();
-            var fatText = graphicsUtils.floatText('-4% fatigue', gameUtils.getPlayableCenterPlus({
+            var fatText = graphicsUtils.floatText('-' + fatigueBenefit + '% fatigue', gameUtils.getPlayableCenterPlus({
                 y: 300
             }), {
                 where: 'hudTwo',
@@ -255,7 +257,7 @@ var airDropStation = function(options) {
         }, 1500);
 
         //subtract fatigue
-        globals.currentGame.map.startingFatigue -= 4;
+        globals.currentGame.map.startingFatigue -= fatigueBenefit;
         if (globals.currentGame.map.startingFatigue < 0) {
             globals.currentGame.map.startingFatigue = 0;
         }
@@ -337,8 +339,18 @@ var selectionMechanism = {
                     thickness: 3,
                     tint: item.borderTint || 0xffffff
                 });
+
+                var itemTitleHelper = item.name;
+                //indicate ursula/shane only items in title
+                if(item.type == 'Marine') {
+                    itemTitleHelper += ' (Shane only)';
+                } else if(item.type == 'Medic') {
+                    itemTitleHelper += ' (Ursula only)';
+                }
+
                 Tooltip.makeTooltippable(item.icon, Object.assign({}, item.originalTooltipObj, {
-                    systemMessage: 'Click to receive from air drop.'
+                    systemMessage: 'Click to receive from air drop.',
+                    title: itemTitleHelper
                 }));
                 j++;
 

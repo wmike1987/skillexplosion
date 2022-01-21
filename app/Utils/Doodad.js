@@ -28,6 +28,11 @@ import {
  *   }
  */
 var Doodad = function(options) {
+    //let's enforce texture to be an array
+    if (!Array.isArray(options.texture)) {
+        options.texture = [options.texture];
+    }
+
     this.rebuildOptions = Object.assign({}, options);
     this.isDoodad = true;
     options = Object.assign({
@@ -114,9 +119,6 @@ var Doodad = function(options) {
 
     //get textures
     var rchildren = [];
-    if (!Array.isArray(options.texture)) {
-        options.texture = [options.texture];
-    }
 
     //set default anchor
     var anchor = options.anchor || {x: 0.5, y: 0.5};

@@ -393,9 +393,15 @@ var sceneryUtils = {
     decorateTerrain: function(options) {
         var container = new SceneContainer();
         var doodadArray = options.possibleDoodads || [];
+        doodadArray = doodadArray.filter((doodad) => {
+            return doodad != null;
+        });
 
         var textureArray = options.possibleTextures || [];
         textureArray = mathArrayUtils.convertToArray(textureArray);
+        textureArray = textureArray.filter((t) => {
+            return t != null;
+        });
 
         var bounds = options.bounds || gameUtils.getCanvasWH();
         var tileWidth = options.tileWidth;
@@ -535,14 +541,16 @@ var sceneryUtils = {
                         //expand possible things for proportional choosing of objects
                         let expandedThings = [];
                         arrayOfThings.forEach(function(thing) {
-                            if (thing.possibleTextures) {
-                                thing.possibleTextures.forEach(function(t) {
-                                    expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
-                                });
-                            } else {
+                            //Testing this commented section out... can it be removed? hopefully
+                            // if (thing.possibleTextures) {
+                            //     thing.possibleTextures.forEach(function(t) {
+                            //         expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
+                            //     });
+                            // } else {
                                 expandedThings.push(thing);
-                            }
+                            // }
                         });
+
                         let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
 
                         //find priority grouping items
