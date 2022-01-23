@@ -191,14 +191,17 @@ Scene.prototype.transitionToScene = function(options) {
         };
     } else if(mode == SceneModes.FADE_AWAY) {
         let currentGame = globals.currentGame;
-        const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
+        const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getRealCanvasWidth(), height: gameUtils.getRealCanvasHeight()});
         const transitionSprite = new PIXI.Sprite(renderTexture);
         let rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
         let renderer = globals.currentGame.renderer.pixiApp.renderer;
 
+        //temporarily set the scale
         renderer.render(rStage, renderTexture, false, null, true);
 
         graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
+        transitionSprite.scale.x = 1/globals.currentGame.renderer.screenScaleFactor;
+        transitionSprite.scale.y = 1/globals.currentGame.renderer.screenScaleFactor;
 
         inRuns = 1;
         iterTime = 32;
@@ -209,8 +212,8 @@ Scene.prototype.transitionToScene = function(options) {
             b: 10,
             c: 555555,
             progress: 1.0,
-            screenSize: gameUtils.getPlayableWH(),
-            centerPoint: options.centerPoint || gameUtils.getCanvasCenter(),
+            screenSize: gameUtils.getRealCanvasWH(),
+            centerPoint: mathArrayUtils.scalePositionToScreenCoordinates(options.centerPoint) || gameUtils.getRealCanvasCenter(),
             gridSize: 2,
             fadeIn: options.fadeIn
         });
@@ -237,6 +240,8 @@ Scene.prototype.transitionToScene = function(options) {
         renderer.render(rStage, renderTexture, false, null, true);
 
         graphicsUtils.addSomethingToRenderer(transitionSprite, "transitionLayer");
+        transitionSprite.scale.x = 1/globals.currentGame.renderer.screenScaleFactor;
+        transitionSprite.scale.y = 1/globals.currentGame.renderer.screenScaleFactor;
 
         inRuns = 1;
         iterTime = 32;
@@ -244,7 +249,7 @@ Scene.prototype.transitionToScene = function(options) {
 
         var dShader = new PIXI.Filter(null, sideSwipeShader, {
             progress: 0.0,
-            screenSize: gameUtils.getPlayableWH(),
+            screenSize: gameUtils.getRealCanvasWH(),
             leftToRight: options.leftToRight === false ? false : true
         });
         globals.currentGame.renderer.layers.transitionLayer.filters = [dShader];

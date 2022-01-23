@@ -244,26 +244,43 @@ var renderer = function(engine, options) {
         // PIXI.settings.ROUND_PIXELS = true;
         this.canvasEl = this.pixiApp.renderer.view;
 
-        var worldWidth = 1400;
-        var worldHeight = 800;
+        var aspectRatio = 7/4;
+        var targetedWidth = 1920;
+        var targetedHeight = 1080;
+        var suggestedWidth = 1400;
+        var suggestedHeight = 800;
+
         this.resizeFunction = function(event) {
+            var realWidth = window.screen.width;
+            var realHeight = window.screen.height;
+
+            var adjustedWidth = realWidth/targetedWidth * suggestedWidth;
+            var adjustedHeight = adjustedWidth/aspectRatio;
+            // debugger;
             // var parent = $('#gameTheater')[0];
             // var styles = getComputedStyle(parent);
             // var w = parseInt(styles.getPropertyValue("width"), 10);
             // var h = parseInt(styles.getPropertyValue("padding-bottom"), 10);
             //
-            // this.canvasEl.width = w;
-            // this.canvasEl.height = h;
-            // this.pixiApp.width = w;
-            // this.pixiApp.height = h;
-            //
-            // this.pixiApp.renderer.resize(w, h);
-            //
-            // this.stage.scale.x = w / worldWidth;
-            // this.stage.scale.y = h / worldHeight;
+            this.canvasEl.width = adjustedWidth;
+            this.canvasEl.height = adjustedHeight;
+            // this.pixiApp.width = adjustedWidth;
+            // this.pixiApp.height = adjustedHeight;
+
+            this.pixiApp.renderer.resize(adjustedWidth, adjustedHeight);
+
+            this.screenScaleFactor = realWidth/targetedWidth;
+            this.stage.scale.x = this.screenScaleFactor;
+            this.stage.scale.y = this.screenScaleFactor;
+            // globals.currentGame.worldOptions.width = adjustedWidth;
+            // globals.currentGame.worldOptions.height = adjustedHeight;
         }.bind(this);
+
         window.addEventListener('resize', this.resizeFunction);
         window.dispatchEvent(new Event('resize'));
+
+        //detect monitor resolution and issue a resize/scale
+        this.resizeFunction();
 
         //destroy the accessibility plugin which was/is causing a div to appear and affects the browser's scroll bar
         this.pixiApp.renderer.plugins.accessibility.destroy();

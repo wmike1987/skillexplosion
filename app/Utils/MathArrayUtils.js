@@ -22,6 +22,32 @@ var mathArrayUtils = {
         });
     },
 
+    scaleValueToScreenCoordinates: function(value) {
+        return value * globals.currentGame.renderer.screenScaleFactor;
+    },
+
+    scalePositionToScreenCoordinates: function(position) {
+        if(position) {
+            return {
+                x: this.scaleValueToScreenCoordinates(position.x),
+                y: this.scaleValueToScreenCoordinates(position.y)
+            };
+        }
+    },
+
+    scaleScreenValueToWorldCoordinate: function(value) {
+        return value / globals.currentGame.renderer.screenScaleFactor;
+    },
+
+    scaleScreenPositionToWorldPosition: function(position) {
+        if(position) {
+            return {
+                x: this.scaleScreenValueToWorldCoordinate(position.x),
+                y: this.scaleScreenValueToWorldCoordinate(position.y)
+            };
+        }
+    },
+
     distanceBetweenBodies: function(bodyA, bodyB) {
         var a = bodyA.position.x - bodyB.position.x;
         var b = bodyA.position.y - bodyB.position.y;
@@ -39,14 +65,16 @@ var mathArrayUtils = {
         options = options || {};
         var position = options.position;
         var numberOfPositions = options.numberOfPositions;
-        var numberOnSides = (numberOfPositions-1)/2.0;
+        var numberOnSides = (numberOfPositions - 1) / 2.0;
         var spacing = options.spacing || 50;
 
         var calculatedPositions = [];
 
-        var totalSpacing = spacing * numberOfPositions-1;
-        for(var x = -numberOnSides; x <= numberOnSides; x++) {
-            calculatedPositions.push(this.clonePosition(position, {x: (x * spacing)}));
+        var totalSpacing = spacing * numberOfPositions - 1;
+        for (var x = -numberOnSides; x <= numberOnSides; x++) {
+            calculatedPositions.push(this.clonePosition(position, {
+                x: (x * spacing)
+            }));
         }
 
         return calculatedPositions;
@@ -73,7 +101,7 @@ var mathArrayUtils = {
 
     //(0.75, 1.00) returns any decimal between the two values, inclusive
     getRandomNumberBetween: function(low, high) {
-        return low + Math.random() * (high-low);
+        return low + Math.random() * (high - low);
     },
 
     getRandomElementOfArray: function(array) {
@@ -96,7 +124,7 @@ var mathArrayUtils = {
         var i = 0;
         var last = false;
         keys.forEach(key => {
-            if(i == length - 1) {
+            if (i == length - 1) {
                 last = true;
             }
             operatorFunc(key, object[key], i, last);
@@ -108,7 +136,7 @@ var mathArrayUtils = {
         times = this.convertToArray(times);
         times = this.getRandomElementOfArray(times);
         var rets = [];
-        for(var i = 0; i < times; i++) {
+        for (var i = 0; i < times; i++) {
             rets[i] = func();
         }
 
@@ -143,7 +171,7 @@ var mathArrayUtils = {
     },
 
     resolveBooleanParam: function(value) {
-        if(value === false || value === null) {
+        if (value === false || value === null) {
             return false;
         } else {
             return true;
@@ -172,7 +200,7 @@ var mathArrayUtils = {
     },
 
     clonePosition: function(vector, offset) {
-        if(!vector) {
+        if (!vector) {
             return null;
         }
         offset = $.extend({
@@ -224,7 +252,7 @@ var mathArrayUtils = {
     },
 
     degreesToRadians: function(degrees) {
-        return degrees * (Math.PI/180);
+        return degrees * (Math.PI / 180);
     },
 
     //return new position
@@ -232,7 +260,10 @@ var mathArrayUtils = {
         var radians = this.degreesToRadians(angle);
         var opposite = Math.sin(radians);
         var adjacent = Math.cos(radians);
-        var destinationPoint = Matter.Vector.add(start, {x: adjacent, y: -opposite});
+        var destinationPoint = Matter.Vector.add(start, {
+            x: adjacent,
+            y: -opposite
+        });
         return this.addScalarToVectorTowardDestination(start, destinationPoint, scalar);
     },
 

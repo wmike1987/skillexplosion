@@ -477,7 +477,7 @@ var gameUtils = {
                 return false;
             }
             var conflict = noZones.some((nz) => {
-                if(incomingComparisonObject.isDoodad) {
+                if (incomingComparisonObject.isDoodad) {
                     return incomingComparisonObject.collidesInTheory(placement, nz);
                 } else {
                     return gameUtils.detectNoZoneCollision(incomingComparisonObject, nz);
@@ -492,10 +492,13 @@ var gameUtils = {
         do {
             placement.x = buffer.x + (Math.random() * (this.getPlayableWidth() - buffer.x * 2));
             placement.y = buffer.y + (Math.random() * (this.getPlayableHeight() - buffer.y * 2));
-            if(doodad) {
+            if (doodad) {
                 comparisonThing = doodad;
             } else {
-                comparisonThing = {center: placement, radius: 0};
+                comparisonThing = {
+                    center: placement,
+                    radius: 0
+                };
             }
         } while (conflictFound(comparisonThing));
         return placement;
@@ -541,11 +544,11 @@ var gameUtils = {
             position.y = point.y - radius + (Math.random() * (radius * 2));
 
         } while ((position.y > maxY ||
-            position.y < minY ||
-            position.x > maxX ||
-            position.x < minX ||
-            mathArrayUtils.distanceBetweenPoints(position, point) < minRadius ||
-            mathArrayUtils.distanceBetweenPoints(position, point) > maxRadius) ||
+                position.y < minY ||
+                position.x > maxX ||
+                position.x < minX ||
+                mathArrayUtils.distanceBetweenPoints(position, point) < minRadius ||
+                mathArrayUtils.distanceBetweenPoints(position, point) > maxRadius) ||
             (withinPlayableBounds && !this.isPositionWithinPlayableBounds(position, playableBoundBuffer)));
 
         return mathArrayUtils.roundPositionToWholeNumbers(position);
@@ -583,6 +586,25 @@ var gameUtils = {
         };
         if (position.x > 0 + buffer.x && position.x < this.getCanvasWidth() - buffer.x) {
             if (position.y > 0 + buffer.y && position.y < this.getCanvasHeight() - buffer.y) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    isPositionWithinRealCanvasBounds: function(position, buffer) {
+        if (buffer && !buffer.x) {
+            buffer = {
+                x: buffer,
+                y: buffer
+            };
+        }
+        if (!buffer) buffer = {
+            x: 0,
+            y: 0
+        };
+        if (position.x > 0 + buffer.x && position.x < this.getRealCanvasWidth() - buffer.x) {
+            if (position.y > 0 + buffer.y && position.y < this.getRealCanvasHeight() - buffer.y) {
                 return true;
             }
         }
@@ -888,6 +910,54 @@ var gameUtils = {
         };
     },
 
+    getRealPlayableWidth: function() {
+        return globals.currentGame.renderer.canvasEl.width;
+    },
+
+    getRealPlayableHeight: function() {
+        return this.getPlayableHeight() * globals.currentGame.renderer.screenScaleFactor;
+    },
+
+    getRealPlayableCenter: function() {
+        return {
+            x: this.getRealPlayableWidth() / 2,
+            y: this.getRealPlayableHeight() / 2
+        };
+    },
+
+    getRealPlayableWH: function() {
+        return {
+            x: this.getRealPlayableWidth(),
+            y: this.getRealPlayableHeight(),
+            w: this.getRealPlayableWidth(),
+            h: this.getRealPlayableHeight()
+        };
+    },
+
+    getRealCanvasWidth: function() {
+        return globals.currentGame.renderer.canvasEl.width;
+    },
+
+    getRealCanvasHeight: function() {
+        return globals.currentGame.renderer.canvasEl.height;
+    },
+
+    getRealCanvasCenter: function() {
+        return {
+            x: this.getRealCanvasWidth() / 2.0,
+            y: this.getRealCanvasHeight() / 2.0
+        };
+    },
+
+    getRealCanvasWH: function() {
+        return {
+            x: globals.currentGame.renderer.canvasEl.width,
+            y: globals.currentGame.renderer.canvasEl.height,
+            w: globals.currentGame.renderer.canvasEl.width,
+            h: globals.currentGame.renderer.canvasEl.height,
+        };
+    },
+
     getPlayableWidth: function() {
         return globals.currentGame.worldOptions.width;
     },
@@ -1106,7 +1176,7 @@ var gameUtils = {
         if (!added) {
             master.slaves.push(slave);
 
-            if(!slave.noMasterRegistration) {
+            if (!slave.noMasterRegistration) {
                 slave.masters.push(master);
             }
         }

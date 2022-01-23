@@ -186,13 +186,13 @@ var campLevel = function() {
         //Setup light
         this.lightPower = 0.0;
         this.lightDirection = 1;
-        this.lightRadius = 700;
+        this.lightRadius = mathArrayUtils.scaleValueToScreenCoordinates(700);
 
         var backgroundRed = 4.0;
         this.backgroundLightShader = new PIXI.Filter(null, campfireShader, {
             lightOnePosition: {
-                x: gameUtils.getCanvasCenter().x,
-                y: gameUtils.getPlayableHeight() / 2 + 30
+                x: gameUtils.getRealCanvasCenter().x,
+                y: gameUtils.getRealPlayableHeight() / 2 + mathArrayUtils.scaleValueToScreenCoordinates(30)
             },
             flameVariation: 0.0,
             yOffset: 0.0,
@@ -206,8 +206,8 @@ var campLevel = function() {
         var stageRed = 3.4;
         this.stageLightShader = new PIXI.Filter(null, campfireShader, {
             lightOnePosition: {
-                x: gameUtils.getCanvasCenter().x,
-                y: gameUtils.getPlayableHeight() / 2 + 30
+                x: gameUtils.getRealCanvasCenter().x,
+                y: gameUtils.getRealPlayableHeight() / 2 + mathArrayUtils.scaleValueToScreenCoordinates(30)
             },
             flameVariation: 0.0,
             yOffset: 60.0,

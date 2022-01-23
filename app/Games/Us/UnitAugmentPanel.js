@@ -480,7 +480,7 @@ ConfigPanel.prototype.liftOpenButton = function() {
 };
 
 ConfigPanel.prototype.collidesWithPoint = function(point) {
-    return (this.showButton.containsPoint(point));
+    return (this.showButton.containsPoint(mathArrayUtils.scalePositionToScreenCoordinates(point)));
 };
 
 ConfigPanel.prototype.cleanUp = function() {

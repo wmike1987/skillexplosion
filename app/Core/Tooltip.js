@@ -391,26 +391,28 @@ Tooltip.makeTooltippable = function(displayObject, options) {
                 gameUtils.setCursorStyle('Info');
             }
             if(displayObject.tooltipObj.visible || displayObject.tooltipObj.disabled) return;
-            if(!gameUtils.isPositionWithinCanvasBounds(event.data.global, {x: 1, y: 1})) return;
+            if(!gameUtils.isPositionWithinRealCanvasBounds(event.data.global, {x: 1, y: 1})) return;
 
             if(stopTimeout) {
                 clearTimeout(stopTimeout);
             }
 
+            let mousePosition = mathArrayUtils.scaleScreenPositionToWorldPosition({x: event.data.global.x, y: event.data.global.y});
+
             if(displayObject.tooltipObj.noDelay) {
                 if(!displayObject.tooltipObj.isDestroyed && displayObject.visible) {
-                    displayObject.tooltipObj.display(event.data.global);
+                    displayObject.tooltipObj.display(mousePosition);
                 }
             } else if(displayObject.tooltipObj.briefDelay) {
                 stopTimeout = setTimeout(function() {
                     if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
-                        displayObject.tooltipObj.display(event.data.global);
+                        displayObject.tooltipObj.display(mousePosition);
                     }
                 }.bind(this), 1);
             } else {
                 stopTimeout = setTimeout(function() {
                     if(!displayObject.tooltipObj.isDestroyed && displayObject.visible && !displayObject.tooltipObj.disabled) {
-                        displayObject.tooltipObj.display(event.data.global);
+                        displayObject.tooltipObj.display(mousePosition);
                     }
                 }.bind(this), 100);
             }

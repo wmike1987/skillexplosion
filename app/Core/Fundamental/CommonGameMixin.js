@@ -169,9 +169,11 @@ var common = {
         }.bind(this);
 
         $('body').on('mousemove', function(event) {
+            //figure out mouse position and scale based on screen resolution scale factor
             var rect = this.canvasEl.getBoundingClientRect();
-            this.mousePosition.x = (event.clientX - rect.left);
-            this.mousePosition.y = (event.clientY - rect.top);
+            this.mousePosition.x = (event.clientX - rect.left) / this.renderer.screenScaleFactor;
+            this.mousePosition.y = (event.clientY - rect.top) / this.renderer.screenScaleFactor;
+
             // console.info(this.mousePosition.x + '-' + this.mousePosition.y);
             this.debugObj.playableCenterOffset = {
                 x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
