@@ -1387,7 +1387,7 @@ var UnitBase = {
 
             //start unit as idling upon add - do we need this
             if (this.stop) {
-                this.stop();
+                this.stop(null, {basicStop: true});
             }
 
             if (this._afterAddInit) {

@@ -97,6 +97,14 @@ export default {
         this.rawStop = this.stop;
         var originalStop = this.stop;
         this.stop = function(commandObj, options) {
+            options = options || {};
+
+            //if we're stopped already, issue a hold position
+            if(!this.isMoving && commandObj && commandObj.command.type == 'key') {
+                this.holdPosition();
+                return;
+            }
+
             if(!this.canStop) {
                 return;
             }
@@ -151,7 +159,7 @@ export default {
         }.bind(this));
 
         this.eventKeyMappings[this.commands.stop.key] = this.stop;
-        this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;;
+        this.eventKeyMappings[this.commands.holdPosition.key] = this.holdPosition;
         this.eventKeyMappings[this.commands.holdPositionAlternate.key] = this.holdPosition;
 
         this.eventClickMappings[this.commands.attack.key] = function(target, commandObj) {

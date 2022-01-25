@@ -887,7 +887,7 @@ var game = {
                 y: 0
             }));
         } else {
-            unit.stop();
+            unit.stop(null, {basicStop: true});
         }
 
         unit.setHealth(unit.maxHealth);

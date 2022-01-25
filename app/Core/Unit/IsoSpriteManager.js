@@ -165,18 +165,18 @@ function IsoSpriteManager(options) {
 		var animation = null;
 		if(direction) {
 			animation = self.unit.walkAnimations[direction];
-			self.switchAnimation(animation, {stop: true});
+			self.switchAnimation(animation, {stop: true, idle: true});
 		} else {
 			var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length-1);
 			animation = self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]];
-			self.switchAnimation(animation, {stop: true});
+			self.switchAnimation(animation, {stop: true, idle: true});
 		}
 
 		animation.spine.state.clearTrack(0);
         animation.spine.lastTime = null;
         animation.spine.skeleton.setToSetupPose();
 
-		this.idleTimer = globals.currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000, callback: function() {
+		this.idleTimer = globals.currentGame.addTimer({name: 'idleTimer' + this.unit.unitId, gogogo: true, timeLimit: 2000 + Math.random() * 1000, callback: function() {
 			this.timeLimit = 2000 + Math.random() * 2000;
 			if(self.unit.idleCancel || self.unit.isDead) {
 				return;

@@ -966,9 +966,9 @@ var graphicsUtils = {
                 x: sprite.width,
                 y: sprite.height
             },
-            spritePosition: graphicsUtils.getInvertedSpritePosition(sprite),
+            spritePosition: mathArrayUtils.scalePositionToScreenCoordinates(graphicsUtils.getInvertedSpritePosition(sprite)),
             leanAmount: leanAmount,
-            gleamWidth: gleamWidth,
+            gleamWidth: mathArrayUtils.scaleValueToScreenCoordinates(gleamWidth),
             alphaIncluded: alphaIncluded,
             power: power,
             red: red,
@@ -984,7 +984,7 @@ var graphicsUtils = {
             timeLimit: duration || 1000,
             tickCallback: function() {
                 gShader.uniforms.progress = this.percentDone;
-                gShader.uniforms.spritePosition = graphicsUtils.getInvertedSpritePosition(sprite);
+                gShader.uniforms.spritePosition = mathArrayUtils.scalePositionToScreenCoordinates(graphicsUtils.getInvertedSpritePosition(sprite));
             },
             totallyDoneCallback: function() {
                 if (pauseDuration) {

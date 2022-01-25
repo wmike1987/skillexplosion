@@ -232,7 +232,7 @@ Scene.prototype.transitionToScene = function(options) {
         };
     } else if(mode == SceneModes.SIDE) {
         let currentGame = globals.currentGame;
-        const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getCanvasWidth(), height: gameUtils.getCanvasHeight()});
+        const renderTexture = new PIXI.RenderTexture.create({width: gameUtils.getRealCanvasWidth(), height: gameUtils.getRealCanvasHeight()});
         const transitionSprite = new PIXI.Sprite(renderTexture);
         let rStage = options.renderStage ? globals.currentGame.renderer.layers[options.renderStage] : globals.currentGame.renderer.pixiApp.stage;
         let renderer = globals.currentGame.renderer.pixiApp.renderer;
