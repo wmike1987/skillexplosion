@@ -101,7 +101,10 @@ var levelBase = {
         //reset level
         this.resetLevel();
 
-        //start enemy spawn
+        //create the initial unit set
+        level.spawner.createInitialUnitSet();
+
+        //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({y: 20}), {
                 duration: 1000,
@@ -119,6 +122,7 @@ var levelBase = {
             game.heartbeat.play();
         }, 1600);
         gameUtils.doSomethingAfterDuration(() => {
+            //start enemy spawnage
             level.spawner.start();
             gameUtils.setCursorStyle('Main');
             let enemiesIncomingText = graphicsUtils.floatText(level.levelEntryText, gameUtils.getPlayableCenterPlus({y: 20}), {
@@ -144,6 +148,7 @@ var levelBase = {
     startPooling: function() {
         this.spawner = new UnitSpawner({
             enemySets: this.enemySets,
+            createOneShotUnit: mathArrayUtils.flipCoin(),
             seed: this.seed
         });
         this.spawner.startPooling();

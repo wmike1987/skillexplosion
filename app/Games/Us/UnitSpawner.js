@@ -10,6 +10,7 @@ import ItemUtils from '@core/Unit/ItemUtils.js';
 import {
     globals
 } from '@core/Fundamental/GlobalState';
+import UnitMenu from '@games/Us/UnitMenu.js';
 
 var unitSpawner = function(options) {
     options = options || {};
@@ -23,13 +24,14 @@ var unitSpawner = function(options) {
     this.locationPool = {};
     this.itemRandomFlips = {};
     this.seed = options.seed;
+    this.createOneShotUnit = options.createOneShotUnit;
 
     var self = this;
     this.startPooling = function(options) {
         options = options || {};
 
         //set the random seed (uses the given seen which is the level's seed) - turned off for now
-        if(false) {
+        if (false) {
             mathArrayUtils.setRandomizerSeed(this.seed);
         }
 
@@ -40,7 +42,7 @@ var unitSpawner = function(options) {
             var itemRandomFlips = [];
             this.locationPool[enemy.id] = locationArray;
             this.itemRandomFlips[enemy.id] = itemRandomFlips;
-            for(k = 0; k < enemy.spawn.total; k++) {
+            for (k = 0; k < enemy.spawn.total; k++) {
                 //locations
                 locationArray.push(gameUtils.getJustOffscreenPosition('random'));
 
@@ -70,8 +72,28 @@ var unitSpawner = function(options) {
         mathArrayUtils.setRandomToTrueRandom();
     };
 
+    this.createInitialUnitSet = function() {
+        //create one shot critter (or other basic unit)
+        if (this.createOneShotUnit) {
+            var oneShot = UnitMenu.createUnit('Critter', {
+                team: globals.currentGame.enemyTeam
+            });
+            globals.currentGame.addUnit(oneShot);
+            oneShot.currentHealth = 5;
+            oneShot.honeRange /= 2;
+
+            var position = gameUtils.getRandomPositionWithinRadiusAroundPoint({
+                point: gameUtils.getCanvasCenter(),
+                radius: 200,
+                withinPlayableBounds: true
+            });
+            Matter.Body.setPosition(oneShot.body, position);
+        }
+    };
+
     this.start = function() {
         var spawner = this;
+
         $.each(enemySets, function(i, enemy) {
             var total = 0;
             var itemsToGive = enemy.item ? enemy.item.total : 0;

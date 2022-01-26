@@ -882,10 +882,17 @@ var game = {
                 unit.body.collisionFilter.mask += 0x0004;
             }, 2500);
 
-            unit.move(options.moveTo || mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
-                x: centerX,
-                y: 0
-            }));
+            if (unit.name == 'Shane') {
+                unit.attackMove(options.moveTo || mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                    x: centerX,
+                    y: 0
+                }));
+            } else {
+                unit.move(options.moveTo || mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {
+                    x: centerX,
+                    y: 0
+                }));
+            }
         } else {
             unit.stop(null, {basicStop: true});
         }
