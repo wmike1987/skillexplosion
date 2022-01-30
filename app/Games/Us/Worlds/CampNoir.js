@@ -1111,7 +1111,7 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
-                    prereqCount: 1,
+                    prereqCount: 3,
                     itemClass: 'worn',
                     itemType: 'specialtyItem',
                     uniqueItem: true,

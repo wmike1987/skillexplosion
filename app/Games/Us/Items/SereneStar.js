@@ -8,8 +8,8 @@ var eventName = 'sereneStarEnergyGain';
 var energyGain = 2;
 
 var manipulations = {
-    maxEnergy: 6,
-    energyRegenerationRate: 0.5,
+    maxEnergy: 5,
+    energyRegenerationRate: 0.25,
     events: {knifeKill: {callback: function(event) {
             event.equippedUnit.giveEnergy(energyGain);
             unitUtils.applyEnergyGainAnimationToUnit(event.equippedUnit);
@@ -23,7 +23,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Serene Star",
-        description: ["Add 6 to maximum energy.", "Regenerate +0.5 energy per second.", "Gain 2 energy after knife kill."],
+        description: ["Add 5 to maximum energy.", "Regenerate +0.25 energy per second.", "Gain 2 energy after knife kill."],
         icon: 'SereneStar',
         collector: {
             eventName: eventName,

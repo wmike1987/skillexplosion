@@ -148,7 +148,7 @@ var levelBase = {
     startPooling: function() {
         this.spawner = new UnitSpawner({
             enemySets: this.enemySets,
-            createOneShotUnit: mathArrayUtils.flipCoin(),
+            createOneShotUnit: this.createOneShotUnit,
             seed: this.seed
         });
         this.spawner.startPooling();
@@ -174,7 +174,8 @@ var levelBase = {
             itemClass: 'lightStimulant',
             itemType: 'item',
             levelEntryText: 'Presence detected...',
-            isSupplyDropEligible: true
+            isSupplyDropEligible: true,
+            createOneShotUnit: mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
 
         //default no zones

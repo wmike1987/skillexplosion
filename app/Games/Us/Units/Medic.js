@@ -377,6 +377,10 @@ export default function Medic(options) {
         volume: 0.1,
         rate: 1.5
     });
+    var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
+        volume: 0.08,
+        rate: 1.6
+    });
 
     var secretStep = function(destination, commandObj) {
         //alter destination for foot destination
@@ -389,6 +393,7 @@ export default function Medic(options) {
         var ghostAugment = thisAbility.isAugmentEnabled('ghost');
         var fleetFeetAugment = thisAbility.isAugmentEnabled('fleet feet');
         var softLandingAugment = thisAbility.isAugmentEnabled('soft landing');
+        var caltropAugment = thisAbility.isAugmentEnabled('caltrop');
 
         //remove a free step if we have one
         if (medic.freeSteps) {
@@ -456,8 +461,10 @@ export default function Medic(options) {
         });
 
         //send collector events
-        if(fleetFeetAugment) {
-            Matter.Events.trigger(globals.currentGame, fleetFeetCollEventName, {value: fleetFeetAugment.energyReduction});
+        if (fleetFeetAugment) {
+            Matter.Events.trigger(globals.currentGame, fleetFeetCollEventName, {
+                value: fleetFeetAugment.energyReduction
+            });
         }
 
         //play smoke animation
@@ -507,7 +514,10 @@ export default function Medic(options) {
                 });
                 footprint.rotation = footprintDirection;
                 graphicsUtils.addSomethingToRenderer(footprint);
-                graphicsUtils.fadeSprite(footprint, 0.006);
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: footprint,
+                    duration: 500
+                });
                 footprint.visible = false;
                 if (everyOther)
                     footstepSound.play();
@@ -517,6 +527,62 @@ export default function Medic(options) {
                 lastFootprint = footprint;
             }
         });
+
+        //Caltrop
+        if (caltropAugment) {
+            var caltrop = Matter.Bodies.circle(this.position.x, this.position.y + 20, 8, {
+                isSensor: true,
+                noWire: true,
+            });
+
+            globals.currentGame.addBody(caltrop);
+            caltrop.isCaltrop = true;
+            var caltropImage = graphicsUtils.addSomethingToRenderer('Caltrop', 'stage', {
+                position: {x: this.position.x, y: this.position.y + 20}
+            });
+
+            gameUtils.deathPact(caltrop, caltropImage);
+
+            Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {
+                entity: caltrop
+            });
+
+            Matter.Events.on(caltrop, 'onCollide', function(pair) {
+                if(caltrop.alreadyActivated) {
+                    return;
+                }
+
+                var otherBody = pair.pair.bodyB == caltrop ? pair.pair.bodyA : pair.pair.bodyB;
+                var otherUnit = otherBody.unit;
+                if (otherUnit && otherUnit.team != this.team) {
+                    caltrop.alreadyActivated = true;
+                    Matter.Events.trigger(globals.currentGame, ctCollEventName, {
+                        value: 1
+                    });
+                    otherUnit.sufferAttack(8, medic);
+                    otherUnit.stun({
+                        duration: 3000,
+                        stunningUnit: medic
+                    });
+                    var bloodPierceAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'pierce',
+                        speed: 0.95,
+                        transform: [caltrop.position.x, caltrop.position.y, 0.45, 0.45]
+                    });
+                    knifeImpactSound.play();
+                    bloodPierceAnimation.play();
+                    graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
+                    graphicsUtils.fadeSpriteOverTime({
+                        sprite: caltropImage,
+                        duration: 300,
+                        callback: function() {
+                            globals.currentGame.removeBody(caltrop);
+                        }
+                    });
+                }
+            }.bind(this));
+        }
 
         Matter.Events.on(shadow, 'onCollide', function(pair) {
             var otherBody = pair.pair.bodyB == shadow ? pair.pair.bodyA : pair.pair.bodyB;
@@ -531,7 +597,9 @@ export default function Medic(options) {
                         petrifyingUnit: medic
                     });
 
-                    Matter.Events.trigger(globals.currentGame, petCollEventName, {value: 1});
+                    Matter.Events.trigger(globals.currentGame, petCollEventName, {
+                        value: 1
+                    });
                 }
             }
         });
@@ -597,7 +665,9 @@ export default function Medic(options) {
                 if (softLandingAugment) {
                     var duration = softLandingAugment.duration;
                     this.becomeHidden(duration);
-                    Matter.Events.trigger(globals.currentGame, slCollEventName, {value: duration/1000});
+                    Matter.Events.trigger(globals.currentGame, slCollEventName, {
+                        value: duration / 1000
+                    });
                 }
             }
         }.bind(this));
@@ -606,6 +676,7 @@ export default function Medic(options) {
 
     var fleetFeetCollEventName = "ffCollectorEventName";
     var slCollEventName = "slCollectorEventName";
+    var ctCollEventName = "ctCollectorEventName";
     var petCollEventName = "petCollectorEventName";
     var secretStepAbility = new Ability({
         name: 'Vanish',
@@ -652,17 +723,31 @@ export default function Medic(options) {
                     }
                 }
             },
+            // {
+            //     name: 'soft landing',
+            //     icon: graphicsUtils.createDisplayObject('SoftLanding'),
+            //     title: 'Soft Landing',
+            //     duration: 3000,
+            //     description: 'Become hidden for 3 seconds after vanishing.',
+            //     collector: {
+            //         eventName: slCollEventName,
+            //         presentation: {
+            //             labels: ["Time spent hidden"],
+            //             suffixes: ["seconds"]
+            //         }
+            //     }
+            // },
             {
-                name: 'soft landing',
-                icon: graphicsUtils.createDisplayObject('SoftLanding'),
-                title: 'Soft Landing',
+                name: 'caltrop',
+                icon: graphicsUtils.createDisplayObject('CaltropIcon'),
+                title: 'Caltrop',
                 duration: 3000,
-                description: 'Become hidden for 3 seconds after vanishing.',
+                description: 'Drop a caltrop upon vanishing.',
+                systemMessage: 'A caltrop stuns and deals 8 damage to enemies.',
                 collector: {
-                    eventName: slCollEventName,
+                    eventName: ctCollEventName,
                     presentation: {
-                        labels: ["Time spent hidden"],
-                        suffixes: ["seconds"]
+                        labels: ["Caltrop hits"]
                     }
                 }
             }
@@ -884,7 +969,9 @@ export default function Medic(options) {
                 if (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= mineState.primaryExplosionRadius) {
                     dmg = dmg * 2;
                 }
-                unit.sufferAttack(dmg, medic, {dodgeable: false});
+                unit.sufferAttack(dmg, medic, {
+                    dodgeable: false
+                });
                 var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
@@ -898,7 +985,7 @@ export default function Medic(options) {
             });
 
             if (scorchAugment) {
-                var scorchedAreaBody = Matter.Bodies.circle(mine.position.x, mine.position.y, blastRadius/2.0, {
+                var scorchedAreaBody = Matter.Bodies.circle(mine.position.x, mine.position.y, blastRadius / 2.0, {
                     restitution: 0.95,
                     frictionAir: 0,
                     mass: options.mass || 5,
@@ -914,7 +1001,9 @@ export default function Medic(options) {
                             duration: scorchAugment.duration,
                             maimingUnit: medic
                         });
-                        Matter.Events.trigger(globals.currentGame, scorchEventName, {value: 1});
+                        Matter.Events.trigger(globals.currentGame, scorchEventName, {
+                            value: 1
+                        });
                     }
                 }.bind(this));
 
@@ -1027,8 +1116,9 @@ export default function Medic(options) {
 
     var ppCollEventName = 'ppCollEvent';
     var sacCollEventName = 'sacCollEvent';
+    var efCollEventName = 'efCollEvent';
     var continuousHealthNeeded = 20;
-    var enragePPTime = 3000;
+    var enrageEFTime = 4000;
     var healAbility = new Ability({
         name: 'Heal',
         icon: graphicsUtils.createDisplayObject('HealIcon'),
@@ -1051,26 +1141,16 @@ export default function Medic(options) {
                 hpGivenTally: 0,
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: ['Reduce healing cost to 0 when ally\'s life is below 60%.', 'Enrage ally for 3 seconds upon giving ' + continuousHealthNeeded + ' health.'],
+                description: ['Reduce healing cost to 0 when ally\'s life is below 60%.'], // 'Enrage ally for 3 seconds upon giving ' + continuousHealthNeeded + ' health.'],
                 collector: {
                     eventName: ppCollEventName,
                     init: function() {
                         this.freeHealing = 0;
-                        this.enragesGranted = 0;
                     },
                     presentation: {
-                        labels: ["Healing done for free", "Times enrage granted"],
-                        values: ["freeHealing", "enragesGranted"],
+                        labels: ["Healing done for free"], //, "Times enrage granted"],
+                        values: ["freeHealing"], //, "enragesGranted"],
                     }
-                },
-                equip: function(unit) {
-                    this.hpGivenTally = 0;
-                    this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
-                        this.hpGivenTally = 0;
-                    });
-                },
-                unequip: function(unit) {
-                    Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
                 }
             },
             {
@@ -1090,75 +1170,99 @@ export default function Medic(options) {
                 }
             },
             {
-                name: 'Sacrifice',
-                icon: graphicsUtils.createDisplayObject('Sacrifice'),
-                title: 'Sacrifice',
-                reviveMultiplier: 0.5,
-                description: ['Fire replenishment missile upon death.', 'Halve time to revive.'],
+                name: 'enriched formula',
+                icon: graphicsUtils.createDisplayObject('EnrichedFormula'),
+                title: 'Enriched Formula',
+                description: ['Enrage ally for 4 seconds upon giving 20 health.'],
                 equip: function(unit) {
-                    unit.sacrificeFunction = function(event) {
-                        Matter.Events.trigger(globals.currentGame, sacCollEventName, {value: 1});
-                        gameUtils.applyToUnitsByTeam(function(team) {
-                            return unit.team == team;
-                        }, function(teamUnit) {
-                            return !teamUnit.isDead;
-                        }, function(livingAlliedUnit) {
-                            combospiritinit.play();
-                            var combospiritAnimation = gameUtils.getAnimation({
-                                spritesheetName: 'MedicAnimations2',
-                                animationName: 'combospirit',
-                                speed: 1.5,
-                                loop: true,
-                                transform: [livingAlliedUnit.position.x, livingAlliedUnit.position.y, 2.0, 2.0]
-                            });
-                            combospiritAnimation.play();
-                            var projectileOptions = {
-                                damage: 0,
-                                speed: 1.0,
-                                tracking: false,
-                                displayObject: combospiritAnimation,
-                                target: livingAlliedUnit,
-                                owningUnit: unit,
-                                impactType: 'collision',
-                                collisionFunction: function(otherUnit) {
-                                    return otherUnit.team == this.owningUnit.team && otherUnit != this.owningUnit;
-                                },
-                                originOffset: 0,
-
-                                autoSend: true,
-                                impactExtension: function(target) {
-                                    fullheal.play();
-                                    var replenAnimation = gameUtils.getAnimation({
-                                        spritesheetName: 'UtilityAnimations1',
-                                        animationName: 'lifegain1',
-                                        speed: 0.8,
-                                        transform: [target.position.x, target.position.y + 10, 1.2, 1.2]
-                                    });
-                                    replenAnimation.play();
-                                    replenAnimation.tint = 0xfb32b1;
-                                    graphicsUtils.addSomethingToRenderer(replenAnimation, 'stageOne');
-
-                                    livingAlliedUnit.giveHealth(livingAlliedUnit.maxHealth, medic);
-                                    livingAlliedUnit.giveEnergy(livingAlliedUnit.maxEnergy);
-                                }
-                            };
-                            var projectile = new Projectile(projectileOptions);
-                        });
-                    };
-                    Matter.Events.on(unit, 'death', unit.sacrificeFunction);
-                    unit.reviveTime *= this.reviveMultiplier;
+                    this.hpGivenTally = 0;
+                    this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
+                        this.hpGivenTally = 0;
+                    });
                 },
                 unequip: function(unit) {
-                    Matter.Events.off(unit, 'death', unit.sacrificeFunction);
-                    unit.reviveTime *= 1 / this.reviveMultiplier;
+                    Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
                 },
                 collector: {
-                    eventName: sacCollEventName,
+                    init: function() {
+                        this.enragesGranted = 0;
+                    },
+                    eventName: efCollEventName,
                     presentation: {
-                        labels: ["Times activated"]
+                        labels: ["Times enrage granted"]
                     }
                 }
-            }
+            },
+            // {
+            //     name: 'Sacrifice',
+            //     icon: graphicsUtils.createDisplayObject('Sacrifice'),
+            //     title: 'Sacrifice',
+            //     reviveMultiplier: 0.5,
+            //     description: ['Fire replenishment missile upon death.', 'Halve time to revive.'],
+            //     equip: function(unit) {
+            //         unit.sacrificeFunction = function(event) {
+            //             Matter.Events.trigger(globals.currentGame, sacCollEventName, {value: 1});
+            //             gameUtils.applyToUnitsByTeam(function(team) {
+            //                 return unit.team == team;
+            //             }, function(teamUnit) {
+            //                 return !teamUnit.isDead;
+            //             }, function(livingAlliedUnit) {
+            //                 combospiritinit.play();
+            //                 var combospiritAnimation = gameUtils.getAnimation({
+            //                     spritesheetName: 'MedicAnimations2',
+            //                     animationName: 'combospirit',
+            //                     speed: 1.5,
+            //                     loop: true,
+            //                     transform: [livingAlliedUnit.position.x, livingAlliedUnit.position.y, 2.0, 2.0]
+            //                 });
+            //                 combospiritAnimation.play();
+            //                 var projectileOptions = {
+            //                     damage: 0,
+            //                     speed: 1.0,
+            //                     tracking: false,
+            //                     displayObject: combospiritAnimation,
+            //                     target: livingAlliedUnit,
+            //                     owningUnit: unit,
+            //                     impactType: 'collision',
+            //                     collisionFunction: function(otherUnit) {
+            //                         return otherUnit.team == this.owningUnit.team && otherUnit != this.owningUnit;
+            //                     },
+            //                     originOffset: 0,
+            //
+            //                     autoSend: true,
+            //                     impactExtension: function(target) {
+            //                         fullheal.play();
+            //                         var replenAnimation = gameUtils.getAnimation({
+            //                             spritesheetName: 'UtilityAnimations1',
+            //                             animationName: 'lifegain1',
+            //                             speed: 0.8,
+            //                             transform: [target.position.x, target.position.y + 10, 1.2, 1.2]
+            //                         });
+            //                         replenAnimation.play();
+            //                         replenAnimation.tint = 0xfb32b1;
+            //                         graphicsUtils.addSomethingToRenderer(replenAnimation, 'stageOne');
+            //
+            //                         livingAlliedUnit.giveHealth(livingAlliedUnit.maxHealth, medic);
+            //                         livingAlliedUnit.giveEnergy(livingAlliedUnit.maxEnergy);
+            //                     }
+            //                 };
+            //                 var projectile = new Projectile(projectileOptions);
+            //             });
+            //         };
+            //         Matter.Events.on(unit, 'death', unit.sacrificeFunction);
+            //         unit.reviveTime *= this.reviveMultiplier;
+            //     },
+            //     unequip: function(unit) {
+            //         Matter.Events.off(unit, 'death', unit.sacrificeFunction);
+            //         unit.reviveTime *= 1 / this.reviveMultiplier;
+            //     },
+            //     collector: {
+            //         eventName: sacCollEventName,
+            //         presentation: {
+            //             labels: ["Times activated"]
+            //         }
+            //     }
+            // }
         ]
     });
 
@@ -1195,7 +1299,9 @@ export default function Medic(options) {
                 var attacker = event.performingUnit;
                 if (!attacker || attacker.isDead || !attacker.isMelee) return;
 
-                attacker.sufferAttack(grit, medic, {dodgeable: false});
+                attacker.sufferAttack(grit, medic, {
+                    dodgeable: false
+                });
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
@@ -1208,7 +1314,9 @@ export default function Medic(options) {
                 graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
                 criticalHitSound2.play();
 
-                return {value: grit};
+                return {
+                    value: grit
+                };
             }
         },
         aggressionAction: function(event) {
@@ -1228,7 +1336,9 @@ export default function Medic(options) {
                 }
             });
 
-            return {value: rsADuration/1000};
+            return {
+                value: rsADuration / 1000
+            };
         },
         collector: {
             aggressionLabel: 'Duration of 3x healing',
@@ -1275,7 +1385,12 @@ export default function Medic(options) {
                     duration: wwDDuration,
                     condemningUnit: medic,
                     onHealingRecieved: function(options) {
-                        Matter.Events.trigger(globals.currentGame, 'WickedWaysCollector', {mode: 'defensePassive', collectorPayload: {value: options.healingReceived}});
+                        Matter.Events.trigger(globals.currentGame, 'WickedWaysCollector', {
+                            mode: 'defensePassive',
+                            collectorPayload: {
+                                value: options.healingReceived
+                            }
+                        });
                     }
                 });
             }
@@ -1299,7 +1414,9 @@ export default function Medic(options) {
                 });
             });
 
-            return {value: wwADuration/1000};
+            return {
+                value: wwADuration / 1000
+            };
         },
         collector: {
             aggressionLabel: 'Duration of 2x regeneration',
@@ -1340,7 +1457,7 @@ export default function Medic(options) {
         },
         defenseAction: function(event) {
             event.attackContext.dodgeRolls += addedDodgeRolls;
-            if(totalDodgeGained >= dodgeMax) {
+            if (totalDodgeGained >= dodgeMax) {
                 return;
             }
             totalDodgeGained += dodgeGain;
@@ -1361,15 +1478,22 @@ export default function Medic(options) {
                 totalDodgeGained = 0;
             });
 
-            return {value: addedDodgeRolls};
+            return {
+                value: addedDodgeRolls
+            };
         },
         aggressionAction: function(event) {
             var allies = gameUtils.getUnitAllies(medic);
             allies.forEach((ally) => {
-                ally.applyDodgeBuff({duration: slADuration, amount: allyDodgeGain});
+                ally.applyDodgeBuff({
+                    duration: slADuration,
+                    amount: allyDodgeGain
+                });
             });
 
-            return {value: slADuration/1000};
+            return {
+                value: slADuration / 1000
+            };
         },
         collector: {
             aggressionLabel: 'Ally\'s duration of increased dodge',
@@ -1432,8 +1556,10 @@ export default function Medic(options) {
         defenseAction: function(event) {
             var attacker = event.performingUnit;
 
-            if(!attacker.isPlaceholder) {
-                attacker.stun({duration: ffDDuration});
+            if (!attacker.isPlaceholder) {
+                attacker.stun({
+                    duration: ffDDuration
+                });
 
                 medic.applyBuff({
                     id: 'familiarFaceSpeed',
@@ -1447,7 +1573,9 @@ export default function Medic(options) {
                     }
                 });
 
-                return {value: ffDDuration/1000};
+                return {
+                    value: ffDDuration / 1000
+                };
             }
         },
         aggressionAction: function(event) {
@@ -1478,7 +1606,9 @@ export default function Medic(options) {
                 }
             });
 
-            return {value: 1};
+            return {
+                value: 1
+            };
         },
         collector: {
             aggressionLabel: 'Vanishes gained',
@@ -1545,16 +1675,20 @@ export default function Medic(options) {
                 petrifyingUnit: medic
             });
 
-            return {value: 1};
+            return {
+                value: 1
+            };
         },
         preStart: function(type) {
             var passive = this;
             if (medic.defensePassive) {
                 deepThought.aggressionAction = function() {
                     medic.defensePassive.aggressionAction();
-                    return {value: 1};
+                    return {
+                        value: 1
+                    };
                 };
-                if(!medic.defensePassive.deepThoughtBypassAggPredicate) {
+                if (!medic.defensePassive.deepThoughtBypassAggPredicate) {
                     deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
                 }
                 deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
@@ -1568,7 +1702,9 @@ export default function Medic(options) {
                     deepThought.aggressionAction = function() {
                         event.passive.aggressionAction();
                         deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
-                        return {value: 1};
+                        return {
+                            value: 1
+                        };
                     };
                     deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
                     deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
@@ -1624,7 +1760,9 @@ export default function Medic(options) {
                 var attacker = event.performingUnit;
                 if (attacker.isDead) return;
 
-                attacker.sufferAttack(ppDamage, medic, {dodgeable: false});
+                attacker.sufferAttack(ppDamage, medic, {
+                    dodgeable: false
+                });
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
@@ -1640,7 +1778,7 @@ export default function Medic(options) {
 
             var damageObj = event.damageObj;
             var damageReduced = damageObj.damage - 1;
-            if(damageReduced == 0) {
+            if (damageReduced == 0) {
                 damageReduced = 0;
             }
             damageObj.damage = 1;
@@ -1674,7 +1812,9 @@ export default function Medic(options) {
 
             blockSound.play();
 
-            return {value: damageReduced};
+            return {
+                value: damageReduced
+            };
         },
         deepThoughtBypassAggPredicate: true,
         aggressionPredicate: function(event) {
@@ -1685,7 +1825,9 @@ export default function Medic(options) {
             unitUtils.applyEnergyGainAnimationToUnit(medic);
             manaHealSound.play();
 
-            return {value: energyGain};
+            return {
+                value: energyGain
+            };
         },
         collector: {
             aggressionLabel: 'Energy gained',
@@ -1850,7 +1992,7 @@ export default function Medic(options) {
         radius: rad,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [healSound, dodgeSound, holdPositionSound, manaHealSound, blockSound, criticalHitSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
+        slaves: [healSound, dodgeSound, holdPositionSound, manaHealSound, blockSound, criticalHitSound, knifeImpactSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
             moveSpeed: 2.35,
@@ -1872,6 +2014,7 @@ export default function Medic(options) {
                 //get current augment
                 var thisAbility = this.getAbilityByName('Heal');
                 var ppAugment = thisAbility.isAugmentEnabled('pure priorities');
+                var efAugment = thisAbility.isAugmentEnabled('enriched formula');
                 var ppBypass = (ppAugment && (target.currentHealth < (target.maxHealth * ppAugment.hpThreshold)));
 
                 var abilityTint = 0x80ba80;
@@ -1896,12 +2039,17 @@ export default function Medic(options) {
                 var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
                 var actualHealingAmount = target.giveHealth(healAmount, this);
 
-                if(ppAugment) {
-                    ppAugment.hpGivenTally += actualHealingAmount;
-                    if(ppAugment.hpGivenTally > continuousHealthNeeded) {
-                        ppAugment.hpGivenTally -= continuousHealthNeeded;
-                        target.enrage({duration: enragePPTime, amount: 3});
-                        Matter.Events.trigger(globals.currentGame, ppCollEventName, {enragesGranted: 1});
+                if (efAugment) {
+                    efAugment.hpGivenTally += actualHealingAmount;
+                    if (efAugment.hpGivenTally > continuousHealthNeeded) {
+                        efAugment.hpGivenTally -= continuousHealthNeeded;
+                        target.enrage({
+                            duration: enrageEFTime,
+                            amount: 3
+                        });
+                        Matter.Events.trigger(globals.currentGame, efCollEventName, {
+                            value: 1
+                        });
                     }
                 }
 
@@ -1909,7 +2057,9 @@ export default function Medic(options) {
                     this.spendEnergy(thisAbility.energyCost);
                 } else {
                     //we've healed at no cost, send the collector event
-                    Matter.Events.trigger(globals.currentGame, ppCollEventName, {freeHealing: actualHealingAmount});
+                    Matter.Events.trigger(globals.currentGame, ppCollEventName, {
+                        freeHealing: actualHealingAmount
+                    });
                 }
             },
             attackHoneTeamPredicate: function(team) {

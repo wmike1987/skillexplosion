@@ -29,6 +29,7 @@ var multiLevel = function(options) {
             if(index > 0) {
                 newOptions.levelOptions.isSupplyDropEligible = false;
                 newOptions.levelOptions.levelEntryText = 'Enemies approaching...';
+                newOptions.levelOptions.createOneShotUnit = false;
             }
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
             newOptions.mapNodeOptions.bypassNodeCreation = false;
