@@ -1179,9 +1179,11 @@ export default function Medic(options) {
                     this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
                         this.hpGivenTally = 0;
                     });
+                    medic.alterHealingColor({r: 1, g: 0.0, b: 1.0});
                 },
                 unequip: function(unit) {
                     Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
+                    medic.alterHealingColor({r: 1, g: 1, b: 1});
                 },
                 collector: {
                     init: function() {
@@ -1838,6 +1840,7 @@ export default function Medic(options) {
     var rad = options.radius || 25;
     var unitProperties = $.extend({
         unitType: 'Medic',
+        idleCancel: false,
         health: 40,
         energy: 60,
         hitboxWidth: 28,
@@ -1983,6 +1986,41 @@ export default function Medic(options) {
 
             $.extend(this, aug);
             this.unlockerInit();
+        },
+        alterHealingColor: function(color) {
+            var shootAnimationName = 'shoot';
+            $.each(this.body.renderlings, function(key, renderling) {
+                if(renderling.spineData) {
+                    var glowIndex = null;
+                    $.each(renderling.skeleton.slots, function(i, slot) {
+                        if(slot.data && slot.data.name.includes('Glow')) {
+                            glowIndex = i;
+                        }
+                    });
+
+                    $.each(renderling.spineData.animations, function(i, anim) {
+                        if(anim.name == shootAnimationName) {
+                            $.each(anim.timelines, function(i, tl) {
+                                if(tl.slotIndex && tl.slotIndex == glowIndex) {
+                                    var frames = tl.frames;
+                                    frames[0] = 0;
+                                    for(var x = 0; x < frames.length; x++) {
+                                        if(x % 5 == 1) {
+                                            frames[x] = color.r;
+                                        }
+                                        if(x % 5 == 2) {
+                                            frames[x] = color.g;
+                                        }
+                                        if(x % 5 == 3) {
+                                            frames[x] = color.b;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         }
     }, options);
 

@@ -100,9 +100,22 @@ export default {
             options = options || {};
 
             //if we're stopped already, issue a hold position
-            if(!this.isMoving && commandObj && commandObj.command.type == 'key') {
+            if(commandObj && commandObj.command.type == 'key' && this.doubleTapS == 1) {
+                this.doubleTapS = 0;
+                if(this.doubleTapTimer) {
+                    this.doubleTapTimer.invalidate();
+                    this.doubleTapTimer = null;
+                }
                 this.holdPosition();
                 return;
+            } else {
+                this.doubleTapS = 1;
+                if(this.doubleTapTimer) {
+                    this.doubleTapTimer.invalidate();
+                }
+                this.doubleTapTimer = gameUtils.doSomethingAfterDuration(() => {
+                    this.doubleTapS = 0;
+                }, 200);
             }
 
             if(!this.canStop) {

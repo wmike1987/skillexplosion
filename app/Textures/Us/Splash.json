@@ -2,19 +2,27 @@
 
 "SplashColored.png":
 {
-	"frame": {"x":1,"y":1,"w":1200,"h":700},
+	"frame": {"x":1,"y":803,"w":1200,"h":700},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1200,"h":700},
 	"sourceSize": {"w":1200,"h":700}
+},
+"SplashColoredBordered.png":
+{
+	"frame": {"x":1,"y":1,"w":1600,"h":800},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1600,"h":800},
+	"sourceSize": {"w":1600,"h":800}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "Splash.png",
 	"format": "RGBA8888",
-	"size": {"w":1202,"h":702},
+	"size": {"w":1602,"h":1504},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:2769710cf7416e0873e48109185a208c:58a00d3cc66b4ddc41a0a1e979b36cc3:761e6d57e8ed97731ad98312f62ad760$"
+	"smartupdate": "$TexturePacker:SmartUpdate:43d1070e75321f1f162c6e7d64a576e7:bc0ef4c9cda3034c33d40237d8632f67:761e6d57e8ed97731ad98312f62ad760$"
 }
 }

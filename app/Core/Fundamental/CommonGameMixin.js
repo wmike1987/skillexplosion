@@ -389,6 +389,40 @@ var common = {
             }
 
             if (keyStates.Alt) {
+                if(globals.currentGame.slotTracker == null) {
+                    globals.currentGame.slotTracker = -1;
+                }
+                globals.currentGame.slotTracker += 1;
+                var unitInQuestion = globals.currentGame.unitSystem.selectedUnit;
+                if (event.key == 'v' || event.key == 'V') {
+                    globals.currentGame.ursula.alterHealingColor({r: 1, g: 0.2, b: 0.5});
+                    // $.each(unitInQuestion.body.renderlings, function(key, renderling) {
+                    //     if(renderling.skeleton) {
+                    //         let rendTracker = globals.currentGame.slotTracker;
+                    //         $.each(renderling.skeleton.slots, function(i, slot) {
+                    //             if(i == rendTracker) {
+                    //                 slot.customColor = {r: 0.2, g: 0.4, b: 1.0, a: 1.0};
+                    //             } else {
+                    //                 // slot.customColor = null;//{r: 0.2, g: 0.4, b: 1.0, a: 1.0};
+                    //             }
+                    //         });
+                    //     }
+                    // });
+                }
+
+                if (event.key == 'b' || event.key == 'B') {
+                    $.each(unitInQuestion.body.renderlings, function(key, renderling) {
+                        if(renderling.skeleton) {
+                            $.each(renderling.skeleton.slots, function(i, slot) {
+                                slot.customColor = null;//{r: 0.2, g: 0.4, b: 1.0, a: 1.0};
+                            });
+                        }
+                    });
+                    globals.currentGame.slotTracker = -1;
+                }
+            }
+
+            if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
                     // globals.currentGame.nextPhase();
 
@@ -465,7 +499,8 @@ var common = {
                         return;
                     }
                     console.info(this.debugObj.playableCenterOffset);
-                    this.map.addAdrenalineBlock();
+                    console.info(this.mousePosition);
+                    // this.map.addAdrenalineBlock();
                 }
             }
         }.bind(this));

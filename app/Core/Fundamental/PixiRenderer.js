@@ -244,10 +244,10 @@ var renderer = function(engine, options) {
         // PIXI.settings.ROUND_PIXELS = true;
         this.canvasEl = this.pixiApp.renderer.view;
 
-        var aspectRatio = 7/4;
+        var aspectRatio = 2/1;
         var targetedWidth = 1920;
         var targetedHeight = 1080;
-        var suggestedWidth = 1400;
+        var suggestedWidth = 1600;
         var suggestedHeight = 800;
 
         this.resizeFunction = function(event) {

@@ -45,6 +45,12 @@ $(document).ready(async function() {
         }
     };
 
+    // var originalApply = PIXI.spine.core.ColorTimeline.prototype.apply;
+    // PIXI.spine.core.ColorTimeline.prototype.apply = function (skeleton, lastTime, time, events, alpha, blend, direction) {
+    //     originalApply(skeleton, lastTime, time, events, alpha, blend, direction);
+    //
+    // };
+
     Matter.use('matter-collision-events');
 
     var frontDoorLoading = false;

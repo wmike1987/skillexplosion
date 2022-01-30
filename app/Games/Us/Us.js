@@ -52,7 +52,7 @@ var game = {
 
     worldOptions: {
         //background: {image: 'Grass', scale: {x: 1.0, y: 1.0}},
-        width: 1400, //1600
+        width: 1600, //1600
         height: 700, //800 playing area, 100 unit panel
         unitPanelHeight: 100,
         gravity: 0,
@@ -384,7 +384,7 @@ var game = {
     },
 
     getLoadingScreen: function() {
-        var background = graphicsUtils.createDisplayObject('SplashColored', {
+        var background = graphicsUtils.createDisplayObject('SplashColoredBordered', {
             where: 'hudText',
             anchor: {
                 x: 0,

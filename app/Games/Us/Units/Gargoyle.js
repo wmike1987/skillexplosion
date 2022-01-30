@@ -302,7 +302,7 @@ export default function Gargoyle(options) {
 
             //gargoyle heal
             this.stoneFormAvailable = true;
-            this.stoneFormCooldown = 1800;
+            this.stoneFormCooldown = 2200;
             this.stoneFormLength = 1500;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
                 if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2) {

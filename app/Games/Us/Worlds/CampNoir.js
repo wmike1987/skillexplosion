@@ -83,14 +83,14 @@ var camp = {
             },
             {
                 center: {
-                    x: 840,
+                    x: 940,
                     y: 275
                 },
                 radius: 40
             },
             {
                 center: {
-                    x: 930,
+                    x: 1030,
                     y: 355
                 },
                 radius: 75

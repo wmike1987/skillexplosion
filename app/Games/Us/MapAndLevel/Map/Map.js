@@ -99,7 +99,7 @@ var map = function(specs) {
     this.adrenalineMax = 4;
     this.adrenalineText = graphicsUtils.createDisplayObject("TEX+:" + 'Adrenaline', {
         position: {
-            x: 90,
+            x: 190,
             y: 622
         },
         style: styles.adrenalineText,
@@ -135,7 +135,7 @@ var map = function(specs) {
             let offset = 18;
             let newBlock = graphicsUtils.createDisplayObject('TintableSquare', {
                 position: {
-                    x: 47.5 + this.adrenaline * offset,
+                    x: 147.5 + this.adrenaline * offset,
                     y: 645.5
                 },
                 where: "hudNOne",
@@ -176,6 +176,15 @@ var map = function(specs) {
             this.startingFatigue += this.fatigueIncrement;
         }
     }.bind(this));
+
+    this.backgroundSprite = graphicsUtils.createDisplayObject('TintableSquare', {
+        where: 'foregroundOne',
+        position: gameUtils.getPlayableCenter(),
+        sortYOffset: -1,
+        tint: 0x323232,
+        alpha: 0.75
+    });
+    graphicsUtils.makeSpriteSize(this.backgroundSprite, gameUtils.getCanvasWH());
 
     //Create main map sprite
     this.mapSprite = graphicsUtils.createDisplayObject('MapBackground', {
@@ -287,7 +296,12 @@ var map = function(specs) {
         });
     };
 
-    this.show = function() {
+    this.show = function(options) {
+        options = options || {
+            backgroundAlpha: 0.75,
+            backgroundTint: 0x011200
+        };
+
         this.isShown = true;
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueText.alpha = 0.3;
@@ -299,7 +313,11 @@ var map = function(specs) {
         this.allowKeyEvents(true);
         openmapSound2.play();
         openmapSound3.play();
+
         graphicsUtils.addOrShowDisplayObject(this.mapSprite);
+        this.backgroundSprite.alpha = options.backgroundAlpha;
+        this.backgroundSprite.tint = options.backgroundTint;
+        graphicsUtils.addOrShowDisplayObject(this.backgroundSprite);
         if (this.newPhase) {
             this.newPhase = false;
             openmapNewPhase.play();
@@ -381,6 +399,7 @@ var map = function(specs) {
         Matter.Events.trigger(globals.currentGame, 'hideMap', {});
 
         graphicsUtils.hideDisplayObject(this.mapSprite);
+        graphicsUtils.hideDisplayObject(this.backgroundSprite);
         this.graph.forEach(node => {
             graphicsUtils.hideDisplayObject(node.displayObject);
             if (node.displayObject.tooltipObj) {
@@ -582,7 +601,10 @@ var map = function(specs) {
                     onDone: function(options) {
                         Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
                         globals.currentGame.transitionToBlankScene();
-                        this.show();
+                        this.show({
+                            backgroundAlpha: 1.0,
+                            backgroundTint: 0x000d07
+                        });
                         gameUtils.doSomethingAfterDuration(() => {
                             //get the next node and trigger the mouse down behavior
                             var mapnode = this.outingNodes.shift();
@@ -629,7 +651,7 @@ var map = function(specs) {
         this.lastNode = this.currentNode;
         this.currentNode = node;
 
-        if(this.currentNode.levelDetails.isBattleLevel() && !this.currentNode.displayObject.tooltipObj.visible) {
+        if (this.currentNode.levelDetails.isBattleLevel() && !this.currentNode.displayObject.tooltipObj.visible) {
             this.currentNode.displayObject.tooltipObj.display(this.currentNode.displayObject.position);
         }
         var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {

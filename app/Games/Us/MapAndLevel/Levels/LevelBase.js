@@ -57,9 +57,6 @@ var levelBase = {
         var scene = new Scene();
         this.scene = scene;
 
-        //fill the scene
-        this.fillLevelScene(scene);
-
         //transition to our new scene
         globals.currentGame.currentScene.transitionToScene({
             newScene: scene,
@@ -68,6 +65,9 @@ var levelBase = {
             transitionLength: options.transitionLength || null,
             leftToRight: options.leftToRight
         });
+        
+        //fill the scene
+        this.fillLevelScene(scene);
 
         Matter.Events.trigger(globals.currentGame, 'EnterLevel', {
             level: this
@@ -106,7 +106,9 @@ var levelBase = {
 
         //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({y: 20}), {
+            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
+                y: 20
+            }), {
                 duration: 1000,
                 style: styles.titleOneStyle
             });
@@ -114,7 +116,9 @@ var levelBase = {
             game.battleInProgress = true;
         }, 800);
         gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({y: 20}), {
+            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
+                y: 20
+            }), {
                 duration: 1000,
                 style: styles.titleOneStyle
             });
@@ -125,11 +129,15 @@ var levelBase = {
             //start enemy spawnage
             level.spawner.start();
             gameUtils.setCursorStyle('Main');
-            let enemiesIncomingText = graphicsUtils.floatText(level.levelEntryText, gameUtils.getPlayableCenterPlus({y: 20}), {
+            let enemiesIncomingText = graphicsUtils.floatText(level.levelEntryText, gameUtils.getPlayableCenterPlus({
+                y: 20
+            }), {
                 duration: 2000,
                 style: styles.titleOneStyle
             });
-            graphicsUtils.flashSprite({sprite: enemiesIncomingText});
+            graphicsUtils.flashSprite({
+                sprite: enemiesIncomingText
+            });
             game.heartbeat.play();
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
@@ -211,7 +219,7 @@ var levelBase = {
         }
 
         this.totalEnemies = this.enemySets.reduce((tally, current) => {
-            if(!current.trivial) {
+            if (!current.trivial) {
                 return tally + current.spawn.total;
             } else {
                 return tally;
@@ -600,7 +608,7 @@ var levelBase = {
             removeCurrentConditions.call(this);
 
             //stop current collectors
-            if(game.shaneCollector.isCollecting()) {
+            if (game.shaneCollector.isCollecting()) {
                 game.shaneCollector.stopCurrentCollector();
                 if (game.ursulaCollector) {
                     game.ursulaCollector.stopCurrentCollector();
@@ -724,7 +732,10 @@ var levelBase = {
                                 });
                                 Matter.Events.trigger(this, 'endLevelActions');
                                 var sc = game.transitionToBlankScene();
-                                game.map.show();
+                                game.map.show({
+                                    backgroundAlpha: 1.0,
+                                    backgroundTint: 0x000d07
+                                });
 
                                 //move shane/urs off screen
                                 game.unitsInPlay.forEach((unit) => {
@@ -788,7 +799,10 @@ var levelBase = {
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });
-                        game.map.show();
+                        game.map.show({
+                            backgroundAlpha: 1.0,
+                            backgroundTint: 0x000d07
+                        });
                     } else {
                         this.scene.addCleanUpTask(() => {
                             this.spawner.cleanUp();

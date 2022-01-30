@@ -4,10 +4,10 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    energyRegenerationRate: 0.35,
-    maxEnergy: 8,
+    energyRegenerationRate: 0.5,
+    maxEnergy: 5,
     healthRegenerationRate: 0.5,
-    maxHealth: 8
+    maxHealth: 5
 };
 
 export default function(options) {

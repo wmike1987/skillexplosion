@@ -5,15 +5,15 @@ import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     maxHealth: 15,
-    gritAddition: 10,
-    defenseAddition: 1,
+    gritAddition: 15,
+    defenseAddition: 0.25,
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Pill Bottle",
-        description: ["Add 10 to grit.", "Add 15 to maximum health.", "Add 1 to armor."],
+        description: ["Add 15 to grit.", "Add 15 to maximum health.", "Add 0.25 to armor."],
         icon: 'PillBottle',
         type: 'Medic',
         fontType: 'ursula'
