@@ -283,9 +283,9 @@ var campLevel = function() {
             scene.add(initLight);
         }
 
-        Matter.Events.on(scene, 'sceneFadeInBegin', function() {
-            gameUtils.playAsMusic(this.enterMusic, {fadeDuration: 50});
-        }.bind(this));
+        // Matter.Events.on(scene, 'sceneFadeInBegin', function() {
+        gameUtils.playAsMusic(this.enterMusic, {fadeDuration: 50});
+        // }.bind(this));
 
         scene._clearExtension = function() {
             var game = globals.currentGame;

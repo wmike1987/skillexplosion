@@ -65,7 +65,7 @@ var levelBase = {
             transitionLength: options.transitionLength || null,
             leftToRight: options.leftToRight
         });
-        
+
         //fill the scene
         this.fillLevelScene(scene);
 
@@ -229,7 +229,7 @@ var levelBase = {
         //create the map node
         if (!options.mapNodeOptions.bypassNodeCreation) {
             var mapNode = this.createMapNode(options.mapNodeOptions);
-            this.mapNode = mapNode; //add back reference
+            this.mapNode = mapNode;
             var position = options.mapNodeOptions.position;
             if (this.manualNodePosition) {
                 var returnedPosition = this.manualNodePosition(position);

@@ -347,6 +347,7 @@ var game = {
 
         this.initNextMap();
 
+        //debug option
         let skipIntro = false;
 
         if (!skipIntro) {

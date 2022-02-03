@@ -575,13 +575,14 @@ var map = function(specs) {
             }
 
             //sometimes we need to get the right "sub node" for the node (multi level)
+            var outingManipulatedNode = myNode;
             if (myNode.getOutingCompatibleNode) {
-                myNode = myNode.getOutingCompatibleNode();
+                outingManipulatedNode = myNode.getOutingCompatibleNode();
             }
 
             //define custom win behavior
-            var level = myNode.levelDetails;
-            myNode.levelDetails.customWinBehavior = () => {
+            var level = outingManipulatedNode.levelDetails;
+            outingManipulatedNode.levelDetails.customWinBehavior = () => {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();
@@ -599,7 +600,7 @@ var map = function(specs) {
                         this.outingAdrenalineGained += amount;
                     },
                     onDone: function(options) {
-                        Matter.Events.trigger(myNode.levelDetails, 'endLevelActions');
+                        Matter.Events.trigger(level, 'endLevelActions');
                         globals.currentGame.transitionToBlankScene();
                         this.show({
                             backgroundAlpha: 1.0,

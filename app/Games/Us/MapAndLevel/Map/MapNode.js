@@ -294,6 +294,14 @@ MapLevelNode.prototype.complete = function() {
     }
 };
 
+MapLevelNode.prototype.getTokenDuplicate = function() {
+    if(this.manualTokens) {
+
+    } else {
+        return
+    }
+};
+
 MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     var node = this;
     node.isSpinning = true;

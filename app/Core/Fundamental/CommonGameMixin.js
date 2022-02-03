@@ -355,9 +355,9 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    globals.currentGame.nextPhase();
+                    // globals.currentGame.nextPhase();
+                    // this.shane.dodgeSound.play();
                     //
-                    this.shane.dodgeSound.play();
 
                     // if (this.gameState == 'paused') {
                     //     this.togglePause();
@@ -424,7 +424,7 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                    // globals.currentGame.nextPhase();
+                    globals.currentGame.nextPhase();
 
                     var d = DoodadFactory.createDoodad({menuItem: 'waterTrough', drawWire: true});
                     d.setPosition({x: 500, y: 500});

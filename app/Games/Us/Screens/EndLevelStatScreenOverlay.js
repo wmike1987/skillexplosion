@@ -57,7 +57,7 @@ var secretStepsPerformed = "Vanishes Performed";
 var ursulaVisuals = [];
 
 var rewardDuration = 800;
-var rewardPauseDuration = 1400;
+var rewardPauseDuration = 1600;
 
 var createContainer = function() {
     var container = new PIXI.Container();
@@ -116,16 +116,25 @@ var presentItems = function(options) {
     var numberOfChoices = globals.currentGame.map.completedNodes.length;
     var choices = [];
     var done = options.done;
+    var airDropIndicators = options.airDropIndicators;
 
     var recursivePresentation = function() {
         var currentNode = globals.currentGame.map.completedNodes[nodeIndex];
         nodeIndex += 1;
 
+        airDropIndicators.forEach((adi, index) => {
+            if(index + 1 == nodeIndex) {
+                adi.highlight();
+            } else {
+                adi.dim();
+            }
+        });
+
         //make sure our item class can satisfy this many choices (only applies to book right now)
         var forcedLength = ItemClasses[currentNode.levelDetails.itemClass][currentNode.levelDetails.itemType].items.length;
         var localNumberOfChoices = forcedLength < numberOfChoices ? forcedLength : numberOfChoices;
 
-        //Show the choose item text
+        //Show the 'choose item' text
         globals.currentGame.soundPool.positiveSoundFast.play();
         var t = localNumberOfChoices == 1 ? 'Take your item!' : 'Choose an item!';
         t = (nodeIndex > 1) ? "Choose another!" : t;
@@ -156,7 +165,11 @@ var presentItems = function(options) {
             spacing: 50
         });
         gameUtils.doSomethingAfterDuration(() => {
-            var selectionOptions = ItemUtils.getRandomItemsFromClass({itemClass: currentNode.levelDetails.itemClass, itemType: currentNode.levelDetails.itemType, amount: localNumberOfChoices});
+            var selectionOptions = ItemUtils.getRandomItemsFromClass({
+                itemClass: currentNode.levelDetails.itemClass,
+                itemType: currentNode.levelDetails.itemType,
+                amount: localNumberOfChoices
+            });
             selectionOptions.forEach((choice) => {
                 var position = positions[j];
                 j++;
@@ -214,6 +227,9 @@ var presentItems = function(options) {
             });
 
             if (choices.length == globals.currentGame.map.completedNodes.length) {
+                airDropIndicators.forEach((adi, index) => {
+                    adi.remove();
+                });
                 globals.currentGame.flyover(() => {
                     globals.currentGame.dustAndItemBox({
                         location: gameUtils.getPlayableCenterPlus({
@@ -2390,13 +2406,14 @@ var EndLevelStatScreenOverlay = function(units, options) {
             });
         }
 
+        var airDropYPositionOffset = 160;
         if (!isVictory) {
             var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
             var pauseTime = adrenalineGained ? rewardPauseDuration : 0;
             gameUtils.doSomethingAfterDuration(() => {
+
                 //get adrenaline lost during an outing
                 gameUtils.doSomethingAfterDuration(() => {
-
                     if (adrenalineGained) {
                         for (var x = 0; x < adrenalineGained; x++) {
                             globals.currentGame.map.removeAdrenalineBlock();
@@ -2423,8 +2440,56 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     gameUtils.doSomethingAfterDuration(() => {
                         //float levels completed text
                         globals.currentGame.soundPool.positiveSoundFast.play();
-                        var levelsCompletedText = campsCompleted == 1 ? "1 camp completed!" : campsCompleted + " camps completed!";
+                        var nodesCompleted = globals.currentGame.map.completedNodes.length;
+                        var levelsCompletedText = campsCompleted == 1 ? "1 camp cleared!" : campsCompleted + " camps cleared!";
                         var txt = levelsCompletedText;
+
+                        var airDropIndicators = globals.currentGame.map.completedNodes.map((node) => {
+                            if (!node.customAirdropDisplay) {
+                                return {
+                                    fadeInAtPosition: function(position, where) {
+                                        var sp = graphicsUtils.addSomethingToRenderer(graphicsUtils.cloneSprite(node.displayObject), {
+                                            position: position,
+                                            where: where
+                                        });
+                                        this.sprite = sp;
+                                        this.dim();
+                                        graphicsUtils.makeSpriteSize(sp, node.defaultTokenSize);
+                                        graphicsUtils.fadeSpriteOverTime({sprite: sp, fadeIn: true, duration: 200});
+                                    },
+                                    dim: function() {
+                                        this.sprite.alpha = 0.2;
+                                    },
+                                    highlight: function() {
+                                        this.sprite.alpha = 1.0;
+                                        graphicsUtils.addGleamToSprite({
+                                            sprite: this.sprite
+                                        });
+                                    },
+                                    remove: function() {
+                                        graphicsUtils.removeSomethingFromRenderer(this.sprite);
+                                    }
+                                };
+                            } else {
+                                return node.customAirdropDisplay();
+                            }
+                        });
+
+                        var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
+                            numberOfPositions: nodesCompleted,
+                            position: gameUtils.getPlayableCenterPlus({
+                                x: 0,
+                                y: airDropYPositionOffset
+                            }),
+                            spacing: 120
+                        });
+
+                        airDropIndicators.forEach((nodeSprite, index) => {
+                            gameUtils.doSomethingAfterDuration(() => {
+                                nodeSprite.fadeInAtPosition(positions[index], 'hudTwo', true);
+                            }, 500 + 250 * index);
+                        });
+
                         var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
                             y: 300
                         }), {
@@ -2464,10 +2529,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
                         //then present items
                         gameUtils.doSomethingAfterDuration(() => {
                             presentItems({
-                                done: options.done
+                                done: options.done,
+                                airDropIndicators: airDropIndicators
                             });
                         }, 3200);
-                    }, pauseTime + rewardPauseDuration);
+                    }, adrenalineGained ? pauseTime + rewardPauseDuration : pauseTime);
                 } else {
                     //else we'll have space to continue show up
                     gameUtils.doSomethingAfterDuration(() => {
@@ -2501,13 +2567,56 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     var textChain = graphicsUtils.createFloatingTextChain({
                         onDone: function() {
                             presentItems({
-                                done: options.done
+                                done: options.done,
+                                airDropIndicators: airDropIndicators
                             });
                         },
                     });
 
                     //add the camp clearance text
-                    var levelsCompletedText = globals.currentGame.map.completedNodes.length == 1 ? "1 camp completed!" : globals.currentGame.map.completedNodes.length + " camps completed!";
+                    var nodesCompleted = globals.currentGame.map.completedNodes.length;
+                    var levelsCompletedText = nodesCompleted == 1 ? "1 camp cleared!" : nodesCompleted + " camps cleared!";
+
+                    var airDropIndicators = globals.currentGame.map.completedNodes.map((node) => {
+                        if (!node.customAirdropDisplay) {
+                            return {
+                                fadeInAtPosition: function(position, where) {
+                                    var sp = graphicsUtils.addSomethingToRenderer(graphicsUtils.cloneSprite(node.displayObject), {
+                                        position: position,
+                                        where: where
+                                    });
+                                    this.sprite = sp;
+                                    this.dim();
+                                    graphicsUtils.makeSpriteSize(sp, node.defaultTokenSize);
+                                    graphicsUtils.fadeSpriteOverTime({sprite: sp, fadeIn: true, duration: 200});
+                                },
+                                dim: function() {
+                                    this.sprite.alpha = 0.2;
+                                },
+                                highlight: function() {
+                                    this.sprite.alpha = 1.0;
+                                    graphicsUtils.addGleamToSprite({
+                                        sprite: this.sprite
+                                    });
+                                },
+                                remove: function() {
+                                    graphicsUtils.removeSomethingFromRenderer(this.sprite);
+                                }
+                            };
+                        } else {
+                            return node.customAirdropDisplay();
+                        }
+                    });
+
+                    var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
+                        numberOfPositions: nodesCompleted,
+                        position: gameUtils.getPlayableCenterPlus({
+                            x: 0,
+                            y: airDropYPositionOffset
+                        }),
+                        spacing: 120
+                    });
+
                     textChain.add({
                         text: levelsCompletedText,
                         position: gameUtils.getPlayableCenterPlus({
@@ -2520,6 +2629,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             duration: rewardDuration * 2.0,
                             startNextAfter: 1000,
                             onStart: (myText) => {
+                                airDropIndicators.forEach((nodeSprite, index) => {
+                                    gameUtils.doSomethingAfterDuration(() => {
+                                        nodeSprite.fadeInAtPosition(positions[index], 'hudTwo', true);
+                                    }, 500 + 250 * index);
+                                });
                                 myText.tint = 0x08d491;
                                 globals.currentGame.soundPool.positiveSoundFast.play();
                                 graphicsUtils.addGleamToSprite({
@@ -2532,6 +2646,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     });
 
                     //add the supply drop text
+                    // var optionText = "Single-option";
+                    // if (nodesCompleted == 2) {
+                    //     optionsText = "Double-option";
+                    // } else if (nodesCompleted == 3) {
+                    //     optionsText = "Triple-option";
+                    // }
                     textChain.add({
                         text: 'Supply drop en route...',
                         position: gameUtils.getPlayableCenterPlus({

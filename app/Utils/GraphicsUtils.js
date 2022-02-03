@@ -160,6 +160,10 @@ var graphicsUtils = {
         return downArrow;
     },
 
+    cloneSprite: function(sprite) {
+        return this.createDisplayObject(sprite.creationTextureName);
+    },
+
     removeSomethingFromRenderer: function(something, where) {
         if (!something) return;
 
@@ -545,7 +549,7 @@ var graphicsUtils = {
                 this.lastAdded = options;
             },
             play: function() {
-                //default the last entity to trigger the onDone callback when the float is done
+                //default the last entity to trigger the onDone callback when the float is done if endAfter is not specified
                 var lastEl = this.chain[this.chain.length - 1];
                 if (!lastEl.additionalOptions.endAfter) {
                     lastEl.additionalOptions.onDone = this.onDone;
@@ -565,6 +569,8 @@ var graphicsUtils = {
                         this.onDone();
                     }, options.additionalOptions.endAfter);
                 }
+
+                //trigger the actual float
                 var myText = graphicsUtils.floatText(options.text, options.position, options.additionalOptions);
 
                 if (options.additionalOptions.onStart) {

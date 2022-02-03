@@ -54,6 +54,7 @@ var ambientLightTints = [
     [0x000000, 0x163c1b, 0x000000, 0x06300f, 0x000000, 0x550000, 0x000000, 0x06300f, 0x550000],
     [0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303, 0x4a0206, 0x610303]
 ];
+var flowerAnimsSortYOffset = 10;
 var getLevelTiles = function() {
     var backgroundTiles = [];
     for (var i = 1; i <= 6; i++) {
@@ -2038,6 +2039,7 @@ var campNoir = {
                             x: randomScale,
                             y: randomScale
                         },
+                        sortYOffset: flowerAnimsSortYOffset,
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
@@ -2065,6 +2067,7 @@ var campNoir = {
                             x: randomScale,
                             y: randomScale
                         },
+                        sortYOffset: flowerAnimsSortYOffset,
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
@@ -2127,6 +2130,7 @@ var campNoir = {
                             x: randomScale,
                             y: randomScale
                         },
+                        sortYOffset: flowerAnimsSortYOffset,
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,
@@ -2153,6 +2157,7 @@ var campNoir = {
                             x: randomScale,
                             y: randomScale
                         },
+                        sortYOffset: flowerAnimsSortYOffset,
                         decorate: function(anim) {
                             graphicsUtils.addShadowToSprite({
                                 sprite: anim,

@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    maxEnergy: 9,
+    maxEnergy: 6,
 };
 
 export default function(options) {

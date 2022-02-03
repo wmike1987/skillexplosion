@@ -13,7 +13,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Beret",
-        description: ["Add 12 to energy", "Regenerate +0.5 energy per second."],
+        description: ["Add 12 to energy.", "Regenerate +0.5 energy per second."],
         icon: 'GreenBeret',
     }, options, shaneOnly);
     return new ic(item);
