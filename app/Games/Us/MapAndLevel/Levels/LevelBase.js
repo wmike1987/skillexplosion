@@ -112,6 +112,7 @@ var levelBase = {
                 duration: 1000,
                 style: styles.titleOneStyle
             });
+            game.unitSystem.unpause();
             game.heartbeat.play();
             game.battleInProgress = true;
         }, 800);
@@ -122,13 +123,12 @@ var levelBase = {
                 duration: 1000,
                 style: styles.titleOneStyle
             });
-            game.unitSystem.unpause();
             game.heartbeat.play();
+            gameUtils.setCursorStyle('Main');
         }, 1600);
         gameUtils.doSomethingAfterDuration(() => {
             //start enemy spawnage
             level.spawner.start();
-            gameUtils.setCursorStyle('Main');
             let enemiesIncomingText = graphicsUtils.floatText(level.levelEntryText, gameUtils.getPlayableCenterPlus({
                 y: 20
             }), {

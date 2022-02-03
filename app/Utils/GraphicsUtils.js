@@ -549,7 +549,7 @@ var graphicsUtils = {
                 this.lastAdded = options;
             },
             play: function() {
-                //default the last entity to trigger the onDone callback when the float is done if endAfter is not specified
+                //default the last entity to trigger the onDone callback when the float is done (if endAfter is not specified) onDone will be called from floatText
                 var lastEl = this.chain[this.chain.length - 1];
                 if (!lastEl.additionalOptions.endAfter) {
                     lastEl.additionalOptions.onDone = this.onDone;

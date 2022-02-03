@@ -56,7 +56,7 @@ var minesLaid = "Mines Laid";
 var secretStepsPerformed = "Vanishes Performed";
 var ursulaVisuals = [];
 
-var rewardDuration = 800;
+var rewardDuration = 650;
 var rewardPauseDuration = 1600;
 
 var createContainer = function() {
@@ -144,7 +144,7 @@ var presentItems = function(options) {
             where: 'hudTwo',
             style: styles.rewardTextMedium,
             speed: 6,
-            duration: rewardDuration,
+            duration: rewardDuration + 250,
             persistAtEnd: true
         });
         rewardText.tint = 0x08d491;
@@ -2407,6 +2407,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         }
 
         var airDropYPositionOffset = 160;
+        var campClearedPause = 1250;
         if (!isVictory) {
             var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
             var pauseTime = adrenalineGained ? rewardPauseDuration : 0;
@@ -2627,7 +2628,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             style: styles.rewardTextLarge,
                             speed: 6,
                             duration: rewardDuration * 2.0,
-                            startNextAfter: 1000,
+                            startNextAfter: rewardDuration * 2.0,
                             onStart: (myText) => {
                                 airDropIndicators.forEach((nodeSprite, index) => {
                                     gameUtils.doSomethingAfterDuration(() => {
@@ -2645,13 +2646,6 @@ var EndLevelStatScreenOverlay = function(units, options) {
                         }
                     });
 
-                    //add the supply drop text
-                    // var optionText = "Single-option";
-                    // if (nodesCompleted == 2) {
-                    //     optionsText = "Double-option";
-                    // } else if (nodesCompleted == 3) {
-                    //     optionsText = "Triple-option";
-                    // }
                     textChain.add({
                         text: 'Supply drop en route...',
                         position: gameUtils.getPlayableCenterPlus({
