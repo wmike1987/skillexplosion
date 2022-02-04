@@ -1590,6 +1590,7 @@ var campNoir = {
                     priority: 1
                 };
                 tree.reallyTry = true;
+                tree.borderBuffer = true;
 
                 var tree2 = SceneryUtils.createTree({
                     tint: treeTints[tIndex],
@@ -1598,6 +1599,7 @@ var campNoir = {
                 tree2.groupingOptions = {
                     priority: 1
                 };
+                tree2.borderBuffer = true;
 
                 //add smokey pit and tent
                 if (!this.noSmokePit) {

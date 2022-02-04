@@ -92,6 +92,7 @@ var moveable = {
         globals.currentGame.addBody(this.smallerBody);
 
         Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
+        Matter.Events.on(this.body, 'onCollide', this.avoidCallback);
 
         //Deathpact these entities
         gameUtils.deathPact(this, this.smallerBody);
@@ -163,8 +164,9 @@ var moveable = {
 
         //Setup stop conditions
         //general condition
-        if(this.stopConditionCheck)
+        if(this.stopConditionCheck) {
             globals.currentGame.removeTickCallback(this.stopConditionCheck);
+        }
         this.stopConditionCheck = globals.currentGame.addTickCallback(this.generalStopCondition.bind(this, commandObj), false, 'afterStep');
         gameUtils.deathPact(this, this.stopConditionCheck, 'generalStopCondition');
 

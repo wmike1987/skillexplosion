@@ -551,9 +551,10 @@ var sceneryUtils = {
                             // }
                         });
 
+                        //just get a random thing
                         let randomThing = mathArrayUtils.getRandomElementOfArray(expandedThings);
 
-                        //find priority grouping items
+                        //but then say f it and look for priority items
                         var priorityItems = expandedThings.filter((item) => {
                             var groupingOptions = item.groupingOptions;
                             if(!groupingOptions) {
@@ -571,8 +572,7 @@ var sceneryUtils = {
                             randomThing = sortedPriorityItems.shift();
                         }
 
-
-                        //force the center object if specified (this is the ultimate priority item)
+                        //then say it f it again and get the center first
                         if(placingCenter && groupings.center) {
                             randomThing = groupings.center;
                         }
@@ -582,6 +582,7 @@ var sceneryUtils = {
                             rotateTowardCenter = true;
                         }
 
+                        //try to find a position somewhere for our f'ed up thing
                         var wholeSkip = false;
                         var tries = 0;
                         var maxTries = randomThing.reallyTry ? 150 : 60;
@@ -592,18 +593,27 @@ var sceneryUtils = {
                             }
                         } else {
                             do {
-                                //check scalar overrides
-                                var scalarOverride = null;
+                                var borderCollision = false;
+                                let scalarOverride = null;
+
+                                //scalar override inspection
                                 if(randomThing.groupingOptions) {
                                     let min = randomThing.groupingOptions.min;
                                     let max = randomThing.groupingOptions.max;
-                                    if(min) {
-                                        scalarOverride = mathArrayUtils.getRandomIntInclusive(min, max);
+                                    if(min || max) {
+                                        scalarOverride = mathArrayUtils.getRandomIntInclusive((min || 0), (max || 5000));
                                     }
                                 }
                                 myPosition = findGroupingPosition(centerPosition, scalarOverride, tries != 0);
+
+                                //enfore border buffer
+                                if(randomThing.borderBuffer) {
+                                    var borderSize = 75;
+                                    borderCollision = !gameUtils.isPositionWithinPlayableBounds(myPosition, borderSize);
+                                }
+
                                 tries++;
-                            } while(checkCollision({myThing: randomThing, position: myPosition, noZones: noZones}) && tries < maxTries);
+                            } while((checkCollision({myThing: randomThing, position: myPosition, noZones: noZones}) || borderCollision) && tries < maxTries);
                         }
 
                         //if we can't place an auxilary thing, just continue
@@ -622,9 +632,10 @@ var sceneryUtils = {
                             hit = true;
                         }
 
-                        let newDO = null;
+                        //So at this point we have a position somewhere
 
                         //handle doodads
+                        let newDO = null;
                         if (randomThing.isDoodad) {
                             newDO = randomThing.clone();
                             newDO.setPosition(mathArrayUtils.clonePosition(myPosition));

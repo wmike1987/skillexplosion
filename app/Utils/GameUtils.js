@@ -573,6 +573,12 @@ var gameUtils = {
         return false;
     },
 
+    isPositionWithinMapBounds: function(position, buffer) {
+        buffer = buffer || {x: 0, y: 0};
+        var mapBuffer = {x: 100 + buffer.x, y: 0 + buffer.y};
+        return this.isPositionWithinPlayableBounds(position, mapBuffer);
+    },
+
     isPositionWithinCanvasBounds: function(position, buffer) {
         if (buffer && !buffer.x) {
             buffer = {

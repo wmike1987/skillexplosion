@@ -44,8 +44,9 @@ function IsoSpriteManager(options) {
 	if(this.unit.isMoveable) {
 		Matter.Events.on(this.unit, 'move', function(event) {
 			if(this.currentMoveAnimation != this.unit.walkAnimations[event.direction]) {
-				if(this.currentMoveAnimation)
+				if(this.currentMoveAnimation) {
 					this.currentMoveAnimation.stop();
+				}
 				this.switchAnimation(this.unit.walkAnimations[event.direction]);
 				this.currentDirection = event.direction;
 				this.currentMoveAnimation = this.unit.walkAnimations[event.direction];
@@ -115,25 +116,27 @@ function IsoSpriteManager(options) {
 	}
 
 	this.switchAnimation = function(animation, options) {
+		options = options || {};
+
 		//change the visibility of the given animation after 'renderWorld' to avoid any side effects of drawing to a renderTexture
 		if(this.pendingAnimationCallback) {
 			globals.currentGame.removeTickCallback(this.pendingAnimationCallback);
 			this.pendingAnimationCallback = false;
 		}
+
+		//if we're no longer idling, kill idler
+		if(!options.idle) {
+			globals.currentGame.invalidateTimer(this.idleTimer);
+			this.idleTimer = null;
+		}
+
 		this.pendingAnimationCallback = gameUtils.oneTimeCallbackAtEvent(() => {
-			options = options || {};
-
-			//if we're no longer idling, kill idler
-			if(!options.idle) {
-				globals.currentGame.invalidateTimer(this.idleTimer);
-				this.idleTimer = null;
-			}
-
 			//turn them all off, except those that intentionally avoid this manager
 			$.each(this.unit.renderlings, function(name, renderling){
 				if(!renderling.avoidIsoMgr)
 				renderling.visible = false;
 			}.bind(this));
+
 
 			//turn one on
 			this.currentAnimation = animation;

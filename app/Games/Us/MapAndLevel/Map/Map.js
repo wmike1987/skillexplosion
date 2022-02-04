@@ -226,6 +226,7 @@ var map = function(specs) {
                     radius += 100;
                 }
                 collision = false;
+                outOfBounds = false;
                 position = gameUtils.getRandomPositionWithinRadiusAroundPoint({
                     point: gameUtils.getPlayableCenter(),
                     radius: radius,
@@ -236,7 +237,7 @@ var map = function(specs) {
                     minY: minY,
                     maxY: maxY
                 });
-                if (!gameUtils.isPositionWithinPlayableBounds(position)) {
+                if (!gameUtils.isPositionWithinMapBounds(position, {x: 50, y: 50})) {
                     outOfBounds = true;
                 }
                 for (let node of this.graph) {
