@@ -270,6 +270,12 @@ Doodad.prototype.scale = function(scalar) {
     });
 
     Matter.Body.scale(this.body, scalar, scalar);
+
+    if(this.noZone) {
+        this.noZone.radius *= scalar;
+    } else if(this.loneNZRadius) {
+        this.loneNZRadius *= scalar;
+    }
 };
 
 export {
