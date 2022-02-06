@@ -540,6 +540,7 @@ export default function Medic(options) {
             var caltropImage = graphicsUtils.addSomethingToRenderer('Caltrop', 'stage', {
                 position: {x: this.position.x, y: this.position.y + 20}
             });
+            graphicsUtils.flashSprite({sprite: caltropImage});
 
             gameUtils.deathPact(caltrop, caltropImage);
 

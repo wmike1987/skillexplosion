@@ -15,6 +15,9 @@ import {
 import {
     PathingSystem
 } from '@core/Unit/_Pathing.js';
+import {
+    DestinationFinder
+} from '@core/Unit/DestinationFinder.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 
 var UnitSystemAssets = [{
@@ -508,6 +511,10 @@ var UnitSystem = function(properties) {
                 if (this.attackMove && !this.box.active) {
                     this.box.invalidateNextMouseUp = true;
                     this.box.invalidateNextBox = true;
+
+                    //determine destinations
+                    var destinationMap = DestinationFinder(Object.values(this.selectedUnits), canvasPoint);
+
                     $.each(this.selectedUnits, function(key, unit) {
                         if (Object.keys(this.selectedUnits).length == 1) {
                             unit.isSoloMover = true;
@@ -530,7 +537,7 @@ var UnitSystem = function(properties) {
                                 let e = {
                                     type: 'click',
                                     id: 'a',
-                                    target: canvasPoint,
+                                    target: destinationMap[unit.unitId],
                                     unit: unit
                                 };
                                 Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
@@ -542,7 +549,7 @@ var UnitSystem = function(properties) {
                             let e = {
                                 type: 'click',
                                 id: 'm',
-                                target: canvasPoint,
+                                target: destinationMap[unit.unitId],
                                 unit: unit
                             };
                             Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
@@ -555,6 +562,9 @@ var UnitSystem = function(properties) {
                 //Dispatch ability on this click
                 if (this.abilityDispatch) {
                     if (this.selectedUnit) {
+
+                        //determine move destinations
+                        var moveDestinationMap = DestinationFinder(Object.values(this.selectedUnits), canvasPoint);
                         if (this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
                             this.box.invalidateNextMouseUp = true;
                             this.box.invalidateNextBox = true;
@@ -570,7 +580,7 @@ var UnitSystem = function(properties) {
                                         var e = {
                                             type: 'click',
                                             id: 'm',
-                                            target: canvasPoint,
+                                            target: moveDestinationMap[unit.unitId],
                                             unit: unit
                                         };
                                         Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
@@ -676,12 +686,15 @@ var UnitSystem = function(properties) {
                     this.abilityDispatch = false;
                     this.attackMove = false;
                 } else {
+                    //determine destinations
+                    let destinationMap = DestinationFinder(Object.values(this.selectedUnits), canvasPoint);
+
                     $.each(this.selectedUnits, function(key, unit) {
                         if (unit.isMoveable) {
                             var e = {
                                 type: 'click',
                                 id: 'm',
-                                target: canvasPoint,
+                                target: destinationMap[unit.unitId],
                                 unit: unit
                             };
                             Matter.Events.trigger(this, 'unitSystemEventDispatch', e);

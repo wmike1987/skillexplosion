@@ -15,7 +15,7 @@ var moveable = {
     isSoloMover: false,
     stopOnCollisionBuffer: 5, //pixels
     overshootBuffer: 5, //pixels
-    groupOvershootBuffer: 20, //pixels
+    groupOvershootBuffer: 5, //pixels
     smallerBodyCollisionCategory: 0x4000,
     noProgressBuffer: 15, //pixels
     canMove: true,
@@ -92,7 +92,7 @@ var moveable = {
         globals.currentGame.addBody(this.smallerBody);
 
         Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
-        Matter.Events.on(this.body, 'onCollide', this.avoidCallback);
+        // Matter.Events.on(this.body, 'onCollide', this.avoidCallback);
 
         //Deathpact these entities
         gameUtils.deathPact(this, this.smallerBody);
