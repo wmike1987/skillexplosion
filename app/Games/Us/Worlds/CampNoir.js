@@ -1605,7 +1605,8 @@ var campNoir = {
                 if (!this.noSmokePit) {
                     var tentDoodad = DoodadFactory.createDoodad({
                         menuItem: 'enemyTent1',
-                        tint: rockTints[tIndex]
+                        tint: rockTints[tIndex],
+                        doodadScale: this.outer ? 1.0 : 0.85,
                     });
                     tentDoodad.unique = true;
 

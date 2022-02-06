@@ -46,6 +46,7 @@ var Doodad = function(options) {
             x: 1,
             y: 1
         },
+        doodadScale: 1,
         noZone: null
     }, options);
     if(options.collides) {
@@ -223,6 +224,8 @@ var Doodad = function(options) {
         Matter.Body.setPosition(this.body, position);
         this.position = this.body.position;
     };
+
+    this.scale(options.doodadScale);
 };
 
 Doodad.prototype.getNoZone = function() {
@@ -259,6 +262,14 @@ Doodad.prototype.collidesInTheory = function(myPosition, otherNoZone) {
 
 Doodad.prototype.clone = function() {
     return new Doodad(this.rebuildOptions);
+};
+
+Doodad.prototype.scale = function(scalar) {
+    Object.values(this.body.renderChildren).forEach((rc) => {
+        rc.scale = Matter.Vector.mult(rc.scale, scalar);
+    });
+
+    Matter.Body.scale(this.body, scalar, scalar);
 };
 
 export {

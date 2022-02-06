@@ -56,6 +56,7 @@ var DoodadFactory = {
             tint: 0xffffff,
             randomHFlip: false,
             sortYOffset: 0,
+            doodadScale: 1,
             scale: {
                 x: 1,
                 y: 1
@@ -71,7 +72,7 @@ var DoodadFactory = {
             shadowOffset: {
                 x: 0,
                 y: 0
-            }
+            },
         };
 
         //build final options object
@@ -98,6 +99,7 @@ var DoodadFactory = {
             shadowOffset: options.shadowOffset,
             anchor: options.anchor,
             scale: options.scale,
+            doodadScale: options.doodadScale,
             offset: options.offset,
             bodyScale: options.bodyScale,
             sortYOffset: options.sortYOffset,

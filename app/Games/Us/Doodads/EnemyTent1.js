@@ -22,6 +22,7 @@ var enemyTent = function() {
         }
     }];
     this.radius = 30;
+    // this.drawWire = true;
     this.collides = true;
     this.where = 'stage';
     this.tint = 0xffffff;
