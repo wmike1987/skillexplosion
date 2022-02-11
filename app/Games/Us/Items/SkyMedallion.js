@@ -11,17 +11,15 @@ import {
 } from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    maxHealth: 10,
-    gritAddition: 10,
-    maxEnergy: 10,
-    dodgeAddition: 5,
+    gritAddition: 15,
+    dodgeAddition: 8,
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Sky Medallion",
-        description: ["Add " + manipulations.gritAddition + " to grit.", "Add " + manipulations.maxHealth + " to maximum health.", "Add " + manipulations.maxEnergy + " to maximum energy.", "Add " + manipulations.dodgeAddition + " to dodge"],
+        description: ["Add " + manipulations.gritAddition + " to grit.", "Add " + manipulations.dodgeAddition + " to dodge"],
         icon: 'SilverMedalCircle1',
     }, options, shaneOnly);
     return new ic(item);

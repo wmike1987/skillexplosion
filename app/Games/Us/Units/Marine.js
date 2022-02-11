@@ -944,12 +944,12 @@ export default function Marine(options) {
             },
             {
                 name: 'first aid pouch',
-                healAmount: 0.25,
+                healAmount: 0.3,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
                 description: '',
                 updaters: {descriptions: function() {
-                    var sum = 0.25;
+                    var sum = 0.3;
                     var addition = marine.firstAidPouchAdditions.forEach((addition) => {
                         sum += addition;
                     });
