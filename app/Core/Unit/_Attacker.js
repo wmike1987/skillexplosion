@@ -108,7 +108,7 @@ export default {
                 }
                 this.holdPosition();
                 return;
-            } else {
+            } else if(commandObj && commandObj.command.type == 'key') {
                 this.doubleTapS = 1;
                 if(this.doubleTapTimer) {
                     this.doubleTapTimer.invalidate();
