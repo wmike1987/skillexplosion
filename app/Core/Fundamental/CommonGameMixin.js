@@ -424,11 +424,11 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                    globals.currentGame.nextPhase();
-
-                    var d = DoodadFactory.createDoodad({menuItem: 'waterTrough', drawWire: true});
-                    d.setPosition({x: 500, y: 500});
-                    this.currentScene.add(d);
+                    // globals.currentGame.nextPhase();
+                    //
+                    // var d = DoodadFactory.createDoodad({menuItem: 'waterTrough', drawWire: true});
+                    // d.setPosition({x: 500, y: 500});
+                    // this.currentScene.add(d);
 
                     // if(!this.whoaSprite) {
                     //     this.whoaSprite = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNOne', style: styles.abilityText});
