@@ -620,7 +620,13 @@ export default function Marine(options) {
         var poisonTipAugment = thisAbility.isAugmentEnabled('poison tip');
 
         if (!childKnife && multiThrowAugment) {
+            var distance = mathArrayUtils.distanceBetweenPoints(destination, this.position);
+            var maxDistance = 300;
+            if(distance > maxDistance) {
+                destination = mathArrayUtils.addScalarToVectorTowardDestination(this.position, destination, maxDistance);
+            }
             var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(destination, this.position)));
+
             var start = (multiThrowAugment.knives - 1) / -2;
             var spacing = 25;
             for (var n = start; n < start + multiThrowAugment.knives; n++) {

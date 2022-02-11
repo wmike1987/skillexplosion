@@ -541,14 +541,15 @@ var sceneryUtils = {
                         //expand possible things for proportional choosing of objects
                         let expandedThings = [];
                         arrayOfThings.forEach(function(thing) {
-                            //Testing this commented section out... can it be removed? hopefully
-                            // if (thing.possibleTextures) {
-                            //     thing.possibleTextures.forEach(function(t) {
-                            //         expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
-                            //     });
-                            // } else {
+                            //this is really dumb and confusing, but this allows us to specify a "thing" that
+                            //contains common attributes, but multiple textures
+                            if (thing.possibleTextures) {
+                                thing.possibleTextures.forEach(function(t) {
+                                    expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
+                                });
+                            } else {
                                 expandedThings.push(thing);
-                            // }
+                            }
                         });
 
                         //just get a random thing

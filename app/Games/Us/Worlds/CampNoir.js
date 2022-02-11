@@ -696,6 +696,29 @@ var enemyDefs = {
             easyFlyObj
         ]
     },
+    basic2: {
+        token: 'default',
+        enemySets: [{
+                type: 'Critter',
+                amount: [2],
+                atATime: 2,
+                hz: 4000
+            }, {
+                type: 'Sentinel',
+                amount: [1],
+                atATime: 1,
+                hz: 4500
+            },
+            {
+                type: 'Gargoyle',
+                amount: [1],
+                atATime: 1,
+                initialDelay: 6500,
+                hz: 4500
+            },
+            easyFlyObj
+        ]
+    },
     basicHunter: {
         enemySets: [{
                 type: 'Hunter',
@@ -725,6 +748,25 @@ var enemyDefs = {
         }, {
             type: 'Gargoyle',
             amount: [2],
+            initialDelay: 6500,
+            atATime: 1,
+            hz: 5000
+        }, generalFlyObj]
+    },
+    basicHard2: {
+        enemySets: [{
+            type: 'Critter',
+            amount: [2, 3],
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Sentinel',
+            amount: [3, 4],
+            atATime: 1,
+            hz: 4500
+        }, {
+            type: 'Gargoyle',
+            amount: [1],
             initialDelay: 6500,
             atATime: 1,
             hz: 5000
@@ -1072,6 +1114,7 @@ var phaseTwo = function(options) {
     campNode.manualEnable = false;
     options = options || {};
     var world = this;
+    let basicList = ['basic', 'basic2'];
     var startDialogue = new CampNoirTrueStart({
         done: () => {
             var campLevel = world.gotoLevelById('camp');
@@ -1084,10 +1127,12 @@ var phaseTwo = function(options) {
                 }
             });
             world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basic');
-            world.map.addMapNode('basicHard', {
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+
+            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2']);
+            world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
                     nodeTitle: 'Mega Den',
                     token: 'hard',
@@ -1098,7 +1143,7 @@ var phaseTwo = function(options) {
 
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
-                    enemyDefList: ['basic', 'basic', 'basic'],
+                    enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList)],
                     itemClass: 'stimulant',
                 }
             });
@@ -1606,7 +1651,7 @@ var campNoir = {
                     var tentDoodad = DoodadFactory.createDoodad({
                         menuItem: 'enemyTent1',
                         tint: rockTints[tIndex],
-                        doodadScale: this.outer ? 1.0 : 0.85,
+                        doodadScale: this.outer ? 1.0 : 0.75,
                     });
                     tentDoodad.unique = true;
 
@@ -1632,7 +1677,7 @@ var campNoir = {
                         max: 150,
                     };
 
-                    if(!this.outer) {
+                    if (!this.outer) {
                         trough1 = null;
                         trough2 = null;
                     }
@@ -1649,114 +1694,116 @@ var campNoir = {
                     };
                     this.tent = SceneryUtils.decorateTerrain({
                         possibleDoodads: [tentDoodad, trough1, trough2, enemyPost4, tree, tree2, {
-                            textureName: 'bullets',
-                            randomHFlip: true,
-                            where: 'backgroundOne',
-                            unique: true,
-                            groupingOptions: {
-                                priority: 2
+                                textureName: 'bullets',
+                                randomHFlip: true,
+                                where: 'backgroundOne',
+                                unique: true,
+                                groupingOptions: {
+                                    priority: 2
+                                }
+                            }, {
+                                textureName: 'CampDoodads/CritterFootprint',
+                                randomScale: {
+                                    min: 0.8,
+                                    max: 1.0
+                                },
+                                groupingOptions: {
+                                    min: 200,
+                                    max: 400
+                                },
+                                alpha: 0.75,
+                                randomHFlip: true,
+                                rotate: 'random',
+                                where: 'stageNTwo'
+                            }, {
+                                textureName: 'CampDoodads/CritterFootprint2',
+                                randomScale: {
+                                    min: 0.8,
+                                    max: 1.0
+                                },
+                                groupingOptions: {
+                                    min: 80,
+                                    max: 200
+                                },
+                                alpha: 0.75,
+                                randomHFlip: true,
+                                rotate: 'random',
+                                where: 'stageNTwo'
+                            }, {
+                                textureName: 'CampDoodads/bootprops',
+                                randomScale: {
+                                    min: 0.8,
+                                    max: 1.0
+                                },
+                                randomHFlip: true,
+                                unique: true,
+                                where: 'stage',
+                                groupingOptions: {
+                                    priority: 3,
+                                    min: 80,
+                                    max: 100
+                                }
+                            }, {
+                                textureName: 'CampDoodads/Bench1',
+                                randomScale: {
+                                    min: 0.8,
+                                    max: 1.0
+                                },
+                                randomHFlip: true,
+                                unique: true,
+                                where: 'stage',
+                                groupingOptions: {
+                                    priority: 3,
+                                    min: 100,
+                                    max: 150
+                                }
+                            },
+                            /*{
+                                                       textureName: 'CampDoodads/MiniTent1',
+                                                       randomScale: {
+                                                           min: 0.8,
+                                                           max: 1.0
+                                                       },
+                                                       randomHFlip: true,
+                                                       unique: true,
+                                                       where: 'stage',
+                                                       groupingOptions: {
+                                                           priority: 3,
+                                                           min: 200,
+                                                           max: 300
+                                                       },
+                                                       loneNZRadius: 80
+                                                   }, */
+                            {
+                                textureName: 'CampDoodads/BarrelTrash1',
+                                randomScale: {
+                                    min: 0.8,
+                                    max: 1.0
+                                },
+                                randomHFlip: true,
+                                unique: true,
+                                where: 'stage',
+                                groupingOptions: {
+                                    priority: 3,
+                                    min: 100,
+                                    max: 150
+                                }
+                            }, {
+                                textureName: 'CampDoodads/CritterFootprint3',
+                                randomScale: {
+                                    min: 0.8,
+                                    max: 1.0
+                                },
+                                groupingOptions: {
+                                    min: 80,
+                                    max: 200
+                                },
+                                alpha: 0.75,
+                                randomHFlip: true,
+                                rotate: 'random',
+                                where: 'stageNTwo'
                             }
-                        }, {
-                            textureName: 'CampDoodads/CritterFootprint',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            groupingOptions: {
-                                min: 200,
-                                max: 400
-                            },
-                            alpha: 0.75,
-                            randomHFlip: true,
-                            rotate: 'random',
-                            where: 'stageNTwo'
-                        }, {
-                            textureName: 'CampDoodads/CritterFootprint2',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            groupingOptions: {
-                                min: 80,
-                                max: 200
-                            },
-                            alpha: 0.75,
-                            randomHFlip: true,
-                            rotate: 'random',
-                            where: 'stageNTwo'
-                        }, {
-                            textureName: 'CampDoodads/bootprops',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            randomHFlip: true,
-                            unique: true,
-                            where: 'stage',
-                            groupingOptions: {
-                                priority: 3,
-                                min: 80,
-                                max: 100
-                            }
-                        }, {
-                            textureName: 'CampDoodads/Bench1',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            randomHFlip: true,
-                            unique: true,
-                            where: 'stage',
-                            groupingOptions: {
-                                priority: 3,
-                                min: 100,
-                                max: 150
-                            }
-                        }, /*{
-                            textureName: 'CampDoodads/MiniTent1',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            randomHFlip: true,
-                            unique: true,
-                            where: 'stage',
-                            groupingOptions: {
-                                priority: 3,
-                                min: 200,
-                                max: 300
-                            },
-                            loneNZRadius: 80
-                        }, */
-                        {
-                            textureName: 'CampDoodads/BarrelTrash1',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            randomHFlip: true,
-                            unique: true,
-                            where: 'stage',
-                            groupingOptions: {
-                                priority: 3,
-                                min: 100,
-                                max: 150
-                            }
-                        }, {
-                            textureName: 'CampDoodads/CritterFootprint3',
-                            randomScale: {
-                                min: 0.8,
-                                max: 1.0
-                            },
-                            groupingOptions: {
-                                min: 80,
-                                max: 200
-                            },
-                            alpha: 0.75,
-                            randomHFlip: true,
-                            rotate: 'random',
-                            where: 'stageNTwo'
-                        }],
+                        ],
                         tileWidth: tileSize,
                         maxNumber: 1,
                         buffer: 180,
@@ -1831,21 +1878,21 @@ var campNoir = {
                     };
 
                     var basicPitArray = [rockPitDoodad, rock1, rock2, rock3, enemyPost, enemyPost2, enemyPost3, log1, log1];
-                    if(this.outer) {
+                    if (this.outer) {
                         var amountOver = Math.min(4, this.totalEnemies - 4);
                         mathArrayUtils.repeatXTimes(() => {
-                                let ep = DoodadFactory.createDoodad({
-                                    menuItem: 'enemyPost2',
-                                    tint: treeTints[tIndex],
-                                    preventDuplicateDoodad: basicPitArray
-                                });
-                                ep.unique = true;
-                                ep.groupingOptions = {
-                                    priority: 1,
-                                    min: 70,
-                                    max: 115,
-                                };
-                                basicPitArray.push(ep);
+                            let ep = DoodadFactory.createDoodad({
+                                menuItem: 'enemyPost2',
+                                tint: treeTints[tIndex],
+                                preventDuplicateDoodad: basicPitArray
+                            });
+                            ep.unique = true;
+                            ep.groupingOptions = {
+                                priority: 1,
+                                min: 70,
+                                max: 115,
+                            };
+                            basicPitArray.push(ep);
                         }, amountOver);
                     }
 
