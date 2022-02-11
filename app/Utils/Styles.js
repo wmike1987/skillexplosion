@@ -468,6 +468,18 @@ export default {
         padding: 11,
     }),
 
+    pageArrowStyleLarge: new PIXI.TextStyle({
+        name: 'pageArrowStyleLarge',
+        fill: "#ebebeb",
+        fillGradientType: 1,
+        fontFamily: "Tahoma, Geneva, sans-serif",
+        fontSize: 50,
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        strokeThickness: 5,
+        padding: 11,
+    }),
+
     rewardTextMedium: new PIXI.TextStyle({
         name: 'rewardTextMedium',
         fill: "#FFFFFF",

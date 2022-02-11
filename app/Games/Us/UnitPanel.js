@@ -9,6 +9,7 @@ import styles from '@utils/Styles.js';
 import Tooltip from '@core/Tooltip.js';
 import ucp from '@games/Us/UnitAugmentPanel.js';
 import upp from '@games/Us/PassivePanel.js';
+import help from '@games/Us/HelpMenu.js';
 import {
     globals,
     keyStates
@@ -165,13 +166,13 @@ var unitPanel = function(options) {
                     value: ''
                 }];
                 if (this.prevailingUnit) {
-                    if(this.prevailingUnit.getTotalGrit() > 0.0) {
+                    if (this.prevailingUnit.getTotalGrit() > 0.0) {
                         result[0].value = 'Regenerate hp at 2x rate while below ' + (this.prevailingUnit.getTotalGrit().toFixed(1)) + '% total health.';
                     } else {
                         result[0].value = 'Gain grit to increase hp regeneration rate near death.';
                     }
 
-                    if(this.prevailingUnit.getTotalGrit() > 0.0) {
+                    if (this.prevailingUnit.getTotalGrit() > 0.0) {
                         result[1].value = 'Dodge 1 killing blow every ' + this.prevailingUnit.gritCooldown + ' seconds';
                     } else {
                         result[1].value = 'Gain grit to block killing blows.';
@@ -272,8 +273,9 @@ var unitPanel = function(options) {
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
+                let txt;
                 if (this.prevailingUnit) {
-                    var txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
+                    txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
                     tooltip.mainDescription.style.fill = graphicsUtils.percentAsHexColor(this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth);
                 }
                 return txt;
@@ -283,8 +285,9 @@ var unitPanel = function(options) {
                     key: 'systemMessages',
                     index: 1
                 };
+                let txt;
                 if (this.prevailingUnit) {
-                    var txt = 'Regen: +' + this.prevailingUnit.getTotalHealthRegeneration().toFixed(2) + " hp/sec";
+                    txt = 'Regen: +' + this.prevailingUnit.getTotalHealthRegeneration().toFixed(2) + " hp/sec";
                 }
                 result.value = txt;
                 return result;
@@ -387,8 +390,9 @@ var unitPanel = function(options) {
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
+                let txt;
                 if (this.prevailingUnit) {
-                    var txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
+                    txt = Math.floor(this.prevailingUnit.currentEnergy) + "/" + this.prevailingUnit.maxEnergy;
                 }
                 return txt;
             }.bind(this),
@@ -397,8 +401,9 @@ var unitPanel = function(options) {
                     key: 'systemMessages',
                     index: 0
                 };
+                let txt;
                 if (this.prevailingUnit) {
-                    var txt = 'Regen: +' + this.prevailingUnit.getTotalEnergyRegeneration().toFixed(2) + " energy/sec";
+                    txt = 'Regen: +' + this.prevailingUnit.getTotalEnergyRegeneration().toFixed(2) + " energy/sec";
                 }
                 result.value = txt;
                 return result;
@@ -486,16 +491,22 @@ var unitPanel = function(options) {
             }
 
             //killing blow dodge indicator
-            if(this.prevailingUnit.hasGritDodge) {
-                if(!this.killingBlowIndicator) {
-                    this.killingBlowIndicator = graphicsUtils.createDisplayObject("GritBuff", {where: 'hud', scale: {x: 0.8, y: 0.8}});
+            if (this.prevailingUnit.hasGritDodge) {
+                if (!this.killingBlowIndicator) {
+                    this.killingBlowIndicator = graphicsUtils.createDisplayObject("GritBuff", {
+                        where: 'hud',
+                        scale: {
+                            x: 0.8,
+                            y: 0.8
+                        }
+                    });
                     this.killingBlowIndicator.position = {
                         x: this.healthVialPosition.x,
                         y: gameUtils.getCanvasHeight() - 15
                     };
                 }
                 graphicsUtils.addOrShowDisplayObject(this.killingBlowIndicator);
-            } else if(this.killingBlowIndicator) {
+            } else if (this.killingBlowIndicator) {
                 this.killingBlowIndicator.visible = false;
             }
 
@@ -565,6 +576,11 @@ var unitPanel = function(options) {
     this.bpItemCenterY = this.centerY + 20.5;
     this.bpItemXSpacing = 30;
 
+    //help positioning
+    this.helpButtonPosition = {};
+    this.helpButtonPosition.x = gameUtils.getCanvasWidth() - 16;
+    this.helpButtonPosition.y = gameUtils.getCanvasHeight() - 16;
+
     //create frame
     this.frame = graphicsUtils.createDisplayObject('UnitPanelFrame', {
         persists: true,
@@ -591,6 +607,11 @@ unitPanel.prototype.initialize = function(options) {
     //create passive panel
     this.unitPassivePanel = new upp(this);
     this.unitPassivePanel.initialize();
+
+    //create help button
+    this.helpMenu = new help(this);
+    this.helpMenu.initialize();
+    this.helpMenu.showButton(this.helpButtonPosition);
 
     //add frame-backing to world
     graphicsUtils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
@@ -772,8 +793,8 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
         this.updateUnitItems(unit);
 
         //if the new unit has a grit dodge available, immediate show it instead of waiting for the next tick
-        if(this.prevailingUnit.hasGritDodge) {
-            if(this.killingBlowIndicator) {
+        if (this.prevailingUnit.hasGritDodge) {
+            if (this.killingBlowIndicator) {
                 graphicsUtils.addOrShowDisplayObject(this.killingBlowIndicator);
             }
         }
@@ -794,7 +815,7 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
         this.currentPortrait.visible = false;
     }
 
-    if(this.killingBlowIndicator) {
+    if (this.killingBlowIndicator) {
         this.killingBlowIndicator.visible = false;
     }
 
@@ -831,7 +852,7 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
             ability.icon.visible = false;
             ability.icon.tooltipObj.hide();
             ability.augments.forEach((augment) => {
-                if(augment.smallerIcon) {
+                if (augment.smallerIcon) {
                     augment.smallerIcon.visible = false;
                     augment.smallerBorder.visible = false;
                     augment.smallerIcon.tooltipObj.hide();
@@ -1058,7 +1079,7 @@ var _displayUnitStats = function() {
             if (this.prevailingUnit.getGritAdditionSum() < 0) {
                 sign = '';
             }
-            this.unitGritAdditionsText.text = sign + this.prevailingUnit.getGritAdditionSum()
+            this.unitGritAdditionsText.text = sign + this.prevailingUnit.getGritAdditionSum();
             this.unitGritAdditionsText.position = mathArrayUtils.clonePosition(this.unitGritText.position, {
                 x: this.unitGritText.width
             });
@@ -1073,7 +1094,7 @@ var _displayUnitStats = function() {
             if (this.prevailingUnit.getDodgeAdditionSum() < 0) {
                 sign = '';
             }
-            this.unitDodgeAdditionsText.text = sign + this.prevailingUnit.getDodgeAdditionSum()
+            this.unitDodgeAdditionsText.text = sign + this.prevailingUnit.getDodgeAdditionSum();
             this.unitDodgeAdditionsText.position = mathArrayUtils.clonePosition(this.unitDodgeText.position, {
                 x: this.unitDodgeText.width
             });
@@ -1159,17 +1180,20 @@ unitPanel.prototype.displayUnitAbilities = function() {
 
         var borderAddition = 2;
         var augmentSpacing = 10;
-        var augmentSize = (ability.icon.width-(borderAddition*2))/(3);
+        var augmentSize = (ability.icon.width - (borderAddition * 2)) / (3);
         var startingX = augmentSize;
         var augmentBorderSize = augmentSize + borderAddition;
         var augmentCount = 0; //init this to 1
         if (ability.augments) {
             $.each(ability.augments, function(i, augment) {
                 let pos = {
-                    x: (ability.icon.position.x-(ability.icon.width / 2)) + startingX-(augmentSize/2) + augmentCount*(augmentSize+borderAddition/2),
+                    x: (ability.icon.position.x - (ability.icon.width / 2)) + startingX - (augmentSize / 2) + augmentCount * (augmentSize + borderAddition / 2),
                     y: (ability.icon.position.y) + (ability.icon.height / 2),
                 };
-                var augmentPosition = mathArrayUtils.clonePosition(pos, {x: borderAddition/2, y: - (augmentSize+borderAddition) / 2});
+                var augmentPosition = mathArrayUtils.clonePosition(pos, {
+                    x: borderAddition / 2,
+                    y: -(augmentSize + borderAddition) / 2
+                });
                 if (!augment.smallerIcon) {
                     augment.smallerIcon = graphicsUtils.addSomethingToRenderer(augment.icon.texture, {
                         where: 'hudOne'
@@ -1213,7 +1237,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
                     if (!enabled) {
                         ability.icon.tint = unavailableTint;
                         ability.augments.forEach((augment) => {
-                            if(augment.smallerIcon) {
+                            if (augment.smallerIcon) {
                                 augment.smallerIcon.tint = unavailableTint;
                                 augment.smallerBorder.tint = unavailableTint;
                             }
@@ -1221,7 +1245,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
                     } else if (ability.icon.tint == unavailableTint) {
                         ability.icon.tint = 0xFFFFFF;
                         ability.augments.forEach((augment) => {
-                            if(augment.smallerIcon) {
+                            if (augment.smallerIcon) {
                                 augment.smallerIcon.tint = 0xFFFFFF;
                                 augment.smallerBorder.tint = 0xFFFFFF;
                             }
@@ -1250,11 +1274,11 @@ unitPanel.prototype.displayUnitPassives = function(options) {
         this.attackPassiveMeter.visible = false;
     }
 
-    if(this.defensivePassiveTooltippable) {
+    if (this.defensivePassiveTooltippable) {
         this.defensivePassiveTooltippable.tooltipObj.hide();
         this.defensivePassiveTooltippable.visible = false;
     }
-    if(this.aggressionPassiveTooltippable) {
+    if (this.aggressionPassiveTooltippable) {
         this.aggressionPassiveTooltippable.tooltipObj.hide();
         this.aggressionPassiveTooltippable.visible = false;
     }
@@ -1403,7 +1427,7 @@ unitPanel.prototype.displayUnitPassives = function(options) {
             var unit = this.prevailingUnit;
             if (!unit) return;
             if (unit.attackPassive) {
-                var percentDone = unit.attackPassive.coolDownMeterPercent;
+                let percentDone = unit.attackPassive.coolDownMeterPercent;
                 this.attackPassiveMeter.visible = true;
                 graphicsUtils.makeSpriteSize(this.attackPassiveMeter, {
                     x: 32 * percentDone,
@@ -1415,14 +1439,14 @@ unitPanel.prototype.displayUnitPassives = function(options) {
                 } else if (!unit.attackPassive.inProcess && unit.attackPassive.newCharge) {
                     this.attackPassiveMeter.tint = 0x09c216;
                     unit.attackPassive.activeIcon.tint = 0xFFFFFF;
-                } else if(unit.attackPassive.inProcess) {
+                } else if (unit.attackPassive.inProcess) {
                     this.attackPassiveMeter.tint = 0x7d302b;
                 }
             } else {
                 this.attackPassiveMeter.visible = false;
             }
             if (unit.defensePassive) {
-                var percentDone = unit.defensePassive.coolDownMeterPercent;
+                let percentDone = unit.defensePassive.coolDownMeterPercent;
                 this.defensePassiveMeter.visible = true;
                 graphicsUtils.makeSpriteSize(this.defensePassiveMeter, {
                     x: 32 * percentDone,
@@ -1434,7 +1458,7 @@ unitPanel.prototype.displayUnitPassives = function(options) {
                 } else if (!unit.defensePassive.inProcess && unit.defensePassive.newCharge) {
                     this.defensePassiveMeter.tint = 0x09c216;
                     unit.defensePassive.activeIcon.tint = 0xFFFFFF;
-                } else if(unit.defensePassive.inProcess) {
+                } else if (unit.defensePassive.inProcess) {
                     this.defensePassiveMeter.tint = 0x1f3c62;
                 }
             } else {
@@ -1601,12 +1625,18 @@ unitPanel.prototype.cleanUp = function() {
     globals.currentGame.removeTickCallback(this.meterUpdater);
 
     //unit configuration panel
-    if (this.unitAugmentPanel)
+    if (this.unitAugmentPanel) {
         this.unitAugmentPanel.cleanUp();
+    }
 
     //unit passive panel
-    if (this.unitPassivePanel)
+    if (this.unitPassivePanel) {
         this.unitPassivePanel.cleanUp();
+    }
+
+    if (this.helpMenu) {
+        this.helpMenu.cleanUp();
+    }
 
     this.autoCastSound.unload();
 
