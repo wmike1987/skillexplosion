@@ -301,7 +301,7 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage1.addLineTitle({
-        text: 'Range Boost',
+        text: 'Range',
         image: 'KeenEyeBuff',
         imageOffset: {
             x: -6
@@ -323,7 +323,7 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage1.addLineTitle({
-        text: 'Main',
+        text: 'Maim',
         image: 'MaimBuff',
         imageOffset: {
             x: -6
@@ -342,6 +342,17 @@ HelpMenu.prototype.initialize = function() {
     });
     BuffPage1.addLine({
         text: 'Increases unit armor.'
+    });
+
+    BuffPage1.addLineTitle({
+        text: 'Dodge',
+        image: 'DodgeBuff',
+        imageOffset: {
+            x: -6
+        }
+    });
+    BuffPage1.addLine({
+        text: 'Increases dodge.'
     });
 
     this.addPage(BuffPage1);
