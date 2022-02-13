@@ -488,6 +488,20 @@ HelpMenu.prototype.initialize = function() {
     });
 
     HotkeyPage.addLineTitle({
+        text: 'W'
+    });
+    HotkeyPage.addLine({
+        text: 'Swap aggression/defensive states of mind.'
+    });
+
+    HotkeyPage.addLineTitle({
+        text: 'Tab'
+    });
+    HotkeyPage.addLine({
+        text: 'Cycle focused unit of current selection.'
+    });
+
+    HotkeyPage.addLineTitle({
         text: 'Escape'
     });
     HotkeyPage.addLine({
@@ -526,7 +540,7 @@ HelpMenu.prototype.getPreviousPage = function(page) {
 };
 
 HelpMenu.prototype.updateArrows = function(page) {
-    var availableColor = 0x0a9546;
+    var availableColor = 0x24e705;
     var normalColor = 0xFFFFFF;
     var unAlpha = 0.15;
     if (this.hasNextPage()) {

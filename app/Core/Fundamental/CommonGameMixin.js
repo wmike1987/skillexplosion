@@ -563,7 +563,15 @@ var common = {
                 value.totalPercentOfRunsDone = Math.min(value.currentRun / value.originalRuns, 1);
 
                 //call tickback
-                if (value.tickCallback) value.tickCallback(event.deltaTime);
+                if (value.tickCallback) {
+                    //mimicry
+                    if (value.mimicry) {
+                        value.tickCallback(value.mimicry);
+                    } else {
+                        value.tickCallback(event.deltaTime);
+                    }
+                }
+
 
                 //call immediately (by setting timeElapsed to be 100%), possibly with a delay
                 if (value.immediateStart) {
@@ -572,10 +580,21 @@ var common = {
                     value.immediateStart = false;
                 }
 
+                if(value.mimicry) {
+                    value.timeElapsed = value.mimicry;
+                    value.isMimicing = true;
+                }
+
                 //if we past our active time limit, execute the callbacks
                 while (value.activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
                     value.executeCallbacks();
+                    if(value.isMimicing) {
+                        value.mimicLeft = value.timeElapsed;
+                    }
                 }
+
+                value.mimicry = null;
+                value.isMimicing = false;
             }.bind(this));
 
             //setup timer victory condition

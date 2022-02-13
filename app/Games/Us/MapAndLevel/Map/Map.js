@@ -42,6 +42,8 @@ var openmapNewPhase = gameUtils.getSound('gleamsweep.wav', {
 var map = function(specs) {
 
     this.outingNodes = [];
+    this.outingNodeMemory = [];
+    this.outingArrows = [];
     this.inProgressOutingNodes = [];
     this.maxOutingLength = 3;
     this.fatigueIncrement = 5;
@@ -390,6 +392,8 @@ var map = function(specs) {
             });
         }
 
+        this.updateRouteArrows();
+
         Matter.Events.trigger(this, 'showMap', {});
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
     };
@@ -432,6 +436,9 @@ var map = function(specs) {
             item.visible = false;
         });
         this.removedAdrenalineBlocks = [];
+
+        //hide route arrows
+        this.clearRouteArrows();
     };
 
     this.allowMouseEvents = function(value) {
@@ -449,12 +456,110 @@ var map = function(specs) {
     this.addNodeToOuting = function(node) {
         this.outingNodes.push(node);
         this.updateOutingEngagement();
+
+        //create the arrow routes
+        var latestNode = this.outingNodes.at(-1);
+        var previousNode = this.outingNodes.at(-2);
+        var startPosition = this.getPlayerMapPosition();
+        if(previousNode) {
+            startPosition = previousNode.position;
+        }
+        this.updateRouteArrows();
     };
 
     this.removeNodeFromOuting = function(node) {
         node.unshowNodeInOuting();
         mathArrayUtils.removeObjectFromArray(node, this.outingNodes);
         this.updateOutingEngagement();
+        this.updateRouteArrows();
+    };
+
+    this.updateRouteArrows = function() {
+        var colors = [0xcdc012, 0xe47b0e, 0xb90606];
+
+        var sendSpriteWrapper = function(start, destination, index) {
+            let myArrowTimers = [];
+            let timer = globals.currentGame.addTimer({
+                name: 'sendSpriteWrapper:' + mathArrayUtils.getId(),
+                gogogo: true,
+                timeLimit: 500,
+                immediateStart: true,
+                executeOnNuke: true,
+                callback: function() {
+                    let routeArrow = graphicsUtils.addSomethingToRenderer('MapArrow', {where: 'hudOne', alpha: 0.5, scale: {x: 0.4, y: 0.4}, tint: sendSpriteObj.color});
+                    let arrowRouteTimer = graphicsUtils.sendSpriteToDestinationAtSpeed({sprite: routeArrow, start: start, destination: destination, speed: 0.75});
+                    if(this.isMimicing) {
+                        arrowRouteTimer.mimicry = this.mimicLeft;
+                    }
+                    myArrowTimers.push(arrowRouteTimer);
+                }
+            });
+            timer.mimicry = 40000;
+            Matter.Events.on(timer, 'onInvalidate', () => {
+                myArrowTimers.forEach((t) => {
+                    t.invalidate();
+                });
+            });
+
+            let sendSpriteObj = {timer: timer, color: colors[index]};
+            return sendSpriteObj;
+        };
+
+        if(this.outingNodes.length == 0) {
+            this.clearRouteArrows();
+        } else {
+            mathArrayUtils.repeatXTimes((index) => {
+                var nodesToUse = this.outingNodes;
+                if(this.outingNodeMemory.length > 0) {
+                    nodesToUse = this.outingNodeMemory;
+                }
+                let currentNode = nodesToUse[index];
+                let previousNode = index == 0 ? {id: 'headToken', position: mathArrayUtils.clonePosition(this.getPlayerMapPosition())} : nodesToUse[index-1];
+
+                if(this.completedNodes && this.completedNodes.indexOf(currentNode) >= 0) {
+                    return;
+                }
+
+                //detect removals (from the end of the array)
+                if(this.outingArrows[index] && currentNode == null) {
+                    this.outingArrows[index].timer.invalidate();
+                    mathArrayUtils.removeObjectFromArray(this.outingArrows[index], this.outingArrows);
+                } else if(this.outingArrows[index] == null && currentNode != null) {
+                    //detect additions
+                    let sendObj = sendSpriteWrapper(previousNode.position, currentNode.position, index);
+                    this.outingArrows[index] = {timer: sendObj.timer, sendObj: sendObj, id: currentNode.id};
+                } else if(this.outingArrows[index] && this.outingArrows[index].id != currentNode.id) {
+                    //detect changes (removals from the middle)
+
+                    //kill current --> changed node and replace with new arrow
+                    this.outingArrows[index].timer.invalidate();
+                    let sendObj = sendSpriteWrapper(previousNode.position, currentNode.position, index);
+                    this.outingArrows[index] = {timer: sendObj.timer, sendObj: sendObj, id: currentNode.id};
+
+                    //kill changed --> it's previous next
+                    if(this.outingArrows[index+1]) {
+                        this.outingArrows[index+1].timer.invalidate();
+                        mathArrayUtils.removeObjectFromArray(this.outingArrows[index+1], this.outingArrows);
+                    }
+                }
+            }, this.maxOutingLength);
+
+            //update colors
+            this.outingArrows.forEach((outingArrowObject, index) => {
+                if(outingArrowObject) {
+                    outingArrowObject.sendObj.color = colors[index];
+                }
+            });
+        }
+    };
+
+    this.clearRouteArrows = function() {
+        mathArrayUtils.reverseForEach(this.outingArrows, (outingArrowObj, index) => {
+            if(outingArrowObj) {
+                outingArrowObj.timer.invalidate();
+                mathArrayUtils.removeObjectFromArray(this.outingArrows[index], this.outingArrows);
+            }
+        });
     };
 
     this.clearOuting = function(options) {
@@ -490,10 +595,13 @@ var map = function(specs) {
                 node.levelDetails.customWinBehavior = null;
             });
             this.outingNodes = [];
+            this.outingNodeMemory = [];
+            this.updateRouteArrows();
             this.inProgressOutingNodes = [];
 
             this.engageText = null;
         }
+
     };
 
     this.isNodeInOuting = function(node) {
@@ -645,6 +753,10 @@ var map = function(specs) {
                 this.completedNodes.push(finalNode);
             }
         });
+    };
+
+    this.getPlayerMapPosition = function() {
+        return this.headTokenBody.position;
     };
 
     this.travelToNode = function(node, destinationCallback) {

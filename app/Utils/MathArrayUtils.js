@@ -117,6 +117,13 @@ var mathArrayUtils = {
         }
     },
 
+    reverseForEach: function(array, func) {
+        let len = array.length-1;
+        for(var x = len; x >= 0; x--) {
+            func(array[x], x);
+        }
+    },
+
     operateOnObjectByKey: function(object, operatorFunc) {
         if (!object) return;
         var keys = Object.keys(object);
@@ -137,7 +144,7 @@ var mathArrayUtils = {
         times = this.getRandomElementOfArray(times);
         var rets = [];
         for (var i = 0; i < times; i++) {
-            rets[i] = func();
+            rets[i] = func(i);
         }
 
         return rets;

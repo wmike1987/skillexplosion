@@ -36,6 +36,7 @@ var enlargedTokenSize = 50;
 var MapLevelNode = function(options) {
     Object.assign(this, options);
     this.type = this.levelDetails.type;
+    this.id = mathArrayUtils.getId();
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
     this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
     this.indicatorOffset = options.indicatorOffset || {

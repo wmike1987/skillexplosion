@@ -278,20 +278,24 @@ var graphicsUtils = {
         globals.currentGame.addTimer(sprite.blinkTimer);
     },
 
-    fadeSprite: function(sprite, rate) {
-        sprite.alpha = sprite.alpha || 1.0;
-        globals.currentGame.addTimer({
-            name: 'fadeSprite:' + mathArrayUtils.getId(),
-            timeLimit: 16,
-            runs: 1.0 / rate,
-            killsSelf: true,
-            callback: function() {
-                sprite.alpha -= rate;
-            },
-            totallyDoneCallback: function() {
-                graphicsUtils.removeSomethingFromRenderer(sprite);
-            }.bind(this)
-        });
+    // fadeSprite: function(sprite, rate) {
+    //     sprite.alpha = sprite.alpha || 1.0;
+    //     globals.currentGame.addTimer({
+    //         name: 'fadeSprite:' + mathArrayUtils.getId(),
+    //         timeLimit: 16,
+    //         runs: 1.0 / rate,
+    //         killsSelf: true,
+    //         callback: function() {
+    //             sprite.alpha -= rate;
+    //         },
+    //         totallyDoneCallback: function() {
+    //             graphicsUtils.removeSomethingFromRenderer(sprite);
+    //         }.bind(this)
+    //     });
+    // },
+
+    fadeSpriteQuicklyThenDestroy: function(sprite, duration) {
+        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500});
     },
 
     fadeSpriteOverTime: function(options) {
@@ -446,6 +450,57 @@ var graphicsUtils = {
         Matter.Events.on(timer, 'onInvalidate', () => {
             remove.removeHandler();
         });
+    },
+
+    sendSpriteToDestinationAtSpeed: function(options) {
+        var sprite = options.sprite;
+        var start = options.start;
+        var pointAtDestination = true;
+        var destination = options.destination;
+        var speed = options.speed || 1;
+        var onDone = options.onDone;
+        var goToLength = mathArrayUtils.distanceBetweenPoints(start, destination);
+        var surpassDestination = options.surpassDestination || true;
+        if(surpassDestination) {
+            var originalDestination = destination;
+            destination = mathArrayUtils.addScalarToVectorTowardDestination(start, destination, 5000);
+        }
+
+        if(pointAtDestination) {
+            sprite.rotation = mathArrayUtils.pointInDirection(start, destination, options.orientation);
+        }
+
+        sprite.position = start;
+
+        var timer = globals.currentGame.addTimer({
+            name: 'sendSprite:' + mathArrayUtils.getId(),
+            gogogo: true,
+            executeOnNuke: true,
+            immediateStart: true,
+            tickCallback: function(delta) {
+                let newPosition = mathArrayUtils.addScalarToVectorTowardDestination(sprite.position, destination, delta * 0.1 * speed);
+                sprite.position = newPosition;
+
+                //check for destination reached
+                if(mathArrayUtils.distanceBetweenPoints(sprite, start) > goToLength) {
+                    // gameUtils.executeSomethingNextFrame(() => {
+                        // graphicsUtils.fadeSpriteQuicklyThenDestroy(sprite, 100);
+                    // });
+                    graphicsUtils.removeSomethingFromRenderer(sprite);
+                }
+            }
+        });
+
+        var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
+            timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
+            graphicsUtils.fadeSpriteQuicklyThenDestroy(sprite, 50);
+        });
+
+        return timer;
     },
 
     rotateSprite: function(sprite, options) {
