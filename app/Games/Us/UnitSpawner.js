@@ -118,6 +118,11 @@ var unitSpawner = function(options) {
                         newUnit.honeRange = 5000;
                         Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.id].shift());
 
+                        //update unit panel when we die
+                        gameUtils.matterOnce(newUnit, 'death', () => {
+                            globals.currentGame.unitSystem.unitPanel.decrementEnemyCount(enemy.id);
+                        });
+
                         //Give item to unit if chosen
                         if (itemsToGive > 0) {
                             var giveItem = true;

@@ -765,9 +765,9 @@ var map = function(specs) {
         this.lastNode = this.currentNode;
         this.currentNode = node;
 
-        if (this.currentNode.levelDetails.isBattleLevel() && !this.currentNode.displayObject.tooltipObj.visible) {
-            this.currentNode.displayObject.tooltipObj.display(this.currentNode.displayObject.position);
-        }
+        // if (this.currentNode.levelDetails.isBattleLevel() && !this.currentNode.displayObject.tooltipObj.visible) {
+        //     this.currentNode.displayObject.tooltipObj.display(this.currentNode.displayObject.position);
+        // }
         var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
             y: 20
         });

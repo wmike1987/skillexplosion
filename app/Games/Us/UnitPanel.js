@@ -581,6 +581,12 @@ var unitPanel = function(options) {
     this.helpButtonPosition.x = gameUtils.getCanvasWidth() - 16;
     this.helpButtonPosition.y = gameUtils.getCanvasHeight() - 16;
 
+    //enemy count positioning
+    this.enemyCountStart = {x: this.centerX + 600, y: this.centerY - 35};
+    this.enemyCountYOffset = 30;
+    this.enemyCountXOffset = 45;
+    this.enemyIcons = {};
+
     //create frame
     this.frame = graphicsUtils.createDisplayObject('UnitPanelFrame', {
         persists: true,
@@ -803,7 +809,36 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
         this.unitAugmentPanel.lowerOpenButton();
         this.unitPassivePanel.lowerOpenButton();
     }
+};
 
+unitPanel.prototype.clearEnemyIcons = function() {
+    mathArrayUtils.operateOnObjectByKey(this.enemyIcons, ((key, set) => {
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(set.icon, 250);
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(set.number, 250);
+    }));
+    this.enemyIcons = [];
+};
+
+unitPanel.prototype.addEnemyIcon = function(enemySet) {
+    var existingNumber = Object.keys(this.enemyIcons).length;
+    var position = mathArrayUtils.clonePosition(this.enemyCountStart, {x: (existingNumber > 2 ? this.enemyCountXOffset : 0), y: ((existingNumber % 3) * this.enemyCountYOffset)});
+    var number = graphicsUtils.addSomethingToRenderer("TEX+:" + enemySet.spawn.total, {position: mathArrayUtils.clonePosition(position, {x: 8, y: 8}), where: 'hudOne', style: styles.fpsStyle});
+    var icon = graphicsUtils.addSomethingToRenderer(enemySet.icon, {position: position, where: 'hudOne'});
+    graphicsUtils.makeSpriteSize(icon, 25);
+    graphicsUtils.addBorderToSprite({sprite: icon, alpha: 0.15, tint: 0xb80a3e});
+    graphicsUtils.flashSprite({sprite: icon.addedBorder, fromColor: 0xb80a3e, toColor: 0xFFFFFF});
+    this.enemyIcons[enemySet.id] = {icon: icon, number: number};
+};
+
+unitPanel.prototype.decrementEnemyCount = function(enemySetId) {
+    if(!this.enemyIcons[enemySetId]) {
+        return;
+    }
+    this.enemyIcons[enemySetId].number.text -= 1;
+    if(this.enemyIcons[enemySetId].number.text == 0) {
+        this.enemyIcons[enemySetId].icon.tint = 0xc80b0b;
+        this.enemyIcons[enemySetId].icon.alpha = 0.5;
+    }
 };
 
 unitPanel.prototype.clearPrevailingUnit = function(options) {
@@ -1637,6 +1672,8 @@ unitPanel.prototype.cleanUp = function() {
     if (this.helpMenu) {
         this.helpMenu.cleanUp();
     }
+
+    this.clearEnemyIcons();
 
     this.autoCastSound.unload();
 

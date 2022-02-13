@@ -104,6 +104,7 @@ var levelBase = {
         //create the initial unit set
         level.spawner.createInitialUnitSet();
 
+
         //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
@@ -115,6 +116,9 @@ var levelBase = {
             game.unitSystem.unpause();
             game.heartbeat.play();
             game.battleInProgress = true;
+
+            //show the current enemy set
+            globals.currentGame.unitSystem.unitPanel.clearEnemyIcons();
         }, 800);
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
@@ -139,6 +143,13 @@ var levelBase = {
                 sprite: enemiesIncomingText
             });
             game.heartbeat.play();
+
+            //show new enemy sets
+            this.enemySets.forEach((set) => {
+                if(!set.trivial) {
+                    globals.currentGame.unitSystem.unitPanel.addEnemyIcon(set);
+                }
+            });
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
                 level: level
@@ -639,6 +650,9 @@ var levelBase = {
                 $('body').on('keydown.levelkeydown', function(event) {
                     var key = event.key.toLowerCase();
                     if (key == ' ') {
+                        //clear the unit panel enemy count
+                        globals.currentGame.unitSystem.unitPanel.clearEnemyIcons();
+
                         $('body').off('keydown.levelkeydown');
                         game.soundPool.sceneContinue.play();
                         this.spaceFlashTimer.invalidate();
@@ -664,6 +678,9 @@ var levelBase = {
             // unitUtils.prepareUnitsForStationaryDraw();
             game.shaneCollector.stopCurrentCollector();
             game.ursulaCollector.stopCurrentCollector();
+
+            //clear the unit panel enemy count
+            globals.currentGame.unitSystem.unitPanel.clearEnemyIcons();
         }.bind(this);
 
         /*
