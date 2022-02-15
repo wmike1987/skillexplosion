@@ -8,7 +8,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Bear Medallion",
-        description: ["Add +1 to armor."],
+        description: ["Add 1 to armor."],
         icon: 'BronzeMedalCircle3'
     }, options);
     return new ic(item);

@@ -3,7 +3,7 @@ import * as Matter from 'matter-js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
-var amount = 4;
+var amount = 2;
 
 export default function(options) {
     var item = Object.assign({

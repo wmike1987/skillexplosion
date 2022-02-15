@@ -824,9 +824,9 @@ unitPanel.prototype.addEnemyIcon = function(enemySet) {
     var position = mathArrayUtils.clonePosition(this.enemyCountStart, {x: (existingNumber > 2 ? this.enemyCountXOffset : 0), y: ((existingNumber % 3) * this.enemyCountYOffset)});
     var number = graphicsUtils.addSomethingToRenderer("TEX+:" + enemySet.spawn.total, {position: mathArrayUtils.clonePosition(position, {x: 8, y: 8}), where: 'hudOne', style: styles.fpsStyle});
     var icon = graphicsUtils.addSomethingToRenderer(enemySet.icon, {position: position, where: 'hudOne'});
-    graphicsUtils.makeSpriteSize(icon, 25);
-    graphicsUtils.addBorderToSprite({sprite: icon, alpha: 0.15, tint: 0xb80a3e});
-    graphicsUtils.flashSprite({sprite: icon.addedBorder, fromColor: 0xb80a3e, toColor: 0xFFFFFF});
+    graphicsUtils.makeSpriteSize(icon, 26);
+    graphicsUtils.addBorderToSprite({sprite: icon, alpha: 0.15});
+    graphicsUtils.flashSprite({sprite: icon.addedBorder, fromColor: 0xffffff, toColor: 0xf500c6});
     this.enemyIcons[enemySet.id] = {icon: icon, number: number};
 };
 

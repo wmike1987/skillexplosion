@@ -15,7 +15,7 @@ var chargeLength = 1000;
 var eventName = 'platedPantsTimesActive';
 
 var manipulations = {
-    gritAddition: 5,
+    gritAddition: 4,
     genericEquip: function(equipped, item) {
         if(!equipped) {
             if(item.chargeHandler) {
@@ -72,7 +72,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Plated Pants",
-        description: ["Add 5 grit.", "Gain " + armorGain + " armor for 8 seconds by holding position for 1 second."],
+        description: ["Add 4 grit.", "Gain " + armorGain + " armor for 8 seconds by holding position for 1 second."],
         icon: 'Pants1',
         collector: {
             eventName: eventName,

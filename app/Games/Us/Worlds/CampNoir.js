@@ -699,11 +699,6 @@ var enemyDefs = {
     basic2: {
         token: 'default',
         enemySets: [{
-                type: 'Critter',
-                amount: [2],
-                atATime: 2,
-                hz: 4000
-            }, {
                 type: 'Sentinel',
                 amount: [1],
                 atATime: 1,
@@ -711,9 +706,20 @@ var enemyDefs = {
             },
             {
                 type: 'Gargoyle',
-                amount: [1],
+                amount: [2],
                 atATime: 1,
                 initialDelay: 6500,
+                hz: 4500
+            },
+            easyFlyObj
+        ]
+    },
+    basic3: {
+        token: 'default',
+        enemySets: [{
+                type: 'Rammian',
+                amount: [3, 4],
+                atATime: 1,
                 hz: 4500
             },
             easyFlyObj
@@ -1114,7 +1120,7 @@ var phaseTwo = function(options) {
     campNode.manualEnable = false;
     options = options || {};
     var world = this;
-    let basicList = ['basic', 'basic2'];
+    let basicList = ['basic', 'basic2', 'basic3'];
     var startDialogue = new CampNoirTrueStart({
         done: () => {
             var campLevel = world.gotoLevelById('camp');

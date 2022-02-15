@@ -15,7 +15,7 @@ var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
     volume: 0.08,
     rate: 1.6
 });
-var damage = 15;
+var damage = 12;
 var eventName = 'boxCutterDamage';
 
 var manipulations = {

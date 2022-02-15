@@ -643,11 +643,12 @@ export default function Marine(options) {
         }
 
         //create knife body
-        var knife = Matter.Bodies.circle(0, 0, 6, {
+        var knife = Matter.Bodies.circle(0, 0, childKnife ? 4 : 6, {
             restitution: 0.95,
             frictionAir: 0,
             mass: options.mass || 5,
             isSensor: true,
+            // drawWire: true,
             isChildKnife: childKnife
         });
         knife.collisionFilter.category = globals.currentGame.unitSystem.projectileCollisionCategory;
@@ -668,32 +669,35 @@ export default function Marine(options) {
         if (pierceAugment && poisonTipAugment) {
             knifeTint = 0xe88a1b;
         }
+
+        var knifeScale = {x: 0.7, y: 0.7};
+        var childKnifeScale = {x: 0.3, y: 0.3};
+        var trueScale = knife.isChildKnife ? childKnifeScale : knifeScale;
+
+        var shadowScale = {
+            x: 1,
+            y: 0.8
+        };
+        var childShadowScale = {x: 0.6, y: 0.3};
+        var trueShadowScale = knife.isChildKnife ? childShadowScale : shadowScale;
+
         knife.renderChildren = [{
                 id: 'knife',
                 data: 'ThrowingDaggerBase',
-                scale: {
-                    x: 0.7,
-                    y: 0.7
-                },
+                scale: trueScale,
                 rotate: mathArrayUtils.pointInDirection(knife.position, destination),
             },
             {
                 id: 'knifeblade',
                 data: 'ThrowingDaggerBlade',
-                scale: {
-                    x: 0.7,
-                    y: 0.7
-                },
+                scale: trueScale,
                 rotate: mathArrayUtils.pointInDirection(knife.position, destination),
                 tint: knifeTint,
             },
             {
                 id: 'shadow',
                 data: 'IsoShadowBlurredThin',
-                scale: {
-                    x: 1,
-                    y: 0.8
-                },
+                scale: trueShadowScale,
                 offset: {
                     x: 15,
                     y: 20
@@ -727,7 +731,11 @@ export default function Marine(options) {
             var otherUnit = otherBody.unit;
 
             if (otherUnit && otherUnit != this && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
-                var damageRet = otherUnit.sufferAttack(marine.knifeDamage, self, {
+                let alteredDamage = marine.knifeDamage;
+                if(knife.childKnife) {
+                    alteredDamage = marine.knifeDamage/2.0;
+                }
+                var damageRet = otherUnit.sufferAttack(alteredDamage, self, {
                     dodgeable: !self.trueKnife,
                     ignoreArmor: self.trueKnife,
                     id: 'knife',
@@ -846,6 +854,7 @@ export default function Marine(options) {
         method: throwKnife,
         title: 'Throwing Knife',
         description: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.',
+        systemMessage: 'Auxiliary knives deal 1/2 damage.',
         updaters: {
             descriptions: function() {
                 return {
@@ -1394,7 +1403,7 @@ export default function Marine(options) {
         health: 75,
         defense: 1,
         energy: 20,
-        energyRegenerationRate: 0.35,
+        energyRegenerationRate: 0.5,
         healthRegenerationRate: 1,
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
