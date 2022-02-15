@@ -621,7 +621,7 @@ export default function Marine(options) {
 
         if (!childKnife && multiThrowAugment) {
             var distance = mathArrayUtils.distanceBetweenPoints(destination, this.position);
-            var maxDistance = 300;
+            var maxDistance = 250;
             if(distance > maxDistance) {
                 destination = mathArrayUtils.addScalarToVectorTowardDestination(this.position, destination, maxDistance);
             }
@@ -643,7 +643,7 @@ export default function Marine(options) {
         }
 
         //create knife body
-        var knife = Matter.Bodies.circle(0, 0, childKnife ? 4 : 6, {
+        var knife = Matter.Bodies.circle(0, 0, childKnife ? 3 : 5, {
             restitution: 0.95,
             frictionAir: 0,
             mass: options.mass || 5,
