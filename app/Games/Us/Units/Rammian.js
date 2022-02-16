@@ -386,8 +386,8 @@ export default function Rammian(options) {
                                 transform: [self.deathPosition.x, self.deathPosition.y - 30, 3, 3]
                             });
                             graphicsUtils.makeSpriteSize(smokeExplosionAnimation, {
-                                x: blastRadius * 1,
-                                y: blastRadius * 1
+                                x: blastRadius * 1.25,
+                                y: blastRadius * 1.25
                             });
                             smokeExplosionAnimation.alpha = 0.4;
                             smokeExplosionAnimation.play();

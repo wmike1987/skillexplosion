@@ -732,7 +732,7 @@ export default function Marine(options) {
 
             if (otherUnit && otherUnit != this && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
                 let alteredDamage = marine.knifeDamage;
-                if(knife.childKnife) {
+                if(knife.isChildKnife) {
                     alteredDamage = marine.knifeDamage/2.0;
                 }
                 var damageRet = otherUnit.sufferAttack(alteredDamage, self, {

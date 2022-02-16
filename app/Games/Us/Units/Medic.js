@@ -538,9 +538,14 @@ export default function Medic(options) {
             globals.currentGame.addBody(caltrop);
             caltrop.isCaltrop = true;
             var caltropImage = graphicsUtils.addSomethingToRenderer('Caltrop', 'stage', {
-                position: {x: this.position.x, y: this.position.y + 20}
+                position: {
+                    x: this.position.x,
+                    y: this.position.y + 20
+                }
             });
-            graphicsUtils.flashSprite({sprite: caltropImage});
+            graphicsUtils.flashSprite({
+                sprite: caltropImage
+            });
 
             gameUtils.deathPact(caltrop, caltropImage);
 
@@ -549,7 +554,7 @@ export default function Medic(options) {
             });
 
             Matter.Events.on(caltrop, 'onCollide', function(pair) {
-                if(caltrop.alreadyActivated) {
+                if (caltrop.alreadyActivated) {
                     return;
                 }
 
@@ -1180,11 +1185,19 @@ export default function Medic(options) {
                     this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
                         this.hpGivenTally = 0;
                     });
-                    medic.alterHealingColor({r: 1, g: 0.0, b: 1.0});
+                    medic.alterHealingColor({
+                        r: 1,
+                        g: 0.0,
+                        b: 1.0
+                    });
                 },
                 unequip: function(unit) {
                     Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
-                    medic.alterHealingColor({r: 1, g: 1, b: 1});
+                    medic.alterHealingColor({
+                        r: 1,
+                        g: 1,
+                        b: 1
+                    });
                 },
                 collector: {
                     init: function() {
@@ -1844,6 +1857,7 @@ export default function Medic(options) {
         idleCancel: false,
         health: 40,
         energy: 60,
+        grit: 5,
         hitboxWidth: 28,
         hitboxHeight: 56,
         adjustHitbox: false,
@@ -1929,7 +1943,7 @@ export default function Medic(options) {
             }
         ],
         damageAdditionType: 'heal',
-        damageScale: 20,
+        damageScale: 12,
         energyRegenerationRate: 1.5,
         healthRegenerationRate: 0.5,
         portrait: graphicsUtils.createDisplayObject('MedicPortrait'),
@@ -1992,28 +2006,28 @@ export default function Medic(options) {
         alterHealingColor: function(color) {
             var shootAnimationName = 'shoot';
             $.each(this.body.renderlings, function(key, renderling) {
-                if(renderling.spineData) {
+                if (renderling.spineData) {
                     var glowIndex = null;
                     $.each(renderling.skeleton.slots, function(i, slot) {
-                        if(slot.data && slot.data.name.includes('Glow')) {
+                        if (slot.data && slot.data.name.includes('Glow')) {
                             glowIndex = i;
                         }
                     });
 
                     $.each(renderling.spineData.animations, function(i, anim) {
-                        if(anim.name == shootAnimationName) {
+                        if (anim.name == shootAnimationName) {
                             $.each(anim.timelines, function(i, tl) {
-                                if(tl.slotIndex && tl.slotIndex == glowIndex) {
+                                if (tl.slotIndex && tl.slotIndex == glowIndex) {
                                     var frames = tl.frames;
                                     frames[0] = 0;
-                                    for(var x = 0; x < frames.length; x++) {
-                                        if(x % 5 == 1) {
+                                    for (var x = 0; x < frames.length; x++) {
+                                        if (x % 5 == 1) {
                                             frames[x] = color.r;
                                         }
-                                        if(x % 5 == 2) {
+                                        if (x % 5 == 2) {
                                             frames[x] = color.g;
                                         }
-                                        if(x % 5 == 3) {
+                                        if (x % 5 == 3) {
                                             frames[x] = color.b;
                                         }
                                     }

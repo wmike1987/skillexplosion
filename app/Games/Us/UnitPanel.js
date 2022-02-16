@@ -355,7 +355,7 @@ var unitPanel = function(options) {
             y: 1
         },
         where: 'hudOne',
-        tint: 0xb436c3
+        tint: 0x860ed9
     });
     graphicsUtils.mouseOverOutTint(this.energyChartBar, this.energyChartBar.tint);
     graphicsUtils.makeSpriteSize(this.energyChartBar, {x: this.chartBarWidth, y: 1});
@@ -1380,7 +1380,7 @@ var _displayUnitStatsGraph = function() {
 
         //health
         main = this.prevailingUnit.maxHealth;
-        localScale = 200;
+        localScale = 180;
         graphicsUtils.makeSpriteSize(this.healthChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
         this.healthChartBar.currentRealValue = main;
 
@@ -1404,7 +1404,7 @@ var _displayUnitStatsGraph = function() {
 
         //armor
         main = this.prevailingUnit.getTotalDefense();
-        localScale = 18;
+        localScale = 12;
         graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
         this.armorChartBar.currentRealValue = main;
 

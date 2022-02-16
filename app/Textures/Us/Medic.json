@@ -2,10 +2,10 @@
 
 "Caltrop.png":
 {
-	"frame": {"x":290,"y":145,"w":27,"h":25},
-	"rotated": false,
+	"frame": {"x":261,"y":149,"w":32,"h":31},
+	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":3,"y":4,"w":27,"h":25},
+	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "CaltropIcon.png":
@@ -90,7 +90,7 @@
 },
 "MaimTiny.png":
 {
-	"frame": {"x":360,"y":29,"w":18,"h":18},
+	"frame": {"x":362,"y":131,"w":18,"h":18},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":7,"y":7,"w":18,"h":18},
@@ -130,7 +130,7 @@
 },
 "MineCracks.png":
 {
-	"frame": {"x":261,"y":149,"w":32,"h":27},
+	"frame": {"x":360,"y":1,"w":32,"h":27},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":27},
@@ -154,7 +154,7 @@
 },
 "MineThree.png":
 {
-	"frame": {"x":103,"y":227,"w":30,"h":16},
+	"frame": {"x":320,"y":127,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -162,7 +162,7 @@
 },
 "MineTwo.png":
 {
-	"frame": {"x":135,"y":227,"w":30,"h":16},
+	"frame": {"x":103,"y":227,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -170,7 +170,7 @@
 },
 "MineZero.png":
 {
-	"frame": {"x":341,"y":225,"w":30,"h":16},
+	"frame": {"x":135,"y":227,"w":30,"h":16},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":9,"w":30,"h":16},
@@ -202,7 +202,7 @@
 },
 "RaisedStakes.png":
 {
-	"frame": {"x":354,"y":55,"w":32,"h":32},
+	"frame": {"x":294,"y":145,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -210,7 +210,7 @@
 },
 "RaisedStakesBuff.png":
 {
-	"frame": {"x":354,"y":89,"w":32,"h":32},
+	"frame": {"x":295,"y":179,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -218,7 +218,7 @@
 },
 "Sacrifice.png":
 {
-	"frame": {"x":354,"y":123,"w":32,"h":32},
+	"frame": {"x":328,"y":145,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -234,7 +234,7 @@
 },
 "SecretStepBuff.png":
 {
-	"frame": {"x":320,"y":127,"w":32,"h":32},
+	"frame": {"x":329,"y":179,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -250,7 +250,7 @@
 },
 "Shrapnel.png":
 {
-	"frame": {"x":354,"y":157,"w":32,"h":32},
+	"frame": {"x":307,"y":213,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -266,7 +266,7 @@
 },
 "SlyLogic.png":
 {
-	"frame": {"x":295,"y":172,"w":32,"h":32},
+	"frame": {"x":341,"y":213,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -274,7 +274,7 @@
 },
 "SoftLanding.png":
 {
-	"frame": {"x":307,"y":206,"w":32,"h":32},
+	"frame": {"x":354,"y":63,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -282,7 +282,7 @@
 },
 "WickedWays.png":
 {
-	"frame": {"x":341,"y":191,"w":32,"h":32},
+	"frame": {"x":354,"y":97,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -290,7 +290,7 @@
 },
 "WickedWaysHealingBuff.png":
 {
-	"frame": {"x":360,"y":1,"w":26,"h":26},
+	"frame": {"x":360,"y":35,"w":26,"h":26},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":2,"w":26,"h":26},
@@ -301,8 +301,8 @@
 	"version": "1.0",
 	"image": "Medic.png",
 	"format": "RGBA8888",
-	"size": {"w":387,"h":250},
+	"size": {"w":388,"h":250},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:de6a1c77dee77d2251f61bf645a9b546:6c24793fce4118a6b13a2f54df243973:8d3e890b84ab07faa58797fc50fc9b0a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:35c2559d3dbbacd94848e028e8787ccb:6632fb6ee47fd5190c9414587f8818e2:8d3e890b84ab07faa58797fc50fc9b0a$"
 }
 }
