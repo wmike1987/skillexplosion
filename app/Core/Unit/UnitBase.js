@@ -2253,6 +2253,10 @@ var UnitBase = {
         return Math.min(this.dodgeMax, this.dodge + this.getDodgeAdditionSum());
     },
 
+    getTotalRawDodge: function() {
+        return this.dodge + this.getDodgeAdditionSum();
+    },
+
     getGritAdditionSum: function() {
         var sum = 0;
         this.gritAdditions.forEach((addition) => {

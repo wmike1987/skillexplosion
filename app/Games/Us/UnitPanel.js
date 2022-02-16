@@ -74,6 +74,10 @@ var unitPanel = function(options) {
         x: this.unitFrameCenterX + this.unitFrameOffset * 8,
         y: this.centerY + this.unitStatSpacing * 2 + this.unitStatYOffset
     });
+    this.unitViewChangePosition = mathArrayUtils.roundPositionToWholeNumbers({
+        x: this.unitFrameCenterX + this.unitFrameOffset * 25,
+        y: this.centerY + this.unitStatSpacing * 2 + this.unitStatYOffset + 2
+    });
 
     this.unitNameText = graphicsUtils.addSomethingToRenderer('TEX+:', {
         position: this.unitNamePosition,
@@ -232,6 +236,252 @@ var unitPanel = function(options) {
         anchor: {
             x: 0,
             y: 0.5
+        }
+    });
+
+    //switch stat view (graph view)
+    this.toGraphViewButton = this.experienceMeter = graphicsUtils.createDisplayObject('GraphView', {
+        position: this.unitViewChangePosition,
+        anchor: {
+            x: 0,
+            y: 0.5
+        },
+        scale: {x: 0.5, y: 0.5},
+        where: 'hudOne'
+    });
+    this.toGraphViewButton.interactive = true;
+    this.toGraphViewButton.on('mousedown', function(event) {
+        this.swapStatView();
+    }.bind(this));
+    graphicsUtils.mouseOverOutTint(this.toGraphViewButton);
+
+    this.toNumberViewButton = this.experienceMeter = graphicsUtils.createDisplayObject('NumberView', {
+        position: this.unitViewChangePosition,
+        anchor: {
+            x: 0,
+            y: 0.5
+        },
+        scale: {x: 0.5, y: 0.5},
+        where: 'hudOne'
+    });
+    this.toNumberViewButton.interactive = true;
+    this.toNumberViewButton.on('mousedown', function(event) {
+        this.swapStatView();
+    }.bind(this));
+    graphicsUtils.mouseOverOutTint(this.toNumberViewButton);
+    this.currentViewState = this.toNumberViewButton;
+
+    //chart bars
+    this.chartBarWidth = 16;
+    this.chartLeftPosition = {
+        x: this.unitFrameCenterX - 88,
+        y: this.centerY + 43
+    };
+
+    //damage bar
+    this.damageHealBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: this.chartLeftPosition,
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x555453
+    });
+    graphicsUtils.mouseOverOutTint(this.damageHealBar, this.damageHealBar.tint);
+    graphicsUtils.makeSpriteSize(this.damageHealBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.damageHealBar, {
+        title: "Damage",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.damageHealBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //health bar
+    this.healthChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 1 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0xb40026
+    });
+    graphicsUtils.mouseOverOutTint(this.healthChartBar, this.healthChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.healthChartBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.healthChartBar, {
+        title: "Health",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.healthChartBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //health regen bar
+    this.healthRegenerationBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 2 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0xe75983
+    });
+    graphicsUtils.mouseOverOutTint(this.healthRegenerationBar, this.healthRegenerationBar.tint);
+    graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.healthRegenerationBar, {
+        title: "Health Regeneration",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.healthRegenerationBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //energy bar
+    this.energyChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 3 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0xb436c3
+    });
+    graphicsUtils.mouseOverOutTint(this.energyChartBar, this.energyChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.energyChartBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.energyChartBar, {
+        title: "Energy",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.energyChartBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //energy regen bar
+    this.energyRegenerationBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 4 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0xe2a1e8
+    });
+    graphicsUtils.mouseOverOutTint(this.energyRegenerationBar, this.energyRegenerationBar.tint);
+    graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.energyRegenerationBar, {
+        title: "Energy Regeneration",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.energyRegenerationBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //armor bar
+    this.armorChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 5 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x0734ba
+    });
+    graphicsUtils.mouseOverOutTint(this.armorChartBar, this.armorChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.armorChartBar, {
+        title: "Energy Regeneration",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.armorChartBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //grit bar
+    this.gritChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 6 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0xdbc81d
+    });
+    graphicsUtils.mouseOverOutTint(this.gritChartBar, this.gritChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.gritChartBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.gritChartBar, {
+        title: "Grit",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.gritChartBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //dodge regen bar
+    this.dodgeChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 7 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x2f811f
+    });
+    graphicsUtils.mouseOverOutTint(this.dodgeChartBar, this.dodgeChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.dodgeChartBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.dodgeChartBar, {
+        title: "Dodge",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.dodgeChartBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //range bar
+    this.rangeChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 8 * this.chartBarWidth}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0xa26513
+    });
+    graphicsUtils.mouseOverOutTint(this.rangeChartBar, this.rangeChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.rangeChartBar, {x: this.chartBarWidth, y: 1});
+    Tooltip.makeTooltippable(this.rangeChartBar, {
+        title: "Range",
+        descriptionStyle: styles.HPTTStyle,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.rangeChartBar.currentRealValue;
+            }.bind(this),
         }
     });
 
@@ -604,6 +854,26 @@ var unitPanel = function(options) {
     });
 };
 
+unitPanel.prototype.swapStatView = function() {
+    if(this.prevailingUnit) {
+        if(this.currentViewState == this.toGraphViewButton) {
+            this.currentViewState = this.toNumberViewButton;
+            this.clearUnitStatsGraph();
+            this.displayUnitStats();
+            graphicsUtils.hideDisplayObject(this.toNumberViewButton);
+            graphicsUtils.addOrShowDisplayObject(this.toGraphViewButton);
+            this.toNumberViewButton.tint = 0xFFFFFF;
+        } else {
+            this.currentViewState = this.toGraphViewButton;
+            this.clearUnitStats();
+            this.displayUnitStatsGraph();
+            graphicsUtils.hideDisplayObject(this.toGraphViewButton);
+            graphicsUtils.addOrShowDisplayObject(this.toNumberViewButton);
+            this.toGraphViewButton.tint = 0xFFFFFF;
+        }
+    }
+};
+
 unitPanel.prototype.initialize = function(options) {
 
     //create unitAugmentPanel
@@ -618,6 +888,12 @@ unitPanel.prototype.initialize = function(options) {
     this.helpMenu = new help(this);
     this.helpMenu.initialize();
     this.helpMenu.showButton(this.helpButtonPosition);
+
+    $('body').on('keydown.viewSwitch', function(event) {
+        if (event.key == 'c' || event.key == 'C') {
+            this.swapStatView();
+        }
+    }.bind(this));
 
     //add frame-backing to world
     graphicsUtils.addSomethingToRenderer(this.frameBacking, 'hudNTwo');
@@ -635,7 +911,7 @@ unitPanel.prototype.initialize = function(options) {
         this.displayUnitPassives(event.unit);
     }.bind(this));
 
-    //listen for when the prevailing unit changes
+    //swap som listener
     Matter.Events.on(this.unitSystem, 'swapStatesOfMind', function(event) {
         this.swapStatesOfMind(event.unit);
     }.bind(this));
@@ -791,12 +1067,19 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
     if (unit) {
         this.prevailingUnit = unit;
         this.displayUnitPortrait();
-        this.displayUnitStats();
+        this.displayCurrentViewUnitStats();
         this.displayUnitAbilities();
         this.displayUnitPassives();
         this.displayCommands();
         this.highlightGroupUnit(unit);
         this.updateUnitItems(unit);
+
+        //stat view button
+        if(this.currentViewState == this.toGraphViewButton) {
+            graphicsUtils.addOrShowDisplayObject(this.toNumberViewButton);
+        } else {
+            graphicsUtils.addOrShowDisplayObject(this.toGraphViewButton);
+        }
 
         //if the new unit has a grit dodge available, immediate show it instead of waiting for the next tick
         if (this.prevailingUnit.hasGritDodge) {
@@ -860,21 +1143,30 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
     //hide passive button
     this.unitPassivePanel.hideOpenButton();
 
+    //hide chart buttons
+    graphicsUtils.hideDisplayObject(this.toNumberViewButton);
+    graphicsUtils.hideDisplayObject(this.toGraphViewButton);
+
     //blank out unit stat panel
     if (!options.transitioningUnits) {
-        this.unitNameText.text = '-----';
-        //this.unitLevelText.text = '--';
-        this.unitDamageText.text = '';
-        this.unitDamageAdditionsText.text = '';
-        this.unitDefenseText.text = '';
-        this.unitDefenseAdditionsText.text = '';
-        this.unitHealthText.text = '';
-        this.unitGritText.text = '';
-        this.unitGritAdditionsText.text = '';
-        this.unitDodgeText.text = '';
-        this.unitDodgeAdditionsText.text = '';
-        this.unitEnergyText.text = '';
+        this.clearUnitStats();
+        this.clearUnitStatsGraph();
+        // this.unitNameText.text = '-----';
+        // //this.unitLevelText.text = '--';
+        // this.unitDamageText.text = '';
+        // this.unitDamageAdditionsText.text = '';
+        // this.unitDefenseText.text = '';
+        // this.unitDefenseAdditionsText.text = '';
+        // this.unitHealthText.text = '';
+        // this.unitGritText.text = '';
+        // this.unitGritAdditionsText.text = '';
+        // this.unitDodgeText.text = '';
+        // this.unitDodgeAdditionsText.text = '';
+        // this.unitEnergyText.text = '';
     }
+
+    graphicsUtils.hideDisplayObject(this.toGraphViewButton);
+    graphicsUtils.hideDisplayObject(this.toNumberViewButton);
 
     //clear exp bar
     if (!options.transitioningUnits) {
@@ -1062,6 +1354,80 @@ unitPanel.prototype.clearUnitItems = function() {
     }
 };
 
+var _convertRawToScaled = function(value, localScale) {
+    var maxChartHeight = 60;
+    var val = (value/localScale) * maxChartHeight;
+    if(val > maxChartHeight) {
+        val = maxChartHeight;
+    }
+
+    return val;
+};
+
+var _displayUnitStatsGraph = function() {
+    if (this.prevailingUnit) {
+
+        //name
+        this.unitNameText.text = this.prevailingUnit.name || this.prevailingUnit.unitType;
+
+        //damage/heal
+        var main = this.prevailingUnit.damageMember ? this.prevailingUnit.damageMember() : this.prevailingUnit.damage;
+        var additions = this.prevailingUnit.damageAdditionType ? this.prevailingUnit.getAdditionSum(this.prevailingUnit.damageAdditionType) : this.prevailingUnit.getDamageAdditionSum();
+        var localScale = this.prevailingUnit.damageScale || 60;
+        this.damageHealBar.tooltipObj.setTitle(this.prevailingUnit.damageLabel || "Damage");
+        graphicsUtils.makeSpriteSize(this.damageHealBar, {x: this.chartBarWidth, y: _convertRawToScaled(main + additions, localScale)});
+        this.damageHealBar.currentRealValue = main + additions;
+
+        //health
+        main = this.prevailingUnit.maxHealth;
+        localScale = 200;
+        graphicsUtils.makeSpriteSize(this.healthChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.healthChartBar.currentRealValue = main;
+
+        //health regen
+        main = this.prevailingUnit.getTotalHealthRegeneration();
+        localScale = 8;
+        graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.healthRegenerationBar.currentRealValue = main;
+
+        //energy
+        main = this.prevailingUnit.maxEnergy;
+        localScale = 110;
+        graphicsUtils.makeSpriteSize(this.energyChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.energyChartBar.currentRealValue = main;
+
+        //energy regen
+        main = this.prevailingUnit.getTotalEnergyRegeneration();
+        localScale = 8;
+        graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.energyRegenerationBar.currentRealValue = main;
+
+        //armor
+        main = this.prevailingUnit.getTotalDefense();
+        localScale = 18;
+        graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.armorChartBar.currentRealValue = main;
+
+        //grit
+        main = this.prevailingUnit.getTotalGrit();
+        localScale = 100;
+        graphicsUtils.makeSpriteSize(this.gritChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.gritChartBar.currentRealValue = main;
+
+        //dodge
+        main = this.prevailingUnit.getTotalRawDodge();
+        localScale = 100;
+        graphicsUtils.makeSpriteSize(this.dodgeChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.dodgeChartBar.currentRealValue = main;
+
+        //range
+        main = this.prevailingUnit.range;
+        localScale = 600;
+        graphicsUtils.makeSpriteSize(this.rangeChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        this.rangeChartBar.currentRealValue = main;
+    }
+};
+
 var _displayUnitStats = function() {
     var sign;
     if (this.prevailingUnit) {
@@ -1073,7 +1439,7 @@ var _displayUnitStats = function() {
         if (this.prevailingUnit.damageMember && this.prevailingUnit.damageMember instanceof Function) {
             functionText = this.prevailingUnit.damageMember().toFixed(1);
         }
-        this.unitDamageText.text = (this.prevailingUnit.damageLabel || "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember].toFixed(1) : this.prevailingUnit.damage).toFixed(1));
+        this.unitDamageText.text = (this.prevailingUnit.damageLabel ? this.prevailingUnit.damageLabel + ": " : "Dmg: ") + (functionText || (this.prevailingUnit.damageMember ? this.prevailingUnit[this.prevailingUnit.damageMember].toFixed(1) : this.prevailingUnit.damage).toFixed(1));
         var damageAdditionLen = this.prevailingUnit.damageAdditionType ? this.prevailingUnit.getAdditions(this.prevailingUnit.damageAdditionType).length : this.prevailingUnit.damageAdditions.length;
         if (damageAdditionLen > 0) {
             sign = '+';
@@ -1142,7 +1508,76 @@ var _displayUnitStats = function() {
     }
 };
 
+unitPanel.prototype.clearUnitStatsGraph = function() {
+    graphicsUtils.hideDisplayObject(this.unitNameText);
+    graphicsUtils.hideDisplayObject(this.damageHealBar);
+    graphicsUtils.hideDisplayObject(this.healthChartBar);
+    graphicsUtils.hideDisplayObject(this.healthRegenerationBar);
+    graphicsUtils.hideDisplayObject(this.energyChartBar);
+    graphicsUtils.hideDisplayObject(this.energyRegenerationBar);
+    graphicsUtils.hideDisplayObject(this.armorChartBar);
+    graphicsUtils.hideDisplayObject(this.gritChartBar);
+    graphicsUtils.hideDisplayObject(this.dodgeChartBar);
+    graphicsUtils.hideDisplayObject(this.rangeChartBar);
+};
+
+unitPanel.prototype.displayUnitStatsGraph = function() {
+    graphicsUtils.addOrShowDisplayObject(this.unitNameText);
+    graphicsUtils.addOrShowDisplayObject(this.damageHealBar);
+    graphicsUtils.addOrShowDisplayObject(this.healthChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.healthRegenerationBar);
+    graphicsUtils.addOrShowDisplayObject(this.energyChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.energyRegenerationBar);
+    graphicsUtils.addOrShowDisplayObject(this.armorChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.gritChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.dodgeChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.rangeChartBar);
+
+    //Unit Stats Graph Ticker
+    if (!this.updateUnitStatGraphTick) {
+        this.updateUnitStatGraphTick = globals.currentGame.addTickCallback(_displayUnitStatsGraph.bind(this));
+    } else {
+        _displayUnitStatsGraph.call(this);
+    }
+};
+
+unitPanel.prototype.clearUnitStats = function() {
+    graphicsUtils.hideDisplayObject(this.unitNameText);
+    graphicsUtils.hideDisplayObject(this.unitDamageText);
+    graphicsUtils.hideDisplayObject(this.unitDamageAdditionsText);
+    graphicsUtils.hideDisplayObject(this.unitDefenseText);
+    graphicsUtils.hideDisplayObject(this.unitDefenseAdditionsText);
+    graphicsUtils.hideDisplayObject(this.unitHealthText);
+    graphicsUtils.hideDisplayObject(this.unitGritText);
+    graphicsUtils.hideDisplayObject(this.unitGritAdditionsText);
+    graphicsUtils.hideDisplayObject(this.unitDodgeText);
+    graphicsUtils.hideDisplayObject(this.unitDodgeAdditionsText);
+    graphicsUtils.hideDisplayObject(this.unitEnergyText);
+};
+
+unitPanel.prototype.displayCurrentViewUnitStats = function() {
+    this.clearUnitStats();
+    this.clearUnitStatsGraph();
+    if(this.currentViewState == this.toGraphViewButton) {
+        this.displayUnitStatsGraph();
+    } else {
+        this.displayUnitStats();
+    }
+};
+
 unitPanel.prototype.displayUnitStats = function() {
+    graphicsUtils.addOrShowDisplayObject(this.unitNameText);
+    graphicsUtils.addOrShowDisplayObject(this.unitDamageText);
+    graphicsUtils.addOrShowDisplayObject(this.unitDamageAdditionsText);
+    graphicsUtils.addOrShowDisplayObject(this.unitDefenseText);
+    graphicsUtils.addOrShowDisplayObject(this.unitDefenseAdditionsText);
+    graphicsUtils.addOrShowDisplayObject(this.unitHealthText);
+    graphicsUtils.addOrShowDisplayObject(this.unitGritText);
+    graphicsUtils.addOrShowDisplayObject(this.unitGritAdditionsText);
+    graphicsUtils.addOrShowDisplayObject(this.unitDodgeText);
+    graphicsUtils.addOrShowDisplayObject(this.unitDodgeAdditionsText);
+    graphicsUtils.addOrShowDisplayObject(this.unitEnergyText);
+
     //Unit Stats Ticker
     if (!this.updateUnitStatTick) {
         this.updateUnitStatTick = globals.currentGame.addTickCallback(_displayUnitStats.bind(this));
@@ -1655,6 +2090,7 @@ unitPanel.prototype.leaveCamp = function() {
 
 unitPanel.prototype.cleanUp = function() {
     globals.currentGame.removeTickCallback(this.updateUnitStatTick);
+    globals.currentGame.removeTickCallback(this.updateUnitStatGraphTick);
     globals.currentGame.removeTickCallback(this.updateHealthAndEnergyVialTick);
     globals.currentGame.removeTickCallback(this.abilityAvailableTick);
     globals.currentGame.removeTickCallback(this.meterUpdater);
@@ -1674,6 +2110,8 @@ unitPanel.prototype.cleanUp = function() {
     }
 
     this.clearEnemyIcons();
+
+    $('body').off('keydown.viewSwitch');
 
     this.autoCastSound.unload();
 

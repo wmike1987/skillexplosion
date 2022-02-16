@@ -1851,7 +1851,7 @@ export default function Medic(options) {
         dodgeSound: dodgeSound,
         holdPositionSound: holdPositionSound,
         mineDamage: 25,
-        damageLabel: "Heal: ",
+        damageLabel: "Heal",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
         },
@@ -1929,6 +1929,7 @@ export default function Medic(options) {
             }
         ],
         damageAdditionType: 'heal',
+        damageScale: 20,
         energyRegenerationRate: 1.5,
         healthRegenerationRate: 0.5,
         portrait: graphicsUtils.createDisplayObject('MedicPortrait'),

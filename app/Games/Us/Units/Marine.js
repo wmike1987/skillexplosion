@@ -854,7 +854,6 @@ export default function Marine(options) {
         method: throwKnife,
         title: 'Throwing Knife',
         description: 'Throw a knife, dealing ' + marine.knifeDamage + ' damage.',
-        systemMessage: 'Auxiliary knives deal 1/2 damage.',
         updaters: {
             descriptions: function() {
                 return {
@@ -903,6 +902,7 @@ export default function Marine(options) {
                 icon: graphicsUtils.createDisplayObject('MultiShot'),
                 title: 'Multi-throw',
                 description: 'Throw multiple knives in a fan.',
+                systemMessage: 'Auxiliary knives deal half damage.',
                 collector: {
                     eventName: multiThrowCollectorEventName,
                     presentation: {
@@ -1408,6 +1408,7 @@ export default function Marine(options) {
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
         graveSpriteName: 'MarineGrave',
+        damageScale: 60,
         team: options.team || 4,
         priority: 10,
         dodgeSound: dodgeSound,

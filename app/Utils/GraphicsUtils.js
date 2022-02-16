@@ -278,22 +278,6 @@ var graphicsUtils = {
         globals.currentGame.addTimer(sprite.blinkTimer);
     },
 
-    // fadeSprite: function(sprite, rate) {
-    //     sprite.alpha = sprite.alpha || 1.0;
-    //     globals.currentGame.addTimer({
-    //         name: 'fadeSprite:' + mathArrayUtils.getId(),
-    //         timeLimit: 16,
-    //         runs: 1.0 / rate,
-    //         killsSelf: true,
-    //         callback: function() {
-    //             sprite.alpha -= rate;
-    //         },
-    //         totallyDoneCallback: function() {
-    //             graphicsUtils.removeSomethingFromRenderer(sprite);
-    //         }.bind(this)
-    //     });
-    // },
-
     fadeSpriteQuicklyThenDestroy: function(sprite, duration) {
         this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500});
     },
@@ -986,6 +970,28 @@ var graphicsUtils = {
         this.addBorderToSprite(Object.assign({
             existingBorder: borderedSprite.addedBorder
         }, borderedSprite.addedBorder.borderOptions));
+    },
+
+    mouseOverOutTint: function(sprite, startTint, finalTint) {
+        startTint = startTint || 0xffffff;
+        finalTint = finalTint || 0x3e3e3e;
+        sprite.interactive = true;
+        sprite.on('mouseover', function(event) {
+            sprite.tint = finalTint;
+        }.bind(this));
+        sprite.on('mouseout', function(event) {
+            sprite.tint = startTint;
+        }.bind(this));
+    },
+
+    mouseOverOutScale: function(sprite, originalScale, largeScale) {
+        sprite.interactive = true;
+        sprite.on('mouseover', function(event) {
+            sprite.scale = {x: largeScale, y: largeScale};
+        }.bind(this));
+        sprite.on('mouseout', function(event) {
+            sprite.scale = {x: originalScale, y: originalScale};
+        }.bind(this));
     },
 
     addGleamToSprite: function(options) {

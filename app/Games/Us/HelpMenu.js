@@ -495,6 +495,13 @@ HelpMenu.prototype.initialize = function() {
     });
 
     HotkeyPage.addLineTitle({
+        text: 'C'
+    });
+    HotkeyPage.addLine({
+        text: 'Swap numeric/chart stat view.'
+    });
+
+    HotkeyPage.addLineTitle({
         text: 'Tab'
     });
     HotkeyPage.addLine({

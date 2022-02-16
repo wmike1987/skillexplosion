@@ -135,6 +135,10 @@ var Tooltip = function(options) {
     this.sizeBase();
 };
 
+Tooltip.prototype.setTitle = function(text) {
+    this.title.text = text;
+};
+
 Tooltip.prototype.setMainDescription = function(text) {
     this.descriptions[0].text = text;
     this.sizeBase();
