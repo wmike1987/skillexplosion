@@ -639,11 +639,11 @@ var hardFlyObj = {
 
 var ultraHardFlyObj = {
     type: 'DamageFlySwarm',
-    amount: [20],
+    amount: [36],
     trivial: true,
-    atATime: 3,
+    atATime: 4,
     initialDelay: 0.1,
-    hz: 1500
+    hz: 1800
 };
 
 var enemyDefs = {
@@ -880,7 +880,7 @@ var enemyDefs = {
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
-            amount: 12,
+            amount: 15,
             atATime: 2,
             hz: 4000
         }, {
@@ -935,8 +935,8 @@ var enemyDefs = {
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
-            amount: 24,
-            atATime: 3,
+            amount: 30,
+            atATime: 4,
             hz: 6000
         }, ultraHardFlyObj]
     },
