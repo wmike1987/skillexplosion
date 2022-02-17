@@ -1549,7 +1549,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             overlayCommonFade(b2, startFadeTime);
         });
 
-        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + ursula.damageLabel + ursula.damageMember(), {
+        var medicDamage = graphicsUtils.createDisplayObject("TEX+:" + ursula.damageLabel + ": " + ursula.damageMember(), {
             position: {
                 x: ursulaColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer - unitStatYSpacing

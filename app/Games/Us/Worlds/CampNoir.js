@@ -639,7 +639,7 @@ var hardFlyObj = {
 
 var ultraHardFlyObj = {
     type: 'DamageFlySwarm',
-    amount: [36],
+    amount: [44],
     trivial: true,
     atATime: 4,
     initialDelay: 0.1,
@@ -800,9 +800,9 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Eruptlet',
-            amount: [10],
-            initialDelay: 6500,
-            atATime: 2,
+            amount: [15],
+            initialDelay: 4000,
+            atATime: 5,
             hz: 5000
         }, generalFlyObj]
     },
