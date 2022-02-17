@@ -406,7 +406,7 @@ var unitPanel = function(options) {
     graphicsUtils.mouseOverOutTint(this.armorChartBar, this.armorChartBar.tint);
     graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.armorChartBar, {
-        title: "Energy Regeneration",
+        title: "Armor",
         descriptionStyle: styles.HPTTStyle,
         noDelay: true,
         updaters: {
@@ -484,6 +484,49 @@ var unitPanel = function(options) {
             }.bind(this),
         }
     });
+
+    //chart line 1
+    var chartLineWidth = 150;
+    this.chartLine1 = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {y: -15}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x3d3d3e,
+        alpha: 0.3,
+        sortYOffset: -1000
+    });
+    graphicsUtils.makeSpriteSize(this.chartLine1, {x: chartLineWidth, y: 1});
+
+    //chart line 2
+    this.chartLine2 = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {y: -30}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x3d3d3e,
+        alpha: 0.3,
+        sortYOffset: -1000
+    });
+    graphicsUtils.makeSpriteSize(this.chartLine2, {x: chartLineWidth, y: 1});
+
+    //chart line 3
+    this.chartLine3 = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {y: -45}),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x3d3d3e,
+        alpha: 0.3,
+        sortYOffset: -1000
+    });
+    graphicsUtils.makeSpriteSize(this.chartLine3, {x: chartLineWidth, y: 1});
 
     //experience meter
     this.experienceMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {
@@ -1519,6 +1562,9 @@ unitPanel.prototype.clearUnitStatsGraph = function() {
     graphicsUtils.hideDisplayObject(this.gritChartBar);
     graphicsUtils.hideDisplayObject(this.dodgeChartBar);
     graphicsUtils.hideDisplayObject(this.rangeChartBar);
+    graphicsUtils.hideDisplayObject(this.chartLine1);
+    graphicsUtils.hideDisplayObject(this.chartLine2);
+    graphicsUtils.hideDisplayObject(this.chartLine3);
 };
 
 unitPanel.prototype.displayUnitStatsGraph = function() {
@@ -1532,6 +1578,9 @@ unitPanel.prototype.displayUnitStatsGraph = function() {
     graphicsUtils.addOrShowDisplayObject(this.gritChartBar);
     graphicsUtils.addOrShowDisplayObject(this.dodgeChartBar);
     graphicsUtils.addOrShowDisplayObject(this.rangeChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.chartLine1);
+    graphicsUtils.addOrShowDisplayObject(this.chartLine2);
+    graphicsUtils.addOrShowDisplayObject(this.chartLine3);
 
     //Unit Stats Graph Ticker
     if (!this.updateUnitStatGraphTick) {

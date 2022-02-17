@@ -637,6 +637,15 @@ var hardFlyObj = {
     hz: 1500
 };
 
+var ultraHardFlyObj = {
+    type: 'DamageFlySwarm',
+    amount: [20],
+    trivial: true,
+    atATime: 3,
+    initialDelay: 0.1,
+    hz: 1500
+};
+
 var enemyDefs = {
     learning: {
         enemySets: [{
@@ -778,12 +787,52 @@ var enemyDefs = {
             hz: 5000
         }, generalFlyObj]
     },
+    basicHard3: {
+        enemySets: [{
+            type: 'Critter',
+            amount: [2, 3],
+            atATime: 2,
+            hz: 4000
+        }, {
+            type: 'Sentinel',
+            amount: [3, 4],
+            atATime: 1,
+            hz: 4500
+        }, {
+            type: 'Eruptlet',
+            amount: [10],
+            initialDelay: 6500,
+            atATime: 2,
+            hz: 5000
+        }, generalFlyObj]
+    },
+    basicHard4: {
+        enemySets: [{
+            type: 'Sentinel',
+            amount: [9, 10],
+            atATime: 1,
+            hz: 4250
+        }, ultraHardFlyObj]
+    },
     rammians: {
         enemySets: [{
             type: 'Rammian',
             amount: [7, 8],
             atATime: 2,
             hz: 8000
+        }, hardFlyObj]
+    },
+    mobRammians: {
+        enemySets: [{
+            type: 'Rammian',
+            amount: [5, 6],
+            atATime: 2,
+            hz: 8500
+        }, {
+            type: 'Eruptlet',
+            amount: 25,
+            atATime: 5,
+            hz: 3800
         }, hardFlyObj]
     },
     hardGargs: {
@@ -881,6 +930,15 @@ var enemyDefs = {
             atATime: 1,
             hz: 4000
         }, hardFlyObj]
+    },
+    outerHardThree: {
+        token: 'outerNormal',
+        enemySets: [{
+            type: 'Critter',
+            amount: 24,
+            atATime: 3,
+            hz: 6000
+        }, ultraHardFlyObj]
     },
     easyGargs: {
         token: 'hard',
@@ -1137,7 +1195,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
 
-            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2']);
+            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
                     nodeTitle: 'Mega Den',
@@ -1522,11 +1580,48 @@ var finalPhase = function() {
         positionOptions: positionOp
     });
 
+
+    var outerHards = ['outerHardOne', 'outerHardTwo', 'outerHardThree'];
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: ['outerHardTwo', 'outerHardTwo', 'outerHardTwo'],
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards)],
             itemClass: 'book',
+        },
+        positionOptions: otherPositionOp
+    });
+
+    var basicHards = ['basicHard', 'basicHard2', 'basicHard3', 'basicHard4'];
+
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+        levelOptions: {
+            nodeTitle: 'Camp',
+            token: 'hard',
+            outer: true
+        }
+    });
+
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+        levelOptions: {
+            nodeTitle: 'Camp',
+            token: 'hard',
+            outer: true
+        }
+    });
+
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+        levelOptions: {
+            nodeTitle: 'Camp',
+            token: 'hard',
+            outer: true
+        }
+    });
+
+    this.map.addMapNode('multiLevel', {
+        levelOptions: {
+            outer: true,
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards), 'mobRammians', mathArrayUtils.getRandomElementOfArray(outerHards)],
+            itemClass: 'rugged',
         },
         positionOptions: otherPositionOp
     });

@@ -663,7 +663,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         });
         b1.visible = false;
 
-        var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage, {
+        var marineDamage = graphicsUtils.createDisplayObject("TEX+:" + "Dmg: " + shane.damage.toFixed(1), {
             position: {
                 x: shaneColumnX - healthEnergyXOffset + healthEnergyXSlice,
                 y: startY - unitStatTextBuffer - unitStatYSpacing
