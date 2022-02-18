@@ -509,7 +509,7 @@ export default function Marine(options) {
     };
 
     var vrHpCost = 2;
-    var vrECost = 1;
+    var vrECost = 2;
     var vitalReservesEventName = 'vitalReservesCollector';
     var deathWishEventName = 'deathWishCollector';
     var dPostureEventName = 'defensivePostureCollector';
@@ -959,12 +959,12 @@ export default function Marine(options) {
             },
             {
                 name: 'first aid pouch',
-                healAmount: 0.3,
+                healAmount: 0.4,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
                 description: '',
                 updaters: {descriptions: function() {
-                    var sum = 0.3;
+                    var sum = 0.4;
                     var addition = marine.firstAidPouchAdditions.forEach((addition) => {
                         sum += addition;
                     });

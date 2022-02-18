@@ -292,7 +292,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.damageHealBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.damageHealBar, {
         title: "Damage",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -315,7 +315,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.healthChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.healthChartBar, {
         title: "Health",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -338,7 +338,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.healthRegenerationBar, {
         title: "Health Regeneration",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -361,7 +361,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.energyChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.energyChartBar, {
         title: "Energy",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -384,7 +384,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.energyRegenerationBar, {
         title: "Energy Regeneration",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -407,7 +407,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.armorChartBar, {
         title: "Armor",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -430,7 +430,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.gritChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.gritChartBar, {
         title: "Grit",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -453,7 +453,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.dodgeChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.dodgeChartBar, {
         title: "Dodge",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -476,7 +476,7 @@ var unitPanel = function(options) {
     graphicsUtils.makeSpriteSize(this.rangeChartBar, {x: this.chartBarWidth, y: 1});
     Tooltip.makeTooltippable(this.rangeChartBar, {
         title: "Range",
-        descriptionStyle: styles.HPTTStyle,
+        descriptionStyle: styles.abilityText,
         noDelay: true,
         updaters: {
             mainDescription: function(tooltip) {
@@ -569,7 +569,7 @@ var unitPanel = function(options) {
                 let txt;
                 if (this.prevailingUnit) {
                     txt = Math.floor(this.prevailingUnit.currentHealth) + "/" + this.prevailingUnit.maxHealth;
-                    tooltip.mainDescription.style.fill = graphicsUtils.percentAsHexColor(this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth);
+                    tooltip.mainDescription.tint = graphicsUtils.percentAsHexColor(this.prevailingUnit.currentHealth / this.prevailingUnit.maxHealth);
                 }
                 return txt;
             }.bind(this),

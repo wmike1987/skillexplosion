@@ -3,12 +3,13 @@ import * as Matter from 'matter-js';
 import {globals} from '@core/Fundamental/GlobalState.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
+var apolloBuff = 0.2;
 export default function(options) {
     var item = Object.assign({
         name: "Apollo Microchip",
         description: ["Enable a Rifle augment.", 'Add 0.2 hp to first aid pouch.'],
         poweredByMessage: {text: 'Apollo Microchip', style: 'basicPoweredByStyle'},
-        conditionalPoweredByMessage: {text: '+0.1 hp per attack.', style: 'basicPoweredByStyle'},
+        conditionalPoweredByMessage: {text: '+0.2 hp per attack.', style: 'basicPoweredByStyle'},
         additionCondition: function(augment) {
             return augment.name == 'first aid pouch';
         },
@@ -16,10 +17,10 @@ export default function(options) {
             return ability.name == 'Rifle';
         },
         plug: function() {
-            this.owningUnit.firstAidPouchAdditions.push(0.2);
+            this.owningUnit.firstAidPouchAdditions.push(apolloBuff);
         },
         unplug: function() {
-            mathArrayUtils.removeObjectFromArray(0.1, this.owningUnit.firstAidPouchAdditions);
+            mathArrayUtils.removeObjectFromArray(apolloBuff, this.owningUnit.firstAidPouchAdditions);
         },
         plugTint: 0xffab08,
         systemMessage: "Drop on augment to enable.",

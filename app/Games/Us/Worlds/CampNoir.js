@@ -790,7 +790,7 @@ var enemyDefs = {
     basicHard3: {
         enemySets: [{
             type: 'Critter',
-            amount: [2, 3],
+            amount: [6, 8],
             atATime: 2,
             hz: 4000
         }, {
@@ -809,9 +809,9 @@ var enemyDefs = {
     basicHard4: {
         enemySets: [{
             type: 'Sentinel',
-            amount: [9, 10],
-            atATime: 1,
-            hz: 4250
+            amount: [5, 6],
+            atATime: 2,
+            hz: 5000
         }, ultraHardFlyObj]
     },
     rammians: {
@@ -936,7 +936,7 @@ var enemyDefs = {
         enemySets: [{
             type: 'Critter',
             amount: 30,
-            atATime: 4,
+            atATime: 6,
             hz: 6000
         }, ultraHardFlyObj]
     },
@@ -965,10 +965,10 @@ var enemyDefs = {
             hz: 3800
         }, {
             type: 'Hunter',
-            amount: 1,
+            amount: 2,
             initialDelay: 5000,
             atATime: 1,
-            hz: 6000
+            hz: 8000
         }, hardFlyObj]
     },
     outerMobs: {

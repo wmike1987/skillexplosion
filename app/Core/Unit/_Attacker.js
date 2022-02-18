@@ -115,7 +115,7 @@ export default {
                 }
                 this.doubleTapTimer = gameUtils.doSomethingAfterDuration(() => {
                     this.doubleTapS = 0;
-                }, 200);
+                }, 280);
             }
 
             if(!this.canStop) {
