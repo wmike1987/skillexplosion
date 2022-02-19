@@ -321,7 +321,7 @@ export default function Gargoyle(options) {
                         this.isoManagedTint = 0x4d4d4d;
                         this.isoManagedAlpha = 0;
                         this.healthRegenerationMultiplier = 8;
-                        this.setSleep(true);
+                        this.setSleep(true, 'garg');
                         this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', sortYOffset: 15, position: this.position});
                         this.defense += 10;
                     }.bind(this), removeChanges: function() {
@@ -334,7 +334,7 @@ export default function Gargoyle(options) {
                         this.defense -= 10;
                         this.isoManagedAlpha = 1;
                         this.stop();
-                        this.setSleep(false);
+                        this.setSleep(false, 'garg');
                         graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
                     }.bind(this)});
                 }

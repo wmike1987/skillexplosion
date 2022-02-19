@@ -144,15 +144,14 @@ function UnitConstructor(options) {
     //manage sleep on this body
     newUnit.sleeperLocks = new Set();
     newUnit.setSleep = function(value, sleeperLockName) {
+        if(!sleeperLockName) {
+            sleeperLockName = 'main';
+        }
         if(value) {
-            if(sleeperLockName) {
-                this.sleeperLocks.add(sleeperLockName);
-            }
+            this.sleeperLocks.add(sleeperLockName);
             Matter.Sleeping.set(body, true);
         } else {
-            if(sleeperLockName) {
-                this.sleeperLocks.delete(sleeperLockName);
-            }
+            this.sleeperLocks.delete(sleeperLockName);
             if(this.sleeperLocks.size == 0) {
                 Matter.Sleeping.set(body, false);
             }

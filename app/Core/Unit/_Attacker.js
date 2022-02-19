@@ -87,6 +87,12 @@ export default {
             this.attackMoveDestination = null;
             this.attackMoving = false;
             this.isHoldingPosition = false;
+
+            //nullify the brief pause
+            if(this.reissueAttackMoveTimer) {
+                this.reissueAttackMoveTimer.invalidate();
+            }
+
             var moveInfo = originalMove.call(this, destination, commandObj);
             if (!moveInfo.moveCancelled) {
                 this._becomePeaceful();
@@ -132,6 +138,12 @@ export default {
             this.isHoning = false;
             this.attackMoveDestination = null;
             this.attackMoving = false;
+
+            //nullify the brief pause
+            if(this.reissueAttackMoveTimer) {
+                this.reissueAttackMoveTimer.invalidate();
+            }
+
             if (options.isHoldingPosition) {
                 this.isHoldingPosition = true;
                 this.setSleep(true);
@@ -218,6 +230,11 @@ export default {
             this.cooldownTimer.timeLimit = this.cooldown;
             this.isHoning = false;
 
+            //nullify the brief pause
+            if(this.reissueAttackMoveTimer) {
+                this.reissueAttackMoveTimer.invalidate();
+            }
+
             //trigger the attack event
             Matter.Events.trigger(this, 'attack', {
                 direction: gameUtils.isoDirectionBetweenPositions(this.position, target.position),
@@ -251,6 +268,11 @@ export default {
             Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             this.specifiedAttackTarget = null;
             this.specifiedCallback = null;
+        }
+
+        //nullify the brief pause
+        if(this.reissueAttackMoveTimer) {
+            this.reissueAttackMoveTimer.invalidate();
         }
 
         //set state
@@ -352,6 +374,11 @@ export default {
         }
 
         this.isHoldingPosition = true;
+
+        //nullify the brief pause
+        if(this.reissueAttackMoveTimer) {
+            this.reissueAttackMoveTimer.invalidate();
+        }
 
         if(this.holdPositionSound) {
             this.holdPositionSound.play();
@@ -509,8 +536,23 @@ export default {
             //If we were given a "specific target" to attack, we only want to naturally stop if we can no longer attack it
             if (!this.currentHone && !this.currentTarget) {
                 //given attack move, reissue the attack move
-                if (this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
-                    this.attackMove(this.attackMoveDestination, commandObj);
+                if (this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady && !this.reissuingAttackMove) {
+
+                    //let's pause briefly before issue the attack move
+
+                    //setup the reissue timer
+                    this.reissuingAttackMove = true;
+                    this.reissueAttackMoveTimer = gameUtils.doSomethingAfterDuration(() => {
+                        //ensure we have the same conditions
+                        if(!this.currentHone && !this.currentTarget && this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
+                            this.attackMove(this.attackMoveDestination, commandObj);
+                        }
+                    }, this.reissueAttackMovePause || 180);
+
+                    gameUtils.matterOnce(this.reissueAttackMoveTimer, 'onInvalidate', () => {
+                        this.reissuingAttackMove = false;
+                    });
+
                     //we were still, let's stop
                 } else if (!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {
                     this.stop();

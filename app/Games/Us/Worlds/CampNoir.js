@@ -790,9 +790,9 @@ var enemyDefs = {
     basicHard3: {
         enemySets: [{
             type: 'Critter',
-            amount: [6, 8],
-            atATime: 2,
-            hz: 4000
+            amount: [3, 4],
+            atATime: 1,
+            hz: 2800
         }, {
             type: 'Sentinel',
             amount: [3, 4],
@@ -800,10 +800,10 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Eruptlet',
-            amount: [15],
+            amount: [12, 13, 14],
             initialDelay: 4000,
-            atATime: 5,
-            hz: 5000
+            atATime: 3,
+            hz: 4000
         }, generalFlyObj]
     },
     basicHard4: {
