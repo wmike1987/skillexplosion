@@ -800,10 +800,10 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Eruptlet',
-            amount: [12, 13, 14],
+            amount: [12, 13],
             initialDelay: 4000,
             atATime: 3,
-            hz: 4000
+            hz: 4200
         }, generalFlyObj]
     },
     basicHard4: {

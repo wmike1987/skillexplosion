@@ -546,8 +546,9 @@ export default {
                         //ensure we have the same conditions
                         if(!this.currentHone && !this.currentTarget && this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady) {
                             this.attackMove(this.attackMoveDestination, commandObj);
+                            this.reissuingAttackMove = false;
                         }
-                    }, this.reissueAttackMovePause || 180);
+                    }, this.cooldown > 180 ? 0 : 180); //if the cooldown is larger than our pause time, just execute this basically immediately
 
                     gameUtils.matterOnce(this.reissueAttackMoveTimer, 'onInvalidate', () => {
                         this.reissuingAttackMove = false;
