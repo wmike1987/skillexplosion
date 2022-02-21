@@ -936,6 +936,7 @@ var graphicsUtils = {
             tint: 0xFFFFFF,
             thickness: 2,
             alpha: 0.45,
+            doubleBorder: false
         }, options);
         let sprite = options.sprite;
 
@@ -959,11 +960,39 @@ var graphicsUtils = {
 
             sprite.addedBorder = border;
         }
+
         graphicsUtils.makeSpriteSize(border, {
             x: sprite.width + options.thickness * 2,
             y: sprite.height + options.thickness * 2
         });
         border.position = sprite.position;
+
+        if(options.doubleBorder) {
+            var border2 = graphicsUtils.addSomethingToRenderer('TintableSquare', {
+                where: options.where || sprite.where,
+                alpha: options.alpha + 0.25,
+            });
+            border2.borderOptions = options;
+            border2.sortYOffset = -2;
+            border2.isBorder = true;
+            border2.tint = options.doubleBorderTint || options.tint;
+            border2.visible = sprite.parent && sprite.visible;
+
+            graphicsUtils.latchDisplayObjectOnto({
+                child: border2,
+                parent: sprite,
+                positionUponShow: true
+            });
+
+            sprite.addedDoubleBorder = border2;
+
+            graphicsUtils.makeSpriteSize(border2, {
+                x: sprite.width + options.thickness + 2 * 2,
+                y: sprite.height + options.thickness + 2 * 2
+            });
+
+            border2.position = sprite.position;
+        }
 
         return border;
     },

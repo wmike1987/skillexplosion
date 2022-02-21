@@ -29,9 +29,9 @@ var petrifySound = gameUtils.getSound('petrify.wav', {
     volume: 0.07,
     rate: 1
 });
-var stunSound = gameUtils.getSound('stunsound.wav', {
-    volume: 0.10,
-    rate: 0.9
+var stunSound = gameUtils.getSound('stunsound2.wav', {
+    volume: 0.1,
+    rate: 1.1
 });
 var maimSound = gameUtils.getSound('maimsound.wav', {
     volume: 0.5,

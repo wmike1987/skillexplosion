@@ -944,8 +944,8 @@ var unitPanel = function(options) {
         y: this.centerY - 28
     };
     this.enemyIconSize = 32;
-    this.enemyCountYOffset = 38;
-    this.enemyCountXOffset = 38;
+    this.enemyCountYOffset = 44;
+    this.enemyCountXOffset = 44;
     this.enemyIcons = {};
 
     //create frame
@@ -1231,8 +1231,8 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
         let fromPosition = positions[index];
         let number = graphicsUtils.addSomethingToRenderer("TEX+:" + set.spawn.total, {
             position: mathArrayUtils.clonePosition(fromPosition, {
-                x: 16,
-                y: 16
+                x: 12,
+                y: 12
             }),
             where: 'hudOne',
             style: styles.fpsStyle
@@ -1244,12 +1244,16 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
         graphicsUtils.makeSpriteSize(icon, this.enemyIconSize);
         graphicsUtils.addBorderToSprite({
             sprite: icon,
-            alpha: 0.15,
+            alpha: 0.7,
+            doubleBorder: true,
+            doubleBorderTint: 0x12120d
         });
         graphicsUtils.flashSprite({
             sprite: icon.addedBorder,
-            fromColor: 0xed8e8e,
-            toColor: 0xf500c6
+            fromColor: 0x996a6a,
+            toColor: 0x621414,
+            times: 3,
+            duration: 200
         });
         let toPosition = mathArrayUtils.clonePosition(this.enemyCountStart, {
             x: (Math.floor(existingNumber/2.0) * this.enemyCountXOffset),
@@ -1266,6 +1270,7 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
         gameUtils.doSomethingAfterDuration(() => {
             Object.values(this.enemyIcons).forEach((ic, index) => {
                 gameUtils.doSomethingAfterDuration(() => {
+                    globals.currentGame.soundPool.swipeQuiet.play();
                     graphicsUtils.sendSpriteToDestinationAtSpeed({
                         sprite: ic.icon,
                         destination: ic.toPosition,
@@ -1276,11 +1281,12 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
                 }, index * timingSpace);
 
                 gameUtils.doSomethingAfterDuration(() => {
+                    globals.currentGame.soundPool.swipeQuiet.play();
                     graphicsUtils.sendSpriteToDestinationAtSpeed({
                         sprite: ic.number,
                         destination: mathArrayUtils.clonePosition(ic.toPosition, {
-                            x: 8,
-                            y: 8
+                            x: 12,
+                            y: 12
                         }),
                         pointAtDestination: false,
                         speed: iconSpeed,
@@ -1289,6 +1295,7 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
                 }, index * timingSpace);
 
                 gameUtils.doSomethingAfterDuration(() => {
+                    globals.currentGame.soundPool.swipeQuiet.play();
                     graphicsUtils.sendSpriteToDestinationAtSpeed({
                         sprite: ic.icon.addedBorder,
                         destination: ic.toPosition,
@@ -1297,8 +1304,19 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
                         surpassDestination: false
                     });
                 }, index * timingSpace);
+
+                gameUtils.doSomethingAfterDuration(() => {
+                    globals.currentGame.soundPool.swipeQuiet.play();
+                    graphicsUtils.sendSpriteToDestinationAtSpeed({
+                        sprite: ic.icon.addedDoubleBorder,
+                        destination: ic.toPosition,
+                        pointAtDestination: false,
+                        speed: iconSpeed,
+                        surpassDestination: false
+                    });
+                }, index * timingSpace);
             });
-        }, 1000);
+        }, 2500);
     });
 };
 
