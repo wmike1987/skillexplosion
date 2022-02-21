@@ -922,7 +922,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }, startFadeTime * 3);
         });
 
-        var shaneDamage = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageDone, {
+        var shaneDamage = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.damageDone.toFixed(1), {
             position: shanePosition(reg),
             style: statStyle,
             where: "hudText",

@@ -2055,6 +2055,7 @@ export default function Medic(options) {
         attacker: {
             attackAnimations: healAnimations,
             cooldown: 333,
+            cooldownPauseAddition: 180,
             honeRange: 300,
             range: rad * 2 + 25,
             canAttackAndMove: false,

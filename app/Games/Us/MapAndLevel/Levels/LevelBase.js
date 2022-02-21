@@ -104,7 +104,6 @@ var levelBase = {
         //create the initial unit set
         level.spawner.createInitialUnitSet();
 
-
         //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
@@ -145,11 +144,7 @@ var levelBase = {
             game.heartbeat.play();
 
             //show new enemy sets
-            this.enemySets.forEach((set) => {
-                if(!set.trivial) {
-                    globals.currentGame.unitSystem.unitPanel.addEnemyIcon(set);
-                }
-            });
+            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this.enemySets);
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
                 level: level
@@ -194,7 +189,7 @@ var levelBase = {
             itemType: 'item',
             levelEntryText: 'Presence detected...',
             isSupplyDropEligible: true,
-            createOneShotUnit: mathArrayUtils.flipCoin(),
+            createOneShotUnit: mathArrayUtils.flipCoin() || mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
 
         //default no zones

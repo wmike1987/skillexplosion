@@ -548,11 +548,13 @@ export default {
                             this.attackMove(this.attackMoveDestination, commandObj);
                             this.reissuingAttackMove = false;
                         }
-                    }, this.cooldown > 180 ? 0 : 180); //if the cooldown is larger than our pause time, just execute this basically immediately
+                    }, this.cooldownPauseAddition || 0);
 
-                    gameUtils.matterOnce(this.reissueAttackMoveTimer, 'onInvalidate', () => {
-                        this.reissuingAttackMove = false;
-                    });
+                    if(this.reissueAttackMoveTimer) {
+                        gameUtils.matterOnce(this.reissueAttackMoveTimer, 'onInvalidate', () => {
+                            this.reissuingAttackMove = false;
+                        });
+                    }
 
                     //we were still, let's stop
                 } else if (!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {

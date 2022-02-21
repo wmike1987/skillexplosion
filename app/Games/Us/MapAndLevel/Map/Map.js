@@ -474,6 +474,7 @@ var map = function(specs) {
         this.updateRouteArrows();
     };
 
+    //path
     this.updateRouteArrows = function() {
         var colors = [0xcdc012, 0xe47b0e, 0xb90606];
 
@@ -486,14 +487,25 @@ var map = function(specs) {
                 immediateStart: true,
                 executeOnNuke: true,
                 callback: function() {
-                    let routeArrow = graphicsUtils.addSomethingToRenderer('MapArrow', {where: 'hudOne', alpha: 0.5, scale: {x: 0.4, y: 0.4}, tint: sendSpriteObj.color});
-                    let arrowRouteTimer = graphicsUtils.sendSpriteToDestinationAtSpeed({sprite: routeArrow, start: start, destination: destination, speed: 0.75});
+                    let routeArrow = graphicsUtils.addSomethingToRenderer('MapArrow', {where: 'noMansLand', alpha: 0.5, scale: {x: 0.5, y: 0.5}, tint: sendSpriteObj.color});
+
+                    //This is a little hacky, but we're creating objects here on 'tick'. Simultaneously, the head token could trigger a render texture on the same tick, before
+                    //the container updates all its children, including the last MapArrow created. It therefore would show up in the top left (0, 0) since the transform wouldn't have
+                    //initiated the 'initial position'. This solution initially creates it in no mans land, then will manually change it to a visible layer the next frame.
+                    //This serves to offset this 'tick' until the 'next tick'.
+                    gameUtils.executeSomethingNextFrame(() => {
+                        if(!routeArrow._destroyed) {
+                            graphicsUtils.changeDisplayObjectStage(routeArrow, 'hudOne');
+                        }
+                    });
+                    let arrowRouteTimer = graphicsUtils.sendSpriteToDestinationAtSpeed({sprite: routeArrow, start: start, destination: destination, speed: 0.75, removeOnFinish: true});
                     if(this.isMimicing) {
                         arrowRouteTimer.mimicry = this.mimicLeft;
                     }
                     myArrowTimers.push(arrowRouteTimer);
                 }
             });
+
             timer.mimicry = 40000;
             Matter.Events.on(timer, 'onInvalidate', () => {
                 myArrowTimers.forEach((t) => {

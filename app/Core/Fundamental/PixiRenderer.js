@@ -28,6 +28,7 @@ var renderer = function(engine, options) {
 
     //create stages (these don't handle sorting, see the laying group below)
     this.stages = {
+        noMansLand: new PIXI.Container(),
         background: new PIXI.Container(),
         backgroundOne: new PIXI.Container(),
         stageNTwo: new PIXI.Container(),

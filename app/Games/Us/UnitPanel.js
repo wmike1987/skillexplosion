@@ -246,7 +246,10 @@ var unitPanel = function(options) {
             x: 0,
             y: 0.5
         },
-        scale: {x: 0.5, y: 0.5},
+        scale: {
+            x: 0.5,
+            y: 0.5
+        },
         where: 'hudOne'
     });
     this.toGraphViewButton.interactive = true;
@@ -261,7 +264,10 @@ var unitPanel = function(options) {
             x: 0,
             y: 0.5
         },
-        scale: {x: 0.5, y: 0.5},
+        scale: {
+            x: 0.5,
+            y: 0.5
+        },
         where: 'hudOne'
     });
     this.toNumberViewButton.interactive = true;
@@ -289,7 +295,10 @@ var unitPanel = function(options) {
         tint: 0x555453
     });
     graphicsUtils.mouseOverOutTint(this.damageHealBar, this.damageHealBar.tint);
-    graphicsUtils.makeSpriteSize(this.damageHealBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.damageHealBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.damageHealBar, {
         title: "Damage",
         descriptionStyle: styles.abilityText,
@@ -303,7 +312,9 @@ var unitPanel = function(options) {
 
     //health bar
     this.healthChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 1 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 1 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -312,7 +323,10 @@ var unitPanel = function(options) {
         tint: 0xb40026
     });
     graphicsUtils.mouseOverOutTint(this.healthChartBar, this.healthChartBar.tint);
-    graphicsUtils.makeSpriteSize(this.healthChartBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.healthChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.healthChartBar, {
         title: "Health",
         descriptionStyle: styles.abilityText,
@@ -326,7 +340,9 @@ var unitPanel = function(options) {
 
     //health regen bar
     this.healthRegenerationBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 2 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 2 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -335,7 +351,10 @@ var unitPanel = function(options) {
         tint: 0xe75983
     });
     graphicsUtils.mouseOverOutTint(this.healthRegenerationBar, this.healthRegenerationBar.tint);
-    graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.healthRegenerationBar, {
         title: "Health Regeneration",
         descriptionStyle: styles.abilityText,
@@ -349,7 +368,9 @@ var unitPanel = function(options) {
 
     //energy bar
     this.energyChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 3 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 3 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -358,7 +379,10 @@ var unitPanel = function(options) {
         tint: 0x860ed9
     });
     graphicsUtils.mouseOverOutTint(this.energyChartBar, this.energyChartBar.tint);
-    graphicsUtils.makeSpriteSize(this.energyChartBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.energyChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.energyChartBar, {
         title: "Energy",
         descriptionStyle: styles.abilityText,
@@ -372,7 +396,9 @@ var unitPanel = function(options) {
 
     //energy regen bar
     this.energyRegenerationBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 4 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 4 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -381,7 +407,10 @@ var unitPanel = function(options) {
         tint: 0xe2a1e8
     });
     graphicsUtils.mouseOverOutTint(this.energyRegenerationBar, this.energyRegenerationBar.tint);
-    graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.energyRegenerationBar, {
         title: "Energy Regeneration",
         descriptionStyle: styles.abilityText,
@@ -395,7 +424,9 @@ var unitPanel = function(options) {
 
     //armor bar
     this.armorChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 5 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 5 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -404,7 +435,10 @@ var unitPanel = function(options) {
         tint: 0x0734ba
     });
     graphicsUtils.mouseOverOutTint(this.armorChartBar, this.armorChartBar.tint);
-    graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.armorChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.armorChartBar, {
         title: "Armor",
         descriptionStyle: styles.abilityText,
@@ -418,7 +452,9 @@ var unitPanel = function(options) {
 
     //grit bar
     this.gritChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 6 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 6 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -427,7 +463,10 @@ var unitPanel = function(options) {
         tint: 0xdbc81d
     });
     graphicsUtils.mouseOverOutTint(this.gritChartBar, this.gritChartBar.tint);
-    graphicsUtils.makeSpriteSize(this.gritChartBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.gritChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.gritChartBar, {
         title: "Grit",
         descriptionStyle: styles.abilityText,
@@ -441,7 +480,9 @@ var unitPanel = function(options) {
 
     //dodge regen bar
     this.dodgeChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 7 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 7 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -450,7 +491,10 @@ var unitPanel = function(options) {
         tint: 0x2f811f
     });
     graphicsUtils.mouseOverOutTint(this.dodgeChartBar, this.dodgeChartBar.tint);
-    graphicsUtils.makeSpriteSize(this.dodgeChartBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.dodgeChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.dodgeChartBar, {
         title: "Dodge",
         descriptionStyle: styles.abilityText,
@@ -464,7 +508,9 @@ var unitPanel = function(options) {
 
     //range bar
     this.rangeChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {x: 8 * this.chartBarWidth}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 8 * this.chartBarWidth
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -473,7 +519,10 @@ var unitPanel = function(options) {
         tint: 0xa26513
     });
     graphicsUtils.mouseOverOutTint(this.rangeChartBar, this.rangeChartBar.tint);
-    graphicsUtils.makeSpriteSize(this.rangeChartBar, {x: this.chartBarWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.rangeChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
     Tooltip.makeTooltippable(this.rangeChartBar, {
         title: "Range",
         descriptionStyle: styles.abilityText,
@@ -488,7 +537,9 @@ var unitPanel = function(options) {
     //chart line 1
     var chartLineWidth = 150;
     this.chartLine1 = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {y: -15}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            y: -15
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -498,11 +549,16 @@ var unitPanel = function(options) {
         alpha: 0.3,
         sortYOffset: -1000
     });
-    graphicsUtils.makeSpriteSize(this.chartLine1, {x: chartLineWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.chartLine1, {
+        x: chartLineWidth,
+        y: 1
+    });
 
     //chart line 2
     this.chartLine2 = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {y: -30}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            y: -30
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -512,11 +568,16 @@ var unitPanel = function(options) {
         alpha: 0.3,
         sortYOffset: -1000
     });
-    graphicsUtils.makeSpriteSize(this.chartLine2, {x: chartLineWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.chartLine2, {
+        x: chartLineWidth,
+        y: 1
+    });
 
     //chart line 3
     this.chartLine3 = graphicsUtils.createDisplayObject('TintableSquare', {
-        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {y: -45}),
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            y: -45
+        }),
         anchor: {
             x: 0,
             y: 1
@@ -526,7 +587,10 @@ var unitPanel = function(options) {
         alpha: 0.3,
         sortYOffset: -1000
     });
-    graphicsUtils.makeSpriteSize(this.chartLine3, {x: chartLineWidth, y: 1});
+    graphicsUtils.makeSpriteSize(this.chartLine3, {
+        x: chartLineWidth,
+        y: 1
+    });
 
     //experience meter
     this.experienceMeter = graphicsUtils.addSomethingToRenderer('TintableSquare', {
@@ -875,9 +939,13 @@ var unitPanel = function(options) {
     this.helpButtonPosition.y = gameUtils.getCanvasHeight() - 16;
 
     //enemy count positioning
-    this.enemyCountStart = {x: this.centerX + 600, y: this.centerY - 35};
-    this.enemyCountYOffset = 30;
-    this.enemyCountXOffset = 45;
+    this.enemyCountStart = {
+        x: this.centerX + 575,
+        y: this.centerY - 28
+    };
+    this.enemyIconSize = 32;
+    this.enemyCountYOffset = 38;
+    this.enemyCountXOffset = 38;
     this.enemyIcons = {};
 
     //create frame
@@ -898,8 +966,8 @@ var unitPanel = function(options) {
 };
 
 unitPanel.prototype.swapStatView = function() {
-    if(this.prevailingUnit) {
-        if(this.currentViewState == this.toGraphViewButton) {
+    if (this.prevailingUnit) {
+        if (this.currentViewState == this.toGraphViewButton) {
             this.currentViewState = this.toNumberViewButton;
             this.clearUnitStatsGraph();
             this.displayUnitStats();
@@ -1118,7 +1186,7 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
         this.updateUnitItems(unit);
 
         //stat view button
-        if(this.currentViewState == this.toGraphViewButton) {
+        if (this.currentViewState == this.toGraphViewButton) {
             graphicsUtils.addOrShowDisplayObject(this.toNumberViewButton);
         } else {
             graphicsUtils.addOrShowDisplayObject(this.toGraphViewButton);
@@ -1145,23 +1213,101 @@ unitPanel.prototype.clearEnemyIcons = function() {
     this.enemyIcons = [];
 };
 
-unitPanel.prototype.addEnemyIcon = function(enemySet) {
-    var existingNumber = Object.keys(this.enemyIcons).length;
-    var position = mathArrayUtils.clonePosition(this.enemyCountStart, {x: (existingNumber > 2 ? this.enemyCountXOffset : 0), y: ((existingNumber % 3) * this.enemyCountYOffset)});
-    var number = graphicsUtils.addSomethingToRenderer("TEX+:" + enemySet.spawn.total, {position: mathArrayUtils.clonePosition(position, {x: 8, y: 8}), where: 'hudOne', style: styles.fpsStyle});
-    var icon = graphicsUtils.addSomethingToRenderer(enemySet.icon, {position: position, where: 'hudOne'});
-    graphicsUtils.makeSpriteSize(icon, 26);
-    graphicsUtils.addBorderToSprite({sprite: icon, alpha: 0.15});
-    graphicsUtils.flashSprite({sprite: icon.addedBorder, fromColor: 0xffffff, toColor: 0xf500c6});
-    this.enemyIcons[enemySet.id] = {icon: icon, number: number};
+unitPanel.prototype.addEnemyIcons = function(enemySets) {
+    var filteredSets = enemySets.filter((set) => {
+        return !set.trivial;
+    });
+    var len = Object.keys(filteredSets).length;
+    var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
+        numberOfPositions: len,
+        position: gameUtils.getPlayableCenterPlus({
+            x: 0,
+            y: 80
+        }),
+        spacing: 50
+    });
+    filteredSets.forEach((set, index) => {
+        let existingNumber = Object.keys(this.enemyIcons).length;
+        let fromPosition = positions[index];
+        let number = graphicsUtils.addSomethingToRenderer("TEX+:" + set.spawn.total, {
+            position: mathArrayUtils.clonePosition(fromPosition, {
+                x: 16,
+                y: 16
+            }),
+            where: 'hudOne',
+            style: styles.fpsStyle
+        });
+        let icon = graphicsUtils.addSomethingToRenderer(set.icon, {
+            position: fromPosition,
+            where: 'hudOne'
+        });
+        graphicsUtils.makeSpriteSize(icon, this.enemyIconSize);
+        graphicsUtils.addBorderToSprite({
+            sprite: icon,
+            alpha: 0.15,
+        });
+        graphicsUtils.flashSprite({
+            sprite: icon.addedBorder,
+            fromColor: 0xed8e8e,
+            toColor: 0xf500c6
+        });
+        let toPosition = mathArrayUtils.clonePosition(this.enemyCountStart, {
+            x: (Math.floor(existingNumber/2.0) * this.enemyCountXOffset),
+            y: ((existingNumber % 2) * this.enemyCountYOffset)
+        });
+        this.enemyIcons[set.id] = {
+            icon: icon,
+            number: number,
+            toPosition: toPosition
+        };
+
+        var iconSpeed = 12;
+        var timingSpace = 150;
+        gameUtils.doSomethingAfterDuration(() => {
+            Object.values(this.enemyIcons).forEach((ic, index) => {
+                gameUtils.doSomethingAfterDuration(() => {
+                    graphicsUtils.sendSpriteToDestinationAtSpeed({
+                        sprite: ic.icon,
+                        destination: ic.toPosition,
+                        pointAtDestination: false,
+                        speed: iconSpeed,
+                        surpassDestination: false
+                    });
+                }, index * timingSpace);
+
+                gameUtils.doSomethingAfterDuration(() => {
+                    graphicsUtils.sendSpriteToDestinationAtSpeed({
+                        sprite: ic.number,
+                        destination: mathArrayUtils.clonePosition(ic.toPosition, {
+                            x: 8,
+                            y: 8
+                        }),
+                        pointAtDestination: false,
+                        speed: iconSpeed,
+                        surpassDestination: false
+                    });
+                }, index * timingSpace);
+
+                gameUtils.doSomethingAfterDuration(() => {
+                    graphicsUtils.sendSpriteToDestinationAtSpeed({
+                        sprite: ic.icon.addedBorder,
+                        destination: ic.toPosition,
+                        pointAtDestination: false,
+                        speed: iconSpeed,
+                        surpassDestination: false
+                    });
+                }, index * timingSpace);
+            });
+        }, 1000);
+    });
 };
 
 unitPanel.prototype.decrementEnemyCount = function(enemySetId) {
-    if(!this.enemyIcons[enemySetId]) {
+    if (!this.enemyIcons[enemySetId]) {
         return;
     }
     this.enemyIcons[enemySetId].number.text -= 1;
-    if(this.enemyIcons[enemySetId].number.text == 0) {
+    if (this.enemyIcons[enemySetId].number.text == 0) {
         this.enemyIcons[enemySetId].icon.tint = 0xc80b0b;
         this.enemyIcons[enemySetId].icon.alpha = 0.5;
     }
@@ -1399,8 +1545,8 @@ unitPanel.prototype.clearUnitItems = function() {
 
 var _convertRawToScaled = function(value, localScale) {
     var maxChartHeight = 60;
-    var val = (value/localScale) * maxChartHeight;
-    if(val > maxChartHeight) {
+    var val = (value / localScale) * maxChartHeight;
+    if (val > maxChartHeight) {
         val = maxChartHeight;
     }
 
@@ -1418,55 +1564,82 @@ var _displayUnitStatsGraph = function() {
         var additions = this.prevailingUnit.damageAdditionType ? this.prevailingUnit.getAdditionSum(this.prevailingUnit.damageAdditionType) : this.prevailingUnit.getDamageAdditionSum();
         var localScale = this.prevailingUnit.damageScale || 60;
         this.damageHealBar.tooltipObj.setTitle(this.prevailingUnit.damageLabel || "Damage");
-        graphicsUtils.makeSpriteSize(this.damageHealBar, {x: this.chartBarWidth, y: _convertRawToScaled(main + additions, localScale)});
+        graphicsUtils.makeSpriteSize(this.damageHealBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main + additions, localScale)
+        });
         this.damageHealBar.currentRealValue = main + additions;
 
         //health
         main = this.prevailingUnit.maxHealth;
         localScale = 180;
-        graphicsUtils.makeSpriteSize(this.healthChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.healthChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.healthChartBar.currentRealValue = main;
 
         //health regen
         main = this.prevailingUnit.getTotalHealthRegeneration();
         localScale = 8;
-        graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.healthRegenerationBar.currentRealValue = main;
 
         //energy
         main = this.prevailingUnit.maxEnergy;
         localScale = 110;
-        graphicsUtils.makeSpriteSize(this.energyChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.energyChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.energyChartBar.currentRealValue = main;
 
         //energy regen
         main = this.prevailingUnit.getTotalEnergyRegeneration();
         localScale = 8;
-        graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.energyRegenerationBar.currentRealValue = main;
 
         //armor
         main = this.prevailingUnit.getTotalDefense();
         localScale = 12;
-        graphicsUtils.makeSpriteSize(this.armorChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.armorChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.armorChartBar.currentRealValue = main;
 
         //grit
         main = this.prevailingUnit.getTotalGrit();
         localScale = 100;
-        graphicsUtils.makeSpriteSize(this.gritChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.gritChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.gritChartBar.currentRealValue = main;
 
         //dodge
         main = this.prevailingUnit.getTotalRawDodge();
         localScale = 100;
-        graphicsUtils.makeSpriteSize(this.dodgeChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.dodgeChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.dodgeChartBar.currentRealValue = main;
 
         //range
         main = this.prevailingUnit.range;
         localScale = 600;
-        graphicsUtils.makeSpriteSize(this.rangeChartBar, {x: this.chartBarWidth, y: _convertRawToScaled(main, localScale)});
+        graphicsUtils.makeSpriteSize(this.rangeChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
         this.rangeChartBar.currentRealValue = main;
     }
 };
@@ -1607,7 +1780,7 @@ unitPanel.prototype.clearUnitStats = function() {
 unitPanel.prototype.displayCurrentViewUnitStats = function() {
     this.clearUnitStats();
     this.clearUnitStatsGraph();
-    if(this.currentViewState == this.toGraphViewButton) {
+    if (this.currentViewState == this.toGraphViewButton) {
         this.displayUnitStatsGraph();
     } else {
         this.displayUnitStats();
