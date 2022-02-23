@@ -175,6 +175,14 @@ var game = {
             volume: 0.07,
             rate: 1.0
         });
+        this.soundPool.positiveSound2 = gameUtils.getSound('positivesound2.wav', {
+            volume: 0.04,
+            rate: 0.9
+        });
+        this.soundPool.noticeme = gameUtils.getSound('noticeme1.wav', {
+            volume: 0.05,
+            rate: 1.15
+        });
         this.soundPool.positiveSoundFast = gameUtils.getSound('positivevictorysound2.wav', {
             volume: 0.07,
             rate: 1.5

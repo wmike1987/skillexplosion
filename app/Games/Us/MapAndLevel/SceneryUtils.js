@@ -738,6 +738,11 @@ var sceneryUtils = {
                         }
 
                         container.addObject(newDO);
+
+                        //consider the new object's nozone
+                        if(newDO.getNoZone) {
+                            noZones.push(newDO.getNoZone());
+                        }
                     }
 
                     if (hit) {

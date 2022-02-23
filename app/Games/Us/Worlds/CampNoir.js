@@ -1653,6 +1653,7 @@ var campNoir = {
         enemyDefs: enemyDefs,
         tileSize: tileSize,
         acceptableTileTints: acceptableTileTints,
+        treeTints: treeTints,
         innerTintIndexes: [0],
         outerTintIndexes: [1],
         levelTiles: getLevelTiles(),
@@ -1685,19 +1686,19 @@ var campNoir = {
             if (!this.isCampProper) {
                 var numberOfRocks = 3;
 
-                var createRock = function() {
-                    var rock = SceneryUtils.createRock({
-                        tint: rockTints[tIndex],
-                        collidableRocks: true,
-                    });
-                    rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
-                        buffer: 80,
-                        useUpcomingSceneNoZones: true,
-                        noZones: noZones
-                    }));
-                    scene.add(rock);
-                };
-                mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
+                // var createRock = function() {
+                //     var rock = SceneryUtils.createRock({
+                //         tint: rockTints[tIndex],
+                //         collidableRocks: true,
+                //     });
+                //     rock.setPosition(gameUtils.getRandomPlacementWithinPlayableBounds({
+                //         buffer: 80,
+                //         useUpcomingSceneNoZones: true,
+                //         noZones: noZones
+                //     }));
+                //     scene.add(rock);
+                // };
+                // mathArrayUtils.repeatXTimes(createRock, numberOfRocks);
 
                 //desert flower map
                 for (let i = 0; i <= 5; i++) {

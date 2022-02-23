@@ -198,7 +198,7 @@ var levelBase = {
             radius: 40
         }, {
             center: globals.currentGame.mapTablePosition,
-            radius: 40
+            radius: 60
         }, {
             center: globals.currentGame.flagPosition,
             radius: 60
@@ -208,10 +208,10 @@ var levelBase = {
         }];
 
         //set the tile tint
-        this.tileTint = options.levelOptions.tileTint || (this.outer ? worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes)] :
-            worldSpecs.acceptableTileTints[mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes)]);
+        this.tintIndex = this.outer ? mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes) : mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes);
+        this.tileTint = options.levelOptions.tileTint || (this.outer ? worldSpecs.acceptableTileTints[this.tintIndex] : worldSpecs.acceptableTileTints[this.tintIndex]);
 
-        //set the enemy  def
+        //set the enemy def
         this.enemyDefs = Object.assign({}, worldSpecs.enemyDefs[type]);
 
         //hook to override defaults

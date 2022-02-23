@@ -88,6 +88,33 @@ commonAirDropStation.fillLevelSceneExtension = function(scene) {
         },
     });
     scene.add(h);
+
+    //create some trees
+    var numberOfTrees = mathArrayUtils.getRandomIntInclusive(6, 9);
+    var trees = [];
+    mathArrayUtils.repeatXTimes(() => {
+        var tree = SceneryUtils.createTree({
+            tint: this.worldSpecs.treeTints[this.tintIndex]
+        });
+        tree.unique = true;
+        trees.push(tree);
+    }, numberOfTrees);
+
+    var container = SceneryUtils.decorateTerrain({
+        possibleDoodads: trees,
+        tileWidth: 600,
+        maxNumber: numberOfTrees,
+        buffer: 100,
+        hz: 0.4,
+        where: 'stage',
+        r: 1,
+        noZones: [{
+            center: this.airDropLocation,
+            radius: 60
+        }]
+    });
+
+    scene.add(container);
 };
 
 commonAirDropStation.cleanUp = function() {
@@ -121,12 +148,11 @@ commonAirDropStation.createMapNode = function(options) {
                     node.levelDetails.isBattleLevel() &&
                     !node.chosenAsPrereq &&
                     ((!this.levelDetails.bridge && this.levelDetails.outer == node.levelDetails.outer) || (this.levelDetails.bridge && (this.levelDetails.outer != node.levelDetails.outer))) &&
-                    mathArrayUtils.distanceBetweenPoints(options.position, node.position) < prereqDistanceLimit)
-                    {
-                        node.chosenAsPrereq = true;
-                        node.master = this;
-                        this.prereqs.push(node);
-                    }
+                    mathArrayUtils.distanceBetweenPoints(options.position, node.position) < prereqDistanceLimit) {
+                    node.chosenAsPrereq = true;
+                    node.master = this;
+                    this.prereqs.push(node);
+                }
                 count++;
             } while (this.prereqs.length < this.levelDetails.prereqCount);
         },
@@ -170,6 +196,16 @@ commonAirDropStation.createMapNode = function(options) {
                     // this.deactivateToken();
                 } else {
                     if (this.travelPredicate()) {
+                        //indicate we're available if this is the first time we available
+                        if (!this.indicatedAvailable) {
+                            this.indicatedAvailable = true;
+                            gameUtils.doSomethingAfterDuration(() => {
+                                globals.currentGame.soundPool.noticeme.play();
+                                graphicsUtils.shakeSprite(this.regularToken, 600);
+                                graphicsUtils.shakeSprite(this.specialToken, 600);
+                            }, 300);
+                        }
+
                         regularToken.visible = true;
                         specialToken.visible = true;
                         if (!this.gleamTimer) {
@@ -305,7 +341,12 @@ airDropStation.prototype = commonAirDropStation;
 
 var selectionMechanism = {
     _chooseRandomItems: function() {
-        this.presentedChoices = ItemUtils.getRandomItemsFromClass({itemClass: this.itemClass, itemType: this.itemType, amount: 3, uniqueItem: this.uniqueItem});
+        this.presentedChoices = ItemUtils.getRandomItemsFromClass({
+            itemClass: this.itemClass,
+            itemType: this.itemType,
+            amount: 3,
+            uniqueItem: this.uniqueItem
+        });
     },
 
     _displayChoices: function() {
@@ -342,9 +383,9 @@ var selectionMechanism = {
 
                 var itemTitleHelper = item.name;
                 //indicate ursula/shane only items in title
-                if(item.type == 'Marine') {
+                if (item.type == 'Marine') {
                     itemTitleHelper += ' (Shane only)';
-                } else if(item.type == 'Medic') {
+                } else if (item.type == 'Medic') {
                     itemTitleHelper += ' (Ursula only)';
                 }
 

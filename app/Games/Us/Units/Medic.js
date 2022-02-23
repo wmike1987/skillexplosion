@@ -340,7 +340,7 @@ export default function Medic(options) {
         rate: 2.2
     });
     var criticalHitSound = gameUtils.getSound('criticalhit.wav', {
-        volume: 0.03,
+        volume: 0.06,
         rate: 1.0
     });
     var criticalHitSound2 = gameUtils.getSound('criticalhit.wav', {
@@ -1284,22 +1284,23 @@ export default function Medic(options) {
 
     var rsADuration = 3000;
     var rsDAmount = 25;
+    var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of excursion.'],
+        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 4000,
+        defenseCooldown: 5000,
         aggressionEventName: 'holdPosition',
         aggressionCooldown: 4000,
         aggressionDuration: rsADuration,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
-                var addedGrit = 4; //Math.floor(unit.getTotalGrit() / 3.0);
+                var addedGrit = rsPassiveGritAddAmount; //Math.floor(unit.getTotalGrit() / 3.0);
                 if (addedGrit > 0) {
                     unit.addGritAddition(addedGrit);
                     gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
@@ -1321,9 +1322,15 @@ export default function Medic(options) {
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
                     animationName: 'maimblast',
-                    speed: 1.0,
+                    speed: 0.7,
                     transform: [attacker.position.x, attacker.position.y, 0.85, 0.85]
                 });
+                if(grit >= 20) {
+                    maimBlast.scale = {x: 1.1, y: 1.1};
+                }
+                if(grit >= 35) {
+                    maimBlast.scale = {x: 1.6, y: 1.6};
+                }
                 maimBlast.tint = 0xf1ca00;
                 maimBlast.rotation = Math.random() * Math.PI;
                 maimBlast.play();
