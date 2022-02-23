@@ -102,7 +102,7 @@ commonAirDropStation.fillLevelSceneExtension = function(scene) {
 
     var container = SceneryUtils.decorateTerrain({
         possibleDoodads: trees,
-        tileWidth: 600,
+        tileWidth: 250,
         maxNumber: numberOfTrees,
         buffer: 100,
         hz: 0.4,
