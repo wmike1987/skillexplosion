@@ -227,8 +227,8 @@ var moveable = {
             y: 0.0
         });
 
-        //body has stopped, therefore
-        this.body.oneFrameOverrideInterpolation = true;
+        //body has stopped, therefore... (do i need this? this causes an abrubt looking change in position upon stopping)
+        // this.body.oneFrameOverrideInterpolation = true;
 
         //return body to non Sleeping
         this.setSleep(false);
