@@ -330,10 +330,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
     //Convience position creators
     var same = 0;
-    var title = 22;
+    var title = 24;
     var iconSpacing = 30;
     var portrait = 55;
-    var reg = 15;
+    var reg = 20;
+    var arrowBuffer = 40;
     var anotherLabel = 20;
     var divider = 25;
 
@@ -401,16 +402,16 @@ var EndLevelStatScreenOverlay = function(units, options) {
     //determine pages
     var pageSize = 5;
     var shanePages = [
-        []
+        [], []
     ];
     var ursulaPages = [
-        []
+        [], []
     ];
 
     var fillPages = function(options) {
         options = options || {};
         var unit = options.unit;
-        var currentPage = 0;
+        var currentPage = 1; //we're currently starting midway through the second page
         var pageHolder = options.pageHolder;
         var pageSize = options.pageSize;
         var customCollectors = options.unit.statCollector.getLastCollector().getSortedCustomCollectors();
@@ -1254,148 +1255,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         this.shaneStats.push([shaneHealingDoneTitle, shaneHealingDone, placeholder]);
         shanePages[0].push(shaneHealingDoneTitle, shaneHealingDone, placeholder);
 
-        var shaneKnifeTitle = graphicsUtils.createDisplayObject("TEX+:" + knivesThrownKilled, {
-            position: shanePosition(title),
-            style: titleStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: shaneKnifeTitle,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-                //globals.currentGame.soundPool.keypressSound.play();
-            }, startFadeTime * 8);
-        });
-
-        var shaneKnifeStats = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.knivesThrown + "/" + shaneStats.knifeKills, {
-            position: shanePosition(reg),
-            style: statStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: shaneKnifeStats,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-                //globals.currentGame.soundPool.keypressSound.play();
-            }, startFadeTime * 8);
-        });
-
-        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
-            position: shanePosition(reg),
-            style: statDividerStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: placeholder,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-                //globals.currentGame.soundPool.keypressSound.play();
-            }, startFadeTime * 9);
-        });
-        this.shaneStats.push([shaneKnifeTitle, shaneKnifeStats, placeholder]);
-        shanePages[0].push(shaneKnifeTitle, shaneKnifeStats, placeholder);
-
-        var shaneDashTitle = graphicsUtils.createDisplayObject("TEX+:" + dashesPerformed, {
-            position: shanePosition(title),
-            style: titleStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: shaneDashTitle,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-                //globals.currentGame.soundPool.keypressSound.play();
-            }, startFadeTime * 9);
-        });
-
-        var shaneDashesPerformed = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.dashesPerformed, {
-            position: shanePosition(reg),
-            style: statStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: shaneDashesPerformed,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-                //globals.currentGame.soundPool.keypressSound.play();
-            }, startFadeTime * 9);
-        });
-
-        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
-            position: shanePosition(reg),
-            style: statDividerStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: placeholder,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-                //globals.currentGame.soundPool.keypressSound.play();
-            }, startFadeTime * 9);
-        });
-        this.shaneStats.push([shaneDashTitle, shaneDashesPerformed, placeholder]);
-        shanePages[0].push(shaneDashTitle, shaneDashesPerformed, placeholder);
-
+        shanePosition(arrowBuffer);
         var shaneArrowPosition = shanePosition(reg);
         var shaneLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<<', {
             position: mathArrayUtils.clonePosition(shaneArrowPosition, {
@@ -1509,7 +1369,216 @@ var EndLevelStatScreenOverlay = function(units, options) {
         });
         this.shaneStats.push([shaneLeftArrow, shaneRightArrow, placeholder]);
 
-        //Ursula
+        //second shane page start
+        //reset shane position
+        shaneY.value = 0;
+        shanePosition(portrait);
+        shanePosition(reg);
+        var shaneKnifeTitle = graphicsUtils.createDisplayObject("TEX+:" + knivesThrownKilled, {
+            position: shanePosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        var shaneKnifeStats = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.knivesThrown + "/" + shaneStats.knifeKills, {
+            position: shanePosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: shanePosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.shaneStats.push([shaneKnifeTitle, shaneKnifeStats, placeholder]);
+        shanePages[1].push(shaneKnifeTitle, shaneKnifeStats, placeholder);
+
+        var shaneDashTitle = graphicsUtils.createDisplayObject("TEX+:" + dashesPerformed, {
+            position: shanePosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        var shaneDashesPerformed = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.dashesPerformed, {
+            position: shanePosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: shanePosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.shaneStats.push([shaneDashTitle, shaneDashesPerformed, placeholder]);
+        shanePages[1].push(shaneDashTitle, shaneDashesPerformed, placeholder);
+
+        var shaneHPRegenTitle = graphicsUtils.createDisplayObject("TEX+:Total HP Regenerated", {
+            position: shanePosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var shaneHealthRegen = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.hpRegen.toFixed(1), {
+            position: shanePosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: shanePosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.shaneStats.push([shaneHPRegenTitle, shaneHealthRegen, placeholder]);
+        shanePages[1].push(shaneHPRegenTitle, shaneHealthRegen, placeholder);
+
+        var shaneEnergyRegenTitle = graphicsUtils.createDisplayObject("TEX+:Total Energy Regenerated", {
+            position: shanePosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var shaneEnergyRegen = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.energyRegen.toFixed(1), {
+            position: shanePosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: shanePosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.shaneStats.push([shaneEnergyRegenTitle, shaneEnergyRegen, placeholder]);
+        shanePages[1].push(shaneEnergyRegenTitle, shaneEnergyRegen, placeholder);
+
+        var shaneKillingBlocksRegenTitle = graphicsUtils.createDisplayObject("TEX+:Killing Blows Blocked", {
+            position: shanePosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var shaneKillingBlocks = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.killingBlow, {
+            position: shanePosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: shanePosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.shaneStats.push([shaneKillingBlocksRegenTitle, shaneKillingBlocks, placeholder]);
+        shanePages[1].push(shaneKillingBlocksRegenTitle, shaneKillingBlocks, placeholder);
+
+        var shaneGritBonusTitle = graphicsUtils.createDisplayObject("TEX+:HP Regenerated From Grit Bonus", {
+            position: shanePosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var shaneGritBonus = graphicsUtils.createDisplayObject("TEX+:" + shaneStats.gritRegen.toFixed(1), {
+            position: shanePosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: shanePosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.shaneStats.push([shaneGritBonusTitle, shaneGritBonus, placeholder]);
+        shanePages[1].push(shaneGritBonusTitle, shaneGritBonus, placeholder);
+
+        //***************
+        //    Ursula
+        //***************
         startPos = ursulaPosition(same);
         startPos.x -= 105;
         var medicPortrait = graphicsUtils.createDisplayObject('MedicPortrait', {
@@ -2119,142 +2188,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         this.ursulaStats.push([ursulaHealingDoneTitle, ursulaHealingDone, placeholder]);
         ursulaPages[0].push(ursulaHealingDoneTitle, ursulaHealingDone, placeholder);
 
-        var minesLaidTitle = graphicsUtils.createDisplayObject("TEX+:" + minesLaid, {
-            position: ursulaPosition(title),
-            style: titleStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: minesLaidTitle,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime * 8);
-        });
-
-        var minesLaidDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.minesLaid, {
-            position: ursulaPosition(reg),
-            style: statStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: minesLaidDone,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime * 8);
-        });
-
-        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
-            position: ursulaPosition(reg),
-            style: statDividerStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: placeholder,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime * 9);
-        });
-        this.ursulaStats.push([minesLaidTitle, minesLaidDone, placeholder]);
-        ursulaPages[0].push(minesLaidTitle, minesLaidDone, placeholder);
-
-        var secretStepsTitle = graphicsUtils.createDisplayObject("TEX+:" + secretStepsPerformed, {
-            position: ursulaPosition(title),
-            style: titleStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: secretStepsTitle,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime * 9);
-        });
-
-        var secretStepsDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.secretStepsPerformed, {
-            position: ursulaPosition(reg),
-            style: statStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: secretStepsDone,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime * 9);
-        });
-
-        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
-            position: ursulaPosition(reg),
-            style: statDividerStyle,
-            where: "hudText",
-            anchor: {
-                x: 0.5,
-                y: 0.5
-            },
-            visible: false
-        });
-        gameUtils.matterOnce(scene, 'sceneFadeInDone', () => {
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTime({
-                    sprite: placeholder,
-                    duration: 1000,
-                    fadeIn: true,
-                    nokill: true,
-                    makeVisible: true
-                });
-            }, startFadeTime * 9);
-        });
-        this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
-        ursulaPages[0].push(secretStepsTitle, secretStepsDone, placeholder);
-
+        ursulaPosition(arrowBuffer);
         var ursulaArrowPosition = ursulaPosition(reg);
         var ursulaLeftArrow = graphicsUtils.createDisplayObject("TEX+:" + '<<', {
             position: mathArrayUtils.clonePosition(ursulaArrowPosition, {
@@ -2367,6 +2301,213 @@ var EndLevelStatScreenOverlay = function(units, options) {
             }, startFadeTime * 10);
         });
         this.ursulaStats.push([ursulaLeftArrow, ursulaRightArrow, placeholder]);
+
+        //second ursula page start
+        //reset ursula position
+        ursulaY.value = 0;
+        ursulaPosition(portrait);
+        ursulaPosition(reg);
+        var minesLaidTitle = graphicsUtils.createDisplayObject("TEX+:" + minesLaid, {
+            position: ursulaPosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        var minesLaidDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.minesLaid, {
+            position: ursulaPosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: ursulaPosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.ursulaStats.push([minesLaidTitle, minesLaidDone, placeholder]);
+        ursulaPages[1].push(minesLaidTitle, minesLaidDone, placeholder);
+
+        var secretStepsTitle = graphicsUtils.createDisplayObject("TEX+:" + secretStepsPerformed, {
+            position: ursulaPosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        var secretStepsDone = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.secretStepsPerformed, {
+            position: ursulaPosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: ursulaPosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.ursulaStats.push([secretStepsTitle, secretStepsDone, placeholder]);
+        ursulaPages[1].push(secretStepsTitle, secretStepsDone, placeholder);
+
+        var ursulaHPRegenTitle = graphicsUtils.createDisplayObject("TEX+:Total HP Regenerated", {
+            position: ursulaPosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var ursulaHealthRegen = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.hpRegen.toFixed(1), {
+            position: ursulaPosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: ursulaPosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.ursulaStats.push([ursulaHPRegenTitle, ursulaHealthRegen, placeholder]);
+        ursulaPages[1].push(ursulaHPRegenTitle, ursulaHealthRegen, placeholder);
+
+        var ursulaEnergyRegenTitle = graphicsUtils.createDisplayObject("TEX+:Total Energy Regenerated", {
+            position: ursulaPosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var ursulaEnergyRegen = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.energyRegen.toFixed(1), {
+            position: ursulaPosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: ursulaPosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.ursulaStats.push([ursulaEnergyRegenTitle, ursulaEnergyRegen, placeholder]);
+        ursulaPages[1].push(ursulaEnergyRegenTitle, ursulaEnergyRegen, placeholder);
+
+        var ursulaKillingBlocksRegenTitle = graphicsUtils.createDisplayObject("TEX+:Killing Blows Blocked", {
+            position: ursulaPosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var ursulaKillingBlocks = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.killingBlow, {
+            position: ursulaPosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: ursulaPosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.ursulaStats.push([ursulaKillingBlocksRegenTitle, ursulaKillingBlocks, placeholder]);
+        ursulaPages[1].push(ursulaKillingBlocksRegenTitle, ursulaKillingBlocks, placeholder);
+
+        var ursulaGritBonusTitle = graphicsUtils.createDisplayObject("TEX+:HP Regenerated From Grit Bonus", {
+            position: ursulaPosition(title),
+            style: titleStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        var ursulaGritBonus = graphicsUtils.createDisplayObject("TEX+:" + ursulaStats.gritRegen.toFixed(1), {
+            position: ursulaPosition(reg),
+            style: statStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        placeholder = graphicsUtils.createDisplayObject("TEX+:" + divider, {
+            position: ursulaPosition(reg),
+            style: statDividerStyle,
+            where: "hudText",
+            anchor: {
+                x: 0.5,
+                y: 0.5
+            },
+            visible: false
+        });
+        this.ursulaStats.push([ursulaGritBonusTitle, ursulaGritBonus, placeholder]);
+        ursulaPages[1].push(ursulaGritBonusTitle, ursulaGritBonus, placeholder);
 
         //Add everything to the scene
         this.shaneStats.forEach((objArr) => {

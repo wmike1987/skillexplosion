@@ -10,7 +10,7 @@
 },
 "AttackIcon.png":
 {
-	"frame": {"x":31,"y":585,"w":28,"h":19},
+	"frame": {"x":65,"y":574,"w":28,"h":19},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":19},
@@ -42,7 +42,7 @@
 },
 "CondemnBuffHeal.png":
 {
-	"frame": {"x":69,"y":574,"w":29,"h":28},
+	"frame": {"x":35,"y":533,"w":29,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":29,"h":28},
@@ -58,10 +58,10 @@
 },
 "DodgeBuff.png":
 {
-	"frame": {"x":35,"y":534,"w":31,"h":32},
-	"rotated": true,
+	"frame": {"x":35,"y":473,"w":30,"h":31},
+	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":1,"y":0,"w":31,"h":32},
+	"spriteSourceSize": {"x":2,"y":1,"w":30,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "Grave.png":
@@ -74,7 +74,7 @@
 },
 "GritBlockActive.png":
 {
-	"frame": {"x":103,"y":525,"w":24,"h":19},
+	"frame": {"x":95,"y":589,"w":24,"h":19},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":8,"w":24,"h":19},
@@ -106,7 +106,7 @@
 },
 "HealthEnergyObscure.png":
 {
-	"frame": {"x":35,"y":500,"w":32,"h":32},
+	"frame": {"x":67,"y":500,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -114,7 +114,7 @@
 },
 "HiddenBuff.png":
 {
-	"frame": {"x":103,"y":500,"w":24,"h":23},
+	"frame": {"x":100,"y":564,"w":24,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":24,"h":23},
@@ -122,7 +122,7 @@
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":103,"y":546,"w":23,"h":23},
+	"frame": {"x":1,"y":593,"w":23,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":23},
@@ -130,7 +130,7 @@
 },
 "HoldPositionRook.png":
 {
-	"frame": {"x":103,"y":571,"w":20,"h":23},
+	"frame": {"x":26,"y":593,"w":20,"h":23},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":5,"w":20,"h":23},
@@ -154,7 +154,7 @@
 },
 "IsometricSelectedSmall.png":
 {
-	"frame": {"x":69,"y":534,"w":32,"h":18},
+	"frame": {"x":66,"y":534,"w":32,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":18},
@@ -186,7 +186,7 @@
 },
 "IsoShadowBlurredSmall.png":
 {
-	"frame": {"x":35,"y":567,"w":32,"h":16},
+	"frame": {"x":1,"y":575,"w":32,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":16},
@@ -226,7 +226,7 @@
 },
 "MoveIcon.png":
 {
-	"frame": {"x":1,"y":569,"w":28,"h":28},
+	"frame": {"x":35,"y":563,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
@@ -234,15 +234,15 @@
 },
 "MoveTarget.png":
 {
-	"frame": {"x":1,"y":541,"w":32,"h":26},
-	"rotated": false,
+	"frame": {"x":101,"y":500,"w":32,"h":26},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":6,"w":32,"h":26},
 	"sourceSize": {"w":32,"h":32}
 },
 "PetrifyBuff.png":
 {
-	"frame": {"x":69,"y":500,"w":32,"h":32},
+	"frame": {"x":1,"y":541,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -266,7 +266,7 @@
 },
 "PrevailingUnitIndicatorSmall.png":
 {
-	"frame": {"x":69,"y":554,"w":32,"h":18},
+	"frame": {"x":66,"y":554,"w":32,"h":18},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":18},
@@ -274,7 +274,7 @@
 },
 "SpeedBuff.png":
 {
-	"frame": {"x":35,"y":473,"w":25,"h":30},
+	"frame": {"x":35,"y":506,"w":25,"h":30},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":2,"w":25,"h":30},
@@ -282,7 +282,7 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":1,"y":599,"w":20,"h":20},
+	"frame": {"x":51,"y":595,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
@@ -290,7 +290,7 @@
 },
 "StunBuff.png":
 {
-	"frame": {"x":100,"y":593,"w":28,"h":25},
+	"frame": {"x":100,"y":534,"w":28,"h":25},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":1,"w":28,"h":25},
@@ -303,8 +303,8 @@
 	"version": "1.0",
 	"image": "BaseUnit.png",
 	"format": "RGBA8888",
-	"size": {"w":128,"h":622},
+	"size": {"w":128,"h":617},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:c5b57bc7d0440f72aac60b3664a13ecf:95deb9d823ed970e0bdb564f699f8084:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:1d648aa2b5eabe19f1f6360da16daff3:3738e62f72e4430c12d60719fb0a93de:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

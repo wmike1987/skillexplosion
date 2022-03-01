@@ -441,9 +441,9 @@ var UnitBase = {
                 performingUnit: performingUnit,
                 amountDone: healingDone
             });
-
-            return healingDone;
         }
+        
+        return healingDone;
     },
 
     giveEnergy: function(amount, performingUnit, options) {
@@ -1623,9 +1623,15 @@ var UnitBase = {
             callback: function() {
                 if (this.ignoreEnergyRegeneration) return;
                 if (this.currentEnergy < this.maxEnergy && this.energyRegenerationRate) {
-                    this.giveEnergy(this.getTotalEnergyRegeneration() / 2.0, null, {
+                    let energyGained = this.giveEnergy(this.getTotalEnergyRegeneration() / 2.0, null, {
                         invisible: true
                     });
+
+                    if(!energyGained) {
+                        return;
+                    }
+
+                    Matter.Events.trigger(globals.currentGame, 'energyRegen', {performingUnit: this, value: energyGained});
                 }
             }.bind(this)
         });
@@ -1640,9 +1646,19 @@ var UnitBase = {
                 if (this.ignoreHealthRegeneration) return;
                 if (this.currentHealth < this.maxHealth && this.healthRegenerationRate) {
                     var healthAddition = this.getTotalHealthRegeneration() / 2.0;
-                    this.giveHealth(healthAddition, null, {
+                    let healthGained = this.giveHealth(healthAddition, null, {
                         invisible: true
                     });
+
+                    if(!healthGained) {
+                        return;
+                    }
+
+                    let normalHealGain = healthAddition / this.gritMult;
+                    let gritGain = Math.max(0, healthGained - normalHealGain);
+
+                    Matter.Events.trigger(globals.currentGame, 'hpRegen', {performingUnit: this, value: healthGained});
+                    Matter.Events.trigger(globals.currentGame, 'gritHPRegen', {performingUnit: this, value: gritGain});
                 }
             }.bind(this)
         });

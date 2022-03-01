@@ -114,6 +114,10 @@ var CollectorManager = function(options) {
         var mineCollector = new MineCollector(options);
         var secretStepCollector = new SecretStepCollector(options);
         var dodgeCollector = new DodgeCollector(options);
+        var hpRegenCollector = new HPRegenCollector(options);
+        var energyRegenCollector = new EnergyRegenCollector(options);
+        var killingBlowDodgeCollector = new KillingBlowCollector(options);
+        var gritRegenCollector = new GritHPRegenCollector(options);
 
         this.collectors.push(damageCollector);
         this.collectors.push(healingCollector);
@@ -126,6 +130,10 @@ var CollectorManager = function(options) {
         this.collectors.push(mineCollector);
         this.collectors.push(secretStepCollector);
         this.collectors.push(dodgeCollector);
+        this.collectors.push(hpRegenCollector);
+        this.collectors.push(energyRegenCollector);
+        this.collectors.push(killingBlowDodgeCollector);
+        this.collectors.push(gritRegenCollector);
     }
 
     this.startCollecting = function() {
@@ -408,6 +416,53 @@ var DodgeCollector = function(options) {
     }.bind(this);
 };
 DodgeCollector.prototype = Collector;
+
+var HPRegenCollector = function(options) {
+    this.name = "hpRegen";
+    this.eventName = 'hpRegen';
+    this.collectorFunction = function(event) {
+        let hpRegen = event.value;
+        if (options.predicate(event)) {
+            this.value += hpRegen;
+        }
+    }.bind(this);
+};
+HPRegenCollector.prototype = Collector;
+
+var EnergyRegenCollector = function(options) {
+    this.name = "energyRegen";
+    this.eventName = 'energyRegen';
+    this.collectorFunction = function(event) {
+        let energyRegen = event.value;
+        if (options.predicate(event)) {
+            this.value += energyRegen;
+        }
+    }.bind(this);
+};
+EnergyRegenCollector.prototype = Collector;
+
+var KillingBlowCollector = function(options) {
+    this.name = "killingBlow";
+    this.eventName = 'killingBlowBlock';
+    this.collectorFunction = function(event) {
+        if (options.predicate(event)) {
+            this.value += 1;
+        }
+    }.bind(this);
+};
+KillingBlowCollector.prototype = Collector;
+
+var GritHPRegenCollector = function(options) {
+    this.name = "gritRegen";
+    this.eventName = 'gritHPRegen';
+    this.collectorFunction = function(event) {
+        let hpRegen = event.value;
+        if (options.predicate(event)) {
+            this.value += hpRegen;
+        }
+    }.bind(this);
+};
+GritHPRegenCollector.prototype = Collector;
 
 export {
     StatCollector,
