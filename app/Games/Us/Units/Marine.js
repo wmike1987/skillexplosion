@@ -1491,6 +1491,7 @@ export default function Marine(options) {
             }
         ],
         itemsEnabled: true,
+        frameTint: 0xd22121,
         name: options.name,
         heightAnimation: 'up',
         // skinTweak: {r: 0.5, g: 3.0, b: 0.5, a: 1.0},

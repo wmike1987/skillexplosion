@@ -1869,6 +1869,7 @@ export default function Medic(options) {
         hitboxHeight: 56,
         adjustHitbox: false,
         itemsEnabled: true,
+        frameTint: 0x0c7d10,
         dodgeSound: dodgeSound,
         holdPositionSound: holdPositionSound,
         mineDamage: 25,

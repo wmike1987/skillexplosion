@@ -203,7 +203,8 @@ export default {
     },
 
     canAttackPredicate: function(target) {
-        return this.canAttack && (gameUtils.isPositionWithinPlayableBounds(this.position, 40) || this.team == globals.currentGame.playerTeam);
+        let canAttackBuffer = this.isMelee ? 5 : 30;
+        return this.canAttack && (gameUtils.isPositionWithinPlayableBounds(this.position, canAttackBuffer) || this.team == globals.currentGame.playerTeam);
     },
 
     _attack: function(target) {

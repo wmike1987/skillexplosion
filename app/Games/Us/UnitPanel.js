@@ -963,6 +963,13 @@ var unitPanel = function(options) {
         w: gameUtils.getCanvasWidth(),
         h: gameUtils.getUnitPanelHeight()
     });
+
+    //create frame tint
+    this.frameTint = graphicsUtils.createDisplayObject('UnitPanelFrameTint', {
+        persists: true,
+        position: this.position,
+    });
+    this.frameTint.activatedAlpha = 0.3;
 };
 
 unitPanel.prototype.swapStatView = function() {
@@ -1011,6 +1018,8 @@ unitPanel.prototype.initialize = function(options) {
 
     //add frame to world
     graphicsUtils.addSomethingToRenderer(this.frame, 'hud');
+
+    graphicsUtils.addSomethingToRenderer(this.frameTint, 'hud');
 
     //listen for when the prevailing unit changes
     Matter.Events.on(this.unitSystem, 'prevailingUnitChange', function(event) {
@@ -1184,6 +1193,10 @@ unitPanel.prototype.updatePrevailingUnit = function(unit) {
         this.displayCommands();
         this.highlightGroupUnit(unit);
         this.updateUnitItems(unit);
+
+        //tint frame tint
+        this.frameTint.tint = this.prevailingUnit.frameTint || 0xffffff;
+        this.frameTint.alpha = this.frameTint.activatedAlpha;
 
         //stat view button
         if (this.currentViewState == this.toGraphViewButton) {
@@ -1374,6 +1387,10 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
 
     graphicsUtils.hideDisplayObject(this.toGraphViewButton);
     graphicsUtils.hideDisplayObject(this.toNumberViewButton);
+
+    //reset the frame tint
+    this.frameTint.tint = 0xffffff;
+    this.frameTint.alpha = 0.0;
 
     //clear exp bar
     if (!options.transitioningUnits) {
