@@ -282,6 +282,10 @@ var graphicsUtils = {
         this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500});
     },
 
+    fadeSpriteInQuickly: function(sprite, duration) {
+        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500, fadeIn: true});
+    },
+
     fadeSpriteOverTime: function(options) {
         options = Object.assign({
             time: options.duration || 1000,

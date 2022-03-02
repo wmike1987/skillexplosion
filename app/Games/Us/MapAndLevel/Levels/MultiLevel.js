@@ -46,6 +46,9 @@ var multiLevel = function(options) {
                 newOptions.levelOptions.createOneShotUnit = false;
             }
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
+            newLevel.multiLevel = true;
+            newLevel.multiLevelPosition = index;
+            newLevel.multiLevelSize = this.enemyDefList.length;
             newOptions.mapNodeOptions.bypassNodeCreation = false;
             this.chain.push(newLevel);
 

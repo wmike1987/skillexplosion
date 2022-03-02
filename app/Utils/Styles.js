@@ -35,6 +35,22 @@ export default {
         strokeThickness: 4
     }),
 
+    scoreStyleNonItalic: new PIXI.TextStyle({
+        name: 'scoreStyleNonItalic',
+        fontFamily: 'Arial',
+        fontSize: 16,
+        fill: ['#01A8F8'],
+        stroke: '#4a1850',
+        strokeThickness: 1,
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 1,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 1,
+        wordWrap: true,
+        wordWrapWidth: 440
+    }),
+
     scoreStyle: new PIXI.TextStyle({
         name: 'scoreStyle',
         fontFamily: 'Arial',

@@ -106,7 +106,7 @@ var levelBase = {
 
         //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
+            graphicsUtils.floatText('.', gameUtils.getPlayableCenterPlus({
                 y: 20
             }), {
                 duration: 1000,
@@ -120,7 +120,7 @@ var levelBase = {
             globals.currentGame.unitSystem.unitPanel.clearEnemyIcons();
         }, 800);
         gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.floatText(".", gameUtils.getPlayableCenterPlus({
+            graphicsUtils.floatText('.', gameUtils.getPlayableCenterPlus({
                 y: 20
             }), {
                 duration: 1000,
@@ -144,7 +144,7 @@ var levelBase = {
             game.heartbeat.play();
 
             //show new enemy sets
-            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this.enemySets);
+            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this);
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
                 level: level

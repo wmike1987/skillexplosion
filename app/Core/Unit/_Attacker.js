@@ -24,6 +24,7 @@ export default {
     specifiedAttackTarget: null,
     attackAutocast: true,
     holdPositionId: 1,
+    reissueAttackMoveDistance: 200,
 
     //default
     attack: function(target) {
@@ -533,11 +534,17 @@ export default {
             //If we're here, we're on alert...
             //Either we were given an attack move command, "still" and on-alert, or were given a specific target
             //If we were given an "attack move" command and no longer have a target or a hone, let's issue an identical attackMove command
+            //   but only if we're a certain distance from our original destination. This prevents minor movements that can feel unintended.
+            //   If we're within this threshold, we'll issue a stop, passing the commandObj to it, essentially completing the attack move command.
             //If we are "still" and no longer have a target or a hone, let's stop.
             //If we were given a "specific target" to attack, we only want to naturally stop if we can no longer attack it
             if (!this.currentHone && !this.currentTarget) {
                 //given attack move, reissue the attack move
                 if (this.attackMoveDestination && (!this.attackMoving || this.isHoning) && this.attackReady && !this.reissuingAttackMove) {
+                    if(mathArrayUtils.distanceBetweenPoints(this.position, this.attackMoveDestination) < this.reissueAttackMoveDistance) {
+                        this.stop(commandObj);
+                        return;
+                    }
 
                     //let's pause briefly before issue the attack move
 
@@ -557,10 +564,10 @@ export default {
                         });
                     }
 
-                    //we were still, let's stop
+                //we were still, let's stop
                 } else if (!this.attackMoveDestination && !this.attackMoving && !this.specifiedAttackTarget && this.isMoving) {
                     this.stop();
-                    //else let's check to see if our specified attack target can still be targeted
+                //else let's check to see if our specified attack target can still be targeted
                 } else if (this.specifiedAttackTarget) {
                     if (!this.canTargetUnit(this.specifiedAttackTarget) || this.isHoldingPosition) {
                         this.stop(null, {isHoldingPosition: this.isHoldingPosition});

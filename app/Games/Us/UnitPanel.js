@@ -948,6 +948,12 @@ var unitPanel = function(options) {
     this.enemyCountXOffset = 44;
     this.enemyIcons = {};
 
+    //multi level panel position
+    this.multiLevelPanelPosition = {
+        x: this.centerX + 508,
+        y: this.centerY + 16
+    };
+
     //create frame
     this.frame = graphicsUtils.createDisplayObject('UnitPanelFrame', {
         persists: true,
@@ -968,6 +974,7 @@ var unitPanel = function(options) {
     this.frameTint = graphicsUtils.createDisplayObject('UnitPanelFrameTint', {
         persists: true,
         position: this.position,
+        alpha: 0.0
     });
     this.frameTint.activatedAlpha = 0.3;
 };
@@ -1224,9 +1231,15 @@ unitPanel.prototype.clearEnemyIcons = function() {
         graphicsUtils.fadeSpriteQuicklyThenDestroy(set.number, 250);
     }));
     this.enemyIcons = [];
+
+    if(this.multiLevelPositionCount) {
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.multiLevelPositionCount, 250);
+    }
 };
 
-unitPanel.prototype.addEnemyIcons = function(enemySets) {
+unitPanel.prototype.addEnemyIcons = function(level) {
+    var enemySets = level.enemySets;
+    var fadeInTime = 1000;
     var filteredSets = enemySets.filter((set) => {
         return !set.trivial;
     });
@@ -1239,9 +1252,31 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
         }),
         spacing: 50
     });
+
+    //comprehend multi level
+    var multiLevelPosition = null;
+    if (level.multiLevel) {
+        multiLevelPosition = graphicsUtils.addSomethingToRenderer("TEX+:(" + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
+            position: mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
+                y: 125
+            }),
+            style: styles.scoreStyleNonItalic
+        });
+        graphicsUtils.fadeSpriteInQuickly(multiLevelPosition, fadeInTime);
+    }
+
+    var getIconPosition = function(i) {
+        return mathArrayUtils.clonePosition(this.enemyCountStart, {
+            x: (Math.floor(i / 2.0) * this.enemyCountXOffset),
+            y: ((i % 2) * this.enemyCountYOffset)
+        });
+    }.bind(this);
+
     filteredSets.forEach((set, index) => {
         let existingNumber = Object.keys(this.enemyIcons).length;
         let fromPosition = positions[index];
+
+        //create the number
         let number = graphicsUtils.addSomethingToRenderer("TEX+:" + set.spawn.total, {
             position: mathArrayUtils.clonePosition(fromPosition, {
                 x: 12,
@@ -1250,10 +1285,14 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
             where: 'hudOne',
             style: styles.fpsStyle
         });
+        graphicsUtils.fadeSpriteInQuickly(number, fadeInTime);
+
+        //create the actual icon (and border)
         let icon = graphicsUtils.addSomethingToRenderer(set.icon, {
             position: fromPosition,
             where: 'hudOne'
         });
+        graphicsUtils.fadeSpriteInQuickly(icon, fadeInTime);
         graphicsUtils.makeSpriteSize(icon, this.enemyIconSize);
         graphicsUtils.addBorderToSprite({
             sprite: icon,
@@ -1261,6 +1300,8 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
             doubleBorder: true,
             doubleBorderTint: 0x12120d
         });
+
+        graphicsUtils.fadeSpriteInQuickly(icon.addedBorder, fadeInTime);
         graphicsUtils.flashSprite({
             sprite: icon.addedBorder,
             fromColor: 0x996a6a,
@@ -1268,69 +1309,78 @@ unitPanel.prototype.addEnemyIcons = function(enemySets) {
             times: 3,
             duration: 200
         });
-        let toPosition = mathArrayUtils.clonePosition(this.enemyCountStart, {
-            x: (Math.floor(existingNumber/2.0) * this.enemyCountXOffset),
-            y: ((existingNumber % 2) * this.enemyCountYOffset)
-        });
+        let toPosition = getIconPosition(existingNumber);
         this.enemyIcons[set.id] = {
             icon: icon,
             number: number,
             toPosition: toPosition
         };
-
-        var iconSpeed = 12;
-        var timingSpace = 150;
-        gameUtils.doSomethingAfterDuration(() => {
-            Object.values(this.enemyIcons).forEach((ic, index) => {
-                gameUtils.doSomethingAfterDuration(() => {
-                    globals.currentGame.soundPool.swipeQuiet.play();
-                    graphicsUtils.sendSpriteToDestinationAtSpeed({
-                        sprite: ic.icon,
-                        destination: ic.toPosition,
-                        pointAtDestination: false,
-                        speed: iconSpeed,
-                        surpassDestination: false
-                    });
-                }, index * timingSpace);
-
-                gameUtils.doSomethingAfterDuration(() => {
-                    globals.currentGame.soundPool.swipeQuiet.play();
-                    graphicsUtils.sendSpriteToDestinationAtSpeed({
-                        sprite: ic.number,
-                        destination: mathArrayUtils.clonePosition(ic.toPosition, {
-                            x: 12,
-                            y: 12
-                        }),
-                        pointAtDestination: false,
-                        speed: iconSpeed,
-                        surpassDestination: false
-                    });
-                }, index * timingSpace);
-
-                gameUtils.doSomethingAfterDuration(() => {
-                    globals.currentGame.soundPool.swipeQuiet.play();
-                    graphicsUtils.sendSpriteToDestinationAtSpeed({
-                        sprite: ic.icon.addedBorder,
-                        destination: ic.toPosition,
-                        pointAtDestination: false,
-                        speed: iconSpeed,
-                        surpassDestination: false
-                    });
-                }, index * timingSpace);
-
-                gameUtils.doSomethingAfterDuration(() => {
-                    globals.currentGame.soundPool.swipeQuiet.play();
-                    graphicsUtils.sendSpriteToDestinationAtSpeed({
-                        sprite: ic.icon.addedDoubleBorder,
-                        destination: ic.toPosition,
-                        pointAtDestination: false,
-                        speed: iconSpeed,
-                        surpassDestination: false
-                    });
-                }, index * timingSpace);
-            });
-        }, 2500);
     });
+
+    var iconSpeed = 12;
+    var timingSpace = 150;
+    var self = this;
+    gameUtils.doSomethingAfterDuration(() => {
+        Object.values(this.enemyIcons).forEach((ic, index) => {
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.soundPool.swipeQuiet.play();
+                graphicsUtils.sendSpriteToDestinationAtSpeed({
+                    sprite: ic.icon,
+                    destination: ic.toPosition,
+                    pointAtDestination: false,
+                    speed: iconSpeed,
+                    surpassDestination: false
+                });
+
+                //fade multi level position and create the panel representation
+                if(multiLevelPosition && index == 0) {
+                    graphicsUtils.fadeSpriteQuicklyThenDestroy(multiLevelPosition, 250);
+                    self.multiLevelPositionCount = graphicsUtils.addSomethingToRenderer("TEX+:(" + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
+                        position: getIconPosition(filteredSets.length),
+                        style: styles.scoreStyleNonItalic,
+                        alpha: 0.75
+                    });
+                }
+
+            }, index * timingSpace);
+
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.soundPool.swipeQuiet.play();
+                graphicsUtils.sendSpriteToDestinationAtSpeed({
+                    sprite: ic.number,
+                    destination: mathArrayUtils.clonePosition(ic.toPosition, {
+                        x: 12,
+                        y: 12
+                    }),
+                    pointAtDestination: false,
+                    speed: iconSpeed,
+                    surpassDestination: false
+                });
+            }, index * timingSpace);
+
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.soundPool.swipeQuiet.play();
+                graphicsUtils.sendSpriteToDestinationAtSpeed({
+                    sprite: ic.icon.addedBorder,
+                    destination: ic.toPosition,
+                    pointAtDestination: false,
+                    speed: iconSpeed,
+                    surpassDestination: false
+                });
+            }, index * timingSpace);
+
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.soundPool.swipeQuiet.play();
+                graphicsUtils.sendSpriteToDestinationAtSpeed({
+                    sprite: ic.icon.addedDoubleBorder,
+                    destination: ic.toPosition,
+                    pointAtDestination: false,
+                    speed: iconSpeed,
+                    surpassDestination: false
+                });
+            }, index * timingSpace);
+        });
+    }, 2500);
 };
 
 unitPanel.prototype.decrementEnemyCount = function(enemySetId) {
