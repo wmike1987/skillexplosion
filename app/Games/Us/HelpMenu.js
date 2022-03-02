@@ -441,14 +441,14 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage2.addLineTitle({
-        text: 'Raised Stakes',
+        text: 'Berserk',
         image: 'RaisedStakesBuff',
         imageOffset: {
             x: -6
         }
     });
     BuffPage2.addLine({
-        text: 'Greatly increases damage/healing.'
+        text: 'Double attack speed.'
     });
 
     this.addPage(BuffPage2);

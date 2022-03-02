@@ -1124,6 +1124,17 @@ export default function Medic(options) {
     var sacCollEventName = 'sacCollEvent';
     var efCollEventName = 'efCollEvent';
     var continuousHealthNeeded = 20;
+    var rsThresholdChangeAmount = continuousHealthNeeded*2.0/3.0;
+    var enrichedBasicColor = {
+        r: 1.0,
+        g: 0.5,
+        b: 0.5
+    };
+    var enrichedThresholdColor = {
+        r: 1.0,
+        g: 0.0,
+        b: 1.0
+    };
     var enrageEFTime = 4000;
     var healAbility = new Ability({
         name: 'Heal',
@@ -1179,16 +1190,11 @@ export default function Medic(options) {
                 name: 'enriched formula',
                 icon: graphicsUtils.createDisplayObject('EnrichedFormula'),
                 title: 'Enriched Formula',
-                description: ['Enrage ally for 4 seconds upon giving 20 health.'],
+                description: ['Grant ally berserk for 4 seconds upon giving 20 health.'],
                 equip: function(unit) {
                     this.hpGivenTally = 0;
                     this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
                         this.hpGivenTally = 0;
-                    });
-                    medic.alterHealingColor({
-                        r: 1,
-                        g: 0.0,
-                        b: 1.0
                     });
                 },
                 unequip: function(unit) {
@@ -1205,7 +1211,7 @@ export default function Medic(options) {
                     },
                     eventName: efCollEventName,
                     presentation: {
-                        labels: ["Times enrage granted"]
+                        labels: ["Times berserk granted"]
                     }
                 }
             },
@@ -1287,7 +1293,7 @@ export default function Medic(options) {
     var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Triple healing cost and healing amount for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Go berserk (increased attack speed) for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
@@ -1343,28 +1349,13 @@ export default function Medic(options) {
             }
         },
         aggressionAction: function(event) {
-            medic.applyBuff({
-                id: "stakesHealBuff" + mathArrayUtils.getId(),
-                duration: rsADuration,
-                textureName: 'RaisedStakesBuff',
-                applyChanges: function() {
-                    var healAbility = medic.getAbilityByName('Heal');
-                    healAbility.energyCost *= 3;
-                    healAbility.healAmount *= 3;
-                },
-                removeChanges: function() {
-                    var healAbility = medic.getAbilityByName('Heal');
-                    healAbility.energyCost /= 3;
-                    healAbility.healAmount /= 3;
-                }
-            });
-
+            medic.berserk({duration: rsADuration, id: 'raisedStakesBerserk', amount: 2});
             return {
                 value: rsADuration / 1000
             };
         },
         collector: {
-            aggressionLabel: 'Duration of 3x healing',
+            aggressionLabel: 'Duration of berserk',
             aggressionSuffix: 'seconds',
             defensiveLabel: 'Damage dealt',
         }
@@ -2103,12 +2094,18 @@ export default function Medic(options) {
                 var actualHealingAmount = target.giveHealth(healAmount, this);
 
                 if (efAugment) {
+                    if(efAugment.hpGivenTally > rsThresholdChangeAmount) {
+                        medic.alterHealingColor(enrichedThresholdColor);
+                    } else {
+                        medic.alterHealingColor(enrichedBasicColor);
+                    }
                     efAugment.hpGivenTally += actualHealingAmount;
                     if (efAugment.hpGivenTally > continuousHealthNeeded) {
                         efAugment.hpGivenTally -= continuousHealthNeeded;
-                        target.enrage({
+                        target.berserk({
                             duration: enrageEFTime,
-                            amount: 3
+                            amount: 2,
+                            id: 'enrichedBerserk'
                         });
                         Matter.Events.trigger(globals.currentGame, efCollEventName, {
                             value: 1

@@ -968,7 +968,7 @@ export default function Marine(options) {
                     var addition = marine.firstAidPouchAdditions.forEach((addition) => {
                         sum += addition;
                     });
-                    return {index: 0, value: 'Heal self and nearby allies for ' + sum + ' hp after firing rifle.'};
+                    return {index: 0, value: 'Heal self and nearby allies for ' + sum.toFixed(1) + ' hp after firing rifle.'};
                 }},
                 collector: {
                     eventName: firstAidCollectorEventName,

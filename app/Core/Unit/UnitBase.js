@@ -442,7 +442,7 @@ var UnitBase = {
                 amountDone: healingDone
             });
         }
-        
+
         return healingDone;
     },
 
@@ -1803,7 +1803,6 @@ var UnitBase = {
         options = options || {};
         let duration = options.duration;
         let amount = options.amount;
-        let callback = options.callback;
         let id = options.id || "EnrageBuff" + mathArrayUtils.getId();
         var unit = this;
 
@@ -1839,6 +1838,31 @@ var UnitBase = {
 
 
         Matter.Events.trigger(this, 'applyEnrageBuff', {
+            targetUnit: this,
+            id: id
+        });
+    },
+
+    berserk: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount || 3;
+        let id = options.id || "RaisedStakesBuff" + mathArrayUtils.getId();
+        var unit = this;
+
+        unit.applyBuff({
+            id: id,
+            textureName: 'RaisedStakesBuff',
+            duration: duration,
+            applyChanges: function() {
+                unit.cooldown /= amount;
+            },
+            removeChanges: function() {
+                unit.cooldown *= amount;
+            }
+        });
+
+        Matter.Events.trigger(this, 'applyBerserkBuff', {
             targetUnit: this,
             id: id
         });
