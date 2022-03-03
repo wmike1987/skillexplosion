@@ -1125,14 +1125,9 @@ export default function Medic(options) {
     var efCollEventName = 'efCollEvent';
     var continuousHealthNeeded = 20;
     var rsThresholdChangeAmount = continuousHealthNeeded*2.0/3.0;
-    var enrichedBasicColor = {
-        r: 1.0,
-        g: 0.5,
-        b: 0.5
-    };
     var enrichedThresholdColor = {
         r: 1.0,
-        g: 0.0,
+        g: 1.0,
         b: 1.0
     };
     var enrageEFTime = 4000;
@@ -1190,7 +1185,7 @@ export default function Medic(options) {
                 name: 'enriched formula',
                 icon: graphicsUtils.createDisplayObject('EnrichedFormula'),
                 title: 'Enriched Formula',
-                description: ['Grant ally berserk for 4 seconds upon giving 20 health.'],
+                description: ['Grant ally berserk (1.5x multiplier) for 4 seconds upon giving 20 health.'],
                 equip: function(unit) {
                     this.hpGivenTally = 0;
                     this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
@@ -1199,11 +1194,7 @@ export default function Medic(options) {
                 },
                 unequip: function(unit) {
                     Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
-                    medic.alterHealingColor({
-                        r: 1,
-                        g: 1,
-                        b: 1
-                    });
+                    medic.alterHealingColor(medic.normalHealingColor);
                 },
                 collector: {
                     init: function() {
@@ -1293,7 +1284,7 @@ export default function Medic(options) {
     var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Go berserk (increased attack speed) for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon hold position)', 'Go berserk (2x multiplier) for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
@@ -1865,6 +1856,7 @@ export default function Medic(options) {
         holdPositionSound: holdPositionSound,
         mineDamage: 25,
         damageLabel: "Heal",
+        attackSpeedLabel: "Heal Speed",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
         },
@@ -2002,6 +1994,14 @@ export default function Medic(options) {
             $.extend(this, aug);
             this.unlockerInit();
         },
+        _afterAddInit: function() {
+            this.normalHealingColor = {
+                r: 1.0,
+                g: 0.0,
+                b: 0.85,
+            };
+            this.alterHealingColor(this.normalHealingColor);
+        },
         alterHealingColor: function(color) {
             var shootAnimationName = 'shoot';
             $.each(this.body.renderlings, function(key, renderling) {
@@ -2097,14 +2097,14 @@ export default function Medic(options) {
                     if(efAugment.hpGivenTally > rsThresholdChangeAmount) {
                         medic.alterHealingColor(enrichedThresholdColor);
                     } else {
-                        medic.alterHealingColor(enrichedBasicColor);
+                        medic.alterHealingColor(this.normalHealingColor);
                     }
                     efAugment.hpGivenTally += actualHealingAmount;
                     if (efAugment.hpGivenTally > continuousHealthNeeded) {
                         efAugment.hpGivenTally -= continuousHealthNeeded;
                         target.berserk({
                             duration: enrageEFTime,
-                            amount: 2,
+                            amount: 1.5,
                             id: 'enrichedBerserk'
                         });
                         Matter.Events.trigger(globals.currentGame, efCollEventName, {

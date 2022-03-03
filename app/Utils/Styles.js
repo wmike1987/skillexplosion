@@ -39,7 +39,7 @@ export default {
         name: 'scoreStyleNonItalic',
         fontFamily: 'Arial',
         fontSize: 16,
-        fill: ['#01A8F8'],
+        fill: ['#6fcdfa'],
         stroke: '#4a1850',
         strokeThickness: 1,
         dropShadow: true,

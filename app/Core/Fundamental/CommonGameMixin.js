@@ -424,6 +424,18 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
+
+                    if(!this.cursorId) {
+                        this.cursorId = 1;
+                    }
+
+                    if(this.cursorId == 1) {
+                        gameUtils.setCursorStyle('server:OverUnitCursor.png', '16 16');
+                        this.cursorId = 2;
+                    } else {
+                        gameUtils.setCursorStyle('server:MainCursor.png');
+                        this.cursorId = 1;
+                    }
                     // globals.currentGame.nextPhase();
                     //
                     // var d = DoodadFactory.createDoodad({menuItem: 'waterTrough', drawWire: true});

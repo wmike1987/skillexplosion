@@ -448,7 +448,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage2.addLine({
-        text: 'Double attack speed.'
+        text: 'Add multiplier to attack speed.'
     });
 
     this.addPage(BuffPage2);

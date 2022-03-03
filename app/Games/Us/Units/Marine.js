@@ -931,7 +931,7 @@ export default function Marine(options) {
         }.bind(this)],
         augments: [{
                 name: 'fully auto',
-                delta: -100,
+                delta: -120,
                 icon: graphicsUtils.createDisplayObject('FullyAuto'),
                 title: 'Full Auto',
                 description: 'Increase rate of fire.',

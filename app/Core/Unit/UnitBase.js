@@ -1846,7 +1846,7 @@ var UnitBase = {
     berserk: function(options) {
         options = options || {};
         let duration = options.duration;
-        let amount = options.amount || 3;
+        let amount = options.amount;
         let id = options.id || "RaisedStakesBuff" + mathArrayUtils.getId();
         var unit = this;
 
@@ -1855,10 +1855,10 @@ var UnitBase = {
             textureName: 'RaisedStakesBuff',
             duration: duration,
             applyChanges: function() {
-                unit.cooldown /= amount;
+                unit.cooldownMultiplier /= amount;
             },
             removeChanges: function() {
-                unit.cooldown *= amount;
+                unit.cooldownMultiplier *= amount;
             }
         });
 

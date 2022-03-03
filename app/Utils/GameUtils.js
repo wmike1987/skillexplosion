@@ -1031,17 +1031,47 @@ var gameUtils = {
             style = 'url(' + style + ')' + (hotspot ? ' ' + hotspot : '') + ', auto';
         }
 
-        if (style.indexOf('Main') > -1) {
-            $('*').css('cursor', 'auto');
-        } else if (style.indexOf('Over') > -1) {
-            $('*').css('cursor', 'pointer');
-        } else if (style.indexOf('None') > -1) {
-            // $('*').css('cursor', 'none');
-        } else if (style.indexOf('Info') > -1) {
+        let currentCursor = globals.currentGame.currentCursor;
+        let cursorChanged = false;
+
+        if (style.indexOf('Main') > -1 && currentCursor != 'main') {
+            $('*').css('cursor', style);
+            globals.currentGame.currentCursor = 'main';
+            cursorChanged = true;
+        } else if (style.indexOf('Over') > -1 && currentCursor != 'over') {
+            $('*').css('cursor', style);
+            globals.currentGame.currentCursor = 'over';
+            cursorChanged = true;
+        } else if (style.indexOf('None') > -1 && currentCursor != 'none') {
+            globals.currentGame.currentCursor = 'None';
+            cursorChanged = true;
+        } else if (style.indexOf('Info') > -1 && currentCursor != 'info') {
             $('*').css('cursor', 'help');
-        } else {
-            $('*').css('cursor', 'crosshair');
+            globals.currentGame.currentCursor = 'info';
+            cursorChanged = true;
+        } else if(style.indexOf('Attack') > -1 && currentCursor != 'crosshair') {
+            $('*').css('cursor', style);
+            globals.currentGame.currentCursor = 'crosshair';
+            cursorChanged = true;
+        } else if(style.indexOf('Target') > -1 && currentCursor != 'target') {
+            $('*').css('cursor', style);
+            globals.currentGame.currentCursor = 'target';
+            cursorChanged = true;
         }
+
+
+        if(cursorChanged) {
+            // console.info(globals.currentGame.currentCursor);
+            this.forceWebkitRepaint();
+        }
+    },
+
+    forceWebkitRepaint: function() {
+        // console.info('redraw');
+        var el = document.getElementById('gameTheater');
+        el.style.display="none";
+        el.offsetHeight;
+        el.style.display="block";
     },
 
     pixiPositionToPoint: function(pointObj, event) {

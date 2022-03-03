@@ -1359,6 +1359,18 @@ var phaseTwo = function(options) {
                 continuation: true,
                 letterSpeed: 30,
                 delayAfterEnd: 1000,
+                onFullyShown: () => {
+                    globals.currentGame.flyover(() => {
+                        globals.currentGame.dustAndItemBox({
+                            location: gameUtils.getPlayableCenterPlus({
+                                x: 200,
+                                y: 120
+                            }),
+                            item: ['BasicMicrochip', 'Book'],
+                            special: true
+                        });
+                    });
+                }
             });
             var self = this;
             var chain = new DialogueChain([a1, a2], {
@@ -1367,18 +1379,6 @@ var phaseTwo = function(options) {
             });
             globals.currentGame.currentScene.add(chain);
             chain.play();
-            gameUtils.doSomethingAfterDuration(() => {
-                globals.currentGame.flyover(() => {
-                    globals.currentGame.dustAndItemBox({
-                        location: gameUtils.getPlayableCenterPlus({
-                            x: 200,
-                            y: 120
-                        }),
-                        item: ['BasicMicrochip', 'Book'],
-                        special: true
-                    });
-                });
-            }, 2000);
         }
     };
 };
@@ -1748,14 +1748,42 @@ var campNoir = {
                 };
                 tree2.borderBuffer = true;
 
+                var tree3 = SceneryUtils.createTree({
+                    tint: treeTints[tIndex],
+                });
+                tree3.unique = true;
+                tree3.groupingOptions = {
+                    priority: 1
+                };
+                tree3.borderBuffer = true;
+
                 //add smokey pit and tent
                 if (!this.noSmokePit) {
-                    var tentDoodad = DoodadFactory.createDoodad({
-                        menuItem: 'enemyTent1',
-                        tint: rockTints[tIndex],
-                        doodadScale: this.outer ? 1.0 : 0.75,
-                    });
-                    tentDoodad.unique = true;
+                    var tentDoodad = null;
+                    if(this.outer) {
+                        tentDoodad = DoodadFactory.createDoodad({
+                            menuItem: 'enemyTent1',
+                            tint: rockTints[tIndex],
+                            doodadScale: this.outer ? 1.0 : 0.75,
+                        });
+                        tentDoodad.unique = true;
+                    } else {
+                        tentDoodad = {
+                            textureName: 'CampDoodads/BarrelTrash1',
+                            randomScale: {
+                                min: 0.8,
+                                max: 1.0
+                            },
+                            randomHFlip: true,
+                            unique: true,
+                            where: 'stage',
+                            groupingOptions: {
+                                priority: 3,
+                                min: 100,
+                                max: 150
+                            }
+                        };
+                    }
 
                     var trough1 = DoodadFactory.createDoodad({
                         menuItem: 'waterTrough',
@@ -1795,7 +1823,7 @@ var campNoir = {
                         max: 90,
                     };
                     this.tent = SceneryUtils.decorateTerrain({
-                        possibleDoodads: [tentDoodad, trough1, trough2, enemyPost4, tree, tree2, {
+                        possibleDoodads: [tentDoodad, trough1, trough2, enemyPost4, tree, tree2, (mathArrayUtils.flipCoin() ? tree3 : null), {
                                 textureName: 'bullets',
                                 randomHFlip: true,
                                 where: 'backgroundOne',
@@ -1861,21 +1889,21 @@ var campNoir = {
                                 }
                             },
                             /*{
-                                                       textureName: 'CampDoodads/MiniTent1',
-                                                       randomScale: {
-                                                           min: 0.8,
-                                                           max: 1.0
-                                                       },
-                                                       randomHFlip: true,
-                                                       unique: true,
-                                                       where: 'stage',
-                                                       groupingOptions: {
-                                                           priority: 3,
-                                                           min: 200,
-                                                           max: 300
-                                                       },
-                                                       loneNZRadius: 80
-                                                   }, */
+                               textureName: 'CampDoodads/MiniTent1',
+                               randomScale: {
+                                   min: 0.8,
+                                   max: 1.0
+                               },
+                               randomHFlip: true,
+                               unique: true,
+                               where: 'stage',
+                               groupingOptions: {
+                                   priority: 3,
+                                   min: 200,
+                                   max: 300
+                               },
+                               loneNZRadius: 80
+                           }, */
                             {
                                 textureName: 'CampDoodads/BarrelTrash1',
                                 randomScale: {
@@ -1926,6 +1954,7 @@ var campNoir = {
                     scene.add(this.tent);
 
                     var tentPosition = this.tent.list[0].position;
+                    this.initialUnitPosition = tentPosition;
 
                     var rockPitDoodad = DoodadFactory.createDoodad({
                         menuItem: 'rockPit',

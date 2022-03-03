@@ -49,13 +49,14 @@ export default {
     honeRange: 250,
     range: 100,
     cooldown: 3000,
+    cooldownMultiplier: 1,
     damage: 6,
 
     initAttacker: function() {
         this.cooldownTimer = globals.currentGame.addTimer({
             name: 'cooldown' + this.body.id,
             runs: 0,
-            timeLimit: this.cooldown,
+            timeLimit: this.cooldown * this.cooldownMultiplier,
             callback: function() {
                 this.attackReady = true;
             }.bind(this)
@@ -204,8 +205,8 @@ export default {
     },
 
     canAttackPredicate: function(target) {
-        let canAttackBuffer = this.isMelee ? 5 : 30;
-        return this.canAttack && (gameUtils.isPositionWithinPlayableBounds(this.position, canAttackBuffer) || this.team == globals.currentGame.playerTeam);
+        let canAttackBuffer = this.isMelee ? true : gameUtils.isPositionWithinPlayableBounds(this.position, 30);
+        return this.canAttack && (canAttackBuffer || this.team == globals.currentGame.playerTeam);
     },
 
     _attack: function(target) {
@@ -229,7 +230,7 @@ export default {
             this.attackReady = false;
             this.cooldownTimer.reset();
             this.cooldownTimer.runs = 1;
-            this.cooldownTimer.timeLimit = this.cooldown;
+            this.cooldownTimer.timeLimit = this.cooldown * this.cooldownMultiplier;
             this.isHoning = false;
 
             //nullify the brief pause

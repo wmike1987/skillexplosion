@@ -278,7 +278,7 @@ var unitPanel = function(options) {
     this.currentViewState = this.toNumberViewButton;
 
     //chart bars
-    this.chartBarWidth = 16;
+    this.chartBarWidth = 14;
     this.chartLeftPosition = {
         x: this.unitFrameCenterX - 88,
         y: this.centerY + 43
@@ -530,6 +530,34 @@ var unitPanel = function(options) {
         updaters: {
             mainDescription: function(tooltip) {
                 return this.rangeChartBar.currentRealValue;
+            }.bind(this),
+        }
+    });
+
+    //attack speed bar
+    this.asChartBar = graphicsUtils.createDisplayObject('TintableSquare', {
+        position: mathArrayUtils.clonePosition(this.chartLeftPosition, {
+            x: 9 * this.chartBarWidth
+        }),
+        anchor: {
+            x: 0,
+            y: 1
+        },
+        where: 'hudOne',
+        tint: 0x31c4a1
+    });
+    graphicsUtils.mouseOverOutTint(this.asChartBar, this.asChartBar.tint);
+    graphicsUtils.makeSpriteSize(this.asChartBar, {
+        x: this.chartBarWidth,
+        y: 1
+    });
+    Tooltip.makeTooltippable(this.asChartBar, {
+        title: "Attack Speed",
+        descriptionStyle: styles.abilityText,
+        noDelay: true,
+        updaters: {
+            mainDescription: function(tooltip) {
+                return this.asChartBar.currentRealValue;
             }.bind(this),
         }
     });
@@ -1648,6 +1676,8 @@ var _displayUnitStatsGraph = function() {
         var main = this.prevailingUnit.damageMember ? this.prevailingUnit.damageMember() : this.prevailingUnit.damage;
         var additions = this.prevailingUnit.damageAdditionType ? this.prevailingUnit.getAdditionSum(this.prevailingUnit.damageAdditionType) : this.prevailingUnit.getDamageAdditionSum();
         var localScale = this.prevailingUnit.damageScale || 60;
+
+        //damage
         this.damageHealBar.tooltipObj.setTitle(this.prevailingUnit.damageLabel || "Damage");
         graphicsUtils.makeSpriteSize(this.damageHealBar, {
             x: this.chartBarWidth,
@@ -1726,6 +1756,16 @@ var _displayUnitStatsGraph = function() {
             y: _convertRawToScaled(main, localScale)
         });
         this.rangeChartBar.currentRealValue = main;
+
+        //attack speed
+        this.asChartBar.tooltipObj.setTitle(this.prevailingUnit.attackSpeedLabel || "Attack Speed");
+        main = 1000/(this.prevailingUnit.cooldown * this.prevailingUnit.cooldownMultiplier);
+        localScale = 10;
+        graphicsUtils.makeSpriteSize(this.asChartBar, {
+            x: this.chartBarWidth,
+            y: _convertRawToScaled(main, localScale)
+        });
+        this.asChartBar.currentRealValue = main.toFixed(1);
     }
 };
 
@@ -1820,6 +1860,7 @@ unitPanel.prototype.clearUnitStatsGraph = function() {
     graphicsUtils.hideDisplayObject(this.gritChartBar);
     graphicsUtils.hideDisplayObject(this.dodgeChartBar);
     graphicsUtils.hideDisplayObject(this.rangeChartBar);
+    graphicsUtils.hideDisplayObject(this.asChartBar);
     graphicsUtils.hideDisplayObject(this.chartLine1);
     graphicsUtils.hideDisplayObject(this.chartLine2);
     graphicsUtils.hideDisplayObject(this.chartLine3);
@@ -1836,6 +1877,7 @@ unitPanel.prototype.displayUnitStatsGraph = function() {
     graphicsUtils.addOrShowDisplayObject(this.gritChartBar);
     graphicsUtils.addOrShowDisplayObject(this.dodgeChartBar);
     graphicsUtils.addOrShowDisplayObject(this.rangeChartBar);
+    graphicsUtils.addOrShowDisplayObject(this.asChartBar);
     graphicsUtils.addOrShowDisplayObject(this.chartLine1);
     graphicsUtils.addOrShowDisplayObject(this.chartLine2);
     graphicsUtils.addOrShowDisplayObject(this.chartLine3);
