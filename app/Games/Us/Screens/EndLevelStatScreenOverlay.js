@@ -153,6 +153,7 @@ var presentItems = function(options) {
             gleamWidth: 25,
             duration: 500
         });
+        graphicsUtils.fadeSpriteInQuickly(rewardText, 500);
 
         //Display the choices
         var j = 0;

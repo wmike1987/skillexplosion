@@ -620,6 +620,9 @@ var graphicsUtils = {
 
                 //trigger the actual float
                 var myText = graphicsUtils.floatText(options.text, options.position, options.additionalOptions);
+                if(true/*options.additionalOptions.fadeIn*/) {
+                    graphicsUtils.fadeSpriteInQuickly(myText, 500);
+                }
 
                 if (options.additionalOptions.onStart) {
                     options.additionalOptions.onStart(myText);

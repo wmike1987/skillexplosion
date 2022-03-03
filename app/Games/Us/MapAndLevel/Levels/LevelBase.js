@@ -138,6 +138,7 @@ var levelBase = {
                 duration: 2000,
                 style: styles.titleOneStyle
             });
+            graphicsUtils.fadeSpriteInQuickly(enemiesIncomingText, 500);
             graphicsUtils.flashSprite({
                 sprite: enemiesIncomingText
             });
@@ -505,6 +506,7 @@ var levelBase = {
                 }),
                 additionalOptions: {
                     where: 'hudTwo',
+                    fadeIn: true,
                     style: styles.adrenalineTextLarge,
                     speed: 6,
                     duration: 1800,
@@ -530,6 +532,7 @@ var levelBase = {
                 }),
                 additionalOptions: {
                     where: 'hudTwo',
+                    fadeIn: true,
                     style: styles.adrenalineTextLarge,
                     speed: 6,
                     duration: 1800,
@@ -556,6 +559,7 @@ var levelBase = {
                 }),
                 additionalOptions: {
                     where: 'hudTwo',
+                    fadeIn: true,
                     style: styles.adrenalineTextLarge,
                     speed: 6,
                     duration: 1800,

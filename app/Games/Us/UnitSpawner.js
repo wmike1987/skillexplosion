@@ -83,8 +83,8 @@ var unitSpawner = function(options) {
             oneShot.honeRange /= 2;
 
             var position = gameUtils.getRandomPositionWithinRadiusAroundPoint({
-                point: gameUtils.getCanvasCenter(),
-                radius: 200,
+                point: globals.currentGame.currentLevel.initialUnitPosition,
+                radius: 50,
                 withinPlayableBounds: true
             });
             Matter.Body.setPosition(oneShot.body, position);
