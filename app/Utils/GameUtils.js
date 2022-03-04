@@ -1034,44 +1034,49 @@ var gameUtils = {
         let currentCursor = globals.currentGame.currentCursor;
         let cursorChanged = false;
 
-        if (style.indexOf('Main') > -1 && currentCursor != 'main') {
+        if (style.indexOf('Main') > -1 && currentCursor != 'Main') {
             $('*').css('cursor', style);
-            globals.currentGame.currentCursor = 'main';
             cursorChanged = true;
-        } else if (style.indexOf('Over') > -1 && currentCursor != 'over') {
+        } else if (style.indexOf('Over') > -1 && currentCursor.indexOf('Over') < 0) {
             $('*').css('cursor', style);
-            globals.currentGame.currentCursor = 'over';
             cursorChanged = true;
-        } else if (style.indexOf('None') > -1 && currentCursor != 'none') {
-            globals.currentGame.currentCursor = 'None';
+        } else if (style.indexOf('None') > -1 && currentCursor.indexOf('None') < 0) {
             cursorChanged = true;
-        } else if (style.indexOf('Info') > -1 && currentCursor != 'info') {
+        } else if (style.indexOf('Info') > -1 && currentCursor.indexOf('Info') < 0) {
             $('*').css('cursor', 'help');
-            globals.currentGame.currentCursor = 'info';
             cursorChanged = true;
-        } else if(style.indexOf('Attack') > -1 && currentCursor != 'crosshair') {
+        } else if(style.indexOf('Attack') > -1 && currentCursor.indexOf('Attack') < 0) {
             $('*').css('cursor', style);
-            globals.currentGame.currentCursor = 'crosshair';
             cursorChanged = true;
-        } else if(style.indexOf('Target') > -1 && currentCursor != 'target') {
+        } else if(style.indexOf('Target') > -1 && currentCursor.indexOf('Target') < 0) {
             $('*').css('cursor', style);
-            globals.currentGame.currentCursor = 'target';
             cursorChanged = true;
         }
 
 
         if(cursorChanged) {
             // console.info(globals.currentGame.currentCursor);
-            this.forceWebkitRepaint();
+            globals.currentGame.currentCursor = style;
+            this.forceWebkitRepaint(5);
         }
     },
 
-    forceWebkitRepaint: function() {
-        // console.info('redraw');
-        var el = document.getElementById('gameTheater');
+    forceWebkitRepaint: function(numberOfTimes) {
+        console.info('redraw-' + numberOfTimes);
+        var el = document.getElementById('body');
         el.style.display="none";
         el.offsetHeight;
         el.style.display="block";
+
+        var t = el.ownerDocument.createTextNode(' ');
+        el.appendChild(t);
+        setTimeout(function() { el.removeChild(t); }, 0);
+
+        if(numberOfTimes) {
+            gameUtils.executeSomethingNextFrame(() => {
+                this.forceWebkitRepaint(numberOfTimes-1);
+            });
+        }
     },
 
     pixiPositionToPoint: function(pointObj, event) {

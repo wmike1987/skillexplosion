@@ -1061,7 +1061,7 @@ var UnitSystem = function(properties) {
                 if (value) {
                     gameUtils.setCursorStyle('server:AttackCursor.png');
                 } else {
-                    gameUtils.setCursorStyle('server:MainCursor.png');
+                    gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'server:MainCursor.png');
                 }
             }.bind(this),
             get: function() {
