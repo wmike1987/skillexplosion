@@ -42,8 +42,12 @@ var multiLevel = function(options) {
             newOptions.mapNodeOptions.bypassNodeCreation = true;
             if (index > 0) {
                 newOptions.levelOptions.isSupplyDropEligible = false;
-                newOptions.levelOptions.levelEntryText = 'Enemies approaching...';
+                newOptions.levelOptions.levelEntryTextOverride = 'Wave ' + (index + 1) + ' incoming...';
+                newOptions.levelOptions.levelTitleOverride = 'Wave ' + (index + 1);
                 newOptions.levelOptions.createOneShotUnit = false;
+            } else {
+                newOptions.levelOptions.levelNounOverride = 'Enemy';
+                newOptions.levelOptions.levelStrengthOverride = 'multi';
             }
             let newLevel = levelFactory.create(type, worldSpecs, newOptions);
             newLevel.multiLevel = true;

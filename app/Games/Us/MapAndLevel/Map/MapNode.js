@@ -112,7 +112,7 @@ var MapLevelNode = function(options) {
     //create the tooltip with a few assumptions
     var supplyDropMessage = this.levelDetails.isSupplyDropEligible ? 'Supply Drop: ' + ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].description : null;
     Tooltip.makeTooltippable(this.displayObject, {
-        title: options.tooltipTitle || this.levelDetails.nodeTitle || 'Enemy Camp',
+        title: options.tooltipTitle || this.levelDetails.nodeTitle,
         description: options.tooltipDescription || this.levelDetails.tooltipDescription || enemyDescriptions,
         descriptionIcons: enemyIcons,
         briefDelay: true,

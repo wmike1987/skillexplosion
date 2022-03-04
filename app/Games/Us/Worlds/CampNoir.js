@@ -656,6 +656,8 @@ var enemyDefs = {
         }]
     },
     learningWithUrsula: {
+        noun: 'Critter',
+        strength: 'basic',
         enemySets: [{
             type: 'Critter',
             amount: 5,
@@ -664,6 +666,8 @@ var enemyDefs = {
         }]
     },
     learningSentinel: {
+        noun: 'Sentinel',
+        strength: 'basic',
         enemySets: [{
             type: 'Critter',
             amount: 1,
@@ -677,6 +681,8 @@ var enemyDefs = {
         }]
     },
     learningSentinelWithUrsula: {
+        noun: 'Critter',
+        strength: 'basic',
         enemySets: [{
             type: 'Critter',
             amount: 4,
@@ -691,6 +697,8 @@ var enemyDefs = {
     },
     basic: {
         token: 'default',
+        noun: 'Critter',
+        strength: 'basic',
         enemySets: [{
                 type: 'Critter',
                 amount: [2, 3, 4],
@@ -706,6 +714,8 @@ var enemyDefs = {
         ]
     },
     basic2: {
+        noun: 'Gargoyle',
+        strength: 'basic',
         token: 'default',
         enemySets: [{
                 type: 'Sentinel',
@@ -724,6 +734,8 @@ var enemyDefs = {
         ]
     },
     basic3: {
+        noun: 'Rammian',
+        strength: 'basic',
         token: 'default',
         enemySets: [{
                 type: 'Rammian',
@@ -735,6 +747,8 @@ var enemyDefs = {
         ]
     },
     basicHunter: {
+        noun: 'Hunter',
+        strength: 'basic',
         enemySets: [{
                 type: 'Hunter',
                 amount: [2],
@@ -750,6 +764,7 @@ var enemyDefs = {
         ]
     },
     basicHard: {
+        strength: 'hard',
         enemySets: [{
             type: 'Critter',
             amount: [2, 3, 4],
@@ -769,6 +784,7 @@ var enemyDefs = {
         }, generalFlyObj]
     },
     basicHard2: {
+        strength: 'hard',
         enemySets: [{
             type: 'Critter',
             amount: [2, 3],
@@ -788,6 +804,7 @@ var enemyDefs = {
         }, generalFlyObj]
     },
     basicHard3: {
+        strength: 'hard',
         enemySets: [{
             type: 'Critter',
             amount: [3, 4],
@@ -807,6 +824,8 @@ var enemyDefs = {
         }, generalFlyObj]
     },
     basicHard4: {
+        noun: 'Sentinel',
+        strength: 'hard',
         enemySets: [{
             type: 'Sentinel',
             amount: [5, 6],
@@ -815,6 +834,8 @@ var enemyDefs = {
         }, ultraHardFlyObj]
     },
     rammians: {
+        noun: 'Rammian',
+        strength: 'hard',
         enemySets: [{
             type: 'Rammian',
             amount: [7, 8],
@@ -823,6 +844,8 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     mobRammians: {
+        noun: 'Eruptlet',
+        strength: 'hard',
         enemySets: [{
             type: 'Rammian',
             amount: [5, 6],
@@ -836,6 +859,8 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     hardGargs: {
+        noun: 'Gargoyle',
+        strength: 'hard',
         enemySets: [{
             type: 'Critter',
             amount: 22,
@@ -849,6 +874,8 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     outerBasic: {
+        noun: 'Critter',
+        strength: 'hard',
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
@@ -863,6 +890,8 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     outerBasicTwo: {
+        noun: 'Hunter',
+        strength: 'hard',
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
@@ -877,6 +906,8 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     outerBasicThree: {
+        noun: 'Rammian',
+        strength: 'hard',
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
@@ -891,6 +922,7 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     outerHardOne: {
+        strength: 'hard',
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
@@ -912,6 +944,7 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     outerHardTwo: {
+        strength: 'hard',
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
@@ -932,6 +965,8 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     outerHardThree: {
+        noun: 'Critter',
+        strength: 'hard',
         token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
@@ -941,6 +976,8 @@ var enemyDefs = {
         }, ultraHardFlyObj]
     },
     easyGargs: {
+        noun: 'Gargoyle',
+        strength: 'hard',
         token: 'hard',
         enemySets: [{
             type: 'Gargoyle',
@@ -949,15 +986,9 @@ var enemyDefs = {
             hz: 2250
         }]
     },
-    outerHardened: {
-        enemySets: [{
-            type: 'Gargoyle',
-            amount: 8,
-            atATime: 1,
-            hz: 2500
-        }]
-    },
     mobs: {
+        noun: 'Eruptlet',
+        strength: 'hard',
         enemySets: [{
             type: 'Eruptlet',
             amount: 35,
@@ -971,19 +1002,6 @@ var enemyDefs = {
             hz: 8000
         }, hardFlyObj]
     },
-    outerMobs: {
-        enemySets: [{
-            type: 'Eruptlet',
-            amount: 50,
-            atATime: 10,
-            hz: 4000
-        }, {
-            type: 'Sentinel',
-            amount: 3,
-            atATime: 1,
-            hz: 6000
-        }]
-    },
     easySentinels: {
         token: 'hard',
         enemySets: [{
@@ -991,23 +1009,6 @@ var enemyDefs = {
             amount: [4, 5],
             atATime: 2,
             hz: 5200
-        }]
-    },
-    easySentinelsNoItem: {
-        token: 'hard',
-        enemySets: [{
-            type: 'Sentinel',
-            amount: [4, 5],
-            atATime: 2,
-            hz: 5200
-        }]
-    },
-    outerSentinels: {
-        enemySets: [{
-            type: 'Sentinel',
-            amount: 10,
-            atATime: 2,
-            hz: 5000
         }]
     },
 };

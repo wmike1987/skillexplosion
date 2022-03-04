@@ -15,6 +15,7 @@ import TileMapper from '@core/TileMapper.js';
 import {
     Doodad
 } from '@utils/Doodad.js';
+import levelNamer from '@games/Us/Worlds/LevelNamer.js';
 import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
 import {
@@ -132,7 +133,7 @@ var levelBase = {
         gameUtils.doSomethingAfterDuration(() => {
             //start enemy spawnage
             level.spawner.start();
-            let enemiesIncomingText = graphicsUtils.floatText(level.levelEntryText, gameUtils.getPlayableCenterPlus({
+            let enemiesIncomingText = graphicsUtils.floatText(level.nodeTitle, gameUtils.getPlayableCenterPlus({
                 y: 20
             }), {
                 duration: 2000,
@@ -188,7 +189,6 @@ var levelBase = {
             seed: Math.random(),
             itemClass: 'lightStimulant',
             itemType: 'item',
-            levelEntryText: 'Presence detected...',
             isSupplyDropEligible: true,
             createOneShotUnit: mathArrayUtils.flipCoin() || mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
@@ -214,6 +214,11 @@ var levelBase = {
 
         //set the enemy def
         this.enemyDefs = Object.assign({}, worldSpecs.enemyDefs[type]);
+
+        //generate camp name
+        let noun = this.levelNounOverride || this.enemyDefs.noun || 'Enemy';
+        let levelStrength = this.levelStrengthOverride || this.enemyDefs.strength || 'basic';
+        this.nodeTitle = this.levelTitleOverride || levelNamer.getName({noun: noun, type: levelStrength});
 
         //hook to override defaults
         if (this.initExtension) {
