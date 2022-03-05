@@ -994,9 +994,9 @@ var UnitSystem = function(properties) {
 
                 if (!this.attackMove && !this.abilityDispatch) {
                     if (lastChosenUnit) {
-                        gameUtils.setCursorStyle('server:OverUnitCursor.png', '16 16');
+                        gameUtils.setCursorStyle('Over');
                     } else if (gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
-                        gameUtils.setCursorStyle('server:MainCursor.png');
+                        gameUtils.setCursorStyle('Main');
                     }
                 }
             }
@@ -1059,9 +1059,9 @@ var UnitSystem = function(properties) {
             set: function(value) {
                 this._attackMove = value;
                 if (value) {
-                    gameUtils.setCursorStyle('server:AttackCursor.png');
+                    gameUtils.setCursorStyle('Attack');
                 } else {
-                    gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'server:MainCursor.png');
+                    gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'Main');
                 }
             }.bind(this),
             get: function() {
@@ -1203,7 +1203,7 @@ var UnitSystem = function(properties) {
                     Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
                     this.abilityDispatch = null;
                 } else if (this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
-                    gameUtils.setCursorStyle('server:TargetCursor.png');
+                    gameUtils.setCursorStyle('Target');
                 } else { //the selected unit cannot handle the event
                     this.abilityDispatch = null;
                 }
@@ -1414,6 +1414,8 @@ var UnitSystem = function(properties) {
         if (this.hoveredUnit) {
             this.hoveredUnit.unhover();
         }
+
+        gameUtils.setCursorStyle('Main');
     };
 
     this.unpause = function() {

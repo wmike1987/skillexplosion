@@ -789,6 +789,8 @@ var graphicsUtils = {
 
     shakeSprite: function(sprite, duration) {
         var shakeFrameLength = 32;
+        let startOffset = 3.0;
+        let finishOffset = 1.0;
         var position = mathArrayUtils.clonePosition(sprite.position);
         sprite.independentRender = true; //in case we're on a body
         var timer = globals.currentGame.addTimer({
@@ -797,8 +799,9 @@ var graphicsUtils = {
             runs: Math.ceil(duration / shakeFrameLength),
             killsSelf: true,
             callback: function() {
+                let offsetAmount = finishOffset + ((1-this.totalPercentOfRunsDone) * (startOffset - finishOffset));
                 sprite.position = {
-                    x: position.x + (this.runs % 2 == 0 ? 1.5 : -1.5) * 2,
+                    x: position.x + (this.runs % 2 == 0 ? offsetAmount : -offsetAmount) * 2,
                     y: position.y
                 };
             },

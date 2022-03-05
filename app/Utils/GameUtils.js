@@ -18,6 +18,7 @@ import {
 import {
     mathArrayUtils
 } from '@utils/MathArrayUtils.js';
+import cursors from '@utils/Cursors.js';
 import {
     unitUtils
 } from '@utils/UnitUtils.js';
@@ -1025,52 +1026,47 @@ var gameUtils = {
         this.floatText(praiseWord, options.position || this.getCanvasCenter(), options);
     },
 
-    setCursorStyle: function(style, hotspot) {
-        if (style.indexOf('server:') > -1) {
-            style = style.replace('server:', window.location.origin + '/Textures/');
-            style = 'url(' + style + ')' + (hotspot ? ' ' + hotspot : '') + ', auto';
-        }
-
+    setCursorStyle: function(style) {
         let currentCursor = globals.currentGame.currentCursor;
         let cursorChanged = false;
 
-        if (style.indexOf('Main') > -1 && currentCursor != 'Main') {
-            $('*').css('cursor', style);
+        if (style == 'Main' && currentCursor != 'Main') {
+            // $('*').css('cursor', style);
+            // $('*').css('cursor', 'default');
+            $('*').css('cursor', cursors.main);
             cursorChanged = true;
-        } else if (style.indexOf('Over') > -1 && currentCursor.indexOf('Over') < 0) {
-            $('*').css('cursor', style);
+        } else if (style == 'Over' && currentCursor != 'Over') {
+            // $('*').css('cursor', style);
+            // $('*').css('cursor', 'crosshair');
+            $('*').css('cursor', cursors.over);
             cursorChanged = true;
-        } else if (style.indexOf('None') > -1 && currentCursor.indexOf('None') < 0) {
+        } else if (style == 'None' && currentCursor != 'None') {
             cursorChanged = true;
-        } else if (style.indexOf('Info') > -1 && currentCursor.indexOf('Info') < 0) {
+        } else if (style == 'Info' && currentCursor != 'Info') {
             $('*').css('cursor', 'help');
             cursorChanged = true;
-        } else if(style.indexOf('Attack') > -1 && currentCursor.indexOf('Attack') < 0) {
-            $('*').css('cursor', style);
+        } else if(style == 'Attack' && currentCursor != 'Attack') {
+            $('*').css('cursor', cursors.attack);
             cursorChanged = true;
-        } else if(style.indexOf('Target') > -1 && currentCursor.indexOf('Target') < 0) {
-            $('*').css('cursor', style);
+        } else if(style == 'Target' && currentCursor != 'Target') {
+            // $('*').css('cursor', style);
+            $('*').css('cursor', cursors.target);
             cursorChanged = true;
         }
-
 
         if(cursorChanged) {
             // console.info(globals.currentGame.currentCursor);
             globals.currentGame.currentCursor = style;
-            this.forceWebkitRepaint(5);
+            this.forceWebkitRepaint(3);
         }
     },
 
     forceWebkitRepaint: function(numberOfTimes) {
-        console.info('redraw-' + numberOfTimes);
+        // console.info('redraw-' + numberOfTimes);
         var el = document.getElementById('body');
         el.style.display="none";
         el.offsetHeight;
         el.style.display="block";
-
-        var t = el.ownerDocument.createTextNode(' ');
-        el.appendChild(t);
-        setTimeout(function() { el.removeChild(t); }, 0);
 
         if(numberOfTimes) {
             gameUtils.executeSomethingNextFrame(() => {

@@ -201,9 +201,9 @@ commonAirDropStation.createMapNode = function(options) {
                             this.indicatedAvailable = true;
                             gameUtils.doSomethingAfterDuration(() => {
                                 globals.currentGame.soundPool.noticeme.play();
-                                graphicsUtils.shakeSprite(this.regularToken, 600);
-                                graphicsUtils.shakeSprite(this.specialToken, 600);
-                            }, 300);
+                                graphicsUtils.shakeSprite(this.regularToken, 800);
+                                graphicsUtils.shakeSprite(this.specialToken, 800);
+                            }, globals.currentGame.map.outingInProgress ? 1000 : 300);
                         }
 
                         regularToken.visible = true;
