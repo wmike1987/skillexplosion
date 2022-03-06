@@ -15,7 +15,7 @@ var Tooltip = function(options) {
     var textAnchor = {x: 0, y: 0};
     this.titleOnly = options.titleOnly;
     this.descriptionSystemMessageBuffer = 5;
-    this.systemMessagesBuffer = 0;
+    this.systemMessagesBuffer = 2;
     this.buffer = 5;
     this.iconBuffer = 0;
 
@@ -89,10 +89,16 @@ var Tooltip = function(options) {
         }
 
         //determine message
-        sysMessage = sysMessage.text || sysMessage;
+        let sysMessageText = sysMessage.text || sysMessage;
 
         //create message
-        this.systemMessages.push(graphicsUtils.createDisplayObject('TEX+:' + sysMessage, {style: style, anchor: textAnchor}));
+        let message = graphicsUtils.createDisplayObject('TEX+:' + sysMessageText, {style: style, anchor: textAnchor});
+
+        //tint if desired
+        if(sysMessage.tint) {
+            message.tint = sysMessage.tint;
+        }
+        this.systemMessages.push(message);
     }.bind(this));
     this.mainSystemMessage = this.systemMessages[0];
 

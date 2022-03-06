@@ -1094,10 +1094,10 @@ export default function Medic(options) {
         energyCost: 15,
         augments: [{
                 name: 'scorch',
-                duration: 10000,
+                duration: 12000,
                 icon: graphicsUtils.createDisplayObject('Maim'),
                 title: 'Scorch',
-                description: 'Leave an explosion area which maims enemy units for 10 seconds.',
+                description: 'Leave an explosion area which maims enemy units for 12 seconds.',
                 collector: {
                     eventName: scorchEventName,
                     presentation: {

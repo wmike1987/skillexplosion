@@ -1424,10 +1424,12 @@ var common = {
         };
         tickDeltaWrapper.isTickCallback = true;
 
-        if (options.invincible)
+        if (options.invincible) {
             this.invincibleTickCallbacks.push(tickDeltaWrapper);
-        else
+        }
+        else {
             this.tickCallbacks.push(tickDeltaWrapper);
+        }
         Matter.Events.on(this.engine.runner, options.eventName || 'tick' /*'afterUpdate'*/ , tickDeltaWrapper);
         callback.tickDeltaWrapper = tickDeltaWrapper; //so we can turn this off with the original function
         return tickDeltaWrapper; //return so you can turn this off if needed

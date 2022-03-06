@@ -928,10 +928,10 @@ var game = {
 
     flyover: function(done, options) {
         options = Object.assign({
-            speed: 95,
+            speed: 250,
             quiet: true
         }, options);
-        var shadow = Matter.Bodies.circle(-4200, gameUtils.getCanvasHeight() / 2.0, 1, {
+        var shadow = Matter.Bodies.circle(-16000, gameUtils.getCanvasHeight() / 2.0, 1, {
             restitution: 0.95,
             frictionAir: 0,
             mass: 1,
@@ -942,13 +942,14 @@ var game = {
             id: 'planeShadow',
             data: 'AirplaneShadow',
             scale: {
-                x: 7,
-                y: 7
+                x: 9.0,
+                y: 3.25
             },
             anchor: {
                 x: 0,
                 y: 0.5
             },
+            alpha: 0.8,
             stage: "foreground",
         }];
 

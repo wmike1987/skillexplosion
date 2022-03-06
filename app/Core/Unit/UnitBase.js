@@ -776,6 +776,15 @@ var UnitBase = {
     initUnit: function() {
         this.applyUnitStates();
 
+        //Enter playable event setup
+        var enterPlayableTick = globals.currentGame.addTickCallback(() => {
+            if(gameUtils.isPositionWithinPlayableBounds(this.position, 30)) {
+                Matter.Events.trigger(globals.currentGame, 'UnitEneteredPlayable', {unit: this});
+                globals.currentGame.removeTickCallback(enterPlayableTick);
+            }
+        }, false);
+        gameUtils.deathPact(this, enterPlayableTick);
+
         Object.defineProperty(this, 'maxHealth', {
             get: function() {
                 return this._maxHealth || 0;
@@ -1591,7 +1600,7 @@ var UnitBase = {
             runs: 1,
             timeLimit: this.gritCooldown * 1000,
             pauseCondition: function() {
-                return self.isDead || !globals.currentGame.levelInPlay;
+                return self.isDead || !globals.currentGame.levelInPlay || self.hasGritDodge;
             },
             callback: function() {
                 if (this.timerActive && self.getTotalGrit() > 0.0) {
@@ -1809,7 +1818,7 @@ var UnitBase = {
         if(unit.damageAdditionType) {
             unit.applyBuff({
                 id: id,
-                textureName: 'DeathWishBuff',
+                textureName: 'EnrageBuff',
                 duration: duration,
                 applyChanges: function() {
                     unit.enrageCounter++;
@@ -1823,7 +1832,7 @@ var UnitBase = {
         } else {
             unit.applyBuff({
                 id: id,
-                textureName: 'DeathWishBuff',
+                textureName: 'EnrageBuff',
                 duration: duration,
                 applyChanges: function() {
                     unit.enrageCounter++;
@@ -1847,12 +1856,12 @@ var UnitBase = {
         options = options || {};
         let duration = options.duration;
         let amount = options.amount;
-        let id = options.id || "RaisedStakesBuff" + mathArrayUtils.getId();
+        let id = options.id || "BerserkBuff" + mathArrayUtils.getId();
         var unit = this;
 
         unit.applyBuff({
             id: id,
-            textureName: 'RaisedStakesBuff',
+            textureName: 'BerserkBuff',
             duration: duration,
             applyChanges: function() {
                 unit.cooldownMultiplier /= amount;
@@ -1906,7 +1915,7 @@ var UnitBase = {
 
         unit.applyBuff({
             id: id,
-            textureName: 'KeenEyeBuff',
+            textureName: 'RangeBuff',
             duration: duration,
             applyChanges: function() {
                 unit.honeRange += amount;

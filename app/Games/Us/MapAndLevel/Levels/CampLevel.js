@@ -361,6 +361,7 @@ var campLevel = function() {
                 duration: 4000
             });
             scene.add(adrText);
+            graphicsUtils.fadeSpriteInQuickly(adrText, 500);
         }, 2500);
 
         //reset fatigue indicator
@@ -374,6 +375,7 @@ var campLevel = function() {
                 duration: 4000
             });
             scene.add(fatigueText);
+            graphicsUtils.fadeSpriteInQuickly(fatigueText, 500);
         }, 4000);
     };
 

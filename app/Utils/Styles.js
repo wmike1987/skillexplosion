@@ -391,6 +391,24 @@ export default {
         strokeThickness: 1
     }),
 
+    systemMessageTextAugment: new PIXI.TextStyle({
+        name: 'systemMessageTextAugment',
+        fill: "#f4f4f4",
+        fillGradientType: 1,
+        fontFamily: "Tahoma, Geneva, sans-serif",
+        fontSize: 12,
+        strokeThickness: 1
+    }),
+
+    levelTextAugment: new PIXI.TextStyle({
+        name: 'levelTextAugment',
+        fill: "#f4f4f4",
+        fillGradientType: 1,
+        fontFamily: "Tahoma, Geneva, sans-serif",
+        fontSize: 16,
+        strokeThickness: 1
+    }),
+
     augmentInactiveText: new PIXI.TextStyle({
         name: 'augmentInactiveText',
         fill: "#b0afae",

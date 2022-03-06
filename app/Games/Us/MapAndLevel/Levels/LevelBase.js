@@ -25,6 +25,59 @@ import UnitSpawner from '@games/Us/UnitSpawner.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 import Tooltip from '@core/Tooltip.js';
 
+var levelAugments = {
+    enraged: {
+        action: function(enemy) {
+            enemy.enrage({duration: 99999, amount: 3});
+        },
+        getSystemMessage: () => {
+            return {text: 'Enraged', style: 'systemMessageTextAugment', tint: 0xbd1515};
+        }
+    },
+    armored: {
+        action: function(enemy) {
+            enemy.applyDefenseBuff({duration: 99999, amount: 2});
+        },
+        getSystemMessage: () => {
+            return {text: 'Armored', style: 'systemMessageTextAugment', tint: 0x7b759f};
+        }
+    },
+    infested: {
+        init: function(level) {
+            level.worldSpecs.infestLevel(level);
+        },
+        action: function(enemy) {
+            // enemy.enrage();
+        },
+        getSystemMessage: () => {
+            return {text: 'Infested', style: 'systemMessageTextAugment', tint: 0x8147b8};
+        }
+    },
+    norevive: {
+        action: function(enemy) {
+            // enemy.enrage();
+        },
+        label: 'No Revive'
+    },
+    slippery: {
+        action: function(enemy) {
+            enemy.applyDodgeBuff({duration: 99999, amount: 30});
+        },
+        getSystemMessage: () => {
+            return {text: 'Slippery', style: 'systemMessageTextAugment', tint: 0x0d853d};
+        }
+    },
+    hardened: {
+        action: function(enemy) {
+            enemy.giveGritDodge(true);
+            enemy.grit = 100;
+        },
+        getSystemMessage: () => {
+            return {text: 'Hardened', style: 'systemMessageTextAugment', tint: 0xa67b29};
+        }
+    },
+};
+
 var levelBase = {
     resetLevel: function() {
         this.enemySets.forEach(set => {
@@ -105,6 +158,9 @@ var levelBase = {
         //create the initial unit set
         level.spawner.createInitialUnitSet();
 
+        //create augment listener
+        this._applyLevelAugments();
+
         //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText('.', gameUtils.getPlayableCenterPlus({
@@ -130,23 +186,38 @@ var levelBase = {
             game.heartbeat.play();
             gameUtils.setCursorStyle('Main');
         }, 1600);
+
+        var textDuration = 3000;
         gameUtils.doSomethingAfterDuration(() => {
             //start enemy spawnage
             level.spawner.start();
             let enemiesIncomingText = graphicsUtils.floatText(level.nodeTitle, gameUtils.getPlayableCenterPlus({
                 y: 20
             }), {
-                duration: 2000,
+                duration: textDuration,
                 style: styles.titleOneStyle
             });
             graphicsUtils.fadeSpriteInQuickly(enemiesIncomingText, 500);
             graphicsUtils.flashSprite({
                 sprite: enemiesIncomingText
             });
+
+            let additionalPropertiesText = this.getAugmentSystemMessages();
+            additionalPropertiesText.forEach((augment, index) => {
+                let augmentText = graphicsUtils.floatText(augment.text, gameUtils.getPlayableCenterPlus({
+                    y: 60 + index * 18
+                }), {
+                    duration: textDuration,
+                    style: styles.levelTextAugment
+                });
+                augmentText.tint = augment.tint;
+                graphicsUtils.fadeSpriteInQuickly(augmentText, 500);
+            });
+
             game.heartbeat.play();
 
             //show new enemy sets
-            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this);
+            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this, additionalPropertiesText.length * 18);
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
                 level: level
@@ -190,6 +261,7 @@ var levelBase = {
             itemClass: 'lightStimulant',
             itemType: 'item',
             isSupplyDropEligible: true,
+            levelAugments: [],
             createOneShotUnit: mathArrayUtils.flipCoin() || mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
 
@@ -208,6 +280,14 @@ var levelBase = {
             radius: 120
         }];
 
+        //set the level augment
+        let tempAugments = [];
+        this.levelAugments = mathArrayUtils.convertToArray(this.levelAugments);
+        this.levelAugments.forEach((aug) => {
+            tempAugments.push(levelAugments[aug]);
+        });
+        this.levelAugments = tempAugments;
+
         //set the tile tint
         this.tintIndex = this.outer ? mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes) : mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes);
         this.tileTint = options.levelOptions.tileTint || (this.outer ? worldSpecs.acceptableTileTints[this.tintIndex] : worldSpecs.acceptableTileTints[this.tintIndex]);
@@ -224,6 +304,13 @@ var levelBase = {
         if (this.initExtension) {
             this.initExtension(type, worldSpecs, options);
         }
+
+        //init augments
+        this.levelAugments.forEach((aug) => {
+            if(aug.init) {
+                aug.init(this);
+            }
+        });
 
         //fulfill enemy sets
         if (this.enemyDefs) {
@@ -474,6 +561,31 @@ var levelBase = {
         }
     },
 
+    _applyLevelAugments: function() {
+        var level = this;
+        this.augmentListener = Matter.Events.on(globals.currentGame, 'UnitEneteredPlayable', (event) => {
+            let unit = event.unit;
+            if(!unit.hazard && unit.team == globals.currentGame.enemyTeam) {
+                level.levelAugments.forEach((aug) => {
+                    aug.action(unit);
+                });
+            }
+        });
+    },
+
+    _removeLevelAugmentListener: function() {
+        Matter.Events.off(globals.currentGame, 'UnitEneteredPlayable', this.augmentListener);
+    },
+
+    getAugmentSystemMessages: function() {
+        var messages = [];
+        this.levelAugments.forEach((aug) => {
+            messages.push(aug.getSystemMessage());
+        });
+
+        return messages;
+    },
+
     cleanUp: function() {
 
     },
@@ -620,7 +732,6 @@ var levelBase = {
 
         //to-be called upon the win conditions being fulfilled
         var winAndContinueTasks = function(options) {
-            removeCurrentConditions.call(this);
 
             //stop current collectors
             if (game.shaneCollector.isCollecting()) {
@@ -671,6 +782,7 @@ var levelBase = {
 
         //to-be called upon the win/loss conditions being fulfilled
         var commonLossTasks = function() {
+            this._removeLevelAugmentListener();
             globals.currentGame.itemSystem.removeAllItemsOnGround(true);
             globals.currentGame.unitSystem.pause();
             removeCurrentConditions.call(this);
@@ -693,9 +805,7 @@ var levelBase = {
         this.endDelayInProgress = false;
         var winCondition = game.addTickCallback(function() {
 
-            /*
-             * See if our enemy sets have been fulfilled
-             */
+            //See if our enemy sets have been fulfilled
             var fulfilled = this.enemySets.every((eset) => {
                 return eset.fulfilled || eset.trivial;
             });
@@ -741,8 +851,13 @@ var levelBase = {
                     });
                 }.bind(this));
 
+                //remove level augment listener
+                this._removeLevelAugmentListener();
+
+                //remove win/loss condition
+                removeCurrentConditions();
+
                 if (this.customWinBehavior) { //custom win behavior
-                    removeCurrentConditions();
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
                     winAndContinueTasks({

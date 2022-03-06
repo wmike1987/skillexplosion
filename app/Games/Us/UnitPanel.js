@@ -1265,9 +1265,10 @@ unitPanel.prototype.clearEnemyIcons = function() {
     }
 };
 
-unitPanel.prototype.addEnemyIcons = function(level) {
+unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
     var enemySets = level.enemySets;
     var fadeInTime = 1000;
+    additionalOffset = additionalOffset || 0;
     var filteredSets = enemySets.filter((set) => {
         return !set.trivial;
     });
@@ -1276,7 +1277,7 @@ unitPanel.prototype.addEnemyIcons = function(level) {
         numberOfPositions: len,
         position: gameUtils.getPlayableCenterPlus({
             x: 0,
-            y: 80
+            y: 80 + additionalOffset
         }),
         spacing: 50
     });
@@ -1408,7 +1409,7 @@ unitPanel.prototype.addEnemyIcons = function(level) {
                 });
             }, index * timingSpace);
         });
-    }, 2500);
+    }, 3200);
 };
 
 unitPanel.prototype.decrementEnemyCount = function(enemySetId) {

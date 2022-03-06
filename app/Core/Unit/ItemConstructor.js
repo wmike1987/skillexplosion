@@ -113,9 +113,17 @@ var baseItem = {
     }
 };
 
+var specialItemDropSound = gameUtils.getSound('itemdrop.wav', {
+    volume: 0.035,
+    rate: 1.5
+});
 var itemDropSound = gameUtils.getSound('itemdrop.wav', {
-    volume: 0.04,
-    rate: 1
+    volume: 0.03,
+    rate: 1.75
+});
+var specialItemSwoosh = gameUtils.getSound('specialitemtoss.wav', {
+    volume: 0.25,
+    rate: 1.2
 });
 var microchipDropSound = gameUtils.getSound('itemdrop.wav', {
     volume: 0.04,
@@ -401,12 +409,19 @@ var ic = function(options) {
                         dropSound = stimulantDropSound;
                     } else if (item.classInformation.itemClass == 'lightStimulant') {
                         dropSound = pillDropSound;
+                    } else if(item.classInformation.itemType == 'specialtyItem') {
+                        dropSound = specialItemDropSound;
                     }
                     dropSound.play();
                 }
             });
 
-            itemSwoosh.play();
+            var tossSound = itemSwoosh;
+            if(item.classInformation.itemType == 'specialtyItem') {
+                tossSound = specialItemSwoosh;
+            }
+
+            tossSound.play();
             item.isDropping = true;
             this.itemDrop.play();
             this.itemDrop.tint = item.footprintTint || item.classInformation.typeInfo.tint;

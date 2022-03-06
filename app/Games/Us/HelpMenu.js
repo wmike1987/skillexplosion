@@ -291,7 +291,7 @@ HelpMenu.prototype.initialize = function() {
 
     BuffPage1.addLineTitle({
         text: 'Enrage',
-        image: 'DeathWishBuff',
+        image: 'EnrageBuff',
         imageOffset: {
             x: -6
         }
@@ -302,7 +302,7 @@ HelpMenu.prototype.initialize = function() {
 
     BuffPage1.addLineTitle({
         text: 'Range',
-        image: 'KeenEyeBuff',
+        image: 'RangeBuff',
         imageOffset: {
             x: -6
         }
@@ -312,14 +312,14 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage1.addLineTitle({
-        text: 'Condemn',
-        image: 'CondemnBuff',
+        text: 'Berserk',
+        image: 'BerserkBuff',
         imageOffset: {
             x: -6
         }
     });
     BuffPage1.addLine({
-        text: 'Death of condemned unit heals condemning unit.'
+        text: 'Add multiplier to attack speed.'
     });
 
     BuffPage1.addLineTitle({
@@ -441,14 +441,14 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage2.addLineTitle({
-        text: 'Berserk',
-        image: 'RaisedStakesBuff',
+        text: 'Condemn',
+        image: 'CondemnBuff',
         imageOffset: {
             x: -6
         }
     });
     BuffPage2.addLine({
-        text: 'Add multiplier to attack speed.'
+        text: 'Death of condemned unit heals condemning unit.'
     });
 
     this.addPage(BuffPage2);

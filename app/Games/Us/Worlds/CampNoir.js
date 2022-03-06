@@ -831,7 +831,7 @@ var enemyDefs = {
             amount: [5, 6],
             atATime: 2,
             hz: 5000
-        }, ultraHardFlyObj]
+        }, hardFlyObj]
     },
     rammians: {
         noun: 'Rammian',
@@ -973,7 +973,7 @@ var enemyDefs = {
             amount: 30,
             atATime: 6,
             hz: 6000
-        }, ultraHardFlyObj]
+        }, hardFlyObj]
     },
     easyGargs: {
         noun: 'Gargoyle',
@@ -1193,13 +1193,19 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('basic');
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
+                levelOptions: {
+                    levelAugments: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened'])
+                }
+            });
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
 
             var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+
+            var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
-                    nodeTitle: 'Mega Den',
+                    levelAugments: [randomAugment],
                     token: 'hard',
                     itemClass: 'worn',
                     outer: true
@@ -1396,7 +1402,9 @@ var phaseThree = function() {
     });
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
-    this.map.addMapNode('easySentinels');
+    this.map.addMapNode('easySentinels', {
+        levelOptions: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested'])
+    });
 
     //outer
     let outerParam = {
@@ -1416,9 +1424,14 @@ var phaseThree = function() {
             minX: gameUtils.getCanvasCenter().x
         }
     }));
+
+    var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
     this.map.addMapNode('outerBasicTwo', Object.assign(outerParam, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
+        },
+        levelOptions: {
+            levelAugments: randomAugment
         }
     }));
 
@@ -1426,13 +1439,16 @@ var phaseThree = function() {
     this.map.addMapNode('outerBasicThree', Object.assign(outerParam, {
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
-        }
+        },
     }));
+
+    randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
     this.map.addMapNode('outerHardTwo', {
         levelOptions: {
             outer: true,
             token: 'outerHard',
             itemClass: 'stimulant',
+            levelAugments: randomAugment
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
@@ -1660,6 +1676,12 @@ var campNoir = {
         levelTiles: getLevelTiles(),
         possibleTrees: possibleTrees,
 
+        infestLevel: function(level) {
+            if (level.enemyDefs.enemySets) {
+                level.enemyDefs.enemySets.push(ultraHardFlyObj);
+            }
+        },
+
         //gets applied per level
         decorateTerrain: function(scene, tint) {
             //various tints
@@ -1761,7 +1783,7 @@ var campNoir = {
                 //add smokey pit and tent
                 if (!this.noSmokePit) {
                     var tentDoodad = null;
-                    if(this.outer) {
+                    if (this.outer) {
                         tentDoodad = DoodadFactory.createDoodad({
                             menuItem: 'enemyTent1',
                             tint: rockTints[tIndex],
