@@ -247,6 +247,14 @@ var UnitBase = {
                     attackingUnit: attackingUnit,
                     attackContext: attackContext
                 });
+
+                //trigger the event on currentGame for the stat collector
+                Matter.Events.trigger(globals.currentGame, 'killingBlowBlock', {
+                    performingUnit: this,
+                    attackingUnit: attackingUnit,
+                    attackContext: attackContext
+                });
+
                 //display a miss graphic
                 graphicsUtils.floatText('Block!', {
                     x: this.position.x,

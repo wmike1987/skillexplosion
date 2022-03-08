@@ -283,7 +283,11 @@ var graphicsUtils = {
     },
 
     fadeSpriteInQuickly: function(sprite, duration) {
-        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500, fadeIn: true});
+        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500, fadeIn: true, makeVisible: true});
+    },
+
+    fadeSpriteOutQuickly: function(sprite, duration) {
+        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500, nokill: true});
     },
 
     fadeSpriteOverTime: function(options) {

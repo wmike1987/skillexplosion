@@ -238,7 +238,7 @@ var MapLevelNode = function(options) {
                             unclickTokenSound.play();
                         } else {
                             //If we trying to add a fourth, just ignore this request
-                            if (this.mapRef.isOutingFull()) {
+                            if (!this.mapRef.canAddNodeToOuting(behavior.nodeToEnter)) {
                                 return;
                             }
                             if (behavior.flash) {
@@ -262,12 +262,17 @@ var MapLevelNode = function(options) {
                             Matter.Events.trigger(globals.currentGame, "travelFinished", {
                                 node: behavior.nodeToEnter
                             });
-                            behavior.nodeToEnter.levelDetails.enterLevel({
-                                enteredByTraveling: true,
-                                keepCurrentCollector: mouseDownOptions.keepCurrentCollector
-                            });
-                            behavior.nodeToEnter.untintNode();
-                            this.displayObject.tooltipObj.enable();
+
+                            if(behavior.nodeToEnter.travelToken) {
+                                this.mapRef.arriveAtTravelToken(behavior.nodeToEnter);
+                            } else {
+                                behavior.nodeToEnter.levelDetails.enterLevel({
+                                    enteredByTraveling: true,
+                                    keepCurrentCollector: mouseDownOptions.keepCurrentCollector
+                                });
+                                behavior.nodeToEnter.untintNode();
+                                this.displayObject.tooltipObj.enable();
+                            }
                         }.bind(this));
                     } else {
                         //clear the outing if we click on non-outingReady node and we've been configuring an outing
@@ -377,7 +382,7 @@ MapLevelNode.prototype.playSpawnAnimation = function(lesser) {
 };
 
 MapLevelNode.prototype.canBePrereq = function() {
-    return true;
+    return !this.travelToken;
 };
 
 MapLevelNode.prototype.setPosition = function(position) {
@@ -436,6 +441,7 @@ MapLevelNode.prototype.focusNode = function() {
 MapLevelNode.prototype.showNodeInOuting = function(options) {
     options = options || {};
     var tints = [0xeeec1a, 0xff7a00, 0xff0000];
+    var tokenTint = 0xffffff;
     var number = options.number;
     var defaultSize = options.defaultSize;
     if (!this.isSpinning && !this.isCompleted) {
@@ -446,7 +452,7 @@ MapLevelNode.prototype.showNodeInOuting = function(options) {
                 where: 'hudNTwo',
                 alpha: 1.0,
                 position: this.position,
-                tint: tints[number]
+                tint: options.travelToken ? tokenTint : tints[number]
             });
             graphicsUtils.makeSpriteSize(this.outingFocusCircle, defaultSize ? this.defaultTokenSize : this.enlargedTokenSize);
 
@@ -461,16 +467,16 @@ MapLevelNode.prototype.showNodeInOuting = function(options) {
             //     });
             // }
         } else {
-            this.outingFocusCircle.tint = tints[number];
+            this.outingFocusCircle.tint = options.travelToken ? tokenTint : tints[number];
         }
     }
 };
 
-MapLevelNode.prototype.unshowNodeInOuting = function() {
+MapLevelNode.prototype.unshowNodeInOuting = function(force) {
     if (!this.outingFocusCircle) return;
-    if (!this.isSpinning) {
+    if (!this.isSpinning || force) {
         this.isFocused = false;
-        graphicsUtils.removeSomethingFromRenderer(this.outingFocusCircle);
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.outingFocusCircle, 150);
         this.outingFocusCircle = null;
         graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
 
@@ -482,9 +488,8 @@ MapLevelNode.prototype.unshowNodeInOuting = function() {
     }
 };
 
-
 MapLevelNode.prototype.tintNode = function(value) {
-    var tintValue = 0x20cd2c;
+    var tintValue = this.customNodeTint || 0x20cd2c;
     this.displayObject.tint = value || tintValue;
     if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
@@ -546,7 +551,7 @@ MapLevelNode.prototype.unfocusNode = function() {
     if (!this.focusCircle) return;
     if (!this.isSpinning) {
         this.isFocused = false;
-        graphicsUtils.removeSomethingFromRenderer(this.focusCircle);
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.focusCircle, 150);
         this.focusCircle = null;
         graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
 

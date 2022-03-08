@@ -96,6 +96,44 @@ var map = function(specs) {
         }
     });
 
+    //manage morphine
+    this.morphine = 0;
+    this.addMorphine = function(amount) {
+        this.morphine += amount;
+
+        graphicsUtils.fadeSpriteInQuickly(this.morphineText, 250);
+        graphicsUtils.fadeSpriteOutQuickly(this.fatigueText, 250);
+    };
+    this.subtractMorphine = function(amount) {
+        this.morphine -= amount;
+        if(this.morphine < 0) {
+            this.morphine = 0;
+        }
+    };
+    this.hasMorphine = function() {
+        return this.morphine > 0;
+    };
+    this.morphineText = graphicsUtils.createDisplayObject("TEX+:" + 'Morphine', {
+        position: {
+            x: 100,
+            y: 100
+        },
+        style: styles.fatigueText,
+        where: "hudOne",
+        tint: 0xe63175
+    });
+    gameUtils.attachSomethingToBody({
+        something: this.morphineText,
+        body: this.headTokenBody,
+        offset: {
+            x: 0,
+            y: 20
+        }
+    });
+    Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', (event) => {
+        this.subtractMorphine(1);
+    });
+
     //manage adrenaline
     this.adrenaline = 0;
     this.adrenalineMax = 4;
@@ -183,7 +221,7 @@ var map = function(specs) {
         where: 'foregroundOne',
         position: gameUtils.getPlayableCenter(),
         sortYOffset: -1,
-        tint: 0x323232,
+        tint: 0x000000,
         alpha: 0.75
     });
     graphicsUtils.makeSpriteSize(this.backgroundSprite, gameUtils.getCanvasWH());
@@ -299,10 +337,40 @@ var map = function(specs) {
         });
     };
 
+    this.arriveAtTravelToken = function(node) {
+        //travel tokens
+        var self = this;
+        node.arriveAtNode();
+        globals.currentGame.currentScene.clear();
+        var finalNode = this.outingNodes.length == 0;
+
+        node.playCompleteAnimation();
+        node.complete();
+
+        //if we're the final node and travel token, remove all the route arrows
+        gameUtils.doSomethingAfterDuration(() => {
+            if(finalNode) {
+                self.allowMouseEvents(true);
+                self.clearRouteArrows();
+                node.unshowNodeInOuting(true);
+                self.outingInProgress = false;
+                self.clearOuting();
+            } else {
+                var mapnode = self.outingNodes.shift();
+                self.inProgressOutingNodes.push(mapnode);
+                mapnode.onMouseDownBehavior({
+                    systemTriggered: true,
+                    keepCurrentCollector: true
+                });
+            }
+        }, 2000);
+
+    };
+
     this.show = function(options) {
         options = options || {
-            backgroundAlpha: 0.75,
-            backgroundTint: 0x011200
+            backgroundAlpha: 1.0,
+            backgroundTint: 0x000000
         };
 
         this.isShown = true;
@@ -345,6 +413,15 @@ var map = function(specs) {
 
         graphicsUtils.addOrShowDisplayObject(this.headTokenSprite);
         graphicsUtils.addOrShowDisplayObject(this.fatigueText);
+        this.fatigueText.alpha = 0.9;
+        graphicsUtils.addOrShowDisplayObject(this.morphineText);
+        this.morphineText.alpha = 0.9;
+
+        if(this.hasMorphine()) {
+            graphicsUtils.hideDisplayObject(this.fatigueText);
+        } else {
+            graphicsUtils.hideDisplayObject(this.morphineText);
+        }
 
         graphicsUtils.addOrShowDisplayObject(this.adrenalineText);
         if (this.adrenalineBlocks.length > 0) {
@@ -384,11 +461,16 @@ var map = function(specs) {
         });
 
         if (this.outingInProgress) {
+            let myIndex = 0;
             this.outingNodeMemory.forEach((node, index) => {
                 node.showNodeInOuting({
-                    number: index,
-                    defaultSize: true
+                    number: myIndex,
+                    defaultSize: true,
+                    travelToken: node.travelToken
                 });
+                if(!node.travelToken) {
+                    myIndex += 1;
+                }
             });
         }
 
@@ -429,6 +511,7 @@ var map = function(specs) {
         this.headTokenSprite.visible = false;
         this.fatigueText.visible = false;
         this.adrenalineText.visible = false;
+        this.morphineText.visible = false;
         this.adrenalineBlocks.forEach((item, i) => {
             item.visible = false;
         });
@@ -474,11 +557,12 @@ var map = function(specs) {
         this.updateRouteArrows();
     };
 
-    //path
     this.updateRouteArrows = function() {
         var colors = [0xcdc012, 0xe47b0e, 0xb90606];
+        var travelTokenColor = 0xffffff;
 
-        var sendSpriteWrapper = function(start, destination, index) {
+        //function to create the timer that creates the arrows
+        var sendSpriteWrapper = function(start, destination, index, travelToken) {
             let myArrowTimers = [];
             let timer = globals.currentGame.addTimer({
                 name: 'sendSpriteWrapper:' + mathArrayUtils.getId(),
@@ -513,22 +597,32 @@ var map = function(specs) {
                 });
             });
 
-            let sendSpriteObj = {timer: timer, color: colors[index]};
+            let sendSpriteObj = {timer: timer, color: travelToken ? travelTokenColor : colors[index]};
             return sendSpriteObj;
         };
 
         if(this.outingNodes.length == 0) {
             this.clearRouteArrows();
         } else {
+            var battleNodeIndex = 0;
+
+            //if we're in the midst of an outing, use the outing node memory, else use the current outing nodes + 1. The plus 1 accounts for adds and subtracts
+            var nodesToSample = this.outingInProgress ? this.outingNodeMemory.length : this.outingNodes.length + 1;
             mathArrayUtils.repeatXTimes((index) => {
+                //either use the set of outing nodes or the outing node memory (which occurs when we've started an outing)
                 var nodesToUse = this.outingNodes;
-                if(this.outingNodeMemory.length > 0) {
+                if(this.outingInProgress) {
                     nodesToUse = this.outingNodeMemory;
                 }
                 let currentNode = nodesToUse[index];
                 let previousNode = index == 0 ? {id: 'headToken', position: mathArrayUtils.clonePosition(this.getPlayerMapPosition())} : nodesToUse[index-1];
 
+                if(currentNode && currentNode.travelToken && currentNode.isCompleted) {
+                    return;
+                }
+
                 if(this.completedNodes && this.completedNodes.indexOf(currentNode) >= 0) {
+                    battleNodeIndex += 1;
                     return;
                 }
 
@@ -538,14 +632,14 @@ var map = function(specs) {
                     mathArrayUtils.removeObjectFromArray(this.outingArrows[index], this.outingArrows);
                 } else if(this.outingArrows[index] == null && currentNode != null) {
                     //detect additions
-                    let sendObj = sendSpriteWrapper(previousNode.position, currentNode.position, index);
+                    let sendObj = sendSpriteWrapper(previousNode.position, currentNode.position, battleNodeIndex, currentNode.travelToken);
                     this.outingArrows[index] = {timer: sendObj.timer, sendObj: sendObj, id: currentNode.id};
                 } else if(this.outingArrows[index] && this.outingArrows[index].id != currentNode.id) {
                     //detect changes (removals from the middle)
 
                     //kill current --> changed node and replace with new arrow
                     this.outingArrows[index].timer.invalidate();
-                    let sendObj = sendSpriteWrapper(previousNode.position, currentNode.position, index);
+                    let sendObj = sendSpriteWrapper(previousNode.position, currentNode.position, battleNodeIndex, currentNode.travelToken);
                     this.outingArrows[index] = {timer: sendObj.timer, sendObj: sendObj, id: currentNode.id};
 
                     //kill changed --> it's previous next
@@ -554,14 +648,22 @@ var map = function(specs) {
                         mathArrayUtils.removeObjectFromArray(this.outingArrows[index+1], this.outingArrows);
                     }
                 }
-            }, this.maxOutingLength);
 
-            //update colors
-            this.outingArrows.forEach((outingArrowObject, index) => {
-                if(outingArrowObject) {
-                    outingArrowObject.sendObj.color = colors[index];
+                if(currentNode && !currentNode.travelToken) {
+                    battleNodeIndex += 1;
                 }
-            });
+            }, nodesToSample);
+
+            //update colors (if our outing is not in progress)
+            var nonTokenIndex = 0;
+            if(!this.outingInProgress) {
+                this.outingArrows.forEach((outingArrowObject, index) => {
+                    if(outingArrowObject.sendObj.color != travelTokenColor) {
+                        outingArrowObject.sendObj.color = colors[nonTokenIndex];
+                        nonTokenIndex += 1;
+                    }
+                });
+            }
         }
     };
 
@@ -624,10 +726,15 @@ var map = function(specs) {
         var game = globals.currentGame;
 
         //refresh the graphics
+        var myIndex = 0;
         this.outingNodes.forEach((node, index) => {
             node.showNodeInOuting({
-                number: index
+                number: myIndex,
+                travelToken: node.travelToken
             });
+            if(!node.travelToken) {
+                myIndex += 1;
+            }
         });
 
         //create the space to embark text
@@ -670,8 +777,14 @@ var map = function(specs) {
         }
     };
 
-    this.isOutingFull = function() {
-        return this.outingNodes.length >= this.maxOutingLength;
+    this.canAddNodeToOuting = function(node) {
+        if(node.travelToken) {
+            return true;
+        }
+        var nonTokenNodes = this.outingNodes.filter((node) => {
+            return !node.travelToken;
+        });
+        return nonTokenNodes.length < this.maxOutingLength;
     };
 
     this.embarkOnOuting = function() {
@@ -686,7 +799,7 @@ var map = function(specs) {
 
         var finalNode = this.outingNodes[this.outingNodes.length - 1];
 
-        //Change the win behavior of every node except the final node
+        //Change the win/continuation behavior of some of these nodes
         this.outingNodes.forEach((node) => {
             var myNode = node;
 
@@ -769,6 +882,10 @@ var map = function(specs) {
 
     this.getPlayerMapPosition = function() {
         return this.headTokenBody.position;
+    };
+
+    this.isOnTravelToken = function() {
+        return this.currentNode.travelToken;
     };
 
     this.travelToNode = function(node, destinationCallback) {

@@ -1192,6 +1192,7 @@ var phaseTwo = function(options) {
                 }
             });
             world.map.addMapNode('basic');
+            world.map.addMapNode('morphineStation');
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
                 levelOptions: {
@@ -1426,14 +1427,15 @@ var phaseThree = function() {
     }));
 
     var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
-    this.map.addMapNode('outerBasicTwo', Object.assign(outerParam, {
+    this.map.addMapNode('outerBasicTwo', {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         },
         levelOptions: {
-            levelAugments: randomAugment
+            levelAugments: randomAugment,
+            outer: true
         }
-    }));
+    });
 
     //left levels
     this.map.addMapNode('outerBasicThree', Object.assign(outerParam, {

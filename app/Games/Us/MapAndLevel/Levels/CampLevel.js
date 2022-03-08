@@ -32,7 +32,7 @@ var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {
 });
 
 var campLevel = function() {
-    this.initExtension = function(type, worldSpecs, options) {
+    this.preNodeInit = function(type, worldSpecs, options) {
         this.isCampProper = true;
         this.campLikeActive = true;
         this.mapTableActive = true;
@@ -295,7 +295,9 @@ var campLevel = function() {
             mathArrayUtils.removeObjectFromArray(this.backgroundLightShader, game.renderer.layers.backgroundOne.filters);
             mathArrayUtils.removeObjectFromArray(this.stageLightShader, game.renderer.layers.stage.filters);
             mathArrayUtils.removeObjectFromArray(this.treeShader, game.renderer.layers.stageTrees.filters);
-            game.map.hide();
+            if(!game.map.isOnTravelToken) {
+                game.map.hide();
+            }
             this.camp.cleanUpSounds();
             $('body').off('mousedown.map');
             $('body').off('keydown.map');

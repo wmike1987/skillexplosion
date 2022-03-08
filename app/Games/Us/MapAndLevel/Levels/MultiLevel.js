@@ -36,7 +36,7 @@ var multiLevel = function(options) {
     //default
     this.enemyDefList = ['basic', 'basic', 'basic'];
 
-    this.initExtension = function(type, worldSpecs, options) {
+    this.preNodeInit = function(type, worldSpecs, options) {
         this.enemyDefList.forEach((type, index) => {
             let newOptions = Object.assign({}, options);
             newOptions.mapNodeOptions.bypassNodeCreation = true;

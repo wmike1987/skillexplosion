@@ -300,9 +300,9 @@ var levelBase = {
         let levelStrength = this.levelStrengthOverride || this.enemyDefs.strength || 'basic';
         this.nodeTitle = this.levelTitleOverride || levelNamer.getName({noun: noun, type: levelStrength});
 
-        //hook to override defaults
-        if (this.initExtension) {
-            this.initExtension(type, worldSpecs, options);
+        //pre node init
+        if (this.preNodeInit) {
+            this.preNodeInit(type, worldSpecs, options);
         }
 
         //init augments
@@ -338,6 +338,10 @@ var levelBase = {
             } else {
                 mapNode.setPosition(position);
             }
+        }
+
+        if (this.initExtension) {
+            this.initExtension(type, worldSpecs, options);
         }
 
         if (this.manualAddToGraph) {
@@ -538,7 +542,7 @@ var levelBase = {
         scene.add(function() {
             $('body').on('keydown.map', function(event) {
                 var key = event.key.toLowerCase();
-                if (key == 'escape' && this.mapActive && this.map.keyEventsAllowed) {
+                if (key == 'escape' && this.mapActive && this.map.keyEventsAllowed && !this.map.isOnTravelToken()) {
                     this.closeMap();
                 }
             }.bind(globals.currentGame));

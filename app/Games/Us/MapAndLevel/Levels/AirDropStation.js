@@ -49,7 +49,7 @@ var fatigueBenefit = 3;
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
-commonAirDropStation.initExtension = function() {
+commonAirDropStation.preNodeInit = function() {
     this.campLikeActive = true;
     this.completeUponEntry = true;
     this.lesserSpin = true;

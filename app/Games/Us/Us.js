@@ -914,7 +914,7 @@ var game = {
         unit.setEnergy(unit.maxEnergy);
 
         //apply fatigue
-        if (options.applyFatigue && unit.fatigue) {
+        if (options.applyFatigue && unit.fatigue && !this.map.hasMorphine()) {
             var healthPenalty = Math.max(0, (unit.fatigue - unit.fatigueReduction)) * unit.maxHealth / 100;
             var energyPenalty = Math.max(0, (unit.fatigue - unit.fatigueReduction)) * unit.maxEnergy / 100;
             unit.setHealth(unit.currentHealth - healthPenalty);
