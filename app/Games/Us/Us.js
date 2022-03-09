@@ -728,10 +728,9 @@ var game = {
 
     setCurrentLevel: function(level, poolingOptions) {
         this.currentLevel = level;
+
         //if this level has enemies, start the pool as we travel
-        if (this.currentLevel.enemySets.length > 0) {
-            this.currentLevel.startPooling(poolingOptions);
-        }
+        this.currentLevel.startPooling(poolingOptions);
     },
 
     isCurrentLevelConfigurable: function() {

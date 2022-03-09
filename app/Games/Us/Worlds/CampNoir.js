@@ -1977,6 +1977,9 @@ var campNoir = {
                         noZones: noZones
                     });
                     scene.add(this.tent);
+                    this.scene.addCleanUpTask(() => {
+                        this.tent = null;
+                    });
 
                     var tentPosition = this.tent.list[0].position;
                     this.initialUnitPosition = tentPosition;
@@ -2147,11 +2150,14 @@ var campNoir = {
                         noZones: noZones
                     });
                     scene.add(this.pit);
+                    scene.addCleanUpTask(() => {
+                        this.pit = null;
+                    });
 
                     var pitPosition = this.pit.list[0].position;
 
                     //other footprints
-                    this.footprints = SceneryUtils.decorateTerrain({
+                    var footprints = SceneryUtils.decorateTerrain({
                         possibleTextures: ['CampDoodads/CritterFootprint',
                             'CampDoodads/CritterFootprint2',
                             'CampDoodads/CritterFootprint3',
@@ -2167,7 +2173,7 @@ var campNoir = {
                         rotate: 'random',
                         r: 1,
                     });
-                    scene.add(this.footprints);
+                    scene.add(footprints);
                 }
             } else {
                 var numberOfRocks2 = 10;
@@ -2408,6 +2414,10 @@ var campNoir = {
             // scene.add(this.desertFlowerMap);
             scene.add(this.cragMap);
             scene.add(this.animatedOrnamentMap);
+            this.scene.addCleanUpTask(() => {
+                this.cragMap = null;
+                this.animatedOrnamentMap = null;
+            });
 
             var l1 = gameUtils.createAmbientLights({
                 hexColorArray: ambientLightTints[tIndex >= 0 ? tIndex : 0],

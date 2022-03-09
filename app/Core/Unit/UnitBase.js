@@ -175,6 +175,7 @@ var UnitBase = {
         let attackContext = Object.assign({
             isProjectile: false,
             dodgeable: true,
+            blockable: true,
             ignoreArmor: false,
             dodgeRolls: 1,
         }, options);
@@ -239,7 +240,7 @@ var UnitBase = {
 
         //killing blow block
         if (this.currentHealth - alteredDamage <= 0) {
-            if (this.hasGritDodge) {
+            if (this.hasGritDodge && attackContext.blockable) {
                 this.giveGritDodge(false);
                 this.gritDodgeTimer.reset();
                 Matter.Events.trigger(this, 'killingBlowBlock', {

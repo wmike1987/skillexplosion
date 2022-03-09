@@ -111,6 +111,10 @@ var levelBase = {
         var scene = new Scene();
         this.scene = scene;
 
+        this.scene.addCleanUpTask(() => {
+            this.tileMap = null;
+        });
+
         //transition to our new scene
         globals.currentGame.currentScene.transitionToScene({
             newScene: scene,
@@ -233,6 +237,9 @@ var levelBase = {
     },
 
     startPooling: function() {
+        if(!this.isBattleLevel()) {
+            return;
+        }
         this.spawner = new UnitSpawner({
             enemySets: this.enemySets,
             createOneShotUnit: this.createOneShotUnit,
@@ -362,7 +369,7 @@ var levelBase = {
     },
 
     isBattleLevel: function() {
-        return this.isLevelNonConfigurable();
+        return (!this.isCompleted && this.enemySets.length > 0)
     },
 
     isOutingReady: function() {
@@ -745,6 +752,10 @@ var levelBase = {
                 }
             }
 
+            //mark us as 'won'
+            this.isCompleted = true;
+
+            //clean up spawner
             this.spawner.cleanUp();
 
             //wait a second then add space to continue button
@@ -862,6 +873,8 @@ var levelBase = {
                 removeCurrentConditions();
 
                 if (this.customWinBehavior) { //custom win behavior
+                    //mark us as 'won'
+                    this.isCompleted = true;
                     this.customWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
                     winAndContinueTasks({

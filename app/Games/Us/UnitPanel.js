@@ -1263,6 +1263,10 @@ unitPanel.prototype.clearEnemyIcons = function() {
     if(this.multiLevelPositionCount) {
         graphicsUtils.fadeSpriteQuicklyThenDestroy(this.multiLevelPositionCount, 250);
     }
+
+    if(this.initialMultiLevelPosition) {
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.initialMultiLevelPosition, 250);
+    }
 };
 
 unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
@@ -1283,15 +1287,15 @@ unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
     });
 
     //comprehend multi level
-    var multiLevelPosition = null;
+    this.initialMultiLevelPosition = null;
     if (level.multiLevel) {
-        multiLevelPosition = graphicsUtils.addSomethingToRenderer("TEX+:(" + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
+        this.initialMultiLevelPosition = graphicsUtils.addSomethingToRenderer("TEX+:(" + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
             position: mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
                 y: 125
             }),
             style: styles.scoreStyleNonItalic
         });
-        graphicsUtils.fadeSpriteInQuickly(multiLevelPosition, fadeInTime);
+        graphicsUtils.fadeSpriteInQuickly(this.initialMultiLevelPosition, fadeInTime);
     }
 
     var getIconPosition = function(i) {
@@ -1362,9 +1366,9 @@ unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
                 });
 
                 //fade multi level position and create the panel representation
-                if(multiLevelPosition && index == 0) {
-                    graphicsUtils.fadeSpriteQuicklyThenDestroy(multiLevelPosition, 250);
-                    self.multiLevelPositionCount = graphicsUtils.addSomethingToRenderer("TEX+:(" + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
+                if(this.initialMultiLevelPosition && index == 0) {
+                    graphicsUtils.fadeSpriteQuicklyThenDestroy(this.initialMultiLevelPosition, 250);
+                    self.multiLevelPositionCount = graphicsUtils.addSomethingToRenderer('TEX+:(' + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
                         position: getIconPosition(filteredSets.length),
                         style: styles.scoreStyleNonItalic,
                         alpha: 0.75

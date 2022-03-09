@@ -91,7 +91,7 @@ var map = function(specs) {
         something: this.fatigueText,
         body: this.headTokenBody,
         offset: {
-            x: 0,
+            x: 8,
             y: 20
         }
     });

@@ -321,12 +321,12 @@ export default function Eruptlet(options) {
                 gameUtils.applyToUnitsByTeam(function(team) {return this.team != team;}.bind(this), function(unit) {
                     return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable & unit != eruptlet);
                 }.bind(this), function(unit) {
-                    console.info('eruplet ' + this.unitId + ' attacked!')
+                    // console.info('eruplet ' + this.unitId + ' attacked!');
                     unit.sufferAttack(this.damage, this);
                 }.bind(this));
                 this.alreadyAttacked = true;
                 if(!this.isDead) {
-                    this.sufferAttack(10000);
+                    this.sufferAttack(10000, null, {dodgeable: false, blockable: false});
                 }
             }
         },
