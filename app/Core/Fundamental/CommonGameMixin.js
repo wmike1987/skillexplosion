@@ -141,8 +141,9 @@ var common = {
         };
         this.removePriorityMouseDownEvent = function(f) {
             var index = this.priorityMouseDownEvents.indexOf(f);
-            if (index > -1)
+            if (index > -1) {
                 this.priorityMouseDownEvents.splice(index, 1);
+            }
         };
 
         /*

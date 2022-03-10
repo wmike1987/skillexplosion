@@ -696,7 +696,6 @@ var enemyDefs = {
         }]
     },
     basic: {
-        token: 'default',
         noun: 'Critter',
         strength: 'basic',
         enemySets: [{
@@ -716,7 +715,6 @@ var enemyDefs = {
     basic2: {
         noun: 'Gargoyle',
         strength: 'basic',
-        token: 'default',
         enemySets: [{
                 type: 'Sentinel',
                 amount: [1],
@@ -736,7 +734,6 @@ var enemyDefs = {
     basic3: {
         noun: 'Rammian',
         strength: 'basic',
-        token: 'default',
         enemySets: [{
                 type: 'Rammian',
                 amount: [3, 4],
@@ -876,7 +873,6 @@ var enemyDefs = {
     outerBasic: {
         noun: 'Critter',
         strength: 'hard',
-        token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
             amount: 12,
@@ -892,7 +888,6 @@ var enemyDefs = {
     outerBasicTwo: {
         noun: 'Hunter',
         strength: 'hard',
-        token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
             amount: 12,
@@ -908,7 +903,6 @@ var enemyDefs = {
     outerBasicThree: {
         noun: 'Rammian',
         strength: 'hard',
-        token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
             amount: 15,
@@ -923,7 +917,6 @@ var enemyDefs = {
     },
     outerHardOne: {
         strength: 'hard',
-        token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
             amount: [7, 8],
@@ -945,7 +938,6 @@ var enemyDefs = {
     },
     outerHardTwo: {
         strength: 'hard',
-        token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
             amount: 12,
@@ -967,7 +959,6 @@ var enemyDefs = {
     outerHardThree: {
         noun: 'Critter',
         strength: 'hard',
-        token: 'outerNormal',
         enemySets: [{
             type: 'Critter',
             amount: 30,
@@ -978,7 +969,6 @@ var enemyDefs = {
     easyGargs: {
         noun: 'Gargoyle',
         strength: 'hard',
-        token: 'hard',
         enemySets: [{
             type: 'Gargoyle',
             amount: [5, 6],
@@ -1003,7 +993,6 @@ var enemyDefs = {
         }, hardFlyObj]
     },
     easySentinels: {
-        token: 'hard',
         enemySets: [{
             type: 'Sentinel',
             amount: [4, 5],
@@ -1207,7 +1196,6 @@ var phaseTwo = function(options) {
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
                     levelAugments: [randomAugment],
-                    token: 'hard',
                     itemClass: 'worn',
                     outer: true
                 }
@@ -1448,7 +1436,7 @@ var phaseThree = function() {
     this.map.addMapNode('outerHardTwo', {
         levelOptions: {
             outer: true,
-            token: 'outerHard',
+            token: 'hard',
             itemClass: 'stimulant',
             levelAugments: randomAugment
         },
@@ -1459,7 +1447,6 @@ var phaseThree = function() {
     this.map.addMapNode('mobs', {
         levelOptions: {
             outer: true,
-            token: 'mobs',
             itemClass: 'stimulant',
             positionOptions: {
                 maxX: gameUtils.getCanvasCenter().x
@@ -1469,7 +1456,7 @@ var phaseThree = function() {
 
     this.map.addMapNode('outerHardOne', {
         levelOptions: {
-            token: 'outerHard',
+            token: 'hard',
             itemClass: 'book'
         }
     });

@@ -24,6 +24,7 @@ var UnitSystemAssets = [{
     name: "BaseUnit",
     target: "Textures/Us/BaseUnit.json"
 }];
+
 var UnitSystem = function(properties) {
 
     //Share given properties

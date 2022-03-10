@@ -84,7 +84,19 @@ var MapLevelNode = function(options) {
         });
     } else {
         //default behavior
-        var tokenMapping = tokenMappings[this.levelDetails.token] || tokenMappings['default'];
+        var token = 'default';
+        if(this.levelDetails.levelAugments.length > 0) {
+            if(this.levelDetails.outer) {
+                token = 'augmentedHard';
+            } else {
+                token = 'augmentedBasic';
+            }
+        } else {
+            if(this.levelDetails.outer) {
+                token = 'hard';
+            }
+        }
+        var tokenMapping = tokenMappings[this.levelDetails.token || token];
         this.displayObject = graphicsUtils.createDisplayObject(tokenMapping, {
             where: 'hudNTwo',
             scale: {
