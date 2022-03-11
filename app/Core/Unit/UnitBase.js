@@ -119,6 +119,7 @@ var UnitBase = {
     dodgeSound: dodgeSound,
     smallerBodyWidthChange: false,
     smallerBodyHeightChange: false,
+    abilityDamageMultiplier: 1,
     bigBodyAddition: {
         x: 0,
         y: 0
@@ -176,6 +177,7 @@ var UnitBase = {
             isProjectile: false,
             dodgeable: true,
             blockable: true,
+            abilityType: false,
             ignoreArmor: false,
             dodgeRolls: 1,
         }, options);
@@ -183,6 +185,10 @@ var UnitBase = {
         attackingUnit = attackingUnit || {
             isPlaceholder: true
         };
+
+        if(attackContext.abilityType) {
+            damage *= this.abilityDamageMultiplier;
+        }
 
         var damageObj = {
             damage: damage
@@ -1989,6 +1995,7 @@ var UnitBase = {
                 unit.isTargetable = false;
                 unit.isoManagedAlpha = 0.6;
                 unit.idleCancel = true;
+                unit.abilityDamageMultiplier *= 2;
                 unit.setSleep(true, 'petrifySleeperLock');
                 if (this.petrifyTintTimer) {
                     globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
@@ -2005,6 +2012,7 @@ var UnitBase = {
                 unit.canAttack = true;
                 unit.isTargetable = true;
                 unit.idleCancel = false;
+                unit.abilityDamageMultiplier /= 2;
                 gameUtils.undeathPact(unit, shakeTimer);
                 globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
                 unit.isoManagedTint = null;
@@ -2024,7 +2032,7 @@ var UnitBase = {
             return;
         }
         var movePenalty = 1.5;
-        var defensePenalty = -2;
+        var defensePenalty = -2000;
 
         var unit = this;
         var buffName = 'maim';

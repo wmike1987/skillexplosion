@@ -1436,7 +1436,6 @@ var phaseThree = function() {
     this.map.addMapNode('outerHardTwo', {
         levelOptions: {
             outer: true,
-            token: 'hard',
             itemClass: 'stimulant',
             levelAugments: randomAugment
         },

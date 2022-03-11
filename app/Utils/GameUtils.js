@@ -1031,14 +1031,13 @@ var gameUtils = {
         let cursorChanged = false;
 
         if (style == 'Main' && currentCursor != 'Main') {
-            // $('*').css('cursor', style);
-            // $('*').css('cursor', 'default');
             $('*').css('cursor', cursors.main);
             cursorChanged = true;
         } else if (style == 'Over' && currentCursor != 'Over') {
-            // $('*').css('cursor', style);
-            // $('*').css('cursor', 'crosshair');
             $('*').css('cursor', cursors.over);
+            cursorChanged = true;
+        } else if (style == 'OverAttack' && currentCursor != 'OverAttack') {
+            $('*').css('cursor', cursors.overAttack);
             cursorChanged = true;
         } else if (style == 'None' && currentCursor != 'None') {
             cursorChanged = true;
@@ -1049,7 +1048,6 @@ var gameUtils = {
             $('*').css('cursor', cursors.attack);
             cursorChanged = true;
         } else if(style == 'Target' && currentCursor != 'Target') {
-            // $('*').css('cursor', style);
             $('*').css('cursor', cursors.target);
             cursorChanged = true;
         }

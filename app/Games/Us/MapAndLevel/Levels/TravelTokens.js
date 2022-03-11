@@ -63,6 +63,9 @@ commonTravelToken.initExtension = function() {
             self.arriveCallback();
         }, 500);
     };
+    this.isOutingReady = function() {
+        return !this.mapNode.isCompleted;
+    };
 };
 
 commonTravelToken.createMapNode = function(options) {

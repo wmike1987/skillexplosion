@@ -37,6 +37,8 @@ var UnitSystem = function(properties) {
         this.flyingBodyCollisionCategory = 0x0010;
         this.projectileCollisionCategory = 0x0800;
 
+        this.currentPointerCursor = 'Main';
+
         //just in case
         if (this.box)
             this.cleanUp();
@@ -993,12 +995,14 @@ var UnitSystem = function(properties) {
                     this.pastHoveredUnitsHover = [unit];
                 }.bind(this));
 
-                if (!this.attackMove && !this.abilityDispatch) {
-                    if (lastChosenUnit) {
+                if (lastChosenUnit) {
+                    if(lastChosenUnit.team == globals.currentGame.enemyTeam) {
+                        gameUtils.setCursorStyle('OverAttack');
+                    } else {
                         gameUtils.setCursorStyle('Over');
-                    } else if (gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
-                        gameUtils.setCursorStyle('Main');
                     }
+                } else if (gameUtils.isPositionWithinPlayableBounds(globals.currentGame.mousePosition)) {
+                    gameUtils.setCursorStyle(this.currentPointerCursor);
                 }
             }
         }.bind(this));
@@ -1060,6 +1064,16 @@ var UnitSystem = function(properties) {
             set: function(value) {
                 this._attackMove = value;
                 if (value) {
+                    this.currentPointerCursor = 'Attack';
+                } else {
+                    this.currentPointerCursor = 'Main';
+                }
+
+                if(this.pastHoveredUnitsHover.length > 0) {
+                    return;
+                }
+
+                if (value) {
                     gameUtils.setCursorStyle('Attack');
                 } else {
                     gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'Main');
@@ -1067,6 +1081,35 @@ var UnitSystem = function(properties) {
             }.bind(this),
             get: function() {
                 return this._attackMove;
+            }
+        });
+
+        /*
+         * Change cursor style, set abilityDispatch state
+         * Dispatch events
+         */
+        this.abilityDispatch = false;
+        Object.defineProperty(this, 'abilityDispatch', {
+            set: function(value) {
+                this._abilityDispatch = value;
+                if (value) {
+                    this.currentPointerCursor = 'Target';
+                } else {
+                    this.currentPointerCursor = 'Main';
+                }
+
+                if(this.pastHoveredUnitsHover.length > 0) {
+                    return;
+                }
+
+                if (value) {
+                    gameUtils.setCursorStyle('Target');
+                } else {
+                    gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'Main');
+                }
+            }.bind(this),
+            get: function() {
+                return this._abilityDispatch;
             }
         });
 
@@ -1205,6 +1248,7 @@ var UnitSystem = function(properties) {
                     this.abilityDispatch = null;
                 } else if (this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
                     gameUtils.setCursorStyle('Target');
+                    this.currentPointerCursor = 'Target';
                 } else { //the selected unit cannot handle the event
                     this.abilityDispatch = null;
                 }

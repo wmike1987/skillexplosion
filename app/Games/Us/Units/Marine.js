@@ -739,6 +739,7 @@ export default function Marine(options) {
                     dodgeable: !self.trueKnife,
                     ignoreArmor: self.trueKnife,
                     id: 'knife',
+                    abilityType: true,
                     knife: knife
                 }); //we can make the assumption that a body is part of a unit if it's attackable
 
@@ -770,7 +771,8 @@ export default function Marine(options) {
                             var poisonRet = otherUnit.sufferAttack(poisonTipAugment.damage / (poisonTipAugment.seconds * 2), self, {
                                 dodgeable: false,
                                 ignoreArmor: true,
-                                id: 'poison'
+                                id: 'poison',
+                                abilityType: true
                             });
                             if (poisonRet.attackLanded) {
                                 Matter.Events.trigger(globals.currentGame, poisonKnifeCollectorEventName, {
@@ -1155,7 +1157,7 @@ export default function Marine(options) {
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 3000,
+        defenseCooldown: 2000,
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 5000,
         passiveAction: function(event) {
@@ -1596,10 +1598,10 @@ export default function Marine(options) {
                 }
 
                 var dTotal = this.damage + this.getDamageAdditionSum();
-                target.sufferAttack(dTotal * crit, this, {
+                var returnInfo = target.sufferAttack(dTotal * crit, this, {
                     id: 'rifle'
                 });
-                if (critActive) {
+                if (critActive && returnInfo.attackLanded) {
                     Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {
                         value: 1
                     });

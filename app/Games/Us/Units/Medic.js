@@ -976,7 +976,8 @@ export default function Medic(options) {
                     dmg = dmg * 2;
                 }
                 unit.sufferAttack(dmg, medic, {
-                    dodgeable: false
+                    dodgeable: false,
+                    abilityType: true
                 });
                 var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({
@@ -1314,7 +1315,8 @@ export default function Medic(options) {
                 if (!attacker || attacker.isDead || !attacker.isMelee) return;
 
                 attacker.sufferAttack(grit, medic, {
-                    dodgeable: false
+                    dodgeable: false,
+                    abilityType: true
                 });
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
@@ -1766,7 +1768,8 @@ export default function Medic(options) {
                 if (attacker.isDead) return;
 
                 attacker.sufferAttack(ppDamage, medic, {
-                    dodgeable: false
+                    dodgeable: false,
+                    abilityType: true
                 });
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',

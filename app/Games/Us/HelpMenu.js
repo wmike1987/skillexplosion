@@ -21,11 +21,12 @@ var Page = function(options) {
         x: gameUtils.getPlayableWidth() / 2.0,
         y: gameUtils.getPlayableHeight() / 2.0
     };
-    var pageHeight = 600;
+    var pageHeight = 620;
     var pageWidth = 450;
     var initialTextBuffer = 40;
     this.buffer = 20;
     this.leftSideBuffer = 10;
+    this.smallLineBuffer = options.smallLineBuffer || 15;
     this.lineBuffer = options.lineBuffer || 20;
     this.titleLineBuffer = options.titleLineBuffer || 22;
     this.currentBuffer = initialTextBuffer;
@@ -133,7 +134,7 @@ Page.prototype.addLine = function(options) {
     });
     this.pageObjects.push(textObj);
 
-    this.currentBuffer += this.lineBuffer;
+    this.currentBuffer += options.continuation ? this.smallLineBuffer : this.lineBuffer;
 };
 
 var HelpMenu = function(unitPanel) {
@@ -264,7 +265,11 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage1.addLine({
-        text: 'Immobilizes unit. Unit becomes immune to normal attacks.'
+        text: 'Immobilizes unit. Unit becomes immune to normal attacks but',
+        continuation: true
+    });
+    BuffPage1.addLine({
+        text: 'takes 2x ability damage.'
     });
 
     BuffPage1.addLineTitle({
@@ -330,7 +335,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage1.addLine({
-        text: 'Slows unit and reduces armor by 2.'
+        text: 'Slows unit and reduces armor to 0.'
     });
 
     BuffPage1.addLineTitle({

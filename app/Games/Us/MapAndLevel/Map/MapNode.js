@@ -466,18 +466,11 @@ MapLevelNode.prototype.showNodeInOuting = function(options) {
                 position: this.position,
                 tint: options.travelToken ? tokenTint : tints[number]
             });
-            graphicsUtils.makeSpriteSize(this.outingFocusCircle, defaultSize ? this.defaultTokenSize : this.enlargedTokenSize);
+            graphicsUtils.makeSpriteSize(this.outingFocusCircle, defaultSize ? this.defaultTokenSize + 10 : this.enlargedTokenSize + 10);
 
-            // graphicsUtils.makeSpriteSize(this.displayObject, this.enlargedTokenSize);
-            // graphicsUtils.makeSpriteSize(this.outingFocusCircle, this.enlargedTokenSize);
             graphicsUtils.rotateSprite(this.outingFocusCircle, {
                 speed: 20
             });
-            // if (this.manualTokens) {
-            //     this.manualTokens.forEach((token) => {
-            //         graphicsUtils.makeSpriteSize(token, this.enlargedTokenSize);
-            //     });
-            // }
         } else {
             this.outingFocusCircle.tint = options.travelToken ? tokenTint : tints[number];
         }
@@ -537,7 +530,7 @@ MapLevelNode.prototype.sizeNode = function(size) {
     }
 
     if (this.outingFocusCircle) {
-        graphicsUtils.makeSpriteSize(this.outingFocusCircle, size || this.defaultTokenSize);
+        graphicsUtils.makeSpriteSize(this.outingFocusCircle, size + 10 || this.defaultTokenSize + 10);
     }
 
     if (this.focusCircle) {
