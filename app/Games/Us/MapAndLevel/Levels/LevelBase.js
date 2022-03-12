@@ -872,10 +872,13 @@ var levelBase = {
                 //remove win/loss condition
                 removeCurrentConditions();
 
-                if (this.customWinBehavior) { //custom win behavior
-                    //mark us as 'won'
-                    this.isCompleted = true;
+                if (this.customWinBehavior) {
+                    // totally custom win behavior
                     this.customWinBehavior();
+                } else if(this.semiCustomWinBehavior) {
+                    //basically the same as above, but we also want to mark the level as completed
+                    this.isCompleted = true;
+                    this.semiCustomWinBehavior();
                 } else if (this.gotoMapOnWin) { //else goto map upon win
                     winAndContinueTasks({
                         onContinue: function() {

@@ -75,11 +75,12 @@ var multiLevel = function(options) {
                     newOptions.levelOptions.campLikeActive = value;
                 }
             });
+
         });
 
         //modify the each level to comprehend that it's part of a chain
         this.chain.forEach((level, index) => {
-
+            let outerLevel = this;
             //if we not the last node, have the win behavior start the next level
             if (index < this.chain.length - 1) {
                 var nextLevel = this.chain[index + 1];
@@ -97,7 +98,22 @@ var multiLevel = function(options) {
                     });
                 };
             } else {
+                //if we're the last node, propagate the isCompleted to the sub levels
+                level._isCompleted = false;
+                Object.defineProperty(level, 'isCompleted', {
+                    get: function() {
+                        return this._isCompleted;
+                    },
 
+                    set: function(value) {
+                        this._isCompleted = value;
+                        outerLevel.chain.forEach((subLevel, subIndex) => {
+                            if(subIndex != index) {
+                                subLevel.isCompleted = value;
+                            }
+                        });
+                    }
+                });
             }
         });
     };

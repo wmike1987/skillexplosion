@@ -700,13 +700,13 @@ var map = function(specs) {
                 if (node.getOutingCompatibleNode) {
                     node = node.getOutingCompatibleNode();
                 }
-                node.levelDetails.customWinBehavior = null;
+                node.levelDetails.semiCustomWinBehavior = null;
             });
             this.outingNodes.forEach((node) => {
                 if (node.getOutingCompatibleNode) {
                     node = node.getOutingCompatibleNode();
                 }
-                node.levelDetails.customWinBehavior = null;
+                node.levelDetails.semiCustomWinBehavior = null;
             });
             this.outingNodes = [];
             this.outingNodeMemory = [];
@@ -816,7 +816,7 @@ var map = function(specs) {
 
             //define custom win behavior
             var level = outingManipulatedNode.levelDetails;
-            outingManipulatedNode.levelDetails.customWinBehavior = () => {
+            outingManipulatedNode.levelDetails.semiCustomWinBehavior = () => {
                 this.completedNodes.push(myNode);
                 globals.currentGame.unitSystem.deselectAllUnits();
                 globals.currentGame.unitSystem.pause();

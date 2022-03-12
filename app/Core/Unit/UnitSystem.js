@@ -1076,7 +1076,7 @@ var UnitSystem = function(properties) {
                 if (value) {
                     gameUtils.setCursorStyle('Attack');
                 } else {
-                    gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'Main');
+                    gameUtils.setCursorStyle(this.currentPointerCursor);
                 }
             }.bind(this),
             get: function() {
@@ -1105,7 +1105,7 @@ var UnitSystem = function(properties) {
                 if (value) {
                     gameUtils.setCursorStyle('Target');
                 } else {
-                    gameUtils.setCursorStyle(globals.currentGame.currentCursor || 'Main');
+                    gameUtils.setCursorStyle(this.currentPointerCursor);
                 }
             }.bind(this),
             get: function() {
@@ -1220,8 +1220,8 @@ var UnitSystem = function(properties) {
             if (Object.keys(this.selectedUnits).length == 0) return;
 
             //set ability dispatch and possibly abandon a pending attack move
-            this.abilityDispatch = event.key.toLowerCase();
             this.attackMove = false;
+            this.abilityDispatch = event.key.toLowerCase();
 
             //if we're s or h, dispatch to all selected units, this is a special case
             if (this.abilityDispatch == 's' || this.abilityDispatch == 'h' || this.abilityDispatch == 'g') {
@@ -1247,8 +1247,8 @@ var UnitSystem = function(properties) {
                     Matter.Events.trigger(this, 'unitSystemEventDispatch', e);
                     this.abilityDispatch = null;
                 } else if (this.selectedUnit.eventClickMappings[this.abilityDispatch]) {
-                    gameUtils.setCursorStyle('Target');
-                    this.currentPointerCursor = 'Target';
+                    // gameUtils.setCursorStyle('Target');
+                    // this.currentPointerCursor = 'Target';
                 } else { //the selected unit cannot handle the event
                     this.abilityDispatch = null;
                 }
