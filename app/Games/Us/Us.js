@@ -250,7 +250,7 @@ var game = {
                                 let shaneAugment = unitUtils.addRandomAugmentToAbility({
                                     unit: globals.currentGame.shane
                                 });
-                                let myText = 'Shane acquired: ';
+                                let myText = 'Shane acquired ';
                                 let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
                                     y: 0
                                 }), {
@@ -303,7 +303,7 @@ var game = {
                                         unit: globals.currentGame.ursula
                                     });
 
-                                    let myText = 'Ursula acquired: ';
+                                    let myText = 'Ursula acquired ';
                                     let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
                                         y: 0
                                     }), {

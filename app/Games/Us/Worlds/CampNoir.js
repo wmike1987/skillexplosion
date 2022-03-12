@@ -1135,7 +1135,7 @@ var phaseOneAndAHalf = function(options) {
     return {
         nextPhase: 'allNodesComplete',
         onAllNodesComplete: function() {
-            campNode.levelDetails.oneTimeNoResetIndicator = true;
+            globals.currentGame.map.findNodeById('camp').levelDetails.oneTimeNoResetIndicator = true;
         },
         acquireAugmentsUponCompletion: false,
         onEnterAfterCompletionBehavior: function() {
@@ -1175,58 +1175,58 @@ var phaseTwo = function(options) {
         done: () => {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
-            world.map.addMapNode('basicHunter', {
-                levelOptions: {
-                    nodeTitle: "Hunter's Camp",
-                    token: 'hard',
-                    itemClass: 'worn',
-                }
-            });
+            // world.map.addMapNode('basicHunter', {
+            //     levelOptions: {
+            //         nodeTitle: "Hunter's Camp",
+            //         token: 'hard',
+            //         itemClass: 'worn',
+            //     }
+            // });
             world.map.addMapNode('basic');
-            world.map.addMapNode('morphineStation');
-            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
-                levelOptions: {
-                    levelAugments: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened'])
-                }
-            });
-            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-
-            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
-
-            var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
-            world.map.addMapNode(basicHardChoice, {
-                levelOptions: {
-                    levelAugments: [randomAugment],
-                    itemClass: 'worn',
-                    outer: true
-                }
-            });
-
-            world.map.addMapNode('multiLevel', {
-                levelOptions: {
-                    enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList)],
-                    itemClass: 'stimulant',
-                }
-            });
-
-            world.map.addMapNode('airDropStation', {
-                levelOptions: {
-                    prereqCount: 1,
-                    itemClass: 'stimulant',
-                    itemType: 'item'
-                }
-            });
-            world.map.addMapNode('airDropStation', {
-                levelOptions: {
-                    prereqCount: 3,
-                    itemClass: 'worn',
-                    itemType: 'specialtyItem',
-                    uniqueItem: true,
-                    regularTokenName: 'AirDropSpecialToken',
-                    specialTokenName: 'AirDropSpecialTokenGleam'
-                }
-            });
+            // world.map.addMapNode('morphineStation');
+            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
+            //     levelOptions: {
+            //         levelAugments: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened'])
+            //     }
+            // });
+            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            //
+            // var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+            //
+            // var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
+            // world.map.addMapNode(basicHardChoice, {
+            //     levelOptions: {
+            //         levelAugments: [randomAugment],
+            //         itemClass: 'worn',
+            //         outer: true
+            //     }
+            // });
+            //
+            // world.map.addMapNode('multiLevel', {
+            //     levelOptions: {
+            //         enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList)],
+            //         itemClass: 'stimulant',
+            //     }
+            // });
+            //
+            // world.map.addMapNode('airDropStation', {
+            //     levelOptions: {
+            //         prereqCount: 1,
+            //         itemClass: 'stimulant',
+            //         itemType: 'item'
+            //     }
+            // });
+            // world.map.addMapNode('airDropStation', {
+            //     levelOptions: {
+            //         prereqCount: 3,
+            //         itemClass: 'worn',
+            //         itemType: 'specialtyItem',
+            //         uniqueItem: true,
+            //         regularTokenName: 'AirDropSpecialToken',
+            //         specialTokenName: 'AirDropSpecialTokenGleam'
+            //     }
+            // });
             if (options.skippedTutorial) {
                 campLevel.skippedTutorial = true;
                 campLevel.mapTableFalseOverride = true;
@@ -1344,7 +1344,7 @@ var phaseTwo = function(options) {
         nextPhase: 'allNodesComplete',
         acquireAugmentsUponCompletion: true,
         onAllNodesComplete: function() {
-            campNode.levelDetails.oneTimeNoResetIndicator = true;
+            globals.currentGame.map.findNodeById('camp').levelDetails.oneTimeNoResetIndicator = true;
         },
         onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
@@ -1519,7 +1519,7 @@ var phaseThree = function() {
         nextPhase: 'allNodesComplete',
         acquireAugmentsUponCompletion: true,
         onAllNodesComplete: function() {
-            campNode.levelDetails.oneTimeNoResetIndicator = true;
+            globals.currentGame.map.findNodeById('camp').levelDetails.oneTimeNoResetIndicator = true;
         },
         onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
@@ -1645,7 +1645,7 @@ var finalPhase = function() {
         nextPhase: 'allNodesComplete',
         acquireAugmentsUponCompletion: true,
         onAllNodesComplete: function() {
-            campNode.levelDetails.oneTimeNoResetIndicator = true;
+            globals.currentGame.map.findNodeById('camp').levelDetails.oneTimeNoResetIndicator = true;
         },
         onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
