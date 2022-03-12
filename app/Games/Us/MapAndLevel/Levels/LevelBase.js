@@ -70,7 +70,7 @@ var levelAugments = {
     hardened: {
         action: function(enemy) {
             enemy.giveGritDodge(true);
-            enemy.grit = 100;
+            enemy.grit = 50;
         },
         getSystemMessage: () => {
             return {text: 'Hardened', style: 'systemMessageTextAugment', tint: 0xa67b29};
@@ -209,7 +209,7 @@ var levelBase = {
             let additionalPropertiesText = this.getAugmentSystemMessages();
             additionalPropertiesText.forEach((augment, index) => {
                 let augmentText = graphicsUtils.floatText(augment.text, gameUtils.getPlayableCenterPlus({
-                    y: 60 + index * 18
+                    y: 60 + (index * 20)
                 }), {
                     duration: textDuration,
                     style: styles.levelTextAugment
@@ -221,7 +221,7 @@ var levelBase = {
             game.heartbeat.play();
 
             //show new enemy sets
-            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this, additionalPropertiesText.length * 18);
+            globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this, additionalPropertiesText.length * 20);
 
             Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
                 level: level
@@ -360,16 +360,8 @@ var levelBase = {
         return this.campLikeActive;
     },
 
-    isLevelSOMConfigurable: function() {
-        return this.campLikeActiveSOM;
-    },
-
-    isLevelNonConfigurable: function() {
-        return !this.campLikeActiveSOM && !this.campLikeActive;
-    },
-
     isBattleLevel: function() {
-        return (!this.isCompleted && this.enemySets.length > 0)
+        return (!this.isCompleted && this.enemySets.length > 0);
     },
 
     isOutingReady: function() {

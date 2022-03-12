@@ -68,7 +68,8 @@ ConfigPanel.prototype.initialize = function() {
     }.bind(this), false, true);
 
     this.configButtonHeight = 218;
-    this.configButtonGlassHeight = 200;
+    this.configButtonGlassHeight = 218;
+    this.actualGlassHeight = 200;
     this.showButton = graphicsUtils.createDisplayObject('AugmentNotificationPanelBorder', {
         where: 'hudNOne',
         position: {
@@ -119,6 +120,9 @@ ConfigPanel.prototype.initialize = function() {
         }
     }.bind(this));
 
+    this.initialAugmentYOffset = 200;
+    this.augmentYIncrement = 50;
+
     $('body').on('mousedown.unitConfigurationPanel', function(event) {
         if (keyStates.Control) return;
         var mousePoint = mathArrayUtils.clonePosition(mousePosition);
@@ -144,14 +148,12 @@ ConfigPanel.prototype.flashPanel = function(unit) {
 };
 
 ConfigPanel.prototype.showForUnit = function(unit) {
-    //hide showbutton and text
-    this.liftOpenButton();
-
-    //hide for last unit
-    // this.hideForCurrentUnit();
 
     //set current unit
     this.prevailingUnit = unit;
+
+    //hide showbutton and text
+    this.liftOpenButton();
 
     //play sounds
     equipShow.play();
@@ -174,7 +176,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
     $.each(unit.abilities, function(i, ability) {
         if (ability.augments) {
             var alphaAugment = 0.8;
-            $.each(ability.augments, function(j, augment) {
+            ability.getAvailableAugments().forEach((augment, j) => {
                 if (!augment.currentAugmentBorder) {
                     augment.currentAugmentBorder = graphicsUtils.addSomethingToRenderer('AugmentBorderWhite', "hudOne");
                     augment.currentAugmentBorder.id = augment.name;
@@ -391,7 +393,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
                 }
                 augment.icon.visible = true;
                 augment.actionBox.visible = true;
-            }.bind(this));
+            });
         }
     }.bind(this));
 };
@@ -408,7 +410,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
     //hide augments
     $.each(unit.abilities, function(i, ability) {
         if (ability.augments) {
-            $.each(ability.augments, function(j, augment) {
+            ability.getAvailableAugments().forEach((augment) => {
                 augment.icon.visible = false;
                 augment.border.visible = false;
                 augment.actionBox.tooltipObj.hide();
@@ -417,7 +419,7 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
                 if (augment.currentAugmentBorder) {
                     augment.currentAugmentBorder.visible = false;
                 }
-            }.bind(this));
+            });
         }
     }.bind(this));
 
@@ -455,11 +457,24 @@ ConfigPanel.prototype.hideOpenButton = function() {
 };
 
 ConfigPanel.prototype.liftOpenButton = function() {
+    //get max augmented ability to determine height
+    let maxAugments = 1;
+    this.prevailingUnit.abilities.forEach((ability) => {
+        let availableAugments = ability.getAvailableAugments();
+        if(availableAugments.length > maxAugments) {
+            maxAugments = availableAugments.length;
+        }
+    });
+
     graphicsUtils.changeDisplayObjectStage(this.showButton, 'hud');
     graphicsUtils.addOrShowDisplayObject(this.showButton);
+
+    let panelOffset = this.initialYOffset;
+    let adjustedGlassHeight = this.actualGlassHeight + this.initialYOffset;
+
     this.showButton.position = {
         x: this.showButton.position.x,
-        y: gameUtils.getPlayableHeight() - this.configButtonHeight / 2
+        y: gameUtils.getPlayableHeight() - (this.configButtonHeight / 2) + (-this.spacing * (3-maxAugments))// - ((this.actualGlassHeight - this.actualGlassHeight) / 2) + (this.configButtonHeight / 3)
     };
     this.showButton.scale = {
         x: 1.00,
@@ -471,7 +486,7 @@ ConfigPanel.prototype.liftOpenButton = function() {
     graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
     this.showButtonGlass.position = {
         x: this.showButtonGlass.position.x,
-        y: gameUtils.getPlayableHeight() - this.configButtonGlassHeight / 2
+        y: gameUtils.getPlayableHeight() - (this.configButtonGlassHeight / 2) + (-this.spacing * (3-maxAugments))// - (this.configButtonGlassHeight / 2) + (this.configButtonHeight / 3)
     };
     this.showButtonGlass.scale = {
         x: 1.00,

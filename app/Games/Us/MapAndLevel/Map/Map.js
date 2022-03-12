@@ -100,9 +100,7 @@ var map = function(specs) {
     this.morphine = 0;
     this.addMorphine = function(amount) {
         this.morphine += amount;
-
         graphicsUtils.fadeSpriteInQuickly(this.morphineText, 250);
-        graphicsUtils.fadeSpriteOutQuickly(this.fatigueText, 250);
     };
     this.subtractMorphine = function(amount) {
         this.morphine -= amount;
@@ -127,7 +125,7 @@ var map = function(specs) {
         body: this.headTokenBody,
         offset: {
             x: 0,
-            y: 20
+            y: 40
         }
     });
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', (event) => {
@@ -417,9 +415,7 @@ var map = function(specs) {
         graphicsUtils.addOrShowDisplayObject(this.morphineText);
         this.morphineText.alpha = 0.9;
 
-        if(this.hasMorphine()) {
-            graphicsUtils.hideDisplayObject(this.fatigueText);
-        } else {
+        if(!this.hasMorphine()) {
             graphicsUtils.hideDisplayObject(this.morphineText);
         }
 
@@ -894,13 +890,13 @@ var map = function(specs) {
         this.lastNode = this.currentNode;
         this.currentNode = node;
 
-        // if (this.currentNode.levelDetails.isBattleLevel() && !this.currentNode.displayObject.tooltipObj.visible) {
-        //     this.currentNode.displayObject.tooltipObj.display(this.currentNode.displayObject.position);
-        // }
         var position = mathArrayUtils.clonePosition(node.travelPosition || node.position, {
             y: 20
         });
-        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, 2.5, null, null, function() {
+
+        let travelSpeed = 2.5 * (this.hasMorphine() ? 2 : 1);
+
+        gameUtils.sendBodyToDestinationAtSpeed(this.headTokenBody, position, travelSpeed, null, null, function() {
             Matter.Body.setVelocity(this.headTokenBody, {
                 x: 0.0,
                 y: 0.0

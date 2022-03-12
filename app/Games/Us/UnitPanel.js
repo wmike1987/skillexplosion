@@ -1146,14 +1146,6 @@ unitPanel.prototype.initialize = function(options) {
             }.bind(this));
         }
     }.bind(this));
-
-    Matter.Events.on(globals.currentGame, 'EnterLevel', function(event) {
-        if (!event.level.isLevelConfigurable()) {
-            this.leaveCamp.bind(this);
-        } else {
-            this.enterCamp.bind(this);
-        }
-    }.bind(this));
 };
 
 //unit group
@@ -1260,11 +1252,11 @@ unitPanel.prototype.clearEnemyIcons = function() {
     }));
     this.enemyIcons = [];
 
-    if(this.multiLevelPositionCount) {
+    if (this.multiLevelPositionCount) {
         graphicsUtils.fadeSpriteQuicklyThenDestroy(this.multiLevelPositionCount, 250);
     }
 
-    if(this.initialMultiLevelPosition) {
+    if (this.initialMultiLevelPosition) {
         graphicsUtils.fadeSpriteQuicklyThenDestroy(this.initialMultiLevelPosition, 250);
     }
 };
@@ -1366,7 +1358,7 @@ unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
                 });
 
                 //fade multi level position and create the panel representation
-                if(this.initialMultiLevelPosition && index == 0) {
+                if (this.initialMultiLevelPosition && index == 0) {
                     graphicsUtils.fadeSpriteQuicklyThenDestroy(this.initialMultiLevelPosition, 250);
                     self.multiLevelPositionCount = graphicsUtils.addSomethingToRenderer('TEX+:(' + (level.multiLevelPosition + 1) + '/' + level.multiLevelSize + ')', 'hudOne', {
                         position: getIconPosition(filteredSets.length),
@@ -1454,18 +1446,6 @@ unitPanel.prototype.clearPrevailingUnit = function(options) {
     if (!options.transitioningUnits) {
         this.clearUnitStats();
         this.clearUnitStatsGraph();
-        // this.unitNameText.text = '-----';
-        // //this.unitLevelText.text = '--';
-        // this.unitDamageText.text = '';
-        // this.unitDamageAdditionsText.text = '';
-        // this.unitDefenseText.text = '';
-        // this.unitDefenseAdditionsText.text = '';
-        // this.unitHealthText.text = '';
-        // this.unitGritText.text = '';
-        // this.unitGritAdditionsText.text = '';
-        // this.unitDodgeText.text = '';
-        // this.unitDodgeAdditionsText.text = '';
-        // this.unitEnergyText.text = '';
     }
 
     graphicsUtils.hideDisplayObject(this.toGraphViewButton);
@@ -1764,7 +1744,7 @@ var _displayUnitStatsGraph = function() {
 
         //attack speed
         this.asChartBar.tooltipObj.setTitle(this.prevailingUnit.attackSpeedLabel || "Attack Speed");
-        main = 1000/(this.prevailingUnit.cooldown * this.prevailingUnit.cooldownMultiplier);
+        main = 1000 / (this.prevailingUnit.cooldown * this.prevailingUnit.cooldownMultiplier);
         localScale = 10;
         graphicsUtils.makeSpriteSize(this.asChartBar, {
             x: this.chartBarWidth,
@@ -2427,19 +2407,6 @@ unitPanel.prototype.refreshAugmentButton = function() {
 
 unitPanel.prototype.refreshPassiveButton = function() {
     this.unitPassivePanel.lowerOpenButton();
-};
-
-unitPanel.prototype.enterCamp = function() {
-    this.unitAugmentPanel.lowerOpenButton();
-    this.unitPassivePanel.lowerOpenButton();
-};
-
-unitPanel.prototype.leaveCamp = function() {
-    this.unitAugmentPanel.hideForCurrentUnit();
-    this.unitAugmentPanel.hideOpenButton();
-
-    this.unitPassivePanel.hideForCurrentUnit();
-    this.unitPassivePanel.hideOpenButton();
 };
 
 unitPanel.prototype.cleanUp = function() {

@@ -19,7 +19,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey('mind');
             this.owningUnit.clearUnlockContext('mind');
             this.unlockHandler.removeHandler();
-            if(globals.currentGame.isCurrentLevelSOMConfigurable()) {
+            if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
             }
             return true;
@@ -28,7 +28,7 @@ export default function(options) {
         grabCallback: function() {
             this.owningUnit.giveUnlockerKey('mind');
             this.owningUnit.setUnlockContext('mind', this);
-            if(globals.currentGame.isCurrentLevelSOMConfigurable()) {
+            if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.showPassivesForUnit(this.owningUnit);
             }
             this.unlockHandler = gameUtils.matterOnce(this.owningUnit, 'unlockedSomething', function() {
@@ -40,7 +40,7 @@ export default function(options) {
             this.owningUnit.removeUnlockerKey('mind');
             this.owningUnit.clearUnlockContext('mind');
             this.unlockHandler.removeHandler();
-            if(globals.currentGame.isCurrentLevelSOMConfigurable()) {
+            if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
             }
         },

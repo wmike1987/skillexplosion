@@ -160,8 +160,8 @@ var graphicsUtils = {
         return downArrow;
     },
 
-    cloneSprite: function(sprite) {
-        return this.createDisplayObject(sprite.creationTextureName);
+    cloneSprite: function(sprite, options) {
+        return this.createDisplayObject(sprite.creationTextureName, options);
     },
 
     removeSomethingFromRenderer: function(something, where) {
@@ -442,6 +442,54 @@ var graphicsUtils = {
         Matter.Events.on(timer, 'onInvalidate', () => {
             remove.removeHandler();
         });
+    },
+
+    floatSpriteNew: function(sprite, position, options) {
+        options = options || {};
+        var alphaBuffer = 2.0;
+
+        sprite.position = position;
+        sprite.alpha = alphaBuffer;
+        var timer = globals.currentGame.addTimer({
+            name: 'floatText:' + mathArrayUtils.getId(),
+            timeLimit: options.duration || 750,
+            killsSelf: true,
+            runs: 1,
+            tickCallback: function(delta) {
+                if (!options.stationary) {
+                    sprite.position.y -= (delta * (options.speed / 100 || 0.03));
+                }
+
+                //if we're going to persist at end, don't fade anything
+                if (!options.persistAtEnd) {
+                    sprite.alpha = alphaBuffer - this.percentDone * alphaBuffer;
+                }
+            },
+            totallyDoneCallback: function() {
+                //if we are to persist at the end, don't remove the sprite
+                if (!options.persistAtEnd) {
+                    graphicsUtils.removeSomethingFromRenderer(sprite, options.where || 'hud');
+                }
+
+                if (options.deferred) {
+                    options.deferred.resolve();
+                }
+
+                if (options.onDone) {
+                    options.onDone();
+                }
+            }.bind(this)
+        });
+
+        var remove = gameUtils.matterOnce(sprite, 'destroy', () => {
+            timer.invalidate();
+        });
+
+        Matter.Events.on(timer, 'onInvalidate', () => {
+            remove.removeHandler();
+        });
+
+        return sprite;
     },
 
     sendSpriteToDestinationAtSpeed: function(options) {

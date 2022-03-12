@@ -85,8 +85,6 @@ commonTravelToken.createMapNode = function(options) {
         },
         mouseDownCallback: function() {
             this.flashNode();
-            this.displayObject.tooltipObj.disable();
-            this.displayObject.tooltipObj.hide();
             airDropClickTokenSound.play();
             return false;
         },
@@ -144,7 +142,7 @@ var morphineStation = function(options) {
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Morphine Station";
-        this.tooltipDescription = 'Incur no fatigue damage on the next level.';
+        this.tooltipDescription = 'Travel at double speed to your next enemy camp.';
     };
 
     this.arriveCallback = function() {

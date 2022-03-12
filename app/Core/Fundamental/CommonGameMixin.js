@@ -350,6 +350,114 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
+
+
+                    // var floatDuration = 4000;
+                    // let shaneAugment = unitUtils.addRandomAugmentToAbility({
+                    //     unit: globals.currentGame.shane
+                    // });
+                    // let myText = 'Shane acquired: ';
+                    // let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
+                    //     y: 0
+                    // }), {
+                    //     duration: floatDuration,
+                    //     style: styles.titleTwoStyle
+                    // });
+                    // globals.currentGame.soundPool.positiveSoundFast.play();
+                    // graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
+                    //
+                    // let coloredText = graphicsUtils.floatText(shaneAugment.title + '!', gameUtils.getPlayableCenterPlus({
+                    //     y: 0,
+                    // }), {
+                    //     duration: floatDuration,
+                    //     style: styles.titleTwoStyle
+                    // });
+                    //
+                    // let totalWidth = acquiredText.width + coloredText.width;
+                    // let acquiredPercent = acquiredText.width/totalWidth;
+                    // let coloredPercent = coloredText.width/totalWidth;
+                    // let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
+                    // let acquiredTextAdjustment = coloredPercent * totalAdjustment;
+                    // let coloredTextAdjustment = acquiredPercent * totalAdjustment;
+                    //
+                    // acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {x: -acquiredTextAdjustment});
+                    // coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {x: coloredTextAdjustment});
+                    // coloredText.tint = 0xba4227;
+                    // graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
+                    //
+                    // let shaneIcon = graphicsUtils.cloneSprite(shaneAugment.icon, {
+                    //     where: 'hudOne',
+                    //     scale: {x: 1.25, y: 1.25}
+                    // });
+                    // graphicsUtils.addSomethingToRenderer(shaneIcon);
+                    // let border = graphicsUtils.addBorderToSprite({sprite: shaneIcon});
+                    // graphicsUtils.floatSpriteNew(shaneIcon,
+                    //     gameUtils.getPlayableCenterPlus({
+                    //         y: 60
+                    //     }), {
+                    //     duration: floatDuration
+                    // });
+                    // graphicsUtils.floatSpriteNew(border,
+                    //     gameUtils.getPlayableCenterPlus({
+                    //         y: 60
+                    //     }), {
+                    //     duration: floatDuration
+                    // });
+                    //
+                    // gameUtils.doSomethingAfterDuration(() => {
+                    //     let ursulaAugment = unitUtils.addRandomAugmentToAbility({
+                    //         unit: globals.currentGame.ursula
+                    //     });
+                    //
+                    //     let myText = 'Ursula acquired: ';
+                    //     let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
+                    //         y: 0
+                    //     }), {
+                    //         duration: floatDuration,
+                    //         style: styles.titleTwoStyle
+                    //     });
+                    //     globals.currentGame.soundPool.positiveSoundFast.play();
+                    //     graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
+                    //
+                    //     let coloredText = graphicsUtils.floatText(ursulaAugment.title + '!', gameUtils.getPlayableCenterPlus({
+                    //         y: 0,
+                    //     }), {
+                    //         duration: floatDuration,
+                    //         style: styles.titleTwoStyle
+                    //     });
+                    //
+                    //     let totalWidth = acquiredText.width + coloredText.width;
+                    //     let acquiredPercent = acquiredText.width/totalWidth;
+                    //     let coloredPercent = coloredText.width/totalWidth;
+                    //     let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
+                    //     let acquiredTextAdjustment = coloredPercent * totalAdjustment;
+                    //     let coloredTextAdjustment = acquiredPercent * totalAdjustment;
+                    //
+                    //     acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {x: -acquiredTextAdjustment});
+                    //     coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {x: coloredTextAdjustment});
+                    //     coloredText.tint = 0x047816;
+                    //     graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
+                    //
+                    //     let ursulaIcon = graphicsUtils.cloneSprite(ursulaAugment.icon, {
+                    //         where: 'hudOne',
+                    //         scale: {x: 1.25, y: 1.25}
+                    //     });
+                    //     graphicsUtils.addSomethingToRenderer(ursulaIcon);
+                    //     let border = graphicsUtils.addBorderToSprite({sprite: ursulaIcon});
+                    //     graphicsUtils.floatSpriteNew(ursulaIcon,
+                    //         gameUtils.getPlayableCenterPlus({
+                    //             y: 60
+                    //         }), {
+                    //         duration: floatDuration
+                    //     });
+                    //     graphicsUtils.floatSpriteNew(border,
+                    //         gameUtils.getPlayableCenterPlus({
+                    //             y: 60
+                    //         }), {
+                    //         duration: floatDuration
+                    //     });
+                    // }, floatDuration);
+
                     // if (this.unitSystem.selectedUnit) {
                     //     this.unitSystem.selectedUnit.giveEnergy(10);
                     // }
@@ -425,18 +533,18 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-
-                    if(!this.cursorId) {
-                        this.cursorId = 1;
-                    }
-
-                    if(this.cursorId == 1) {
-                        gameUtils.setCursorStyle('server:OverUnitCursor.png', '16 16');
-                        this.cursorId = 2;
-                    } else {
-                        gameUtils.setCursorStyle('server:MainCursor.png');
-                        this.cursorId = 1;
-                    }
+                    unitUtils.addRandomAugmentToAbility({unit: this.shane});
+                    // if(!this.cursorId) {
+                    //     this.cursorId = 1;
+                    // }
+                    //
+                    // if(this.cursorId == 1) {
+                    //     gameUtils.setCursorStyle('server:OverUnitCursor.png', '16 16');
+                    //     this.cursorId = 2;
+                    // } else {
+                    //     gameUtils.setCursorStyle('server:MainCursor.png');
+                    //     this.cursorId = 1;
+                    // }
                     // globals.currentGame.nextPhase();
                     //
                     // var d = DoodadFactory.createDoodad({menuItem: 'waterTrough', drawWire: true});

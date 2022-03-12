@@ -1539,6 +1539,12 @@ export default function Marine(options) {
 
             $.extend(this, aug);
             this.unlockerInit();
+
+            //randomize initial augments
+            this.abilities.forEach((ability) => {
+                ability.addAvailableAugment();
+            });
+
         }
     }, options);
 

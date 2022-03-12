@@ -402,11 +402,17 @@ export default {
 
     levelTextAugment: new PIXI.TextStyle({
         name: 'levelTextAugment',
-        fill: "#f4f4f4",
+        dropShadow: true,
+        dropShadowAngle: 13.2,
+        dropShadowDistance: 4,
+        fill: "white",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 16,
-        strokeThickness: 1
+        fontSize: 18,
+        fontVariant: "small-caps",
+        lineJoin: "bevel",
+        padding: 11,
+        stroke: "#cfc9c9"
     }),
 
     augmentInactiveText: new PIXI.TextStyle({
@@ -611,6 +617,16 @@ export default {
         fill: "white",
         fontSize: 43,
         fontStyle: "italic",
+        fontWeight: "bold",
+        lineJoin: "round",
+        miterLimit: 0,
+        strokeThickness: 4
+    }),
+
+    titleTwoStyle: new PIXI.TextStyle({
+        name: 'titleTwoStyle',
+        fill: "white",
+        fontSize: 35,
         fontWeight: "bold",
         lineJoin: "round",
         miterLimit: 0,

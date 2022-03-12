@@ -703,6 +703,10 @@ var UnitBase = {
         return ret;
     },
 
+    getRandomAbility: function() {
+        return mathArrayUtils.getRandomElementOfArray(Object.values(this.abilities));
+    },
+
     equipPassive: function(passive, type) {
         //equip the new passive
         this[type] = passive;

@@ -10,7 +10,8 @@ import {
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import Marine from '@games/Us/Units/Marine.js';
 import Medic from '@games/Us/Units/Medic.js';
@@ -239,15 +240,132 @@ var game = {
                     campNode.levelDetails.oneTimeLevelPlayableExtension = function() {
                         campNode.manualEnable = false;
                         campNode.activeCampTooltipOverride = null;
-                        if (currentPhaseObj.onEnterBehavior) {
-                            currentPhaseObj.onEnterBehavior();
+
+                        let onEnterDelay = 0;
+                        if (currentPhaseObj.acquireAugmentsUponCompletion) {
+                            globals.currentGame.makeCurrentLevelNonConfigurable();
+                            onEnterDelay = 8500;
+                            gameUtils.doSomethingAfterDuration(() => {
+                                var floatDuration = 4000;
+                                let shaneAugment = unitUtils.addRandomAugmentToAbility({
+                                    unit: globals.currentGame.shane
+                                });
+                                let myText = 'Shane acquired: ';
+                                let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
+                                    y: 0
+                                }), {
+                                    duration: floatDuration,
+                                    style: styles.titleTwoStyle
+                                });
+                                globals.currentGame.soundPool.positiveSoundFast.play();
+                                graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
+
+                                let coloredText = graphicsUtils.floatText(shaneAugment.title, gameUtils.getPlayableCenterPlus({
+                                    y: 0,
+                                }), {
+                                    duration: floatDuration,
+                                    style: styles.titleTwoStyle
+                                });
+
+                                let totalWidth = acquiredText.width + coloredText.width;
+                                let acquiredPercent = acquiredText.width/totalWidth;
+                                let coloredPercent = coloredText.width/totalWidth;
+                                let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
+                                let acquiredTextAdjustment = coloredPercent * totalAdjustment;
+                                let coloredTextAdjustment = acquiredPercent * totalAdjustment;
+
+                                acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {x: -acquiredTextAdjustment});
+                                coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {x: coloredTextAdjustment});
+                                coloredText.tint = 0xba4227;
+                                graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
+
+                                let shaneIcon = graphicsUtils.cloneSprite(shaneAugment.icon, {
+                                    where: 'hudOne',
+                                    scale: {x: 1.25, y: 1.25}
+                                });
+                                graphicsUtils.addSomethingToRenderer(shaneIcon);
+                                let border = graphicsUtils.addBorderToSprite({sprite: shaneIcon});
+                                graphicsUtils.floatSpriteNew(shaneIcon,
+                                    gameUtils.getPlayableCenterPlus({
+                                        y: 60
+                                    }), {
+                                    duration: floatDuration
+                                });
+                                graphicsUtils.floatSpriteNew(border,
+                                    gameUtils.getPlayableCenterPlus({
+                                        y: 60
+                                    }), {
+                                    duration: floatDuration
+                                });
+
+                                gameUtils.doSomethingAfterDuration(() => {
+                                    let ursulaAugment = unitUtils.addRandomAugmentToAbility({
+                                        unit: globals.currentGame.ursula
+                                    });
+
+                                    let myText = 'Ursula acquired: ';
+                                    let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
+                                        y: 0
+                                    }), {
+                                        duration: floatDuration,
+                                        style: styles.titleTwoStyle
+                                    });
+                                    globals.currentGame.soundPool.positiveSoundFast.play();
+                                    graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
+
+                                    let coloredText = graphicsUtils.floatText(ursulaAugment.title, gameUtils.getPlayableCenterPlus({
+                                        y: 0,
+                                    }), {
+                                        duration: floatDuration,
+                                        style: styles.titleTwoStyle
+                                    });
+
+                                    let totalWidth = acquiredText.width + coloredText.width;
+                                    let acquiredPercent = acquiredText.width/totalWidth;
+                                    let coloredPercent = coloredText.width/totalWidth;
+                                    let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
+                                    let acquiredTextAdjustment = coloredPercent * totalAdjustment;
+                                    let coloredTextAdjustment = acquiredPercent * totalAdjustment;
+
+                                    acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {x: -acquiredTextAdjustment});
+                                    coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {x: coloredTextAdjustment});
+                                    coloredText.tint = 0x047816;
+                                    graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
+
+                                    let ursulaIcon = graphicsUtils.cloneSprite(ursulaAugment.icon, {
+                                        where: 'hudOne',
+                                        scale: {x: 1.25, y: 1.25}
+                                    });
+                                    graphicsUtils.addSomethingToRenderer(ursulaIcon);
+                                    let border = graphicsUtils.addBorderToSprite({sprite: ursulaIcon});
+                                    graphicsUtils.floatSpriteNew(ursulaIcon,
+                                        gameUtils.getPlayableCenterPlus({
+                                            y: 60
+                                        }), {
+                                        duration: floatDuration
+                                    });
+                                    graphicsUtils.floatSpriteNew(border,
+                                        gameUtils.getPlayableCenterPlus({
+                                            y: 60
+                                        }), {
+                                        duration: floatDuration
+                                    });
+                                }, floatDuration - 750);
+                            }, 1500);
                         }
 
-                        if (!currentPhaseObj.wrappedNextPhase) {
-                            globals.currentGame.nextPhase();
-                        } else {
-                            currentPhaseObj.wrappedNextPhase();
-                        }
+                        gameUtils.doSomethingAfterDuration(() => {
+                            globals.currentGame.makeCurrentLevelConfigurable();
+                            if (currentPhaseObj.onEnterAfterCompletionBehavior) {
+                                currentPhaseObj.onEnterAfterCompletionBehavior();
+                            }
+
+                            if (!currentPhaseObj.wrappedNextPhase) {
+                                globals.currentGame.nextPhase();
+                            } else {
+                                currentPhaseObj.wrappedNextPhase();
+                            }
+                        }, onEnterDelay);
                     };
                 }.bind(this));
             }
@@ -271,7 +389,7 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            if (!event.node.levelDetails.isLevelNonConfigurable()) {
+            if (!event.node.levelDetails.isBattleLevel()) {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }
         }.bind(this));
@@ -338,7 +456,12 @@ var game = {
         Matter.Events.on(this, 'enterNight', function(event) {
             this.isNight = true;
             gameUtils.matterOnce(this, 'EnterLevel', function(event) {
-                var lightObjs = graphicsUtils.enableLighting({r: 0.2, g: 0.2, b: 1.0, invertProgress: true});
+                var lightObjs = graphicsUtils.enableLighting({
+                    r: 0.2,
+                    g: 0.2,
+                    b: 1.0,
+                    invertProgress: true
+                });
 
                 var progressTimer = globals.currentGame.addTimer({
                     name: 'nightFadeOutProgressTimer',
@@ -434,8 +557,8 @@ var game = {
 
     nextPhase: function(options) {
         options = options || {};
-
         var index = options.index;
+
         if (mathArrayUtils.isFalseNotZero(options.index)) {
             //if no index is given, goto next phase
             this.currentPhase += 1;
@@ -444,6 +567,7 @@ var game = {
             //else, go to specific phase
             this.currentPhase = index;
         }
+
         this.currentPhaseObj = this.currentWorld.phases[index](options) || {};
         if (!this.currentPhaseObj.bypassMapPhaseBehavior) {
             this.map.newPhase = true;
@@ -734,11 +858,7 @@ var game = {
     },
 
     isCurrentLevelConfigurable: function() {
-        return this.currentLevel.campLikeActive;
-    },
-
-    isCurrentLevelSOMConfigurable: function() {
-        return this.currentLevel.campLikeActiveSOM || this.currentLevel.campLikeActive;
+        return this.currentLevel.isLevelConfigurable();
     },
 
     isOutingInProgress: function() {
@@ -747,6 +867,12 @@ var game = {
 
     makeCurrentLevelConfigurable: function() {
         this.currentLevel.campLikeActive = true;
+        globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
+    },
+
+    makeCurrentLevelNonConfigurable: function() {
+        this.currentLevel.campLikeActive = false;
+        globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
     },
 
     removeAllEnemyUnits: function() {
@@ -770,7 +896,11 @@ var game = {
 
     //debug
     giveUnitItem: function(unit, itemName) {
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: [itemName], unit: unit});
+        ItemUtils.giveUnitItem({
+            gamePrefix: "Us",
+            itemName: [itemName],
+            unit: unit
+        });
     },
 
     createShane: function() {
@@ -906,14 +1036,16 @@ var game = {
                 }));
             }
         } else {
-            unit.stop(null, {basicStop: true});
+            unit.stop(null, {
+                basicStop: true
+            });
         }
 
         unit.setHealth(unit.maxHealth);
         unit.setEnergy(unit.maxEnergy);
 
         //apply fatigue
-        if (options.applyFatigue && unit.fatigue && !this.map.hasMorphine()) {
+        if (options.applyFatigue && unit.fatigue) { //&& !this.map.hasMorphine()) {
             var healthPenalty = Math.max(0, (unit.fatigue - unit.fatigueReduction)) * unit.maxHealth / 100;
             var energyPenalty = Math.max(0, (unit.fatigue - unit.fatigueReduction)) * unit.maxEnergy / 100;
             unit.setHealth(unit.currentHealth - healthPenalty);

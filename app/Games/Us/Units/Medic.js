@@ -1996,6 +1996,11 @@ export default function Medic(options) {
 
             $.extend(this, aug);
             this.unlockerInit();
+
+            //randomize initial augments
+            this.abilities.forEach((ability) => {
+                ability.addAvailableAugment();
+            });
         },
         _afterAddInit: function() {
             this.normalHealingColor = {

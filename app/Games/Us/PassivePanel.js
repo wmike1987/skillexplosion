@@ -19,7 +19,7 @@ var ConfigPanel = function(unitPanel) {
     this.unitPanelRef = unitPanel;
 
     this.currentLevelIsConfigurable = function() {
-        return globals.currentGame.isCurrentLevelConfigurable() || globals.currentGame.isCurrentLevelSOMConfigurable();
+        return globals.currentGame.isCurrentLevelConfigurable();
     };
 };
 

@@ -360,11 +360,11 @@ var campLevel = function() {
                 where: 'hudThree',
                 style: styles.adrenalineTextLarge,
                 speed: 4,
-                duration: 4000
+                duration: 2000
             });
             scene.add(adrText);
             graphicsUtils.fadeSpriteInQuickly(adrText, 500);
-        }, 2500);
+        }, 1500);
 
         //reset fatigue indicator
         gameUtils.doSomethingAfterDuration(() => {
@@ -374,11 +374,11 @@ var campLevel = function() {
                 where: 'hudThree',
                 style: styles.fatigueTextLarge,
                 speed: 4,
-                duration: 4000
+                duration: 2000
             });
             scene.add(fatigueText);
             graphicsUtils.fadeSpriteInQuickly(fatigueText, 500);
-        }, 4000);
+        }, 3000);
     };
 
     this.manualNodePosition = function() {

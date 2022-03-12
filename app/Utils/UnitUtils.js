@@ -226,6 +226,21 @@ var unitUtils = {
         }.bind(this));
 
         return items;
+    },
+
+    addRandomAugmentToAbility: function(options) {
+        options = Object.assign({random: true}, options);
+
+        if(!options.unit) {
+            return;
+        }
+
+        let filteredAbilities = options.unit.abilities.filter((ability) => {
+            return !ability.allAugmentsAvailable();
+        });
+
+        let chosenAbility = mathArrayUtils.getRandomElementOfArray(filteredAbilities);
+        return chosenAbility.addAvailableAugment();
     }
 };
 

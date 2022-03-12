@@ -1105,6 +1105,7 @@ var phaseOne = function() {
 
     return {
         nextPhase: 'manual',
+        acquireAugmentsUponCompletion: false,
         bypassMapPhaseBehavior: true
     };
 };
@@ -1136,7 +1137,8 @@ var phaseOneAndAHalf = function(options) {
         onAllNodesComplete: function() {
             campNode.levelDetails.oneTimeNoResetIndicator = true;
         },
-        onEnterBehavior: function() {
+        acquireAugmentsUponCompletion: false,
+        onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
                 actor: "MacMurray",
                 text: "Get some rest, I'll be in touch...",
@@ -1340,7 +1342,11 @@ var phaseTwo = function(options) {
 
     return {
         nextPhase: 'allNodesComplete',
-        onEnterBehavior: function() {
+        acquireAugmentsUponCompletion: true,
+        onAllNodesComplete: function() {
+            campNode.levelDetails.oneTimeNoResetIndicator = true;
+        },
+        onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
                 actor: "MacMurray",
                 text: "You're still alive... Unfortunately it's getting hotter.",
@@ -1511,7 +1517,11 @@ var phaseThree = function() {
 
     return {
         nextPhase: 'allNodesComplete',
-        onEnterBehavior: function() {
+        acquireAugmentsUponCompletion: true,
+        onAllNodesComplete: function() {
+            campNode.levelDetails.oneTimeNoResetIndicator = true;
+        },
+        onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
                 actor: "MacMurray",
                 text: "Serious camps have been identified... incoming...",
@@ -1633,7 +1643,11 @@ var finalPhase = function() {
 
     return {
         nextPhase: 'allNodesComplete',
-        onEnterBehavior: function() {
+        acquireAugmentsUponCompletion: true,
+        onAllNodesComplete: function() {
+            campNode.levelDetails.oneTimeNoResetIndicator = true;
+        },
+        onEnterAfterCompletionBehavior: function() {
             var a1 = new Dialogue({
                 actor: "MacMurray",
                 text: "Great job...",

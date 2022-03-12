@@ -1,4 +1,8 @@
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/UtilityMenu.js';
 import {
     CustomCollector
 } from '@games/Us/StatCollector.js';
@@ -9,14 +13,23 @@ export default function(options) {
     this.enablers = [];
     this.enabledAugments = {};
     this.updaters = {};
+    this.availableAugments = [];
 
     Object.assign(this, options);
 
     //Alter the ability's augments somewhat
-    if(options.augments) {
+    if (options.augments) {
         options.augments.forEach(augment => {
             augment.ability = this;
-            if(augment.collector) {
+
+            //default to not avilable
+            augment.isAvailable = false;
+
+            if(augment.isAvailable) {
+                this.availableAugments.push(augment);
+            }
+
+            if (augment.collector) {
                 augment.customCollector = new CustomCollector({
                     eventName: augment.collector.eventName,
                     priority: 10,
@@ -39,29 +52,30 @@ export default function(options) {
                 });
 
                 //convenience for fixed formatter
-                if(augment.collector.presentation.formats == "fixed1") {
+                if (augment.collector.presentation.formats == "fixed1") {
                     augment.customCollector.presentation.formats = [function(v) {
                         return v.toFixed(1);
                     }];
                 }
             }
-            if(augment.systemMessage) {
-                // augment.systemMessage = [augment.systemMessage, 'Click to equip'];
-            } else {
-                // augment.systemMessage = 'Click to equip';
-            }
         });
     }
 
     //Manage tooltip options
-    if(this.energyCost) {
-      this.systemMessage = ["E: " + this.energyCost];
-      this.updaters.systemMessages = function() {
-          if(this.customCostTextUpdater) {
-              return {index: 0, value: this.customCostTextUpdater()};
-          }
-          return {index: 0, value: "E: " + this.energyCost};
-      }.bind(this);
+    if (this.energyCost) {
+        this.systemMessage = ["E: " + this.energyCost];
+        this.updaters.systemMessages = function() {
+            if (this.customCostTextUpdater) {
+                return {
+                    index: 0,
+                    value: this.customCostTextUpdater()
+                };
+            }
+            return {
+                index: 0,
+                value: "E: " + this.energyCost
+            };
+        }.bind(this);
     }
 
     //convenience method for enabling and disabling an ability
@@ -83,12 +97,12 @@ export default function(options) {
             return !f();
         });
 
-        if(this.manuallyEnabled) {
+        if (this.manuallyEnabled) {
             disabled = false;
         }
 
         //this manual setting will take precedence
-        if(this.manuallyDisabled) {
+        if (this.manuallyDisabled) {
             disabled = true;
         }
 
@@ -100,7 +114,7 @@ export default function(options) {
     };
 
     this.isAugmentEnabled = function(name) {
-        if(name.name) {
+        if (name.name) {
             name = name.name;
         }
         return this.enabledAugments[name];
@@ -114,5 +128,33 @@ export default function(options) {
         slaves.forEach((sl) => {
             gameUtils.deathPact(this, sl);
         });
+    };
+
+    this.addAvailableAugment = function(options) {
+        options = Object.assign({
+            random: true
+        }, options);
+        let nonAvailableAugments = this.augments.filter((augment) => {
+            return !augment.isAvailable;
+        });
+
+        let randomAugment = null;
+        if(options.random) {
+            randomAugment = mathArrayUtils.getRandomElementOfArray(nonAvailableAugments);
+            if(randomAugment) {
+                randomAugment.isAvailable = true;
+                this.availableAugments.push(randomAugment);
+            }
+        }
+
+        return randomAugment;
+    };
+
+    this.getAvailableAugments = function() {
+        return this.availableAugments;
+    };
+
+    this.allAugmentsAvailable = function() {
+        return this.getAvailableAugments().length == this.augments.length;
     };
 }
