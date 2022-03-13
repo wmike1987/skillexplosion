@@ -7,7 +7,7 @@ import {
     StatCollector
 } from '@games/Us/StatCollector.js';
 
-var amount = 4;
+var amount = 3;
 var eventName = 'PictureOfTheMoonEnergyGain';
 
 var manipulations = {

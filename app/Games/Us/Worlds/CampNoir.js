@@ -1175,6 +1175,8 @@ var phaseTwo = function(options) {
         done: () => {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
+            world.map.addMapNode('basic');
+
             // world.map.addMapNode('basicHunter', {
             //     levelOptions: {
             //         nodeTitle: "Hunter's Camp",
@@ -1182,7 +1184,6 @@ var phaseTwo = function(options) {
             //         itemClass: 'worn',
             //     }
             // });
-            world.map.addMapNode('basic');
             // world.map.addMapNode('morphineStation');
             // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
@@ -1543,7 +1544,7 @@ var phaseThree = function() {
                             x: 200,
                             y: 120
                         }),
-                        item: ['Book', 'Book'],
+                        item: ['Book', 'BasicMicrochip'],
                         special: true
                     });
                 });

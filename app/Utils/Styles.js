@@ -404,7 +404,7 @@ export default {
         name: 'levelTextAugment',
         dropShadow: true,
         dropShadowAngle: 13.2,
-        dropShadowDistance: 4,
+        dropShadowDistance: 2,
         fill: "white",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",

@@ -4,7 +4,7 @@ import {
     globals
 } from '@core/Fundamental/GlobalState.js';
 
-var amount = 8;
+var amount = 5;
 var eventName = 'sharpPictureOfTheMoonEnergyGain';
 
 var manipulations = {

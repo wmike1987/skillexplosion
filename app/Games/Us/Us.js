@@ -128,6 +128,10 @@ var game = {
             volume: 0.5,
             rate: 1.0
         });
+        this.soundPool.nightPiano = gameUtils.getSound('music/nightpiano.mp3', {
+            volume: 0.5,
+            rate: 1.0
+        });
         this.soundPool.campVamp = gameUtils.getSound('music/campdiddy2.mp3', {
             volume: 0.5,
             rate: 1.0
@@ -213,7 +217,7 @@ var game = {
             rate: 1.5
         });
 
-        this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp];
+        this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
 
         //next phase detector
         Matter.Events.on(this, 'nodeCompleted', function(event) {
@@ -389,7 +393,7 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
-            if (!event.node.levelDetails.isBattleLevel()) {
+            if (!event.node.levelDetails.isBattleLevel() && !event.node.travelToken) {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }
         }.bind(this));
@@ -868,11 +872,13 @@ var game = {
     makeCurrentLevelConfigurable: function() {
         this.currentLevel.campLikeActive = true;
         globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
+        globals.currentGame.unitSystem.unitPanel.refreshPassiveButton();
     },
 
     makeCurrentLevelNonConfigurable: function() {
         this.currentLevel.campLikeActive = false;
         globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
+        globals.currentGame.unitSystem.unitPanel.refreshPassiveButton();
     },
 
     removeAllEnemyUnits: function() {
