@@ -687,9 +687,10 @@ var gameUtils = {
         unitPredicate = unitPredicate || function(unit) {
             return true;
         };
-        $.each(globals.currentGame.unitsByTeam, function(i, team) {
-            if (teamPredicate(i)) {
-                $.each(team, function(i, unit) {
+
+        mathArrayUtils.operateOnObjectByKey(globals.currentGame.unitsByTeam, (key, teamGroup, i) => {
+            if (teamPredicate(key)) {
+                mathArrayUtils.operateOnObjectByKey(teamGroup, (teamKey, unit) => {
                     if (unitPredicate(unit)) {
                         f(unit);
                     }

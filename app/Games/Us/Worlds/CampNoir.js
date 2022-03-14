@@ -639,7 +639,7 @@ var hardFlyObj = {
 
 var ultraHardFlyObj = {
     type: 'DamageFlySwarm',
-    amount: [44],
+    amount: [50],
     trivial: true,
     atATime: 4,
     initialDelay: 0.1,
@@ -1177,57 +1177,57 @@ var phaseTwo = function(options) {
             world.map.clearAllNodesExcept('camp');
             world.map.addMapNode('basic');
 
-            // world.map.addMapNode('basicHunter', {
-            //     levelOptions: {
-            //         nodeTitle: "Hunter's Camp",
-            //         token: 'hard',
-            //         itemClass: 'worn',
-            //     }
-            // });
-            // world.map.addMapNode('morphineStation');
-            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
-            //     levelOptions: {
-            //         levelAugments: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened'])
-            //     }
-            // });
-            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-            //
-            // var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
-            //
-            // var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
-            // world.map.addMapNode(basicHardChoice, {
-            //     levelOptions: {
-            //         levelAugments: [randomAugment],
-            //         itemClass: 'worn',
-            //         outer: true
-            //     }
-            // });
-            //
-            // world.map.addMapNode('multiLevel', {
-            //     levelOptions: {
-            //         enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList)],
-            //         itemClass: 'stimulant',
-            //     }
-            // });
-            //
-            // world.map.addMapNode('airDropStation', {
-            //     levelOptions: {
-            //         prereqCount: 1,
-            //         itemClass: 'stimulant',
-            //         itemType: 'item'
-            //     }
-            // });
-            // world.map.addMapNode('airDropStation', {
-            //     levelOptions: {
-            //         prereqCount: 3,
-            //         itemClass: 'worn',
-            //         itemType: 'specialtyItem',
-            //         uniqueItem: true,
-            //         regularTokenName: 'AirDropSpecialToken',
-            //         specialTokenName: 'AirDropSpecialTokenGleam'
-            //     }
-            // });
+            world.map.addMapNode('basicHunter', {
+                levelOptions: {
+                    nodeTitle: "Hunter's Camp",
+                    token: 'hard',
+                    itemClass: 'worn',
+                }
+            });
+            world.map.addMapNode('morphineStation');
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
+                levelOptions: {
+                    levelAugments: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened'])
+                }
+            });
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+
+            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+
+            var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
+            world.map.addMapNode(basicHardChoice, {
+                levelOptions: {
+                    levelAugments: [randomAugment],
+                    itemClass: 'worn',
+                    outer: true
+                }
+            });
+
+            world.map.addMapNode('multiLevel', {
+                levelOptions: {
+                    enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList)],
+                    itemClass: 'stimulant',
+                }
+            });
+
+            world.map.addMapNode('airDropStation', {
+                levelOptions: {
+                    prereqCount: 1,
+                    itemClass: 'stimulant',
+                    itemType: 'item'
+                }
+            });
+            world.map.addMapNode('airDropStation', {
+                levelOptions: {
+                    prereqCount: 3,
+                    itemClass: 'worn',
+                    itemType: 'specialtyItem',
+                    uniqueItem: true,
+                    regularTokenName: 'AirDropSpecialToken',
+                    specialTokenName: 'AirDropSpecialTokenGleam'
+                }
+            });
             if (options.skippedTutorial) {
                 campLevel.skippedTutorial = true;
                 campLevel.mapTableFalseOverride = true;
@@ -1681,6 +1681,12 @@ var campNoir = {
 
         infestLevel: function(level) {
             if (level.enemyDefs.enemySets) {
+                var tmpSets = [...level.enemyDefs.enemySets];
+                tmpSets.forEach((set) => {
+                    if(set.type == 'DamageFlySwarm') {
+                        mathArrayUtils.removeObjectFromArray(set, level.enemyDefs.enemySets);
+                    }
+                });
                 level.enemyDefs.enemySets.push(ultraHardFlyObj);
             }
         },

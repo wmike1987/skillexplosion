@@ -632,7 +632,7 @@ var common = {
             //Create a temp object so that there are no bad effects of invalidating a timer
             //from within another timer. I actually need to make sure this matters.
             var tempTimers = $.extend({}, this.timers);
-            $.each(tempTimers, function(key, value) {
+            mathArrayUtils.operateOnObjectByKey(tempTimers, function(key, value) {
 
                 //tick monitor is called whether or not the timer has stopped
                 if (value.tickMonitor) {

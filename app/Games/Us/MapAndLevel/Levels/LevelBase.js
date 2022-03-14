@@ -268,7 +268,7 @@ var levelBase = {
             itemClass: 'lightStimulant',
             itemType: 'item',
             isSupplyDropEligible: true,
-            levelAugments: [],
+            levelAugments: ['infested'],
             createOneShotUnit: mathArrayUtils.flipCoin() || mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
 
@@ -299,8 +299,8 @@ var levelBase = {
         this.tintIndex = this.outer ? mathArrayUtils.getRandomElementOfArray(worldSpecs.outerTintIndexes) : mathArrayUtils.getRandomElementOfArray(worldSpecs.innerTintIndexes);
         this.tileTint = options.levelOptions.tileTint || (this.outer ? worldSpecs.acceptableTileTints[this.tintIndex] : worldSpecs.acceptableTileTints[this.tintIndex]);
 
-        //set the enemy def
-        this.enemyDefs = Object.assign({}, worldSpecs.enemyDefs[type]);
+        //set the enemy def (deep copy)
+        this.enemyDefs = $.extend(true, {}, worldSpecs.enemyDefs[type]);
 
         //generate camp name
         let noun = this.levelNounOverride || this.enemyDefs.noun || 'Enemy';

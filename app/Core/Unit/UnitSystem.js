@@ -118,9 +118,11 @@ var UnitSystem = function(properties) {
         }
 
         //establish pathing system
-        if (this.enablePathingSystem) {
-            this.pathingSystem = new PathingSystem(properties);
-            this.pathingSystem.init();
+        if(false) {
+            if (this.enablePathingSystem) {
+                this.pathingSystem = new PathingSystem(properties);
+                this.pathingSystem.init();
+            }
         }
 
         //destination marker
