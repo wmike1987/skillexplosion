@@ -389,7 +389,15 @@ var game = {
         }.bind(this));
 
         Matter.Events.on(this, 'EmbarkOnOuting', function(event) {
-            gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
+            var battleOuting = event.outingNodes.some((node) => {
+                return node.levelDetails.isBattleLevel();
+            });
+
+            if(battleOuting) {
+                gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
+            } else {
+                gameUtils.playAsMusic(this.soundPool.fillerMovement);
+            }
         }.bind(this));
 
         Matter.Events.on(this, 'TravelStarted', function(event) {
@@ -430,12 +438,18 @@ var game = {
             //cleanup and reset the previous unit spawner
             var node = event.node;
             this.setCurrentLevel(node.levelDetails);
+
+            //fatigue timer
             let timeLimit = 75 + this.map.adrenaline * 22;
             this.fatigueTimer = this.addTimer({
                 name: 'fatigueTimer',
                 gogogo: true,
                 timeLimit: timeLimit,
                 callback: function() {
+                    //only set fatigue if we're a battle level
+                    if(!node.levelDetails.isBattleLevel()) {
+                        return;
+                    }
                     this.unitsInPlay.forEach((unit) => {
                         unit.fatigue += 1;
                     });
@@ -655,10 +669,16 @@ var game = {
                 vScene.clear();
             } else {
                 this.currentScene.add(vScene);
-                this.reconfigureAtCurrentLevel({
-                    result: result,
-                    revive: true
-                });
+                if(this.map.currentNode.travelToken) {
+                    //open map and activate the travel token
+                    this.map.show();
+                    this.map.arriveAtTravelToken(this.map.currentNode);
+                } else {
+                    this.reconfigureAtCurrentLevel({
+                        result: result,
+                        revive: true
+                    });
+                }
             }
         }.bind(this);
 
@@ -1086,7 +1106,7 @@ var game = {
                 x: 0,
                 y: 0.5
             },
-            alpha: 0.8,
+            alpha: 0.9,
             stage: "foreground",
         }];
 

@@ -348,11 +348,7 @@ var map = function(specs) {
         //if we're the final node and travel token, remove all the route arrows
         gameUtils.doSomethingAfterDuration(() => {
             if(finalNode) {
-                self.allowMouseEvents(true);
-                self.clearRouteArrows();
-                node.unshowNodeInOuting(true);
-                self.outingInProgress = false;
-                self.clearOuting();
+                self._completeOuting({finalNode: node});
             } else {
                 var mapnode = self.outingNodes.shift();
                 self.inProgressOutingNodes.push(mapnode);
@@ -565,7 +561,6 @@ var map = function(specs) {
                 gogogo: true,
                 timeLimit: 500,
                 immediateStart: true,
-                executeOnNuke: true,
                 callback: function() {
                     let routeArrow = graphicsUtils.addSomethingToRenderer('MapArrow', {where: 'noMansLand', alpha: 0.5, scale: {x: 0.5, y: 0.5}, tint: sendSpriteObj.color});
 
@@ -859,21 +854,37 @@ var map = function(specs) {
         });
 
         //let everyone know
-        Matter.Events.trigger(globals.currentGame, 'EmbarkOnOuting');
-        gameUtils.matterOnce(globals.currentGame, 'BeginLevel', () => {
+        Matter.Events.trigger(globals.currentGame, 'EmbarkOnOuting', {outingNodes: this.outingNodeMemory});
+
+        //These two handlers will be removed after the outing is completed just in case the outing consisted only
+        //of a travel token
+        this.beginLevelHandler = gameUtils.matterOnce(globals.currentGame, 'BeginLevel', () => {
             Matter.Events.trigger(globals.currentGame, 'BeginPrimaryBattle');
         });
 
         //upon normal win/loss behavior clear the outing
-        var outingWinLossHandler = gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', (event) => {
-            this.outingInProgress = false;
-            this.clearOuting();
-
-            //if we've won, add the finalNode to the completed node list
-            if (event.result == 'victory') {
-                this.completedNodes.push(finalNode);
-            }
+        this.finalWinHandler = gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', (event) => {
+            this._completeOuting({finalNode: finalNode, result: event.result});
         });
+    };
+
+    this._completeOuting = function(options) {
+        let result = options.result;
+        let finalNode = options.finalNode;
+
+        this.outingInProgress = false;
+        this.clearOuting();
+        this.allowMouseEvents(true);
+        this.clearRouteArrows();
+        finalNode.unshowNodeInOuting(true);
+
+        //if we have a result
+        if (result == 'victory') {
+            this.completedNodes.push(finalNode);
+        }
+
+        this.beginLevelHandler.removeHandler();
+        this.finalWinHandler.removeHandler();
     };
 
     this.getPlayerMapPosition = function() {

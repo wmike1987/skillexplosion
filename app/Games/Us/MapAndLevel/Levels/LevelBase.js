@@ -268,7 +268,7 @@ var levelBase = {
             itemClass: 'lightStimulant',
             itemType: 'item',
             isSupplyDropEligible: true,
-            levelAugments: ['infested'],
+            levelAugments: [],
             createOneShotUnit: mathArrayUtils.flipCoin() || mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
 

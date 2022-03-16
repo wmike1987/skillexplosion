@@ -1002,6 +1002,8 @@ var enemyDefs = {
     },
 };
 
+var phaseOneMusicHandler = null;
+
 //phase one is shane intro
 var phaseOne = function() {
     var firstLevelPosition = {
@@ -1010,7 +1012,7 @@ var phaseOne = function() {
     };
 
     //play training session music
-    gameUtils.matterOnce(globals.currentGame, 'TravelStarted', () => {
+    phaseOneMusicHandler = gameUtils.matterOnce(globals.currentGame, 'TravelStarted', () => {
         gameUtils.playAsMusic(globals.currentGame.soundPool.mainMarch);
     });
 
@@ -1163,6 +1165,7 @@ var phaseOneAndAHalf = function(options) {
 
 //phase two is the "first" phase, it includes the starting dialog
 var phaseTwo = function(options) {
+    phaseOneMusicHandler.removeHandler();
     globals.currentGame.map.setHeadToken('headtoken');
     let campNode = this.map.findNodeById('camp');
     campNode.activeCampTooltipOverride = null;
