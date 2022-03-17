@@ -1003,6 +1003,7 @@ var enemyDefs = {
 };
 
 var phaseOneMusicHandler = null;
+var phaseOneCountingFunction = null;
 
 //phase one is shane intro
 var phaseOne = function() {
@@ -1091,7 +1092,7 @@ var phaseOne = function() {
     });
 
     var winCount = 0;
-    this.counterFunction = function(event) {
+    phaseOneCountingFunction = function(event) {
         if (event.result == 'victory') {
             winCount += 1;
             if (winCount == 3) {
@@ -1099,11 +1100,11 @@ var phaseOne = function() {
                 campNode.manualDisable = false;
                 campNode.manualEnable = true;
                 campNode.activeCampTooltipOverride = 'Camp available.';
-                Matter.Events.off(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
+                Matter.Events.off(globals.currentGame, "VictoryOrDefeat", phaseOneCountingFunction);
             }
         }
     };
-    Matter.Events.on(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
+    Matter.Events.on(globals.currentGame, "VictoryOrDefeat", phaseOneCountingFunction);
 
     return {
         nextPhase: 'manual',
@@ -1114,7 +1115,7 @@ var phaseOne = function() {
 
 var phaseOneAndAHalf = function(options) {
 
-    Matter.Events.off(globals.currentGame, "VictoryOrDefeat", this.counterFunction);
+    Matter.Events.off(globals.currentGame, "VictoryOrDefeat", phaseOneCountingFunction);
 
     let campNode = this.map.findNodeById('camp');
     this.map.setHeadToken('headtoken');

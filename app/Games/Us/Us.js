@@ -659,7 +659,6 @@ var game = {
             leftToRight: options.leftToRight
         });
 
-        this.reconfigureSound.play();
         return blankScene;
     },
 
@@ -688,10 +687,11 @@ var game = {
                 }
                 this.unitSystem.unitPanel.refreshPassiveButton();
                 vScene.clear();
-            } else {
+            } else { //if loss
                 this.currentScene.add(vScene);
                 if (this.map.currentNode.travelToken) {
                     //open map and activate the travel token
+                    this.reconfigureSound.play();
                     globals.currentGame.transitionToBlankScene({
                         mode: 'SIDE',
                         transitionLength: 1000,
