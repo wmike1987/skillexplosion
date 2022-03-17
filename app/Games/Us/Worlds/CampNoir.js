@@ -1399,6 +1399,8 @@ var phaseThree = function() {
             itemClass: 'worn'
         }
     });
+
+    this.map.addMapNode('morphineStation');
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
     this.map.addMapNode('easySentinels', {
@@ -1560,6 +1562,7 @@ var finalPhase = function() {
     this.map.clearAllNodesExcept('camp');
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
+    this.map.addMapNode('morphineStation');
 
     var decision = mathArrayUtils.flipCoin();
     var positionOp = {

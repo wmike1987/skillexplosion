@@ -358,7 +358,7 @@ export default function Gargoyle(options) {
             attackAnimations: attackAnimations,
             cooldown: 450,
             honeRange: 300,
-            range: options.radius*2,
+            range: options.radius*2+14,
             isMelee: true,
             damage: 9,
             attackExtension: function(target) {

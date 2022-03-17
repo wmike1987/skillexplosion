@@ -302,7 +302,7 @@ export default function Critter(options) {
                 cooldown: 650,
                 honeRange: 300,
                 isMelee: true,
-                range: options.radius*2+10,
+                range: options.radius*2+14,
                 damage: 6,
                 attackExtension: function(target) {
                     var bloodAnimation = gameUtils.getAnimation({

@@ -142,11 +142,11 @@ var morphineStation = function(options) {
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Morphine Station";
-        this.tooltipDescription = 'Travel at double speed to your next enemy camp.';
+        this.tooltipDescription = 'Travel at double speed to your next two enemy camps.';
     };
 
     this.arriveCallback = function() {
-        globals.currentGame.map.addMorphine(1);
+        globals.currentGame.map.addMorphine(2);
     };
 };
 morphineStation.prototype = commonTravelToken;

@@ -272,35 +272,44 @@ var game = {
                                 });
 
                                 let totalWidth = acquiredText.width + coloredText.width;
-                                let acquiredPercent = acquiredText.width/totalWidth;
-                                let coloredPercent = coloredText.width/totalWidth;
+                                let acquiredPercent = acquiredText.width / totalWidth;
+                                let coloredPercent = coloredText.width / totalWidth;
                                 let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
                                 let acquiredTextAdjustment = coloredPercent * totalAdjustment;
                                 let coloredTextAdjustment = acquiredPercent * totalAdjustment;
 
-                                acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {x: -acquiredTextAdjustment});
-                                coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {x: coloredTextAdjustment});
+                                acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {
+                                    x: -acquiredTextAdjustment
+                                });
+                                coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {
+                                    x: coloredTextAdjustment
+                                });
                                 coloredText.tint = 0xba4227;
                                 graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
 
                                 let shaneIcon = graphicsUtils.cloneSprite(shaneAugment.icon, {
                                     where: 'hudOne',
-                                    scale: {x: 1.25, y: 1.25}
+                                    scale: {
+                                        x: 1.25,
+                                        y: 1.25
+                                    }
                                 });
                                 graphicsUtils.addSomethingToRenderer(shaneIcon);
-                                let border = graphicsUtils.addBorderToSprite({sprite: shaneIcon});
+                                let border = graphicsUtils.addBorderToSprite({
+                                    sprite: shaneIcon
+                                });
                                 graphicsUtils.floatSpriteNew(shaneIcon,
                                     gameUtils.getPlayableCenterPlus({
                                         y: 60
                                     }), {
-                                    duration: floatDuration
-                                });
+                                        duration: floatDuration
+                                    });
                                 graphicsUtils.floatSpriteNew(border,
                                     gameUtils.getPlayableCenterPlus({
                                         y: 60
                                     }), {
-                                    duration: floatDuration
-                                });
+                                        duration: floatDuration
+                                    });
 
                                 gameUtils.doSomethingAfterDuration(() => {
                                     let ursulaAugment = unitUtils.addRandomAugmentToAbility({
@@ -325,35 +334,44 @@ var game = {
                                     });
 
                                     let totalWidth = acquiredText.width + coloredText.width;
-                                    let acquiredPercent = acquiredText.width/totalWidth;
-                                    let coloredPercent = coloredText.width/totalWidth;
+                                    let acquiredPercent = acquiredText.width / totalWidth;
+                                    let coloredPercent = coloredText.width / totalWidth;
                                     let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
                                     let acquiredTextAdjustment = coloredPercent * totalAdjustment;
                                     let coloredTextAdjustment = acquiredPercent * totalAdjustment;
 
-                                    acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {x: -acquiredTextAdjustment});
-                                    coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {x: coloredTextAdjustment});
+                                    acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {
+                                        x: -acquiredTextAdjustment
+                                    });
+                                    coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {
+                                        x: coloredTextAdjustment
+                                    });
                                     coloredText.tint = 0x047816;
                                     graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
 
                                     let ursulaIcon = graphicsUtils.cloneSprite(ursulaAugment.icon, {
                                         where: 'hudOne',
-                                        scale: {x: 1.25, y: 1.25}
+                                        scale: {
+                                            x: 1.25,
+                                            y: 1.25
+                                        }
                                     });
                                     graphicsUtils.addSomethingToRenderer(ursulaIcon);
-                                    let border = graphicsUtils.addBorderToSprite({sprite: ursulaIcon});
+                                    let border = graphicsUtils.addBorderToSprite({
+                                        sprite: ursulaIcon
+                                    });
                                     graphicsUtils.floatSpriteNew(ursulaIcon,
                                         gameUtils.getPlayableCenterPlus({
                                             y: 60
                                         }), {
-                                        duration: floatDuration
-                                    });
+                                            duration: floatDuration
+                                        });
                                     graphicsUtils.floatSpriteNew(border,
                                         gameUtils.getPlayableCenterPlus({
                                             y: 60
                                         }), {
-                                        duration: floatDuration
-                                    });
+                                            duration: floatDuration
+                                        });
                                 }, floatDuration - 750);
                             }, 1500);
                         }
@@ -393,7 +411,7 @@ var game = {
                 return node.levelDetails.isBattleLevel();
             });
 
-            if(battleOuting) {
+            if (battleOuting) {
                 gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
             } else {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
@@ -447,7 +465,7 @@ var game = {
                 timeLimit: timeLimit,
                 callback: function() {
                     //only set fatigue if we're a battle level
-                    if(!node.levelDetails.isBattleLevel()) {
+                    if (!node.levelDetails.isBattleLevel()) {
                         return;
                     }
                     this.unitsInPlay.forEach((unit) => {
@@ -637,8 +655,11 @@ var game = {
             newScene: blankScene,
             fadeIn: true,
             mode: options.mode,
-            transitionLength: options.transitionLength
+            transitionLength: options.transitionLength,
+            leftToRight: options.leftToRight
         });
+
+        this.reconfigureSound.play();
         return blankScene;
     },
 
@@ -669,8 +690,13 @@ var game = {
                 vScene.clear();
             } else {
                 this.currentScene.add(vScene);
-                if(this.map.currentNode.travelToken) {
+                if (this.map.currentNode.travelToken) {
                     //open map and activate the travel token
+                    globals.currentGame.transitionToBlankScene({
+                        mode: 'SIDE',
+                        transitionLength: 1000,
+                        leftToRight: false
+                    });
                     this.map.show();
                     this.map.arriveAtTravelToken(this.map.currentNode);
                 } else {
@@ -819,7 +845,7 @@ var game = {
         var isVictory = options.result == 'victory';
         var game = this;
 
-        game.reconfigureSound.play();
+        this.reconfigureSound.play();
         this.currentLevel.enterLevel({
             customEnterLevel: function(level) {
                 //set state of mind config only to be active

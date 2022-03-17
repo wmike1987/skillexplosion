@@ -516,7 +516,7 @@ export default function Rammian(options) {
             attackAnimations: attackAnimations,
             cooldown: 750,
             honeRange: 300,
-            range: options.radius * 2,
+            range: options.radius * 2 + 14,
             isMelee: true,
             damage: 25,
             attackExtension: function(target) {

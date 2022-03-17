@@ -342,8 +342,10 @@ var map = function(specs) {
         globals.currentGame.currentScene.clear();
         var finalNode = this.outingNodes.length == 0;
 
-        node.playCompleteAnimation();
-        node.complete();
+        if(!node.isCompleted) {
+            node.playCompleteAnimation();
+            node.complete();
+        }
 
         //if we're the final node and travel token, remove all the route arrows
         gameUtils.doSomethingAfterDuration(() => {
