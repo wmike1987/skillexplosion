@@ -5,7 +5,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js';
 import {airDropStation} from '@games/Us/MapAndLevel/Levels/AirDropStation.js';
-import {morphineStation} from '@games/Us/MapAndLevel/Levels/TravelTokens.js';
+import {morphineStation, restStop} from '@games/Us/MapAndLevel/Levels/TravelTokens.js';
 import {shaneLearning} from '@games/Us/MapAndLevel/Levels/ShaneLearning.js';
 import {multiLevel} from '@games/Us/MapAndLevel/Levels/MultiLevel.js';
 import {campLevel} from '@games/Us/MapAndLevel/Levels/CampLevel.js';
@@ -34,6 +34,7 @@ var predefinedTypes = {
     airDropStation: airDropStation,
     multiLevel: multiLevel,
     morphineStation: morphineStation,
+    restStop: restStop,
     shaneLearning: shaneLearning,
 };
 

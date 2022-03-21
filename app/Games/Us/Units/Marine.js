@@ -1056,7 +1056,7 @@ export default function Marine(options) {
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3 seconds.'],
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain movement speed for 4 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 10% of max hp.'],
         textureName: 'RushOfBlood',
         unit: marine,

@@ -60,6 +60,7 @@ commonTravelToken.initExtension = function() {
     this.mapNode.travelToken = true;
     this.mapNode.arriveAtNode = function() {
         gameUtils.doSomethingAfterDuration(() => {
+            globals.currentGame.soundPool.positiveSound3.play();
             self.arriveCallback();
         }, 500);
     };
@@ -85,7 +86,6 @@ commonTravelToken.createMapNode = function(options) {
         },
         mouseDownCallback: function() {
             this.flashNode();
-            airDropClickTokenSound.play();
             return false;
         },
         manualTokens: function() {
@@ -106,7 +106,7 @@ commonTravelToken.createMapNode = function(options) {
                         regularToken.visible = true;
                         specialToken.visible = true;
                         if (!this.gleamTimer) {
-                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 900, 1500, 1500);
                             Matter.Events.on(regularToken, 'destroy', () => {
                                 this.gleamTimer.invalidate();
                             });
@@ -151,8 +151,29 @@ var morphineStation = function(options) {
 };
 morphineStation.prototype = commonTravelToken;
 
+var restStop = function(options) {
+    this.regularTokenName = 'RestStopToken';
+    this.specialTokenName = 'RestStopTokenGleaming';
+
+    this.setNodeTitle = function() {
+        this.nodeTitle = "Rest Stop";
+        this.tooltipDescription = ['Subtract half of current fatigue.', 'Subtract 2 adrenaline.'];
+    };
+
+    this.arriveCallback = function() {
+        graphicsUtils.flashSprite({sprite: globals.currentGame.map.fatigueText, toColor: 0x45f112});
+        Matter.Events.trigger(globals.currentGame.map, 'SetFatigue', {
+            amount: Math.floor(globals.currentGame.map.getCurrentFatigue()/2.0)
+        });
+        globals.currentGame.map.removeAdrenalineBlock();
+        globals.currentGame.map.removeAdrenalineBlock();
+    };
+};
+restStop.prototype = commonTravelToken;
+
 
 
 export {
-    morphineStation
+    morphineStation,
+    restStop
 };

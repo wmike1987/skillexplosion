@@ -680,7 +680,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SteadySyringe.png":
+"SingleBoot3.png":
 {
 	"frame": {"x":35,"y":409,"w":32,"h":32},
 	"rotated": false,
@@ -688,7 +688,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"Steroid.png":
+"SteadySyringe.png":
 {
 	"frame": {"x":69,"y":409,"w":32,"h":32},
 	"rotated": false,
@@ -696,7 +696,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SturdyCanteen.png":
+"Steroid.png":
 {
 	"frame": {"x":103,"y":409,"w":32,"h":32},
 	"rotated": false,
@@ -704,7 +704,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SugarPill.png":
+"SturdyCanteen.png":
 {
 	"frame": {"x":137,"y":409,"w":32,"h":32},
 	"rotated": false,
@@ -712,7 +712,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"TechnologyKey.png":
+"SugarPill.png":
 {
 	"frame": {"x":171,"y":409,"w":32,"h":32},
 	"rotated": false,
@@ -720,7 +720,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"ThrowingGlove.png":
+"TechnologyKey.png":
 {
 	"frame": {"x":205,"y":409,"w":32,"h":32},
 	"rotated": false,
@@ -728,7 +728,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VioletTipCartridge.png":
+"ThrowingGlove.png":
 {
 	"frame": {"x":1,"y":443,"w":32,"h":32},
 	"rotated": false,
@@ -736,7 +736,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VioletVisor.png":
+"VioletTipCartridge.png":
 {
 	"frame": {"x":35,"y":443,"w":32,"h":32},
 	"rotated": false,
@@ -744,7 +744,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VitaminOne.png":
+"VioletVisor.png":
 {
 	"frame": {"x":69,"y":443,"w":32,"h":32},
 	"rotated": false,
@@ -752,7 +752,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"WalkieTalkie1.png":
+"VitaminOne.png":
 {
 	"frame": {"x":103,"y":443,"w":32,"h":32},
 	"rotated": false,
@@ -760,9 +760,17 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"YellowSyringe.png":
+"WalkieTalkie1.png":
 {
 	"frame": {"x":137,"y":443,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"YellowSyringe.png":
+{
+	"frame": {"x":171,"y":443,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -774,7 +782,7 @@
 	"Pants": ["Pants1.png","Pants2.png"],
 	"SilverMedalCircle": ["SilverMedalCircle1.png","SilverMedalCircle2.png","SilverMedalCircle3.png","SilverMedalCircle4.png"],
 	"SilverMedalDiamond": ["SilverMedalDiamond1.png","SilverMedalDiamond2.png"],
-	"SingleBoot": ["SingleBoot1.png","SingleBoot2.png"]
+	"SingleBoot": ["SingleBoot1.png","SingleBoot2.png","SingleBoot3.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
@@ -783,6 +791,6 @@
 	"format": "RGBA8888",
 	"size": {"w":238,"h":476},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:5ba73b49a3dc9e98f79613757d1acd60:6d47f14c0c9c343d62be6998ab4e565a:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:3b1eb4ff12d3398c2c75d161e40a1813:8a27d0bc07d5f61de12b535af90573e7:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

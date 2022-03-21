@@ -1,8 +1,18 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
-import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
+import {
+    shaneOnly,
+    ursulaOnly
+} from '@games/Us/Items/SpecialtyValues.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 
 var eventName = 'sereneStarEnergyGain';
 var energyGain = 2;
@@ -10,13 +20,16 @@ var energyGain = 2;
 var manipulations = {
     maxEnergy: 5,
     energyRegenerationRate: 0.25,
-    events: {knifeKill: {callback: function(event) {
-            event.equippedUnit.giveEnergy(energyGain);
-            unitUtils.applyEnergyGainAnimationToUnit(event.equippedUnit);
-            event.energyGain = energyGain;
-            Matter.Events.trigger(globals.currentGame, eventName, event);
+    events: {
+        knifeKill: {
+            callback: function(event) {
+                event.equippedUnit.giveEnergy(energyGain);
+                unitUtils.applyEnergyGainAnimationToUnit(event.equippedUnit);
+                event.energyGain = energyGain;
+                Matter.Events.trigger(globals.currentGame, eventName, event);
+            }
         }
-    }}
+    }
 };
 
 export default function(options) {

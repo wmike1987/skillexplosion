@@ -1233,6 +1233,10 @@ var gameUtils = {
             });
             slave.masters = [];
         }
+    },
+
+    mixinDefaults: function(params, defaults) {
+        return Object.assign({}, defaults, params);
     }
 };
 

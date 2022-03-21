@@ -394,12 +394,14 @@ export default function Medic(options) {
         var fleetFeetAugment = thisAbility.isAugmentEnabled('fleet feet');
         var softLandingAugment = thisAbility.isAugmentEnabled('soft landing');
         var caltropAugment = thisAbility.isAugmentEnabled('caltrop');
+        var isFreeStep = false;
 
         //remove a free step if we have one
         if (medic.freeSteps) {
             medic.buffs['freeSecretStep' + medic.freeSteps].removeBuff({
                 detached: true
             });
+            isFreeStep = true;
         }
 
         var shadow = Matter.Bodies.circle(this.position.x, this.position.y, 20, {
@@ -457,7 +459,8 @@ export default function Medic(options) {
         var secretStepSpeed = fleetFeetAugment ? 20 : 10;
         gameUtils.sendBodyToDestinationAtSpeed(shadow, destination, secretStepSpeed, true, true);
         Matter.Events.trigger(globals.currentGame, 'secretStep', {
-            performingUnit: this
+            performingUnit: this,
+            isFreeStep: isFreeStep
         });
 
         //send collector events
@@ -663,7 +666,8 @@ export default function Medic(options) {
                 globals.currentGame.removeBody(shadow);
                 globals.currentGame.invalidateTimer(footprintTimer);
                 Matter.Events.trigger(this, 'secretStepLand', {
-                    destination: destination
+                    destination: destination,
+                    isFreeStep: isFreeStep
                 });
                 commandObj.command.done();
 
@@ -1513,7 +1517,7 @@ export default function Medic(options) {
     var familiarFace = new Passive({
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Stun attacker and increase movement speed for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Stun attacker and gain movement speed for 3 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free vanish.'],
         textureName: 'FamiliarFace',
         unit: medic,

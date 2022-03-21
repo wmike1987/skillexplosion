@@ -86,6 +86,7 @@ var map = function(specs) {
         this.fatigueText.alpha = 0.9;
         var amount = event.amount;
         this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
+        this.fatigueAmount = event.amount;
     }.bind(this));
     gameUtils.attachSomethingToBody({
         something: this.fatigueText,
@@ -95,6 +96,10 @@ var map = function(specs) {
             y: 20
         }
     });
+
+    this.getCurrentFatigue = function() {
+        return this.fatigueAmount;
+    };
 
     //manage morphine
     this.morphine = 0;
@@ -199,6 +204,10 @@ var map = function(specs) {
         mathArrayUtils.removeObjectFromArray(lastBlock, this.adrenalineBlocks);
         this.removedAdrenalineBlocks.push(lastBlock);
         this.adrenaline -= 1;
+
+        if(this.isShown) {
+            this.flashAndHideAdrenalineBlocks();
+        }
     };
 
     this.clearAllAdrenalineBlocks = function() {
@@ -207,6 +216,22 @@ var map = function(specs) {
         });
         this.adrenaline = 0;
         this.adrenalineBlocks = [];
+    };
+
+    this.flashAndHideAdrenalineBlocks = function() {
+        this.removedAdrenalineBlocks.forEach((item, i) => {
+            graphicsUtils.addOrShowDisplayObject(item);
+            graphicsUtils.flashSprite({
+                sprite: item,
+                fromColor: item.tint,
+                toColor: 0x464646,
+                duration: 150,
+                times: 8,
+                onEnd: () => {
+                    graphicsUtils.removeSomethingFromRenderer(item);
+                }
+            });
+        });
     };
 
     Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', function(event) {
@@ -371,6 +396,7 @@ var map = function(specs) {
 
         this.isShown = true;
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
+        this.fatigueAmount = this.startingFatigue || 0;
         this.fatigueText.alpha = 0.3;
 
         if (!this.outingInProgress) {
@@ -440,19 +466,7 @@ var map = function(specs) {
             }
         });
 
-        this.removedAdrenalineBlocks.forEach((item, i) => {
-            graphicsUtils.addOrShowDisplayObject(item);
-            graphicsUtils.flashSprite({
-                sprite: item,
-                fromColor: item.tint,
-                toColor: 0x464646,
-                duration: 150,
-                times: 8,
-                onEnd: () => {
-                    graphicsUtils.removeSomethingFromRenderer(item);
-                }
-            });
-        });
+        this.flashAndHideAdrenalineBlocks();
 
         if (this.outingInProgress) {
             let myIndex = 0;
@@ -752,6 +766,12 @@ var map = function(specs) {
             $('body').on('keydown.engagespace', function(event) {
                 var key = event.key.toLowerCase();
                 if (key == ' ') {
+                    var legal = this.isOutingLegal();
+                    if(!legal.result) {
+                        game.toastMessage({message: legal.message});
+                        game.soundPool.cantdo.play();
+                        return;
+                    }
                     $('body').off('keydown.engagespace');
                     game.soundPool.sceneContinue.play();
                     this.spaceFlashTimer.invalidate();
@@ -766,18 +786,37 @@ var map = function(specs) {
             graphicsUtils.removeSomethingFromRenderer(this.engageText);
             this.engageText = null;
         } else {
-            this.engageText.text = "Space to embark (" + this.outingNodes.length + "/3)";
+            var nonTokenNodes = this.getNonTokenNodes();
+            this.engageText.text = "Space to embark (" + nonTokenNodes.length + "/3)";
         }
+    };
+
+    this.getNonTokenNodes = function() {
+        var nonTokenNodes = this.outingNodes.filter((node) => {
+            return !node.travelToken;
+        });
+
+        return nonTokenNodes;
     };
 
     this.canAddNodeToOuting = function(node) {
         if(node.travelToken) {
             return true;
         }
-        var nonTokenNodes = this.outingNodes.filter((node) => {
-            return !node.travelToken;
-        });
+
+        var nonTokenNodes = this.getNonTokenNodes();
+
         return nonTokenNodes.length < this.maxOutingLength;
+    };
+
+    this.isOutingLegal = function() {
+        var finalNode = this.outingNodes[this.outingNodes.length - 1];
+
+        if(finalNode.travelToken && this.getNonTokenNodes().length > 0) {
+            return {result: false, message: 'Final destination must be an enemy camp'};
+        }
+
+        return {result: true};
     };
 
     this.embarkOnOuting = function() {

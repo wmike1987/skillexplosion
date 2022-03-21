@@ -1189,6 +1189,7 @@ var phaseTwo = function(options) {
                 }
             });
             world.map.addMapNode('morphineStation');
+            world.map.addMapNode('restStop');
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
                 levelOptions: {

@@ -397,7 +397,7 @@ var campLevel = function() {
                 if(this.manualEnable) {
                     return true;
                 }
-                return this.nightsLeft;
+                return false;
                 // return true;
             },
             hoverCallback: function() {

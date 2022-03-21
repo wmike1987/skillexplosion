@@ -257,6 +257,8 @@ var airDropStation = function(options) {
     this.onLevelPlayable = function(scene) {
         var game = globals.currentGame;
 
+        gameUtils.playAsMusic(game.soundPool.airdropVamp);
+
         //move units to center
         game.setUnit(game.shane, {
             position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), game.offscreenStartLocation),

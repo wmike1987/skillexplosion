@@ -128,6 +128,10 @@ var game = {
             volume: 0.5,
             rate: 1.0
         });
+        this.soundPool.airdropVamp = gameUtils.getSound('music/vamp1.mp3', {
+            volume: 0.5,
+            rate: 1.0
+        });
         this.soundPool.nightPiano = gameUtils.getSound('music/nightpiano.mp3', {
             volume: 0.5,
             rate: 1.0
@@ -184,6 +188,10 @@ var game = {
             volume: 0.04,
             rate: 0.9
         });
+        this.soundPool.positiveSound3 = gameUtils.getSound('positivesound3.wav', {
+            volume: 0.06,
+            rate: 0.9
+        });
         this.soundPool.noticeme = gameUtils.getSound('noticeme1.wav', {
             volume: 0.05,
             rate: 1.15
@@ -203,6 +211,10 @@ var game = {
         this.soundPool.keypressSound = gameUtils.getSound('keypress1.wav', {
             volume: 0.15,
             rate: 1
+        });
+        this.soundPool.cantdo = gameUtils.getSound('cantpickup.wav', {
+            volume: 0.03,
+            rate: 1.3
         });
         this.soundPool.unlock1 = gameUtils.getSound('unlockability.wav', {
             volume: 0.12,
@@ -1248,6 +1260,25 @@ var game = {
                 box.sufferAttack(1000);
             }, 200);
         }
+    },
+
+    toastMessage: function(options) {
+        options = gameUtils.mixinDefaults(options, {
+            style: styles.fatigueTextLarge,
+            scene: options.scene || globals.currentGame.currentScene
+        });
+
+        //reset adrenaline indicator
+        var toastText = graphicsUtils.floatText(options.message, gameUtils.getPlayableCenterPlus({
+            y: 300
+        }), {
+            where: 'hudThree',
+            style: options.style,
+            speed: 4,
+            duration: 2000
+        });
+        options.scene.add(toastText);
+        graphicsUtils.fadeSpriteInQuickly(toastText, 500);
     },
 
     resetGameExtension: function() {
