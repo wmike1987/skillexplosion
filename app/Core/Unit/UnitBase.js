@@ -356,7 +356,8 @@ var UnitBase = {
         Matter.Events.trigger(attackingUnit, 'dealDamage', {
             sufferingUnit: this,
             amountDone: alteredDamage,
-            attackContext: attackContext
+            attackContext: attackContext,
+            eventSubtractableDamage: alteredDamage
         });
 
         returnInformation.damageDone = alteredDamage;

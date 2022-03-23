@@ -491,8 +491,11 @@ export default function Marine(options) {
             } else {
                 marine.deathWishListener = Matter.Events.on(marine, 'dealDamage', (event) => {
                     if (event.attackContext.id == 'rifle') {
+                        let subtractableDamage = event.eventSubtractableDamage;
+                        let bonusDamage = Math.min(deathWishAugment.damageIncrease, subtractableDamage);
+                        event.eventSubtractableDamage -= bonusDamage;
                         Matter.Events.trigger(globals.currentGame, deathWishEventName, {
-                            value: deathWishAugment.damageIncrease
+                            value: bonusDamage
                         });
                     }
                 });
@@ -1138,7 +1141,7 @@ export default function Marine(options) {
         }
 
         //limit... may need to rethink this
-        if (marine.freeKnives >= 1) {
+        if (marine.freeKnives >= 2) {
             return;
         }
 
@@ -1170,30 +1173,42 @@ export default function Marine(options) {
         });
     };
 
+    var kiEnrageAmount = 3;
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 6 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain a free knife.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Become enraged for 2 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain two free knives.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 2000,
+        defenseCooldown: 3000,
+        defenseDuration: 2000,
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 5000,
         passiveAction: function(event) {
             marine.grantFreeKnife();
+            marine.grantFreeKnife();
         },
         defenseAction: function(event) {
-            var attackingUnit = event.performingUnit;
-            if(!attackingUnit.isPlaceholder) {
-                attackingUnit.maim({
-                    duration: 6000
-                });
+            marine.enrage({duration: 2000, amount: kiEnrageAmount});
 
-                return {
-                    value: 1
-                };
+            let matterEvent = Matter.Events.on(marine, 'dealDamage', (event) => {
+                if (event.attackContext.id == 'rifle') {
+                    let subtractableDamage = event.eventSubtractableDamage;
+                    let bonusDamage = Math.min(kiEnrageAmount, subtractableDamage);
+                    event.eventSubtractableDamage -= bonusDamage;
+                    this.createDefenseCollectorEvent({value: bonusDamage});
+                }
+            });
+
+            this.removeDealDamage = () => {
+                Matter.Events.off(marine, 'dealDamage', matterEvent);
+            };
+        },
+        defenseStopAction: function() {
+            if(this.removeDealDamage) {
+                this.removeDealDamage();
             }
         },
         aggressionAction: function(event) {
@@ -1208,7 +1223,7 @@ export default function Marine(options) {
         },
         collector: {
             aggressionLabel: 'Targets maimed',
-            defensiveLabel: 'Attackers maimed'
+            defensiveLabel: 'Addtl. damage from enrage'
         }
     });
 

@@ -78,7 +78,7 @@ export default function(options) {
                 this.attackPassive = 0;
                 this.defensePassive = 0;
                 this.presentation.variableLabels = ["none", "none"];
-                if(this._init) {
+                if (this._init) {
                     this._init();
                 }
             },
@@ -94,51 +94,53 @@ export default function(options) {
                 suffixes: ["", ""]
             },
             collectorFunction: function(event) {
-                if(this.attackCollectorFunction && event.mode == attackPassive) {
+                if (this.attackCollectorFunction && event.mode == attackPassive) {
                     this.aggressionCollectorFunction(event.collectorPayload.value);
-                } else if(this.defenseCollectorFunction && event.mode == defensePassive) {
+                } else if (this.defenseCollectorFunction && event.mode == defensePassive) {
                     this.defenseCollectorFunction(event.collectorPayload.value);
                 } else {
                     this[event.mode] += event.collectorPayload.value;
                 }
             },
-            entity: {name: this.title.replace(/\s+/g, '')}
+            entity: {
+                name: this.title.replace(/\s+/g, '')
+            }
         }, this.collector));
 
         //propagate active/passive labels onto the collector
-        if(this.collector.aggressionLabel) {
+        if (this.collector.aggressionLabel) {
             this.customCollector.presentation.labels[0] = this.collector.aggressionLabel;
         }
 
-        if(this.collector.defensiveLabel) {
+        if (this.collector.defensiveLabel) {
             this.customCollector.presentation.labels[1] = this.collector.defensiveLabel;
         }
 
-        if(this.collector.aggressionSuffix) {
+        if (this.collector.aggressionSuffix) {
             this.customCollector.presentation.suffixes[0] = this.collector.aggressionSuffix;
         }
 
-        if(this.collector.aggressionFormat) {
+        if (this.collector.aggressionFormat) {
             this.customCollector.presentation.formats[0] = this.collector.aggressionFormat;
         }
 
-        if(this.collector.defensiveSuffix) {
+        if (this.collector.defensiveSuffix) {
             this.customCollector.presentation.suffixes[1] = this.collector.defensiveSuffix;
         }
 
-        if(this.collector.defensiveFormat) {
+        if (this.collector.defensiveFormat) {
             this.customCollector.presentation.formats[1] = this.collector.defensiveFormat;
         }
 
-        if(this.collector._init) {
+        if (this.collector._init) {
             this.customCollector._init = this.collector._init;
         }
 
-        if(this.collector.attackCollectorFunction) {
+        if (this.collector.attackCollectorFunction) {
             this.customCollector.attackCollectorFunction = this.collector.attackCollectorFunction;
         }
 
-        if(this.collector.defenseCollectorFunction) {
+        if (this.collector.defenseCollectorFunction) {
             this.customCollector.defenseCollectorFunction = this.collector.defenseCollectorFunction;
         }
 
@@ -156,15 +158,15 @@ export default function(options) {
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'NewCollectorStarted', function(event) {
-        if(!this.activeMode) {
+        if (!this.activeMode) {
             return;
         }
 
         var collector = event.newCollectorManager.getCustomCollector(this.customCollector.name);
-        if(!collector) {
+        if (!collector) {
             return;
         }
-        if(this.activeMode == attackPassive) {
+        if (this.activeMode == attackPassive) {
             collector.presentation.variableLabels[0] = this.customCollector.presentation.labels[0];
         } else {
             collector.presentation.variableLabels[1] = this.customCollector.presentation.labels[1];
@@ -217,9 +219,9 @@ export default function(options) {
         this.activeMode = mode;
 
         //if we've started the passive, enable the collector
-        if(this.unit.statCollector.isCollecting()) {
+        if (this.unit.statCollector.isCollecting()) {
             var customCollector = this.unit.statCollector.currentCollectorManager.getCustomCollector(this.customCollector.name);
-            if(mode == attackPassive) {
+            if (mode == attackPassive) {
                 customCollector.presentation.variableLabels[0] = this.customCollector.presentation.labels[0];
             } else {
                 customCollector.presentation.variableLabels[1] = this.customCollector.presentation.labels[1];
@@ -242,14 +244,22 @@ export default function(options) {
                 }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
-                var collectorPayload = this.aggressionAction(event) || {value: 0};
-                Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: mode, collectorPayload: collectorPayload});
+                var collectorPayload = this.aggressionAction(event) || {
+                    value: 0
+                };
+                Matter.Events.trigger(globals.currentGame, this.collectorEventName, {
+                    mode: mode,
+                    collectorPayload: collectorPayload
+                });
                 Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'attackPassiveActivated', {
                     duration: this.aggressionDuration || 32
                 });
                 gameUtils.doSomethingAfterDuration(function() {
                     this.active = false;
                     this.inProcess = false;
+                    if(this.aggressionStopAction) {
+                        this.aggressionStopAction();
+                    }
                 }.bind(this), this.aggressionDuration);
             }.bind(this));
             this.clearListener = function() {
@@ -265,14 +275,22 @@ export default function(options) {
                 }
                 this.inProcess = true;
                 this.newCharge = false; //indicates to the unit panel that the charge has been used
-                var collectorPayload = this.defenseAction(event) || {value: 0};
-                Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: mode, collectorPayload: collectorPayload});
+                var collectorPayload = this.defenseAction(event) || {
+                    value: 0
+                };
+                Matter.Events.trigger(globals.currentGame, this.collectorEventName, {
+                    mode: mode,
+                    collectorPayload: collectorPayload
+                });
                 Matter.Events.trigger(globals.currentGame.unitSystem.unitPanel, 'defensePassiveActivated', {
                     duration: this.defenseDuration || 32
                 });
                 gameUtils.doSomethingAfterDuration(function() {
                     this.active = false;
                     this.inProcess = false;
+                    if(this.defenseStopAction) {
+                        this.defenseStopAction();
+                    }
                 }.bind(this), this.defenseDuration);
             }.bind(this));
             this.clearListener = function() {
@@ -303,6 +321,38 @@ export default function(options) {
         gameUtils.deathPact(this, this.cooldownTimer, 'cooldownTimer');
     };
 
+    this.createAttackCollectorEvent = function(options) {
+        let value = options.value;
+        let predicate = options.predicate || function() {
+            return true;
+        };
+
+        if(predicate.call(this)) {
+            Matter.Events.trigger(globals.currentGame, this.collectorEventName, {
+                mode: attackPassive,
+                collectorPayload: {
+                    value: value
+                }
+            });
+        }
+    };
+
+    this.createDefenseCollectorEvent = function(options) {
+        let value = options.value;
+        let predicate = options.predicate || function() {
+            return true;
+        };
+
+        if(predicate.call(this)) {
+            Matter.Events.trigger(globals.currentGame, this.collectorEventName, {
+                mode: defensePassive,
+                collectorPayload: {
+                    value: value
+                }
+            });
+        }
+    };
+
     this.stop = function() {
         if (this.preStop) {
             this.preStop();
@@ -310,6 +360,12 @@ export default function(options) {
         this.active = false;
         this.inProcess = false;
         this.activeMode = null;
+        if(this.defenseStopAction) {
+            this.defenseStopAction();
+        }
+        if(this.aggressionStopAction) {
+            this.aggressionStopAction();
+        }
         if (this.clearListener) {
             this.clearListener();
         }
