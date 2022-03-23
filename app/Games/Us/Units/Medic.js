@@ -568,11 +568,11 @@ export default function Medic(options) {
                     Matter.Events.trigger(globals.currentGame, ctCollEventName, {
                         value: 1
                     });
-                    otherUnit.sufferAttack(8, medic);
                     otherUnit.stun({
                         duration: 3000,
                         stunningUnit: medic
                     });
+                    otherUnit.sufferAttack(8, medic);
                     var bloodPierceAnimation = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'pierce',
