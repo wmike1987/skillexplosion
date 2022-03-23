@@ -7,12 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Painkiller",
-        description: "Consume to gain 0.5 armor.",
+        description: "Consume to gain 0.4 armor.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'BlackSyringe',
         fontType: 'stimulant',
         consume: function(currentUnit) {
-            currentUnit.defense += 0.5;
+            currentUnit.defense += 0.4;
         },
     }, options, Consumable);
     return new ic(item);

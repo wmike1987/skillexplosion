@@ -10,10 +10,6 @@ import {
 import * as Matter from 'matter-js';
 import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
-var armorGainDuration = 6000;
-var armorGain = 2;
-var chargeLength = 2000;
-
 var manipulations = {
     events: {
         applyEnrageBuff: {

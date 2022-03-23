@@ -403,6 +403,10 @@ export default function Marine(options) {
         volume: 0.006,
         rate: 1.3
     });
+    var manaHealSound = gameUtils.getSound('healsound.wav', {
+        volume: 0.007,
+        rate: 0.9
+    });
     var yeahsound = gameUtils.getSound('shaneyeah.wav', {
         volume: 0.1,
         rate: 1.0
@@ -991,11 +995,13 @@ export default function Marine(options) {
     var allyArmorDuration = 7000;
     var armorGiven = 1.0;
     var allyHeal = 6;
+    var allyEnergyHeal = 1;
+    var passiveAllyPercentageHeal = 15;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp.'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp and ' + allyEnergyHeal + ' energy.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 7 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Heal ally for 10% of max hp.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Heal ally for ' + passiveAllyPercentageHeal + '% of max hp.'],
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1007,7 +1013,7 @@ export default function Marine(options) {
         passiveAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                var healthToGive = ally.maxHealth / 10.0;
+                var healthToGive = ally.maxHealth * (passiveAllyPercentageHeal/100);
                 ally.giveHealth(healthToGive, marine);
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
@@ -1016,15 +1022,23 @@ export default function Marine(options) {
         defenseAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             var healthGiven = 0;
+            var energyGiven = 0;
             allies.forEach((ally) => {
                 if (ally.isDead) return;
+
                 healthGiven += ally.giveHealth(allyHeal, marine);
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
+
+                energyGiven += ally.giveEnergy(allyEnergyHeal, marine);
+                gameUtils.doSomethingAfterDuration(() => {
+                    unitUtils.applyEnergyGainAnimationToUnit(ally);
+                    manaHealSound.play();
+                }, 200);
             });
 
             return {
-                value: healthGiven
+                value: {health: healthGiven, energy: energyGiven}
             };
         },
         aggressionAction: function(event) {
@@ -1044,9 +1058,16 @@ export default function Marine(options) {
         },
         collector: {
             aggressionLabel: 'Total armor granted',
-            defensiveLabel: 'Healing done',
+            defensiveLabel: 'Health/Energy granted',
             defensiveFormat: function(v) {
-                return v.toFixed(1);
+                return v.health.toFixed(1) + '/' + v.energy.toFixed(1);
+            },
+            _init: function() {
+                this.defensePassive = {health: 0, energy: 0};
+            },
+            defenseCollectorFunction: function(event) {
+                this.defensePassive.health += event.health;
+                this.defensePassive.energy += event.energy;
             }
         }
     });
@@ -1057,7 +1078,7 @@ export default function Marine(options) {
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3 seconds.'],
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain movement speed for 4 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 10% of max hp.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain 10% of max hp.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'holdPosition',
@@ -1153,7 +1174,7 @@ export default function Marine(options) {
         title: 'Killer Instinct',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Maim enemy for 6 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free knife.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain a free knife.'],
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1196,7 +1217,7 @@ export default function Marine(options) {
         title: 'Clear Perspective',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Double rifle range for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Double rifle range for 10 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Double rifle range for 10 seconds.'],
         textureName: 'ClearPerspective',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1239,13 +1260,13 @@ export default function Marine(options) {
         }
     });
 
-    var ssDDuration = 4000;
+    var ssDDuration = 5000;
     var ssADuration = 4000;
     var spiritualState = new Passive({
         title: 'Spiritual State',
         aggressionDescription: ['Agression Mode (Upon hold position)', 'Gain 1 energy for every 1 hp recieved from healing for 4 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 4 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies rengerate energy at x2 rate for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1260,7 +1281,7 @@ export default function Marine(options) {
                 unit.applyBuff({
                     id: "spiritualStateGain",
                     textureName: 'SpiritualStateEnergyGainBuff',
-                    duration: 3000,
+                    duration: 5000,
                     applyChanges: function() {
                         unit.energyRegenerationMultiplier *= 2;
                     },
@@ -1321,16 +1342,19 @@ export default function Marine(options) {
         }
     });
 
+    var trueGritGain = 2;
+    var trueGritCap = 20;
+    var passiveGritGain = 4;
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Gain 5 grit for length of excursion.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant allies 5 grit for length of excursion.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain 4 grit for length of excursion.'],
+        aggressionDescription: ['Agression Mode (Upon targeted attack)', 'Add half of Shane\'s grit to current attack (up to ' + trueGritCap + ').'],
+        defenseDescription: ['Defensive Mode (When hit)', 'Grant self and allies ' + trueGritGain + ' grit for length of excursion.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies gain ' + passiveGritGain + ' grit for length of excursion.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 6000,
-        aggressionEventName: 'kill',
+        aggressionEventName: 'preDealDamageSpecifiedAttackTarget',
         aggressionCooldown: 6000,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
@@ -1338,14 +1362,14 @@ export default function Marine(options) {
                 if (unit.isDead) {
                     return;
                 }
-                unit.addGritAddition(10);
+                unit.addGritAddition(passiveGritGain);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                    unit.removeGritAddition(10);
+                    unit.removeGritAddition(passiveGritGain);
                 });
             });
         },
         defenseAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(marine);
+            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 if (unit.isDead) {
                     return;
@@ -1362,40 +1386,52 @@ export default function Marine(options) {
                     direction: 1,
                     runs: 50
                 });
-                unit.addGritAddition(5);
+                unit.addGritAddition(trueGritGain);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                    unit.removeGritAddition(5);
+                    unit.removeGritAddition(trueGritGain);
                 });
             });
 
             return {
-                value: 5
+                value: trueGritGain * 2
             };
         },
+        aggressionPredicate: function() {
+            let grit = marine.getTotalGrit() / 2.0;
+            return grit > 0;
+        },
         aggressionAction: function(event) {
-            var gritUp = graphicsUtils.addSomethingToRenderer("GritBuff", {
-                where: 'stageTwo',
-                position: marine.position
+            let grit = marine.getTotalGrit() / 2.0;
+            grit = Math.min(trueGritCap, grit);
+
+            event.damageObj.damage += grit;
+
+            var sufferingUnit = event.sufferingUnit;
+
+            var maimBlast = gameUtils.getAnimation({
+                spritesheetName: 'MedicAnimations1',
+                animationName: 'maimblast',
+                speed: 0.7,
+                transform: [sufferingUnit.position.x, sufferingUnit.position.y, 0.85, 0.85]
             });
-            gameUtils.attachSomethingToBody({
-                something: gritUp,
-                body: marine.body
-            });
-            graphicsUtils.floatSprite(gritUp, {
-                direction: 1,
-                runs: 50
-            });
-            marine.addGritAddition(5);
-            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
-                marine.removeGritAddition(5);
-            });
+            if(grit >= 20) {
+                maimBlast.scale = {x: 1.1, y: 1.1};
+            }
+            if(grit >= 35) {
+                maimBlast.scale = {x: 1.6, y: 1.6};
+            }
+            maimBlast.tint = 0xf1ca00;
+            maimBlast.rotation = Math.random() * Math.PI;
+            maimBlast.play();
+            graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
+            criticalHitSound.play();
 
             return {
-                value: 5
+                value: grit
             };
         },
         collector: {
-            aggressionLabel: 'Grit gained',
+            aggressionLabel: 'Additional damage dealt',
             defensiveLabel: 'Grit granted'
         }
     });
@@ -1555,7 +1591,7 @@ export default function Marine(options) {
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
         slaves: [dashSound, dodgeSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
-            poisonSound, criticalHitSound, yeahsound, unitProperties.wireframe, unitProperties.portrait
+            poisonSound, criticalHitSound, yeahsound, healsound, manaHealSound, unitProperties.wireframe, unitProperties.portrait
         ],
         unit: unitProperties,
         moveable: {
@@ -1604,8 +1640,9 @@ export default function Marine(options) {
                 }
 
                 var dTotal = this.damage + this.getDamageAdditionSum();
-                var returnInfo = target.sufferAttack(dTotal * crit, this, {
-                    id: 'rifle'
+                var returnInfo = target.sufferAttack(dTotal, this, {
+                    id: 'rifle',
+                    damageMultiplier: crit
                 });
                 if (critActive && returnInfo.attackLanded) {
                     Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {
@@ -1613,7 +1650,7 @@ export default function Marine(options) {
                     });
                     fireSound.play();
                     criticalHitSound.play();
-                    var chText = graphicsUtils.floatText(dTotal * crit + '!', {
+                    var chText = graphicsUtils.floatText(returnInfo.rawDamage + '!', {
                         x: target.position.x,
                         y: target.position.y - 15
                     }, {

@@ -80,6 +80,12 @@ export default {
             }
         });
 
+        Matter.Events.on(this, 'preDealDamage', (event) => {
+            if(this.specifiedAttackTarget) {
+                Matter.Events.trigger(this, 'preDealDamageSpecifiedAttackTarget', (event));
+            }
+        });
+
         //extend move to cease attacking
         this.rawMove = this.move;
         var originalMove = this.move;
@@ -340,6 +346,7 @@ export default {
                 }, this.cooldown);
             }
         }.bind(this);
+
         var callback = Matter.Events.on(this.specifiedAttackTarget, 'death', this.specifiedCallback);
 
         //But if we are removed (from the game) first, remove the onremove listener
@@ -348,6 +355,9 @@ export default {
                 Matter.Events.off(this.specifiedAttackTarget, 'death', this.specifiedCallback);
             }
         }.bind(this), 'removeSpecifiedAttackTarget');
+
+        //send out the event
+        Matter.Events.trigger(this, 'specifiedTargetAcquired', {targetedUnit: target});
 
         //move unit
         this.rawMove(destination);

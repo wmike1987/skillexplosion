@@ -15,7 +15,7 @@ var chargeLength = 1000;
 var eventName = 'leatherBeltTimesActive';
 
 var manipulations = {
-    defenseAddition: 0.4,
+    defenseAddition: 0.3,
     genericEquip: function(equipped, item) {
         if(!equipped) {
             if(item.chargeHandler) {
@@ -72,7 +72,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Leather Belt",
-        description: ["Add 0.4 to armor.", "Gain " + dodgeGain + " dodge for 8 seconds by holding position for 1 second."],
+        description: ["Add 0.25 to armor.", "Gain " + dodgeGain + " dodge for 8 seconds by holding position for 1 second."],
         icon: 'LeatherBelt',
         collector: {
             eventName: eventName,

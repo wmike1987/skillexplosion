@@ -10,7 +10,7 @@ import {
 import * as Matter from 'matter-js';
 
 var armorGainDuration = 8000;
-var armorGain = 2;
+var armorGain = 1.5;
 var chargeLength = 1000;
 var eventName = 'platedPantsTimesActive';
 

@@ -78,6 +78,9 @@ export default function(options) {
                 this.attackPassive = 0;
                 this.defensePassive = 0;
                 this.presentation.variableLabels = ["none", "none"];
+                if(this._init) {
+                    this._init();
+                }
             },
             canPresent: function() {
                 return !(this.presentation.variableLabels[0] == "none" && this.presentation.variableLabels[1] == "none");
@@ -91,7 +94,13 @@ export default function(options) {
                 suffixes: ["", ""]
             },
             collectorFunction: function(event) {
-                this[event.mode] += event.collectorPayload.value;
+                if(this.attackCollectorFunction && event.mode == attackPassive) {
+                    this.aggressionCollectorFunction(event.collectorPayload.value);
+                } else if(this.defenseCollectorFunction && event.mode == defensePassive) {
+                    this.defenseCollectorFunction(event.collectorPayload.value);
+                } else {
+                    this[event.mode] += event.collectorPayload.value;
+                }
             },
             entity: {name: this.title.replace(/\s+/g, '')}
         }, this.collector));
@@ -119,6 +128,18 @@ export default function(options) {
 
         if(this.collector.defensiveFormat) {
             this.customCollector.presentation.formats[1] = this.collector.defensiveFormat;
+        }
+
+        if(this.collector._init) {
+            this.customCollector._init = this.collector._init;
+        }
+
+        if(this.collector.attackCollectorFunction) {
+            this.customCollector.attackCollectorFunction = this.collector.attackCollectorFunction;
+        }
+
+        if(this.collector.defenseCollectorFunction) {
+            this.customCollector.defenseCollectorFunction = this.collector.defenseCollectorFunction;
         }
 
         this.unit.statCollector.registerCustomCollector(this.customCollector);

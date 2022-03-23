@@ -324,7 +324,7 @@ export default function Medic(options) {
         rate: 1.3
     });
     var manaHealSound = gameUtils.getSound('healsound.wav', {
-        volume: 0.006,
+        volume: 0.007,
         rate: 0.9
     });
     var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {
@@ -1289,14 +1289,14 @@ export default function Medic(options) {
     var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Go berserk (2x multiplier) for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon targeted heal)', 'Go berserk (2x multiplier) for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
-        aggressionEventName: 'holdPosition',
+        aggressionEventName: 'specifiedTargetAcquired',
         aggressionCooldown: 4000,
         aggressionDuration: rsADuration,
         passiveAction: function(event) {
@@ -1364,7 +1364,7 @@ export default function Medic(options) {
         title: 'Wicked Ways',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 5 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
         passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
         textureName: 'WickedWays',
         unit: medic,
@@ -1449,7 +1449,7 @@ export default function Medic(options) {
         title: 'Sly Logic',
         aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to 10) for length of excursion.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 3 dodge for length of excursion.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain 3 dodge for length of excursion.'],
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
@@ -1518,7 +1518,7 @@ export default function Medic(options) {
         title: 'Familiar Face',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
         defenseDescription: ['Defensive Mode (When hit)', 'Stun attacker and gain movement speed for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free vanish.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain a free vanish.'],
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1636,7 +1636,7 @@ export default function Medic(options) {
         originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
         aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain a free mine.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain a free mine.'],
         textureName: 'DeepThought',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1745,13 +1745,13 @@ export default function Medic(options) {
 
     var efADuration = 4000;
     var efDDuration = 4000;
-    var energyGain = 15;
+    var energyGain = 3;
     var ppDamage = 12;
     var elegantForm = new Passive({
         title: 'Proper Posture',
-        aggressionDescription: ['Agression Mode (When hit by projectile)', 'Gain ' + energyGain + ' energy.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'],
-        unequippedDescription: ['Unequipped Mode (Upon level start)', 'Gain 15 energy.'],
+        aggressionDescription: ['Agression Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain ' + energyGain + ' energy.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain 15 energy.'],
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1766,6 +1766,55 @@ export default function Medic(options) {
             return event.attackContext.isProjectile;
         },
         defenseAction: function(event) {
+            var damageObj = event.damageObj;
+            var damageReduced = damageObj.damage - 1;
+            if (damageReduced == 0) {
+                damageReduced = 0;
+            }
+            damageObj.damage = 1;
+
+            //add block graphic
+            let offset = 40;
+            let offsetLocation = mathArrayUtils.addScalarToVectorTowardDestination(medic.position, event.attackContext.projectileData.startLocation, offset);
+            let attachmentOffset = Matter.Vector.sub(offsetLocation, medic.position);
+            let block = graphicsUtils.addSomethingToRenderer('Block', {
+                where: 'stageOne',
+                position: medic.position,
+                scale: {
+                    x: 1.0,
+                    y: 1.0
+                }
+            });
+            gameUtils.attachSomethingToBody({
+                something: block,
+                body: medic.body,
+                offset: attachmentOffset,
+                deathPactSomething: true
+            });
+            block.rotation = mathArrayUtils.pointInDirection(medic.position, offsetLocation);
+            graphicsUtils.flashSprite({
+                sprite: block,
+                toColor: 0x8d01be,
+                duration: 100,
+                times: 4
+            });
+            graphicsUtils.fadeSpriteOverTimeLegacy(block, 500);
+
+            blockSound.play();
+
+            var energyGiven = medic.giveEnergy(energyGain);
+            unitUtils.applyEnergyGainAnimationToUnit(medic);
+            manaHealSound.play();
+
+            return {
+                value: energyGiven
+            };
+        },
+        deepThoughtBypassAggPredicate: true,
+        aggressionPredicate: function(event) {
+            return event.attackContext.isProjectile;
+        },
+        aggressionAction: function(event) {
             //delay the attack for a second
             gameUtils.doSomethingAfterDuration(() => {
                 var attacker = event.performingUnit;
@@ -1825,25 +1874,12 @@ export default function Medic(options) {
             blockSound.play();
 
             return {
-                value: damageReduced
-            };
-        },
-        deepThoughtBypassAggPredicate: true,
-        aggressionPredicate: function(event) {
-            return event.attackContext.isProjectile;
-        },
-        aggressionAction: function(event) {
-            medic.giveEnergy(energyGain);
-            unitUtils.applyEnergyGainAnimationToUnit(medic);
-            manaHealSound.play();
-
-            return {
-                value: energyGain
+                value: ppDamage
             };
         },
         collector: {
-            aggressionLabel: 'Energy gained',
-            defensiveLabel: 'Projectile damage prevented',
+            aggressionLabel: 'Damage dealt',
+            defensiveLabel: 'Energy gained',
         }
     });
 

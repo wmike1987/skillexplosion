@@ -6,14 +6,14 @@ import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 var manipulations = {
     healthRegenerationRate: 1,
     condemnedLifeGain: 10,
-    maxHealth: 20
+    maxHealth: 18
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Ruby Ring",
-        description: ["Add 20 to max health.", "Regenerate +1 hp per second.", "Add 10 to health gained from killing a condemned enemy."],
+        description: ["Add 18 to max health.", "Regenerate +1 hp per second.", "Increase condemned heal amount by 10."],
         icon: 'RubyRing',
         type: 'Medic',
         fontType: 'ursula'

@@ -15,41 +15,47 @@ import {
 } from '@core/Fundamental/GlobalState.js';
 
 var eventName = 'leatherBootsEnergySaved';
-var energyAmount = 1;
+var energySavedAmount = 2;
+var speedDuration = 2;
+var dodgeAdd = 3;
 
 var manipulations = {
     genericEquip: function(equipped, item) {
-        if(equipped) {
-            this.getAbilityByName('Vanish').energyCost -= energyAmount;
+        if (equipped) {
+            this.getAbilityByName('Vanish').energyCost -= energySavedAmount;
         } else {
-            this.getAbilityByName('Vanish').energyCost += energyAmount;
+            this.getAbilityByName('Vanish').energyCost += energySavedAmount;
         }
     },
     events: {
         secretStepLand: {
             callback: function(event) {
                 var unit = event.equippedUnit;
-                unit.applySpeedBuff({amount: 0.5, duration: 2000});
-                if(!event.isFreeStep) {
+                unit.applySpeedBuff({
+                    amount: 0.5,
+                    duration: speedDuration * 1000
+                });
+                if (!event.isFreeStep) {
                     Matter.Events.trigger(globals.currentGame, eventName, event);
                 }
             }
         }
-    }
+    },
+    dodgeAddition: dodgeAdd
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Leather Boots",
-        description: ["Decrease Vanish cost by 1.", "Gain movement speed for 2 seconds after vanishing."],
+        description: ["Decrease Vanish cost by " + energySavedAmount + ".", "Gain movement speed for " + speedDuration + " seconds after vanishing.", "Add " + dodgeAdd +  " to dodge."],
         icon: 'SingleBoot3',
         type: 'Medic',
         fontType: 'ursula',
         collector: {
             eventName: eventName,
             collectorFunction: function(event) {
-                this.value += energyAmount;
+                this.value += energySavedAmount;
             },
             presentation: {
                 labels: ["Energy saved"],

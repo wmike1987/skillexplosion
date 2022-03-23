@@ -281,8 +281,9 @@ var CustomCollector = function(options) {
     }
 
     this.collectorFunction = function(event) {
-        if (options.predicate(event))
+        if (options.predicate(event)) {
             options.collectorFunction.call(this, event);
+        }
     };
 
     this.spawnNewCollector = function() {

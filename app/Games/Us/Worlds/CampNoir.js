@@ -1403,6 +1403,7 @@ var phaseThree = function() {
     });
 
     this.map.addMapNode('morphineStation');
+    this.map.addMapNode('restStop');
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
     this.map.addMapNode('easySentinels', {
@@ -1565,6 +1566,7 @@ var finalPhase = function() {
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
     this.map.addMapNode('morphineStation');
+    this.map.addMapNode('restStop');
 
     var decision = mathArrayUtils.flipCoin();
     var positionOp = {

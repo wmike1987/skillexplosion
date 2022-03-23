@@ -100,6 +100,8 @@ var UnitBase = {
     fatigueReduction: 0,
     organic: true,
     stunnable: true,
+    isStunned: 0,
+    isPetrified: 0,
     condemnedLifeGain: 10,
     currentExperience: 0,
     nextLevelExp: 100,
@@ -180,6 +182,7 @@ var UnitBase = {
             abilityType: false,
             ignoreArmor: false,
             dodgeRolls: 1,
+            damageMultiplier: 1
         }, options);
 
         attackingUnit = attackingUnit || {
@@ -236,6 +239,16 @@ var UnitBase = {
             damageObj: damageObj,
             attackContext: attackContext,
         });
+
+        Matter.Events.trigger(attackingUnit, 'preDealDamage', {
+            sufferingUnit: this,
+            amountDone: alteredDamage,
+            damageObj: damageObj,
+            attackContext: attackContext
+        });
+
+        //multiply damage by the given multiplier
+        damageObj.damage *= attackContext.damageMultiplier;
 
         //pre suffered attack listeners have the right to change the incoming damage, so we use the damageObj to retreive any changes
         damage = damageObj.damage;
@@ -347,6 +360,7 @@ var UnitBase = {
         });
 
         returnInformation.damageDone = alteredDamage;
+        returnInformation.rawDamage = damageObj.damage;
         return returnInformation;
     },
 
@@ -1996,6 +2010,7 @@ var UnitBase = {
                 });
                 unit.canMove = false;
                 unit.canAttack = false;
+                unit.isPetrified += 1;
                 unit.isTargetable = false;
                 unit.isoManagedAlpha = 0.6;
                 unit.idleCancel = true;
@@ -2014,6 +2029,7 @@ var UnitBase = {
                 unit.stop();
                 unit.canMove = true;
                 unit.canAttack = true;
+                unit.isPetrified -= 1;
                 unit.isTargetable = true;
                 unit.idleCancel = false;
                 unit.abilityDamageMultiplier /= 2;
@@ -2086,6 +2102,7 @@ var UnitBase = {
                 });
                 unit.canMove = false;
                 unit.canAttack = false;
+                unit.isStunned += 1;
                 unit.isoManagedAlpha = 0.6;
                 unit.idleCancel = true;
                 unit.setSleep(true, 'stunSleeperLock');
@@ -2101,6 +2118,7 @@ var UnitBase = {
                 unit.stop();
                 unit.canMove = true;
                 unit.canAttack = true;
+                unit.isStunned -= 1;
                 unit.idleCancel = false;
                 globals.currentGame.invalidateTimer(unit.stunTintTimer);
                 unit.isoManagedTint = null;

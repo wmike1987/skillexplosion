@@ -305,7 +305,7 @@ export default function Gargoyle(options) {
             this.stoneFormCooldown = 2200;
             this.stoneFormLength = 1500;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
-                if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2) {
+                if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2 && !this.isStunned && !this.isPetrified) {
                     this.stoneFormAvailable = false;
                     gameUtils.doSomethingAfterDuration(() => {
                         this.stoneFormAvailable = true;
