@@ -275,6 +275,8 @@ var MapLevelNode = function(options) {
                                 node: behavior.nodeToEnter
                             });
 
+                            behavior.nodeToEnter.saveMapState();
+
                             if(behavior.nodeToEnter.travelToken) {
                                 this.mapRef.arriveAtTravelToken(behavior.nodeToEnter);
                             } else {
@@ -304,8 +306,16 @@ var MapLevelNode = function(options) {
     }
 };
 
+MapLevelNode.prototype.saveMapState = function() {
+    this.morphine = globals.currentGame.map.morphine;
+};
+
+MapLevelNode.prototype.restoreMapState = function() {
+    globals.currentGame.map.setMorphine(this.morphine);
+};
+
 MapLevelNode.prototype.deactivateToken = function() {
-    this.displayObject.tint = 0x00630b;
+    this.displayObject.tint = 0x038524;
     this.displayObject.alpha = 0.75;
 };
 
@@ -325,7 +335,7 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     node.sizeNode();
 
     if (this.displayObject.iconIndicator) {
-        this.displayObject.iconIndicator.tint = 0x00630b;
+        this.displayObject.iconIndicator.tint = 0x038524;
         this.displayObject.iconIndicator.alpha = 0.8;
         this.displayObject.iconIndicator.addedBorder.alpha = 0.00;
         this.displayObject.iconIndicator.addedBorder.tint = 0xffffff;
@@ -335,7 +345,7 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
     if (this.manualTokens) {
         this.manualTokens.forEach((token) => {
             graphicsUtils.spinSprite(token, times, 150, 2, () => {
-                if (node.mapRef.isShown) {
+                if (node.mapRef.isShowing) {
                     node.deactivateToken();
                 }
             }, () => {
@@ -344,7 +354,7 @@ MapLevelNode.prototype.playCompleteAnimation = function(lesser) {
         });
     } else {
         graphicsUtils.spinSprite(this.displayObject, times, 150, 2, () => {
-            if (node.mapRef.isShown) {
+            if (node.mapRef.isShowing) {
                 node.deactivateToken();
             }
         }, () => {

@@ -288,6 +288,22 @@
 	"spriteSourceSize": {"x":30,"y":15,"w":68,"h":102},
 	"sourceSize": {"w":128,"h":128}
 },
+"EnergyDepotToken.png":
+{
+	"frame": {"x":1065,"y":1731,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+},
+"EnergyDepotTokenGleaming.png":
+{
+	"frame": {"x":1117,"y":1731,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+},
 "FatigueBorder.png":
 {
 	"frame": {"x":82,"y":1728,"w":96,"h":32},
@@ -330,7 +346,7 @@
 },
 "FireMapToken.png":
 {
-	"frame": {"x":1740,"y":1700,"w":49,"h":50},
+	"frame": {"x":1948,"y":1708,"w":49,"h":50},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":49,"h":50},
@@ -370,7 +386,7 @@
 },
 "HardAugmentedCampToken.png":
 {
-	"frame": {"x":1065,"y":1731,"w":50,"h":50},
+	"frame": {"x":1433,"y":1666,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -378,7 +394,7 @@
 },
 "HardCampToken.png":
 {
-	"frame": {"x":1117,"y":1731,"w":50,"h":50},
+	"frame": {"x":1485,"y":1666,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -390,6 +406,22 @@
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":3,"y":11,"w":44,"h":24},
+	"sourceSize": {"w":50,"h":50}
+},
+"HealthDepotToken.png":
+{
+	"frame": {"x":1537,"y":1666,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
+	"sourceSize": {"w":50,"h":50}
+},
+"HealthDepotTokenGleaming.png":
+{
+	"frame": {"x":1589,"y":1666,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
 	"sourceSize": {"w":50,"h":50}
 },
 "HoldText.png":
@@ -418,7 +450,7 @@
 },
 "LevelCompletedToken.png":
 {
-	"frame": {"x":1433,"y":1666,"w":50,"h":50},
+	"frame": {"x":1428,"y":1718,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -474,7 +506,7 @@
 },
 "MapGoldBattleToken.png":
 {
-	"frame": {"x":1485,"y":1666,"w":50,"h":50},
+	"frame": {"x":1480,"y":1718,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -482,7 +514,7 @@
 },
 "MapNodeFocusCircle.png":
 {
-	"frame": {"x":1537,"y":1666,"w":50,"h":50},
+	"frame": {"x":1532,"y":1718,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -490,7 +522,7 @@
 },
 "MapOuterHardBattleToken.png":
 {
-	"frame": {"x":1589,"y":1666,"w":50,"h":50},
+	"frame": {"x":1584,"y":1718,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -498,7 +530,7 @@
 },
 "MapRedBattleToken.png":
 {
-	"frame": {"x":1428,"y":1718,"w":50,"h":50},
+	"frame": {"x":1636,"y":1718,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -538,7 +570,7 @@
 },
 "MobBattleToken.png":
 {
-	"frame": {"x":1480,"y":1718,"w":50,"h":50},
+	"frame": {"x":1688,"y":1701,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -546,7 +578,7 @@
 },
 "MorphineToken.png":
 {
-	"frame": {"x":1532,"y":1718,"w":50,"h":50},
+	"frame": {"x":1740,"y":1700,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -554,7 +586,7 @@
 },
 "MorphineTokenGleaming.png":
 {
-	"frame": {"x":1584,"y":1718,"w":50,"h":50},
+	"frame": {"x":1792,"y":1710,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -610,7 +642,7 @@
 },
 "RestStopToken.png":
 {
-	"frame": {"x":1636,"y":1718,"w":50,"h":50},
+	"frame": {"x":1844,"y":1710,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -618,7 +650,7 @@
 },
 "RestStopTokenGleaming.png":
 {
-	"frame": {"x":1688,"y":1701,"w":50,"h":50},
+	"frame": {"x":1896,"y":1708,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -671,6 +703,14 @@
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":0,"w":53,"h":79},
 	"sourceSize": {"w":55,"h":79}
+},
+"SmallWhiteCircle.png":
+{
+	"frame": {"x":180,"y":1728,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16}
 },
 "stump.png":
 {
@@ -803,6 +843,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2008,"h":1782},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:9bc5b72bb2b4e7fa7cfe11f854738f81:f2bfc97d42e5c81d522fd5db9c667b14:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:34e50b9090ece3939ef371bcf9891add:1ea70d9144df94f6843112daf6f05acc:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

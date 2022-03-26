@@ -46,7 +46,9 @@ var map = function(specs) {
     this.outingArrows = [];
     this.inProgressOutingNodes = [];
     this.maxOutingLength = 3;
-    this.fatigueIncrement = 5;
+    this.fatigueIncrement = 4;
+    this.additionalState = {};
+    this.tokenAugments = {};
 
     //create the head token
     this.headTokenBody = Matter.Bodies.circle(0, 0, 4, {
@@ -83,6 +85,9 @@ var map = function(specs) {
         where: "hudOne"
     });
     Matter.Events.on(this, "SetFatigue", function(event) {
+        if(event.includeStartingFatigue) {
+            this.startingFatigue = event.amount;
+        }
         this.fatigueText.alpha = 0.9;
         var amount = event.amount;
         this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
@@ -115,6 +120,9 @@ var map = function(specs) {
     };
     this.hasMorphine = function() {
         return this.morphine > 0;
+    };
+    this.setMorphine = function(amount) {
+        this.morphine = amount;
     };
     this.morphineText = graphicsUtils.createDisplayObject("TEX+:" + 'Morphine', {
         position: {
@@ -205,7 +213,7 @@ var map = function(specs) {
         this.removedAdrenalineBlocks.push(lastBlock);
         this.adrenaline -= 1;
 
-        if(this.isShown) {
+        if(this.isShowing) {
             this.flashAndHideAdrenalineBlocks();
         }
     };
@@ -263,6 +271,42 @@ var map = function(specs) {
     this.mouseEventsAllowed = true;
     this.clicksAllowed = true;
     this.keyEventsAllowed = true;
+
+    this.addAdditionalState = function(obj) {
+        Object.assign(this.additionalState, obj);
+    };
+
+    this.removeAdditionalState = function(key) {
+        if(this.additionalState[key]) {
+            delete this.additionalState[key];
+        }
+    };
+
+    this.getAdditionalState = function() {
+        return this.additionalState;
+    };
+
+    this.addTokenAugment = function(sprite, id) {
+        var prevLength = Object.keys(this.tokenAugments).length;
+        this.tokenAugments[id] = sprite;
+        gameUtils.attachSomethingToBody({
+            something: sprite,
+            body: this.headTokenBody,
+            offset: {
+                x: 40 + 18 * prevLength,
+                y: 0
+            }
+        });
+        if(this.isShowing) {
+            graphicsUtils.addOrShowDisplayObject(sprite);
+            graphicsUtils.fadeSpriteInQuickly(sprite);
+        }
+    };
+
+    this.removeTokenAugment = function(id) {
+        graphicsUtils.removeSomethingFromRenderer(this.tokenAugments[id]);
+        delete this.tokenAugments[id];
+    };
 
     this.addMapNode = function(levelType, options) {
         //default these values
@@ -360,6 +404,12 @@ var map = function(specs) {
         });
     };
 
+    this.retriggerTravelToken = function(node) {
+        //travel tokens
+        var self = this;
+        node.arriveAtNode();
+    };
+
     this.arriveAtTravelToken = function(node) {
         //travel tokens
         var self = this;
@@ -394,7 +444,7 @@ var map = function(specs) {
             backgroundTint: 0x000000
         };
 
-        this.isShown = true;
+        this.isShowing = true;
         this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
         this.fatigueAmount = this.startingFatigue || 0;
         this.fatigueText.alpha = 0.3;
@@ -443,6 +493,11 @@ var map = function(specs) {
             graphicsUtils.hideDisplayObject(this.morphineText);
         }
 
+        //token augments
+        var tokenSprites = mathArrayUtils.operateOnObjectByKey(this.tokenAugments, function(id, sprite) {
+            graphicsUtils.addOrShowDisplayObject(sprite);
+        });
+
         graphicsUtils.addOrShowDisplayObject(this.adrenalineText);
         if (this.adrenalineBlocks.length > 0) {
             graphicsUtils.addGleamToSprite({
@@ -489,7 +544,7 @@ var map = function(specs) {
     };
 
     this.hide = function() {
-        this.isShown = false;
+        this.isShowing = false;
         Matter.Events.trigger(this, 'hideMap', {});
         Matter.Events.trigger(globals.currentGame, 'hideMap', {});
 
@@ -520,6 +575,12 @@ var map = function(specs) {
         this.fatigueText.visible = false;
         this.adrenalineText.visible = false;
         this.morphineText.visible = false;
+
+        //token augments
+        var tokenSprites = mathArrayUtils.operateOnObjectByKey(this.tokenAugments, function(id, sprite) {
+            graphicsUtils.hideDisplayObject(sprite);
+        });
+
         this.adrenalineBlocks.forEach((item, i) => {
             item.visible = false;
         });
@@ -934,6 +995,10 @@ var map = function(specs) {
 
     this.isOnTravelToken = function() {
         return this.currentNode.travelToken;
+    };
+
+    this.isOnActiveTravelToken = function() {
+        return this.currentNode.travelToken && !this.currentNode.isCompleted;
     };
 
     this.travelToNode = function(node, destinationCallback) {

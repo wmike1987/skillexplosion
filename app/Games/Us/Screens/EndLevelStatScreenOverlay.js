@@ -2530,9 +2530,8 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
         //continue-only key listeners
         var campsCompleted = globals.currentGame.map.completedNodes.length;
-        if (this.spaceToContinue || campsCompleted == 0) {
+        if (/*this.spaceToContinue ||*/ !isVictory) {
             Matter.Events.on(scene, 'sceneFadeInDone', () => {
-                Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
                 $('body').on('keydown.uskeydownendscreen', function(event) {
                     var key = event.key.toLowerCase();
                     if (key == ' ' && this.spaceToContinue) {
@@ -2548,21 +2547,20 @@ var EndLevelStatScreenOverlay = function(units, options) {
             });
         }
 
+        //if we lost...
         var airDropYPositionOffset = 160;
         var campClearedPause = 1250;
         if (!isVictory) {
             var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
-            var pauseTime = adrenalineGained ? rewardPauseDuration : 0;
+            var pauseTime = adrenalineGained ? rewardDuration * 2.0 : 0;
             gameUtils.doSomethingAfterDuration(() => {
 
-                //get adrenaline lost during an outing
+                //get adrenaline lost during an outing... only subtract 1 max per loss
                 gameUtils.doSomethingAfterDuration(() => {
                     if (adrenalineGained) {
-                        for (var x = 0; x < adrenalineGained; x++) {
-                            globals.currentGame.map.removeAdrenalineBlock();
-                        }
+                        globals.currentGame.map.removeAdrenalineBlock();
                         globals.currentGame.soundPool.negativeSound.play();
-                        var adrText = graphicsUtils.floatText('-' + adrenalineGained + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                        var adrText = graphicsUtils.floatText('-1' + ' adrenaline', gameUtils.getPlayableCenterPlus({
                             y: 300
                         }), {
                             where: 'hudTwo',
@@ -2667,7 +2665,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                                 toColor: 0xc39405,
                                 duration: 200,
                             });
-                        }, rewardPauseDuration);
+                        }, rewardDuration * 2.0);
 
                         //then present items
                         gameUtils.doSomethingAfterDuration(() => {
@@ -2676,7 +2674,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                                 airDropIndicators: airDropIndicators
                             });
                         }, 3200);
-                    }, adrenalineGained ? pauseTime + rewardPauseDuration : pauseTime);
+                    }, adrenalineGained ? pauseTime + rewardDuration * 2.0 : pauseTime);
                 } else {
                     //else we'll have space to continue show up
                     gameUtils.doSomethingAfterDuration(() => {
@@ -2696,7 +2694,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                         globals.currentGame.soundPool.positiveSound.play();
                         scene.add(this.spaceToContinue);
                         this.spaceToContinue.visible = true;
-                    }, pauseTime + rewardDuration);
+                    }, pauseTime + rewardDuration * 2.0);
                 }
 
             }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
@@ -2820,6 +2818,8 @@ var EndLevelStatScreenOverlay = function(units, options) {
             if (this.spaceToContinue) {
                 this.spaceToContinue.visible = true;
             }
+
+            Matter.Events.trigger(globals.currentGame, "VictoryDefeatSceneFadeIn");
         });
 
         scene.initializeScene();

@@ -841,7 +841,7 @@ export default function Medic(options) {
 
         var medic = this;
         var blastRadius = shrapnelAugment ? 160 : 120;
-        var primaryExplosionRadius = shrapnelAugment ? 85 : 60;
+        var primaryExplosionRadius = shrapnelAugment ? 60 : 60;
         var mineState = {
             state: 0,
             id: mathArrayUtils.uuidv4(),
@@ -1376,16 +1376,9 @@ export default function Medic(options) {
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({
+                unit.applyHealthGem({
                     id: "wwHealthGain",
-                    textureName: 'WickedWaysHealingBuff',
                     duration: 3000,
-                    applyChanges: function() {
-                        unit.healthRegenerationMultiplier *= 2;
-                    },
-                    removeChanges: function() {
-                        unit.healthRegenerationMultiplier /= 2;
-                    }
                 });
             });
         },
@@ -1897,7 +1890,7 @@ export default function Medic(options) {
         frameTint: 0x0c7d10,
         dodgeSound: dodgeSound,
         holdPositionSound: holdPositionSound,
-        mineDamage: 25,
+        mineDamage: 20,
         damageLabel: "Heal",
         attackSpeedLabel: "Heal Speed",
         damageMember: function() {

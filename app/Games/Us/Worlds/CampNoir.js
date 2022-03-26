@@ -739,6 +739,11 @@ var enemyDefs = {
                 amount: [3, 4],
                 atATime: 1,
                 hz: 4500
+            }, {
+                type: 'Critter',
+                amount: [1, 2],
+                atATime: 1,
+                hz: 4500
             },
             easyFlyObj
         ]
@@ -1190,10 +1195,12 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('morphineStation');
             world.map.addMapNode('restStop');
+            world.map.addMapNode('energyDepot');
+            world.map.addMapNode('healthDepot');
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
                 levelOptions: {
-                    levelAugments: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened'])
+                    augmented: true,
                 }
             });
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
@@ -1203,7 +1210,7 @@ var phaseTwo = function(options) {
             var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
-                    levelAugments: [randomAugment],
+                    augmented: true,
                     itemClass: 'worn',
                     outer: true
                 }
@@ -1218,7 +1225,7 @@ var phaseTwo = function(options) {
 
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
-                    prereqCount: 1,
+                    prereqCount: 2,
                     itemClass: 'stimulant',
                     itemType: 'item'
                 }
@@ -1435,7 +1442,7 @@ var phaseThree = function() {
             minX: gameUtils.getCanvasCenter().x
         },
         levelOptions: {
-            levelAugments: randomAugment,
+            augmented: true,
             outer: true
         }
     });
@@ -1452,7 +1459,7 @@ var phaseThree = function() {
         levelOptions: {
             outer: true,
             itemClass: 'stimulant',
-            levelAugments: randomAugment
+            augmented: true
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
@@ -1479,8 +1486,8 @@ var phaseThree = function() {
     this.map.addMapNode('airDropStation', {
         levelOptions: {
             outer: true,
-            bridge: true
-            // prereqCount: 0
+            bridge: true,
+            itemClass: 'stimulant',
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
@@ -1588,8 +1595,8 @@ var finalPhase = function() {
     this.map.addMapNode('airDropStation', {
         levelOptions: {
             outer: true,
-            bridge: true
-            // prereqCount: 0
+            bridge: true,
+            itemClass: 'stimulant',
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
@@ -1618,11 +1625,18 @@ var finalPhase = function() {
     });
 
     var basicHards = ['basicHard', 'basicHard2', 'basicHard3', 'basicHard4'];
+    var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+        levelOptions: {
+            nodeTitle: 'Camp',
+            outer: true,
+            augmented: true
+        }
+    });
 
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
         levelOptions: {
             nodeTitle: 'Camp',
-            token: 'hard',
             outer: true
         }
     });
@@ -1630,16 +1644,8 @@ var finalPhase = function() {
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
         levelOptions: {
             nodeTitle: 'Camp',
-            token: 'hard',
-            outer: true
-        }
-    });
-
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
-        levelOptions: {
-            nodeTitle: 'Camp',
-            token: 'hard',
-            outer: true
+            outer: true,
+            augmented: true
         }
     });
 

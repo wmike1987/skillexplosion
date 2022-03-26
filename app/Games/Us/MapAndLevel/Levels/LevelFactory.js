@@ -1,21 +1,40 @@
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/UtilityMenu.js';
 import EnemySetSpecifier from '@games/Us/MapAndLevel/EnemySetSpecifier.js';
 import levelBase from '@games/Us/MapAndLevel/Levels/LevelBase.js';
-import {airDropStation} from '@games/Us/MapAndLevel/Levels/AirDropStation.js';
-import {morphineStation, restStop} from '@games/Us/MapAndLevel/Levels/TravelTokens.js';
-import {shaneLearning} from '@games/Us/MapAndLevel/Levels/ShaneLearning.js';
-import {multiLevel} from '@games/Us/MapAndLevel/Levels/MultiLevel.js';
-import {campLevel} from '@games/Us/MapAndLevel/Levels/CampLevel.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    airDropStation
+} from '@games/Us/MapAndLevel/Levels/AirDropStation.js';
+import {
+    morphineStation,
+    restStop,
+    healthDepot,
+    energyDepot
+} from '@games/Us/MapAndLevel/Levels/TravelTokens.js';
+import {
+    shaneLearning
+} from '@games/Us/MapAndLevel/Levels/ShaneLearning.js';
+import {
+    multiLevel
+} from '@games/Us/MapAndLevel/Levels/MultiLevel.js';
+import {
+    campLevel
+} from '@games/Us/MapAndLevel/Levels/CampLevel.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 import SceneryUtils from '@games/Us/MapAndLevel/SceneryUtils.js';
 
 var levelFactory = {
     create: function(type, worldSpecs, options) {
         var TypeMapping = predefinedTypes[type];
-        if(TypeMapping) {
+        if (TypeMapping) {
             let level = new TypeMapping(worldSpecs);
             level.init(type, worldSpecs, options);
             return level;
@@ -35,7 +54,11 @@ var predefinedTypes = {
     multiLevel: multiLevel,
     morphineStation: morphineStation,
     restStop: restStop,
+    healthDepot: healthDepot,
+    energyDepot: energyDepot,
     shaneLearning: shaneLearning,
 };
 
-export {levelFactory};
+export {
+    levelFactory
+};

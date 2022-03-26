@@ -685,6 +685,8 @@ var game = {
         this.unitSystem.deselectUnit(this.shane);
         this.unitSystem.deselectUnit(this.ursula);
 
+        this.map.currentNode.restoreMapState();
+
         //determine continue behavior
         var continueBehavior = function() {
             if (result == 'victory') {
@@ -704,13 +706,15 @@ var game = {
                 if (this.map.currentNode.travelToken) {
                     //open map and activate the travel token
                     this.reconfigureSound.play();
-                    globals.currentGame.transitionToBlankScene({
-                        mode: 'SIDE',
-                        transitionLength: 1000,
-                        leftToRight: false
+                    this.reconfigureAtCurrentLevel({
+                        result: result,
+                        revive: true
                     });
-                    this.map.show();
-                    this.map.arriveAtTravelToken(this.map.currentNode);
+                    let self = this;
+                    gameUtils.matterOnce(this.map, 'showMap', function() {
+                        self.map.retriggerTravelToken(self.map.currentNode);
+                        self.map.currentNode.playCompleteAnimation();
+                    });
                 } else {
                     this.reconfigureAtCurrentLevel({
                         result: result,

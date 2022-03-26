@@ -463,7 +463,7 @@ var campLevel = function() {
                 }.bind(this));
 
                 Matter.Events.on(this.mapRef, 'showMap', function() {
-                    var availabilityText = 'Available now. (' + this.nightsLeft + ' nights available)';
+                    var availabilityText = 'Camp available.';//' (' + this.nightsLeft + ' nights available)';
                     if (this.mapRef.currentNode != this && !this.travelPredicate()) {
                         availabilityText = 'Camp unavailable.';
                     } else if (this.mapRef.currentNode == this) {

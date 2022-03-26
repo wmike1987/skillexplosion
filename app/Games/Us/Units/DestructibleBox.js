@@ -69,7 +69,7 @@ export default function DestructibleBox(options) {
 
     var unitProperties = $.extend({
         unitType: 'Box',
-        health: 20,
+        health: 15,
         isoManaged: false,
         damage: 0,
         defense: 1,

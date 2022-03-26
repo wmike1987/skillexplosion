@@ -1286,23 +1286,16 @@ export default function Marine(options) {
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
-        defenseDuration: ssDDuration,
+        defenseDuration: 5000,
         aggressionEventName: 'holdPosition',
         aggressionCooldown: 6000,
         aggressionDuration: ssADuration,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({
+                unit.applyEnergyGem({
                     id: "spiritualStateGain",
-                    textureName: 'SpiritualStateEnergyGainBuff',
-                    duration: 5000,
-                    applyChanges: function() {
-                        unit.energyRegenerationMultiplier *= 2;
-                    },
-                    removeChanges: function() {
-                        unit.energyRegenerationMultiplier /= 2;
-                    }
+                    duration: ssDDuration
                 });
             });
         },

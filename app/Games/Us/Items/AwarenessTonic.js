@@ -7,13 +7,13 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Awareness Tonic",
-        description: "Consume to gain 3 dodge and increase max hp by 3.",
+        description: "Consume to gain 3 dodge and increase max hp by 2.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'GreenSyringe',
         fontType: 'stimulant',
         consume: function(currentUnit) {
             currentUnit.dodge += 3;
-            currentUnit.maxHealth += 3;
+            currentUnit.maxHealth += 2;
         },
     }, options, Consumable);
     return new ic(item);

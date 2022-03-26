@@ -223,10 +223,6 @@ var levelBase = {
             //show new enemy sets
             globals.currentGame.unitSystem.unitPanel.addEnemyIcons(this, additionalPropertiesText.length * 20);
 
-            Matter.Events.trigger(globals.currentGame, 'BeginLevelSpawn', {
-                level: level
-            });
-
             if (!options.continuation) {
                 Matter.Events.trigger(globals.currentGame, 'BeginLevel', {
                     level: level
@@ -286,6 +282,11 @@ var levelBase = {
             center: gameUtils.getPlayableCenter(),
             radius: 120
         }];
+
+        //convenience... for now. Will redo this
+        if(this.augmented) {
+            this.levelAugments = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
+        }
 
         //set the level augment
         let tempAugments = [];
@@ -541,7 +542,7 @@ var levelBase = {
         scene.add(function() {
             $('body').on('keydown.map', function(event) {
                 var key = event.key.toLowerCase();
-                if (key == 'escape' && this.mapActive && this.map.keyEventsAllowed && !this.map.isOnTravelToken()) {
+                if (key == 'escape' && this.mapActive && this.map.keyEventsAllowed && !this.map.isOnActiveTravelToken()) {
                     this.closeMap();
                 }
             }.bind(globals.currentGame));
@@ -1007,6 +1008,10 @@ var modes = {
                 level.startLevelSpawn(options);
                 level._onLevelPlayable(scene);
             });
+
+            gameUtils.doSomethingAfterDuration(() => {
+                Matter.Events.trigger(globals.currentGame, 'EarlyEnterBattleLevel');
+            }, 1000);
 
             game.level += 1;
         }

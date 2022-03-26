@@ -1987,6 +1987,44 @@ var UnitBase = {
         });
     },
 
+    applyEnergyGem: function(options) {
+        options = options || {};
+        var duration = options.duration;
+        var self = this;
+
+        this.applyBuff({
+            id: options.id || "energyGem" + mathArrayUtils.getId(),
+            unit: this,
+            textureName: 'SpiritualStateEnergyGainBuff',
+            duration: duration || 2000,
+            applyChanges: function() {
+                self.energyRegenerationMultiplier *= 2;
+            },
+            removeChanges: function() {
+                self.energyRegenerationMultiplier /= 2;
+            }
+        });
+    },
+
+    applyHealthGem: function(options) {
+        options = options || {};
+        var duration = options.duration;
+        var self = this;
+
+        this.applyBuff({
+            id: options.id || "healthGem" + mathArrayUtils.getId(),
+            unit: this,
+            textureName: 'WickedWaysHealingBuff',
+            duration: duration || 2000,
+            applyChanges: function() {
+                self.healthRegenerationMultiplier *= 2;
+            },
+            removeChanges: function() {
+                self.healthRegenerationMultiplier /= 2;
+            }
+        });
+    },
+
     petrify: function(options) {
         options = options || {};
         let duration = options.duration;
@@ -2646,7 +2684,7 @@ var UnitBase = {
                 realizedBuff.removeBuffImage(cleanUpOptions);
             }
 
-            Matter.Events.trigger(unit, 'removeBuff', {buff: realizedBuff, continuing: cleanUpOptions.preserveImage});
+            // Matter.Events.trigger(unit, 'removeBuff', {buff: realizedBuff, continuing: cleanUpOptions.preserveImage});
 
             //remove associated events
             removeAllHandlers();

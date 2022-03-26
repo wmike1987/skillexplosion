@@ -58,6 +58,72 @@ commonTravelToken.preNodeInit = function() {
 commonTravelToken.initExtension = function() {
     var self = this;
     this.mapNode.travelToken = true;
+    this.stateCaptured = false;
+
+    this.mapNode.saveMapState = function() {
+        //capture or restore states
+        if (!self.stateCaptured) {
+            self.fatigueState = globals.currentGame.map.startingFatigue;
+            self.adrenalineState = globals.currentGame.map.adrenaline;
+            self.morphineState = globals.currentGame.map.morphine;
+            self.healthDepot = globals.currentGame.map.getAdditionalState().healthDepot;
+            self.energyDepot = globals.currentGame.map.getAdditionalState().energyDepot;
+            self.stateCaptured = true;
+        }
+    };
+
+    this.mapNode.restoreMapState = function() {
+        var mapState = {
+            fatigue: self.fatigueState,
+            adrenaline: self.adrenalineState,
+            morphine: self.morphineState,
+            healthDepot: self.healthDepot,
+            energyDepot: self.energyDepot
+        };
+
+        //starting fatigue/fatigue
+        Matter.Events.trigger(globals.currentGame.map, 'SetFatigue', {
+            amount: mapState.fatigue,
+            includeStartingFatigue: true
+        });
+
+        //morphine
+        globals.currentGame.map.setMorphine(mapState.morphine);
+
+        //adrenaline
+        globals.currentGame.map.clearAllAdrenalineBlocks();
+        mathArrayUtils.repeatXTimes(() => {
+            globals.currentGame.map.addAdrenalineBlock();
+        }, mapState.adrenaline);
+
+        //depots
+        if (mapState.healthDepot) {
+            tokenAugmentFunction({
+                tint: 0xd70808,
+                stateKey: 'healthDepot',
+                id: 'healthIcon',
+                action: (unit) => {
+                    unit.applyHealthGem({
+                        duration: 999999
+                    });
+                }
+            });
+        }
+
+        if (mapState.energyDepot) {
+            tokenAugmentFunction({
+                tint: 0x8d2fc7,
+                stateKey: 'energyDepot',
+                id: 'energyIcon',
+                action: (unit) => {
+                    unit.applyEnergyGem({
+                        duration: 999999
+                    });
+                }
+            });
+        }
+    };
+
     this.mapNode.arriveAtNode = function() {
         gameUtils.doSomethingAfterDuration(() => {
             globals.currentGame.soundPool.positiveSound3.play();
@@ -161,9 +227,13 @@ var restStop = function(options) {
     };
 
     this.arriveCallback = function() {
-        graphicsUtils.flashSprite({sprite: globals.currentGame.map.fatigueText, toColor: 0x45f112});
+        graphicsUtils.flashSprite({
+            sprite: globals.currentGame.map.fatigueText,
+            toColor: 0x45f112
+        });
         Matter.Events.trigger(globals.currentGame.map, 'SetFatigue', {
-            amount: Math.floor(globals.currentGame.map.getCurrentFatigue()/2.0)
+            amount: Math.floor(globals.currentGame.map.getCurrentFatigue() / 2.0),
+            includeStartingFatigue: true
         });
         globals.currentGame.map.removeAdrenalineBlock();
         globals.currentGame.map.removeAdrenalineBlock();
@@ -171,9 +241,77 @@ var restStop = function(options) {
 };
 restStop.prototype = commonTravelToken;
 
+var tokenAugmentFunction = function(options) {
+    var icon = graphicsUtils.createDisplayObject('SmallWhiteCircle', {
+        where: 'hudOne',
+        tint: options.tint
+    });
+    globals.currentGame.map.addTokenAugment(icon, options.id);
+    let st = {};
+    st[options.stateKey] = 1;
+    globals.currentGame.map.addAdditionalState(st);
+    gameUtils.matterOnce(globals.currentGame, 'EarlyEnterBattleLevel', () => {
+        globals.currentGame.map.removeTokenAugment(options.id);
+        globals.currentGame.map.removeAdditionalState(options.stateKey);
+        gameUtils.applyToUnitsByTeam(function(team) {
+            return team == globals.currentGame.playerTeam;
+        }.bind(this), null, function(unit) {
+            options.action(unit);
+        }.bind(this));
+    });
+};
 
+var healthDepot = function(options) {
+    this.regularTokenName = 'HealthDepotToken';
+    this.specialTokenName = 'HealthDepotTokenGleaming';
+
+    this.setNodeTitle = function() {
+        this.nodeTitle = "Health Depot";
+        this.tooltipDescription = ['Gain a permanent health gem for the next camp.'];
+    };
+
+    this.arriveCallback = function() {
+        tokenAugmentFunction({
+            tint: 0xd70808,
+            stateKey: 'healthDepot',
+            id: 'healthIcon',
+            action: (unit) => {
+                unit.applyHealthGem({
+                    duration: 999999
+                });
+            }
+        });
+    };
+};
+healthDepot.prototype = commonTravelToken;
+
+var energyDepot = function(options) {
+    this.regularTokenName = 'EnergyDepotToken';
+    this.specialTokenName = 'EnergyDepotTokenGleaming';
+
+    this.setNodeTitle = function() {
+        this.nodeTitle = "Energy Depot";
+        this.tooltipDescription = ['Gain a permanent energy gem for the next camp.'];
+    };
+
+    this.arriveCallback = function(options) {
+        tokenAugmentFunction({
+            tint: 0x8d2fc7,
+            stateKey: 'energyDepot',
+            id: 'energyIcon',
+            action: (unit) => {
+                unit.applyEnergyGem({
+                    duration: 999999
+                });
+            }
+        });
+    };
+};
+energyDepot.prototype = commonTravelToken;
 
 export {
     morphineStation,
-    restStop
+    restStop,
+    healthDepot,
+    energyDepot,
 };
