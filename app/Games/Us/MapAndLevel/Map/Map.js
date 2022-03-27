@@ -608,14 +608,6 @@ var map = function(specs) {
     this.addNodeToOuting = function(node) {
         this.outingNodes.push(node);
         this.updateOutingEngagement();
-
-        //create the arrow routes
-        var latestNode = this.outingNodes.at(-1);
-        var previousNode = this.outingNodes.at(-2);
-        var startPosition = this.getPlayerMapPosition();
-        if(previousNode) {
-            startPosition = previousNode.position;
-        }
         this.updateRouteArrows();
     };
 
@@ -627,7 +619,7 @@ var map = function(specs) {
     };
 
     this.updateRouteArrows = function() {
-        var colors = [0xcdc012, 0xe47b0e, 0xb90606];
+        var colors = [0xcdc012, 0xe47b0e, 0xc20000];
         var travelTokenColor = 0xffffff;
 
         //function to create the timer that creates the arrows
@@ -683,7 +675,7 @@ var map = function(specs) {
                     nodesToUse = this.outingNodeMemory;
                 }
                 let currentNode = nodesToUse[index];
-                let previousNode = index == 0 ? {id: 'headToken', position: mathArrayUtils.clonePosition(this.getPlayerMapPosition())} : nodesToUse[index-1];
+                let previousNode = index == 0 ? {id: 'headToken', position: mathArrayUtils.clonePosition(this.currentNode.position)} : nodesToUse[index-1];
 
                 if(currentNode && currentNode.travelToken && currentNode.isCompleted) {
                     return;

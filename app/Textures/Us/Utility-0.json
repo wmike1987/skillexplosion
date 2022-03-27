@@ -474,10 +474,10 @@
 },
 "MapArrow.png":
 {
-	"frame": {"x":946,"y":1658,"w":18,"h":15},
-	"rotated": true,
+	"frame": {"x":379,"y":1752,"w":20,"h":17},
+	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":7,"y":9,"w":18,"h":15},
+	"spriteSourceSize": {"x":6,"y":9,"w":20,"h":17},
 	"sourceSize": {"w":32,"h":32}
 },
 "MapBackground.png":
@@ -843,6 +843,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2008,"h":1782},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:34e50b9090ece3939ef371bcf9891add:1ea70d9144df94f6843112daf6f05acc:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:81f7a6c9d81bd2c74eadeb727e67ae61:c173af202991acbc427a61d50c9dcad2:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }

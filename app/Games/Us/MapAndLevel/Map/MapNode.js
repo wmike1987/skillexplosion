@@ -257,7 +257,7 @@ var MapLevelNode = function(options) {
                                 this.flashNode();
                             }
                             if (behavior.sound) {
-                                clickTokenSound2.play();
+                                this.getClickSound().play();
                             }
                             this.mapRef.addNodeToOuting(behavior.nodeToEnter);
                         }
@@ -266,7 +266,7 @@ var MapLevelNode = function(options) {
                             this.flashNode();
                         }
                         if (behavior.sound) {
-                            clickTokenSound2.play();
+                            this.getClickSound().play();
                         }
 
                         //this is the plain travel-to-node behavior
@@ -438,6 +438,10 @@ MapLevelNode.prototype.cleanUp = function() {
     }
 };
 
+MapLevelNode.prototype.getClickSound = function() {
+    return clickTokenSound2;
+};
+
 MapLevelNode.prototype.focusNode = function() {
     if (!this.isSpinning) {
         this.isFocused = true;
@@ -477,7 +481,6 @@ MapLevelNode.prototype.showNodeInOuting = function(options) {
                 tint: options.travelToken ? tokenTint : tints[number]
             });
             graphicsUtils.makeSpriteSize(this.outingFocusCircle, defaultSize ? this.defaultTokenSize + 10 : this.enlargedTokenSize + 10);
-
             graphicsUtils.rotateSprite(this.outingFocusCircle, {
                 speed: 20
             });

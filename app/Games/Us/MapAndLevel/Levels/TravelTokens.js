@@ -28,21 +28,9 @@ import {
     ItemClasses
 } from '@games/Us/Items/ItemClasses.js';
 
-var entrySound = gameUtils.getSound('enterairdrop1.wav', {
-    volume: 0.04,
-    rate: 1
-});
-var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {
+var clickTokenSound = gameUtils.getSound('clickbattletoken2.wav', {
     volume: 0.03,
-    rate: 1
-});
-var itemRevealSound = gameUtils.getSound('itemreveal1.wav', {
-    volume: 0.08,
-    rate: 1
-});
-var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
-    volume: 0.08,
-    rate: 1.0
+    rate: 1.2
 });
 
 var fatigueBenefit = 3;
@@ -150,9 +138,8 @@ commonTravelToken.createMapNode = function(options) {
         travelPredicate: function() {
             return true;
         },
-        mouseDownCallback: function() {
-            this.flashNode();
-            return false;
+        getClickSound: function() {
+            return clickTokenSound;
         },
         manualTokens: function() {
             var regularToken = graphicsUtils.createDisplayObject(this.levelDetails.regularTokenName, {
