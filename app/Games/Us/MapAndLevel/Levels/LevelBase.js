@@ -28,7 +28,7 @@ import Tooltip from '@core/Tooltip.js';
 var levelAugments = {
     enraged: {
         action: function(enemy) {
-            enemy.enrage({duration: 99999, amount: 3});
+            enemy.enrage({duration: 99999, amount: 4});
         },
         getSystemMessage: () => {
             return {text: 'Enraged', style: 'systemMessageTextAugment', tint: 0xbd1515};
@@ -70,7 +70,7 @@ var levelAugments = {
     hardened: {
         action: function(enemy) {
             enemy.giveGritDodge(true);
-            enemy.grit = 50;
+            enemy.grit = 1;
         },
         getSystemMessage: () => {
             return {text: 'Hardened', style: 'systemMessageTextAugment', tint: 0xa67b29};

@@ -2728,6 +2728,13 @@ var UnitBase = {
             });
             eventRemoveHandlers.push(ret.removeHandler);
         });
+    },
+
+    removeBuff: function(buffId) {
+        let buff = this.buffs[buffId];
+        if(buff) {
+            buff.removeBuff();
+        }
     }
 };
 

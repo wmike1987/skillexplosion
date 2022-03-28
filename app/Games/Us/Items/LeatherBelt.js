@@ -72,7 +72,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Leather Belt",
-        description: ["Add 0.25 to armor.", "Gain " + dodgeGain + " dodge for 8 seconds by holding position for 1 second."],
+        description: ["Add 0.3 to armor.", "Gain " + dodgeGain + " dodge for 8 seconds by holding position for 1 second."],
         icon: 'LeatherBelt',
         collector: {
             eventName: eventName,

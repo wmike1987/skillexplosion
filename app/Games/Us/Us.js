@@ -233,7 +233,7 @@ var game = {
 
         //next phase detector
         Matter.Events.on(this, 'nodeCompleted', function(event) {
-            if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
+            if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllRequiredNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
                 //manually enable the camp
                 let campNode = this.map.findNodeById('camp');
                 campNode.manualEnable = true;
@@ -258,6 +258,7 @@ var game = {
                         campNode.activeCampTooltipOverride = null;
 
                         let onEnterDelay = 0;
+                        let yOffset = 50;
                         if (currentPhaseObj.acquireAugmentsUponCompletion) {
                             globals.currentGame.makeCurrentLevelNonConfigurable();
                             onEnterDelay = 8500;
@@ -268,7 +269,7 @@ var game = {
                                 });
                                 let myText = 'Shane acquired ';
                                 let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
-                                    y: 0
+                                    y: yOffset
                                 }), {
                                     duration: floatDuration,
                                     style: styles.titleTwoStyle
@@ -277,7 +278,7 @@ var game = {
                                 graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
 
                                 let coloredText = graphicsUtils.floatText(shaneAugment.title, gameUtils.getPlayableCenterPlus({
-                                    y: 0,
+                                    y: yOffset,
                                 }), {
                                     duration: floatDuration,
                                     style: styles.titleTwoStyle
@@ -312,13 +313,13 @@ var game = {
                                 });
                                 graphicsUtils.floatSpriteNew(shaneIcon,
                                     gameUtils.getPlayableCenterPlus({
-                                        y: 60
+                                        y: 60 + yOffset
                                     }), {
                                         duration: floatDuration
                                     });
                                 graphicsUtils.floatSpriteNew(border,
                                     gameUtils.getPlayableCenterPlus({
-                                        y: 60
+                                        y: 60 + yOffset
                                     }), {
                                         duration: floatDuration
                                     });
@@ -330,7 +331,7 @@ var game = {
 
                                     let myText = 'Ursula acquired ';
                                     let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
-                                        y: 0
+                                        y: yOffset
                                     }), {
                                         duration: floatDuration,
                                         style: styles.titleTwoStyle
@@ -339,7 +340,7 @@ var game = {
                                     graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
 
                                     let coloredText = graphicsUtils.floatText(ursulaAugment.title, gameUtils.getPlayableCenterPlus({
-                                        y: 0,
+                                        y: yOffset,
                                     }), {
                                         duration: floatDuration,
                                         style: styles.titleTwoStyle
@@ -374,13 +375,13 @@ var game = {
                                     });
                                     graphicsUtils.floatSpriteNew(ursulaIcon,
                                         gameUtils.getPlayableCenterPlus({
-                                            y: 60
+                                            y: 60 + yOffset
                                         }), {
                                             duration: floatDuration
                                         });
                                     graphicsUtils.floatSpriteNew(border,
                                         gameUtils.getPlayableCenterPlus({
-                                            y: 60
+                                            y: 60 + yOffset
                                         }), {
                                             duration: floatDuration
                                         });
@@ -685,8 +686,6 @@ var game = {
         this.unitSystem.deselectUnit(this.shane);
         this.unitSystem.deselectUnit(this.ursula);
 
-        this.map.currentNode.restoreMapState();
-
         //determine continue behavior
         var continueBehavior = function() {
             if (result == 'victory') {
@@ -702,6 +701,7 @@ var game = {
                 this.unitSystem.unitPanel.refreshPassiveButton();
                 vScene.clear();
             } else { //if loss
+                this.map.currentNode.restoreMapState();
                 this.currentScene.add(vScene);
                 if (this.map.currentNode.travelToken) {
                     //open map and activate the travel token

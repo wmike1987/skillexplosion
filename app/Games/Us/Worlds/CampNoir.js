@@ -1195,8 +1195,7 @@ var phaseTwo = function(options) {
             });
             world.map.addMapNode('morphineStation');
             world.map.addMapNode('restStop');
-            world.map.addMapNode('energyDepot');
-            world.map.addMapNode('healthDepot');
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
                 levelOptions: {
@@ -1411,6 +1410,8 @@ var phaseThree = function() {
 
     this.map.addMapNode('morphineStation');
     this.map.addMapNode('restStop');
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
     this.map.addMapNode('easySentinels', {
@@ -1574,7 +1575,8 @@ var finalPhase = function() {
     this.map.addMapNode('basic');
     this.map.addMapNode('morphineStation');
     this.map.addMapNode('restStop');
-
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
     var decision = mathArrayUtils.flipCoin();
     var positionOp = {
         minX: gameUtils.getCanvasCenter().x

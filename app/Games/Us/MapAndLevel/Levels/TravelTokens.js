@@ -66,7 +66,8 @@ commonTravelToken.initExtension = function() {
             adrenaline: self.adrenalineState,
             morphine: self.morphineState,
             healthDepot: self.healthDepot,
-            energyDepot: self.energyDepot
+            energyDepot: self.energyDepot,
+            dodgeDepot: self.dodgeDepot
         };
 
         //starting fatigue/fatigue
@@ -86,29 +87,15 @@ commonTravelToken.initExtension = function() {
 
         //depots
         if (mapState.healthDepot) {
-            tokenAugmentFunction({
-                tint: 0xd70808,
-                stateKey: 'healthDepot',
-                id: 'healthIcon',
-                action: (unit) => {
-                    unit.applyHealthGem({
-                        duration: 999999
-                    });
-                }
-            });
+            healthDepotAction();
         }
 
         if (mapState.energyDepot) {
-            tokenAugmentFunction({
-                tint: 0x8d2fc7,
-                stateKey: 'energyDepot',
-                id: 'energyIcon',
-                action: (unit) => {
-                    unit.applyEnergyGem({
-                        duration: 999999
-                    });
-                }
-            });
+            energyDepotAction();
+        }
+
+        if (mapState.dodgeDepot) {
+            dodgeDepotAction();
         }
     };
 
@@ -248,29 +235,56 @@ var tokenAugmentFunction = function(options) {
     });
 };
 
+var healthDepotAction = () => {
+    tokenAugmentFunction({
+        tint: 0xd70808,
+        stateKey: 'healthDepot',
+        id: 'healthIcon' + mathArrayUtils.getId(),
+        action: (unit) => {
+            var id = 'healthDepotBuff' + mathArrayUtils.getId();
+            unit.applyHealthGem({
+                duration: 999999,
+                id: id
+            });
+
+            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', () => {
+                unit.removeBuff(id);
+            });
+        }
+    });
+};
+
 var healthDepot = function(options) {
     this.regularTokenName = 'HealthDepotToken';
     this.specialTokenName = 'HealthDepotTokenGleaming';
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Health Depot";
-        this.tooltipDescription = ['Gain a permanent health gem for the next camp.'];
+        this.tooltipDescription = ['Gain a health gem for the next camp.'];
     };
 
-    this.arriveCallback = function() {
-        tokenAugmentFunction({
-            tint: 0xd70808,
-            stateKey: 'healthDepot',
-            id: 'healthIcon',
-            action: (unit) => {
-                unit.applyHealthGem({
-                    duration: 999999
-                });
-            }
-        });
-    };
+    this.arriveCallback = healthDepotAction;
 };
 healthDepot.prototype = commonTravelToken;
+
+var energyDepotAction = () => {
+    tokenAugmentFunction({
+        tint: 0x8d2fc7,
+        stateKey: 'energyDepot',
+        id: 'energyIcon' + mathArrayUtils.getId(),
+        action: (unit) => {
+            var id = 'energyDepotBuff' + mathArrayUtils.getId();
+            unit.applyEnergyGem({
+                duration: 999999,
+                id: id
+            });
+
+            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', () => {
+                unit.removeBuff(id);
+            });
+        }
+    });
+};
 
 var energyDepot = function(options) {
     this.regularTokenName = 'EnergyDepotToken';
@@ -278,27 +292,50 @@ var energyDepot = function(options) {
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Energy Depot";
-        this.tooltipDescription = ['Gain a permanent energy gem for the next camp.'];
+        this.tooltipDescription = ['Gain an energy gem for the next camp.'];
     };
 
-    this.arriveCallback = function(options) {
-        tokenAugmentFunction({
-            tint: 0x8d2fc7,
-            stateKey: 'energyDepot',
-            id: 'energyIcon',
-            action: (unit) => {
-                unit.applyEnergyGem({
-                    duration: 999999
-                });
-            }
-        });
-    };
+    this.arriveCallback = energyDepotAction;
 };
 energyDepot.prototype = commonTravelToken;
+
+var dodgeDepotAction = () => {
+    tokenAugmentFunction({
+        tint: 0x066a01,
+        stateKey: 'dodgeDepot',
+        id: 'dodgeIcon' + mathArrayUtils.getId(),
+        action: (unit) => {
+            var id = 'dodgeDepotBuff' + mathArrayUtils.getId();
+            unit.applyDodgeBuff({
+                duration: 999999,
+                amount: 30,
+                id: id
+            });
+
+            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', () => {
+                unit.removeBuff(id);
+            });
+        }
+    });
+};
+
+var dodgeDepot = function(options) {
+    this.regularTokenName = 'DodgeToken';
+    this.specialTokenName = 'DodgeTokenGleaming';
+
+    this.setNodeTitle = function() {
+        this.nodeTitle = "Dodge Depot";
+        this.tooltipDescription = ['Gain a dodge buff (+30) for the next camp.'];
+    };
+
+    this.arriveCallback = dodgeDepotAction;
+};
+dodgeDepot.prototype = commonTravelToken;
 
 export {
     morphineStation,
     restStop,
     healthDepot,
     energyDepot,
+    dodgeDepot,
 };

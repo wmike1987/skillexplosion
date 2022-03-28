@@ -45,7 +45,7 @@ var map = function(specs) {
     this.outingNodeMemory = [];
     this.outingArrows = [];
     this.inProgressOutingNodes = [];
-    this.maxOutingLength = 3;
+    this.maxOutingLength = 23;
     this.fatigueIncrement = 4;
     this.additionalState = {};
     this.tokenAugments = {};
@@ -1048,9 +1048,9 @@ var map = function(specs) {
         return levelNode;
     };
 
-    this.areAllNodesExceptCampCompleted = function() {
+    this.areAllRequiredNodesExceptCampCompleted = function() {
         let foundIncomplete = this.graph.find(node => {
-            return node.type != 'camp' && !node.isCompleted;
+            return node.type != 'camp' && !node.isCompleted && !node.travelToken;
         });
 
         if (foundIncomplete) {

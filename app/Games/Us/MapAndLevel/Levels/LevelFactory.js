@@ -15,7 +15,8 @@ import {
     morphineStation,
     restStop,
     healthDepot,
-    energyDepot
+    energyDepot,
+    dodgeDepot
 } from '@games/Us/MapAndLevel/Levels/TravelTokens.js';
 import {
     shaneLearning
@@ -56,7 +57,8 @@ var predefinedTypes = {
     restStop: restStop,
     healthDepot: healthDepot,
     energyDepot: energyDepot,
-    shaneLearning: shaneLearning,
+    dodgeDepot: dodgeDepot,
+    shaneLearning: shaneLearning
 };
 
 export {
