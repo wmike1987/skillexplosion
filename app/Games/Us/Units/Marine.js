@@ -423,6 +423,8 @@ export default function Marine(options) {
         var thisAbility = this.getAbilityByName('Dash');
         var defensivePostureAugment = thisAbility.isAugmentEnabled('defensive posture');
         var deathWishAugment = thisAbility.isAugmentEnabled('death wish');
+        var shockAugment = thisAbility.isAugmentEnabled('shock');
+        var blitzAugment = thisAbility.isAugmentEnabled('blitz');
 
         this.stop(null, {
             peaceful: true
@@ -430,7 +432,8 @@ export default function Marine(options) {
         this.moveSpeedAugment = this.moveSpeed;
         this.body.frictionAir = 0.2;
         var velocityVector = Matter.Vector.sub(destination, this.position);
-        var velocityScaled = dashVelocity / Matter.Vector.magnitude(velocityVector);
+        var alteredVelocity = blitzAugment ? dashVelocity * blitzAugment.dashFactor : dashVelocity;
+        var velocityScaled = alteredVelocity / Matter.Vector.magnitude(velocityVector);
         Matter.Body.applyForce(this.body, this.position, {
             x: velocityScaled * velocityVector.x,
             y: velocityScaled * velocityVector.y
@@ -446,8 +449,10 @@ export default function Marine(options) {
             spritesheetName: 'MarineAnimations1',
             animationName: 'dash',
             speed: 0.3,
-            transform: [this.position.x, this.position.y, 3.5, 2.5]
+            transform: [this.position.x, this.position.y, 3.5, blitzAugment ? 4.5 : 2.5]
         });
+
+        dashAnimation.tint = blitzAugment ? 0x737d00 : 0xFFFFFF;
 
         dashAnimation.play();
         dashAnimation.alpha = 0.8;
@@ -469,6 +474,10 @@ export default function Marine(options) {
                     self._becomeOnAlert();
                 }
 
+                if (shockCollision) {
+                    shockCollision.removeHandler();
+                }
+
                 commandObj.command.done();
             }
         });
@@ -477,11 +486,45 @@ export default function Marine(options) {
         if (defensivePostureAugment) {
             marine.applyDefenseBuff({
                 id: 'defpostbuff',
-                duration: 3000,
+                duration: 4000,
                 amount: defensivePostureGain
             });
             Matter.Events.trigger(globals.currentGame, dPostureEventName, {
                 value: 1
+            });
+        }
+
+        if (blitzAugment) {
+            marine.applySpeedBuff({
+                id: 'blitzPostBuff',
+                duration: 1000,
+                amount: blitzAugment.moveSpeedIncrease
+            });
+            Matter.Events.trigger(globals.currentGame, blitzEventName, {
+                value: 1
+            });
+        }
+
+        if (shockAugment) {
+            var shockCollision = gameUtils.matterConditionalOnce(this.body, 'onCollideActive onCollide', function(pair) {
+                var otherBody = pair.pair.bodyB == self.body ? pair.pair.bodyA : pair.pair.bodyB;
+                if (!otherBody.isCollisionBody || !otherBody.unit) return false;
+                var otherUnit = otherBody.unit;
+                otherUnit.sufferAttack(shockAugment.damage, self, {
+                    dodgeable: false,
+                    ignoreArmor: false,
+                    id: 'shock',
+                    abilityType: false,
+                });
+                otherUnit.petrify({
+                    duration: shockAugment.petrifyDuration,
+                    petrifyingUnit: self
+                });
+                unitUtils.showBlockGraphic({scale: {x: 0.9, y: 0.9}, attackingUnit: otherUnit, unit: self, tint: 0xe40707});
+                Matter.Events.trigger(globals.currentGame, shockEventName, {
+                    value: 1
+                });
+                return true;
             });
         }
 
@@ -520,6 +563,8 @@ export default function Marine(options) {
     var vitalReservesEventName = 'vitalReservesCollector';
     var deathWishEventName = 'deathWishCollector';
     var dPostureEventName = 'defensivePostureCollector';
+    var shockEventName = 'shockCollector';
+    var blitzEventName = 'blitzCollector';
     var dashAbility = new Ability({
         name: 'Dash',
         key: 'd',
@@ -583,7 +628,7 @@ export default function Marine(options) {
                 name: 'defensive posture',
                 icon: graphicsUtils.createDisplayObject('DefensivePosture'),
                 title: 'Defensive Posture',
-                description: 'Gain 2 defense upon dashing for 3 seconds.',
+                description: 'Gain 2 defense upon dashing for 4 seconds.',
                 collector: {
                     eventName: dPostureEventName,
                     presentation: {
@@ -601,6 +646,34 @@ export default function Marine(options) {
                     eventName: deathWishEventName,
                     presentation: {
                         labels: ["Addtl. damage from death wish"]
+                    }
+                }
+            },
+            {
+                name: 'shock',
+                icon: graphicsUtils.createDisplayObject('RamIcon'),
+                title: 'Shock',
+                description: 'Petrify and deal 5 damage to unit by dashing into it.',
+                damage: 5,
+                petrifyDuration: 4000,
+                collector: {
+                    eventName: shockEventName,
+                    presentation: {
+                        labels: ["Units petrified"]
+                    }
+                }
+            },
+            {
+                name: 'blitz',
+                icon: graphicsUtils.createDisplayObject('BlitzIcon'),
+                title: 'Blitz',
+                description: 'Increase dash length and increase movement speed upon dashing for 1 second.',
+                moveSpeedIncrease: 1.0,
+                dashFactor: 1.5,
+                collector: {
+                    eventName: blitzEventName,
+                    presentation: {
+                        labels: ["Duration of increased speed"]
                     }
                 }
             },
@@ -629,7 +702,7 @@ export default function Marine(options) {
         if (!childKnife && multiThrowAugment) {
             var distance = mathArrayUtils.distanceBetweenPoints(destination, this.position);
             var maxDistance = 250;
-            if(distance > maxDistance) {
+            if (distance > maxDistance) {
                 destination = mathArrayUtils.addScalarToVectorTowardDestination(this.position, destination, maxDistance);
             }
             var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(destination, this.position)));
@@ -677,15 +750,24 @@ export default function Marine(options) {
             knifeTint = 0xe88a1b;
         }
 
-        var knifeScale = {x: 0.7, y: 0.7};
-        var childKnifeScale = {x: 0.3, y: 0.3};
+        var knifeScale = {
+            x: 0.7,
+            y: 0.7
+        };
+        var childKnifeScale = {
+            x: 0.3,
+            y: 0.3
+        };
         var trueScale = knife.isChildKnife ? childKnifeScale : knifeScale;
 
         var shadowScale = {
             x: 1,
             y: 0.8
         };
-        var childShadowScale = {x: 0.6, y: 0.3};
+        var childShadowScale = {
+            x: 0.6,
+            y: 0.3
+        };
         var trueShadowScale = knife.isChildKnife ? childShadowScale : shadowScale;
 
         knife.renderChildren = [{
@@ -739,8 +821,8 @@ export default function Marine(options) {
 
             if (otherUnit && otherUnit != this && otherUnit.canTakeAbilityDamage && otherUnit.team != this.team) {
                 let alteredDamage = marine.knifeDamage;
-                if(knife.isChildKnife) {
-                    alteredDamage = marine.knifeDamage/2.0;
+                if (knife.isChildKnife) {
+                    alteredDamage = marine.knifeDamage / 2.0;
                 }
                 var damageRet = otherUnit.sufferAttack(alteredDamage, self, {
                     dodgeable: !self.trueKnife,
@@ -750,7 +832,7 @@ export default function Marine(options) {
                     knife: knife
                 }); //we can make the assumption that a body is part of a unit if it's attackable
 
-                if(damageRet && !damageRet.attackLanded) {
+                if (damageRet && !damageRet.attackLanded) {
                     return;
                 }
 
@@ -790,7 +872,7 @@ export default function Marine(options) {
                     });
                 }
 
-                if(knife.isChildKnife && !knife.alreadyHitPrimary) {
+                if (knife.isChildKnife && !knife.alreadyHitPrimary) {
                     Matter.Events.trigger(globals.currentGame, multiThrowCollectorEventName, {
                         value: damageRet.damageDone
                     });
@@ -927,6 +1009,8 @@ export default function Marine(options) {
     var hpCollectorEventName = 'hoodedPeepCollector';
     var fullAutoCollectorEventName = 'fullAutoCollector';
     var firstAidCollectorEventName = 'firstAidCollector';
+    var cleaningKitCollectorEventName = 'cleaningKitCollector';
+    var leadBulletsCollectorEventName = 'leadBulletsCollector';
     var gunAbility = new Ability({
         name: 'Rifle',
         manualDispatch: true,
@@ -968,21 +1052,73 @@ export default function Marine(options) {
             },
             {
                 name: 'first aid pouch',
-                healAmount: 0.4,
+                healAmount: 0.6,
                 icon: graphicsUtils.createDisplayObject('FirstAidPouchIcon'),
                 title: 'First Aid Pouch',
                 description: '',
-                updaters: {descriptions: function() {
-                    var sum = 0.4;
-                    var addition = marine.firstAidPouchAdditions.forEach((addition) => {
-                        sum += addition;
-                    });
-                    return {index: 0, value: 'Heal self and nearby allies for ' + sum.toFixed(1) + ' hp after firing rifle.'};
-                }},
+                updaters: {
+                    descriptions: function() {
+                        var sum = 0.6;
+                        var addition = marine.firstAidPouchAdditions.forEach((addition) => {
+                            sum += addition;
+                        });
+                        return {
+                            index: 0,
+                            value: 'Heal self and nearby allies for ' + sum.toFixed(1) + ' hp after firing rifle.'
+                        };
+                    }
+                },
                 collector: {
                     eventName: firstAidCollectorEventName,
                     presentation: {
                         labels: ["Healing done"],
+                        values: ["value"],
+                        formats: [function(v) {
+                            return v.toFixed(1);
+                        }]
+                    }
+                }
+            },
+            {
+                name: 'cleaning kit',
+                energyGrant: 0.3,
+                icon: graphicsUtils.createDisplayObject('CleaningKitIcon'),
+                title: 'Cleaning Kit',
+                description: '',
+                updaters: {
+                    descriptions: function() {
+                        var sum = 0.3;
+                        var addition = marine.cleaningKitAdditions.forEach((addition) => {
+                            sum += addition;
+                        });
+                        return {
+                            index: 0,
+                            value: 'Grant self and nearby allies ' + sum.toFixed(1) + ' energy after firing rifle.'
+                        };
+                    }
+                },
+                collector: {
+                    eventName: cleaningKitCollectorEventName,
+                    presentation: {
+                        labels: ["Energy granted"],
+                        values: ["value"],
+                        formats: [function(v) {
+                            return v.toFixed(1);
+                        }]
+                    }
+                }
+            },
+            {
+                name: 'lead bullets',
+                armorSubtractor: 5,
+                dodgeManipulator: 0.5,
+                icon: graphicsUtils.createDisplayObject('LeadBulletsIcon'),
+                title: 'Lead Bullets',
+                description: 'Attacks bypass 50% of target\'s dodge and ignore up to 5 armor.',
+                collector: {
+                    eventName: leadBulletsCollectorEventName,
+                    presentation: {
+                        labels: ["Armor Ignored"],
                         values: ["value"],
                         formats: [function(v) {
                             return v.toFixed(1);
@@ -1016,7 +1152,7 @@ export default function Marine(options) {
         passiveAction: function(event) {
             var allies = gameUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
-                var healthToGive = ally.maxHealth * (passiveAllyPercentageHeal/100);
+                var healthToGive = ally.maxHealth * (passiveAllyPercentageHeal / 100);
                 ally.giveHealth(healthToGive, marine);
                 unitUtils.applyHealthGainAnimationToUnit(ally);
                 healsound.play();
@@ -1041,7 +1177,10 @@ export default function Marine(options) {
             });
 
             return {
-                value: {health: healthGiven, energy: energyGiven}
+                value: {
+                    health: healthGiven,
+                    energy: energyGiven
+                }
             };
         },
         aggressionAction: function(event) {
@@ -1066,7 +1205,10 @@ export default function Marine(options) {
                 return v.health.toFixed(1) + '/' + v.energy.toFixed(1);
             },
             _init: function() {
-                this.defensePassive = {health: 0, energy: 0};
+                this.defensePassive = {
+                    health: 0,
+                    energy: 0
+                };
             },
             defenseCollectorFunction: function(event) {
                 this.defensePassive.health += event.health;
@@ -1120,7 +1262,7 @@ export default function Marine(options) {
             marine.applySpeedBuff({
                 id: 'rushofbloodspeedBuff',
                 duration: robADuration,
-                amount: 0.6
+                amount: 0.5
             });
 
             return {
@@ -1191,14 +1333,19 @@ export default function Marine(options) {
             marine.grantFreeKnife();
         },
         defenseAction: function(event) {
-            marine.enrage({duration: 2000, amount: kiEnrageAmount});
+            marine.enrage({
+                duration: 2000,
+                amount: kiEnrageAmount
+            });
 
             let matterEvent = Matter.Events.on(marine, 'dealDamage', (event) => {
                 if (event.attackContext.id == 'rifle') {
                     let subtractableDamage = event.eventSubtractableDamage;
                     let bonusDamage = Math.min(kiEnrageAmount, subtractableDamage);
                     event.eventSubtractableDamage -= bonusDamage;
-                    this.createDefenseCollectorEvent({value: bonusDamage});
+                    this.createDefenseCollectorEvent({
+                        value: bonusDamage
+                    });
                 }
             });
 
@@ -1207,7 +1354,7 @@ export default function Marine(options) {
             };
         },
         defenseStopAction: function() {
-            if(this.removeDealDamage) {
+            if (this.removeDealDamage) {
                 this.removeDealDamage();
             }
         },
@@ -1332,7 +1479,12 @@ export default function Marine(options) {
                 applyChanges: function() {
                     f.handler = Matter.Events.on(marine, 'receiveHeal', function(event) {
                         energyGained = marine.giveEnergy(event.amountDone);
-                        Matter.Events.trigger(globals.currentGame, 'SpiritualStateCollector', {mode: 'attackPassive', collectorPayload: {value: energyGained}});
+                        Matter.Events.trigger(globals.currentGame, 'SpiritualStateCollector', {
+                            mode: 'attackPassive',
+                            collectorPayload: {
+                                value: energyGained
+                            }
+                        });
                     });
                 },
                 removeChanges: function() {
@@ -1422,11 +1574,17 @@ export default function Marine(options) {
                 speed: 0.7,
                 transform: [sufferingUnit.position.x, sufferingUnit.position.y, 0.85, 0.85]
             });
-            if(grit >= 20) {
-                maimBlast.scale = {x: 1.1, y: 1.1};
+            if (grit >= 20) {
+                maimBlast.scale = {
+                    x: 1.1,
+                    y: 1.1
+                };
             }
-            if(grit >= 35) {
-                maimBlast.scale = {x: 1.6, y: 1.6};
+            if (grit >= 35) {
+                maimBlast.scale = {
+                    x: 1.6,
+                    y: 1.6
+                };
             }
             maimBlast.tint = 0xf1ca00;
             maimBlast.rotation = Math.random() * Math.PI;
@@ -1576,6 +1734,7 @@ export default function Marine(options) {
         },
         _init: function() {
             this.firstAidPouchAdditions = [];
+            this.cleaningKitAdditions = [];
             if (!this.bypassRevival) {
                 $.extend(this, rv);
                 this.revivableInit();
@@ -1587,6 +1746,7 @@ export default function Marine(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
+                ability.addAllAvailableAugments();
             });
 
         }
@@ -1617,6 +1777,8 @@ export default function Marine(options) {
                 var thisAbility = this.getAbilityByName('Rifle');
                 var hoodedPeepAugment = thisAbility.isAugmentEnabled('hooded peep');
                 var firstAidPouchAugment = thisAbility.isAugmentEnabled('first aid pouch');
+                var cleaningKitAugment = thisAbility.isAugmentEnabled('cleaning kit');
+                var leadBulletsAugment = thisAbility.isAugmentEnabled('lead bullets');
 
                 var crit = 1;
                 var critActive = false;
@@ -1647,11 +1809,41 @@ export default function Marine(options) {
                     });
                 }
 
+                if (cleaningKitAugment) {
+                    gameUtils.applyToUnitsByTeam(function(team) {
+                        return self.team == team;
+                    }, function(unit) {
+                        return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
+                    }, function(unit) {
+                        unitUtils.applyEnergyGainAnimationToUnit(unit);
+                        healsound.play();
+                        var sum = 0;
+                        self.cleaningKitAdditions.forEach((addition) => {
+                            sum += addition;
+                        });
+                        var amountGranted = unit.giveEnergy(cleaningKitAugment.energyGrant + sum, self);
+                        Matter.Events.trigger(globals.currentGame, cleaningKitCollectorEventName, {
+                            value: amountGranted
+                        });
+                    });
+                }
+
                 var dTotal = this.damage + this.getDamageAdditionSum();
                 var returnInfo = target.sufferAttack(dTotal, this, {
                     id: 'rifle',
-                    damageMultiplier: crit
+                    damageMultiplier: crit,
+                    armorSubtractor: leadBulletsAugment ? leadBulletsAugment.armorSubtractor : 0,
+                    dodgeManipulator: function(dodge) {
+                        return dodge * (leadBulletsAugment ? leadBulletsAugment.dodgeManipulator : 1);
+                    }
                 });
+
+                if (leadBulletsAugment) {
+                    Matter.Events.trigger(globals.currentGame, leadBulletsCollectorEventName, {
+                        value: returnInfo.armorIgnored
+                    });
+                }
+
                 if (critActive && returnInfo.attackLanded) {
                     Matter.Events.trigger(globals.currentGame, hpCollectorEventName, {
                         value: 1

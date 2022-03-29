@@ -1985,14 +1985,22 @@ unitPanel.prototype.displayUnitAbilities = function() {
         var borderAddition = 2;
         var augmentSpacing = 10;
         var augmentSize = (ability.icon.width - (borderAddition * 2)) / (3);
+        augmentSize = 19;
         var startingX = augmentSize;
         var augmentBorderSize = augmentSize + borderAddition;
         var augmentCount = 0; //init this to 1
         if (ability.augments) {
             $.each(ability.augments, function(i, augment) {
+                let xAugmentOffset = augmentCount;
+                let yAugmentOffset = 0;
+                if(augmentCount > 2) {
+                    xAugmentOffset = 2;
+                    yAugmentOffset = augmentCount - 2;
+                }
+
                 let pos = {
-                    x: (ability.icon.position.x - (ability.icon.width / 2)) + startingX - (augmentSize / 2) + augmentCount * (augmentSize + borderAddition / 2),
-                    y: (ability.icon.position.y) + (ability.icon.height / 2),
+                    x: (ability.icon.position.x - (ability.icon.width / 2)) + startingX - (augmentSize / 2) + xAugmentOffset * (augmentSize + borderAddition / 2),
+                    y: (ability.icon.position.y) + (ability.icon.height / 2) - (yAugmentOffset * augmentSize) - (yAugmentOffset * 0.5),
                 };
                 var augmentPosition = mathArrayUtils.clonePosition(pos, {
                     x: borderAddition / 2,
@@ -2000,7 +2008,8 @@ unitPanel.prototype.displayUnitAbilities = function() {
                 });
                 if (!augment.smallerIcon) {
                     augment.smallerIcon = graphicsUtils.addSomethingToRenderer(augment.icon.texture, {
-                        where: 'hudOne'
+                        where: 'hudOne',
+                        sortYOffset: 200
                     });
                     Tooltip.makeTooltippable(augment.smallerIcon, {
                         title: augment.title,
@@ -2008,7 +2017,8 @@ unitPanel.prototype.displayUnitAbilities = function() {
                         updaters: augment.updaters
                     });
                     augment.smallerBorder = graphicsUtils.addSomethingToRenderer('AugmentBorder', {
-                        where: 'hudOne'
+                        where: 'hudOne',
+                        sortYOffset: 200
                     });
                     graphicsUtils.makeSpriteSize(augment.smallerIcon, augmentSize);
                     graphicsUtils.makeSpriteSize(augment.smallerBorder, augmentBorderSize);

@@ -1774,8 +1774,8 @@ export default function Medic(options) {
                 where: 'stageOne',
                 position: medic.position,
                 scale: {
-                    x: 1.0,
-                    y: 1.0
+                    x: 0.75,
+                    y: 0.75
                 }
             });
             gameUtils.attachSomethingToBody({

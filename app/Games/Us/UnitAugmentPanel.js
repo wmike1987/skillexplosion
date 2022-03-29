@@ -67,8 +67,8 @@ ConfigPanel.prototype.initialize = function() {
         }
     }.bind(this), false, true);
 
-    this.configButtonHeight = 218;
-    this.configButtonGlassHeight = 218;
+    this.configButtonHeight = 380;
+    this.configButtonGlassHeight = 380;
     this.actualGlassHeight = 200;
     this.showButton = graphicsUtils.createDisplayObject('AugmentNotificationPanelBorder', {
         where: 'hudNOne',
@@ -439,12 +439,12 @@ ConfigPanel.prototype.lowerOpenButton = function() {
         graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
         this.showButton.position = {
             x: this.showButton.position.x,
-            y: gameUtils.getPlayableHeight() + this.configButtonHeight / 2.75
+            y: gameUtils.getPlayableHeight() + this.configButtonHeight / 2.5
         };
         this.showButton.state = "lowered";
         this.showButtonGlass.position = {
             x: this.showButton.position.x,
-            y: gameUtils.getPlayableHeight() + this.configButtonGlassHeight / 2.75
+            y: gameUtils.getPlayableHeight() + this.configButtonGlassHeight / 2.5
         };
     }
 };
@@ -466,15 +466,15 @@ ConfigPanel.prototype.liftOpenButton = function() {
         }
     });
 
-    graphicsUtils.changeDisplayObjectStage(this.showButton, 'hud');
+    graphicsUtils.changeDisplayObjectStage(this.showButton, 'hudNOne');
     graphicsUtils.addOrShowDisplayObject(this.showButton);
 
-    let panelOffset = this.initialYOffset;
+    let panelOffset = 32;
     let adjustedGlassHeight = this.actualGlassHeight + this.initialYOffset;
 
     this.showButton.position = {
         x: this.showButton.position.x,
-        y: gameUtils.getPlayableHeight() - (this.configButtonHeight / 2) + (-this.spacing * (3-maxAugments))// - ((this.actualGlassHeight - this.actualGlassHeight) / 2) + (this.configButtonHeight / 3)
+        y: gameUtils.getPlayableHeight() + (this.configButtonHeight / 2) - panelOffset - (-this.spacing * (maxAugments))// - ((this.actualGlassHeight - this.actualGlassHeight) / 2) + (this.configButtonHeight / 3)
     };
     this.showButton.scale = {
         x: 1.00,
@@ -482,11 +482,11 @@ ConfigPanel.prototype.liftOpenButton = function() {
     };
     this.showButton.state = "lifted";
 
-    graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hud');
+    graphicsUtils.changeDisplayObjectStage(this.showButtonGlass, 'hudNOne');
     graphicsUtils.addOrShowDisplayObject(this.showButtonGlass);
     this.showButtonGlass.position = {
         x: this.showButtonGlass.position.x,
-        y: gameUtils.getPlayableHeight() - (this.configButtonGlassHeight / 2) + (-this.spacing * (3-maxAugments))// - (this.configButtonGlassHeight / 2) + (this.configButtonHeight / 3)
+        y: gameUtils.getPlayableHeight() + (this.configButtonGlassHeight / 2) - panelOffset - (-this.spacing * (maxAugments))// + (-this.spacing * (3-maxAugments))// - (this.configButtonGlassHeight / 2) + (this.configButtonHeight / 3)
     };
     this.showButtonGlass.scale = {
         x: 1.00,

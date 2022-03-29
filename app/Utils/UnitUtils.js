@@ -106,7 +106,7 @@ var unitUtils = {
     },
 
     showBlockGraphic: function(options) {
-        var attackContext = options.attackContext;
+        var attackContext = options.attackContext || {};
         var attackingUnit = options.attackingUnit;
         var unit = options.unit;
 
@@ -124,9 +124,9 @@ var unitUtils = {
         let block = graphicsUtils.addSomethingToRenderer('Block', {
             where: 'stageOne',
             position: offsetLocation,
-            scale: {
-                x: 1.0,
-                y: 1.0
+            scale: options.scale || {
+                x: 0.75,
+                y: 0.75
             }
         });
         gameUtils.attachSomethingToBody({

@@ -182,7 +182,11 @@ var UnitBase = {
             abilityType: false,
             ignoreArmor: false,
             dodgeRolls: 1,
-            damageMultiplier: 1
+            damageMultiplier: 1,
+            dodgeManipulator: (dodge) => {
+                return dodge;
+            },
+            armorSubtractor: 0
         }, options);
 
         attackingUnit = attackingUnit || {
@@ -205,7 +209,7 @@ var UnitBase = {
             attackContext: attackContext
         });
 
-        let dodgeReturnArray = mathArrayUtils.repeatXTimes(this.attackDodged.bind(this), attackContext.dodgeRolls);
+        let dodgeReturnArray = mathArrayUtils.repeatXTimes(this.attackDodged.bind(this, {dodgeManipulator: attackContext.dodgeManipulator}), attackContext.dodgeRolls);
         let attackDodged = dodgeReturnArray.some(function(bool) {
             return bool;
         });
@@ -254,7 +258,9 @@ var UnitBase = {
         damage = damageObj.damage;
 
         //factor in armor
-        var totalDefense = attackContext.ignoreArmor ? 0 : this.getTotalDefense();
+        var totalDefense = attackContext.ignoreArmor ? 0 : (Math.max(0, this.getTotalDefense() - attackContext.armorSubtractor));
+        returnInformation.armorIgnored = this.getTotalDefense() - totalDefense;
+
         var alteredDamage = Math.max(1, (damage - totalDefense));
 
         //killing blow block
@@ -365,9 +371,15 @@ var UnitBase = {
         return returnInformation;
     },
 
-    attackDodged: function() {
+    attackDodged: function(options) {
+        options = gameUtils.mixinDefaults(options, {
+            dodgeManipulator: (dodge) => {
+                return dodge;
+            }
+        });
+
         var r = Math.random();
-        var dodgeSum = this.getTotalDodge();
+        var dodgeSum = options.dodgeManipulator(this.getTotalDodge());
         return (r < (dodgeSum / 100));
     },
 

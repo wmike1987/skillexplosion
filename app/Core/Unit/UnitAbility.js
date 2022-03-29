@@ -131,6 +131,10 @@ export default function(options) {
     };
 
     this.addAvailableAugment = function(options) {
+        if(this.allAugmentsAvailable()) {
+            return;
+        }
+
         options = Object.assign({
             random: true
         }, options);
@@ -148,6 +152,12 @@ export default function(options) {
         }
 
         return randomAugment;
+    };
+
+    this.addAllAvailableAugments = function() {
+        mathArrayUtils.repeatXTimes(() => {
+            this.addAvailableAugment();
+        }, 10);
     };
 
     this.getAvailableAugments = function() {

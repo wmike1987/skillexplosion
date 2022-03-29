@@ -354,7 +354,7 @@ var gameUtils = {
     },
 
     matterConditionalOnce: function(obj, eventName, callback) {
-        this.matterOnce(obj, eventName, callback, {
+        return this.matterOnce(obj, eventName, callback, {
             conditionalOff: true
         });
     },
