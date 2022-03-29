@@ -426,15 +426,15 @@ var gameUtils = {
         return trackingTimer;
     },
 
-    bodyRanOffStage: function(body) {
-        var buffer = 50;
-        if (body.velocity.x < 0 && body.bounds.max.x < -buffer)
+    bodyRanOffStage: function(body, buffer, topBuffer, bottomBuffer, rightBuffer, leftBuffer) {
+        buffer = buffer || 50;
+        if (body.velocity.x < 0 && body.bounds.max.x < (leftBuffer || -buffer))
             return true;
-        if (body.velocity.x > 0 && body.bounds.min.x > this.getPlayableWidth() + buffer)
+        if (body.velocity.x > 0 && body.bounds.min.x > this.getPlayableWidth() + (rightBuffer || buffer))
             return true;
-        if (body.velocity.y > 0 && body.bounds.min.y > this.getPlayableHeight() + buffer)
+        if (body.velocity.y > 0 && body.bounds.min.y > this.getPlayableHeight() + (bottomBuffer || buffer))
             return true;
-        if (body.velocity.y < 0 && body.bounds.max.y < -buffer)
+        if (body.velocity.y < 0 && body.bounds.max.y < (topBuffer || -buffer))
             return true;
     },
 

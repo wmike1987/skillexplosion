@@ -369,6 +369,10 @@ export default function Marine(options) {
         volume: 0.002,
         rate: 3
     });
+    var knifeBreakSound = gameUtils.getSound('knifebreak.wav', {
+        volume: 0.0065,
+        rate: 2.0
+    });
     var dodgeSound = gameUtils.getSound('shane_dodge.mp3', {
         volume: 0.4,
         rate: 1
@@ -653,7 +657,7 @@ export default function Marine(options) {
                 name: 'shock',
                 icon: graphicsUtils.createDisplayObject('RamIcon'),
                 title: 'Shock',
-                description: 'Petrify and deal 5 damage to unit by dashing into it.',
+                description: ['Petrify unit for 4 seconds by dashing into it.', 'Deal 5 damage to unit by dashing into it.'],
                 damage: 5,
                 petrifyDuration: 4000,
                 collector: {
@@ -667,7 +671,7 @@ export default function Marine(options) {
                 name: 'blitz',
                 icon: graphicsUtils.createDisplayObject('BlitzIcon'),
                 title: 'Blitz',
-                description: 'Increase dash length and increase movement speed upon dashing for 1 second.',
+                description: ['Increase dash length.', 'Increase movement speed upon dashing for 1 second.'],
                 moveSpeedIncrease: 1.0,
                 dashFactor: 1.5,
                 collector: {
@@ -698,6 +702,8 @@ export default function Marine(options) {
         var multiThrowAugment = thisAbility.isAugmentEnabled('multi throw');
         var pierceAugment = thisAbility.isAugmentEnabled('pierce');
         var poisonTipAugment = thisAbility.isAugmentEnabled('poison tip');
+        var friendlyFireAugment = thisAbility.isAugmentEnabled('friendly fire');
+        var leftoverShardAugment = thisAbility.isAugmentEnabled('leftover shards');
 
         if (!childKnife && multiThrowAugment) {
             var distance = mathArrayUtils.distanceBetweenPoints(destination, this.position);
@@ -801,10 +807,80 @@ export default function Marine(options) {
         knifeThrowSound.play();
         knife.deltaTime = this.body.deltaTime;
         knife.destination = destination;
+
+        if(leftoverShardAugment) {
+            Matter.Events.on(knife, 'onremove', function() {
+                if(!knife.canLeaveShards) return;
+                var shard = Matter.Bodies.circle(knife.position.x, knife.position.y + 20, 8, {
+                    isSensor: true,
+                    noWire: true,
+                });
+
+                globals.currentGame.addBody(shard);
+                knifeBreakSound.play();
+                shard.isShard = true;
+                var shardImage = graphicsUtils.addSomethingToRenderer('Shards', 'stage', {
+                    position: {
+                        x: this.position.x,
+                        y: this.position.y + 20
+                    },
+                    scale: {x: mathArrayUtils.flipCoin() ? -1 : 1, y: 1}
+                });
+                graphicsUtils.flashSprite({
+                    sprite: shardImage
+                });
+
+                gameUtils.deathPact(shard, shardImage);
+
+                Matter.Events.trigger(globals.currentGame, 'LevelLocalEntityCreated', {
+                    entity: shard
+                });
+
+                Matter.Events.on(shard, 'onCollide', function(pair) {
+                    if (shard.alreadyActivated) {
+                        return;
+                    }
+
+                    var otherBody = pair.pair.bodyB == shard ? pair.pair.bodyA : pair.pair.bodyB;
+                    var otherUnit = otherBody.unit;
+                    if (otherUnit && otherUnit.team != self.team) {
+                        shard.alreadyActivated = true;
+                        Matter.Events.trigger(globals.currentGame, leftoverShardsCollectorEventName, {
+                            value: leftoverShardAugment.damage
+                        });
+                        otherUnit.sufferAttack(leftoverShardAugment.damage, marine);
+                        var bloodPierceAnimation = gameUtils.getAnimation({
+                            spritesheetName: 'UtilityAnimations1',
+                            animationName: 'pierce',
+                            speed: 0.95,
+                            transform: [shard.position.x, shard.position.y, 0.45, 0.45]
+                        });
+                        knifeImpactSound.play();
+                        bloodPierceAnimation.play();
+                        graphicsUtils.addSomethingToRenderer(bloodPierceAnimation, 'foreground');
+                        graphicsUtils.fadeSpriteOverTime({
+                            sprite: shardImage,
+                            duration: 300,
+                            callback: function() {
+                                globals.currentGame.removeBody(shard);
+                            }
+                        });
+                    }
+                }.bind(this));
+            });
+        }
+
         gameUtils.sendBodyToDestinationAtSpeed(knife, destination, marine.knifeSpeed, true, true);
         var removeSelf = globals.currentGame.addTickCallback(function() {
-            if (gameUtils.bodyRanOffStage(knife)) {
-                globals.currentGame.removeBody(knife);
+            if(leftoverShardAugment) {
+                if (gameUtils.bodyRanOffStage(knife, null, 17, -52, -32, 35)) {
+                    knife.canLeaveShards = true;
+                    globals.currentGame.removeBody(knife);
+                }
+            } else {
+                if (gameUtils.bodyRanOffStage(knife)) {
+                    globals.currentGame.removeBody(knife);
+                }
             }
         });
         gameUtils.deathPact(knife, removeSelf);
@@ -879,6 +955,9 @@ export default function Marine(options) {
                 }
 
                 if (otherUnit.isDead) {
+                    if(leftoverShardAugment) {
+                        knife.canLeaveShards = true;
+                    }
                     Matter.Events.trigger(this, 'knifeKill');
                     Matter.Events.trigger(globals.currentGame, 'knifeKill', {
                         performingUnit: this
@@ -908,6 +987,18 @@ export default function Marine(options) {
                 } else {
                     globals.currentGame.removeBody(knife);
                 }
+            } else if(otherUnit && otherUnit.team == this.team && otherUnit != self && friendlyFireAugment) {
+                if(self.friendlyFireApply == 'health') {
+                    otherUnit.applyHealthGem({duration: friendlyFireAugment.duration, id: 'friendlyFireHealth'});
+                    self.friendlyFireApply = 'energy';
+                } else {
+                    otherUnit.applyEnergyGem({duration: friendlyFireAugment.duration, id: 'friendlyFireEnergy'});
+                    self.friendlyFireApply = 'health';
+                }
+
+                Matter.Events.trigger(globals.currentGame, friendlyFireCollectorEventName, {
+                    value: 1
+                });
             }
 
             if (otherBody.isMine) {
@@ -937,6 +1028,8 @@ export default function Marine(options) {
     var piercingKnifeCollectorEventName = 'piercingKnifeCollector';
     var poisonKnifeCollectorEventName = 'poisonKnifeCollector';
     var multiThrowCollectorEventName = 'multiThrowKnifeCollector';
+    var friendlyFireCollectorEventName = 'friendlyFireKnifeCollector';
+    var leftoverShardsCollectorEventName = 'leftoverShardsCollector';
     var knifeAbility = new Ability({
         name: 'Throw Knife',
         key: 'f',
@@ -998,6 +1091,34 @@ export default function Marine(options) {
                     eventName: multiThrowCollectorEventName,
                     presentation: {
                         labels: ["Auxiliary knife damage"],
+                        formats: "fixed1"
+                    }
+                }
+            },
+            {
+                name: 'friendly fire',
+                duration: 2000,
+                icon: graphicsUtils.createDisplayObject('FriendlyFireIcon'),
+                title: 'Friendly Fire',
+                description: 'Grant allies health/energy gems for 2 seconds by hitting them with a knife.',
+                systemMessage: 'Health and energy gems are granted alternately.',
+                collector: {
+                    eventName: friendlyFireCollectorEventName,
+                    presentation: {
+                        labels: ["Gems granted"]
+                    }
+                }
+            },
+            {
+                name: 'leftover shards',
+                damage: 8,
+                icon: graphicsUtils.createDisplayObject('LeftoverShardsIcon'),
+                title: 'Leftover Shards',
+                description: 'Knives leave behind shards, dealing 8 damage upon collision.',
+                collector: {
+                    eventName: leftoverShardsCollectorEventName,
+                    presentation: {
+                        labels: ["Shard damage"],
                         formats: "fixed1"
                     }
                 }
@@ -1609,6 +1730,7 @@ export default function Marine(options) {
         energy: 20,
         energyRegenerationRate: 0.5,
         healthRegenerationRate: 1,
+        friendlyFireApply: 'health',
         portrait: graphicsUtils.createDisplayObject('MarinePortrait'),
         wireframe: graphicsUtils.createDisplayObject('MarineGroupPortrait'),
         graveSpriteName: 'MarineGrave',
@@ -1758,7 +1880,7 @@ export default function Marine(options) {
         radius: options.radius || 25,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [dashSound, dodgeSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
+        slaves: [dashSound, dodgeSound, knifeBreakSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
             poisonSound, criticalHitSound, yeahsound, healsound, manaHealSound, unitProperties.wireframe, unitProperties.portrait
         ],
         unit: unitProperties,

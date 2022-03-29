@@ -572,7 +572,7 @@ export default function Medic(options) {
                         duration: 3000,
                         stunningUnit: medic
                     });
-                    otherUnit.sufferAttack(8, medic);
+                    otherUnit.sufferAttack(10, medic);
                     var bloodPierceAnimation = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'pierce',
@@ -753,7 +753,7 @@ export default function Medic(options) {
                 title: 'Caltrop',
                 duration: 3000,
                 description: 'Drop a caltrop upon vanishing.',
-                systemMessage: 'A caltrop stuns and deals 8 damage to enemies.',
+                systemMessage: 'A caltrop stuns and deals 10 damage to enemies.',
                 collector: {
                     eventName: ctCollEventName,
                     presentation: {
