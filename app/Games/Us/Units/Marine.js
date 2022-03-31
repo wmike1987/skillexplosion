@@ -819,12 +819,12 @@ export default function Marine(options) {
                 globals.currentGame.addBody(shard);
                 knifeBreakSound.play();
                 shard.isShard = true;
-                var shardImage = graphicsUtils.addSomethingToRenderer('Shards', 'stage', {
+                var shardImage = graphicsUtils.addSomethingToRenderer('Shards', 'stageNOne', {
                     position: {
                         x: this.position.x,
                         y: this.position.y + 20
                     },
-                    scale: {x: mathArrayUtils.flipCoin() ? -1 : 1, y: 1}
+                    scale: {x: mathArrayUtils.flipCoin() ? -1 : 1, y: 1},
                 });
                 graphicsUtils.flashSprite({
                     sprite: shardImage
@@ -1111,10 +1111,10 @@ export default function Marine(options) {
             },
             {
                 name: 'leftover shards',
-                damage: 8,
+                damage: 10,
                 icon: graphicsUtils.createDisplayObject('LeftoverShardsIcon'),
                 title: 'Leftover Shards',
-                description: 'Knives leave behind shards, dealing 8 damage upon collision.',
+                description: 'Knives leave behind shards, dealing 10 damage upon collision.',
                 collector: {
                     eventName: leftoverShardsCollectorEventName,
                     presentation: {
@@ -1496,11 +1496,12 @@ export default function Marine(options) {
     });
 
     var cpADuration = 4000;
+    var cpRange = 180;
     var clearPerspective = new Passive({
         title: 'Clear Perspective',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Double rifle range for 4 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Add 180 to rifle range for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
-        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Double rifle range for 10 seconds.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Add 180 to rifle range for 10 seconds.'],
         textureName: 'ClearPerspective',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1526,10 +1527,9 @@ export default function Marine(options) {
             };
         },
         aggressionAction: function(event) {
-            var currentRange = marine.range;
             marine.applyRangeBuff({
                 duration: cpADuration,
-                amount: currentRange
+                amount: cpRange
             });
 
             return {

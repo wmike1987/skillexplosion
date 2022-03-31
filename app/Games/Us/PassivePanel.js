@@ -311,6 +311,8 @@ ConfigPanel.prototype.lowerOpenButton = function() {
         this.showButtonGlass.scale = {x: 0.3, y: 1.1};
         this.showButtonSkinny.visible = true;
     }
+
+    this.registerPassiveImpeder(this.showButtonSkinny);
 };
 
 ConfigPanel.prototype.hideOpenButton = function() {
@@ -320,6 +322,8 @@ ConfigPanel.prototype.hideOpenButton = function() {
     this.showButtonGlass.state = "hidden";
     this.showButtonSkinny.visible = false;
     this.showButtonSkinny.state = "hidden";
+
+    this.deregisterPassiveImpeder();
 };
 
 ConfigPanel.prototype.liftOpenButton = function() {
@@ -336,6 +340,25 @@ ConfigPanel.prototype.liftOpenButton = function() {
     this.showButtonGlass.scale = {x: 1.00, y: 1.00};
 
     this.showButtonSkinny.visible = false;
+
+    this.registerPassiveImpeder();
+};
+
+ConfigPanel.prototype.registerPassiveImpeder = function(widget) {
+    widget = widget || this.showButton;
+    let impederOpts = {
+        x: mathArrayUtils.scaleScreenValueToWorldCoordinate(widget.getBounds().left),
+        y: mathArrayUtils.scaleScreenValueToWorldCoordinate(widget.getBounds().top),
+        width: mathArrayUtils.scaleScreenValueToWorldCoordinate(widget.width),
+        height: mathArrayUtils.scaleScreenValueToWorldCoordinate(widget.height),
+        id: 'passiveImpeder'
+    };
+
+    globals.currentGame.unitSystem.registerClickImpeder(mathArrayUtils.getImpeder(impederOpts));
+};
+
+ConfigPanel.prototype.deregisterPassiveImpeder = function() {
+    globals.currentGame.unitSystem.deregisterClickImpeder('passiveImpeder');
 };
 
 ConfigPanel.prototype.collidesWithPoint = function(point) {

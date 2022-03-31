@@ -253,7 +253,7 @@ HelpMenu.prototype.initialize = function() {
 
     //default pages
     var BuffPage1 = new Page({
-        title: 'Buff/Debuff Key',
+        title: 'Buff Key (1/3)',
         lineBuffer: 40,
         titleLineBuffer: 20
     });
@@ -265,11 +265,11 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage1.addLine({
-        text: 'Immobilizes unit. Unit becomes immune to normal attacks but',
+        text: 'Immobilizes unit. Unit becomes immune to normal',
         continuation: true
     });
     BuffPage1.addLine({
-        text: 'takes 2x ability damage.'
+        text: 'attacks but takes 2x ability damage.'
     });
 
     BuffPage1.addLineTitle({
@@ -324,7 +324,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage1.addLine({
-        text: 'Add multiplier to attack speed.'
+        text: 'Adds multiplier to attack speed.'
     });
 
     BuffPage1.addLineTitle({
@@ -335,7 +335,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage1.addLine({
-        text: 'Slows unit and reduces armor to 0.'
+        text: 'Slows unit.'
     });
 
     BuffPage1.addLineTitle({
@@ -350,24 +350,47 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage1.addLineTitle({
-        text: 'Dodge',
-        image: 'DodgeBuff',
+        text: 'Soften',
+        image: 'SoftenBuff',
         imageOffset: {
             x: -6
         }
     });
     BuffPage1.addLine({
-        text: 'Increases dodge.'
+        text: 'Decreases unit armor to 0.'
     });
 
     this.addPage(BuffPage1);
 
     //default pages
     var BuffPage2 = new Page({
-        title: 'Buff/Debuff Cont...',
+        title: 'Buffs Cont... (2/3)',
         lineBuffer: 40,
         titleLineBuffer: 20
     });
+
+    BuffPage2.addLineTitle({
+        text: 'Dodge',
+        image: 'DodgeBuff',
+        imageOffset: {
+            x: -6
+        }
+    });
+    BuffPage2.addLine({
+        text: 'Increases dodge.'
+    });
+
+    BuffPage2.addLineTitle({
+        text: 'Sure Dodge',
+        image: 'SureDodgeBuff',
+        imageOffset: {
+            x: -6
+        }
+    });
+    BuffPage2.addLine({
+        text: 'Grants 100% chance to dodge the next attack.'
+    });
+
     BuffPage2.addLineTitle({
         text: 'Free Mine',
         image: 'MineBuff',
@@ -376,7 +399,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage2.addLine({
-        text: 'Next mine costs 0 energy.'
+        text: 'Changes cost of next mine to 0 energy.'
     });
 
     BuffPage2.addLineTitle({
@@ -387,7 +410,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage2.addLine({
-        text: 'Next vanish costs 0 energy.'
+        text: 'Changes cost of next vanish to 0 energy.'
     });
 
     BuffPage2.addLineTitle({
@@ -398,7 +421,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage2.addLine({
-        text: 'Next knife costs 0 energy.'
+        text: 'Changes cost of next knife to 0 energy.'
     });
 
     BuffPage2.addLineTitle({
@@ -424,6 +447,17 @@ HelpMenu.prototype.initialize = function() {
     });
 
     BuffPage2.addLineTitle({
+        text: 'Plague Gem',
+        image: 'PlagueBuff',
+        imageOffset: {
+            x: -6
+        }
+    });
+    BuffPage2.addLine({
+        text: 'Prevents health and energy regeneration.'
+    });
+
+    BuffPage2.addLineTitle({
         text: 'Rush of Blood',
         image: 'RushOfBloodBuff',
         imageOffset: {
@@ -434,29 +468,53 @@ HelpMenu.prototype.initialize = function() {
         text: 'Doubles healing received by unit.'
     });
 
-    BuffPage2.addLineTitle({
+    this.addPage(BuffPage2);
+
+    //default pages
+    var BuffPage3 = new Page({
+        title: 'Buffs Cont... (3/3)',
+        lineBuffer: 40,
+        titleLineBuffer: 20
+    });
+
+    BuffPage3.addLineTitle({
         text: 'Spiritual State',
         image: 'SpiritualStateBuff',
         imageOffset: {
             x: -6
         }
     });
-    BuffPage2.addLine({
+    BuffPage3.addLine({
         text: 'Grants energy per hp received.'
     });
 
-    BuffPage2.addLineTitle({
+    BuffPage3.addLineTitle({
         text: 'Condemn',
         image: 'CondemnBuff',
         imageOffset: {
             x: -6
         }
     });
-    BuffPage2.addLine({
+    BuffPage3.addLine({
         text: 'Death of condemned unit heals condemning unit.'
     });
 
-    this.addPage(BuffPage2);
+    BuffPage3.addLineTitle({
+        text: 'Accuse',
+        image: 'DoomBuff',
+        imageOffset: {
+            x: -6
+        }
+    });
+    BuffPage3.addLine({
+        text: 'Death of accused unit either heals accusing unit',
+        continuation: true
+    });
+    BuffPage3.addLine({
+        text: 'or grants a killing blow block..'
+    });
+
+    this.addPage(BuffPage3);
 
     //default page 2
     var HotkeyPage = new Page({
@@ -468,7 +526,7 @@ HelpMenu.prototype.initialize = function() {
         text: 'Alt'
     });
     HotkeyPage.addLine({
-        text: 'Display unit health/energy bars.'
+        text: 'Display unit health/energy bars. Show item titles.'
     });
 
     HotkeyPage.addLineTitle({

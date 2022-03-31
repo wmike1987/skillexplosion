@@ -27,7 +27,7 @@ var mathArrayUtils = {
     },
 
     scalePositionToScreenCoordinates: function(position) {
-        if(position) {
+        if (position) {
             return {
                 x: this.scaleValueToScreenCoordinates(position.x),
                 y: this.scaleValueToScreenCoordinates(position.y)
@@ -40,7 +40,7 @@ var mathArrayUtils = {
     },
 
     scaleScreenPositionToWorldPosition: function(position) {
-        if(position) {
+        if (position) {
             return {
                 x: this.scaleScreenValueToWorldCoordinate(position.x),
                 y: this.scaleScreenValueToWorldCoordinate(position.y)
@@ -118,8 +118,8 @@ var mathArrayUtils = {
     },
 
     reverseForEach: function(array, func) {
-        let len = array.length-1;
-        for(var x = len; x >= 0; x--) {
+        let len = array.length - 1;
+        for (var x = len; x >= 0; x--) {
             func(array[x], x);
         }
     },
@@ -310,6 +310,32 @@ var mathArrayUtils = {
     angleBetweenTwoVectors: function(vecA, vecB) {
         return Math.acos((Matter.Vector.dot(vecA, vecB)) / (Matter.Vector.magnitude(vecA) * Matter.Vector.magnitude(vecB)));
     },
+
+    getImpeder: function(options) {
+        var impeder = {
+            id: options.id,
+            x: options.x,
+            y: options.y,
+            width: options.width,
+            height: options.height,
+        };
+        impeder.impedesPoint = function(point) {
+            let impeded = true;
+            let pointX = point.x;
+            let pointY = point.y;
+
+            if(pointX < this.x || pointX > this.x + this.width) {
+                impeded = false;
+            }
+            if(pointY < this.y || pointY > this.y + this.height) {
+                impeded = false;
+            }
+
+            return impeded;
+        };
+
+        return impeder;
+    }
 };
 
 //aliases

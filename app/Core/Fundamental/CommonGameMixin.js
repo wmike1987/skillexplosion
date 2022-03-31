@@ -14,7 +14,9 @@ import {
     UnitSystem,
     UnitSystemAssets
 } from '@core/Unit/UnitSystem.js';
-import {Scene} from '@core/Scene.js';
+import {
+    Scene
+} from '@core/Scene.js';
 import ItemSystem from '@core/Unit/ItemSystem.js';
 import CommonGameStarter from '@core/Fundamental/CommonGameStarter.js';
 import {
@@ -172,8 +174,13 @@ var common = {
         $('body').on('mousemove', function(event) {
             //figure out mouse position and scale based on screen resolution scale factor
             var rect = this.canvasEl.getBoundingClientRect();
-            this.mousePosition.x = (event.clientX - rect.left) / this.renderer.screenScaleFactor;
-            this.mousePosition.y = (event.clientY - rect.top) / this.renderer.screenScaleFactor;
+            let position = mathArrayUtils.scaleScreenPositionToWorldPosition({
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            });
+
+            this.mousePosition.x = position.x;
+            this.mousePosition.y = position.y;
 
             // console.info(this.mousePosition.x + '-' + this.mousePosition.y);
             this.debugObj.playableCenterOffset = {
@@ -498,13 +505,17 @@ var common = {
             }
 
             if (keyStates.Alt) {
-                if(globals.currentGame.slotTracker == null) {
+                if (globals.currentGame.slotTracker == null) {
                     globals.currentGame.slotTracker = -1;
                 }
                 globals.currentGame.slotTracker += 1;
                 var unitInQuestion = globals.currentGame.unitSystem.selectedUnit;
                 if (event.key == 'v' || event.key == 'V') {
-                    globals.currentGame.ursula.alterHealingColor({r: 1, g: 0.2, b: 0.5});
+                    globals.currentGame.ursula.alterHealingColor({
+                        r: 1,
+                        g: 0.2,
+                        b: 0.5
+                    });
                     // $.each(unitInQuestion.body.renderlings, function(key, renderling) {
                     //     if(renderling.skeleton) {
                     //         let rendTracker = globals.currentGame.slotTracker;
@@ -521,9 +532,9 @@ var common = {
 
                 if (event.key == 'b' || event.key == 'B') {
                     $.each(unitInQuestion.body.renderlings, function(key, renderling) {
-                        if(renderling.skeleton) {
+                        if (renderling.skeleton) {
                             $.each(renderling.skeleton.slots, function(i, slot) {
-                                slot.customColor = null;//{r: 0.2, g: 0.4, b: 1.0, a: 1.0};
+                                slot.customColor = null; //{r: 0.2, g: 0.4, b: 1.0, a: 1.0};
                             });
                         }
                     });
@@ -533,7 +544,9 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                    unitUtils.addRandomAugmentToAbility({unit: this.shane});
+                    unitUtils.addRandomAugmentToAbility({
+                        unit: this.shane
+                    });
                     // if(!this.cursorId) {
                     //     this.cursorId = 1;
                     // }
@@ -585,14 +598,16 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'm' || event.key == 'M') {
                     console.info(this.mousePosition);
-                    this.shane.stun({duration: 1000});
+                    this.shane.stun({
+                        duration: 1000
+                    });
                 }
             }
 
             if (keyStates.Alt) {
                 if (event.key == 'u' || event.key == 'U') {
                     //unit tester
-                    if(true) {
+                    if (true) {
                         var unitT = UnitMenu.createUnit(this.debugUnitName || 'Eruptlet', {
                             team: this.enemyTeam,
                             // team: this.playerTeam,
@@ -601,7 +616,10 @@ var common = {
 
 
                         // unitT.body.drawWire = true;
-                        unitT.position = {x: 500, y: 400};
+                        unitT.position = {
+                            x: 500,
+                            y: 400
+                        };
                         unitT.moveSpeed = 0.0001;
                         // gameUtils.moveUnitOffScreen(unitT);
                         this.addUnit(unitT);
@@ -701,7 +719,7 @@ var common = {
                     value.immediateStart = false;
                 }
 
-                if(value.mimicry) {
+                if (value.mimicry) {
                     value.timeElapsed = value.mimicry;
                     value.isMimicing = true;
                 }
@@ -709,7 +727,7 @@ var common = {
                 //if we past our active time limit, execute the callbacks
                 while (value.activeTimeLimit <= value.timeElapsed && value.runs > 0 && !value.invalidated) {
                     value.executeCallbacks();
-                    if(value.isMimicing) {
+                    if (value.isMimicing) {
                         value.mimicLeft = value.timeElapsed;
                     }
                 }
@@ -1417,7 +1435,7 @@ var common = {
 
     debounceFunction: function(func, id) {
         id = id || func;
-        if(this.debouncedCalls[id]) {
+        if (this.debouncedCalls[id]) {
             return;
         }
 
@@ -1535,8 +1553,7 @@ var common = {
 
         if (options.invincible) {
             this.invincibleTickCallbacks.push(tickDeltaWrapper);
-        }
-        else {
+        } else {
             this.tickCallbacks.push(tickDeltaWrapper);
         }
         Matter.Events.on(this.engine.runner, options.eventName || 'tick' /*'afterUpdate'*/ , tickDeltaWrapper);

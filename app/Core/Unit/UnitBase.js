@@ -45,6 +45,10 @@ var condemnSound2 = gameUtils.getSound('condemn.wav', {
     volume: 0.05,
     rate: 1.5
 });
+var doomSound = gameUtils.getSound('condemn.wav', {
+    volume: 0.05,
+    rate: 1.8
+});
 var buffSound = gameUtils.getSound('buffcreate.wav', {
     volume: 0.015,
     rate: 1.0
@@ -103,6 +107,7 @@ var UnitBase = {
     isStunned: 0,
     isPetrified: 0,
     condemnedLifeGain: 10,
+    doomedHealthLifeGain: 5,
     currentExperience: 0,
     nextLevelExp: 100,
     lastLevelExp: 0,
@@ -111,6 +116,7 @@ var UnitBase = {
     energyRegenerationMultiplier: 1,
     healthRegenerationRate: 0,
     healthRegenerationMultiplier: 1,
+    plagueCount: 0,
     maxEnergy: 0,
     currentEnergy: 0,
     energyFadeBars: [],
@@ -1725,11 +1731,11 @@ var UnitBase = {
     },
 
     getTotalHealthRegeneration: function() {
-        return this.healthRegenerationRate * this.gritMult * this.healthRegenerationMultiplier;
+        return this.healthRegenerationRate * this.gritMult * this.healthRegenerationMultiplier * (this.plagueCount ? 0 : 1);
     },
 
     getTotalEnergyRegeneration: function() {
-        return this.energyRegenerationRate * this.energyRegenerationMultiplier;
+        return this.energyRegenerationRate * this.energyRegenerationMultiplier * (this.plagueCount ? 0 : 1);
     },
 
     addFilter: function(filter, filterArea) {
@@ -1854,6 +1860,35 @@ var UnitBase = {
         });
     },
 
+    applySoftenBuff: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = -2000;
+        let callback = options.callback;
+        let id = options.id || "SoftenBuff" + mathArrayUtils.getId();
+
+        var unit = this;
+        unit.applyBuff({
+            id: id,
+            textureName: 'SoftenBuff',
+            duration: duration,
+            applyChanges: function() {
+                unit.addDefenseAddition(amount);
+            },
+            removeChanges: function() {
+                if(callback) {
+                    callback();
+                }
+                unit.removeDefenseAddition(amount);
+            }
+        });
+
+        Matter.Events.trigger(this, 'applySoftenBuff', {
+            targetUnit: this,
+            id: id
+        });
+    },
+
     enrage: function(options) {
         options = options || {};
         let duration = options.duration;
@@ -1952,6 +1987,192 @@ var UnitBase = {
         });
     },
 
+    applySureDodgeBuff: function(options) {
+        options = options || {};
+        let duration = options.duration || 999999;
+        let amount = options.amount;
+        let callback = options.callback;
+        let id = options.id || "SureDodgeBuff" + mathArrayUtils.getId();
+
+        var unit = this;
+        unit.applyBuff({
+            id: id,
+            textureName: 'SureDodgeBuff',
+            duration: duration,
+            applyChanges: function() {
+                var self = this;
+                gameUtils.matterOnce(unit, 'preDodgeSufferAttack', function(event) {
+                    let myBuff = self.buffs[id];
+                    if(myBuff) {
+                        myBuff.removeBuff();
+                        event.attackContext.dodgeManipulator = function() {
+                            return 100;
+                        };
+                    }
+                });
+
+            },
+            removeChanges: function() {
+            }
+        });
+
+        Matter.Events.trigger(this, 'applySureDodgeBuff', {
+            targetUnit: this,
+            id: id
+        });
+    },
+
+    doom: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let doomingUnit = options.doomingUnit;
+
+        var unit = this;
+        if (unit.isDead) {
+            return;
+        }
+
+        var buffName = 'doom';
+        condemnSound.play();
+        var handler;
+        this.applyBuff({
+            id: buffName,
+            unit: this,
+            textureName: 'DoomBuff',
+            playSound: false,
+            duration: duration || 2000,
+            applyChanges: function() {
+                var doomed = this;
+                handler = gameUtils.matterOnce(this, 'death', function() {
+                    if (doomingUnit.isDead) {
+                        return;
+                    }
+
+                    var deathanim = gameUtils.getAnimation({
+                        spritesheetName: 'UtilityAnimations1',
+                        animationName: 'crossslash',
+                        speed: 0.65,
+                        transform: [doomed.position.x, doomed.position.y, 0.3, 0.3]
+                    });
+                    deathanim.play();
+                    graphicsUtils.addSomethingToRenderer(deathanim, 'foreground');
+
+                    //spawn projectile
+                    var combospiritAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'MedicAnimations2',
+                        animationName: 'combospirit',
+                        speed: 1.0,
+                        loop: true,
+                        transform: [doomed.position.x, doomed.position.y, 1.5, 1.5]
+                    });
+                    combospiritAnimation.tint = 0xd8dd04;
+                    combospiritAnimation.play();
+                    var projectileOptions = {
+                        damage: 0,
+                        speed: 8.0,
+                        displayObject: combospiritAnimation,
+                        tracking: true,
+                        target: doomingUnit,
+                        owningUnit: doomed,
+                        impactType: 'collision',
+                        collisionFunction: function(otherUnit) {
+                            return otherUnit == doomingUnit;
+                        },
+                        originOffset: 0,
+
+                        autoSend: true,
+                        impactFunction: function(target) {
+                            var position1 = doomingUnit.position;
+                            var offset2 = {
+                                x: Math.random() * 40 - 20,
+                                y: Math.random() * 40 - 20
+                            };
+                            var offset3 = {
+                                x: Math.random() * 40 - 20,
+                                y: Math.random() * 40 - 20
+                            };
+                            var doomNote1 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
+                                where: 'stageTwo',
+                                position: position1,
+                                scale: {
+                                    x: 0.8,
+                                    y: 0.8
+                                }
+                            });
+                            var doomNote2 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
+                                where: 'stageTwo',
+                                position: position1,
+                                scale: {
+                                    x: 0.8,
+                                    y: 0.8
+                                }
+                            });
+                            var doomNote3 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
+                                where: 'stageTwo',
+                                position: position1,
+                                scale: {
+                                    x: 0.8,
+                                    y: 0.8
+                                }
+                            });
+                            gameUtils.attachSomethingToBody({
+                                something: doomNote1,
+                                body: doomingUnit.body
+                            });
+                            gameUtils.attachSomethingToBody({
+                                something: doomNote2,
+                                body: doomingUnit.body,
+                                offset: offset2
+                            });
+                            gameUtils.attachSomethingToBody({
+                                something: doomNote3,
+                                body: doomingUnit.body,
+                                offset: offset3
+                            });
+                            graphicsUtils.floatSprite(doomNote1, {
+                                runs: 45
+                            });
+                            graphicsUtils.floatSprite(doomNote2, {
+                                runs: 50
+                            });
+                            graphicsUtils.floatSprite(doomNote3, {
+                                runs: 65
+                            });
+
+                            if(doomingUnit.hasGritDodge) {
+                                var healthGained = doomingUnit.giveHealth(doomingUnit.doomedHealthLifeGain, doomingUnit);
+                                if(options.onHealingRecieved) {
+                                    options.onHealingRecieved({healingReceived: healthGained});
+                                }
+                                healSound.play();
+                            } else {
+                                doomingUnit.giveGritDodge(true);
+                            }
+                            gameUtils.doSomethingAfterDuration(() => {
+                                doomSound.play();
+                            }, 200);
+                        }
+                    };
+                    var projectile = new Projectile(projectileOptions);
+                    var dpfunction = function() {
+                        projectile.cleanUp();
+                    };
+                    gameUtils.deathPact(doomingUnit, dpfunction);
+                    Matter.Events.on(projectile, 'remove', () => {
+                        gameUtils.undeathPact(doomingUnit, dpfunction);
+                    });
+                });
+            },
+            removeChanges: function() {
+                handler.removeHandler();
+            }.bind(this)
+        });
+        Matter.Events.trigger(doomingUnit, 'doom', {
+            doomedUnit: unit,
+            doomingUnit: doomingUnit
+        });
+    },
+
     applyRangeBuff: function(options) {
         options = options || {};
         let duration = options.duration;
@@ -2037,6 +2258,25 @@ var UnitBase = {
         });
     },
 
+    applyPlagueGem: function(options) {
+        options = options || {};
+        var duration = options.duration;
+        var self = this;
+
+        this.applyBuff({
+            id: options.id || "plagueGem" + mathArrayUtils.getId(),
+            unit: this,
+            textureName: 'PlagueBuff',
+            duration: duration || 2000,
+            applyChanges: function() {
+                self.plagueCount += 1;
+            },
+            removeChanges: function() {
+                self.plagueCount -= 1;
+            }
+        });
+    },
+
     petrify: function(options) {
         options = options || {};
         let duration = options.duration;
@@ -2103,7 +2343,7 @@ var UnitBase = {
             return;
         }
         var movePenalty = 1.5;
-        var defensePenalty = -2000;
+        // var defensePenalty = -2000;
 
         var unit = this;
         var buffName = 'maim';
@@ -2116,11 +2356,11 @@ var UnitBase = {
             duration: duration || 2000,
             applyChanges: function() {
                 unit.moveSpeed -= movePenalty;
-                unit.addDefenseAddition(defensePenalty);
+                // unit.addDefenseAddition(defensePenalty);
             },
             removeChanges: function() {
                 unit.moveSpeed += movePenalty;
-                unit.removeDefenseAddition(defensePenalty);
+                // unit.removeDefenseAddition(defensePenalty);
             }
         });
 

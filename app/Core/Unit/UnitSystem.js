@@ -39,6 +39,8 @@ var UnitSystem = function(properties) {
 
         this.currentPointerCursor = 'Main';
 
+        this.clickImpeders = {};
+
         //just in case
         if (this.box)
             this.cleanUp();
@@ -463,6 +465,9 @@ var UnitSystem = function(properties) {
         //Mouse down event
         $('body').on('mousedown.unitSystem', function(event) {
             if (!this.active) return;
+            if(this.pointDoesImpede(mousePosition)) {
+                return;
+            }
 
             var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
 
@@ -718,6 +723,7 @@ var UnitSystem = function(properties) {
 
         $('body').on('mousemove.unitSystem', function(event) {
             if (!this.active) return;
+
             if (this.box.mouseDown && this.box.renderlings && !this.box.invalidateNextBox) {
                 //If we're just starting a box, clear pastHoveredUnitsHover. This is needed since we don't do hover logic while the
                 //selction box is active and simplicity's sake (and a bug), let's just reset all pending selections and let the
@@ -947,6 +953,10 @@ var UnitSystem = function(properties) {
         this.pastHoveredUnitsHover = [];
         globals.currentGame.addTickCallback(function(event) {
             if (!this.active) return;
+            if(this.pointDoesImpede(mousePosition)) {
+                return;
+            }
+
             if (!this.box.active) {
                 //if we have a perma, we won't act on hovering pending selections, so break here
                 if (this.box.permaPendingUnit) return;
@@ -1013,6 +1023,9 @@ var UnitSystem = function(properties) {
         var pastHoveredUnits = [];
         globals.currentGame.addTickCallback(function(event) {
             if (!this.active) return;
+            if(this.pointDoesImpede(mousePosition)) {
+                return;
+            }
 
             //Find bodies under mouse position, use vertice history if possible
             var bodies = [];
@@ -1469,63 +1482,79 @@ var UnitSystem = function(properties) {
         this.active = true;
     };
 
+    this.registerClickImpeder = function(zone) {
+        this.clickImpeders[zone.id] = zone;
+    };
+
+    this.deregisterClickImpeder = function(id) {
+        delete this.clickImpeders[id];
+    };
+
+    this.pointDoesImpede = function(point) {
+        var impeded = Object.values(this.clickImpeders).some((impeder) => {
+            return impeder.impedesPoint(point);
+        });
+
+        return impeded;
+    };
+
     /*
      * Cleanup any listeners we've created
      */
     this.cleanUp = function() {
 
-            //clear unit system events
-            Matter.Events.off(this);
+        //clear unit system events
+        Matter.Events.off(this);
 
-            //cleanup box stuff
-            if (this.box) {
-                Matter.Events.off(this.box);
-                Matter.Events.off(this.engine.world, this.bodyRemoveCallback);
-                Matter.Events.off(this, this.manualRemoveCallback);
-                globals.currentGame.removeBody(this.box);
-                this.box = null;
+        //cleanup box stuff
+        if (this.box) {
+            Matter.Events.off(this.box);
+            Matter.Events.off(this.engine.world, this.bodyRemoveCallback);
+            Matter.Events.off(this, this.manualRemoveCallback);
+            globals.currentGame.removeBody(this.box);
+            this.box = null;
+        }
+
+        //cleanup unit panel
+        if (this.unitPanel)
+            this.unitPanel.cleanUp();
+
+        //don't hold onto any bodies
+        this.selectedUnits = {};
+        this.orderedUnits = [];
+
+        //kill this timer
+        if (this.prevailingUnitCircle && this.prevailingUnitCircle.timer) {
+            globals.currentGame.invalidateTimer(this.prevailingUnitCircle.timer);
+        }
+
+        //clear jquery events
+        $('body').off('mousedown.unitSystem');
+        $('body').off('mousemove.unitSystem');
+        $('body').off('mouseup.unitSystem');
+        $('body').off('keydown.unitSystem');
+        $('body').off('keyup.unitSystem');
+        $('body').off('keypress.unitSystem');
+    };
+
+    //return units attached to the main selection body
+    this.convertBodiesToSelectionEnabledUnits = function(bodies, useSelectionBoxBody) {
+        bodies = $.grep(bodies, function(body) {
+            if (useSelectionBoxBody) {
+                //for selection box
+                return body.isSelectionBody && !body.isSmallerBody;
+            } else {
+                //use either the 'big body' or a specific isMoving and stationary body for mouse-overs (not box)
+                return (body.isSelectionBigBody || body.isMovingAndStationaryBody) && !body.isSmallerBody;
             }
+        });
 
-            //cleanup unit panel
-            if (this.unitPanel)
-                this.unitPanel.cleanUp();
+        bodies = $.map(bodies, function(body) {
+            return body.unit || body.unitRedirect;
+        });
 
-            //don't hold onto any bodies
-            this.selectedUnits = {};
-            this.orderedUnits = [];
-
-            //kill this timer
-            if (this.prevailingUnitCircle && this.prevailingUnitCircle.timer) {
-                globals.currentGame.invalidateTimer(this.prevailingUnitCircle.timer);
-            }
-
-            //clear jquery events
-            $('body').off('mousedown.unitSystem');
-            $('body').off('mousemove.unitSystem');
-            $('body').off('mouseup.unitSystem');
-            $('body').off('keydown.unitSystem');
-            $('body').off('keyup.unitSystem');
-            $('body').off('keypress.unitSystem');
-        };
-
-        //return units attached to the main selection body
-        this.convertBodiesToSelectionEnabledUnits = function(bodies, useSelectionBoxBody) {
-            bodies = $.grep(bodies, function(body) {
-                if (useSelectionBoxBody) {
-                    //for selection box
-                    return body.isSelectionBody && !body.isSmallerBody;
-                } else {
-                    //use either the 'big body' or a specific isMoving and stationary body for mouse-overs (not box)
-                    return (body.isSelectionBigBody || body.isMovingAndStationaryBody) && !body.isSmallerBody;
-                }
-            });
-
-            bodies = $.map(bodies, function(body) {
-                return body.unit || body.unitRedirect;
-            });
-
-            return bodies;
-        };
+        return bodies;
+    };
 };
 
 export {

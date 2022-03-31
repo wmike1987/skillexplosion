@@ -447,6 +447,24 @@ ConfigPanel.prototype.lowerOpenButton = function() {
             y: gameUtils.getPlayableHeight() + this.configButtonGlassHeight / 2.5
         };
     }
+
+    this.registerAugmentImpeder();
+};
+
+ConfigPanel.prototype.registerAugmentImpeder = function() {
+    let impederOpts = {
+        x: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.showButton.getBounds().left),
+        y: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.showButton.getBounds().top),
+        width: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.showButton.width),
+        height: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.showButton.height),
+        id: 'augmentImpeder'
+    };
+
+    globals.currentGame.unitSystem.registerClickImpeder(mathArrayUtils.getImpeder(impederOpts));
+};
+
+ConfigPanel.prototype.deregisterAugmentImpeder = function() {
+    globals.currentGame.unitSystem.deregisterClickImpeder('augmentImpeder');
 };
 
 ConfigPanel.prototype.hideOpenButton = function() {
@@ -454,6 +472,8 @@ ConfigPanel.prototype.hideOpenButton = function() {
     this.showButton.state = "hidden";
     this.showButtonGlass.visible = false;
     this.showButtonGlass.state = "hidden";
+
+    this.deregisterAugmentImpeder();
 };
 
 ConfigPanel.prototype.liftOpenButton = function() {
@@ -492,6 +512,8 @@ ConfigPanel.prototype.liftOpenButton = function() {
         x: 1.00,
         y: 1.00
     };
+
+    this.registerAugmentImpeder();
 };
 
 ConfigPanel.prototype.collidesWithPoint = function(point) {

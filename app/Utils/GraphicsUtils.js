@@ -91,11 +91,14 @@ var graphicsUtils = {
     },
 
     //We'll add if needed, and always set visible to true since the intention of this method is to show something
-    addOrShowDisplayObject: function(displayObject) {
+    addOrShowDisplayObject: function(displayObject, alpha) {
         if (!displayObject.parent) {
             this.addDisplayObjectToRenderer(displayObject);
         }
         displayObject.visible = true;
+        if(alpha) {
+            displayObject.alpha = alpha;
+        }
         Matter.Events.trigger(displayObject, 'addOrShowDisplayObject');
     },
 

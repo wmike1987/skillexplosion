@@ -572,7 +572,7 @@ export default function Medic(options) {
                         duration: 3000,
                         stunningUnit: medic
                     });
-                    otherUnit.sufferAttack(10, medic);
+                    otherUnit.sufferAttack(12, medic);
                     var bloodPierceAnimation = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'pierce',
@@ -674,9 +674,9 @@ export default function Medic(options) {
                 var self = this;
                 if (softLandingAugment) {
                     var duration = softLandingAugment.duration;
-                    this.becomeHidden(duration);
+                    this.applySureDodgeBuff();
                     Matter.Events.trigger(globals.currentGame, slCollEventName, {
-                        value: duration / 1000
+                        value: 1
                     });
                 }
             }
@@ -733,27 +733,27 @@ export default function Medic(options) {
                     }
                 }
             },
-            // {
-            //     name: 'soft landing',
-            //     icon: graphicsUtils.createDisplayObject('SoftLanding'),
-            //     title: 'Soft Landing',
-            //     duration: 3000,
-            //     description: 'Become hidden for 3 seconds after vanishing.',
-            //     collector: {
-            //         eventName: slCollEventName,
-            //         presentation: {
-            //             labels: ["Time spent hidden"],
-            //             suffixes: ["seconds"]
-            //         }
-            //     }
-            // },
+            {
+                name: 'soft landing',
+                icon: graphicsUtils.createDisplayObject('SoftLanding'),
+                title: 'Soft Landing',
+                duration: 3000,
+                description: 'Gain two sure dodges upon landing.',
+                collector: {
+                    eventName: slCollEventName,
+                    presentation: {
+                        labels: ["Times activated"],
+                        suffixes: ["seconds"]
+                    }
+                }
+            },
             {
                 name: 'caltrop',
                 icon: graphicsUtils.createDisplayObject('CaltropIcon'),
                 title: 'Caltrop',
                 duration: 3000,
                 description: 'Drop a caltrop upon vanishing.',
-                systemMessage: 'A caltrop stuns and deals 10 damage to enemies.',
+                systemMessage: 'A caltrop stuns and deals 12 damage to enemies.',
                 collector: {
                     eventName: ctCollEventName,
                     presentation: {
@@ -1155,7 +1155,6 @@ export default function Medic(options) {
         augments: [{
                 name: 'pure priorities',
                 hpThreshold: 0.60,
-                hpGivenTally: 0,
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
                 description: ['Reduce healing cost to 0 when ally\'s life is below 60%.'], // 'Enrage ally for 3 seconds upon giving ' + continuousHealthNeeded + ' health.'],
@@ -1187,30 +1186,68 @@ export default function Medic(options) {
                 }
             },
             {
-                name: 'enriched formula',
-                icon: graphicsUtils.createDisplayObject('EnrichedFormula'),
-                title: 'Enriched Formula',
-                description: ['Grant ally berserk (1.5x multiplier) for 4 seconds upon giving 20 health.'],
+                name: 'formula e',
+                icon: graphicsUtils.createDisplayObject('FormulaE'),
+                title: 'Formula E',
+                amount: 4,
+                description: ['Grant ally enrage (+3) for 4 seconds upon giving 20 health.'],
                 equip: function(unit) {
-                    this.hpGivenTally = 0;
                     this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
-                        this.hpGivenTally = 0;
+                        medic.hpGivenTally = 0;
                     });
                 },
                 unequip: function(unit) {
                     Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
-                    medic.alterHealingColor(medic.normalHealingColor);
                 },
                 collector: {
-                    init: function() {
-                        this.enragesGranted = 0;
-                    },
+                    eventName: efCollEventName,
+                    presentation: {
+                        labels: ["Times enrage granted"]
+                    }
+                }
+            },
+            {
+                name: 'formula b',
+                icon: graphicsUtils.createDisplayObject('EnrichedFormula'),
+                title: 'Formula B',
+                description: ['Grant ally berserk (1.5x multiplier) for 4 seconds upon giving 20 health.'],
+                equip: function(unit) {
+                    this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
+                        medic.hpGivenTally = 0;
+                    });
+                },
+                unequip: function(unit) {
+                    Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
+                },
+                collector: {
                     eventName: efCollEventName,
                     presentation: {
                         labels: ["Times berserk granted"]
                     }
                 }
             },
+            {
+                name: 'formula r',
+                icon: graphicsUtils.createDisplayObject('FormulaR'),
+                title: 'Formula R',
+                range: 180,
+                description: ['Grant ally 180 range for 4 seconds upon giving 20 health.'],
+                equip: function(unit) {
+                    this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
+                        medic.hpGivenTally = 0;
+                    });
+                },
+                unequip: function(unit) {
+                    Matter.Events.off(globals.currentGame, 'EnterLevel', this.resetListener);
+                },
+                collector: {
+                    eventName: efCollEventName,
+                    presentation: {
+                        labels: ["Times range granted"]
+                    }
+                }
+            },
+
             // {
             //     name: 'Sacrifice',
             //     icon: graphicsUtils.createDisplayObject('Sacrifice'),
@@ -1892,6 +1929,7 @@ export default function Medic(options) {
         holdPositionSound: holdPositionSound,
         mineDamage: 20,
         damageLabel: "Heal",
+        hpGivenTally: 0,
         attackSpeedLabel: "Heal Speed",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
@@ -2033,15 +2071,37 @@ export default function Medic(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
+                ability.addAllAvailableAugments();
+            });
+
+            this.fullhpTallyMeterWidth = 30;
+            this.hpTallyMeter = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', anchor: {x: 0.5, y: 0.5}, alpha: 0.5});
+            this.hpTallyMeter.tint = 0xa9e449;
+            gameUtils.attachSomethingToBody({something: this.hpTallyMeter, body: this.body, offset: {x: 0, y: 34}});
+
+            this.hpTallyMeterBorder = graphicsUtils.createDisplayObject('TintableSquare', {sortYOffset: -1, where: 'foreground', anchor: {x: 0.5, y: 0.5}, alpha: 0.75});
+            this.hpTallyMeterBorder.tint = 0x000000;
+            gameUtils.attachSomethingToBody({something: this.hpTallyMeterBorder, body: this.body, offset: {x: 0, y: 34}});
+            this.hpTallyMeterBorder.scale = {x: this.fullhpTallyMeterWidth + 2, y: 6};
+
+            var self = this;
+            this.hpTallyHideTimer = globals.currentGame.addTimer({
+                name: 'tallyHideTimer',
+                runs: 1,
+                timeLimit: 1000,
+                callback: function() {
+                    graphicsUtils.fadeSpriteOutQuickly(self.hpTallyMeter);
+                    graphicsUtils.fadeSpriteOutQuickly(self.hpTallyMeterBorder);
+                }
             });
         },
         _afterAddInit: function() {
-            this.normalHealingColor = {
-                r: 1.0,
-                g: 0.0,
-                b: 0.85,
-            };
-            this.alterHealingColor(this.normalHealingColor);
+            // this.normalHealingColor = {
+            //     r: 1.0,
+            //     g: 0.0,
+            //     b: 0.85,
+            // };
+            // this.alterHealingColor(this.normalHealingColor);
         },
         alterHealingColor: function(color) {
             var shootAnimationName = 'shoot';
@@ -2109,7 +2169,9 @@ export default function Medic(options) {
                 //get current augment
                 var thisAbility = this.getAbilityByName('Heal');
                 var ppAugment = thisAbility.isAugmentEnabled('pure priorities');
-                var efAugment = thisAbility.isAugmentEnabled('enriched formula');
+                var enrageAugment = thisAbility.isAugmentEnabled('formula e');
+                var berserkAugment = thisAbility.isAugmentEnabled('formula b');
+                var rangeAugment = thisAbility.isAugmentEnabled('formula r');
                 var ppBypass = (ppAugment && (target.currentHealth < (target.maxHealth * ppAugment.hpThreshold)));
 
                 var abilityTint = 0x80ba80;
@@ -2134,20 +2196,37 @@ export default function Medic(options) {
                 var healAmount = thisAbility.healAmount + this.getAdditionSum('heal');
                 var actualHealingAmount = target.giveHealth(healAmount, this);
 
-                if (efAugment) {
-                    if(efAugment.hpGivenTally > rsThresholdChangeAmount) {
-                        medic.alterHealingColor(enrichedThresholdColor);
-                    } else {
-                        medic.alterHealingColor(this.normalHealingColor);
-                    }
-                    efAugment.hpGivenTally += actualHealingAmount;
-                    if (efAugment.hpGivenTally > continuousHealthNeeded) {
-                        efAugment.hpGivenTally -= continuousHealthNeeded;
-                        target.berserk({
-                            duration: enrageEFTime,
-                            amount: 1.5,
-                            id: 'enrichedBerserk'
-                        });
+                if (rangeAugment || berserkAugment || enrageAugment) {
+                    graphicsUtils.addOrShowDisplayObject(this.hpTallyMeter, 0.5);
+                    graphicsUtils.addOrShowDisplayObject(this.hpTallyMeterBorder, 0.75);
+                    medic.hpGivenTally += actualHealingAmount;
+                    this.hpTallyMeter.scale = {x: this.fullhpTallyMeterWidth * medic.hpGivenTally/20, y: 4};
+                    this.hpTallyHideTimer.reset();
+                    if (medic.hpGivenTally > continuousHealthNeeded) {
+                        medic.hpGivenTally -= continuousHealthNeeded;
+                        this.hpTallyMeter.scale = {x: this.fullhpTallyMeterWidth * medic.hpGivenTally/20, y: 4};
+
+                        if(berserkAugment) {
+                            target.berserk({
+                                duration: enrageEFTime,
+                                amount: 1.5,
+                                id: 'formulaB'
+                            });
+                        }
+                        if(enrageAugment) {
+                            target.enrage({
+                                duration: enrageEFTime,
+                                amount: enrageAugment.amount,
+                                id: 'formulaE'
+                            });
+                        }
+                        if(rangeAugment) {
+                            target.applyRangeBuff({
+                                duration: enrageEFTime,
+                                amount: rangeAugment.range,
+                                id: 'formulaR'
+                            });
+                        }
                         Matter.Events.trigger(globals.currentGame, efCollEventName, {
                             value: 1
                         });
