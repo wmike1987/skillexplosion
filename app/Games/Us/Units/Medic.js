@@ -392,6 +392,7 @@ export default function Medic(options) {
         var thisAbility = this.getAbilityByName('Vanish');
         var ghostAugment = thisAbility.isAugmentEnabled('ghost');
         var fleetFeetAugment = thisAbility.isAugmentEnabled('fleet feet');
+        var luckyLandingAugment = thisAbility.isAugmentEnabled('lucky landing');
         var softLandingAugment = thisAbility.isAugmentEnabled('soft landing');
         var caltropAugment = thisAbility.isAugmentEnabled('caltrop');
         var isFreeStep = false;
@@ -483,11 +484,11 @@ export default function Medic(options) {
         dashAnimation.alpha = 0.35;
         var dashTint = fleetFeetAugment ? 0xff0067 : 0x636362;
         dashTint = ghostAugment ? 0xf9f9f5 : dashTint;
-        dashTint = softLandingAugment ? 0x9954f6 : dashTint;
-        dashTint = softLandingAugment && ghostAugment ? 0x1fc3b4 : dashTint;
-        dashTint = softLandingAugment && fleetFeetAugment ? 0xffe600 : dashTint;
+        dashTint = luckyLandingAugment ? 0x9954f6 : dashTint;
+        dashTint = luckyLandingAugment && ghostAugment ? 0x1fc3b4 : dashTint;
+        dashTint = luckyLandingAugment && fleetFeetAugment ? 0xffe600 : dashTint;
         dashTint = ghostAugment && fleetFeetAugment ? 0x29904c : dashTint;
-        dashTint = ghostAugment && fleetFeetAugment && softLandingAugment ? 0xf6372b : dashTint;
+        dashTint = ghostAugment && fleetFeetAugment && luckyLandingAugment ? 0xf6372b : dashTint;
         dashAnimation.tint = dashTint;
         dashAnimation.rotation = mathArrayUtils.pointInDirection(this.position, destination, 'north');
         graphicsUtils.addSomethingToRenderer(dashAnimation, 'stageNOne');
@@ -672,11 +673,26 @@ export default function Medic(options) {
                 commandObj.command.done();
 
                 var self = this;
-                if (softLandingAugment) {
-                    var duration = softLandingAugment.duration;
+                if (luckyLandingAugment) {
+                    var duration = luckyLandingAugment.duration;
                     this.applySureDodgeBuff();
-                    Matter.Events.trigger(globals.currentGame, slCollEventName, {
+                    Matter.Events.trigger(globals.currentGame, luckyCollEventName, {
                         value: 1
+                    });
+                }
+
+                if (softLandingAugment) {
+                    gameUtils.applyToUnitsByTeam(function(team) {
+                        return self.team != team;
+                    }, function(unit) {
+                        return mathArrayUtils.distanceBetweenUnits(self, unit) <= softLandingAugment.radius;
+                    }, function(unit) {
+                        unit.applySoftenBuff({
+                            duration: softLandingAugment.duration
+                        });
+                        Matter.Events.trigger(globals.currentGame, slCollEventName, {
+                            value: 1
+                        });
                     });
                 }
             }
@@ -686,6 +702,7 @@ export default function Medic(options) {
 
     var fleetFeetCollEventName = "ffCollectorEventName";
     var slCollEventName = "slCollectorEventName";
+    var luckyCollEventName = "luckyCollectorEventName";
     var ctCollEventName = "ctCollectorEventName";
     var petCollEventName = "petCollectorEventName";
     var secretStepAbility = new Ability({
@@ -734,16 +751,28 @@ export default function Medic(options) {
                 }
             },
             {
+                name: 'lucky landing',
+                icon: graphicsUtils.createDisplayObject('LuckyLanding'),
+                title: 'Lucky Landing',
+                description: 'Gain a sure-dodge upon landing.',
+                collector: {
+                    eventName: luckyCollEventName,
+                    presentation: {
+                        labels: ["Sure-dodges gained"],
+                    }
+                }
+            },
+            {
                 name: 'soft landing',
                 icon: graphicsUtils.createDisplayObject('SoftLanding'),
                 title: 'Soft Landing',
-                duration: 3000,
-                description: 'Gain two sure dodges upon landing.',
+                duration: 5000,
+                radius: 125,
+                description: 'Soften nearby enemies upon landing.',
                 collector: {
                     eventName: slCollEventName,
                     presentation: {
-                        labels: ["Times activated"],
-                        suffixes: ["seconds"]
+                        labels: ["Enemies softened"],
                     }
                 }
             },
@@ -782,6 +811,8 @@ export default function Medic(options) {
         var pressurePlateAugment = thisAbility.isAugmentEnabled('pressure plate');
         var shrapnelAugment = thisAbility.isAugmentEnabled('shrapnel');
         var scorchAugment = thisAbility.isAugmentEnabled('scorch');
+        var sideEffectsAugment = thisAbility.isAugmentEnabled('side effects');
+        var sparePartsAugment = thisAbility.isAugmentEnabled('spare parts');
 
         var mine = Matter.Bodies.circle(this.position.x, this.position.y + 20, 15, {
             isSensor: true,
@@ -968,6 +999,12 @@ export default function Medic(options) {
             entity: mine
         });
 
+        if(sparePartsAugment) {
+            Matter.Events.trigger(globals.currentGame, sparePartsAugment, {
+                value: sparePartsAugment.energyReduction
+            });
+        }
+
         mine.explode = function() {
             mineExplosion.play();
             gameUtils.applyToUnitsByTeam(function(team) {
@@ -983,6 +1020,15 @@ export default function Medic(options) {
                     dodgeable: false,
                     abilityType: true
                 });
+                if (!unit.isDead && sideEffectsAugment) {
+                    unit.doom({
+                        duration: sideEffectsAugment.duration,
+                        doomingUnit: medic
+                    });
+                    Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
+                        value: 1
+                    });
+                }
                 var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'MedicAnimations1',
@@ -1079,6 +1125,8 @@ export default function Medic(options) {
     };
 
     var scorchEventName = 'scorchCollEvent';
+    var sideEffectsEventName = 'sideEffectsCollEvent';
+    var sparePartsEventName = 'sparePartsEventsCollEvent';
     var mineAbility = new Ability({
         name: 'Mine',
         key: 'f',
@@ -1121,6 +1169,38 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('Shrapnel'),
                 title: 'Shrapnel',
                 description: 'Increase blast radius.'
+            },
+            {
+                name: 'side effects',
+                icon: graphicsUtils.createDisplayObject('SideEffectsIcon'),
+                duration: 5000,
+                title: 'Side Effects',
+                description: 'Accuse surviving enemies for 5 seconds.',
+                collector: {
+                    eventName: sideEffectsEventName,
+                    presentation: {
+                        labels: ["Enemies accused"]
+                    }
+                }
+            },
+            {
+                name: 'spare parts',
+                icon: graphicsUtils.createDisplayObject('SparePartsIcon'),
+                title: 'Spare Parts',
+                energyReduction: 3,
+                description: 'Reduce energy cost by 3.',
+                equip: function(unit) {
+                    unit.getAbilityByName('Mine').energyCost -= this.energyReduction;
+                },
+                unequip: function(unit) {
+                    unit.getAbilityByName('Mine').energyCost += this.energyReduction;
+                },
+                collector: {
+                    eventName: sparePartsEventName,
+                    presentation: {
+                        labels: ["Energy saved"]
+                    }
+                }
             }
         ]
     });
@@ -1129,7 +1209,7 @@ export default function Medic(options) {
     var sacCollEventName = 'sacCollEvent';
     var efCollEventName = 'efCollEvent';
     var continuousHealthNeeded = 20;
-    var rsThresholdChangeAmount = continuousHealthNeeded*2.0/3.0;
+    var rsThresholdChangeAmount = continuousHealthNeeded * 2.0 / 3.0;
     var enrichedThresholdColor = {
         r: 1.0,
         g: 1.0,
@@ -1365,11 +1445,17 @@ export default function Medic(options) {
                     speed: 0.7,
                     transform: [attacker.position.x, attacker.position.y, 0.85, 0.85]
                 });
-                if(grit >= 20) {
-                    maimBlast.scale = {x: 1.1, y: 1.1};
+                if (grit >= 20) {
+                    maimBlast.scale = {
+                        x: 1.1,
+                        y: 1.1
+                    };
                 }
-                if(grit >= 35) {
-                    maimBlast.scale = {x: 1.6, y: 1.6};
+                if (grit >= 35) {
+                    maimBlast.scale = {
+                        x: 1.6,
+                        y: 1.6
+                    };
                 }
                 maimBlast.tint = 0xf1ca00;
                 maimBlast.rotation = Math.random() * Math.PI;
@@ -1383,7 +1469,11 @@ export default function Medic(options) {
             }
         },
         aggressionAction: function(event) {
-            medic.berserk({duration: rsADuration, id: 'raisedStakesBerserk', amount: 2});
+            medic.berserk({
+                duration: rsADuration,
+                id: 'raisedStakesBerserk',
+                amount: 2
+            });
             return {
                 value: rsADuration / 1000
             };
@@ -2075,14 +2165,46 @@ export default function Medic(options) {
             });
 
             this.fullhpTallyMeterWidth = 30;
-            this.hpTallyMeter = graphicsUtils.createDisplayObject('TintableSquare', {where: 'foreground', anchor: {x: 0.5, y: 0.5}, alpha: 0.5});
+            this.hpTallyMeter = graphicsUtils.createDisplayObject('TintableSquare', {
+                where: 'foreground',
+                anchor: {
+                    x: 0.5,
+                    y: 0.5
+                },
+                alpha: 0.5
+            });
             this.hpTallyMeter.tint = 0xa9e449;
-            gameUtils.attachSomethingToBody({something: this.hpTallyMeter, body: this.body, offset: {x: 0, y: 34}});
+            gameUtils.attachSomethingToBody({
+                something: this.hpTallyMeter,
+                body: this.body,
+                offset: {
+                    x: 0,
+                    y: 34
+                }
+            });
 
-            this.hpTallyMeterBorder = graphicsUtils.createDisplayObject('TintableSquare', {sortYOffset: -1, where: 'foreground', anchor: {x: 0.5, y: 0.5}, alpha: 0.75});
+            this.hpTallyMeterBorder = graphicsUtils.createDisplayObject('TintableSquare', {
+                sortYOffset: -1,
+                where: 'foreground',
+                anchor: {
+                    x: 0.5,
+                    y: 0.5
+                },
+                alpha: 0.75
+            });
             this.hpTallyMeterBorder.tint = 0x000000;
-            gameUtils.attachSomethingToBody({something: this.hpTallyMeterBorder, body: this.body, offset: {x: 0, y: 34}});
-            this.hpTallyMeterBorder.scale = {x: this.fullhpTallyMeterWidth + 2, y: 6};
+            gameUtils.attachSomethingToBody({
+                something: this.hpTallyMeterBorder,
+                body: this.body,
+                offset: {
+                    x: 0,
+                    y: 34
+                }
+            });
+            this.hpTallyMeterBorder.scale = {
+                x: this.fullhpTallyMeterWidth + 2,
+                y: 6
+            };
 
             var self = this;
             this.hpTallyHideTimer = globals.currentGame.addTimer({
@@ -2200,27 +2322,33 @@ export default function Medic(options) {
                     graphicsUtils.addOrShowDisplayObject(this.hpTallyMeter, 0.5);
                     graphicsUtils.addOrShowDisplayObject(this.hpTallyMeterBorder, 0.75);
                     medic.hpGivenTally += actualHealingAmount;
-                    this.hpTallyMeter.scale = {x: this.fullhpTallyMeterWidth * medic.hpGivenTally/20, y: 4};
+                    this.hpTallyMeter.scale = {
+                        x: this.fullhpTallyMeterWidth * medic.hpGivenTally / 20,
+                        y: 4
+                    };
                     this.hpTallyHideTimer.reset();
                     if (medic.hpGivenTally > continuousHealthNeeded) {
                         medic.hpGivenTally -= continuousHealthNeeded;
-                        this.hpTallyMeter.scale = {x: this.fullhpTallyMeterWidth * medic.hpGivenTally/20, y: 4};
+                        this.hpTallyMeter.scale = {
+                            x: this.fullhpTallyMeterWidth * medic.hpGivenTally / 20,
+                            y: 4
+                        };
 
-                        if(berserkAugment) {
+                        if (berserkAugment) {
                             target.berserk({
                                 duration: enrageEFTime,
                                 amount: 1.5,
                                 id: 'formulaB'
                             });
                         }
-                        if(enrageAugment) {
+                        if (enrageAugment) {
                             target.enrage({
                                 duration: enrageEFTime,
                                 amount: enrageAugment.amount,
                                 id: 'formulaE'
                             });
                         }
-                        if(rangeAugment) {
+                        if (rangeAugment) {
                             target.applyRangeBuff({
                                 duration: enrageEFTime,
                                 amount: rangeAugment.range,

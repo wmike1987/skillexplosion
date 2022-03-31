@@ -190,6 +190,7 @@ export default function DamageFlySwarm(options) {
         stunnable: false,
         flying: true,
         hazard: true,
+        immuneToBuffs: true,
         portrait: graphicsUtils.createDisplayObject('BoxPortrait'),
         wireframe: graphicsUtils.createDisplayObject('BoxGroupPortrait'),
         team: options.team || 49,

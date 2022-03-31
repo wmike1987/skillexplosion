@@ -103,6 +103,7 @@ var UnitBase = {
     level: 1,
     fatigueReduction: 0,
     organic: true,
+    immuneToBuffs: false,
     stunnable: true,
     isStunned: 0,
     isPetrified: 0,
@@ -1838,6 +1839,10 @@ var UnitBase = {
         let callback = options.callback;
         let id = options.id || "DefenseBuff" + mathArrayUtils.getId();
 
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
         var unit = this;
         unit.applyBuff({
             id: id,
@@ -1865,7 +1870,11 @@ var UnitBase = {
         let duration = options.duration;
         let amount = -2000;
         let callback = options.callback;
-        let id = options.id || "SoftenBuff" + mathArrayUtils.getId();
+        let id = options.id || "SoftenBuff";
+
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
 
         var unit = this;
         unit.applyBuff({
@@ -1894,8 +1903,12 @@ var UnitBase = {
         let duration = options.duration;
         let amount = options.amount;
         let id = options.id || "EnrageBuff" + mathArrayUtils.getId();
-        var unit = this;
 
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
+        var unit = this;
         if(unit.damageAdditionType) {
             unit.applyBuff({
                 id: id,
@@ -1938,8 +1951,12 @@ var UnitBase = {
         let duration = options.duration;
         let amount = options.amount;
         let id = options.id || "BerserkBuff" + mathArrayUtils.getId();
-        var unit = this;
 
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
+        var unit = this;
         unit.applyBuff({
             id: id,
             textureName: 'BerserkBuff',
@@ -1964,6 +1981,10 @@ var UnitBase = {
         let amount = options.amount;
         let callback = options.callback;
         let id = options.id || "DodgeBuff" + mathArrayUtils.getId();
+
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
 
         var unit = this;
         unit.applyBuff({
@@ -1992,7 +2013,11 @@ var UnitBase = {
         let duration = options.duration || 999999;
         let amount = options.amount;
         let callback = options.callback;
-        let id = options.id || "SureDodgeBuff" + mathArrayUtils.getId();
+        let id = options.id || "SureDodgeBuff";
+
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
 
         var unit = this;
         unit.applyBuff({
@@ -2027,11 +2052,11 @@ var UnitBase = {
         let duration = options.duration;
         let doomingUnit = options.doomingUnit;
 
-        var unit = this;
-        if (unit.isDead) {
+        if(this.isDead || !this.canTakeBuff()) {
             return;
         }
 
+        var unit = this;
         var buffName = 'doom';
         condemnSound.play();
         var handler;
@@ -2180,6 +2205,10 @@ var UnitBase = {
         let id = options.id || "RangeBuff" + mathArrayUtils.getId();
         var unit = this;
 
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
         unit.applyBuff({
             id: id,
             textureName: 'RangeBuff',
@@ -2201,6 +2230,10 @@ var UnitBase = {
         let amount = options.amount;
         let id = options.id || "SpeedBuff" + mathArrayUtils.getId();
         var unit = this;
+
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
 
         this.applyBuff({
             id: id,
@@ -2225,6 +2258,10 @@ var UnitBase = {
         var duration = options.duration;
         var self = this;
 
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
         this.applyBuff({
             id: options.id || "energyGem" + mathArrayUtils.getId(),
             unit: this,
@@ -2244,6 +2281,10 @@ var UnitBase = {
         var duration = options.duration;
         var self = this;
 
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
         this.applyBuff({
             id: options.id || "healthGem" + mathArrayUtils.getId(),
             unit: this,
@@ -2262,6 +2303,10 @@ var UnitBase = {
         options = options || {};
         var duration = options.duration;
         var self = this;
+
+        if(this.isDead || !this.canTakeBuff()) {
+            return;
+        }
 
         this.applyBuff({
             id: options.id || "plagueGem" + mathArrayUtils.getId(),
@@ -2283,7 +2328,7 @@ var UnitBase = {
         let petrifyingUnit = options.petrifyingUnit;
         var unit = this;
 
-        if (unit.isDead || !unit.isMoveable) {
+        if (unit.isDead || !unit.isMoveable || !this.canTakeBuff()) {
             return;
         }
 
@@ -2339,7 +2384,7 @@ var UnitBase = {
     maim: function(options) {
         var duration = options.duration;
         var maimingUnit = options.maimingUnit;
-        if (this.isDead) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
         var movePenalty = 1.5;
@@ -2375,7 +2420,7 @@ var UnitBase = {
     stun: function(options) {
         var duration = options.duration;
         var stunningUnit = options.stunningUnit;
-        if (this.isDead || !this.isMoveable || !this.stunnable) {
+        if (this.isDead || !this.isMoveable || !this.stunnable || !this.canTakeBuff()) {
             return;
         }
 
@@ -2431,7 +2476,7 @@ var UnitBase = {
         let condemningUnit = options.condemningUnit;
 
         var unit = this;
-        if (unit.isDead) {
+        if (unit.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -2987,6 +3032,10 @@ var UnitBase = {
         if(buff) {
             buff.removeBuff();
         }
+    },
+
+    canTakeBuff: function() {
+        return this.organic && !this.immuneToBuffs;
     }
 };
 
