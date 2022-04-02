@@ -169,6 +169,7 @@ var UnitBase = {
     eventKeyStateGathering: {},
     buffs: {},
     orderedBuffs: [],
+    pauseImmuneBuffs: ['StunBuff', 'PetrifyBuff'],
     allBuffsGroupsPaused: 0,
     allBuffPauseExclusions: [],
     enrageCounter: 0,
@@ -2408,6 +2409,7 @@ var UnitBase = {
             id: buffName,
             unit: this,
             textureName: 'PetrifyBuff',
+            noCount: true,
             playSound: false,
             duration: duration || 2000,
             applyChanges: function() {
@@ -2501,6 +2503,7 @@ var UnitBase = {
             id: buffName,
             unit: this,
             textureName: 'StunBuff',
+            noCount: true,
             playSound: false,
             duration: duration || 2000,
             applyChanges: function() {
@@ -2959,8 +2962,11 @@ var UnitBase = {
                     //if this is our first pause, remove the changes
                     if(mathArrayUtils.getLengthOfObject(this.pausers) == 1) {
                         options.removeChanges.call(this);
-                        currentBuffGroup.buffCount.countObj.text = 'x';
-                        currentBuffGroup.buffCount.countObj.alpha = 0.75;
+
+                        if(!this.noCount) {
+                            currentBuffGroup.buffCount.countObj.text = 'x';
+                            currentBuffGroup.buffCount.countObj.alpha = 0.75;
+                        }
                         currentBuffGroup.dobj.alpha = 0.3;
                     }
                 },
@@ -2968,8 +2974,11 @@ var UnitBase = {
                     //if we have 1 pauser left at this time, actually resume the buff
                     if(mathArrayUtils.getLengthOfObject(this.pausers) == 1) {
                         options.applyChanges.call(this);
-                        currentBuffGroup.buffCount.countObj.text = currentBuffGroup.buffCount.count;
-                        currentBuffGroup.buffCount.countObj.alpha = 1.0;
+
+                        if(!this.noCount) {
+                            currentBuffGroup.buffCount.countObj.text = currentBuffGroup.buffCount.count;
+                            currentBuffGroup.buffCount.countObj.alpha = 1.0;
+                        }
                         currentBuffGroup.dobj.alpha = 1.0;
                     }
 
@@ -2979,7 +2988,8 @@ var UnitBase = {
                 id: id,
                 pausers: {},
                 textureId: textureName,
-                count: options.count
+                count: options.count,
+                noCount: options.noCount
             };
             currentBuffObj = buffObj;
 
@@ -3165,6 +3175,10 @@ var UnitBase = {
         return this.allBuffsGroupsPaused;
     },
 
+    getPauseImmuneBuffs: function() {
+        return this.pauseImmuneBuffs;
+    },
+
     pauseBuffs: function(options) {
         options = gameUtils.mixinDefaults({
             params: options,
@@ -3176,6 +3190,7 @@ var UnitBase = {
         var allBuffsFlag = options.all;
         var exclusions = options.exclusions;
         exclusions = mathArrayUtils.convertToArray(exclusions);
+        exclusions.push(...this.getPauseImmuneBuffs());
 
         var buffsInQuestion = [];
         if (allBuffsFlag) {

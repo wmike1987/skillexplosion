@@ -544,7 +544,7 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                     this.shane.applyDefenseBuff({duration: 6000, amount: mathArrayUtils.getRandomIntInclusive(1, 5)});
+                     this.shane.stun({duration: 6000});
                     // unitUtils.addRandomAugmentToAbility({
                     //     unit: this.shane
                     // });
