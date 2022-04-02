@@ -2078,7 +2078,7 @@ var UnitBase = {
         let duration = options.duration || 999999;
         let amount = options.amount;
         let callback = options.callback;
-        let id = options.id || "SureDodgeBuff";
+        let id = options.id || "SureDodgeBuff" + mathArrayUtils.getId();
 
         if (this.isDead || !this.canTakeBuff()) {
             return;
@@ -2091,18 +2091,26 @@ var UnitBase = {
             duration: duration,
             applyChanges: function() {
                 var self = this;
-                gameUtils.matterOnce(unit, 'preDodgeSufferAttack', function(event) {
-                    let myBuff = self.buffs[id];
-                    if (myBuff) {
-                        myBuff.removeBuff();
-                        event.attackContext.dodgeManipulator = function() {
-                            return 100;
-                        };
+                unit.dodgeHandler = gameUtils.matterConditionalOnce(unit, 'preDodgeSufferAttack', function(event) {
+                    if(event.alreadySureDodged) {
+                        return false;
+                    } else {
+                        event.alreadySureDodged = true;
+                        let myBuff = self.getBuffById(id);
+                        if (myBuff) {
+                            myBuff.removeBuff();
+                            event.attackContext.dodgeManipulator = function() {
+                                return 100;
+                            };
+                        }
+                        return true;
                     }
                 });
 
             },
-            removeChanges: function() {}
+            removeChanges: function() {
+                unit.dodgeHandler.removeHandler();
+            }
         });
 
         Matter.Events.trigger(this, 'applySureDodgeBuff', {
@@ -2961,7 +2969,7 @@ var UnitBase = {
 
                     //if this is our first pause, remove the changes
                     if(mathArrayUtils.getLengthOfObject(this.pausers) == 1) {
-                        options.removeChanges.call(this);
+                        options.removeChanges.call(unit);
 
                         if(!this.noCount) {
                             currentBuffGroup.buffCount.countObj.text = 'x';
@@ -2973,7 +2981,7 @@ var UnitBase = {
                 resume: function(id) {
                     //if we have 1 pauser left at this time, actually resume the buff
                     if(mathArrayUtils.getLengthOfObject(this.pausers) == 1) {
-                        options.applyChanges.call(this);
+                        options.applyChanges.call(unit);
 
                         if(!this.noCount) {
                             currentBuffGroup.buffCount.countObj.text = currentBuffGroup.buffCount.count;
@@ -3118,7 +3126,7 @@ var UnitBase = {
             removeAllHandlers();
 
             //remove changes
-            options.removeChanges();
+            options.removeChanges.call(unit);
         };
         if (buffDuration) {
             var timer = gameUtils.doSomethingAfterDuration(mainCleanUp, buffDuration, {
@@ -3163,8 +3171,23 @@ var UnitBase = {
 
         if (buff) {
             buff.removeBuff();
-            buff.paused = true;
         }
+    },
+
+    removeAllBuffs: function(options) {
+        var listOfBuffObjs = [];
+        Object.values(this.buffs).forEach((buffGroupObj) => {
+            if(!buffGroupObj) {
+                return;
+            }
+            mathArrayUtils.operateOnObjectByKey(buffGroupObj.buffs, (id, myBuff) => {
+                listOfBuffObjs.push(myBuff);
+            });
+        });
+
+        listOfBuffObjs.forEach((buff) => {
+            buff.removeBuff();
+        });
     },
 
     isBuffGroupPaused: function(textureName) {
@@ -3261,10 +3284,13 @@ var UnitBase = {
         return arrayOfBuffs;
     },
 
-    getBuffById: function(id) {
+    getBuffById: function(buffId) {
         var foundBuff = null;
-        Object.values(this.buffs).forEach((buffObs) => {
-            gameUtils.operateOnObjectByKey(buffObs, (id, myBuff) => {
+        Object.values(this.buffs).forEach((buffGroupObj) => {
+            if(!buffGroupObj) {
+                return;
+            }
+            mathArrayUtils.operateOnObjectByKey(buffGroupObj.buffs, (id, myBuff) => {
                 if (id == buffId) {
                     foundBuff = myBuff;
                 }

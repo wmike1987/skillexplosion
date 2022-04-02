@@ -399,7 +399,7 @@ export default function Medic(options) {
 
         //remove a free step if we have one
         if (medic.freeSteps) {
-            medic.buffs['freeSecretStep' + medic.freeSteps].removeBuff({
+            medic.getBuffById('freeSecretStep' + medic.freeSteps).removeBuff({
                 detached: true
             });
             isFreeStep = true;
@@ -829,7 +829,7 @@ export default function Medic(options) {
 
         //remove a free mine if we have one
         if (this.freeMines) {
-            this.buffs['freeMine' + this.freeMines].removeBuff({
+            this.getBuffById('freeMine' + this.freeMines).removeBuff({
                 detached: true
             });
         }
@@ -1749,6 +1749,7 @@ export default function Medic(options) {
     });
 
     var wwADuration = 2000;
+    var wwDDuration = 3000;
     var wwHandler = {};
     var wickedWays = new Passive({
         title: 'Wicked Ways',
@@ -2167,7 +2168,7 @@ export default function Medic(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                // ability.addAllAvailableAugments();
+                ability.addAllAvailableAugments();
             });
 
             this.fullhpTallyMeterWidth = 30;

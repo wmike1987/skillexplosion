@@ -566,6 +566,15 @@ var game = {
         Matter.Events.on(this, 'BeginLevel', () => {
             this.rewardManager.startNewRewardCollector();
         });
+
+        Matter.Events.on(this, 'VictoryOrDefeat OutingLevelCompleted TravelStarted', () => {
+            let self = this;
+            gameUtils.applyToUnitsByTeam(function(team) {
+                return self.playerTeam == team;
+            }, null, function(unit) {
+                unit.removeAllBuffs();
+            });
+        });
     },
 
     getLoadingScreen: function() {
@@ -987,7 +996,7 @@ var game = {
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PlatedPants"], unit: this.shane});
         // this.shane.dodge = 40;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["ApolloMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});

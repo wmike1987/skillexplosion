@@ -246,10 +246,6 @@ var healthDepotAction = () => {
                 duration: 999999,
                 id: id
             });
-
-            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', () => {
-                unit.removeBuff(id);
-            });
         }
     });
 };
@@ -277,10 +273,6 @@ var energyDepotAction = () => {
             unit.applyEnergyGem({
                 duration: 999999,
                 id: id
-            });
-
-            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', () => {
-                unit.removeBuff(id);
             });
         }
     });
@@ -310,10 +302,6 @@ var dodgeDepotAction = () => {
                 duration: 999999,
                 amount: 30,
                 id: id
-            });
-
-            gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', () => {
-                unit.removeBuff(id);
             });
         }
     });

@@ -1875,7 +1875,7 @@ export default function Marine(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                ability.addAllAvailableAugments();
+                // ability.addAllAvailableAugments();
             });
 
         }
