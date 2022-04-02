@@ -1996,6 +1996,45 @@ export default function Marine(options) {
                 });
 
                 if (target.organic) {
+                    if(leadBulletsAugment) {
+                        var variance2 = Math.random() * 0.5;
+                        var rifleAnimation = gameUtils.getAnimation({
+                            spritesheetName: 'MarineAnimations1',
+                            animationName: 'rifle',
+                            speed: 0.6,
+                            transform: [target.position.x + variance2, target.position.y + variance2, 0.1 + variance2, 0.1 + variance2]
+                        });
+                        rifleAnimation.tint = 0x1695a2;
+                        rifleAnimation.play();
+                        rifleAnimation.rotation = Math.random() * Math.PI;
+                        graphicsUtils.addSomethingToRenderer(rifleAnimation, 'foreground');
+
+                        rifleAnimation = gameUtils.getAnimation({
+                            spritesheetName: 'MarineAnimations1',
+                            animationName: 'rifle',
+                            speed: 1.0,
+                            transform: [target.position.x + variance2, target.position.y + variance2, 0.4 + variance2, 0.4 + variance2]
+                        });
+                        rifleAnimation.tint = 0xffffff;
+                        rifleAnimation.alpha = 0.5;
+                        rifleAnimation.play();
+                        rifleAnimation.rotation = Math.random() * Math.PI;
+                        graphicsUtils.addSomethingToRenderer(rifleAnimation, 'foreground');
+
+                        //play blood animation
+                        var extraBlood = gameUtils.getAnimation({
+                            spritesheetName: 'UtilityAnimations1',
+                            animationName: 'rifleSlash',
+                            speed: 0.24,
+                            transform: [target.position.x + variance2, target.position.y + variance2, 0.4 + variance2, 0.4 + variance2]
+                        });
+                        extraBlood.play();
+                        extraBlood.rotation = Math.random() * Math.PI;
+                        graphicsUtils.addSomethingToRenderer(extraBlood, 'foreground');
+                    }
+
+
+                    //play blood animation
                     var variance = Math.random() * 0.25;
                     var bloodAnimation1 = gameUtils.getAnimation({
                         spritesheetName: 'UtilityAnimations1',
@@ -2016,72 +2055,28 @@ export default function Marine(options) {
                     bloodAnimation2.play();
                     bloodAnimation2.rotation = Math.random() * Math.PI;
                     graphicsUtils.addSomethingToRenderer(bloodAnimation2, 'foreground');
-                }
-
-                if (true) {
-                    //bullet emitter
-                    var emitter = gameUtils.createParticleEmitter({
-                        where: globals.currentGame.renderer.stages.stage,
-                        config: {
-                            "alpha": {
-                                "start": 1,
-                                "end": 1.0
-                            },
-                            "scale": {
-                                "start": 0.2,
-                                "end": 0.1,
-                                "minimumScaleMultiplier": 1
-                            },
-                            "color": {
-                                "start": "#ffd21f",
-                                "end": "#fff23d"
-                            },
-                            "speed": {
-                                "start": 200,
-                                "end": 200,
-                                "minimumSpeedMultiplier": 1
-                            },
-                            "acceleration": {
-                                "x": 0,
-                                "y": 0
-                            },
-                            "maxSpeed": 0,
-                            "startRotation": {
-                                "min": 0,
-                                "max": 360
-                            },
-                            "noRotation": false,
-                            "rotationSpeed": {
-                                "min": 0,
-                                "max": 0
-                            },
-                            "lifetime": {
-                                "min": 0.02,
-                                "max": 0.02
-                            },
-                            "blendMode": "normal",
-                            "frequency": 0.3 / 3,
-                            "emitterLifetime": 0.3,
-                            "maxParticles": 3,
-                            "pos": {
-                                "x": 0,
-                                "y": 0
-                            },
-                            "addAtBack": false,
-                            "spawnType": "circle",
-                            "spawnCircle": {
-                                "x": 0,
-                                "y": 0,
-                                "r": 8
-                            }
-                        },
-                        texture: PIXI.Texture.from('Textures/bulletParticle.png')
+                } else {
+                    var nonOrganicRifleAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'MarineAnimations1',
+                        animationName: 'rifle',
+                        speed: 1.5,
+                        transform: [target.position.x, target.position.y, 0.5, 0.5]
                     });
-                    emitter.updateSpawnPos(target.position.x, target.position.y);
-                    emitter.playOnceAndDestroy();
+                    nonOrganicRifleAnimation.tint = 0xc8d717;
+                    nonOrganicRifleAnimation.play();
+                    nonOrganicRifleAnimation.rotation = Math.random() * Math.PI;
+                    graphicsUtils.addSomethingToRenderer(nonOrganicRifleAnimation, 'foreground');
+
+                    nonOrganicRifleAnimation = gameUtils.getAnimation({
+                        spritesheetName: 'MarineAnimations1',
+                        animationName: 'rifle',
+                        speed: 1.0,
+                        transform: [target.position.x, target.position.y, 0.5, 0.5]
+                    });
+                    nonOrganicRifleAnimation.play();
+                    nonOrganicRifleAnimation.rotation = Math.random() * Math.PI;
+                    graphicsUtils.addSomethingToRenderer(nonOrganicRifleAnimation, 'foreground');
                 }
-
-
             },
         },
     });

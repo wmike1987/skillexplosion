@@ -972,7 +972,7 @@ var levelBase = {
                             result: lossResult,
                         });
                     }
-                }, 500);
+                }, 750);
             }
         }.bind(this));
     }
