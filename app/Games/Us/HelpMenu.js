@@ -454,7 +454,11 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage2.addLine({
-        text: 'Prevents health and energy regeneration.'
+        text: 'Prevents health and energy regeneration and',
+        continuation: true
+    });
+    BuffPage2.addLine({
+        text: 'disables other buffs.'
     });
 
     BuffPage2.addLineTitle({
@@ -496,18 +500,18 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage3.addLine({
-        text: 'Death of condemned unit heals condemning unit.'
+        text: 'Death of condemned unit heals (10) condemning unit.'
     });
 
     BuffPage3.addLineTitle({
-        text: 'Accuse',
+        text: 'Afflict',
         image: 'DoomBuff',
         imageOffset: {
             x: -6
         }
     });
     BuffPage3.addLine({
-        text: 'Death of accused unit either heals accusing unit',
+        text: 'Death of afflicted unit either heals (5) afflicting unit',
         continuation: true
     });
     BuffPage3.addLine({

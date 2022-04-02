@@ -139,6 +139,13 @@ var mathArrayUtils = {
         });
     },
 
+    getLengthOfObject: function(object) {
+        if(!object) {
+            return 0;
+        }
+        return Object.values(object).length;
+    },
+
     repeatXTimes: function(func, times) {
         times = this.convertToArray(times);
         times = this.getRandomElementOfArray(times);

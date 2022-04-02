@@ -96,7 +96,7 @@ var graphicsUtils = {
             this.addDisplayObjectToRenderer(displayObject);
         }
         displayObject.visible = true;
-        if(alpha) {
+        if (alpha) {
             displayObject.alpha = alpha;
         }
         Matter.Events.trigger(displayObject, 'addOrShowDisplayObject');
@@ -199,12 +199,14 @@ var graphicsUtils = {
             positionOffset: {
                 x: 0,
                 y: 0
-            }
+            },
+            trace: false
         }, options);
         var child = options.child;
         var parent = options.parent;
 
         gameUtils.matterOnce(parent, 'destroy', () => {
+            globals.currentGame.removeTickCallback(tick);
             graphicsUtils.removeSomethingFromRenderer(child);
         });
 
@@ -214,6 +216,15 @@ var graphicsUtils = {
             }
             graphicsUtils.addOrShowDisplayObject(child);
         });
+
+        if (options.trace) {
+            var tick = globals.currentGame.addTickCallback(() => {
+                child.position.x = parent.position.x + options.positionOffset.x;
+                child.position.y = parent.position.y + options.positionOffset.y;
+            }, {
+                eventName: 'afterRenderWorld'
+            });
+        }
 
         Matter.Events.on(parent, 'hideDisplayObject', () => {
             graphicsUtils.hideDisplayObject(child);
@@ -282,15 +293,27 @@ var graphicsUtils = {
     },
 
     fadeSpriteQuicklyThenDestroy: function(sprite, duration) {
-        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500});
+        this.fadeSpriteOverTime({
+            sprite: sprite,
+            duration: duration || 500
+        });
     },
 
     fadeSpriteInQuickly: function(sprite, duration) {
-        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500, fadeIn: true, makeVisible: true});
+        this.fadeSpriteOverTime({
+            sprite: sprite,
+            duration: duration || 500,
+            fadeIn: true,
+            makeVisible: true
+        });
     },
 
     fadeSpriteOutQuickly: function(sprite, duration) {
-        this.fadeSpriteOverTime({sprite: sprite, duration: duration || 500, nokill: true});
+        this.fadeSpriteOverTime({
+            sprite: sprite,
+            duration: duration || 500,
+            nokill: true
+        });
     },
 
     fadeSpriteOverTime: function(options) {
@@ -505,12 +528,12 @@ var graphicsUtils = {
         var goToLength = mathArrayUtils.distanceBetweenPoints(start, destination);
         var surpassDestination = options.surpassDestination === false ? false : true;
         var removeOnFinish = options.removeOnFinish;
-        if(surpassDestination) {
+        if (surpassDestination) {
             var originalDestination = destination;
             destination = mathArrayUtils.addScalarToVectorTowardDestination(start, destination, 5000);
         }
 
-        if(pointAtDestination) {
+        if (pointAtDestination) {
             sprite.rotation = mathArrayUtils.pointInDirection(start, destination, options.orientation);
         }
 
@@ -526,8 +549,8 @@ var graphicsUtils = {
                 sprite.position = newPosition;
 
                 //check for destination reached
-                if(mathArrayUtils.distanceBetweenPoints(sprite, start) > goToLength) {
-                    if(removeOnFinish) {
+                if (mathArrayUtils.distanceBetweenPoints(sprite, start) > goToLength) {
+                    if (removeOnFinish) {
                         graphicsUtils.removeSomethingFromRenderer(sprite);
                     } else {
                         sprite.position = destination;
@@ -543,7 +566,7 @@ var graphicsUtils = {
 
         Matter.Events.on(timer, 'onInvalidate', () => {
             remove.removeHandler();
-            if(removeOnFinish) {
+            if (removeOnFinish) {
                 graphicsUtils.fadeSpriteQuicklyThenDestroy(sprite, 50);
             }
         });
@@ -675,7 +698,7 @@ var graphicsUtils = {
 
                 //trigger the actual float
                 var myText = graphicsUtils.floatText(options.text, options.position, options.additionalOptions);
-                if(true/*options.additionalOptions.fadeIn*/) {
+                if (true /*options.additionalOptions.fadeIn*/ ) {
                     graphicsUtils.fadeSpriteInQuickly(myText, 500);
                 }
 
@@ -854,7 +877,7 @@ var graphicsUtils = {
             runs: Math.ceil(duration / shakeFrameLength),
             killsSelf: true,
             callback: function() {
-                let offsetAmount = finishOffset + ((1-this.totalPercentOfRunsDone) * (startOffset - finishOffset));
+                let offsetAmount = finishOffset + ((1 - this.totalPercentOfRunsDone) * (startOffset - finishOffset));
                 sprite.position = {
                     x: position.x + (this.runs % 2 == 0 ? offsetAmount : -offsetAmount) * 2,
                     y: position.y
@@ -1032,7 +1055,7 @@ var graphicsUtils = {
         });
         border.position = sprite.position;
 
-        if(options.doubleBorder) {
+        if (options.doubleBorder) {
             var border2 = graphicsUtils.addSomethingToRenderer('TintableSquare', {
                 where: options.where || sprite.where,
                 alpha: options.alpha + 0.25,
@@ -1086,10 +1109,16 @@ var graphicsUtils = {
     mouseOverOutScale: function(sprite, originalScale, largeScale) {
         sprite.interactive = true;
         sprite.on('mouseover', function(event) {
-            sprite.scale = {x: largeScale, y: largeScale};
+            sprite.scale = {
+                x: largeScale,
+                y: largeScale
+            };
         }.bind(this));
         sprite.on('mouseout', function(event) {
-            sprite.scale = {x: originalScale, y: originalScale};
+            sprite.scale = {
+                x: originalScale,
+                y: originalScale
+            };
         }.bind(this));
     },
 

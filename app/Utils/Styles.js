@@ -68,6 +68,22 @@ export default {
         wordWrapWidth: 440
     }),
 
+    verySmallStyleNonItalic: new PIXI.TextStyle({
+        name: 'verySmallStyleNonItalic',
+        fontFamily: "Helvetica",
+        fontSize: 12,
+        fill: ['#ffffff'],
+        stroke: '#4a1850',
+        strokeThickness: 2,
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 1,
+        dropShadowAngle: 2.3,
+        dropShadowDistance: 1.5,
+        wordWrap: true,
+        wordWrapWidth: 440
+    }),
+
     redScoreStyle: new PIXI.TextStyle({
         name: 'redScoreStyle',
         fontFamily: 'Arial',

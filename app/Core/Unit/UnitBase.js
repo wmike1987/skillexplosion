@@ -108,7 +108,7 @@ var UnitBase = {
     isStunned: 0,
     isPetrified: 0,
     condemnedLifeGain: 10,
-    doomedHealthLifeGain: 5,
+    afflictedHealthLifeGain: 5,
     currentExperience: 0,
     nextLevelExp: 100,
     lastLevelExp: 0,
@@ -169,6 +169,8 @@ var UnitBase = {
     eventKeyStateGathering: {},
     buffs: {},
     orderedBuffs: [],
+    allBuffsGroupsPaused: 0,
+    allBuffPauseExclusions: [],
     enrageCounter: 0,
     currentItems: [null, null, null, null, null, null],
     currentSpecialtyItems: [null, null, null, null, null, null],
@@ -179,7 +181,9 @@ var UnitBase = {
     neutralTint: 0xb8b62d,
 
     sufferAttack: function(damage, attackingUnit, options) {
-        var returnInformation = {attackLanded: true};
+        var returnInformation = {
+            attackLanded: true
+        };
         if (this.unitRemoved) return {};
 
         let attackContext = Object.assign({
@@ -200,7 +204,7 @@ var UnitBase = {
             isPlaceholder: true
         };
 
-        if(attackContext.abilityType) {
+        if (attackContext.abilityType) {
             damage *= this.abilityDamageMultiplier;
         }
 
@@ -216,7 +220,9 @@ var UnitBase = {
             attackContext: attackContext
         });
 
-        let dodgeReturnArray = mathArrayUtils.repeatXTimes(this.attackDodged.bind(this, {dodgeManipulator: attackContext.dodgeManipulator}), attackContext.dodgeRolls);
+        let dodgeReturnArray = mathArrayUtils.repeatXTimes(this.attackDodged.bind(this, {
+            dodgeManipulator: attackContext.dodgeManipulator
+        }), attackContext.dodgeRolls);
         let attackDodged = dodgeReturnArray.some(function(bool) {
             return bool;
         });
@@ -237,7 +243,12 @@ var UnitBase = {
             }, {
                 style: styles.dodgeText
             });
-            unitUtils.showBlockGraphic({attackContext: attackContext, attackingUnit: attackingUnit, unit: this, tint: 0x00960f});
+            unitUtils.showBlockGraphic({
+                attackContext: attackContext,
+                attackingUnit: attackingUnit,
+                unit: this,
+                tint: 0x00960f
+            });
             this.dodgeSound.play();
 
             returnInformation.attackLanded = false;
@@ -296,7 +307,12 @@ var UnitBase = {
                     style: styles.dodgeKillingBlowText
                 });
 
-                unitUtils.showBlockGraphic({attackContext: attackContext, attackingUnit: attackingUnit, unit: this, tint: 0xd55812});
+                unitUtils.showBlockGraphic({
+                    attackContext: attackContext,
+                    attackingUnit: attackingUnit,
+                    unit: this,
+                    tint: 0xd55812
+                });
                 killingBlowBlock.play();
 
                 returnInformation.attackLanded = false;
@@ -366,6 +382,14 @@ var UnitBase = {
             attackContext: attackContext
         });
 
+        //emit for passives
+        Matter.Events.trigger(this, 'sufferAttack', {
+            performingUnit: attackingUnit,
+            sufferingUnit: this,
+            amountDone: alteredDamage,
+            attackContext: attackContext
+        });
+
         Matter.Events.trigger(attackingUnit, 'dealDamage', {
             sufferingUnit: this,
             amountDone: alteredDamage,
@@ -379,9 +403,12 @@ var UnitBase = {
     },
 
     attackDodged: function(options) {
-        options = gameUtils.mixinDefaults(options, {
-            dodgeManipulator: (dodge) => {
-                return dodge;
+        options = gameUtils.mixinDefaults({
+            params: options,
+            defaults: {
+                dodgeManipulator: (dodge) => {
+                    return dodge;
+                }
             }
         });
 
@@ -397,7 +424,7 @@ var UnitBase = {
             overridePendingUpdates: true
         });
 
-        if(options.silent) {
+        if (options.silent) {
             this.showLifeBar(false);
         }
     },
@@ -409,7 +436,7 @@ var UnitBase = {
             overridePendingUpdates: true
         });
 
-        if(options.silent) {
+        if (options.silent) {
             this.showEnergyBar(false);
         }
     },
@@ -432,7 +459,7 @@ var UnitBase = {
 
         var healthDiff = this.maxHealth - this.currentHealth;
         var healingDone = amount;
-        if(healthDiff < amount) {
+        if (healthDiff < amount) {
             healingDone = healthDiff;
         }
 
@@ -443,8 +470,10 @@ var UnitBase = {
             });
         }
 
-        if(options.immediateChange) {
-            this.updateHealthBar({overridePendingUpdates: true});
+        if (options.immediateChange) {
+            this.updateHealthBar({
+                overridePendingUpdates: true
+            });
         } else {
             //show give life fade
             let healthSnapshot = this.currentHealth;
@@ -456,7 +485,7 @@ var UnitBase = {
             });
         }
 
-        if(options.showGainAnimation) {
+        if (options.showGainAnimation) {
             unitUtils.applyHealthGainAnimationToUnit(this);
         }
 
@@ -503,14 +532,16 @@ var UnitBase = {
 
         var energyDiff = this.maxEnergy - this.currentEnergy;
         var energyGained = amount;
-        if(energyDiff < amount) {
+        if (energyDiff < amount) {
             energyGained = energyDiff;
         }
 
         this.currentEnergy += amount;
 
-        if(options.immediateChange) {
-            this.updateEnergyBar({overridePendingUpdates: true});
+        if (options.immediateChange) {
+            this.updateEnergyBar({
+                overridePendingUpdates: true
+            });
         } else {
             //show give energy fade
             let energySnapshot = this.currentEnergy;
@@ -521,7 +552,7 @@ var UnitBase = {
             });
         }
 
-        if(options.showGainAnimation) {
+        if (options.showGainAnimation) {
             unitUtils.applyEnergyGainAnimationToUnit(this);
         }
 
@@ -791,7 +822,7 @@ var UnitBase = {
         var currentAttack = this.attackPassive;
         var currentDefensive = this.defensePassive;
 
-        if(currentAttack || currentDefensive) {
+        if (currentAttack || currentDefensive) {
             equip.play();
         } else {
             return;
@@ -813,12 +844,14 @@ var UnitBase = {
             this.equipPassive(currentDefensive, 'attackPassive');
         }
 
-        Matter.Events.trigger(globals.currentGame.unitSystem, 'swapStatesOfMind', {unit: this});
+        Matter.Events.trigger(globals.currentGame.unitSystem, 'swapStatesOfMind', {
+            unit: this
+        });
         this.swappingStatesOfMind = false;
     },
 
     applyUnitStates: function() {
-        if(this.hazard) {
+        if (this.hazard) {
             this.isTargetable = false;
             this.isSelectable = false;
             this.hideLifeBar = true;
@@ -831,8 +864,10 @@ var UnitBase = {
 
         //Enter playable event setup
         var enterPlayableTick = globals.currentGame.addTickCallback(() => {
-            if(gameUtils.isPositionWithinPlayableBounds(this.position, 30)) {
-                Matter.Events.trigger(globals.currentGame, 'UnitEneteredPlayable', {unit: this});
+            if (gameUtils.isPositionWithinPlayableBounds(this.position, 30)) {
+                Matter.Events.trigger(globals.currentGame, 'UnitEneteredPlayable', {
+                    unit: this
+                });
                 globals.currentGame.removeTickCallback(enterPlayableTick);
             }
         }, false);
@@ -850,7 +885,10 @@ var UnitBase = {
                 }
                 this._maxHealth = value;
                 let diffToGive = this._maxHealth * currentPercentage - this.currentHealth;
-                this.giveHealth(diffToGive, null, {immediateChange: true, invisible: true});
+                this.giveHealth(diffToGive, null, {
+                    immediateChange: true,
+                    invisible: true
+                });
             }
         });
 
@@ -866,7 +904,10 @@ var UnitBase = {
                 }
                 this._maxEnergy = value;
                 let diffToGive = this._maxEnergy * currentPercentage - this.currentEnergy;
-                this.giveEnergy(diffToGive, null, {immediateChange: true, invisible: true});
+                this.giveEnergy(diffToGive, null, {
+                    immediateChange: true,
+                    invisible: true
+                });
             }
         });
 
@@ -1041,11 +1082,19 @@ var UnitBase = {
         }.bind(this));
 
         Matter.Events.on(this, "attackPassiveCharged", function() {
-            unitUtils.showExpandingCircleAnimation({unit: this, tint: 0xff3333, play: true});
+            unitUtils.showExpandingCircleAnimation({
+                unit: this,
+                tint: 0xff3333,
+                play: true
+            });
         }.bind(this));
 
         Matter.Events.on(this, "defensePassiveCharged", function() {
-            unitUtils.showExpandingCircleAnimation({unit: this, tint: 0x479cff, play: true});
+            unitUtils.showExpandingCircleAnimation({
+                unit: this,
+                tint: 0x479cff,
+                play: true
+            });
         }.bind(this));
 
         var resetPassiveOrder = function() {
@@ -1057,10 +1106,10 @@ var UnitBase = {
         });
 
         Matter.Events.on(this, "changeHoldPosition", function(event) {
-            if(this.holdPositionMarker) {
+            if (this.holdPositionMarker) {
                 graphicsUtils.removeSomethingFromRenderer(this.holdPositionMarker);
             }
-            if(!event.newValue) {
+            if (!event.newValue) {
                 return;
             }
 
@@ -1068,7 +1117,10 @@ var UnitBase = {
                 where: 'stageOne',
                 rotate: 'none',
                 position: mathArrayUtils.roundPositionToWholeNumbers(mathArrayUtils.clonePosition(this.position)),
-                scale: {x: 1.0, y: 1.0},
+                scale: {
+                    x: 1.0,
+                    y: 1.0
+                },
                 alpha: 1.0,
                 tint: 0xb8b8b8
             });
@@ -1443,13 +1495,15 @@ var UnitBase = {
         Matter.Events.on(this, 'addUnit', function() {
             var healthBarYOffset = -20;
             var energyBarYOffset = -12;
-            if(!this.energy) {
+            if (!this.energy) {
                 healthBarYOffset = energyBarYOffset;
             }
 
             //start unit as idling upon add - do we need this
             if (this.stop) {
-                this.stop(null, {basicStop: true});
+                this.stop(null, {
+                    basicStop: true
+                });
             }
 
             if (this._afterAddInit) {
@@ -1457,19 +1511,17 @@ var UnitBase = {
             }
 
             //establish the height of the unit
-            if(this.manualUnitHeight) {
+            if (this.manualUnitHeight) {
                 this.unitHeight = this.manualUnitHeight;
-            }
-            else if(this.heightAnimation) {
+            } else if (this.heightAnimation) {
                 this.unitHeight = this.renderlings[this.heightAnimation].height;
-            }
-            else {
+            } else {
                 this.unitHeight = this.body.circleRadius * 2;
             }
 
             //play the pending animation
             mathArrayUtils.operateOnObjectByKey(this.renderlings, function(key, value) {
-                if(value.isPendingAnimation) {
+                if (value.isPendingAnimation) {
                     value.play();
                 }
             });
@@ -1689,11 +1741,14 @@ var UnitBase = {
                         invisible: true
                     });
 
-                    if(!energyGained) {
+                    if (!energyGained) {
                         return;
                     }
 
-                    Matter.Events.trigger(globals.currentGame, 'energyRegen', {performingUnit: this, value: energyGained});
+                    Matter.Events.trigger(globals.currentGame, 'energyRegen', {
+                        performingUnit: this,
+                        value: energyGained
+                    });
                 }
             }.bind(this)
         });
@@ -1712,15 +1767,21 @@ var UnitBase = {
                         invisible: true
                     });
 
-                    if(!healthGained) {
+                    if (!healthGained) {
                         return;
                     }
 
                     let normalHealGain = healthAddition / this.gritMult;
                     let gritGain = Math.max(0, healthGained - normalHealGain);
 
-                    Matter.Events.trigger(globals.currentGame, 'hpRegen', {performingUnit: this, value: healthGained});
-                    Matter.Events.trigger(globals.currentGame, 'gritHPRegen', {performingUnit: this, value: gritGain});
+                    Matter.Events.trigger(globals.currentGame, 'hpRegen', {
+                        performingUnit: this,
+                        value: healthGained
+                    });
+                    Matter.Events.trigger(globals.currentGame, 'gritHPRegen', {
+                        performingUnit: this,
+                        value: gritGain
+                    });
                 }
             }.bind(this)
         });
@@ -1814,7 +1875,7 @@ var UnitBase = {
         options = options || {};
         var items = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems);
 
-        if(options.namesOnly) {
+        if (options.namesOnly) {
             items = items.map(item => {
                 return item.spacelessName;
             });
@@ -1839,7 +1900,7 @@ var UnitBase = {
         let callback = options.callback;
         let id = options.id || "DefenseBuff" + mathArrayUtils.getId();
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -1848,11 +1909,12 @@ var UnitBase = {
             id: id,
             textureName: 'DefensiveBuff',
             duration: duration,
+            count: amount,
             applyChanges: function() {
                 unit.addDefenseAddition(amount);
             },
             removeChanges: function() {
-                if(callback) {
+                if (callback) {
                     callback();
                 }
                 unit.removeDefenseAddition(amount);
@@ -1872,7 +1934,7 @@ var UnitBase = {
         let callback = options.callback;
         let id = options.id || "SoftenBuff";
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -1885,7 +1947,7 @@ var UnitBase = {
                 unit.addDefenseAddition(amount);
             },
             removeChanges: function() {
-                if(callback) {
+                if (callback) {
                     callback();
                 }
                 unit.removeDefenseAddition(amount);
@@ -1904,15 +1966,16 @@ var UnitBase = {
         let amount = options.amount;
         let id = options.id || "EnrageBuff" + mathArrayUtils.getId();
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
         var unit = this;
-        if(unit.damageAdditionType) {
+        if (unit.damageAdditionType) {
             unit.applyBuff({
                 id: id,
                 textureName: 'EnrageBuff',
+                count: amount,
                 duration: duration,
                 applyChanges: function() {
                     unit.enrageCounter++;
@@ -1927,6 +1990,7 @@ var UnitBase = {
             unit.applyBuff({
                 id: id,
                 textureName: 'EnrageBuff',
+                count: amount,
                 duration: duration,
                 applyChanges: function() {
                     unit.enrageCounter++;
@@ -1952,7 +2016,7 @@ var UnitBase = {
         let amount = options.amount;
         let id = options.id || "BerserkBuff" + mathArrayUtils.getId();
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -1982,7 +2046,7 @@ var UnitBase = {
         let callback = options.callback;
         let id = options.id || "DodgeBuff" + mathArrayUtils.getId();
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -1995,7 +2059,7 @@ var UnitBase = {
                 unit.addDodgeAddition(amount);
             },
             removeChanges: function() {
-                if(callback) {
+                if (callback) {
                     callback();
                 }
                 unit.removeDodgeAddition(amount);
@@ -2015,7 +2079,7 @@ var UnitBase = {
         let callback = options.callback;
         let id = options.id || "SureDodgeBuff";
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -2028,7 +2092,7 @@ var UnitBase = {
                 var self = this;
                 gameUtils.matterOnce(unit, 'preDodgeSufferAttack', function(event) {
                     let myBuff = self.buffs[id];
-                    if(myBuff) {
+                    if (myBuff) {
                         myBuff.removeBuff();
                         event.attackContext.dodgeManipulator = function() {
                             return 100;
@@ -2037,8 +2101,7 @@ var UnitBase = {
                 });
 
             },
-            removeChanges: function() {
-            }
+            removeChanges: function() {}
         });
 
         Matter.Events.trigger(this, 'applySureDodgeBuff', {
@@ -2047,29 +2110,30 @@ var UnitBase = {
         });
     },
 
-    doom: function(options) {
+    afflict: function(options) {
         options = options || {};
         let duration = options.duration;
-        let doomingUnit = options.doomingUnit;
+        let afflictingUnit = options.afflictingUnit;
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
         var unit = this;
-        var buffName = 'doom';
+        var buffName = 'afflict';
         condemnSound.play();
         var handler;
         this.applyBuff({
             id: buffName,
             unit: this,
             textureName: 'DoomBuff',
+            noCount: true,
             playSound: false,
             duration: duration || 2000,
             applyChanges: function() {
-                var doomed = this;
+                var afflicted = this;
                 handler = gameUtils.matterOnce(this, 'death', function() {
-                    if (doomingUnit.isDead) {
+                    if (afflictingUnit.isDead) {
                         return;
                     }
 
@@ -2077,7 +2141,7 @@ var UnitBase = {
                         spritesheetName: 'UtilityAnimations1',
                         animationName: 'crossslash',
                         speed: 0.65,
-                        transform: [doomed.position.x, doomed.position.y, 0.3, 0.3]
+                        transform: [afflicted.position.x, afflicted.position.y, 0.3, 0.3]
                     });
                     deathanim.play();
                     graphicsUtils.addSomethingToRenderer(deathanim, 'foreground');
@@ -2088,7 +2152,7 @@ var UnitBase = {
                         animationName: 'combospirit',
                         speed: 1.0,
                         loop: true,
-                        transform: [doomed.position.x, doomed.position.y, 1.5, 1.5]
+                        transform: [afflicted.position.x, afflicted.position.y, 1.5, 1.5]
                     });
                     combospiritAnimation.tint = 0xd8dd04;
                     combospiritAnimation.play();
@@ -2097,17 +2161,17 @@ var UnitBase = {
                         speed: 8.0,
                         displayObject: combospiritAnimation,
                         tracking: true,
-                        target: doomingUnit,
-                        owningUnit: doomed,
+                        target: afflictingUnit,
+                        owningUnit: afflicted,
                         impactType: 'collision',
                         collisionFunction: function(otherUnit) {
-                            return otherUnit == doomingUnit;
+                            return otherUnit == afflictingUnit;
                         },
                         originOffset: 0,
 
                         autoSend: true,
                         impactFunction: function(target) {
-                            var position1 = doomingUnit.position;
+                            var position1 = afflictingUnit.position;
                             var offset2 = {
                                 x: Math.random() * 40 - 20,
                                 y: Math.random() * 40 - 20
@@ -2142,16 +2206,16 @@ var UnitBase = {
                             });
                             gameUtils.attachSomethingToBody({
                                 something: doomNote1,
-                                body: doomingUnit.body
+                                body: afflictingUnit.body
                             });
                             gameUtils.attachSomethingToBody({
                                 something: doomNote2,
-                                body: doomingUnit.body,
+                                body: afflictingUnit.body,
                                 offset: offset2
                             });
                             gameUtils.attachSomethingToBody({
                                 something: doomNote3,
-                                body: doomingUnit.body,
+                                body: afflictingUnit.body,
                                 offset: offset3
                             });
                             graphicsUtils.floatSprite(doomNote1, {
@@ -2164,14 +2228,16 @@ var UnitBase = {
                                 runs: 65
                             });
 
-                            if(doomingUnit.hasGritDodge) {
-                                var healthGained = doomingUnit.giveHealth(doomingUnit.doomedHealthLifeGain, doomingUnit);
-                                if(options.onHealingRecieved) {
-                                    options.onHealingRecieved({healingReceived: healthGained});
+                            if (afflictingUnit.hasGritDodge) {
+                                var healthGained = afflictingUnit.giveHealth(afflictingUnit.afflictedHealthLifeGain, afflictingUnit);
+                                if (options.onHealingRecieved) {
+                                    options.onHealingRecieved({
+                                        healingReceived: healthGained
+                                    });
                                 }
                                 healSound.play();
                             } else {
-                                doomingUnit.giveGritDodge(true);
+                                afflictingUnit.giveGritDodge(true);
                             }
                             gameUtils.doSomethingAfterDuration(() => {
                                 doomSound.play();
@@ -2182,9 +2248,9 @@ var UnitBase = {
                     var dpfunction = function() {
                         projectile.cleanUp();
                     };
-                    gameUtils.deathPact(doomingUnit, dpfunction);
+                    gameUtils.deathPact(afflictingUnit, dpfunction);
                     Matter.Events.on(projectile, 'remove', () => {
-                        gameUtils.undeathPact(doomingUnit, dpfunction);
+                        gameUtils.undeathPact(afflictingUnit, dpfunction);
                     });
                 });
             },
@@ -2192,9 +2258,9 @@ var UnitBase = {
                 handler.removeHandler();
             }.bind(this)
         });
-        Matter.Events.trigger(doomingUnit, 'doom', {
-            doomedUnit: unit,
-            doomingUnit: doomingUnit
+        Matter.Events.trigger(afflictingUnit, 'afflict', {
+            afflictedUnit: unit,
+            afflictingUnit: afflictingUnit
         });
     },
 
@@ -2205,7 +2271,7 @@ var UnitBase = {
         let id = options.id || "RangeBuff" + mathArrayUtils.getId();
         var unit = this;
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -2231,7 +2297,7 @@ var UnitBase = {
         let id = options.id || "SpeedBuff" + mathArrayUtils.getId();
         var unit = this;
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -2258,7 +2324,7 @@ var UnitBase = {
         var duration = options.duration;
         var self = this;
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -2281,7 +2347,7 @@ var UnitBase = {
         var duration = options.duration;
         var self = this;
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
@@ -2303,21 +2369,25 @@ var UnitBase = {
         options = options || {};
         var duration = options.duration;
         var self = this;
+        var id = options.id || "plagueGem" + mathArrayUtils.getId();
 
-        if(this.isDead || !this.canTakeBuff()) {
+        if (this.isDead || !this.canTakeBuff()) {
             return;
         }
 
         this.applyBuff({
-            id: options.id || "plagueGem" + mathArrayUtils.getId(),
+            id: id,
             unit: this,
             textureName: 'PlagueBuff',
+            noCount: true,
             duration: duration || 2000,
             applyChanges: function() {
                 self.plagueCount += 1;
+                self.pauseBuffs({exclusions: 'PlagueBuff', id: id});
             },
             removeChanges: function() {
                 self.plagueCount -= 1;
+                self.resumeBuffs({exclusions: 'PlagueBuff', id: id});
             }
         });
     },
@@ -2397,6 +2467,7 @@ var UnitBase = {
             id: buffName,
             unit: this,
             textureName: 'MaimBuff',
+            noCount: true,
             playSound: false,
             duration: duration || 2000,
             applyChanges: function() {
@@ -2409,7 +2480,7 @@ var UnitBase = {
             }
         });
 
-        if(maimingUnit) {
+        if (maimingUnit) {
             Matter.Events.trigger(maimingUnit, 'maim', {
                 maimedUnit: unit,
                 maimingUnit: maimingUnit
@@ -2462,7 +2533,7 @@ var UnitBase = {
             }
         });
 
-        if(stunningUnit) {
+        if (stunningUnit) {
             Matter.Events.trigger(stunningUnit, 'stun', {
                 stunnedUnit: unit,
                 stunningUnit: stunningUnit
@@ -2488,6 +2559,7 @@ var UnitBase = {
             id: buffName,
             unit: this,
             textureName: 'CondemnBuff',
+            noCount: true,
             playSound: false,
             duration: duration || 2000,
             applyChanges: function() {
@@ -2589,8 +2661,10 @@ var UnitBase = {
                                 runs: 65
                             });
                             var healthGained = condemningUnit.giveHealth(condemningUnit.condemnedLifeGain, condemningUnit);
-                            if(options.onHealingRecieved) {
-                                options.onHealingRecieved({healingReceived: healthGained});
+                            if (options.onHealingRecieved) {
+                                options.onHealingRecieved({
+                                    healingReceived: healthGained
+                                });
                             }
                             healSound.play();
                             gameUtils.doSomethingAfterDuration(() => {
@@ -2806,12 +2880,16 @@ var UnitBase = {
      * }
      */
     applyBuff: function(options) {
-        if(this.isDead) {
+        if (this.isDead) {
             return;
         }
 
         options = Object.assign({
-            playSound: true
+            playSound: true,
+            stacks: true,
+            textureName: 'TransparentSquare',
+            count: 1,
+            noCount: false
         }, options);
 
         var id = options.id;
@@ -2825,107 +2903,147 @@ var UnitBase = {
         var playSound = options.playSound;
         var buffDuration = options.duration;
 
-        var buffAlreadyExists = false;
-        if (unit.buffs[id]) {
-            buffAlreadyExists = true;
+        if (!unit.buffs[textureName]) {
+            unit.buffs[textureName] = {
+                buffs: {}
+            };
         }
+        var currentBuffGroup = unit.buffs[textureName];
+
+        var buffAlreadyExists = false;
+        var currentBuffObj = null;
+        if (unit.buffs[textureName].buffs[id]) {
+            buffAlreadyExists = true;
+            currentBuffObj = unit.buffs[textureName].buffs[id];
+        }
+
         if (!buffAlreadyExists) {
+            //create the buff for the given id
             var buffObj = {
                 removeBuffImage: function(options) {
-                    unit.buffs[id].dobj.removeGleam();
-                    gameUtils.detachSomethingFromBody(unit.buffs[id].dobj);
-                    graphicsUtils.removeSomethingFromRenderer(unit.buffs[id].dobj);
-                    mathArrayUtils.removeObjectFromArray(unit.buffs[id], unit.orderedBuffs);
-                    var debuffAnim = gameUtils.getAnimation({
-                        spritesheetName: 'UtilityAnimations2',
-                        animationName: 'buffdestroy',
-                        speed: 4,
-                        transform: [unit.position.x + unit.buffs[id].offset.x, unit.position.y + unit.buffs[id].offset.y, 0.8, 0.8],
-                        onCompleteExtension: function() {
-                            unit.reorderBuffs();
-                        }
-                    });
+                    delete currentBuffGroup.buffs[id];
+                    if (Object.keys(currentBuffGroup.buffs).length == 0) {
+                        currentBuffGroup.dobj.removeGleam();
+                        gameUtils.detachSomethingFromBody(currentBuffGroup.dobj);
+                        graphicsUtils.removeSomethingFromRenderer(currentBuffGroup.dobj);
+                        mathArrayUtils.removeObjectFromArray(currentBuffGroup, unit.orderedBuffs);
+                        gameUtils.doSomethingAfterDuration(unit.reorderBuffs.bind(unit), 50);
+                        unit.buffs[textureName] = null;
 
-                    graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
-                    if (!options.detached) {
-                        gameUtils.attachSomethingToBody({
-                            something: debuffAnim,
-                            body: unit.body,
-                            offset: unit.buffs[id].offset,
-                            deathPactSomething: true
+                        var debuffAnim = gameUtils.getAnimation({
+                            spritesheetName: 'UtilityAnimations2',
+                            animationName: 'buffdestroy',
+                            speed: 4,
+                            transform: [unit.position.x + currentBuffGroup.offset.x, unit.position.y + currentBuffGroup.offset.y, 0.8, 0.8],
+                            onCompleteExtension: function() {}
                         });
+
+                        graphicsUtils.addSomethingToRenderer(debuffAnim, 'stageTwo');
+                        if (!options.detached) {
+                            gameUtils.attachSomethingToBody({
+                                something: debuffAnim,
+                                body: unit.body,
+                                offset: currentBuffGroup.offset,
+                                deathPactSomething: true
+                            });
+                        }
+                        debuffAnim.play();
+                    } else {
+                        //decrement count
+                        currentBuffGroup.buffCount.decrementCount(this.count);
                     }
-                    debuffAnim.play();
-                    gameUtils.doSomethingAfterDuration(unit.reorderBuffs, 200);
-                    unit.buffs[id] = null;
-                    delete unit.buffs[id];
                 },
-                id: id
+                pause: function(id) {
+                    this.pausers[id] = true;
+
+                    //if this is our first pause, remove the changes
+                    if(mathArrayUtils.getLengthOfObject(this.pausers) == 1) {
+                        options.removeChanges.call(this);
+                        currentBuffGroup.buffCount.countObj.text = 'x';
+                        currentBuffGroup.buffCount.countObj.alpha = 0.75;
+                        currentBuffGroup.dobj.alpha = 0.3;
+                    }
+                },
+                resume: function(id) {
+                    //if we have 1 pauser left at this time, actually resume the buff
+                    if(mathArrayUtils.getLengthOfObject(this.pausers) == 1) {
+                        options.applyChanges.call(this);
+                        currentBuffGroup.buffCount.countObj.text = currentBuffGroup.buffCount.count;
+                        currentBuffGroup.buffCount.countObj.alpha = 1.0;
+                        currentBuffGroup.dobj.alpha = 1.0;
+                    }
+
+                    delete this.pausers[id];
+
+                },
+                id: id,
+                pausers: {},
+                textureId: textureName,
+                count: options.count
             };
+            currentBuffObj = buffObj;
 
-            if (!textureName) {
-                textureName = 'TransparentSquare';
-            }
-            var dobj = graphicsUtils.addSomethingToRenderer(textureName, {
-                tint: options.tint || 0xFFFFFF,
-                where: 'stageTwo',
-                scale: {
-                    x: scale.x,
-                    y: scale.y
-                }
-            });
-            gameUtils.attachSomethingToBody({
-                something: dobj,
-                body: unit.body,
-                offset: {
-                    x: 0,
-                    y: originalyOffset
-                },
-                deathPactSomething: true
-            });
-            buffObj.dobj = dobj;
-            unit.buffs[id] = buffObj;
-            unit.orderedBuffs.push(buffObj);
-        }
+            //assign the textured, id'd buff to the unit
+            unit.buffs[textureName].buffs[id] = buffObj;
 
-        //reorder buffs (could be multiple images to show, let's lay them out nicely, rows of three)
-        if (!unit.reorderBuffs) {
-            var b1 = null;
-            var b2 = null;
-            var xSpacing = 32;
-            var ySpacing = 32;
-            unit.reorderBuffs = function() {
-                if (unit.isDead) {
-                    return;
-                }
-                unit.orderedBuffs.forEach((buff, i) => {
-                    var attachmentTick = buff.dobj.bodyAttachmentTick;
-                    var row = Math.floor(i / 3);
-                    var yOffset = row * -ySpacing;
-                    var col = i % 3;
-                    var xOffset = 0;
-                    if (col == 0) {
-                        //start of a new row
-                        b1 = buff;
-                        b2 = null;
-                    } else if (col == 1) {
-                        xOffset = xSpacing / 2;
-                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
-                        b2 = buff;
-                    } else if (col == 2) {
-                        xOffset = xSpacing;
-                        b1.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
-                        b2.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
+            //conditionally assign the group's dobj and create the counter text
+            if (!currentBuffGroup.dobj) {
+                var dobj = graphicsUtils.addSomethingToRenderer(textureName, {
+                    tint: options.tint || 0xFFFFFF,
+                    where: 'stageTwo',
+                    scale: {
+                        x: scale.x,
+                        y: scale.y
                     }
-                    buff.offset = {
-                        x: xOffset,
-                        y: originalyOffset + yOffset
-                    };
-                    attachmentTick.offset = buff.offset;
                 });
-            };
+                gameUtils.attachSomethingToBody({
+                    something: dobj,
+                    body: unit.body,
+                    offset: {
+                        x: 0,
+                        y: originalyOffset
+                    },
+                    deathPactSomething: true
+                });
+                currentBuffGroup.dobj = dobj;
+
+                //create the buff count text
+                let firstCount = currentBuffObj.count;
+                currentBuffGroup.buffCount = {
+                    count: firstCount,
+                    countObj: graphicsUtils.addSomethingToRenderer('TEX+:' + firstCount, 'stageTwo', {
+                        style: styles.verySmallStyleNonItalic,
+                        alpha: options.noCount ? 0.0 : 1.0,
+                        sortYOffset: 10,
+                        tint: options.customCountTint || 0xffffff
+                    }),
+                    incrementCount: function(count) {
+                        this.count += count;
+                        this.countObj.text = this.count;
+                    },
+                    decrementCount: function(count) {
+                        this.count -= count;
+                        this.countObj.text = this.count;
+                    }
+                };
+
+                graphicsUtils.latchDisplayObjectOnto({
+                    child: currentBuffGroup.buffCount.countObj,
+                    parent: dobj,
+                    trace: true,
+                    positionOffset: options.customCountOffset || {
+                        x: 12,
+                        y: -10
+                    }
+                });
+
+                unit.orderedBuffs.push(unit.buffs[textureName]);
+                unit.reorderBuffs();
+            } else {
+                //else this group already has an image, so let's increment the counter
+                currentBuffGroup.buffCount.incrementCount(currentBuffObj.count);
+            }
         }
-        unit.reorderBuffs();
 
         //always play the buff create animation
         var buffAnim = gameUtils.getAnimation({
@@ -2937,14 +3055,14 @@ var UnitBase = {
         });
         graphicsUtils.addSomethingToRenderer(buffAnim, 'stageTwo');
         graphicsUtils.addGleamToSprite({
-            sprite: unit.buffs[id].dobj,
+            sprite: currentBuffGroup.dobj,
             duration: 650,
             gleamWidth: 10
         });
         gameUtils.attachSomethingToBody({
             something: buffAnim,
             body: unit.body,
-            offset: unit.buffs[id].offset,
+            offset: currentBuffGroup.offset,
             deathPactSomething: true
         });
         buffAnim.play();
@@ -2955,7 +3073,7 @@ var UnitBase = {
         }
 
         //if the same buff already exists, destroy previous timers etc
-        var realizedBuff = unit.buffs[id];
+        var realizedBuff = currentBuffObj;
         if (buffAlreadyExists) {
             realizedBuff.removeBuff({
                 preserveImage: true
@@ -2965,6 +3083,9 @@ var UnitBase = {
 
         //apply the buff changes
         options.applyChanges.call(this);
+        if(this.isBuffGroupPaused(options.textureName)) {
+            currentBuffObj.pause();
+        }
 
         //setup cleanup of buff
         var eventRemoveHandlers = [];
@@ -3028,10 +3149,150 @@ var UnitBase = {
     },
 
     removeBuff: function(buffId) {
-        let buff = this.buffs[buffId];
-        if(buff) {
+        let buff = this.getBuffById(buffId);
+
+        if (buff) {
             buff.removeBuff();
+            buff.paused = true;
         }
+    },
+
+    isBuffGroupPaused: function(textureName) {
+        return this.areAllBuffGroupsPaused() && !this.allBuffPauseExclusions.includes(textureName);
+    },
+
+    areAllBuffGroupsPaused: function() {
+        return this.allBuffsGroupsPaused;
+    },
+
+    pauseBuffs: function(options) {
+        options = gameUtils.mixinDefaults({
+            params: options,
+            defaults: {
+                all: true,
+                exclusions: []
+            }
+        });
+        var allBuffsFlag = options.all;
+        var exclusions = options.exclusions;
+        exclusions = mathArrayUtils.convertToArray(exclusions);
+
+        var buffsInQuestion = [];
+        if (allBuffsFlag) {
+            this.allBuffsGroupsPaused += 1;
+            this.allBuffPauseExclusions.push(...exclusions);
+            buffsInQuestion = this.getBuffsAsArray({
+                exclusions: exclusions
+            });
+        }
+
+        buffsInQuestion.forEach((buff) => {
+            buff.pause(options.id);
+        });
+    },
+
+    resumeBuffs: function(options) {
+        options = gameUtils.mixinDefaults({
+            params: options,
+            defaults: {
+                all: true,
+                exclusions: []
+            }
+        });
+        var allBuffsFlag = options.all;
+        var exclusions = options.exclusions;
+        exclusions = mathArrayUtils.convertToArray(exclusions);
+
+        var buffsInQuestion = [];
+        if (allBuffsFlag) {
+            this.allBuffsGroupsPaused -= 1;
+            if(this.allBuffsGroupsPaused == 0) {
+                exclusions.forEach((exclusion) => {
+                    mathArrayUtils.removeObjectFromArray(exclusion, this.allBuffPauseExclusions);
+                });
+            }
+            buffsInQuestion = this.getBuffsAsArray({
+                exclusions: exclusions
+            });
+        }
+
+        buffsInQuestion.forEach((buff) => {
+            buff.resume(options.id);
+        });
+    },
+
+    isBuffGroupExcludedFromPausing: function(textureName) {
+        return this.buffPauseExclusions.includes(textureName);
+    },
+
+    getBuffsAsArray: function(options) {
+        var exclusions = options.exclusions;
+        exclusions = mathArrayUtils.convertToArray(exclusions);
+
+        var arrayOfBuffs = [];
+        mathArrayUtils.operateOnObjectByKey(this.buffs, (textureId, buffGroup) => {
+            if(!buffGroup) {
+                return;
+            } else {
+                var actualBuffList = buffGroup.buffs;
+                if (!exclusions.includes(textureId)) {
+                    mathArrayUtils.operateOnObjectByKey(actualBuffList, (id, myBuff) => {
+                        arrayOfBuffs.push(myBuff);
+                    });
+                }
+            }
+        });
+
+        return arrayOfBuffs;
+    },
+
+    getBuffById: function(id) {
+        var foundBuff = null;
+        Object.values(this.buffs).forEach((buffObs) => {
+            gameUtils.operateOnObjectByKey(buffObs, (id, myBuff) => {
+                if (id == buffId) {
+                    foundBuff = myBuff;
+                }
+            });
+        });
+
+        return foundBuff;
+    },
+
+    reorderBuffs: function() {
+        var b1 = null;
+        var b2 = null;
+        var xSpacing = 32;
+        var ySpacing = 32;
+        var originalyOffset = -this.buffYOffset || -65;
+        if (this.isDead) {
+            return;
+        }
+        this.orderedBuffs.forEach((buff, i) => {
+            var attachmentTick = buff.dobj.bodyAttachmentTick;
+            var row = Math.floor(i / 3);
+            var yOffset = row * -ySpacing;
+            var col = i % 3;
+            var xOffset = 0;
+            if (col == 0) {
+                //start of a new row
+                b1 = buff;
+                b2 = null;
+            } else if (col == 1) {
+                xOffset = xSpacing / 2;
+                b1.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
+                b2 = buff;
+            } else if (col == 2) {
+                xOffset = xSpacing;
+                b1.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
+                b2.dobj.bodyAttachmentTick.offset.x -= xSpacing / 2;
+            }
+            buff.offset = {
+                x: xOffset,
+                y: originalyOffset + yOffset
+            };
+            attachmentTick.offset = buff.offset;
+        });
     },
 
     canTakeBuff: function() {

@@ -453,10 +453,10 @@ export default function Marine(options) {
             spritesheetName: 'MarineAnimations1',
             animationName: 'dash',
             speed: 0.3,
-            transform: [this.position.x, this.position.y, 3.5, blitzAugment ? 4.5 : 2.5]
+            transform: [this.position.x, this.position.y, 3.5, blitzAugment ? 4.0 : 2.5]
         });
 
-        dashAnimation.tint = blitzAugment ? 0x737d00 : 0xFFFFFF;
+        dashAnimation.tint = blitzAugment ? 0xffdb44 : 0x8f0000;
 
         dashAnimation.play();
         dashAnimation.alpha = 0.8;
@@ -478,8 +478,8 @@ export default function Marine(options) {
                     self._becomeOnAlert();
                 }
 
-                if (shockCollision) {
-                    shockCollision.removeHandler();
+                if (self.shockCollision) {
+                    self.shockCollision.removeHandler();
                 }
 
                 commandObj.command.done();
@@ -509,8 +509,16 @@ export default function Marine(options) {
             });
         }
 
+        if(shockAugment) {
+            unitUtils.showBlockGraphic({scale: {x: 0.9, y: 0.9}, attackingUnit: {position: destination}, unit: self, tint: 0xd4631a});
+            dashAnimation.tint = 0xd67400;
+        }
+
+        if(self.shockCollision) {
+            self.shockCollision.removeHandler();
+        }
         if (shockAugment) {
-            var shockCollision = gameUtils.matterConditionalOnce(this.body, 'onCollideActive onCollide', function(pair) {
+            self.shockCollision = gameUtils.matterConditionalOnce(this.body, 'onCollideActive onCollide', function(pair) {
                 var otherBody = pair.pair.bodyB == self.body ? pair.pair.bodyA : pair.pair.bodyB;
                 if (!otherBody.isCollisionBody || !otherBody.unit) return false;
                 var otherUnit = otherBody.unit;
@@ -524,7 +532,6 @@ export default function Marine(options) {
                     duration: shockAugment.petrifyDuration,
                     petrifyingUnit: self
                 });
-                unitUtils.showBlockGraphic({scale: {x: 0.9, y: 0.9}, attackingUnit: otherUnit, unit: self, tint: 0xe40707});
                 Matter.Events.trigger(globals.currentGame, shockEventName, {
                     value: 1
                 });

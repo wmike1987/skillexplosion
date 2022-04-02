@@ -544,9 +544,10 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                    unitUtils.addRandomAugmentToAbility({
-                        unit: this.shane
-                    });
+                     this.shane.applyDefenseBuff({duration: 6000, amount: mathArrayUtils.getRandomIntInclusive(1, 5)});
+                    // unitUtils.addRandomAugmentToAbility({
+                    //     unit: this.shane
+                    // });
                     // if(!this.cursorId) {
                     //     this.cursorId = 1;
                     // }
@@ -598,9 +599,10 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'm' || event.key == 'M') {
                     console.info(this.mousePosition);
-                    this.shane.stun({
-                        duration: 1000
-                    });
+                    // this.shane.stun({
+                    //     duration: 1000
+                    // });
+                    this.shane.applyPlagueGem({duration: 2000});
                 }
             }
 

@@ -988,10 +988,10 @@ var game = {
         // this.shane.dodge = 40;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["ApolloMicrochip"], unit: this.shane});
         ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
-        ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BasicMicrochip"], unit: this.shane});
         // ItemUtils.dropItemAtPosition({gamePrefix: "Us", itemName: ["RingOfThought"], unit: this.shane, position: gameUtils.getCanvasCenter()});
 
         this.shaneCollector = new StatCollector({
@@ -1272,10 +1272,10 @@ var game = {
     },
 
     toastMessage: function(options) {
-        options = gameUtils.mixinDefaults(options, {
+        options = gameUtils.mixinDefaults({params: options, defaults: {
             style: styles.fatigueTextLarge,
             scene: options.scene || globals.currentGame.currentScene
-        });
+        }});
 
         //reset adrenaline indicator
         var toastText = graphicsUtils.floatText(options.message, gameUtils.getPlayableCenterPlus({

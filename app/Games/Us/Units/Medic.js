@@ -1000,7 +1000,7 @@ export default function Medic(options) {
         });
 
         if(sparePartsAugment) {
-            Matter.Events.trigger(globals.currentGame, sparePartsAugment, {
+            Matter.Events.trigger(globals.currentGame, sparePartsEventName, {
                 value: sparePartsAugment.energyReduction
             });
         }
@@ -1021,9 +1021,9 @@ export default function Medic(options) {
                     abilityType: true
                 });
                 if (!unit.isDead && sideEffectsAugment) {
-                    unit.doom({
+                    unit.afflict({
                         duration: sideEffectsAugment.duration,
-                        doomingUnit: medic
+                        afflictingUnit: medic
                     });
                     Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
                         value: 1
@@ -1175,7 +1175,7 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('SideEffectsIcon'),
                 duration: 5000,
                 title: 'Side Effects',
-                description: 'Accuse surviving enemies for 5 seconds.',
+                description: 'Afflict surviving enemies for 5 seconds.',
                 collector: {
                     eventName: sideEffectsEventName,
                     presentation: {
@@ -1485,26 +1485,26 @@ export default function Medic(options) {
         }
     });
 
-    var wwDDuration = 3000;
-    var wwADuration = 5000;
-    var wickedWays = new Passive({
-        title: 'Wicked Ways',
+    var hhDDuration = 3000;
+    var hhADuration = 5000;
+    var healthyHabits = new Passive({
+        title: 'Healthy Habits',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 5 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
         passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
-        textureName: 'WickedWays',
+        textureName: 'HealthyHabits',
         unit: medic,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 3000,
-        aggressionDuration: wwADuration,
+        aggressionDuration: hhADuration,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyHealthGem({
-                    id: "wwHealthGain",
+                    id: "hhHealthGain",
                     duration: 3000,
                 });
             });
@@ -1513,10 +1513,10 @@ export default function Medic(options) {
             var attackingUnit = event.performingUnit;
             if (attackingUnit.condemn) {
                 attackingUnit.condemn({
-                    duration: wwDDuration,
+                    duration: hhDDuration,
                     condemningUnit: medic,
                     onHealingRecieved: function(options) {
-                        Matter.Events.trigger(globals.currentGame, 'WickedWaysCollector', {
+                        Matter.Events.trigger(globals.currentGame, 'HealthyHabitsCollector', {
                             mode: 'defensePassive',
                             collectorPayload: {
                                 value: options.healingReceived
@@ -1530,9 +1530,9 @@ export default function Medic(options) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
-                    id: "wwHealthGain",
-                    textureName: 'WickedWaysHealingBuff',
-                    duration: wwADuration,
+                    id: "hhHealthGain",
+                    textureName: 'HealthyHabitsHealingBuff',
+                    duration: hhADuration,
                     applyChanges: function() {
                         unit.healthRegenerationMultiplier *= 2;
                         unitUtils.applyHealthGainAnimationToUnit(unit);
@@ -1546,11 +1546,11 @@ export default function Medic(options) {
             });
 
             return {
-                value: wwADuration / 1000
+                value: hhADuration / 1000
             };
         },
         collector: {
-            aggressionLabel: 'Duration of 2x regeneration',
+            aggressionLabel: 'Duration of 2x hp regeneration',
             aggressionSuffix: 'seconds',
             defensiveLabel: 'Healing from condemned',
             defensiveFormat: function(v) {
@@ -1748,26 +1748,24 @@ export default function Medic(options) {
         }
     });
 
-    var dtDDuration = 3000;
-    var dtADuration = 3000;
-    var dtHandler = {};
-    var deepThought = new Passive({
-        title: 'Deep Thought',
-        originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
+    var wwADuration = 2000;
+    var wwHandler = {};
+    var wickedWays = new Passive({
+        title: 'Wicked Ways',
+        // originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
+        aggressionDescription: ['Agression Mode (When hit)', 'Plague attacker for 2 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain a free mine.'],
-        textureName: 'DeepThought',
+        textureName: 'WickedWays',
         unit: medic,
-        defenseEventName: 'preSufferAttack',
+        defenseEventName: 'sufferAttack',
         defenseCooldown: 6000,
-        aggressionEventName: 'kill',
-        aggressionCooldown: 8000,
+        aggressionEventName: 'sufferAttack',
+        aggressionCooldown: wwADuration,
         passiveAction: function(event) {
             if (!medic.freeMines) {
                 medic.freeMines = 0;
             }
-
             medic.applyBuff({
                 id: 'freeMine' + (medic.freeMines + 1),
                 textureName: 'MineBuff',
@@ -1802,7 +1800,7 @@ export default function Medic(options) {
             var attackingUnit = event.performingUnit;
             medic.getAbilityByName('Mine').method.call(medic, null);
             attackingUnit.petrify({
-                duration: dtDDuration,
+                duration: wwDDuration,
                 petrifyingUnit: medic
             });
 
@@ -1810,57 +1808,65 @@ export default function Medic(options) {
                 value: 1
             };
         },
-        preStart: function(type) {
-            var passive = this;
-            if (medic.defensePassive) {
-                deepThought.aggressionAction = function() {
-                    medic.defensePassive.aggressionAction();
-                    return {
-                        value: 1
-                    };
-                };
-                if (!medic.defensePassive.deepThoughtBypassAggPredicate) {
-                    deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
-                }
-                deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
-                deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
-            }
-            if (type == 'attackPassive') {
-                var fe = Matter.Events.on(medic, 'defensePassiveEquipped', function(event) {
-                    Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
-                    Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
-                    // Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
-                    deepThought.aggressionAction = function() {
-                        event.passive.aggressionAction();
-                        deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
-                        return {
-                            value: 1
-                        };
-                    };
-                    deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
-                    deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
-                    passive.start('attackPassive');
-                });
-                var fu = Matter.Events.on(medic, 'defensePassiveUnequipped', function(event) {
-                    Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
-                    Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
-                    deepThought.aggressionAction = null;
-                    deepThought.aggressionPredicate = null;
-                    deepThought.aggressionDescription = deepThought.originalAggressionDescription;
-                    passive.start('attackPassive');
-                });
-                dtHandler.fe = fe;
-                dtHandler.fu = fu;
-            }
-        },
-        preStop: function(type) {
-            Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
-            Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+        aggressionAction: function(event) {
+            var attackingUnit = event.performingUnit;
+            attackingUnit.applyPlagueGem({duration: wwADuration});
+
+            return {
+                value: 1
+            };
         },
         collector: {
-            aggressionLabel: 'Aggression-mode activations',
+            aggressionLabel: 'Enemies plagued',
             defensiveLabel: 'Mines laid/enemies petrified',
         }
+        // preStart: function(type) {
+        //     var passive = this;
+        //     if (medic.defensePassive) {
+        //         deepThought.aggressionAction = function() {
+        //             medic.defensePassive.aggressionAction();
+        //             return {
+        //                 value: 1
+        //             };
+        //         };
+        //         if (!medic.defensePassive.deepThoughtBypassAggPredicate) {
+        //             deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
+        //         }
+        //         deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
+        //         deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
+        //     }
+        //     if (type == 'attackPassive') {
+        //         var fe = Matter.Events.on(medic, 'defensePassiveEquipped', function(event) {
+        //             Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
+        //             Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+        //             // Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
+        //             deepThought.aggressionAction = function() {
+        //                 event.passive.aggressionAction();
+        //                 deepThought.aggressionPredicate = medic.defensePassive.aggressionPredicate;
+        //                 return {
+        //                     value: 1
+        //                 };
+        //             };
+        //             deepThought.aggressionDescription = [].concat(medic.defensePassive.aggressionDescription);
+        //             deepThought.aggressionDescription[0] = deepThought.originalAggressionDescription[0];
+        //             passive.start('attackPassive');
+        //         });
+        //         var fu = Matter.Events.on(medic, 'defensePassiveUnequipped', function(event) {
+        //             Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
+        //             Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+        //             deepThought.aggressionAction = null;
+        //             deepThought.aggressionPredicate = null;
+        //             deepThought.aggressionDescription = deepThought.originalAggressionDescription;
+        //             passive.start('attackPassive');
+        //         });
+        //         dtHandler.fe = fe;
+        //         dtHandler.fu = fu;
+        //     }
+        // },
+        // preStop: function(type) {
+        //     Matter.Events.off(medic, 'defensePassiveEquipped', dtHandler.fe);
+        //     Matter.Events.off(medic, 'defensePassiveUnequipped', dtHandler.fu);
+        // },
     });
 
     var efADuration = 4000;
@@ -2110,7 +2116,7 @@ export default function Medic(options) {
         name: options.name,
         heightAnimation: 'up',
         abilities: [healAbility, secretStepAbility, mineAbility],
-        passiveAbilities: [elegantForm, raisedStakes, wickedWays, deepThought, slyLogic, familiarFace],
+        passiveAbilities: [elegantForm, raisedStakes, healthyHabits, wickedWays, slyLogic, familiarFace],
         death: function() {
             var self = this;
             var anim = gameUtils.getAnimation({
@@ -2161,7 +2167,7 @@ export default function Medic(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                ability.addAllAvailableAugments();
+                // ability.addAllAvailableAugments();
             });
 
             this.fullhpTallyMeterWidth = 30;
