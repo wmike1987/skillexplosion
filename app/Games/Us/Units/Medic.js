@@ -1442,13 +1442,13 @@ export default function Medic(options) {
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'BaseUnitAnimations1',
                     animationName: 'gritblast2',
-                    speed: 1.0,
-                    transform: [attacker.position.x, attacker.position.y, 0.5, 0.5]
+                    speed: 0.9,
+                    transform: [attacker.position.x, attacker.position.y, 0.75, 0.75]
                 });
                 if (grit >= 20) {
                     maimBlast.scale = {
-                        x: 0.7,
-                        y: 0.7
+                        x: 0.8,
+                        y: 0.8
                     };
                 }
                 if (grit >= 35) {

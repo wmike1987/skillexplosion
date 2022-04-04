@@ -2056,6 +2056,7 @@ var UnitBase = {
             id: id,
             textureName: 'DodgeBuff',
             duration: duration,
+            count: amount,
             applyChanges: function() {
                 unit.addDodgeAddition(amount);
             },

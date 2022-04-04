@@ -5,14 +5,23 @@ import UC from '@core/Unit/UnitConstructor.js';
 import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
 import style from '@utils/Styles.js';
-import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 
 export default function Gargoyle(options) {
     var gargoyle = {};
 
     options = options || {};
-    $.extend(options, {radius: 25}, options);
+    $.extend(options, {
+        radius: 25
+    }, options);
 
     //animation settings
     var runSpeed = 0.6;
@@ -139,105 +148,166 @@ export default function Gargoyle(options) {
     };
 
     var scale = 0.1;
-    var sc = {x: scale, y: scale};
-    var adjustedUpDownsc = {x: scale, y: scale};
-    var flipsc = {x: -1 * sc.x, y: sc.y};
+    var sc = {
+        x: scale,
+        y: scale
+    };
+    var adjustedUpDownsc = {
+        x: scale,
+        y: scale
+    };
+    var flipsc = {
+        x: -1 * sc.x,
+        y: sc.y
+    };
     var yOffset = 22;
-    var rc = [
-    {
-        id: 'selected',
-        data: 'IsometricSelectedSmall',
-        scale: {x: 1.1, y: 1.1},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },
-    {
-        id: 'selectionPending',
-        data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.35, y: 0.35},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },{
-        id: 'left',
-        data: spineWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-    },{
-        id: 'right',
-        data: spineEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'up',
-        data: spineNorth,
-        scale: adjustedUpDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'down',
-        data: spineSouth,
-        scale: adjustedUpDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upLeft',
-        data: spineNorthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upRight',
-        data: spineNorthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'downRight',
-        data: spineSouthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    }, {
-        id: 'downLeft',
-        data: spineSouthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },{
-        id: 'shadow',
-        data: 'IsoShadowBlurredSmall',
-        scale: {x: 1.1, y: 1.1},
-        visible: true,
-        tint: 0x000546,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        stage: "stageNTwo",
-        offset: {x: 0, y: 22}}];
+    var rc = [{
+            id: 'selected',
+            data: 'IsometricSelectedSmall',
+            scale: {
+                x: 1.1,
+                y: 1.1
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        },
+        {
+            id: 'selectionPending',
+            data: unitUtils.getPendingAnimation(),
+            scale: {
+                x: 0.35,
+                y: 0.35
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        }, {
+            id: 'left',
+            data: spineWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+        }, {
+            id: 'right',
+            data: spineEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'up',
+            data: spineNorth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'down',
+            data: spineSouth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upLeft',
+            data: spineNorthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upRight',
+            data: spineNorthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'downRight',
+            data: spineSouthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'downLeft',
+            data: spineSouthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'shadow',
+            data: 'IsoShadowBlurredSmall',
+            scale: {
+                x: 1.1,
+                y: 1.1
+            },
+            visible: true,
+            tint: 0x000546,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            stage: "stageNTwo",
+            offset: {
+                x: 0,
+                y: 22
+            }
+        }
+    ];
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
-    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: 0.08, rate: 1.5});
-    var transform = gameUtils.getSound('gargoyletransform.wav', {volume: 0.35, rate: 1});
+    var attackSound = gameUtils.getSound('critterhit.wav', {
+        volume: 0.15,
+        rate: 1
+    });
+    var deathSound = gameUtils.getSound('critterdeath.wav', {
+        volume: 0.08,
+        rate: 1.5
+    });
+    var transform = gameUtils.getSound('gargoyletransform.wav', {
+        volume: 0.35,
+        rate: 1
+    });
 
     var unitProperties = $.extend({
         unitType: 'Gargoyle',
@@ -276,7 +346,16 @@ export default function Gargoyle(options) {
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {
+                where: 'stageNTwo',
+                scale: {
+                    x: 0.75,
+                    y: 0.75
+                },
+                position: mathArrayUtils.clonePosition(self.deathPosition, {
+                    y: 22
+                })
+            });
             graphicsUtils.fadeSpriteOverTimeLegacy(shadow, globals.currentGame.unitCorpseTime);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
@@ -284,17 +363,21 @@ export default function Gargoyle(options) {
         },
         _afterAddInit: function() {
             $.each(this.body.renderlings, function(key, renderling) {
-                if(renderling.skeleton) {
+                if (renderling.skeleton) {
                     $.each(renderling.skeleton.slots, function(i, slot) {
-                        if(slot.currentSprite) {
-                            if(slot.currentSpriteName.includes('1---4') ||
-                              (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length-1) == '1') ||
-                              (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
-                              slot.currentSpriteName.includes('1---3') ||
-                              slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
-                              slot.currentSpriteName.includes('North_0003_Layer-1---5'))
-                            {
-                                slot.customColor = {r: 0.2, g: 0.4, b: 1.0, a: 1.0};
+                        if (slot.currentSprite) {
+                            if (slot.currentSpriteName.includes('1---4') ||
+                                (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length - 1) == '1') ||
+                                (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
+                                slot.currentSpriteName.includes('1---3') ||
+                                slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
+                                slot.currentSpriteName.includes('North_0003_Layer-1---5')) {
+                                slot.customColor = {
+                                    r: 0.2,
+                                    g: 0.4,
+                                    b: 1.0,
+                                    a: 1.0
+                                };
                             }
                         }
                     });
@@ -306,38 +389,51 @@ export default function Gargoyle(options) {
             this.stoneFormCooldown = 2200;
             this.stoneFormLength = 1500;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
-                if(this.stoneFormAvailable && this.currentHealth < this.maxHealth/2 && !this.isStunned && !this.isPetrified) {
+                if (this.stoneFormAvailable && this.currentHealth < this.maxHealth / 2 && !this.isStunned && !this.isPetrified) {
                     this.stoneFormAvailable = false;
                     gameUtils.doSomethingAfterDuration(() => {
                         this.stoneFormAvailable = true;
                     }, this.stoneFormCooldown + this.stoneFormLength);
 
                     transform.play();
-                    this.applyBuff({id: "gargBuff", textureName: 'DefensiveBuff', duration: this.stoneFormLength, applyChanges: function() {
-                        this.stop(null, {peaceful: true}); //stop any movement
-                        this.showLifeBar(true);
-                        this.barsShowingOverride = true;
-                        this.canMove = false;
-                        this.canAttack = false;
-                        this.isoManagedTint = 0x4d4d4d;
-                        this.isoManagedAlpha = 0;
-                        this.healthRegenerationMultiplier = 8;
-                        this.setSleep(true, 'garg');
-                        this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {where: 'stage', sortYOffset: 15, position: this.position});
-                        this.defense += 10;
-                    }.bind(this), removeChanges: function() {
-                        this.showLifeBar(false);
-                        this.barsShowingOverride = false;
-                        this.healthRegenerationMultiplier = 1;
-                        this.isoManagedTint = null;
-                        this.canMove = true;
-                        this.canAttack = true;
-                        this.defense -= 10;
-                        this.isoManagedAlpha = 1;
-                        this.stop();
-                        this.setSleep(false, 'garg');
-                        graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
-                    }.bind(this)});
+                    this.applyBuff({
+                        id: "gargBuff",
+                        count: 10,
+                        textureName: 'DefensiveBuff',
+                        duration: this.stoneFormLength,
+                        applyChanges: function() {
+                            this.stop(null, {
+                                peaceful: true
+                            }); //stop any movement
+                            this.showLifeBar(true);
+                            this.barsShowingOverride = true;
+                            this.canMove = false;
+                            this.canAttack = false;
+                            this.isoManagedTint = 0x4d4d4d;
+                            this.isoManagedAlpha = 0;
+                            this.healthRegenerationMultiplier = 8;
+                            this.setSleep(true, 'garg');
+                            this.gargoyleSnapshot = graphicsUtils.addSomethingToRenderer('GargoyleSnapshot', {
+                                where: 'stage',
+                                sortYOffset: 15,
+                                position: this.position
+                            });
+                            this.defense += 10;
+                        }.bind(this),
+                        removeChanges: function() {
+                            this.showLifeBar(false);
+                            this.barsShowingOverride = false;
+                            this.healthRegenerationMultiplier = 1;
+                            this.isoManagedTint = null;
+                            this.canMove = true;
+                            this.canAttack = true;
+                            this.defense -= 10;
+                            this.isoManagedAlpha = 1;
+                            this.stop();
+                            this.setSleep(false, 'garg');
+                            graphicsUtils.removeSomethingFromRenderer(this.gargoyleSnapshot);
+                        }.bind(this)
+                    });
                 }
             }.bind(this));
         },
@@ -359,7 +455,7 @@ export default function Gargoyle(options) {
             attackAnimations: attackAnimations,
             cooldown: 450,
             honeRange: 300,
-            range: options.radius*2+14,
+            range: options.radius * 2 + 14,
             isMelee: true,
             damage: 9,
             attackExtension: function(target) {
@@ -367,7 +463,7 @@ export default function Gargoyle(options) {
                     spritesheetName: 'UtilityAnimations1',
                     animationName: 'GenericHit',
                     speed: 1.0,
-                    transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.25, 0.25]
+                    transform: [target.position.x + Math.random() * 8, target.position.y + Math.random() * 8, 0.25, 0.25]
                 });
                 graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
                 bloodAnimation.play();
