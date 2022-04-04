@@ -446,9 +446,9 @@ ConfigPanel.prototype.lowerOpenButton = function() {
             x: this.showButton.position.x,
             y: gameUtils.getPlayableHeight() + this.configButtonGlassHeight / 2.5
         };
-    }
 
-    this.registerAugmentImpeder();
+        this.registerAugmentImpeder();
+    }
 };
 
 ConfigPanel.prototype.registerAugmentImpeder = function() {

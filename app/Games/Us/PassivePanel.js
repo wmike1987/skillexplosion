@@ -310,9 +310,9 @@ ConfigPanel.prototype.lowerOpenButton = function() {
         this.showButtonSkinny.scale = {x: 1.00, y: 1.00};
         this.showButtonGlass.scale = {x: 0.3, y: 1.1};
         this.showButtonSkinny.visible = true;
-    }
 
-    this.registerPassiveImpeder(this.showButtonSkinny);
+        this.registerPassiveImpeder(this.showButtonSkinny);
+    }
 };
 
 ConfigPanel.prototype.hideOpenButton = function() {

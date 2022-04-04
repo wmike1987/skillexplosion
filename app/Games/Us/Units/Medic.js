@@ -1440,24 +1440,24 @@ export default function Medic(options) {
                     abilityType: true
                 });
                 var maimBlast = gameUtils.getAnimation({
-                    spritesheetName: 'MedicAnimations1',
-                    animationName: 'maimblast',
-                    speed: 0.7,
-                    transform: [attacker.position.x, attacker.position.y, 0.85, 0.85]
+                    spritesheetName: 'BaseUnitAnimations1',
+                    animationName: 'gritblast2',
+                    speed: 1.0,
+                    transform: [attacker.position.x, attacker.position.y, 0.5, 0.5]
                 });
                 if (grit >= 20) {
                     maimBlast.scale = {
-                        x: 1.1,
-                        y: 1.1
+                        x: 0.7,
+                        y: 0.7
                     };
                 }
                 if (grit >= 35) {
                     maimBlast.scale = {
-                        x: 1.6,
-                        y: 1.6
+                        x: 1.0,
+                        y: 1.0
                     };
                 }
-                maimBlast.tint = 0xf1ca00;
+                maimBlast.tint = 0xffeea7;
                 maimBlast.rotation = Math.random() * Math.PI;
                 maimBlast.play();
                 graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
@@ -2168,7 +2168,7 @@ export default function Medic(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                ability.addAllAvailableAugments();
+                // ability.addAllAvailableAugments();
             });
 
             this.fullhpTallyMeterWidth = 30;

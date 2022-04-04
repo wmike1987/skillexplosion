@@ -730,7 +730,7 @@ export default function Marine(options) {
 
         //look for free knives
         if (this.freeKnives) {
-            this.buffs['freeKnife' + this.freeKnives].removeBuff({
+            this.getBuffById('freeKnife' + this.freeKnives).removeBuff({
                 detached: true
             });
         }
@@ -1697,24 +1697,24 @@ export default function Marine(options) {
             var sufferingUnit = event.sufferingUnit;
 
             var maimBlast = gameUtils.getAnimation({
-                spritesheetName: 'MedicAnimations1',
-                animationName: 'maimblast',
-                speed: 0.7,
-                transform: [sufferingUnit.position.x, sufferingUnit.position.y, 0.85, 0.85]
+                spritesheetName: 'BaseUnitAnimations1',
+                animationName: 'gritblast',
+                speed: 1.0,
+                transform: [sufferingUnit.position.x, sufferingUnit.position.y, 0.5, 0.5]
             });
             if (grit >= 20) {
                 maimBlast.scale = {
-                    x: 1.1,
-                    y: 1.1
+                    x: 0.7,
+                    y: 0.7
                 };
             }
             if (grit >= 35) {
                 maimBlast.scale = {
-                    x: 1.6,
-                    y: 1.6
+                    x: 1.0,
+                    y: 1.0
                 };
             }
-            maimBlast.tint = 0xf1ca00;
+            maimBlast.tint = 0xffeea7;
             maimBlast.rotation = Math.random() * Math.PI;
             maimBlast.play();
             graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
