@@ -76,6 +76,17 @@ var levelAugments = {
             return {text: 'Hardened', style: 'systemMessageTextAugment', tint: 0xa67b29};
         }
     },
+    vitalityBoss: {
+        init: function(level) {
+            level._isBossLevel = true;
+        },
+        action: function(enemy) {
+            enemy.applyVitalityBuff({duration: 999999, amount: 200});
+        },
+        getSystemMessage: () => {
+            return {text: 'Boss', style: 'systemMessageTextAugment', tint: 0x0af5e7};
+        }
+    }
 };
 
 var levelBase = {
@@ -264,6 +275,7 @@ var levelBase = {
             itemClass: 'lightStimulant',
             itemType: 'item',
             isSupplyDropEligible: true,
+            specificAugment: null,
             levelAugments: [],
             createOneShotUnit: mathArrayUtils.flipCoin() || mathArrayUtils.flipCoin(),
         }, options.levelOptions || {});
@@ -284,8 +296,11 @@ var levelBase = {
         }];
 
         //convenience... for now. Will redo this
-        if(this.augmented) {
+        if(this.randomAugment) {
             this.levelAugments = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
+        } else if(this.specificAugment) {
+            mathArrayUtils.convertToArray(this.specificAugment);
+            this.levelAugments = this.specificAugment;
         }
 
         //set the level augment
@@ -363,6 +378,10 @@ var levelBase = {
 
     isBattleLevel: function() {
         return (!this.isCompleted && this.enemySets.length > 0);
+    },
+
+    isBossLevel: function() {
+        return this._isBossLevel;
     },
 
     isAugmented: function() {

@@ -875,6 +875,8 @@ var enemyDefs = {
             hz: 14000
         }, hardFlyObj]
     },
+
+    //outer basics
     outerBasic: {
         noun: 'Critter',
         strength: 'hard',
@@ -920,6 +922,8 @@ var enemyDefs = {
             hz: 4000
         }, hardFlyObj]
     },
+
+    //outer hards
     outerHardOne: {
         strength: 'hard',
         enemySets: [{
@@ -971,6 +975,44 @@ var enemyDefs = {
             hz: 6000
         }, hardFlyObj]
     },
+
+    //boss
+    sentinelBoss: {
+        noun: 'Sentinel',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Sentinel',
+            amount: 2,
+            atATime: 2,
+            hz: 6000
+        }, hardFlyObj]
+    },
+    critterBoss: {
+        noun: 'Critter',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Critter',
+            amount: 4,
+            atATime: 2,
+            hz: 15000
+        }, hardFlyObj]
+    },
+    mixedBoss: {
+        noun: 'Enemy',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Critter',
+            amount: 2,
+            atATime: 2,
+            hz: 15000
+        }, {
+            type: 'Sentinel',
+            amount: 1,
+            atATime: 1,
+            initialDelay: 8000,
+        }, hardFlyObj]
+    },
+
     easyGargs: {
         noun: 'Gargoyle',
         strength: 'hard',
@@ -1188,7 +1230,6 @@ var phaseTwo = function(options) {
 
             world.map.addMapNode('basicHunter', {
                 levelOptions: {
-                    nodeTitle: "Hunter's Camp",
                     token: 'hard',
                     itemClass: 'worn',
                 }
@@ -1199,7 +1240,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
                 levelOptions: {
-                    augmented: true,
+                    randomAugment: true,
                 }
             });
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
@@ -1209,7 +1250,7 @@ var phaseTwo = function(options) {
             var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
-                    augmented: true,
+                    randomAugment: true,
                     itemClass: 'worn',
                     outer: true
                 }
@@ -1443,7 +1484,7 @@ var phaseThree = function() {
             minX: gameUtils.getCanvasCenter().x
         },
         levelOptions: {
-            augmented: true,
+            randomAugment: true,
             outer: true
         }
     });
@@ -1460,7 +1501,7 @@ var phaseThree = function() {
         levelOptions: {
             outer: true,
             itemClass: 'stimulant',
-            augmented: true
+            randomAugment: true
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
@@ -1630,31 +1671,29 @@ var finalPhase = function() {
     var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
         levelOptions: {
-            nodeTitle: 'Camp',
             outer: true,
-            augmented: true
+            randomAugment: true
         }
     });
 
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
         levelOptions: {
-            nodeTitle: 'Camp',
             outer: true
         }
     });
 
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
         levelOptions: {
-            nodeTitle: 'Camp',
             outer: true,
-            augmented: true
+            randomAugment: true
         }
     });
 
-    this.map.addMapNode('multiLevel', {
+    var bossMix = ['sentinelBoss', 'critterBoss', 'mixedBoss'];
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bossMix), {
         levelOptions: {
             outer: true,
-            enemyDefList: [mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards), 'mobRammians', mathArrayUtils.getRandomElementOfArray(outerHards)],
+            specificAugment: 'vitalityBoss',
             itemClass: 'rugged',
         },
         positionOptions: otherPositionOp
@@ -2086,72 +2125,71 @@ var campNoir = {
                             }
                         },
                         possibleDoodads: basicPitArray.concat([{
-                                textureName: 'bullets',
-                                where: 'backgroundOne',
-                                randomHFlip: true,
-                                // unique: true,
-                                randomScale: {
-                                    min: 0.8,
-                                    max: 1.0
-                                }
-                            }, {
-                                textureName: 'CampDoodads/CritterFootprint',
-                                randomScale: {
-                                    min: 0.8,
-                                    max: 1.0
-                                },
-                                groupingOptions: {
-                                    min: 80,
-                                    max: 600
-                                },
-                                alpha: 0.75,
-                                randomHFlip: true,
-                                rotate: 'random',
-                                where: 'stageNTwo'
-                            }, {
-                                textureName: 'CampDoodads/CritterFootprint2',
-                                randomScale: {
-                                    min: 0.8,
-                                    max: 1.0
-                                },
-                                groupingOptions: {
-                                    min: 80,
-                                    max: 400
-                                },
-                                alpha: 0.75,
-                                randomHFlip: true,
-                                rotate: 'random',
-                                where: 'stageNTwo'
-                            }, {
-                                textureName: 'CampDoodads/CritterFootprint3',
-                                randomScale: {
-                                    min: 0.8,
-                                    max: 1.0
-                                },
-                                groupingOptions: {
-                                    min: 80,
-                                    max: 400
-                                },
-                                alpha: 0.75,
-                                randomHFlip: true,
-                                rotate: 'random',
-                                where: 'stageNTwo'
-                            }, {
-                                textureName: 'CampDoodads/CritterFootprint5',
-                                randomScale: {
-                                    min: 0.8,
-                                    max: 1.0
-                                },
-                                groupingOptions: {
-                                    min: 80,
-                                    max: 400
-                                },
-                                alpha: 0.75,
-                                randomHFlip: true,
-                                rotate: 'random',
-                                where: 'stageNTwo'
+                            textureName: 'bullets',
+                            where: 'backgroundOne',
+                            randomHFlip: true,
+                            // unique: true,
+                            randomScale: {
+                                min: 0.8,
+                                max: 1.0
                             }
-                        ]),
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint',
+                            randomScale: {
+                                min: 0.8,
+                                max: 1.0
+                            },
+                            groupingOptions: {
+                                min: 80,
+                                max: 600
+                            },
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint2',
+                            randomScale: {
+                                min: 0.8,
+                                max: 1.0
+                            },
+                            groupingOptions: {
+                                min: 80,
+                                max: 400
+                            },
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint3',
+                            randomScale: {
+                                min: 0.8,
+                                max: 1.0
+                            },
+                            groupingOptions: {
+                                min: 80,
+                                max: 400
+                            },
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }, {
+                            textureName: 'CampDoodads/CritterFootprint5',
+                            randomScale: {
+                                min: 0.8,
+                                max: 1.0
+                            },
+                            groupingOptions: {
+                                min: 80,
+                                max: 400
+                            },
+                            alpha: 0.75,
+                            randomHFlip: true,
+                            rotate: 'random',
+                            where: 'stageNTwo'
+                        }]),
                         tileWidth: tileSize,
                         maxNumber: 1,
                         nonTilePosition: true,
