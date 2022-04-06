@@ -679,38 +679,6 @@ var gameUtils = {
         return l;
     },
 
-    //apply something to bodies by team
-    applyToUnitsByTeam: function(teamPredicate, unitPredicate, f) {
-        teamPredicate = teamPredicate || function(team) {
-            return true;
-        };
-        unitPredicate = unitPredicate || function(unit) {
-            return true;
-        };
-
-        mathArrayUtils.operateOnObjectByKey(globals.currentGame.unitsByTeam, (key, teamGroup, i) => {
-            if (teamPredicate(key)) {
-                mathArrayUtils.operateOnObjectByKey(teamGroup, (teamKey, unit) => {
-                    if (unitPredicate(unit)) {
-                        f(unit);
-                    }
-                });
-            }
-        });
-    },
-
-    moveUnitOffScreen: function(unit) {
-        unit.body.oneFrameOverrideInterpolation = true;
-        unit.position = {
-            x: 8000,
-            y: 8000
-        };
-        if (unit.selectionBody)
-            Matter.Body.setPosition(unit.selectionBody, unit.position);
-        if (unit.smallerBody)
-            Matter.Body.setPosition(unit.smallerBody, unit.position);
-    },
-
     moveSpriteOffScreen: function(something) {
         something.position = {
             x: 8000,
@@ -848,30 +816,6 @@ var gameUtils = {
             }
         }
         return dir;
-    },
-
-    getUnitAllies: function(meUnit, includeMe) {
-        var allies = [];
-        this.applyToUnitsByTeam(function(team) {
-            return meUnit.team == team;
-        }, function(unit) {
-            return includeMe || meUnit != unit;
-        }, function(unit) {
-            allies.push(unit);
-        });
-
-        return allies;
-    },
-
-    getUnitEnemies: function(meUnit) {
-        var enemies = [];
-        this.applyToUnitsByTeam(function(team) {
-            return meUnit.team != team;
-        }, null, function(unit) {
-            enemies.push(unit);
-        });
-
-        return enemies;
     },
 
     getCanvasCenter: function() {

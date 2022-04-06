@@ -624,7 +624,7 @@ var common = {
                             y: 400
                         };
                         unitT.moveSpeed = 0.0001;
-                        // gameUtils.moveUnitOffScreen(unitT);
+                        // unitUtils.moveUnitOffScreen(unitT);
                         this.addUnit(unitT);
                         this.newUnitTest = unitT;
                         // unitT.maxHealth = 100000;
@@ -1282,7 +1282,7 @@ var common = {
 
         //Remove units safely (removeUnit())
         var unitsToRemove = [];
-        gameUtils.applyToUnitsByTeam(null, function(unit) {
+        unitUtils.applyToUnitsByTeam(null, function(unit) {
             return unit;
         }, function(unit) {
             unitsToRemove.push(unit);

@@ -4,7 +4,8 @@ import * as PIXI from 'pixi.js';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import {
     Dialogue,

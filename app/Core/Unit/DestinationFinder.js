@@ -1,14 +1,22 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 
 //assuming this is just two units, maybe variable number for the future
 var unitSpacing = 60;
-var zero = {x: 0, y: 0};
+var zero = {
+    x: 0,
+    y: 0
+};
 
 var DestinationFinder = function(units, destination) {
-    if(units.length == 2) {
+    if (units.length == 2) {
         return DuoPositionFinder(units, destination);
     } else {
         return NoopPositionFinder(units, destination);
@@ -23,9 +31,9 @@ var DuoPositionFinder = function(possibleUnitArray, destination) {
     var unitBNewPosition = mathArrayUtils.addScalarToVectorTowardDestination(unitA.position, unitB.position, unitSpacing);
 
     //find middle point
-    var middlePoint = mathArrayUtils.addScalarToVectorTowardDestination(unitA.position, unitB.position, unitSpacing/2.0);
+    var middlePoint = mathArrayUtils.addScalarToVectorTowardDestination(unitA.position, unitB.position, unitSpacing / 2.0);
 
-    var offsetVector =  Matter.Vector.sub(middlePoint, destination);
+    var offsetVector = Matter.Vector.sub(middlePoint, destination);
 
     var retValues = {};
     retValues[unitA.unitId] = Matter.Vector.sub(unitA.position, offsetVector);
@@ -43,4 +51,6 @@ var NoopPositionFinder = function(possibleUnitArray, destination) {
 };
 
 
-export {DestinationFinder};
+export {
+    DestinationFinder
+};

@@ -1278,7 +1278,7 @@ export default function Marine(options) {
         aggressionDuration: gsADuration,
         aggressionCooldown: 4000,
         passiveAction: function(event) {
-            var allies = gameUtils.getUnitAllies(marine);
+            var allies = unitUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
                 var healthToGive = ally.maxHealth * (passiveAllyPercentageHeal / 100);
                 ally.giveHealth(healthToGive, marine);
@@ -1287,7 +1287,7 @@ export default function Marine(options) {
             });
         },
         defenseAction: function(event) {
-            var allies = gameUtils.getUnitAllies(marine);
+            var allies = unitUtils.getUnitAllies(marine);
             var healthGiven = 0;
             var energyGiven = 0;
             allies.forEach((ally) => {
@@ -1312,7 +1312,7 @@ export default function Marine(options) {
             };
         },
         aggressionAction: function(event) {
-            var allies = gameUtils.getUnitAllies(marine);
+            var allies = unitUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
                 if (ally.isDead) return;
                 var id = mathArrayUtils.getId();
@@ -1566,7 +1566,7 @@ export default function Marine(options) {
         aggressionCooldown: 6000,
         aggressionDuration: ssADuration,
         passiveAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyEnergyGem({
                     id: "spiritualStateGain",
@@ -1578,7 +1578,7 @@ export default function Marine(options) {
             return event.attackContext.isProjectile;
         },
         defenseAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
                     id: "spiritualStateGain",
@@ -1645,7 +1645,7 @@ export default function Marine(options) {
         aggressionEventName: 'preDealDamage',
         aggressionCooldown: 7000,
         passiveAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 if (unit.isDead) {
                     return;
@@ -1657,7 +1657,7 @@ export default function Marine(options) {
             });
         },
         defenseAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 if (unit.isDead) {
                     return;
@@ -1920,7 +1920,7 @@ export default function Marine(options) {
 
                 var self = this;
                 if (firstAidPouchAugment) {
-                    gameUtils.applyToUnitsByTeam(function(team) {
+                    unitUtils.applyToUnitsByTeam(function(team) {
                         return self.team == team;
                     }, function(unit) {
                         return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;
@@ -1939,7 +1939,7 @@ export default function Marine(options) {
                 }
 
                 if (cleaningKitAugment) {
-                    gameUtils.applyToUnitsByTeam(function(team) {
+                    unitUtils.applyToUnitsByTeam(function(team) {
                         return self.team == team;
                     }, function(unit) {
                         return mathArrayUtils.distanceBetweenUnits(self, unit) <= 500;

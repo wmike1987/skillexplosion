@@ -1275,7 +1275,7 @@ var UnitSystem = function(properties) {
             if (!this.active) return;
 
             if (event.key == 'Alt') {
-                gameUtils.applyToUnitsByTeam(function() {
+                unitUtils.applyToUnitsByTeam(function() {
                     return true;
                 }, function(unit) {
                     return unit;
@@ -1339,7 +1339,7 @@ var UnitSystem = function(properties) {
 
             $('body').on('keyup.unitSystem', function(event) {
                 if (event.key == 'Alt') {
-                    gameUtils.applyToUnitsByTeam(function() {
+                    unitUtils.applyToUnitsByTeam(function() {
                         return true;
                     }, function(unit) {
                         return unit;

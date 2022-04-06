@@ -1,7 +1,12 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 import Moveable from '@core/Unit/_Moveable.js';
 import Attacker from '@core/Unit/_Attacker.js';
 import Iso from '@core/Unit/IsoSpriteManager.js';
@@ -25,25 +30,27 @@ function UnitConstructor(options) {
 
     //use the given object as our base -- "unitObj"
     var unitObj = options.givenUnitObj || {};
-    Object.assign(unitObj, {unitId: mathArrayUtils.uuidv4()}); //add in a unit id
+    Object.assign(unitObj, {
+        unitId: mathArrayUtils.uuidv4()
+    }); //add in a unit id
 
     //mixin the unit options into the unit base then into the unit object
     var unitBase = $.extend(true, {}, UnitBase);
     var newUnit = Object.assign(unitObj, unitBase, options.unit);
 
     //add passives (and probably abilities in the future to slaves)
-    if(newUnit.passiveAbilities) {
+    if (newUnit.passiveAbilities) {
         options.slaves = options.slaves.concat(newUnit.passiveAbilities);
     }
 
-    if(newUnit.abilities) {
+    if (newUnit.abilities) {
         options.slaves = options.slaves.concat(newUnit.abilities);
     }
 
     //death pact slaves
-    if(options.slaves) {
+    if (options.slaves) {
         $.each(options.slaves, function(i, sound) {
-            if(sound._state == 'loaded') {
+            if (sound._state == 'loaded') {
                 sound.noMasterRegistration = true;
             }
             gameUtils.deathPact(newUnit, sound);
@@ -51,7 +58,7 @@ function UnitConstructor(options) {
     }
 
     //add default enabler to abilities
-    if(newUnit.abilities) {
+    if (newUnit.abilities) {
         $.each(newUnit.abilities, function(i, ability) {
             ability.enablers = ability.enablers || [];
             ability.enablers.push(function() {
@@ -63,10 +70,10 @@ function UnitConstructor(options) {
     //extrapolate unit ability to key mappings
     newUnit.eventKeyMappings = {};
     newUnit.eventClickMappings = {};
-    if(newUnit.abilities) {
+    if (newUnit.abilities) {
         $.each(newUnit.abilities, function(i, ability) {
-            if(ability.manualDispatch) return;
-            if(ability.type == 'key') {
+            if (ability.manualDispatch) return;
+            if (ability.type == 'key') {
                 newUnit.eventKeyMappings[ability.key] = {
                     method: ability.method,
                     predicates: [function() {
@@ -74,39 +81,39 @@ function UnitConstructor(options) {
                     }],
                     //defaults the pre exec interceptor to subtract energy and run any cost function on the ability
                     preExecuteInterceptors: [function() {
-                        if(!ability.byPassEnergyCost) {
+                        if (!ability.byPassEnergyCost) {
                             newUnit.spendEnergy(ability.energyCost || 0);
                         }
-                        if(ability.costs) {
+                        if (ability.costs) {
                             ability.costs.forEach(cost => {
                                 cost();
                             });
                         }
                     }]
                 };
-                if(ability.predicates) {
+                if (ability.predicates) {
                     $.each(ability.predicates, function(i, predicate) {
                         newUnit.eventKeyMappings[ability.key].predicates.push(predicate);
                     });
                 }
-            } else if(ability.type == 'click') {
+            } else if (ability.type == 'click') {
                 newUnit.eventClickMappings[ability.key] = {
                     method: ability.method,
                     predicates: [function() {
                         return ability.isEnabled();
                     }],
                     preExecuteInterceptors: [function() {
-                        if(!ability.byPassEnergyCost) {
+                        if (!ability.byPassEnergyCost) {
                             newUnit.spendEnergy(ability.energyCost || 0);
                         }
-                        if(ability.costs) {
+                        if (ability.costs) {
                             ability.costs.forEach(cost => {
                                 cost();
                             });
                         }
                     }]
                 };
-                if(ability.predicates) {
+                if (ability.predicates) {
                     $.each(ability.predicates, function(i, predicate) {
                         newUnit.eventClickMappings[ability.key].predicates.push(predicate);
                     });
@@ -126,13 +133,13 @@ function UnitConstructor(options) {
     });
     // body.drawWire = true;
     body.collisionFilter.mask -= 0x0002;
-    if(newUnit.noWall) {
+    if (newUnit.noWall) {
         body.collisionFilter.mask -= 0x0004;
     }
     body.unit = newUnit; //reference to parent
     body.isCollisionBody = true;
 
-    if(newUnit.flying) {
+    if (newUnit.flying) {
         body.collisionFilter.group = -1;
         body.collisionFilter.category = globals.currentGame.unitSystem.flyingBodyCollisionCategory;
         body.collisionFilter.mask -= 0x0001;
@@ -144,15 +151,15 @@ function UnitConstructor(options) {
     //manage sleep on this body
     newUnit.sleeperLocks = new Set();
     newUnit.setSleep = function(value, sleeperLockName) {
-        if(!sleeperLockName) {
+        if (!sleeperLockName) {
             sleeperLockName = 'main';
         }
-        if(value) {
+        if (value) {
             this.sleeperLocks.add(sleeperLockName);
             Matter.Sleeping.set(body, true);
         } else {
             this.sleeperLocks.delete(sleeperLockName);
-            if(this.sleeperLocks.size == 0) {
+            if (this.sleeperLocks.size == 0) {
                 Matter.Sleeping.set(body, false);
             }
         }
@@ -163,7 +170,7 @@ function UnitConstructor(options) {
     //**************************************************************
     var selectionBody = null;
     var selectionBodyBig = null;
-    if(newUnit.useCollisionBodyAsSelectionBody) {
+    if (newUnit.useCollisionBodyAsSelectionBody) {
         selectionBody = Matter.Bodies.circle(0, 0, options.radius, {
             isSensor: true
         });
@@ -183,10 +190,17 @@ function UnitConstructor(options) {
         var defaultBigBodyWidthAddition = 20;
         selectionBodyBig = Matter.Bodies.rectangle(5, 5, (newUnit.hitboxWidth || 20) + (newUnit.bigBodyAddition.x || defaultBigBodyWidthAddition),
             (newUnit.hitboxHeight || 20) + (newUnit.bigBodyAddition.y || defaultBigBodyHeightAddition), {
-            isSensor: true,
-        });
+                isSensor: true,
+            });
         selectionBodyBig.collisionFilter.mask = 0;
-        gameUtils.attachSomethingToBody({something: selectionBodyBig, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
+        gameUtils.attachSomethingToBody({
+            something: selectionBodyBig,
+            body: body,
+            offset: {
+                x: 0,
+                y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8
+            }
+        });
         selectionBodyBig.isSelectionBigBody = true;
         selectionBodyBig.unit = newUnit;
         selectionBodyBig.noWire = true;
@@ -194,7 +208,7 @@ function UnitConstructor(options) {
     }
 
     //animation specific hitbox addition
-    if(newUnit.animationSpecificHitboxes) {
+    if (newUnit.animationSpecificHitboxes) {
         newUnit.animationSpecificBodies = [];
         newUnit.animationSpecificHitboxes.forEach((details) => {
             let newBody = Matter.Bodies.rectangle(5, 5, details.width, details.height, {
@@ -208,11 +222,21 @@ function UnitConstructor(options) {
             newBody.collisionFilter.mask = 0x0002;
             gameUtils.deathPact(newUnit, newBody);
             Matter.Events.on(newUnit, 'animationVisible', function(event) {
-                if(event.animation == details.animation) {
-                    gameUtils.attachSomethingToBody({something: newBody, body: body, offset: details.offset || {x: 0, y: 0}});
+                if (event.animation == details.animation) {
+                    gameUtils.attachSomethingToBody({
+                        something: newBody,
+                        body: body,
+                        offset: details.offset || {
+                            x: 0,
+                            y: 0
+                        }
+                    });
                 } else {
                     gameUtils.detachSomethingFromBody(newBody);
-                    Matter.Body.setPosition(newBody, {x: 4000, y: 4000});
+                    Matter.Body.setPosition(newBody, {
+                        x: 4000,
+                        y: 4000
+                    });
                 }
             });
         });
@@ -222,7 +246,14 @@ function UnitConstructor(options) {
     selectionBody.isSelectionBody = true;
     selectionBody.unit = newUnit;
     selectionBody.noWire = !newUnit.adjustHitbox;
-    gameUtils.attachSomethingToBody({something: selectionBody, body: body, offset: {x: 0, y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8}});
+    gameUtils.attachSomethingToBody({
+        something: selectionBody,
+        body: body,
+        offset: {
+            x: 0,
+            y: newUnit.hitboxYOffset != null ? newUnit.hitboxYOffset : -8
+        }
+    });
     gameUtils.deathPact(newUnit, selectionBody);
 
     //used by the unit system
@@ -320,29 +351,47 @@ function UnitConstructor(options) {
     }
 
     //Fill inventory with empty items which represent empty slots
-    if(newUnit.itemsEnabled) {
+    if (newUnit.itemsEnabled) {
         newUnit.emptyRegularSlots = [];
-        for(var i = 0; i < newUnit.currentItems.length; i++) {
+        for (var i = 0; i < newUnit.currentItems.length; i++) {
             let item = EmptySlot('Item Slot', 'Holds a regular item.');
-            item.currentSlot = {location: newUnit.currentItems, index: i, active: true, slotDef: item, type: 'common'};
+            item.currentSlot = {
+                location: newUnit.currentItems,
+                index: i,
+                active: true,
+                slotDef: item,
+                type: 'common'
+            };
             newUnit.emptyRegularSlots.push(item);
             newUnit.currentItems[i] = item;
         }
 
         //start with blank items
         newUnit.emptySpecialtySlots = [];
-        for(i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
+        for (i = 0; i < newUnit.currentSpecialtyItems.length; i++) {
             let item = EmptySlot('Specialty Slot', 'Holds a specialty item.');
-            item.currentSlot = {location: newUnit.currentSpecialtyItems, index: i, active: true, slotDef: item, type: newUnit.unitType};
+            item.currentSlot = {
+                location: newUnit.currentSpecialtyItems,
+                index: i,
+                active: true,
+                slotDef: item,
+                type: newUnit.unitType
+            };
             newUnit.emptySpecialtySlots.push(item);
             newUnit.currentSpecialtyItems[i] = item;
         }
 
         //start with blank items
         newUnit.emptyBackpackSlots = [];
-        for(i = 0; i < newUnit.currentBackpack.length; i++) {
+        for (i = 0; i < newUnit.currentBackpack.length; i++) {
             let item = EmptySlot('Backpack Slot', 'Holds any item. Item is not active.');
-            item.currentSlot = {location: newUnit.currentBackpack, index: i, active: false, slotDef: item, type: 'universal'};
+            item.currentSlot = {
+                location: newUnit.currentBackpack,
+                index: i,
+                active: false,
+                slotDef: item,
+                type: 'universal'
+            };
             newUnit.emptyBackpackSlots.push(item);
             newUnit.currentBackpack[i] = item;
         }

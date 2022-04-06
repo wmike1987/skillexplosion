@@ -854,7 +854,7 @@ var levelBase = {
 
                 //remove hazard units when we're transitioning to the next scene
                 gameUtils.matterOnce(globals.currentGame.currentScene, 'sceneFadeOutBegin', function() {
-                    let enemies = gameUtils.getUnitEnemies(game.shane);
+                    let enemies = unitUtils.getUnitEnemies(game.shane);
                     enemies.forEach((enemy) => {
                         if (enemy.hazard) {
                             this.spawner.cleanUp();
@@ -892,7 +892,7 @@ var levelBase = {
 
                                 //move shane/urs off screen
                                 game.unitsInPlay.forEach((unit) => {
-                                    gameUtils.moveUnitOffScreen(unit);
+                                    unitUtils.moveUnitOffScreen(unit);
                                 });
 
                                 //remove level local entities
@@ -948,7 +948,7 @@ var levelBase = {
                         });
                         game.map.revertHeadToPreviousLocationDueToDefeat();
                         game.removeAllLevelLocalEntities();
-                        let enemies = gameUtils.getUnitEnemies(game.shane);
+                        let enemies = unitUtils.getUnitEnemies(game.shane);
                         enemies.forEach((enemy) => {
                             game.removeUnit(enemy);
                         });
@@ -960,7 +960,7 @@ var levelBase = {
                         this.scene.addCleanUpTask(() => {
                             this.spawner.cleanUp();
                             let game = globals.currentGame;
-                            let enemies = gameUtils.getUnitEnemies(game.shane);
+                            let enemies = unitUtils.getUnitEnemies(game.shane);
                             enemies.forEach((enemy) => {
                                 game.removeUnit(enemy);
                             });

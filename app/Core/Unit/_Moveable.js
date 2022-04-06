@@ -1,9 +1,16 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 import Command from '@core/Unit/Command.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 
 var moveable = {
     //private
@@ -48,11 +55,11 @@ var moveable = {
                 return !this.canMovePreventer;
             },
             set: function(value) {
-                if(!value) {
+                if (!value) {
                     this.canMovePreventer++;
                 } else {
                     this.canMovePreventer--;
-                    if(this.canMovePreventer < 0) {
+                    if (this.canMovePreventer < 0) {
                         this.canMovePreventer = 0;
                     }
                 }
@@ -61,22 +68,24 @@ var moveable = {
 
         this.eventClickMappings[this.commands.move.key] = this.move;
         this.eventClickStateGathering[this.commands.move.key] = function() {
-            return {isSoloMover: Object.keys(globals.currentGame.unitSystem.selectedUnits).length == 1};
+            return {
+                isSoloMover: Object.keys(globals.currentGame.unitSystem.selectedUnits).length == 1
+            };
         };
 
         //**********************
         //Create body sensor - the selection box collides with a slightly smaller body size
         //**********************
         this.smallerBody = null;
-        if(this.useCollisionBodyAsSelectionBody) {
-            var sradius = this.smallerBodyRadiusChange ? this.selectionBody.rradius/10*8 : this.selectionBody.rradius;
+        if (this.useCollisionBodyAsSelectionBody) {
+            var sradius = this.smallerBodyRadiusChange ? this.selectionBody.rradius / 10 * 8 : this.selectionBody.rradius;
             this.smallerBody = Matter.Bodies.circle(0, 0, sradius, {
                 isSensor: true,
                 noWire: true,
             });
         } else {
-            var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight/10*8 : this.selectionBody.hheight;
-            var swidth = this.smallerBodyWidthChange ? this.selectionBody.wwidth/7*4 : this.selectionBody.wwidth;
+            var sheight = this.smallerBodyHeightChange ? this.selectionBody.hheight / 10 * 8 : this.selectionBody.hheight;
+            var swidth = this.smallerBodyWidthChange ? this.selectionBody.wwidth / 7 * 4 : this.selectionBody.wwidth;
             this.smallerBody = Matter.Bodies.rectangle(0, 0, swidth, sheight, {
                 isSensor: true,
                 noWire: true
@@ -88,7 +97,14 @@ var moveable = {
         this.smallerBody.isSmallerBody = true;
         this.smallerBody.unit = this;
 
-        gameUtils.attachSomethingToBody({something: this.smallerBody, body: this.body, offset: {x: 0, y: this.hitboxYOffset != null ? this.hitboxYOffset : -8}});
+        gameUtils.attachSomethingToBody({
+            something: this.smallerBody,
+            body: this.body,
+            offset: {
+                x: 0,
+                y: this.hitboxYOffset != null ? this.hitboxYOffset : -8
+            }
+        });
         globals.currentGame.addBody(this.smallerBody);
 
         Matter.Events.on(this.body, 'onCollideActive', this.avoidCallback);
@@ -102,10 +118,13 @@ var moveable = {
         options = options || {};
 
         //trigger the move event
-        Matter.Events.trigger(this, 'unitMove', {unit: this, destination: destination});
+        Matter.Events.trigger(this, 'unitMove', {
+            unit: this,
+            destination: destination
+        });
 
         //if command is given, we're being executed as part of a command queue, else, fake the command object
-        if(!commandObj) {
+        if (!commandObj) {
             commandObj = {
                 command: {
                     done: function() {
@@ -120,22 +139,28 @@ var moveable = {
             };
         }
 
-        if(commandObj.command.state && commandObj.command.state.isSoloMover) {
+        if (commandObj.command.state && commandObj.command.state.isSoloMover) {
             this.isSoloMover = true;
         }
 
         //set state
         this.destination = destination;
-        var calculatedFootDestination = mathArrayUtils.clonePosition(this.destination, {y: -this.footOffset || -20});
+        var calculatedFootDestination = mathArrayUtils.clonePosition(this.destination, {
+            y: -this.footOffset || -20
+        });
 
         //don't do anything if they're already at their destination
         if (this.body.position.x == calculatedFootDestination.x && this.body.position.y == calculatedFootDestination.y)
-            return {moveCancelled: true};
+            return {
+                moveCancelled: true
+            };
 
-        if(!this.canMove)
-            return {moveCancelled: true};
+        if (!this.canMove)
+            return {
+                moveCancelled: true
+            };
 
-        if(this.isHoning || options.centerMove) {
+        if (this.isHoning || options.centerMove) {
             this.footDestination = this.destination; //so foot destination becomes the de-facto "destination." Poor use of foot-destination imo
         } else {
             this.footDestination = calculatedFootDestination; //offset for moving to the "foot location"
@@ -150,21 +175,23 @@ var moveable = {
 
         //if we're changing directions, override interpolation for a frame
         let newDirection = gameUtils.isoDirectionBetweenPositions(this.position, this.footDestination);
-        if(this.currentDirection != newDirection) {
+        if (this.currentDirection != newDirection) {
             this.body.oneFrameOverrideInterpolation = true;
         }
 
         //setup the constant move tick
-        if(this.moveTick) {
+        if (this.moveTick) {
             globals.currentGame.removeTickCallback(this.moveTick);
         }
 
-        this.moveTick = globals.currentGame.addTickCallback(this.constantlySetVelocityTowardsDestination.bind(this), {runImmediately: true});
+        this.moveTick = globals.currentGame.addTickCallback(this.constantlySetVelocityTowardsDestination.bind(this), {
+            runImmediately: true
+        });
         gameUtils.deathPact(this, this.moveTick, 'moveTick');
 
         //Setup stop conditions
         //general condition
-        if(this.stopConditionCheck) {
+        if (this.stopConditionCheck) {
             globals.currentGame.removeTickCallback(this.stopConditionCheck);
         }
         this.stopConditionCheck = globals.currentGame.addTickCallback(this.generalStopCondition.bind(this, commandObj), false, 'afterStep');
@@ -176,13 +203,13 @@ var moveable = {
             gogogo: true,
             timeLimit: 550,
             callback: function() {
-                if(this.alwaysTry) {
+                if (this.alwaysTry) {
                     return;
                 }
                 if (this.lastPosition && this.isMoving && !this.isHoning && !this.isAttacking) {
                     if (this.lastPosition.x + this.noProgressBuffer > this.body.position.x && this.lastPosition.x - this.noProgressBuffer < this.body.position.x) {
                         if (this.lastPosition.y + this.noProgressBuffer > this.body.position.y && this.lastPosition.y - this.noProgressBuffer < this.body.position.y) {
-                            if(!commandObj.command.queue.hasNext()) {
+                            if (!commandObj.command.queue.hasNext()) {
                                 this.stop();
                             }
                             commandObj.command.done();
@@ -196,7 +223,7 @@ var moveable = {
         gameUtils.deathPact(this, this.tryForDestinationTimer, 'tryForDestination');
 
         //group movement stop condition
-        if(this.collideCallback) {
+        if (this.collideCallback) {
             Matter.Events.off(this.body, 'onCollideActive', this.collideCallback);
         }
         this.collideCallback = function(pair) {
@@ -205,7 +232,7 @@ var moveable = {
             if (this.destination.x + this.stopOnCollisionBuffer > this.position.x && this.destination.x - this.stopOnCollisionBuffer < this.position.x) {
                 if (this.destination.y + this.stopOnCollisionBuffer > this.position.y && this.destination.y - this.stopOnCollisionBuffer < this.position.y) {
                     if (otherBody.isMoveable && !otherBody.isMoving && otherBody.destination && otherBody.destination.x == this.destination.x && otherBody.destination.y == this.destination.y) {
-                        if(!commandObj.command.queue.hasNext()) {
+                        if (!commandObj.command.queue.hasNext()) {
                             this.stop();
                         }
                         commandObj.command.done();
@@ -215,10 +242,12 @@ var moveable = {
         }.bind(this);
         Matter.Events.on(this.body, 'onCollideActive', this.collideCallback);
 
-        if(this.moveExtension)
+        if (this.moveExtension)
             this.moveExtension();
 
-        return {moveCancelled: false};
+        return {
+            moveCancelled: false
+        };
     },
     stop: function() {
         //stop the unit
@@ -234,17 +263,17 @@ var moveable = {
         this.setSleep(false);
 
         //remove movement callback
-        if(this.moveTick)
+        if (this.moveTick)
             globals.currentGame.removeTickCallback(this.moveTick);
 
         //remove stop conditions
-        if(this.stopConditionCheck)
+        if (this.stopConditionCheck)
             globals.currentGame.removeTickCallback(this.stopConditionCheck);
 
-        if(this.tryForDestinationTimer)
+        if (this.tryForDestinationTimer)
             globals.currentGame.invalidateTimer(this.tryForDestinationTimer);
 
-        if(this.collideCallback) {
+        if (this.collideCallback) {
             Matter.Events.off(this.body, 'onCollideActive', this.collideCallback);
         }
 
@@ -267,8 +296,10 @@ var moveable = {
         var stopDestination = this.footDestination;
         if (stopDestination.x + alteredOvershootBuffer > this.body.position.x && stopDestination.x - alteredOvershootBuffer < this.body.position.x) {
             if (stopDestination.y + alteredOvershootBuffer > this.body.position.y && stopDestination.y - alteredOvershootBuffer < this.body.position.y) {
-                Matter.Events.trigger(this, 'destinationReached', {destination: stopDestination});
-                if(!commandObj.command.queue.hasNext()) {
+                Matter.Events.trigger(this, 'destinationReached', {
+                    destination: stopDestination
+                });
+                if (!commandObj.command.queue.hasNext()) {
                     this.stop();
                 }
                 commandObj.command.done();
@@ -333,20 +364,26 @@ var moveable = {
             //if the moving-unit's destination doesn't go beyond the still-unit, we don't want to move the still-unit too much
             var moverToDestination = mathArrayUtils.distanceBetweenPoints(otherUnit.position, otherUnit.destination);
             var moverToMe = mathArrayUtils.distanceBetweenPoints(myUnit.position, otherUnit.position);
-            if(moverToDestination < moverToMe) {
+            if (moverToDestination < moverToMe) {
                 maxScatterDistance = this.circleRadius;
             }
 
-            var movePercentage = Math.PI/2.0 - mathArrayUtils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position));
-            var newVelocity = Matter.Vector.normalise({x: otherBody.velocity.y * swapX, y: otherBody.velocity.x * swapY});
-            newVelocity = Matter.Vector.mult(newVelocity, Math.max(minScatterDistance, movePercentage*maxScatterDistance));
+            var movePercentage = Math.PI / 2.0 - mathArrayUtils.angleBetweenTwoVectors(otherBody.velocity, Matter.Vector.sub(this.position, otherBody.position));
+            var newVelocity = Matter.Vector.normalise({
+                x: otherBody.velocity.y * swapX,
+                y: otherBody.velocity.x * swapY
+            });
+            newVelocity = Matter.Vector.mult(newVelocity, Math.max(minScatterDistance, movePercentage * maxScatterDistance));
 
-            if(!myUnit.isAttacker) {
-                myUnit.move(Matter.Vector.add(this.position, newVelocity), null, {centerMove: true});
+            if (!myUnit.isAttacker) {
+                myUnit.move(Matter.Vector.add(this.position, newVelocity), null, {
+                    centerMove: true
+                });
                 myUnit.isSoloMover = true;
-            }
-            else {
-                myUnit.attackMove(Matter.Vector.add(this.position, newVelocity), null, {centerMove: true});
+            } else {
+                myUnit.attackMove(Matter.Vector.add(this.position, newVelocity), null, {
+                    centerMove: true
+                });
                 myUnit.isSoloMover = true;
             }
         }

@@ -133,7 +133,7 @@ var game = {
 
 				var blastRadius = 70;
 				var bodiesToDamage = [];
-				gameUtils.applyToUnitsByTeam(function(team) {return marble.team != team}, function(unit) {
+				unitUtils.applyToUnitsByTeam(function(team) {return marble.team != team}, function(unit) {
 					return (mathArrayUtils.distanceBetweenBodies(marble.body, unit.body) <= blastRadius && unit.isTargetable);
 				}.bind(this), function(unit) {
 					var shard = graphicsUtils.addSomethingToRenderer('glassShards', 'background', {position: unit.position, scale: {x: .65, y: .65}, tint: unit.tint, rotation: Math.random()*6});

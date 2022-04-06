@@ -467,7 +467,7 @@ export default {
             var currentHoneDistance = null;
             var currentAttackDistance = null;
 
-            gameUtils.applyToUnitsByTeam(function(team) {
+            unitUtils.applyToUnitsByTeam(function(team) {
                 if (this.attackHoneTeamPredicate)
                     return this.attackHoneTeamPredicate(team);
                 else if (!this.specifiedAttackTarget) {

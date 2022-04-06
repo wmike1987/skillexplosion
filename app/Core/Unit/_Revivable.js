@@ -4,7 +4,8 @@ import * as $ from 'jquery';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import {
     globals
@@ -58,7 +59,7 @@ export default {
             this.canAttack = false;
             this.canMove = false;
             this.isTargetable = false;
-            gameUtils.moveUnitOffScreen(this);
+            unitUtils.moveUnitOffScreen(this);
             Matter.Events.trigger(globals.currentGame.unitSystem, "removeUnitFromSelectionSystem", {
                 unit: this
             });
@@ -74,7 +75,7 @@ export default {
                 callback: function() {
                     var canRevive = false;
                     var revivingUnit = null;
-                    gameUtils.applyToUnitsByTeam(function(team) {
+                    unitUtils.applyToUnitsByTeam(function(team) {
                         return team == this.team;
                     }.bind(this), function(unit) {
                         return this != unit;

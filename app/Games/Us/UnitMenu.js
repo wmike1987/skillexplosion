@@ -12,28 +12,75 @@ import Scout from '@games/Us/Units/Scout.js';
 import Ghost from '@games/Us/Units/Ghost.js';
 import DestructibleBox from '@games/Us/Units/DestructibleBox.js';
 import DamageFlySwarm from '@games/Us/Units/DamageFlySwarm.js';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 
 var unitMenu = {};
-unitMenu.EnemyMarine = {c: EnemyMarine, p: 'MarinePortrait'};
-unitMenu.Critter = {c: Critter, p: 'CritterPortrait'};
-unitMenu.AlienGuard = {c: AlienGuard, p: 'AlienGuardPortrait'};
-unitMenu.Marine = {c: Marine, p: 'MarinePortrait'};
-unitMenu.Medic = {c: Medic, p: 'MedicPortrait'};
-unitMenu.Sentinel = {c: Sentinel, p: 'SentinelPortrait'};
-unitMenu.Hunter = {c: Hunter, p: 'HunterPortrait'};
-unitMenu.Eruptlet = {c: Eruptlet, p: 'EruptletPortrait'};
-unitMenu.Gargoyle = {c: Gargoyle, p: 'GargoylePortrait'};
-unitMenu.Rammian = {c: Rammian, p: 'RammianPortrait'};
-unitMenu.Scout = {c: Scout, p: 'GargoylePortrait'};
-unitMenu.Ghost = {c: Ghost, p: 'GargoylePortrait'};
-unitMenu.DestructibleBox = {c: DestructibleBox, p: 'GargoylePortrait'};
-unitMenu.DamageFlySwarm = {c: DamageFlySwarm, p: 'GargoylePortrait'};
+unitMenu.EnemyMarine = {
+    c: EnemyMarine,
+    p: 'MarinePortrait'
+};
+unitMenu.Critter = {
+    c: Critter,
+    p: 'CritterPortrait'
+};
+unitMenu.AlienGuard = {
+    c: AlienGuard,
+    p: 'AlienGuardPortrait'
+};
+unitMenu.Marine = {
+    c: Marine,
+    p: 'MarinePortrait'
+};
+unitMenu.Medic = {
+    c: Medic,
+    p: 'MedicPortrait'
+};
+unitMenu.Sentinel = {
+    c: Sentinel,
+    p: 'SentinelPortrait'
+};
+unitMenu.Hunter = {
+    c: Hunter,
+    p: 'HunterPortrait'
+};
+unitMenu.Eruptlet = {
+    c: Eruptlet,
+    p: 'EruptletPortrait'
+};
+unitMenu.Gargoyle = {
+    c: Gargoyle,
+    p: 'GargoylePortrait'
+};
+unitMenu.Rammian = {
+    c: Rammian,
+    p: 'RammianPortrait'
+};
+unitMenu.Scout = {
+    c: Scout,
+    p: 'GargoylePortrait'
+};
+unitMenu.Ghost = {
+    c: Ghost,
+    p: 'GargoylePortrait'
+};
+unitMenu.DestructibleBox = {
+    c: DestructibleBox,
+    p: 'GargoylePortrait'
+};
+unitMenu.DamageFlySwarm = {
+    c: DamageFlySwarm,
+    p: 'GargoylePortrait'
+};
 
 unitMenu.createUnit = function(constructor, options) {
     var unit = this[constructor].c(options);
 
-    gameUtils.moveUnitOffScreen(unit);
+    unitUtils.moveUnitOffScreen(unit);
     return unit;
 };
 

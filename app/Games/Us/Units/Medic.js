@@ -454,7 +454,6 @@ export default function Medic(options) {
 
         shadow.oneFrameOverrideInterpolation = true;
 
-
         //set the prevailing unit indicator to the shadow
         this.proxyBody = shadow;
         if (globals.currentGame.unitSystem.selectedUnit == this) {
@@ -469,11 +468,20 @@ export default function Medic(options) {
         });
 
         //send collector events
-        if (fleetFeetAugment) {
+        if (fleetFeetAugment && !isFreeStep) {
             Matter.Events.trigger(globals.currentGame, fleetFeetCollEventName, {
                 value: fleetFeetAugment.energyReduction
             });
         }
+
+        //make units attack move at the vanish destination
+        unitUtils.getUnitEnemies(this).forEach((enemy) => {
+            gameUtils.doSomethingAfterDuration(() => {
+                if(enemy.isAttacker && !enemy.isDead) {
+                    enemy.attackMove(destination);
+                }
+            }, 100 + Math.random() * 650);
+        });
 
         //play smoke animation
         //play animation
@@ -626,7 +634,7 @@ export default function Medic(options) {
 
         this.isTargetable = false;
         this.isVanishing = true;
-        gameUtils.moveUnitOffScreen(this);
+        unitUtils.moveUnitOffScreen(this);
         this.stop();
 
         this.getAbilityByName("Vanish").manuallyDisabled = true;
@@ -694,7 +702,7 @@ export default function Medic(options) {
                     graphicsUtils.makeSpriteSize(slGraphic, softLandingAugment.radius * 2);
                     graphicsUtils.fadeSpriteOutQuickly(slGraphic, 600);
 
-                    gameUtils.applyToUnitsByTeam(function(team) {
+                    unitUtils.applyToUnitsByTeam(function(team) {
                         return self.team != team;
                     }, function(unit) {
                         return mathArrayUtils.distanceBetweenUnits({position: self.footPosition}, unit) <= softLandingAugment.radius;
@@ -1019,7 +1027,7 @@ export default function Medic(options) {
 
         mine.explode = function() {
             mineExplosion.play();
-            gameUtils.applyToUnitsByTeam(function(team) {
+            unitUtils.applyToUnitsByTeam(function(team) {
                 return medic.team != team;
             }, function(unit) {
                 return (mathArrayUtils.distanceBetweenBodies(mine, unit.body) <= (mineState.blastRadius + unit.body.circleRadius) && unit.canTakeAbilityDamage);
@@ -1372,7 +1380,7 @@ export default function Medic(options) {
             //     equip: function(unit) {
             //         unit.sacrificeFunction = function(event) {
             //             Matter.Events.trigger(globals.currentGame, sacCollEventName, {value: 1});
-            //             gameUtils.applyToUnitsByTeam(function(team) {
+            //             unitUtils.applyToUnitsByTeam(function(team) {
             //                 return unit.team == team;
             //             }, function(teamUnit) {
             //                 return !teamUnit.isDead;
@@ -1452,7 +1460,7 @@ export default function Medic(options) {
         aggressionCooldown: 2000,
         aggressionDuration: rsADuration,
         passiveAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 var addedGrit = rsPassiveGritAddAmount; //Math.floor(unit.getTotalGrit() / 3.0);
                 if (addedGrit > 0) {
@@ -1536,7 +1544,7 @@ export default function Medic(options) {
         aggressionCooldown: 3000,
         aggressionDuration: hhADuration,
         passiveAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyHealthGem({
                     id: "hhHealthGain",
@@ -1562,7 +1570,7 @@ export default function Medic(options) {
             }
         },
         aggressionAction: function(event) {
-            var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
+            var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyBuff({
                     id: "hhHealthGain",
@@ -1649,7 +1657,7 @@ export default function Medic(options) {
             };
         },
         aggressionAction: function(event) {
-            var allies = gameUtils.getUnitAllies(medic);
+            var allies = unitUtils.getUnitAllies(medic);
             allies.forEach((ally) => {
                 ally.applyDodgeBuff({
                     duration: slADuration,

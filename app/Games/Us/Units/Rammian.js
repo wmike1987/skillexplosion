@@ -394,7 +394,7 @@ export default function Rammian(options) {
                             smokeExplosionAnimation.play();
                             graphicsUtils.addSomethingToRenderer(smokeExplosionAnimation, 'stageOne');
 
-                            gameUtils.applyToUnitsByTeam(function(team) {
+                            unitUtils.applyToUnitsByTeam(function(team) {
                                 return rammian.team != team;
                             }, function(unit) {
                                 return (mathArrayUtils.distanceBetweenBodies({

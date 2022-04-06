@@ -318,7 +318,7 @@ export default function Eruptlet(options) {
 
                 var blastRadius = 70;
                 var bodiesToDamage = [];
-                gameUtils.applyToUnitsByTeam(function(team) {return this.team != team;}.bind(this), function(unit) {
+                unitUtils.applyToUnitsByTeam(function(team) {return this.team != team;}.bind(this), function(unit) {
                     return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable & unit != eruptlet);
                 }.bind(this), function(unit) {
                     // console.info('eruplet ' + this.unitId + ' attacked!');

@@ -1,5 +1,11 @@
 import * as $ from 'jquery';
-import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+}
+from '@utils/UtilityMenu.js';
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {

@@ -1,7 +1,8 @@
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import styles from '@utils/Styles.js';
 import {

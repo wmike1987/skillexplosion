@@ -282,7 +282,7 @@ export default function DamageFlySwarm(options) {
                     }
                     var attacked = false;
                     flyAnim.animationSpeed = flyAnim.originalSpeed;
-                    gameUtils.applyToUnitsByTeam(function(team) {
+                    unitUtils.applyToUnitsByTeam(function(team) {
                         return self.team != team;
                     }, function(unit) {
                         return (mathArrayUtils.distanceBetweenBodies(self, unit.body) <= (60));

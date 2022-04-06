@@ -115,7 +115,7 @@ var unitSpawner = function(options) {
                         // var newUnit = enemy.constructor({team: 4});
                         var newUnit = spawner.getFromPool(enemy);
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
-                        newUnit.honeRange = 5000;
+                        newUnit.honeRange = 9000;
                         Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.id].shift());
 
                         //update unit panel when we die

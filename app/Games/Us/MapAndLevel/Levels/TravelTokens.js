@@ -227,7 +227,7 @@ var tokenAugmentFunction = function(options) {
     gameUtils.matterOnce(globals.currentGame, 'EarlyEnterBattleLevel', () => {
         globals.currentGame.map.removeTokenAugment(options.id);
         globals.currentGame.map.removeAdditionalState(options.stateKey);
-        gameUtils.applyToUnitsByTeam(function(team) {
+        unitUtils.applyToUnitsByTeam(function(team) {
             return team == globals.currentGame.playerTeam;
         }.bind(this), null, function(unit) {
             options.action(unit);

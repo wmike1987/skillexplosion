@@ -569,7 +569,7 @@ var game = {
 
         Matter.Events.on(this, 'VictoryOrDefeat OutingLevelCompleted TravelStarted', () => {
             let self = this;
-            gameUtils.applyToUnitsByTeam(function(team) {
+            unitUtils.applyToUnitsByTeam(function(team) {
                 return self.playerTeam == team;
             }, null, function(unit) {
                 unit.removeAllBuffs();
@@ -953,7 +953,7 @@ var game = {
     },
 
     removeAllEnemyUnits: function() {
-        gameUtils.applyToUnitsByTeam(function(team) {
+        unitUtils.applyToUnitsByTeam(function(team) {
             return team != this.playerTeam;
         }.bind(this), null, function(unit) {
             this.removeUnit(unit);
@@ -1016,7 +1016,7 @@ var game = {
         });
         this.shane.statCollector = this.shaneCollector;
 
-        gameUtils.moveUnitOffScreen(this.shane);
+        unitUtils.moveUnitOffScreen(this.shane);
         s.position = gameUtils.getPlayableCenter();
 
         return s;
@@ -1056,7 +1056,7 @@ var game = {
         });
         this.ursula.statCollector = this.ursulaCollector;
 
-        gameUtils.moveUnitOffScreen(this.ursula);
+        unitUtils.moveUnitOffScreen(this.ursula);
         return this.ursula;
     },
 

@@ -3,7 +3,8 @@ import * as $ from 'jquery';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import {
     globals
