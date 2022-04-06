@@ -10,7 +10,7 @@
 },
 "AttackIcon.png":
 {
-	"frame": {"x":94,"y":650,"w":28,"h":19},
+	"frame": {"x":96,"y":622,"w":28,"h":19},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":19},
@@ -98,8 +98,8 @@
 },
 "GritBlockActive.png":
 {
-	"frame": {"x":26,"y":645,"w":24,"h":19},
-	"rotated": true,
+	"frame": {"x":96,"y":643,"w":24,"h":19},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":8,"w":24,"h":19},
 	"sourceSize": {"w":32,"h":32}
@@ -138,15 +138,15 @@
 },
 "HiddenBuff.png":
 {
-	"frame": {"x":1,"y":645,"w":24,"h":23},
-	"rotated": true,
+	"frame": {"x":1,"y":663,"w":24,"h":23},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":4,"y":5,"w":24,"h":23},
 	"sourceSize": {"w":32,"h":32}
 },
 "HoldPositionIcon.png":
 {
-	"frame": {"x":96,"y":622,"w":23,"h":23},
+	"frame": {"x":27,"y":663,"w":23,"h":23},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":23},
@@ -154,8 +154,8 @@
 },
 "HoldPositionRook.png":
 {
-	"frame": {"x":47,"y":650,"w":20,"h":23},
-	"rotated": true,
+	"frame": {"x":52,"y":663,"w":20,"h":23},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":5,"w":20,"h":23},
 	"sourceSize": {"w":32,"h":32}
@@ -242,15 +242,23 @@
 },
 "MaimBuff.png":
 {
-	"frame": {"x":1,"y":615,"w":28,"h":28},
+	"frame": {"x":66,"y":620,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
 	"sourceSize": {"w":32,"h":32}
 },
+"MaxHpBuff.png":
+{
+	"frame": {"x":1,"y":615,"w":31,"h":31},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":31,"h":31},
+	"sourceSize": {"w":32,"h":32}
+},
 "MoveIcon.png":
 {
-	"frame": {"x":66,"y":620,"w":28,"h":28},
+	"frame": {"x":34,"y":633,"w":28,"h":28},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":28,"h":28},
@@ -330,7 +338,7 @@
 },
 "StopIcon.png":
 {
-	"frame": {"x":72,"y":650,"w":20,"h":20},
+	"frame": {"x":74,"y":650,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":20,"h":20},
@@ -359,8 +367,8 @@
 	"version": "1.0",
 	"image": "BaseUnit.png",
 	"format": "RGBA8888",
-	"size": {"w":128,"h":671},
+	"size": {"w":128,"h":687},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:78cd51cb7a9edef3eec47831d9ace473:6f95c70298bf458952ee4e32252db2ec:7de1f2aac53873cb58dd0459a8593ca7$"
+	"smartupdate": "$TexturePacker:SmartUpdate:2d734de5f6788eaf344c0a897cb48816:caa7e5b9590d43ac68edff3707591eaa:7de1f2aac53873cb58dd0459a8593ca7$"
 }
 }

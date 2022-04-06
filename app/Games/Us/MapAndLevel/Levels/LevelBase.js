@@ -365,6 +365,10 @@ var levelBase = {
         return (!this.isCompleted && this.enemySets.length > 0);
     },
 
+    isAugmented: function() {
+        return this.levelAugments.length > 0;
+    },
+
     isOutingReady: function() {
         return this.isBattleLevel() && !this.trainingLevel;
     },

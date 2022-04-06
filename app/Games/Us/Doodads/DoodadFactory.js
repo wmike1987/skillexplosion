@@ -13,6 +13,7 @@ import EnemyPost2 from '@games/Us/Doodads/EnemyPost2.js';
 import SidewaysLog1 from '@games/Us/Doodads/SidewaysLog1.js';
 import EnemyTent1 from '@games/Us/Doodads/EnemyTent1.js';
 import WaterTrough from '@games/Us/Doodads/WaterTrough.js';
+import WeaponRack from '@games/Us/Doodads/WeaponRack.js';
 import {
     gameUtils,
     graphicsUtils,
@@ -27,6 +28,7 @@ var doodadMenu = {
     sidewaysLog1: SidewaysLog1,
     enemyTent1: EnemyTent1,
     waterTrough: WaterTrough,
+    weaponRack: WeaponRack,
 };
 
 /*
@@ -92,6 +94,7 @@ var DoodadFactory = {
             drawWire: options.drawWire,
             randomHFlip: options.randomHFlip,
             animateOnCollision: options.animateOnCollision,
+            _onCollision: options._onCollision,
             collisionSound: options.collisionSound,
             shadowIcon: options.shadowIcon,
             shadowAlpha: options.shadowAlpha,

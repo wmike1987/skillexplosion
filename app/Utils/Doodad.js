@@ -85,6 +85,7 @@ var Doodad = function(options) {
             if(!options.animateOnCollision) {
                 return;
             }
+
             var otherBody = pair.pair.bodyB == this.body ? pair.pair.bodyA : pair.pair.bodyB;
             var otherUnit = otherBody.unit;
             if (otherUnit != null) {
@@ -93,6 +94,10 @@ var Doodad = function(options) {
                     options.collisionSound.play();
                 }
                 options.animateOnCollision = false;
+            }
+
+            if(options._onCollision) {
+                options._onCollision({body: this.body});
             }
         }.bind(this));
     }

@@ -1104,10 +1104,10 @@ export default function Marine(options) {
             },
             {
                 name: 'friendly fire',
-                duration: 2000,
+                duration: 4000,
                 icon: graphicsUtils.createDisplayObject('FriendlyFireIcon'),
                 title: 'Friendly Fire',
-                description: 'Grant allies health/energy gems for 2 seconds by hitting them with a knife.',
+                description: 'Grant allies health/energy gems for 4 seconds by hitting them with a knife.',
                 systemMessage: 'Health and energy gems are granted alternately.',
                 collector: {
                     eventName: friendlyFireCollectorEventName,
@@ -1345,21 +1345,21 @@ export default function Marine(options) {
         }
     });
 
-    var robDDuration = 3000;
+    var robDDuration = 2000;
     var robADuration = 4000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (Upon hold position)', 'Absorb 2x healing for 3 seconds.'],
+        defenseDescription: ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for 2 seconds.'],
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain movement speed for 4 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain 10% of max hp.'],
         textureName: 'RushOfBlood',
         unit: marine,
-        defenseEventName: 'holdPosition',
+        defenseEventName: 'preReceiveHeal',
         defenseDuration: robDDuration,
         defenseCooldown: 6000,
         aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
-        aggressionCooldown: 3000,
+        aggressionCooldown: 4000,
         passiveAction: function(event) {
             var healthToGive = marine.maxHealth / 10.0;
             marine.giveHealth(healthToGive, marine);
@@ -1551,10 +1551,10 @@ export default function Marine(options) {
     });
 
     var ssDDuration = 5000;
-    var ssADuration = 4000;
+    var ssADuration = 2000;
     var spiritualState = new Passive({
         title: 'Spiritual State',
-        aggressionDescription: ['Agression Mode (Upon hold position)', 'Gain 1 energy for every 1 hp recieved from healing for 4 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for 2 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
         textureName: 'SpiritualState',
@@ -1562,7 +1562,7 @@ export default function Marine(options) {
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
         defenseDuration: 5000,
-        aggressionEventName: 'holdPosition',
+        aggressionEventName: 'preReceiveHeal',
         aggressionCooldown: 6000,
         aggressionDuration: ssADuration,
         passiveAction: function(event) {
@@ -1635,15 +1635,15 @@ export default function Marine(options) {
     var passiveGritGain = 4;
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon targeted attack)', 'Add half of Shane\'s grit to current attack (up to ' + trueGritCap + ').'],
+        aggressionDescription: ['Agression Mode (Upon rifle attack)', 'Add half of Shane\'s grit to current attack (up to ' + trueGritCap + ').'],
         defenseDescription: ['Defensive Mode (When hit)', 'Grant self and allies ' + trueGritGain + ' grit for length of excursion.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies gain ' + passiveGritGain + ' grit for length of excursion.'],
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 6000,
-        aggressionEventName: 'preDealDamageSpecifiedAttackTarget',
-        aggressionCooldown: 6000,
+        aggressionEventName: 'preDealDamage',
+        aggressionCooldown: 7000,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {

@@ -29,6 +29,10 @@ var petrifySound = gameUtils.getSound('petrify.wav', {
     volume: 0.07,
     rate: 1
 });
+var dearmorSound = gameUtils.getSound('dearmor.wav', {
+    volume: 0.07,
+    rate: 1
+});
 var stunSound = gameUtils.getSound('stunsound2.wav', {
     volume: 0.1,
     rate: 1.1
@@ -62,7 +66,7 @@ var gainKillingBlow = gameUtils.getSound('gainkillingblow.wav', {
     rate: 1.0
 });
 var killingBlowBlock = gameUtils.getSound('gainkillingblow.wav', {
-    volume: 0.03,
+    volume: 0.045,
     rate: 2.0
 });
 var equip = gameUtils.getSound('augmentEquip.wav', {
@@ -1944,6 +1948,7 @@ var UnitBase = {
             id: id,
             textureName: 'SoftenBuff',
             duration: duration,
+            customSound: dearmorSound,
             applyChanges: function() {
                 unit.addDefenseAddition(amount);
             },
@@ -1952,6 +1957,38 @@ var UnitBase = {
                     callback();
                 }
                 unit.removeDefenseAddition(amount);
+            }
+        });
+
+        Matter.Events.trigger(this, 'applySoftenBuff', {
+            targetUnit: this,
+            id: id
+        });
+    },
+
+    applyVitalityBuff: function(options) {
+        options = options || {};
+        let duration = options.duration;
+        let amount = options.amount;
+        let callback = options.callback;
+        let id = options.id || "VitalityBuff";
+
+        if (this.isDead || !this.canTakeBuff()) {
+            return;
+        }
+
+        var unit = this;
+        unit.applyBuff({
+            id: id,
+            textureName: 'MaxHpBuff',
+            count: amount,
+            duration: duration,
+            // customSound: dearmorSound,
+            applyChanges: function() {
+                unit.maxHealth += amount;
+            },
+            removeChanges: function() {
+                unit.maxHealth -= amount;
             }
         });
 
@@ -2130,15 +2167,14 @@ var UnitBase = {
         }
 
         var unit = this;
-        var buffName = 'afflict';
-        condemnSound.play();
+        var id = options.id || 'afflict';
         var handler;
         this.applyBuff({
-            id: buffName,
+            id: id,
             unit: this,
             textureName: 'DoomBuff',
             noCount: true,
-            playSound: false,
+            customSound: condemnSound,
             duration: duration || 2000,
             applyChanges: function() {
                 var afflicted = this;
@@ -2240,14 +2276,21 @@ var UnitBase = {
 
                             if (afflictingUnit.hasGritDodge) {
                                 var healthGained = afflictingUnit.giveHealth(afflictingUnit.afflictedHealthLifeGain, afflictingUnit);
-                                if (options.onHealingRecieved) {
-                                    options.onHealingRecieved({
-                                        healingReceived: healthGained
-                                    });
-                                }
+                                Matter.Events.trigger(afflictingUnit, 'afflictHealthGain', {
+                                    afflictedUnit: unit,
+                                    afflictingUnit: afflictingUnit,
+                                    id: id,
+                                    healthGained: healthGained
+
+                                });
                                 healSound.play();
                             } else {
                                 afflictingUnit.giveGritDodge(true);
+                                Matter.Events.trigger(afflictingUnit, 'afflictBlockGain', {
+                                    afflictedUnit: unit,
+                                    afflictingUnit: afflictingUnit,
+                                    id: id
+                                });
                             }
                             gameUtils.doSomethingAfterDuration(() => {
                                 doomSound.play();
@@ -2419,7 +2462,7 @@ var UnitBase = {
             unit: this,
             textureName: 'PetrifyBuff',
             noCount: true,
-            playSound: false,
+            customSound: petrifySound,
             duration: duration || 2000,
             applyChanges: function() {
                 unit.stop(null, {
@@ -2439,7 +2482,6 @@ var UnitBase = {
                 unit.petrifyTintTimer = graphicsUtils.graduallyTint(unit, 0x008265, 0xFFFFFF, duration, 'isoManagedTint');
                 shakeTimer = graphicsUtils.shakeSprite(unit.isoManager.visibleIsoSprite.spine, 400);
                 gameUtils.deathPact(unit, shakeTimer);
-                petrifySound.play();
             },
             removeChanges: function(context) {
                 unit.setSleep(false, 'petrifySleeperLock');
@@ -2473,13 +2515,12 @@ var UnitBase = {
 
         var unit = this;
         var buffName = 'maim';
-        maimSound.play();
         this.applyBuff({
             id: buffName,
             unit: this,
             textureName: 'MaimBuff',
             noCount: true,
-            playSound: false,
+            customSound: maimSound,
             duration: duration || 2000,
             applyChanges: function() {
                 unit.moveSpeed -= movePenalty;
@@ -2513,7 +2554,7 @@ var UnitBase = {
             unit: this,
             textureName: 'StunBuff',
             noCount: true,
-            playSound: false,
+            customSound: stunSound,
             duration: duration || 2000,
             applyChanges: function() {
                 unit.stop(null, {
@@ -2530,7 +2571,6 @@ var UnitBase = {
                     globals.currentGame.invalidateTimer(unit.stunTintTimer);
                 }
                 unit.stunTintTimer = graphicsUtils.graduallyTint(unit, 0x430050, 0xFFFFFF, duration, 'isoManagedTint');
-                stunSound.play();
             },
             removeChanges: function(context) {
                 unit.setSleep(false, 'stunSleeperLock');
@@ -2565,14 +2605,13 @@ var UnitBase = {
 
         var defensePenalty = -1;
         var buffName = 'condemn';
-        condemnSound.play();
         var handler;
         this.applyBuff({
             id: buffName,
             unit: this,
             textureName: 'CondemnBuff',
             noCount: true,
-            playSound: false,
+            customSound: condemnSound,
             duration: duration || 2000,
             applyChanges: function() {
                 this.addDefenseAddition(defensePenalty);
@@ -2709,7 +2748,6 @@ var UnitBase = {
         this.applyBuff({
             id: 'hidden',
             textureName: 'HiddenBuff',
-            playSound: true,
             duration: duration || 2000,
             applyChanges: function() {
                 this.isTargetable = false;
@@ -2897,7 +2935,7 @@ var UnitBase = {
         }
 
         options = Object.assign({
-            playSound: true,
+            customSound: null,
             stacks: true,
             textureName: 'TransparentSquare',
             count: 1,
@@ -2912,7 +2950,7 @@ var UnitBase = {
             y: 1
         };
         var originalyOffset = -this.buffYOffset || -65;
-        var playSound = options.playSound;
+        var customSound = options.customSound;
         var buffDuration = options.duration;
 
         if (!unit.buffs[textureName]) {
@@ -3087,7 +3125,9 @@ var UnitBase = {
         buffAnim.play();
 
         //play sound
-        if (playSound) {
+        if (customSound) {
+            customSound.play();
+        } else {
             buffSound.play();
         }
 

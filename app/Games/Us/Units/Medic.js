@@ -327,6 +327,10 @@ export default function Medic(options) {
         volume: 0.007,
         rate: 0.9
     });
+    var soundLandingSound = gameUtils.getSound('softlanding.wav', {
+        volume: 0.15,
+        rate: 1.2
+    });
     var deathSoundBlood = gameUtils.getSound('marinedeathbloodsound.wav', {
         volume: 0.06,
         rate: 1.2
@@ -682,10 +686,18 @@ export default function Medic(options) {
                 }
 
                 if (softLandingAugment) {
+                    soundLandingSound.play();
+                    let slGraphic = graphicsUtils.addSomethingToRenderer('LandingArea', {
+                        where: 'stageNOne',
+                        position: medic.footPosition
+                    });
+                    graphicsUtils.makeSpriteSize(slGraphic, softLandingAugment.radius * 2);
+                    graphicsUtils.fadeSpriteOutQuickly(slGraphic, 600);
+
                     gameUtils.applyToUnitsByTeam(function(team) {
                         return self.team != team;
                     }, function(unit) {
-                        return mathArrayUtils.distanceBetweenUnits(self, unit) <= softLandingAugment.radius;
+                        return mathArrayUtils.distanceBetweenUnits({position: self.footPosition}, unit) <= softLandingAugment.radius;
                     }, function(unit) {
                         unit.applySoftenBuff({
                             duration: softLandingAugment.duration
@@ -767,7 +779,7 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('SoftLanding'),
                 title: 'Soft Landing',
                 duration: 5000,
-                radius: 125,
+                radius: 90,
                 description: 'Soften nearby enemies upon landing.',
                 collector: {
                     eventName: slCollEventName,
@@ -1023,7 +1035,8 @@ export default function Medic(options) {
                 if (!unit.isDead && sideEffectsAugment) {
                     unit.afflict({
                         duration: sideEffectsAugment.duration,
-                        afflictingUnit: medic
+                        afflictingUnit: medic,
+                        id: 'sideEffects'
                     });
                     Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
                         value: 1
@@ -1173,13 +1186,35 @@ export default function Medic(options) {
             {
                 name: 'side effects',
                 icon: graphicsUtils.createDisplayObject('SideEffectsIcon'),
-                duration: 5000,
+                duration: 6000,
                 title: 'Side Effects',
-                description: 'Afflict surviving enemies for 5 seconds.',
+                description: 'Afflict surviving enemies for 6 seconds.',
+                equip: function(unit) {
+                    this.healthHandler = Matter.Events.on(unit, 'afflictHealthGain', (event) => {
+                        if(event.id == 'sideEffects') {
+                            Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {healthGained: event.healthGained});
+                        }
+                    });
+
+                    this.blockHandler = Matter.Events.on(unit, 'afflictBlockGain', (event) => {
+                        if(event.id == 'sideEffects') {
+                            Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {blocksGained: 1});
+                        }
+                    });
+                },
+                unequip: function(unit) {
+                    Matter.Events.off(unit, 'afflictHealthGain', this.healthHandler);
+                    Matter.Events.off(unit, 'afflictBlockGain', this.blockHandler);
+                },
                 collector: {
                     eventName: sideEffectsEventName,
+                    init: function() {
+                        this.healthGained = 0;
+                        this.blocksGained = 0;
+                    },
                     presentation: {
-                        labels: ["Enemies accused"]
+                        labels: ['Health gained', 'Blocks gained'],
+                        values: ['healthGained', 'blocksGained']
                     }
                 }
             },
@@ -1234,10 +1269,10 @@ export default function Medic(options) {
         }.bind(medic),
         augments: [{
                 name: 'pure priorities',
-                hpThreshold: 0.60,
+                hpThreshold: 0.5,
                 icon: graphicsUtils.createDisplayObject('PurePriorities'),
                 title: 'Pure Priorities',
-                description: ['Reduce healing cost to 0 when ally\'s life is below 60%.'], // 'Enrage ally for 3 seconds upon giving ' + continuousHealthNeeded + ' health.'],
+                description: ['Reduce healing cost to 0 when ally\'s life is below 50%.'], // 'Enrage ally for 3 seconds upon giving ' + continuousHealthNeeded + ' health.'],
                 collector: {
                     eventName: ppCollEventName,
                     init: function() {
@@ -1401,20 +1436,20 @@ export default function Medic(options) {
         ]
     });
 
-    var rsADuration = 3000;
+    var rsADuration = 2000;
     var rsDAmount = 25;
     var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon targeted heal)', 'Go berserk (2x multiplier) for 3 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) for 2 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
-        aggressionEventName: 'specifiedTargetAcquired',
-        aggressionCooldown: 4000,
+        aggressionEventName: 'attack',
+        aggressionCooldown: 2000,
         aggressionDuration: rsADuration,
         passiveAction: function(event) {
             var alliesAndSelf = gameUtils.getUnitAllies(medic, true);
@@ -2275,7 +2310,7 @@ export default function Medic(options) {
         radius: rad,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [healSound, dodgeSound, holdPositionSound, manaHealSound, blockSound, criticalHitSound, knifeImpactSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
+        slaves: [healSound, dodgeSound, soundLandingSound, holdPositionSound, manaHealSound, blockSound, criticalHitSound, knifeImpactSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
             moveSpeed: 2.35,

@@ -518,6 +518,18 @@ HelpMenu.prototype.initialize = function() {
         text: 'or grants a killing blow block..'
     });
 
+    BuffPage3.addLineTitle({
+        text: 'Vitality',
+        image: 'MaxHpBuff',
+        imageOffset: {
+            x: -6
+        }
+    });
+    BuffPage3.addLine({
+        text: 'Increases max hp of unit.',
+        continuation: true
+    });
+
     this.addPage(BuffPage3);
 
     //default page 2

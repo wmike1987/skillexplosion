@@ -85,7 +85,7 @@ var MapLevelNode = function(options) {
     } else {
         //default behavior
         var token = 'default';
-        if(this.levelDetails.levelAugments.length > 0) {
+        if(this.levelDetails.isAugmented()) {
             if(this.levelDetails.outer) {
                 token = 'augmentedHard';
             } else {

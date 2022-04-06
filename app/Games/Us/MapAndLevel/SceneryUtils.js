@@ -541,10 +541,10 @@ var sceneryUtils = {
                         //expand possible things for proportional choosing of objects
                         let expandedThings = [];
                         arrayOfThings.forEach(function(thing) {
-                            //this is really dumb and confusing, but this allows us to specify a "thing" that
+                            //TextureGroups allow us to specify a "thing" that
                             //contains common attributes, but multiple textures
-                            if (thing.possibleTextures) {
-                                thing.possibleTextures.forEach(function(t) {
+                            if (thing.textureGroup && thing.textureGroupCount > 0) {
+                                thing.textureGroup.forEach(function(t) {
                                     expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
                                 });
                             } else {
@@ -569,6 +569,7 @@ var sceneryUtils = {
                             return a.groupingOptions.priority - b.groupingOptions.priority;
                         });
 
+                        //if we have priority items, overwrite our previously chosen randomThing
                         if(priorityItems.length > 0) {
                             randomThing = sortedPriorityItems.shift();
                         }
@@ -576,6 +577,11 @@ var sceneryUtils = {
                         //then say it f it again and get the center first
                         if(placingCenter && groupings.center) {
                             randomThing = groupings.center;
+                        }
+
+                        //we have our official random thing, check if we should decrement the texture group count
+                        if(randomThing.textureGroupCount) {
+                            randomThing.textureGroupCount -= 1;
                         }
 
                         var rotateTowardCenter = false;
@@ -664,11 +670,8 @@ var sceneryUtils = {
                             let localRotate = (randomThing.rotate || globalRotate) == 'random' ? Math.random() * (2 * Math.PI) : 0;
 
                             //check if we are a grouping of textures with their own tints etc
-                            if (randomThing.possibleTextures) {
-                                resolvedThing = mathArrayUtils.getRandomElementOfArray(randomThing.possibleTextures);
-                                if (globalUnique || resolvedThing.unique) {
-                                    mathArrayUtils.removeObjectFromArray(resolvedThing, randomThing.possibleTextures);
-                                }
+                            if (randomThing.textureGroup) {
+                                resolvedThing = mathArrayUtils.getRandomElementOfArray(randomThing.textureGroup);
                             } else { //else we have "something else" TM
                                 resolvedThing = randomThing;
                                 if (globalUnique || resolvedThing.unique) {
