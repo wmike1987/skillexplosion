@@ -209,7 +209,7 @@ commonAirDropStation.createMapNode = function(options) {
                         regularToken.visible = true;
                         specialToken.visible = true;
                         if (!this.gleamTimer) {
-                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 500, 900, 0);
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 900, 1800, 250);
                             Matter.Events.on(regularToken, 'destroy', () => {
                                 this.gleamTimer.invalidate();
                             });

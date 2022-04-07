@@ -111,18 +111,24 @@ var map = function(specs) {
     this.addMorphine = function(amount) {
         this.morphine += amount;
         graphicsUtils.fadeSpriteInQuickly(this.morphineText, 250);
+        this.refreshMorphineText();
     };
     this.subtractMorphine = function(amount) {
         this.morphine -= amount;
         if(this.morphine < 0) {
             this.morphine = 0;
         }
+        this.refreshMorphineText();
     };
     this.hasMorphine = function() {
         return this.morphine > 0;
     };
     this.setMorphine = function(amount) {
         this.morphine = amount;
+        this.refreshMorphineText();
+    };
+    this.refreshMorphineText = function() {
+        this.morphineText.text = 'Morphine (' + this.morphine + ')';
     };
     this.morphineText = graphicsUtils.createDisplayObject("TEX+:" + 'Morphine', {
         position: {
@@ -141,8 +147,10 @@ var map = function(specs) {
             y: 40
         }
     });
-    Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', (event) => {
-        this.subtractMorphine(1);
+    Matter.Events.on(globals.currentGame, 'travelFinished', (event) => {
+        if(event.node.levelDetails.isBattleLevel()) {
+            this.subtractMorphine(1);
+        }
     });
 
     //manage adrenaline

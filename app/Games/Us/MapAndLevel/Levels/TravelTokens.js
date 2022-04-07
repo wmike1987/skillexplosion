@@ -4,7 +4,8 @@ import * as PIXI from 'pixi.js';
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
+    mathArrayUtils,
+    unitUtils
 } from '@utils/UtilityMenu.js';
 import {
     globals,
@@ -146,7 +147,7 @@ commonTravelToken.createMapNode = function(options) {
                         regularToken.visible = true;
                         specialToken.visible = true;
                         if (!this.gleamTimer) {
-                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 900, 1500, 1500);
+                            this.gleamTimer = graphicsUtils.fadeBetweenSprites(regularToken, specialToken, 900, 1800, 250);
                             Matter.Events.on(regularToken, 'destroy', () => {
                                 this.gleamTimer.invalidate();
                             });
@@ -197,7 +198,7 @@ var restStop = function(options) {
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Rest Stop";
-        this.tooltipDescription = ['Subtract half of current fatigue.', 'Subtract 2 adrenaline.'];
+        this.tooltipDescription = ['Subtract half of current fatigue.', 'Subtract 1 adrenaline.'];
     };
 
     this.arriveCallback = function() {
@@ -209,7 +210,6 @@ var restStop = function(options) {
             amount: Math.floor(globals.currentGame.map.getCurrentFatigue() / 2.0),
             includeStartingFatigue: true
         });
-        globals.currentGame.map.removeAdrenalineBlock();
         globals.currentGame.map.removeAdrenalineBlock();
     };
 };

@@ -1231,7 +1231,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basicHunter', {
                 levelOptions: {
                     token: 'hard',
-                    itemClass: 'worn',
+                    itemClass: 'stimulant',
                 }
             });
             world.map.addMapNode('morphineStation');
@@ -1251,7 +1251,7 @@ var phaseTwo = function(options) {
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
                     randomAugment: true,
-                    itemClass: 'worn',
+                    itemClass: 'stimulant',
                     outer: true
                 }
             });
@@ -1265,8 +1265,8 @@ var phaseTwo = function(options) {
 
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
-                    prereqCount: 2,
-                    itemClass: 'stimulant',
+                    prereqCount: 1,
+                    itemClass: 'worn',
                     itemType: 'item'
                 }
             });
@@ -1524,17 +1524,13 @@ var phaseThree = function() {
         }
     });
 
-    //air drops
-    // this.map.addMapNode('airDropStation', {
-    //     levelOptions: {
-    //         outer: true,
-    //         bridge: true,
-    //         itemClass: 'stimulant',
-    //     },
-    //     positionOptions: {
-    //         maxX: gameUtils.getCanvasCenter().x
-    //     }
-    // });
+    this.map.addMapNode('airDropStation', {
+        levelOptions: {
+            prereqCount: 1,
+            itemClass: 'worn',
+            itemType: 'item'
+        }
+    });
 
     this.map.addMapNode('airDropStation', {
         levelOptions: {
@@ -1552,7 +1548,7 @@ var phaseThree = function() {
             outer: true,
             prereqCount: 3,
             itemClass: 'rugged',
-            itemType: 'specialtyItem',
+            itemType: 'microchip',
             uniqueItem: true,
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
@@ -1568,8 +1564,7 @@ var phaseThree = function() {
         levelOptions: {
             outer: true,
             enemyDefList: ['rammians', 'easyGargs', 'outerBasic'],
-            itemClass: 'rugged',
-            itemType: 'microchip'
+            itemClass: 'stimulant',
         }
     });
 
