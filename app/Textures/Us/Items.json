@@ -728,7 +728,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SteadySyringe.png":
+"SingleBoot3Blue.png":
 {
 	"frame": {"x":443,"y":103,"w":32,"h":32},
 	"rotated": false,
@@ -736,7 +736,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"Steroid.png":
+"SteadySyringe.png":
 {
 	"frame": {"x":477,"y":103,"w":32,"h":32},
 	"rotated": false,
@@ -744,7 +744,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SturdyCanteen.png":
+"Steroid.png":
 {
 	"frame": {"x":375,"y":137,"w":32,"h":32},
 	"rotated": false,
@@ -752,7 +752,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"SugarPill.png":
+"SturdyCanteen.png":
 {
 	"frame": {"x":375,"y":171,"w":32,"h":32},
 	"rotated": false,
@@ -760,7 +760,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"TechnologyKey.png":
+"SugarPill.png":
 {
 	"frame": {"x":375,"y":205,"w":32,"h":32},
 	"rotated": false,
@@ -768,7 +768,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"ThrowingGlove.png":
+"TechnologyKey.png":
 {
 	"frame": {"x":409,"y":137,"w":32,"h":32},
 	"rotated": false,
@@ -776,7 +776,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"ToxicMicrochip.png":
+"ThrowingGlove.png":
 {
 	"frame": {"x":443,"y":137,"w":32,"h":32},
 	"rotated": false,
@@ -784,7 +784,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VioletTipCartridge.png":
+"ToxicMicrochip.png":
 {
 	"frame": {"x":477,"y":137,"w":32,"h":32},
 	"rotated": false,
@@ -792,7 +792,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VioletVisor.png":
+"VioletTipCartridge.png":
 {
 	"frame": {"x":409,"y":171,"w":32,"h":32},
 	"rotated": false,
@@ -800,7 +800,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"VitaminOne.png":
+"VioletVisor.png":
 {
 	"frame": {"x":409,"y":205,"w":32,"h":32},
 	"rotated": false,
@@ -808,7 +808,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"WalkieTalkie1.png":
+"VitaminOne.png":
 {
 	"frame": {"x":443,"y":171,"w":32,"h":32},
 	"rotated": false,
@@ -816,9 +816,17 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"YellowSyringe.png":
+"WalkieTalkie1.png":
 {
 	"frame": {"x":477,"y":171,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"YellowSyringe.png":
+{
+	"frame": {"x":443,"y":205,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -839,6 +847,6 @@
 	"format": "RGBA8888",
 	"size": {"w":510,"h":238},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:4e2395d950be3c3e08f92546a6e6612c:84b23e2459e0739ee42429cac581049d:e6844a27e364e41b6ff4e09f3909db66$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b4fc11168cdfe551edeb9e0e230e9ce3:32d7f434b3ffd9426aec20ecaafe6b42:e6844a27e364e41b6ff4e09f3909db66$"
 }
 }

@@ -81,10 +81,16 @@ var levelAugments = {
             level._isBossLevel = true;
         },
         action: function(enemy) {
-            enemy.applyVitalityBuff({duration: 999999, amount: 200});
+            enemy.applyVitalityBuff({duration: 999999, amount: 250});
+
+            if(mathArrayUtils.flipCoin()) {
+                enemy.enrage({duration: 999999, amount: 5});
+            } else {
+                enemy.applyDodgeBuff({duration: 999999, amount: 8});
+            }
         },
         getSystemMessage: () => {
-            return {text: 'Ultra', style: 'systemMessageTextAugment', tint: 0x1237d4};
+            return {text: 'Ultra', style: 'systemMessageTextAugment', tint: 0x6701e8};
         }
     }
 };

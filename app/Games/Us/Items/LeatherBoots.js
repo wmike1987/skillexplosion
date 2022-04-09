@@ -17,7 +17,7 @@ import {
 var eventName = 'leatherBootsEnergySaved';
 var energySavedAmount = 2;
 var speedDuration = 2;
-var dodgeAdd = 3;
+var dodgeAdd = 5;
 
 var manipulations = {
     genericEquip: function(equipped, item) {
@@ -49,7 +49,7 @@ export default function(options) {
         manipulations: manipulations,
         name: "Leather Boots",
         description: ["Decrease Vanish cost by " + energySavedAmount + ".", "Gain movement speed for " + speedDuration + " seconds after vanishing.", "Add " + dodgeAdd +  " to dodge."],
-        icon: 'SingleBoot3',
+        icon: 'SingleBoot3Blue',
         type: 'Medic',
         fontType: 'ursula',
         collector: {

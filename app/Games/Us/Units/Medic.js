@@ -2221,7 +2221,7 @@ export default function Medic(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                ability.addAllAvailableAugments();
+                // ability.addAllAvailableAugments();
             });
 
             this.fullhpTallyMeterWidth = 30;

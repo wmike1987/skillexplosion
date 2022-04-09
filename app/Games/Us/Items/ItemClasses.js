@@ -29,7 +29,7 @@ var ItemClasses = {
         },
         specialtyItem: {
             description: 'Worn Specialty Item',
-            items: ['LeatherGlove', 'RoseRing', 'LeatherBoots', 'SilverYinYang', 'SteadySyringe', 'BlackTippedCartridge', 'ExtraShrapnel', 'SereneStar', 'PillBottle', 'TrustMedallion', 'SkyMedallion', 'Beret'],
+            items: ['LeatherGlove', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'BlackTippedCartridge', 'ExtraShrapnel', 'SereneStar', 'PillBottle', 'TrustMedallion', 'SkyMedallion', 'Beret'],
             mapNodeIndicator: 'RoseRing'
         },
     },
@@ -50,7 +50,7 @@ var ItemClasses = {
         specialtyItem: {
             description: 'Rugged Specialty Item',
             tint: 0x1e9489,
-            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove'],
+            items: ["JadeRing", 'BoxCutter', 'GoldenYinYang', "RubyRing", "BlueVisor", "PolarizedVisor", 'CamoflaugeGlove', 'LeatherBoots'],
             mapNodeIndicator: 'JadeRing'
         },
     },
