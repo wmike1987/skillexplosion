@@ -144,7 +144,7 @@ var graphicsUtils = {
 
         arrowScale = arrowScale || 1.0;
         yOffset = yOffset || 0.0;
-        var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudNTwo', {
+        var downArrow = graphicsUtils.addSomethingToRenderer('DownArrow', 'hudOne', {
             scale: {
                 x: 1.00 * arrowScale,
                 y: 1.00 * arrowScale

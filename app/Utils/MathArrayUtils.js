@@ -140,7 +140,7 @@ var mathArrayUtils = {
     },
 
     getLengthOfObject: function(object) {
-        if(!object) {
+        if (!object) {
             return 0;
         }
         return Object.values(object).length;
@@ -318,6 +318,16 @@ var mathArrayUtils = {
         return Math.acos((Matter.Vector.dot(vecA, vecB)) / (Matter.Vector.magnitude(vecA) * Matter.Vector.magnitude(vecB)));
     },
 
+    getSumOfArrayOfValues: function(array) {
+        let sum = 0;
+        sum = array.reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0
+        );
+
+        return sum;
+    },
+
     getImpeder: function(options) {
         var impeder = {
             id: options.id,
@@ -331,10 +341,10 @@ var mathArrayUtils = {
             let pointX = point.x;
             let pointY = point.y;
 
-            if(pointX < this.x || pointX > this.x + this.width) {
+            if (pointX < this.x || pointX > this.x + this.width) {
                 impeded = false;
             }
-            if(pointY < this.y || pointY > this.y + this.height) {
+            if (pointY < this.y || pointY > this.y + this.height) {
                 impeded = false;
             }
 

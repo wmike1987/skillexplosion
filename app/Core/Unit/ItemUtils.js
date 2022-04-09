@@ -197,7 +197,7 @@ var resolveItemInformation = function(options) {
 };
 
 var isItemInPlayByPlayer = function(itemName) {
-    return unitUtils.getItemsInPlayByTeam({team: currentGame.playerTeam, namesOnly: true}).includes(itemName);
+    return unitUtils.getItemsInPlayByTeam({team: currentGame.playerTeam, namesOnly: true, includeMicrochips: true}).includes(itemName);
 };
 
 export default {

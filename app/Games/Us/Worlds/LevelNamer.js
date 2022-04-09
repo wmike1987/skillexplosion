@@ -8,7 +8,7 @@ var hard = ['Major', 'Large', 'Daunting', 'Heavy', 'Robust', 'Strong', 'Mighty',
 var multi = ['Mega', 'Relentless', 'Ruthless', 'Harsh', 'Rigorous', 'Steady', 'Profuse', 'Vigorous', 'Headstrong'];
 var boss = ['Captain\'s', 'Leading', 'Main', 'Principal', 'Central', 'Prime', 'Capital', 'Essential'];
 
-var adjectives = {basic: basic, hard: hard, multi: multi};
+var adjectives = {basic: basic, hard: hard, multi: multi, boss: boss};
 
 var locationVariations = [];
 

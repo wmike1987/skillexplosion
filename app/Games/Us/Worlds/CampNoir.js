@@ -587,7 +587,7 @@ var camp = {
             if (!globals.currentGame.ursula) {
                 globals.currentGame.initUrsula();
                 globals.currentGame.ursula.position = {
-                    x: 800,
+                    x: 850,
                     y: 350
                 };
             }
@@ -982,9 +982,9 @@ var enemyDefs = {
         strength: 'boss',
         enemySets: [{
             type: 'Sentinel',
-            amount: 2,
-            atATime: 2,
-            hz: 6000
+            amount: 3,
+            atATime: 1,
+            hz: 12000
         }, hardFlyObj]
     },
     critterBoss: {
@@ -992,9 +992,9 @@ var enemyDefs = {
         strength: 'boss',
         enemySets: [{
             type: 'Critter',
-            amount: 4,
-            atATime: 2,
-            hz: 15000
+            amount: 5,
+            atATime: 1,
+            hz: 12000
         }, hardFlyObj]
     },
     mixedBoss: {
@@ -1003,13 +1003,13 @@ var enemyDefs = {
         enemySets: [{
             type: 'Critter',
             amount: 2,
-            atATime: 2,
-            hz: 15000
+            atATime: 1,
+            hz: 12000
         }, {
             type: 'Sentinel',
-            amount: 1,
+            amount: 2,
             atATime: 1,
-            initialDelay: 8000,
+            initialDelay: 12000,
         }, hardFlyObj]
     },
 
@@ -1100,6 +1100,7 @@ var phaseOne = function() {
             gotoMapOnWin: true,
             trainingLevel: true,
             isSupplyDropEligible: false,
+            createOneShotUnit: false,
             noSmokePit: true,
         },
         mapNodeOptions: {
@@ -1116,6 +1117,7 @@ var phaseOne = function() {
             gotoMapOnWin: true,
             trainingLevel: true,
             isSupplyDropEligible: false,
+            createOneShotUnit: false,
             noSmokePit: true,
         },
         mapNodeOptions: {
@@ -1130,6 +1132,7 @@ var phaseOne = function() {
         levelOptions: {
             gotoMapOnWin: true,
             trainingLevel: true,
+            createOneShotUnit: false,
             isSupplyDropEligible: false,
             noSmokePit: true,
         },
@@ -1181,6 +1184,10 @@ var phaseOneAndAHalf = function(options) {
             itemClass: 'book'
         }
     });
+
+    var l4 = this.map.addMapNode('healthDepot', {levelOptions: {
+        levelId: 'healthDepot'
+    }});
 
     return {
         nextPhase: 'allNodesComplete',
@@ -1444,7 +1451,7 @@ var phaseThree = function() {
     this.map.addMapNode('basic');
     this.map.addMapNode('airDropStation', {
         levelOptions: {
-            prereqCount: 2,
+            prereqCount: 1,
             itemClass: 'worn'
         }
     });
@@ -1607,12 +1614,28 @@ var phaseThree = function() {
 
 var finalPhase = function() {
     this.map.clearAllNodesExcept('camp');
-    this.map.addMapNode('basic');
-    this.map.addMapNode('basic');
+
+    //basic levels
+    let basicList = ['basic', 'basic2', 'basic3'];
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+
+    //travel tokens
     this.map.addMapNode('morphineStation');
     this.map.addMapNode('restStop');
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
+        levelOptions: {
+            outer: true
+        }
+    });
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
+        levelOptions: {
+            outer: true
+        }
+    });
+
+
     var decision = mathArrayUtils.flipCoin();
     var positionOp = {
         minX: gameUtils.getCanvasCenter().x
@@ -1634,8 +1657,12 @@ var finalPhase = function() {
         levelOptions: {
             outer: true,
             bridge: true,
-            itemClass: 'worn',
+            prereqCount: 3,
+            itemClass: 'rugged',
             itemType: 'microchip',
+            uniqueItem: true,
+            regularTokenName: 'AirDropSpecialToken',
+            specialTokenName: 'AirDropSpecialTokenGleam'
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x

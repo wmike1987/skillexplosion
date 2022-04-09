@@ -4,29 +4,28 @@ import {globals} from '@core/Fundamental/GlobalState.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import chipBase from '@games/Us/Items/MicrochipBase.js';
 
-var amount = 3;
-
+var demeterBuff = 0.1;
 export default function(options) {
     var item = Object.assign({}, chipBase, {
-        name: "Jagged Microchip",
-        description: ["Enable a Knife augment.", 'Add ' + amount + ' to knife damage.'],
-        poweredByMessage: {text: 'Jagged Microchip', style: 'basicPoweredByStyle'},
-        conditionalPoweredByMessage: {text: '+ ' + amount + ' damage.', style: 'basicPoweredByStyle'},
+        name: "Demeter Chip",
+        description: ["Enable a Rifle augment.", 'Add 0.1 energy to cleaning kit.'],
+        poweredByMessage: {text: 'Demeter Microchip', style: 'basicPoweredByStyle'},
+        conditionalPoweredByMessage: {text: '+0.1 energy per attack.', style: 'basicPoweredByStyle'},
         additionCondition: function(augment) {
-            return true;
+            return augment.name == 'cleaning kit';
         },
         plugCondition: function(ability, augment) {
-            return ability.name == 'Throw Knife';
+            return ability.name == 'Rifle';
         },
         plug: function() {
-            this.owningUnit.knifeDamage += amount;
+            this.owningUnit.cleaningKitAdditions.push(demeterBuff);
         },
         unplug: function() {
-            this.owningUnit.knifeDamage -= amount;
+            mathArrayUtils.removeObjectFromArray(demeterBuff, this.owningUnit.cleaningKitAdditions);
         },
-        plugTint: 0xfb5c43,
+        plugTint: 0xeb27fc,
         systemMessage: "Drop on augment to enable.",
-        icon: 'JaggedMicrochip',
+        icon: 'DemeterMicrochip',
     }, options);
     return new ic(item);
 }

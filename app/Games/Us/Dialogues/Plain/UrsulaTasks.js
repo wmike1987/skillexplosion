@@ -68,7 +68,7 @@ var UrsulaTasks = function(scene) {
         chain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
             transitionChain.play();
-        }, 250);
+        }, 500);
     }});
 
     var moveBeaconLocation = {x: 1000, y: 550};
@@ -227,7 +227,7 @@ var UrsulaTasks = function(scene) {
         microchipChain.cleanUp();
     });
 
-    var b1 = new Dialogue({actor: "MacMurray", text: "Good job, you'll need to learn fast out here.", pauseAfterWord: {word: 'Great.', duration: 1000}, backgroundBox: true, letterSpeed: 40});
+    var b1 = new Dialogue({actor: "MacMurray", text: "Good job. You've got your wits about you but you'll need help.", pauseAfterWord: {word: 'job.', duration: 1000}, backgroundBox: true, letterSpeed: 40, delayAfterEnd: 500});
     var b2 = new Dialogue({actor: "MacMurray", text: "I'm delivering a microchip. Learn to use it.", isTask: false, backgroundBox: true, letterSpeed: 40, continuation: true, preventAutoEnd: true, delayAfterEnd: 100});
 
     var transitionChain = new DialogueChain([b1, b2], {startDelay: 200, done: function() {
@@ -249,6 +249,7 @@ var UrsulaTasks = function(scene) {
     var c3 = new Dialogue({text: "Grab the microchip and place it on one of your ability augments.", isTask: true, backgroundBox: true});
     var c4 = new Dialogue({text: "Microchips can be reused.", isInfo: true, backgroundBox: true, letterSpeed: 30, delayAfterEnd: 1500});
     var c5 = new Dialogue({text: "Unseat the microchip and place it on a different augment.", isTask: true, backgroundBox: true});
+    var c5b = new Dialogue({actor: "Info", text: "Information about various ability effects is available in the bottom right.", backgroundBox: true, delayAfterEnd: 4500});
     var c6 = new Dialogue({actor: "MacMurray", text: "We've located several enemy camps, let's test out what you've learned.", newBreak: true, pauseAfterWord: {word: 'incoming,', duration: 500}, backgroundBox: true, letterSpeed: 40});
 
     var microchip = null;
@@ -308,7 +309,14 @@ var UrsulaTasks = function(scene) {
         });
     };
 
-    var microchipChain = new DialogueChain([c1, c2, c3, c4, c5, c6], {startDelay: 200, done: function() {
+    c5b.onFullyShown = function() {
+        var arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.unitSystem.unitPanel.helpMenu.helpButton, -10, 0.5);
+        gameUtils.doSomethingAfterDuration(() => {
+            graphicsUtils.removeSomethingFromRenderer(arrow);
+        }, 4000);
+    };
+
+    var microchipChain = new DialogueChain([c1, c2, c3, c4, c5, c5b, c6], {startDelay: 200, done: function() {
         microchipChain.cleanUp();
         gameUtils.doSomethingAfterDuration(() => {
                 globals.currentGame.nextPhase();

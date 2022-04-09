@@ -139,11 +139,27 @@ var MapLearning = function(scene) {
         });
     };
 
+    var a11b = new Dialogue({
+        actor: "Ursula",
+        text: "Some stops are beneficial. This health depot can be incorporated into our excursion.",
+        letterSpeed: 45,
+        newBreak: true,
+        backgroundBox: true,
+        delayAfterEnd: 5500
+    });
+    a11b.onFullyShown = function() {
+        let healthDepot = globals.currentGame.map.findNodeById('healthDepot');
+        let arrow = graphicsUtils.pointToSomethingWithArrow(healthDepot, -20, 0.5);
+        gameUtils.doSomethingAfterDuration(() => {
+            graphicsUtils.removeSomethingFromRenderer(arrow);
+        }, 5000);
+    };
+
     var a12 = new Dialogue({
         actor: "Ursula",
-        text: "Additionally, after each camp we'll gain one point of adrenaline.",
-        newBreak: true,
+        text: "Finally, after each camp we'll gain one point of adrenaline.",
         letterSpeed: 45,
+        continuation: true,
         backgroundBox: true
     });
     var a13 = new Dialogue({
@@ -179,7 +195,7 @@ var MapLearning = function(scene) {
     });
     var a16 = new Dialogue({
         actor: "Ursula",
-        text: "Traveling produces fatigue rapidly and our starting fatigue increases per enemy camp.",
+        text: "Fatigue prevents us from entering an enemy camp at full strength.",
         delayAfterEnd: 500,
         backgroundBox: true,
         continuation: true
@@ -191,40 +207,19 @@ var MapLearning = function(scene) {
         continuation: true,
         backgroundBox: true
     });
-    var a17 = new Dialogue({
-        actor: "Info",
-        text: "Returning to camp resets fatigue, but also resets adrenaline.",
-        isInfo: true,
-        backgroundBox: true,
-        delayAfterEnd: 2500
-    });
-    var a17a = new Dialogue({
-        actor: "Info",
-        text: "It's possible to return to camp once per set of camps.",
-        isInfo: true,
-        backgroundBox: true,
-        delayAfterEnd: 2500
-    });
 
     var a18 = new Dialogue({
         actor: "Ursula",
-        text: "You'll get the hang of it.",
+        text: "You'll get the hang of it, let's go.",
         backgroundBox: true,
         delayAfterEnd: 1800
     });
 
-    var a19 = new Dialogue({
-        actor: "Ursula",
-        text: "Let's get going.",
-        newBreak: true,
-        continuation: false,
-        backgroundBox: true
-    });
-
-    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a11a, a12, a13, a14, a15, a16, a16b, a17, a17a, a18, a19], {
+    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a11a, a11b, a12, a13, a14, a15, a16, a16b, /*a17, a17a,*/ a18], {
         cleanUpOnDone: true,
         startDelay: 200,
         done: () => {
+            Matter.Events.trigger(globals.currentGame.map, 'mapGleam');
             globals.currentGame.map.allowClickEvents(true);
         }
     });

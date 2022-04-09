@@ -84,7 +84,7 @@ var levelAugments = {
             enemy.applyVitalityBuff({duration: 999999, amount: 200});
         },
         getSystemMessage: () => {
-            return {text: 'Boss', style: 'systemMessageTextAugment', tint: 0x0af5e7};
+            return {text: 'Ultra', style: 'systemMessageTextAugment', tint: 0x1237d4};
         }
     }
 };

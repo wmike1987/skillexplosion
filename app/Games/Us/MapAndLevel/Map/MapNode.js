@@ -66,6 +66,7 @@ var MapLevelNode = function(options) {
 
     if (!options.noSpawnGleam) {
         this.removeSpawnAnimator = gameUtils.matterOnce(this.mapRef, 'showMap', this.playSpawnAnimation.bind(this));
+        this.allPurposeSpawnAnimator = Matter.Events.on(this.mapRef, 'mapGleam', this.playSpawnAnimation.bind(this));
     }
 
     if (options.manualTokens) {
@@ -424,6 +425,10 @@ MapLevelNode.prototype.cleanUp = function() {
 
     if (this.removeSpawnAnimator) {
         this.removeSpawnAnimator.removeHandler();
+    }
+
+    if (this.allPurposeSpawnAnimator) {
+        Matter.Events.off(this.mapRef, 'mapGleam', this.allPurposeSpawnAnimator);
     }
 
     if (this.manualTokens) {

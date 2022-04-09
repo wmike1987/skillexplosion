@@ -158,7 +158,7 @@ var map = function(specs) {
     this.adrenalineMax = 4;
     this.adrenalineText = graphicsUtils.createDisplayObject("TEX+:" + 'Adrenaline', {
         position: {
-            x: 190,
+            x: 192,
             y: 622
         },
         style: styles.adrenalineText,

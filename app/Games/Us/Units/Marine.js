@@ -1107,7 +1107,7 @@ export default function Marine(options) {
                 duration: 4000,
                 icon: graphicsUtils.createDisplayObject('FriendlyFireIcon'),
                 title: 'Friendly Fire',
-                description: 'Grant allies health/energy gems for 4 seconds by hitting them with a knife.',
+                description: ['Grant allies health/energy gems for 4 seconds', 'by hitting them with a knife.'],
                 systemMessage: 'Health and energy gems are granted alternately.',
                 collector: {
                     eventName: friendlyFireCollectorEventName,
@@ -1875,7 +1875,7 @@ export default function Marine(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                // ability.addAllAvailableAugments();
+                ability.addAllAvailableAugments();
             });
 
         }
@@ -1927,10 +1927,7 @@ export default function Marine(options) {
                     }, function(unit) {
                         unitUtils.applyHealthGainAnimationToUnit(unit);
                         healsound.play();
-                        var sum = 0;
-                        self.firstAidPouchAdditions.forEach((addition) => {
-                            sum += addition;
-                        });
+                        let sum = mathArrayUtils.getSumOfArrayOfValues(self.firstAidPouchAdditions);
                         var amountHealed = unit.giveHealth(firstAidPouchAugment.healAmount + sum, self);
                         Matter.Events.trigger(globals.currentGame, firstAidCollectorEventName, {
                             value: amountHealed
@@ -1946,10 +1943,7 @@ export default function Marine(options) {
                     }, function(unit) {
                         unitUtils.applyEnergyGainAnimationToUnit(unit);
                         healsound.play();
-                        var sum = 0;
-                        self.cleaningKitAdditions.forEach((addition) => {
-                            sum += addition;
-                        });
+                        var sum = mathArrayUtils.getSumOfArrayOfValues(self.cleaningKitAdditions);
                         var amountGranted = unit.giveEnergy(cleaningKitAugment.energyGrant + sum, self);
                         Matter.Events.trigger(globals.currentGame, cleaningKitCollectorEventName, {
                             value: amountGranted

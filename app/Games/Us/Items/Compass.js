@@ -1,7 +1,7 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    fatigueReduction: 6,
+    fatigueReduction: 8,
     maxEnergy: 3
 };
 

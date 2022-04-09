@@ -223,7 +223,11 @@ var unitUtils = {
             return options.team == team;
         }.bind(this), null, function(unit) {
             items = items.concat(unit.getAllItems({namesOnly: options.namesOnly}));
+            if(options.includeMicrochips) {
+                items.push(...unit.getAllPluggedMicrochipNames());
+            }
         }.bind(this));
+
 
         return items;
     },

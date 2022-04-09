@@ -23,7 +23,7 @@ var completeTaskAndRelease = function(dialogue) {
 var shaneLearning = function(options) {
     var enter = gameUtils.getSound('entershanelearn.wav', {volume: 0.14, rate: 1.0});
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});
-    var podPosition = {x: gameUtils.getCanvasCenter().x-200, y: gameUtils.getPlayableHeight()-500};
+    var podPosition = {x: gameUtils.getCanvasCenter().x-350, y: gameUtils.getPlayableHeight()-500};
 
     this.initExtension = function() {
         this.completeUponEntry = true;

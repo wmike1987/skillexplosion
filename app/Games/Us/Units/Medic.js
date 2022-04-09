@@ -1076,7 +1076,7 @@ export default function Medic(options) {
                     var otherUnit = otherBody.unit;
                     if (otherUnit != null && otherUnit.team != medic.team) {
                         otherUnit.maim({
-                            duration: scorchAugment.duration,
+                            duration: scorchAugment.maimDuration,
                             maimingUnit: medic
                         });
                         Matter.Events.trigger(globals.currentGame, scorchEventName, {
@@ -1110,7 +1110,7 @@ export default function Medic(options) {
                             globals.currentGame.removeBody(scorchedAreaBody);
                         }
                     });
-                }, scorchAugment.duration);
+                }, scorchAugment.duration + mathArrayUtils.getSumOfArrayOfValues(medic.scorchDurationAdditions));
             }
 
             if (shrapnelAugment) {
@@ -1169,9 +1169,19 @@ export default function Medic(options) {
         augments: [{
                 name: 'scorch',
                 duration: 12000,
+                maimDuration: 5000,
                 icon: graphicsUtils.createDisplayObject('Maim'),
                 title: 'Scorch',
-                description: 'Leave an explosion area which maims enemy units for 12 seconds.',
+                description: ['Leave an explosion area lasting 12 seconds which maims.', 'enemies for 5 seconds'],
+                updaters: {
+                    descriptions: function() {
+                        let sum = 12000 + mathArrayUtils.getSumOfArrayOfValues(medic.scorchDurationAdditions);
+                        return {
+                            index: 0,
+                            value: 'Leave an explosion area lasting ' + sum/1000 + ' seconds which maims'
+                        };
+                    }
+                },
                 collector: {
                     eventName: scorchEventName,
                     presentation: {
@@ -2211,7 +2221,7 @@ export default function Medic(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                // ability.addAllAvailableAugments();
+                ability.addAllAvailableAugments();
             });
 
             this.fullhpTallyMeterWidth = 30;
@@ -2266,6 +2276,8 @@ export default function Medic(options) {
                     graphicsUtils.fadeSpriteOutQuickly(self.hpTallyMeterBorder);
                 }
             });
+
+            this.scorchDurationAdditions = [];
         },
         _afterAddInit: function() {
             // this.normalHealingColor = {

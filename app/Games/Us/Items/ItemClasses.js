@@ -44,7 +44,7 @@ var ItemClasses = {
         microchip: {
             description: 'Rugged Microchip',
             tint: 0xa77e16,
-            items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip'],
+            items: ['JaggedMicrochip', 'GreenMicrochip', 'ApolloMicrochip', 'DemeterChip', 'ToxicMicrochip'],
             mapNodeIndicator: 'GreenMicrochip'
         },
         specialtyItem: {

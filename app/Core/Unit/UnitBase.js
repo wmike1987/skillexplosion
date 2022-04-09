@@ -1889,6 +1889,23 @@ var UnitBase = {
         return items;
     },
 
+    getAllPluggedMicrochipNames: function(options) {
+        options = options || {};
+        let augments = [];
+        this.abilities.forEach((ability) => {
+            augments.push(...ability.augments);
+        });
+
+        let pluggedMicrochips = [];
+        augments.forEach((augment) => {
+            if(augment.currentMicrochipName) {
+                pluggedMicrochips.push(augment.currentMicrochipName);
+            }
+        });
+
+        return pluggedMicrochips;
+    },
+
     //This returns all item objects a unit possesses, including hidden empty slots
     getCompleteSetOfItemObjects: function() {
         var completeSet = this.currentItems.concat(this.currentBackpack).concat(this.currentSpecialtyItems).filter(item => {
