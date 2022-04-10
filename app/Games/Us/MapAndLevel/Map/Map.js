@@ -829,8 +829,7 @@ var map = function(specs) {
                 if (key == ' ') {
                     var legal = this.isOutingLegal();
                     if(!legal.result) {
-                        game.toastMessage({message: legal.message});
-                        game.soundPool.cantdo.play();
+                        game.toastMessage({message: legal.message, state: 'cantdo'});
                         return;
                     }
                     $('body').off('keydown.engagespace');

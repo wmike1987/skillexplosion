@@ -201,7 +201,7 @@ var game = {
             rate: 1.5
         });
         this.soundPool.negativeSound = gameUtils.getSound('negative_sound.wav', {
-            volume: 0.07,
+            volume: 0.1,
             rate: 1.0
         });
         this.soundPool.negativeSound2 = gameUtils.getSound('negative_sound.wav', {
@@ -1283,8 +1283,21 @@ var game = {
     toastMessage: function(options) {
         options = gameUtils.mixinDefaults({params: options, defaults: {
             style: styles.fatigueTextLarge,
-            scene: options.scene || globals.currentGame.currentScene
+            scene: options.scene || globals.currentGame.currentScene,
+            state: 'positive',
+            sound: null
         }});
+
+        let sound = options.sound;
+        if(options.state == 'none') {
+            //do nothing
+        } else if(options.state == 'positive') {
+            sound = this.soundPool.positiveSoundFast;
+        } else if(options.state == 'cantdo') {
+            sound = this.soundPool.cantdo;
+        } else if(options.state == 'negative') {
+            sound = this.soundPool.negativeSound;
+        }
 
         //reset adrenaline indicator
         var toastText = graphicsUtils.floatText(options.message, gameUtils.getPlayableCenterPlus({
@@ -1295,8 +1308,16 @@ var game = {
             speed: 4,
             duration: 2000
         });
+        graphicsUtils.addGleamToSprite({
+            sprite: toastText,
+            gleamWidth: 50,
+            duration: 500
+        });
         options.scene.add(toastText);
         graphicsUtils.fadeSpriteInQuickly(toastText, 500);
+        if(sound) {
+            sound.play();
+        }
     },
 
     resetGameExtension: function() {

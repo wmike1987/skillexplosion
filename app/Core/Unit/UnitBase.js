@@ -868,6 +868,16 @@ var UnitBase = {
         this.applyUnitStates();
 
         //Enter playable event setup
+        var preEnterPlayableTick = globals.currentGame.addTickCallback(() => {
+            if (gameUtils.isPositionWithinPlayableBounds(this.position, 10)) {
+                Matter.Events.trigger(globals.currentGame, 'UnitPreEneteredPlayable', {
+                    unit: this
+                });
+                globals.currentGame.removeTickCallback(preEnterPlayableTick);
+            }
+        }, false);
+        gameUtils.deathPact(this, preEnterPlayableTick);
+
         var enterPlayableTick = globals.currentGame.addTickCallback(() => {
             if (gameUtils.isPositionWithinPlayableBounds(this.position, 30)) {
                 Matter.Events.trigger(globals.currentGame, 'UnitEneteredPlayable', {

@@ -121,7 +121,11 @@ var MapLevelNode = function(options) {
             return;
         }
         enemyDescriptions.push(' x ' + set.spawn.total);
-        enemyIcons.push(set.icon);
+        let iconObj = {icon: set.icon, borderTint: 0x252f59};
+        enemyIcons.push(iconObj);
+        if(self.levelDetails.isBossLevel() && !set.addedProps.immuneToAugment) {
+            iconObj.borderTint = 0x6710ab;
+        }
     });
 
     //create the tooltip with a few assumptions

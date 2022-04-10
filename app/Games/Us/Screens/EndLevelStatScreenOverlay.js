@@ -192,6 +192,7 @@ var presentItems = function(options) {
                     graphicsUtils.makeSpriteSize(item.icon, 36);
                     item.icon.position = position;
                     graphicsUtils.addBorderToSprite({
+                        thickness: 1,
                         sprite: item.icon,
                         alpha: 0.75
                     });

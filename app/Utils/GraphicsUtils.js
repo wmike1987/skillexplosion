@@ -1073,10 +1073,11 @@ var graphicsUtils = {
             });
 
             sprite.addedDoubleBorder = border2;
+            border.addedDoubleBorder = border2;
 
             graphicsUtils.makeSpriteSize(border2, {
-                x: sprite.width + options.thickness + 2 * 2,
-                y: sprite.height + options.thickness + 2 * 2
+                x: sprite.width + options.thickness + (options.doubleBorderThickness || 2) * 2,
+                y: sprite.height + options.thickness + (options.doubleBorderThickness || 2) * 2
             });
 
             border2.position = sprite.position;

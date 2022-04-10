@@ -53,15 +53,17 @@ var unitSpawner = function(options) {
 
         //pool unit objects
         $.each(enemySets, function(i, enemy) {
+            let addedProps = Object.assign({
+                team: globals.currentGame.enemyTeam,
+            }, enemy.addedProps);
+
             //create a timer to fill the enemy pool between hz to spread out the load
             var poolTimer = globals.currentGame.addTimer({
                 name: 'poolSpawner' + i + this.id + enemy.type,
                 runs: enemy.spawn.total,
                 timeLimit: options.immediatePool || (enemy.spawn.hz / (enemy.spawn.atATime || 1)),
                 callback: function() {
-                    this.insertIntoPool(enemy, enemy.constructor({
-                        team: globals.currentGame.enemyTeam
-                    }));
+                    this.insertIntoPool(enemy, enemy.constructor(addedProps));
                 }.bind(this)
             });
             this.timers.push(poolTimer);
@@ -76,8 +78,10 @@ var unitSpawner = function(options) {
         //create one shot critter (or other basic unit)
         if (this.createOneShotUnit) {
             var oneShot = UnitMenu.createUnit('Critter', {
-                team: globals.currentGame.enemyTeam
+                team: globals.currentGame.enemyTeam,
+                immuneToAugment: true,
             });
+
             globals.currentGame.addUnit(oneShot);
             oneShot.currentHealth = 5;
             oneShot.honeRange /= 2;

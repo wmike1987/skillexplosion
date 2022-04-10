@@ -1319,21 +1319,31 @@ unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
         });
         graphicsUtils.fadeSpriteInQuickly(icon, fadeInTime);
         graphicsUtils.makeSpriteSize(icon, this.enemyIconSize);
-        graphicsUtils.addBorderToSprite({
+
+        let borderTint = 0x252f59;
+        if(level.isBossLevel() && !set.addedProps.immuneToAugment) {
+            borderTint = 0x6710ab;
+        }
+
+        var border = graphicsUtils.addBorderToSprite({
             sprite: icon,
             alpha: 0.7,
+            tint: borderTint,
+            thickness: 0,
             doubleBorder: true,
-            doubleBorderTint: 0x12120d
+            doubleBorderThickness: 1,
+            doubleBorderTint: 0xb3b3b3,
         });
 
         graphicsUtils.fadeSpriteInQuickly(icon.addedBorder, fadeInTime);
-        graphicsUtils.flashSprite({
-            sprite: icon.addedBorder,
-            fromColor: 0x996a6a,
-            toColor: 0x621414,
-            times: 3,
-            duration: 200
-        });
+        graphicsUtils.fadeSpriteInQuickly(icon.addedDoubleBorder, fadeInTime);
+        // graphicsUtils.flashSprite({
+        //     sprite: icon.addedBorder,
+        //     fromColor: 0x996a6a,
+        //     toColor: 0x621414,
+        //     times: 3,
+        //     duration: 200
+        // });
         let toPosition = getIconPosition(existingNumber);
         this.enemyIcons[set.id] = {
             icon: icon,

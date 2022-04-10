@@ -46,6 +46,7 @@ var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
 });
 
 var fatigueBenefit = 3;
+var adrenalinePenalty = 2;
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
@@ -56,13 +57,21 @@ commonAirDropStation.preNodeInit = function() {
     this.entrySound = entrySound;
     this.isAirDrop = true;
     this.nodeTitle = "Air Drop Station";
-    this.tooltipDescription = 'Subtract ' + fatigueBenefit + '% fatigue and receive supply drop.';
+    // this.tooltipDescription = 'Receive supply drop.';
+    this.tooltipDescription = ['Receive supply drop.', 'Subtract 2 adrenaline.'];
     this.mode = this.possibleModes.CUSTOM;
     this.noSmokePit = true;
     this.noZones.push({
         center: {
             x: 830,
             y: 400
+        },
+        radius: 40
+    });
+    this.noZones.push({
+        center: {
+            x: 943,
+            y: 410
         },
         radius: 40
     });
@@ -276,29 +285,18 @@ var airDropStation = function(options) {
         var selection = Object.create(selectionMechanism);
         selection.level = this;
 
-        //alter fatigue
         gameUtils.doSomethingAfterDuration(() => {
-            globals.currentGame.soundPool.positiveSoundFast.play();
-            var fatText = graphicsUtils.floatText('-' + fatigueBenefit + '% fatigue', gameUtils.getPlayableCenterPlus({
-                y: 300
-            }), {
-                where: 'hudTwo',
-                style: styles.fatigueTextLarge,
-                speed: 6,
-                duration: 1500
+            globals.currentGame.toastMessage({
+                message: '-' + adrenalinePenalty + ' adrenaline',
+                state: 'negative',
+                style: styles.adrenalineTextLarge
             });
-            graphicsUtils.addGleamToSprite({
-                sprite: fatText,
-                gleamWidth: 50,
-                duration: 500
-            });
-        }, 1500);
+        }, 1000);
 
         //subtract fatigue
-        globals.currentGame.map.startingFatigue -= fatigueBenefit;
-        if (globals.currentGame.map.startingFatigue < 0) {
-            globals.currentGame.map.startingFatigue = 0;
-        }
+        mathArrayUtils.repeatXTimes(() => {
+            globals.currentGame.map.removeAdrenalineBlock();
+        }, adrenalinePenalty);
 
         //begin dialogue
         var title = new Dialogue({
@@ -333,7 +331,7 @@ var airDropStation = function(options) {
         };
 
         var chain = new DialogueChain([title, a1], {
-            startDelay: 1750
+            startDelay: 2200
         });
         scene.add(chain);
         chain.play();

@@ -86,11 +86,11 @@ var levelAugments = {
             if(mathArrayUtils.flipCoin()) {
                 enemy.enrage({duration: 999999, amount: 5});
             } else {
-                enemy.applyDodgeBuff({duration: 999999, amount: 8});
+                enemy.applyDefenseBuff({duration: 999999, amount: 2});
             }
         },
         getSystemMessage: () => {
-            return {text: 'Ultra', style: 'systemMessageTextAugment', tint: 0x6701e8};
+            return {text: 'Ultra', style: 'systemMessageTextAugment', tint: 0x9c2674};
         }
     }
 };
@@ -212,15 +212,15 @@ var levelBase = {
         gameUtils.doSomethingAfterDuration(() => {
             //start enemy spawnage
             level.spawner.start();
-            let enemiesIncomingText = graphicsUtils.floatText(level.nodeTitle, gameUtils.getPlayableCenterPlus({
+            let levelTitleText = graphicsUtils.floatText(level.nodeTitle, gameUtils.getPlayableCenterPlus({
                 y: 20
             }), {
                 duration: textDuration,
                 style: styles.titleOneStyle
             });
-            graphicsUtils.fadeSpriteInQuickly(enemiesIncomingText, 500);
+            graphicsUtils.fadeSpriteInQuickly(levelTitleText, 500);
             graphicsUtils.flashSprite({
-                sprite: enemiesIncomingText
+                sprite: levelTitleText
             });
 
             let additionalPropertiesText = this.getAugmentSystemMessages();
@@ -423,94 +423,6 @@ var levelBase = {
         return new MapNode(options);
     },
 
-    createAugmentRack: function(scene, options) {
-        options = options || {};
-
-        //add gunrack
-        var gunrackSprite = graphicsUtils.createDisplayObject('gunrack');
-        this.gunrack = new Doodad({
-            drawWire: false,
-            collides: true,
-            autoAdd: false,
-            radius: 28,
-            texture: [gunrackSprite],
-            stage: 'stage',
-            scale: {
-                x: 1.0,
-                y: 1.0
-            },
-            offset: {
-                x: 0,
-                y: 0
-            },
-            sortYOffset: 0,
-            shadowIcon: 'IsoShadowBlurred',
-            shadowScale: {
-                x: 1,
-                y: 1
-            },
-            shadowOffset: {
-                x: -2,
-                y: 15
-            },
-            position: globals.currentGame.augmentRackPosition
-        });
-        scene.add(this.gunrack);
-
-        //add text
-        Tooltip.makeTooltippable(gunrackSprite, {
-            title: 'Augment configuration',
-            description: 'Ctrl+Click to enable augment panel',
-            systemMessage: 'Costs 1 adrenaline'
-        });
-
-        var gunrackHoverTick = globals.currentGame.addTickCallback(function(event) {
-            if (self.campLikeActive || globals.currentGame.mapActive) {
-                return;
-            }
-            if (Matter.Vertices.contains(this.gunrack.body.vertices, mousePosition)) {
-                gunrackSprite.tint = 0xff33cc;
-            } else {
-                gunrackSprite.tint = 0xFFFFFF;
-            }
-        }.bind(this));
-
-        var self = this;
-        //Establish map click listeners
-        var gunrackClickListener = globals.currentGame.addPriorityMouseDownEvent(function(event) {
-            if (self.campLikeActive || !keyStates.Control) return;
-            if (event.which == 3) return; //don't allow right clicks
-            var canvasPoint = mathArrayUtils.clonePosition(mousePosition);
-
-            if (Matter.Vertices.contains(self.gunrack.body.vertices, canvasPoint) && !this.mapActive) {
-                gunrackSprite.tooltipObj.destroy();
-                globals.currentGame.removeTickCallback(gunrackHoverTick);
-                gunrackSprite.tint = 0xFFFFFF;
-                globals.currentGame.makeCurrentLevelConfigurable();
-                globals.currentGame.unitSystem.unitPanel.refreshAugmentButton();
-                globals.currentGame.soundPool.unlock1.play();
-                globals.currentGame.map.removeAdrenalineBlock();
-                graphicsUtils.floatText('-1 adrenaline', {
-                    x: gunrackSprite.position.x,
-                    y: gunrackSprite.position.y - 25
-                }, {
-                    style: styles.adrenalineTextMedium,
-                    where: 'hudThree',
-                    speed: 2,
-                    duration: 2000
-                });
-            }
-        }.bind(globals.currentGame));
-
-        scene.addCleanUpTask(() => {
-            globals.currentGame.removePriorityMouseDownEvent(gunrackClickListener);
-            globals.currentGame.removeTickCallback(gunrackHoverTick);
-            this.gunrack = null;
-        });
-
-        return this.gunrack;
-    },
-
     createMapTable: function(scene, options) {
         options = options || {};
 
@@ -596,18 +508,23 @@ var levelBase = {
 
     _applyLevelAugments: function() {
         var level = this;
-        this.augmentListener = Matter.Events.on(globals.currentGame, 'UnitEneteredPlayable', (event) => {
+        this.augmentListener = Matter.Events.on(globals.currentGame, 'UnitPreEneteredPlayable', (event) => {
             let unit = event.unit;
-            if(!unit.hazard && unit.team == globals.currentGame.enemyTeam) {
-                level.levelAugments.forEach((aug) => {
-                    aug.action(unit);
-                });
+
+            //establish exceptions
+            if(unit.hazard || unit.team != globals.currentGame.enemyTeam || unit.immuneToAugment) {
+                return;
             }
+
+            //apply the augment if the unit passed
+            level.levelAugments.forEach((aug) => {
+                aug.action(unit);
+            });
         });
     },
 
     _removeLevelAugmentListener: function() {
-        Matter.Events.off(globals.currentGame, 'UnitEneteredPlayable', this.augmentListener);
+        Matter.Events.off(globals.currentGame, 'UnitPreEneteredPlayable', this.augmentListener);
     },
 
     getAugmentSystemMessages: function() {

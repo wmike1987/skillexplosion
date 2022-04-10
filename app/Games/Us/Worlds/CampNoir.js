@@ -985,6 +985,14 @@ var enemyDefs = {
             amount: 3,
             atATime: 1,
             hz: 12000
+        }, {
+            type: 'Critter',
+            amount: 12,
+            atATime: 1,
+            addedProps: {
+                immuneToAugment: true
+            },
+            hz: 8000
         }, hardFlyObj]
     },
     critterBoss: {
@@ -992,24 +1000,40 @@ var enemyDefs = {
         strength: 'boss',
         enemySets: [{
             type: 'Critter',
-            amount: 5,
-            atATime: 1,
-            hz: 12000
-        }, hardFlyObj]
-    },
-    mixedBoss: {
-        noun: 'Enemy',
-        strength: 'boss',
-        enemySets: [{
-            type: 'Critter',
-            amount: 2,
+            amount: 4,
             atATime: 1,
             hz: 12000
         }, {
             type: 'Sentinel',
             amount: 2,
             atATime: 1,
+            addedProps: {
+                immuneToAugment: true
+            },
+            hz: 8000
+        }, hardFlyObj]
+    },
+    mixedBoss: {
+        noun: 'Enemy',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Sentinel',
+            amount: 2,
+            atATime: 1,
             initialDelay: 12000,
+        }, {
+            type: 'Critter',
+            amount: 1,
+            atATime: 1,
+            hz: 12000
+        }, {
+            type: 'Critter',
+            amount: 14,
+            atATime: 1,
+            addedProps: {
+                immuneToAugment: true
+            },
+            hz: 7500
         }, hardFlyObj]
     },
 
@@ -1185,9 +1209,11 @@ var phaseOneAndAHalf = function(options) {
         }
     });
 
-    var l4 = this.map.addMapNode('healthDepot', {levelOptions: {
-        levelId: 'healthDepot'
-    }});
+    var l4 = this.map.addMapNode('healthDepot', {
+        levelOptions: {
+            levelId: 'healthDepot'
+        }
+    });
 
     return {
         nextPhase: 'allNodesComplete',
@@ -1234,6 +1260,15 @@ var phaseTwo = function(options) {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
             world.map.addMapNode('basic');
+
+            var bossMix = ['sentinelBoss', 'critterBoss', 'mixedBoss'];
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bossMix), {
+                levelOptions: {
+                    outer: true,
+                    specificAugment: 'vitalityBoss',
+                    itemClass: 'rugged',
+                }
+            });
 
             world.map.addMapNode('basicHunter', {
                 levelOptions: {
@@ -1684,7 +1719,7 @@ var finalPhase = function() {
         levelOptions: {
             outer: true,
             enemyDefList: [mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards)],
-            itemClass: 'book',
+            itemClass: 'stimulant',
         },
         positionOptions: otherPositionOp
     });
