@@ -347,7 +347,7 @@ var ic = function(options) {
         newItem.drop = function(position, options) {
             if (!options) options = {};
             options = $.extend({}, {
-                fleeting: true
+                fleeting: false
             }, options);
 
             //create item body

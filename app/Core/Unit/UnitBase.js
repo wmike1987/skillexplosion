@@ -1737,7 +1737,7 @@ var UnitBase = {
                         this.reset();
                     }
                 } else {
-                    self.giveGritDodge(false);
+                    // self.giveGritDodge(false);
                     this.timerActive = false;
                 }
             }

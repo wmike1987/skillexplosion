@@ -442,9 +442,11 @@ var game = {
                 return el != null;
             });
 
-            this.unitsInPlay.forEach((unit) => {
-                unit.fatigue = event.startingFatigue || 0;
-            });
+            if(!event.continueFromCurrentFatigue) {
+                this.unitsInPlay.forEach((unit) => {
+                    unit.fatigue = event.startingFatigue || 0;
+                });
+            }
 
             //figure out starting offset from which the chars will move into the center
             var headX = Math.abs(event.headVelocity.x);
@@ -478,7 +480,7 @@ var game = {
                 timeLimit: timeLimit,
                 callback: function() {
                     //only set fatigue if we're a battle level
-                    if (!node.levelDetails.isBattleLevel()) {
+                    if (!node.levelDetails.incursTravelFatigue()) {
                         return;
                     }
                     this.unitsInPlay.forEach((unit) => {

@@ -245,6 +245,9 @@ var Collector = {
 
     stop: function() {
         Matter.Events.off(globals.currentGame, this.eventName, this.listener);
+        if(this.onStop) {
+            this.onStop();
+        }
     },
 
     pause: function() {
@@ -265,6 +268,7 @@ var CustomCollector = function(options) {
     this.entity = options.entity;
     this.name = options.name || this.entity.name;
     this.init = options.init;
+    this.onStop = options.onStop;
     this.priority = options.priority;
     this.predicate = options.predicate || function() {
         return true;

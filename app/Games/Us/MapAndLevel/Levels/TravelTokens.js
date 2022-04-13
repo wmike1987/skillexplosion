@@ -109,6 +109,10 @@ commonTravelToken.initExtension = function() {
     this.isOutingReady = function() {
         return !this.mapNode.isCompleted;
     };
+
+    if(this.tokenSpecificInit) {
+        this.tokenSpecificInit();
+    }
 };
 
 commonTravelToken.createMapNode = function(options) {
@@ -195,6 +199,11 @@ morphineStation.prototype = commonTravelToken;
 var restStop = function(options) {
     this.regularTokenName = 'RestStopToken';
     this.specialTokenName = 'RestStopTokenGleaming';
+
+    this.tokenSpecificInit = function() {
+        this.mapNode.continueWithStartingFatigue = true;
+        this._incursTravelFatigue = false;
+    };
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Rest Stop";

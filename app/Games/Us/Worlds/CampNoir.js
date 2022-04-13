@@ -1261,14 +1261,14 @@ var phaseTwo = function(options) {
             world.map.clearAllNodesExcept('camp');
             world.map.addMapNode('basic');
 
-            var bossMix = ['sentinelBoss', 'critterBoss', 'mixedBoss'];
-            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bossMix), {
-                levelOptions: {
-                    outer: true,
-                    specificAugment: 'vitalityBoss',
-                    itemClass: 'rugged',
-                }
-            });
+            // var bossMix = ['sentinelBoss', 'critterBoss', 'mixedBoss'];
+            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bossMix), {
+            //     levelOptions: {
+            //         outer: true,
+            //         specificAugment: 'vitalityBoss',
+            //         itemClass: 'rugged',
+            //     }
+            // });
 
             world.map.addMapNode('basicHunter', {
                 levelOptions: {

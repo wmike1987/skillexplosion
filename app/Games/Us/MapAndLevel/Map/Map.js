@@ -1021,6 +1021,7 @@ var map = function(specs) {
             destinationCallback();
         }.bind(this));
         Matter.Events.trigger(globals.currentGame, "TravelStarted", {
+            continueFromCurrentFatigue: (this.lastNode.travelToken && !this.lastNode.continueWithStartingFatigue),
             node: node,
             headVelocity: this.headTokenBody.velocity,
             startingFatigue: this.startingFatigue

@@ -1046,9 +1046,9 @@ export default function Medic(options) {
                         afflictingUnit: medic,
                         id: 'sideEffects'
                     });
-                    Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
-                        value: 1
-                    });
+                    // Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
+                    //     value: 1
+                    // });
                 }
                 var variation = Math.random() * 0.3;
                 var maimBlast = gameUtils.getAnimation({

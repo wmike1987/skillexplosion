@@ -280,6 +280,7 @@ var levelBase = {
             seed: Math.random(),
             itemClass: 'lightStimulant',
             itemType: 'item',
+            _incursTravelFatigue: true,
             isSupplyDropEligible: true,
             specificAugment: null,
             levelAugments: [],
@@ -396,6 +397,10 @@ var levelBase = {
 
     isOutingReady: function() {
         return this.isBattleLevel() && !this.trainingLevel;
+    },
+
+    incursTravelFatigue: function() {
+        return this._incursTravelFatigue;
     },
 
     fillLevelScene: function(scene) {

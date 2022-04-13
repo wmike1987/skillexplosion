@@ -56,6 +56,7 @@ commonAirDropStation.preNodeInit = function() {
     this.lesserSpin = true;
     this.entrySound = entrySound;
     this.isAirDrop = true;
+    this._incursTravelFatigue = false;
     this.nodeTitle = "Air Drop Station";
     // this.tooltipDescription = 'Receive supply drop.';
     this.tooltipDescription = ['Receive supply drop.', 'Subtract 2 adrenaline.'];

@@ -378,7 +378,7 @@ export default function Marine(options) {
         rate: 1
     });
     var holdPositionSound = gameUtils.getSound('shane_dodge.mp3', {
-        volume: 0.4,
+        volume: 0.25,
         rate: 0.8
     });
     var poisonSound = gameUtils.getSound('poisonhit1.wav', {
@@ -389,6 +389,12 @@ export default function Marine(options) {
     //crit
     var criticalHitSound = gameUtils.getSound('criticalhit.wav', {
         volume: 0.03,
+        rate: 1.0
+    });
+
+    //crit
+    var shockSound = gameUtils.getSound('shanehumph1.wav', {
+        volume: 0.1,
         rate: 1.0
     });
 
@@ -509,12 +515,22 @@ export default function Marine(options) {
             });
         }
 
-        if(shockAugment) {
-            unitUtils.showBlockGraphic({scale: {x: 0.9, y: 0.9}, attackingUnit: {position: destination}, unit: self, tint: 0xd4631a});
+        if (shockAugment) {
+            unitUtils.showBlockGraphic({
+                scale: {
+                    x: 0.9,
+                    y: 0.9
+                },
+                attackingUnit: {
+                    position: destination
+                },
+                unit: self,
+                tint: 0xd4631a
+            });
             dashAnimation.tint = 0xd67400;
         }
 
-        if(self.shockCollision) {
+        if (self.shockCollision) {
             self.shockCollision.removeHandler();
         }
         if (shockAugment) {
@@ -522,6 +538,7 @@ export default function Marine(options) {
                 var otherBody = pair.pair.bodyB == self.body ? pair.pair.bodyA : pair.pair.bodyB;
                 if (!otherBody.isCollisionBody || !otherBody.unit) return false;
                 var otherUnit = otherBody.unit;
+                shockSound.play();
                 otherUnit.sufferAttack(shockAugment.damage, self, {
                     dodgeable: false,
                     ignoreArmor: false,
@@ -815,9 +832,9 @@ export default function Marine(options) {
         knife.deltaTime = this.body.deltaTime;
         knife.destination = destination;
 
-        if(leftoverShardAugment) {
+        if (leftoverShardAugment) {
             Matter.Events.on(knife, 'onremove', function() {
-                if(!knife.canLeaveShards) return;
+                if (!knife.canLeaveShards) return;
                 var shard = Matter.Bodies.circle(knife.position.x, knife.position.y + 20, 8, {
                     isSensor: true,
                     noWire: true,
@@ -831,7 +848,10 @@ export default function Marine(options) {
                         x: this.position.x,
                         y: this.position.y + 20
                     },
-                    scale: {x: mathArrayUtils.flipCoin() ? -1 : 1, y: 1},
+                    scale: {
+                        x: mathArrayUtils.flipCoin() ? -1 : 1,
+                        y: 1
+                    },
                 });
                 graphicsUtils.flashSprite({
                     sprite: shardImage
@@ -879,7 +899,7 @@ export default function Marine(options) {
 
         gameUtils.sendBodyToDestinationAtSpeed(knife, destination, marine.knifeSpeed, true, true);
         var removeSelf = globals.currentGame.addTickCallback(function() {
-            if(leftoverShardAugment) {
+            if (leftoverShardAugment) {
                 if (gameUtils.bodyRanOffStage(knife, null, 17, -52, -32, 35)) {
                     knife.canLeaveShards = true;
                     globals.currentGame.removeBody(knife);
@@ -962,7 +982,7 @@ export default function Marine(options) {
                 }
 
                 if (otherUnit.isDead) {
-                    if(leftoverShardAugment) {
+                    if (leftoverShardAugment) {
                         knife.canLeaveShards = true;
                     }
                     Matter.Events.trigger(this, 'knifeKill');
@@ -994,12 +1014,18 @@ export default function Marine(options) {
                 } else {
                     globals.currentGame.removeBody(knife);
                 }
-            } else if(otherUnit && otherUnit.team == this.team && otherUnit != self && friendlyFireAugment) {
-                if(self.friendlyFireApply == 'health') {
-                    otherUnit.applyHealthGem({duration: friendlyFireAugment.duration, id: 'friendlyFireHealth'});
+            } else if (otherUnit && otherUnit.team == this.team && otherUnit != self && friendlyFireAugment) {
+                if (self.friendlyFireApply == 'health') {
+                    otherUnit.applyHealthGem({
+                        duration: friendlyFireAugment.duration,
+                        id: 'friendlyFireHealth'
+                    });
                     self.friendlyFireApply = 'energy';
                 } else {
-                    otherUnit.applyEnergyGem({duration: friendlyFireAugment.duration, id: 'friendlyFireEnergy'});
+                    otherUnit.applyEnergyGem({
+                        duration: friendlyFireAugment.duration,
+                        id: 'friendlyFireEnergy'
+                    });
                     self.friendlyFireApply = 'health';
                 }
 
@@ -1238,11 +1264,11 @@ export default function Marine(options) {
             },
             {
                 name: 'lead bullets',
-                armorSubtractor: 5,
+                armorSubtractor: 2,
                 dodgeManipulator: 0.5,
                 icon: graphicsUtils.createDisplayObject('LeadBulletsIcon'),
                 title: 'Lead Bullets',
-                description: 'Attacks bypass 50% of target\'s dodge and ignore up to 5 armor.',
+                description: 'Attacks bypass 50% of target\'s dodge and ignore up to 2 armor.',
                 collector: {
                     eventName: leadBulletsCollectorEventName,
                     presentation: {
@@ -1635,7 +1661,7 @@ export default function Marine(options) {
     var passiveGritGain = 4;
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon rifle attack)', 'Add half of Shane\'s grit to current attack (up to ' + trueGritCap + ').'],
+        aggressionDescription: ['Agression Mode (Upon rifle attack)', 'Afflict target.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Grant self and allies ' + trueGritGain + ' grit for length of excursion.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies gain ' + passiveGritGain + ' grit for length of excursion.'],
         textureName: 'TrueGrit',
@@ -1643,7 +1669,7 @@ export default function Marine(options) {
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 6000,
         aggressionEventName: 'preDealDamage',
-        aggressionCooldown: 7000,
+        aggressionCooldown: 5000,
         passiveAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
@@ -1684,48 +1710,64 @@ export default function Marine(options) {
                 value: trueGritGain * 2
             };
         },
-        aggressionPredicate: function() {
-            let grit = marine.getTotalGrit() / 2.0;
-            return grit > 0;
-        },
         aggressionAction: function(event) {
-            let grit = marine.getTotalGrit() / 2.0;
-            grit = Math.min(trueGritCap, grit);
-
-            event.damageObj.damage += grit;
-
-            var sufferingUnit = event.sufferingUnit;
-
-            var maimBlast = gameUtils.getAnimation({
-                spritesheetName: 'BaseUnitAnimations1',
-                animationName: 'gritblast',
-                speed: 1.0,
-                transform: [sufferingUnit.position.x, sufferingUnit.position.y, 0.5, 0.5]
-            });
-            if (grit >= 20) {
-                maimBlast.scale = {
-                    x: 0.7,
-                    y: 0.7
-                };
+            if (event.attackContext.id == 'rifle') {
+                var sufferingUnit = event.sufferingUnit;
+                sufferingUnit.afflict({
+                    duration: 5000,
+                    afflictingUnit: marine,
+                    id: 'trueGrit'
+                });
             }
-            if (grit >= 35) {
-                maimBlast.scale = {
-                    x: 1.0,
-                    y: 1.0
-                };
-            }
-            maimBlast.tint = 0xffeea7;
-            maimBlast.rotation = Math.random() * Math.PI;
-            maimBlast.play();
-            graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
-            criticalHitSound.play();
-
-            return {
-                value: grit
-            };
         },
         collector: {
-            aggressionLabel: 'Additional damage dealt',
+            aggressionLabel: 'Health/Blocks gained',
+            attackCollectorFunction: function(event) {
+                this.attackPassive.healthGained += event.healthGained || 0;
+                this.attackPassive.blocksGained += event.blocksGained || 0;
+            },
+            aggressionFormat: function(v) {
+                return v.healthGained.toFixed(1) + '/' + v.blocksGained;
+            },
+            _init: function() {
+                let eventName = this.eventName;
+                this.healthHandler = Matter.Events.on(marine, 'afflictHealthGain', (event) => {
+                    if (event.id == 'trueGrit') {
+                        let payload = {
+                            collectorPayload: {
+                                value: {
+                                    healthGained: event.healthGained,
+                                }
+                            },
+                            mode: 'attackPassive'
+                        };
+                        Matter.Events.trigger(globals.currentGame, eventName, payload);
+                    }
+                });
+
+                this.blockHandler = Matter.Events.on(marine, 'afflictBlockGain', (event) => {
+                    if (event.id == 'trueGrit') {
+                        let payload = {
+                            collectorPayload: {
+                                value: {
+                                    blocksGained: 1,
+                                }
+                            },
+                            mode: 'attackPassive'
+                        };
+                        Matter.Events.trigger(globals.currentGame, eventName, payload);
+                    }
+                });
+
+                this.attackPassive = {
+                    healthGained: 0,
+                    blocksGained: 0
+                };
+            },
+            _onStop: function() {
+                Matter.Events.off(marine, 'afflictHealthGain', this.healthHandler);
+                Matter.Events.off(marine, 'afflictBlockGain', this.blockHandler);
+            },
             defensiveLabel: 'Grit granted'
         }
     });
@@ -1735,6 +1777,7 @@ export default function Marine(options) {
         health: 75,
         defense: 1,
         energy: 20,
+        // grit: 2,
         energyRegenerationRate: 0.5,
         healthRegenerationRate: 1,
         friendlyFireApply: 'health',
@@ -1875,7 +1918,7 @@ export default function Marine(options) {
             //randomize initial augments
             this.abilities.forEach((ability) => {
                 ability.addAvailableAugment();
-                // ability.addAllAvailableAugments();
+                ability.addAllAvailableAugments();
             });
 
         }
@@ -1887,7 +1930,7 @@ export default function Marine(options) {
         radius: options.radius || 25,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [dashSound, dodgeSound, knifeBreakSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
+        slaves: [dashSound, dodgeSound, knifeBreakSound, shockSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
             poisonSound, criticalHitSound, yeahsound, healsound, manaHealSound, unitProperties.wireframe, unitProperties.portrait
         ],
         unit: unitProperties,
@@ -1989,45 +2032,21 @@ export default function Marine(options) {
                     speed: 100
                 });
 
+                //play rifle bullet animation
+                var scale = leadBulletsAugment ? 0.55 : 0.55;
+                var variance2 = Math.random() * 0.5 - 0.25;
+                var nonOrganicRifleAnimation = gameUtils.getAnimation({
+                    spritesheetName: 'MarineAnimations1',
+                    animationName: 'rifle',
+                    speed: 0.85,
+                    transform: [target.position.x + variance2, target.position.y + variance2, scale, scale]
+                });
+                nonOrganicRifleAnimation.tint = leadBulletsAugment ? 0xaafffc : 0xfbffc9;
+                nonOrganicRifleAnimation.play();
+                nonOrganicRifleAnimation.rotation = Math.random() * Math.PI;
+                graphicsUtils.addSomethingToRenderer(nonOrganicRifleAnimation, 'foreground');
+
                 if (target.organic) {
-                    if(leadBulletsAugment) {
-                        var variance2 = Math.random() * 0.5;
-                        var rifleAnimation = gameUtils.getAnimation({
-                            spritesheetName: 'MarineAnimations1',
-                            animationName: 'rifle',
-                            speed: 0.6,
-                            transform: [target.position.x + variance2, target.position.y + variance2, 0.1 + variance2, 0.1 + variance2]
-                        });
-                        rifleAnimation.tint = 0x1695a2;
-                        rifleAnimation.play();
-                        rifleAnimation.rotation = Math.random() * Math.PI;
-                        graphicsUtils.addSomethingToRenderer(rifleAnimation, 'foreground');
-
-                        rifleAnimation = gameUtils.getAnimation({
-                            spritesheetName: 'MarineAnimations1',
-                            animationName: 'rifle',
-                            speed: 1.0,
-                            transform: [target.position.x + variance2, target.position.y + variance2, 0.4 + variance2, 0.4 + variance2]
-                        });
-                        rifleAnimation.tint = 0xffffff;
-                        rifleAnimation.alpha = 0.5;
-                        rifleAnimation.play();
-                        rifleAnimation.rotation = Math.random() * Math.PI;
-                        graphicsUtils.addSomethingToRenderer(rifleAnimation, 'foreground');
-
-                        //play blood animation
-                        var extraBlood = gameUtils.getAnimation({
-                            spritesheetName: 'UtilityAnimations1',
-                            animationName: 'rifleSlash',
-                            speed: 0.24,
-                            transform: [target.position.x + variance2, target.position.y + variance2, 0.4 + variance2, 0.4 + variance2]
-                        });
-                        extraBlood.play();
-                        extraBlood.rotation = Math.random() * Math.PI;
-                        graphicsUtils.addSomethingToRenderer(extraBlood, 'foreground');
-                    }
-
-
                     //play blood animation
                     var variance = Math.random() * 0.25;
                     var bloodAnimation1 = gameUtils.getAnimation({
@@ -2049,27 +2068,6 @@ export default function Marine(options) {
                     bloodAnimation2.play();
                     bloodAnimation2.rotation = Math.random() * Math.PI;
                     graphicsUtils.addSomethingToRenderer(bloodAnimation2, 'foreground');
-                } else {
-                    var nonOrganicRifleAnimation = gameUtils.getAnimation({
-                        spritesheetName: 'MarineAnimations1',
-                        animationName: 'rifle',
-                        speed: 1.5,
-                        transform: [target.position.x, target.position.y, 0.5, 0.5]
-                    });
-                    nonOrganicRifleAnimation.tint = 0xc8d717;
-                    nonOrganicRifleAnimation.play();
-                    nonOrganicRifleAnimation.rotation = Math.random() * Math.PI;
-                    graphicsUtils.addSomethingToRenderer(nonOrganicRifleAnimation, 'foreground');
-
-                    nonOrganicRifleAnimation = gameUtils.getAnimation({
-                        spritesheetName: 'MarineAnimations1',
-                        animationName: 'rifle',
-                        speed: 1.0,
-                        transform: [target.position.x, target.position.y, 0.5, 0.5]
-                    });
-                    nonOrganicRifleAnimation.play();
-                    nonOrganicRifleAnimation.rotation = Math.random() * Math.PI;
-                    graphicsUtils.addSomethingToRenderer(nonOrganicRifleAnimation, 'foreground');
                 }
             },
         },

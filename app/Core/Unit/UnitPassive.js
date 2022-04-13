@@ -96,7 +96,7 @@ export default function(options) {
             },
             collectorFunction: function(event) {
                 if (this.attackCollectorFunction && event.mode == attackPassive) {
-                    this.aggressionCollectorFunction(event.collectorPayload.value);
+                    this.attackCollectorFunction(event.collectorPayload.value);
                 } else if (this.defenseCollectorFunction && event.mode == defensePassive) {
                     this.defenseCollectorFunction(event.collectorPayload.value);
                 } else {
@@ -135,6 +135,10 @@ export default function(options) {
 
         if (this.collector._init) {
             this.customCollector._init = this.collector._init;
+        }
+
+        if (this.collector._onStop) {
+            this.customCollector.onStop = this.collector._onStop;
         }
 
         if (this.collector.attackCollectorFunction) {
