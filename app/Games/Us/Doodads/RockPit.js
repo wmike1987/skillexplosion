@@ -55,12 +55,25 @@ var rockPit = function() {
         this.textureName[2] = {
             data: "CampDoodads/PitTint",
             name: "CampDoodads/PitTint",
-            alpha: 0.1,
-            tint: 0xc9c322,
+            alpha: 0.75,
+            tint: 0x494a4a,
             where: 'backgroundOne',
             scale: {
                 x: 8,
                 y: 8
+            }
+        };
+
+        var grassName = mathArrayUtils.flipCoin() ? "CampDoodads/PitGrass1" : "CampDoodads/PitGrass2";
+        this.textureName[3] = {
+            data: grassName,
+            name: grassName,
+            alpha: 0.60,
+            tint: 0xffffff,
+            where: 'backgroundOne',
+            scale: {
+                x: 1.1,
+                y: 1.1
             }
         };
     };

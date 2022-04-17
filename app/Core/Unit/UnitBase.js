@@ -2219,118 +2219,126 @@ var UnitBase = {
                     deathanim.play();
                     graphicsUtils.addSomethingToRenderer(deathanim, 'foreground');
 
-                    //spawn projectile
-                    var combospiritAnimation = gameUtils.getAnimation({
-                        spritesheetName: 'MedicAnimations2',
-                        animationName: 'combospirit',
-                        speed: 1.0,
-                        loop: true,
-                        transform: [afflicted.position.x, afflicted.position.y, 1.5, 1.5]
-                    });
-                    combospiritAnimation.tint = 0xd8dd04;
-                    combospiritAnimation.play();
-                    var projectileOptions = {
-                        damage: 0,
-                        speed: 8.0,
-                        displayObject: combospiritAnimation,
-                        tracking: true,
-                        target: afflictingUnit,
-                        owningUnit: afflicted,
-                        impactType: 'collision',
-                        collisionFunction: function(otherUnit) {
-                            return otherUnit == afflictingUnit;
-                        },
-                        originOffset: 0,
+                    var alliesAndSelf = unitUtils.getUnitAllies(afflictingUnit, true);
 
-                        autoSend: true,
-                        impactFunction: function(target) {
-                            var position1 = afflictingUnit.position;
-                            var offset2 = {
-                                x: Math.random() * 40 - 20,
-                                y: Math.random() * 40 - 20
-                            };
-                            var offset3 = {
-                                x: Math.random() * 40 - 20,
-                                y: Math.random() * 40 - 20
-                            };
-                            var doomNote1 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
-                                where: 'stageTwo',
-                                position: position1,
-                                scale: {
-                                    x: 0.8,
-                                    y: 0.8
-                                }
-                            });
-                            var doomNote2 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
-                                where: 'stageTwo',
-                                position: position1,
-                                scale: {
-                                    x: 0.8,
-                                    y: 0.8
-                                }
-                            });
-                            var doomNote3 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
-                                where: 'stageTwo',
-                                position: position1,
-                                scale: {
-                                    x: 0.8,
-                                    y: 0.8
-                                }
-                            });
-                            gameUtils.attachSomethingToBody({
-                                something: doomNote1,
-                                body: afflictingUnit.body
-                            });
-                            gameUtils.attachSomethingToBody({
-                                something: doomNote2,
-                                body: afflictingUnit.body,
-                                offset: offset2
-                            });
-                            gameUtils.attachSomethingToBody({
-                                something: doomNote3,
-                                body: afflictingUnit.body,
-                                offset: offset3
-                            });
-                            graphicsUtils.floatSprite(doomNote1, {
-                                runs: 45
-                            });
-                            graphicsUtils.floatSprite(doomNote2, {
-                                runs: 50
-                            });
-                            graphicsUtils.floatSprite(doomNote3, {
-                                runs: 65
-                            });
-
-                            if (afflictingUnit.hasGritDodge) {
-                                var healthGained = afflictingUnit.giveHealth(afflictingUnit.afflictedHealthLifeGain, afflictingUnit);
-                                Matter.Events.trigger(afflictingUnit, 'afflictHealthGain', {
-                                    afflictedUnit: unit,
-                                    afflictingUnit: afflictingUnit,
-                                    id: id,
-                                    healthGained: healthGained
-
-                                });
-                                healSound.play();
-                            } else {
-                                afflictingUnit.giveGritDodge(true);
-                                Matter.Events.trigger(afflictingUnit, 'afflictBlockGain', {
-                                    afflictedUnit: unit,
-                                    afflictingUnit: afflictingUnit,
-                                    id: id
-                                });
-                            }
-                            gameUtils.doSomethingAfterDuration(() => {
-                                doomSound.play();
-                            }, 200);
+                    alliesAndSelf.forEach((benefittingUnit) => {
+                        if(benefittingUnit.isDead) {
+                            return;
                         }
-                    };
-                    var projectile = new Projectile(projectileOptions);
-                    var dpfunction = function() {
-                        projectile.cleanUp();
-                    };
-                    gameUtils.deathPact(afflictingUnit, dpfunction);
-                    Matter.Events.on(projectile, 'remove', () => {
-                        gameUtils.undeathPact(afflictingUnit, dpfunction);
+
+                        //spawn projectile
+                        var combospiritAnimation = gameUtils.getAnimation({
+                            spritesheetName: 'MedicAnimations2',
+                            animationName: 'combospirit',
+                            speed: 1.0,
+                            loop: true,
+                            transform: [afflicted.position.x, afflicted.position.y, 1.5, 1.5]
+                        });
+                        combospiritAnimation.tint = 0xd8dd04;
+                        combospiritAnimation.play();
+                        var projectileOptions = {
+                            damage: 0,
+                            speed: 8.0,
+                            displayObject: combospiritAnimation,
+                            tracking: true,
+                            target: benefittingUnit,
+                            owningUnit: afflicted,
+                            impactType: 'collision',
+                            collisionFunction: function(otherUnit) {
+                                return otherUnit == benefittingUnit;
+                            },
+                            originOffset: 0,
+
+                            autoSend: true,
+                            impactFunction: function(target) {
+                                var position1 = benefittingUnit.position;
+                                var offset2 = {
+                                    x: Math.random() * 40 - 20,
+                                    y: Math.random() * 40 - 20
+                                };
+                                var offset3 = {
+                                    x: Math.random() * 40 - 20,
+                                    y: Math.random() * 40 - 20
+                                };
+                                var doomNote1 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
+                                    where: 'stageTwo',
+                                    position: position1,
+                                    scale: {
+                                        x: 0.8,
+                                        y: 0.8
+                                    }
+                                });
+                                var doomNote2 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
+                                    where: 'stageTwo',
+                                    position: position1,
+                                    scale: {
+                                        x: 0.8,
+                                        y: 0.8
+                                    }
+                                });
+                                var doomNote3 = graphicsUtils.addSomethingToRenderer("DoomBuff", {
+                                    where: 'stageTwo',
+                                    position: position1,
+                                    scale: {
+                                        x: 0.8,
+                                        y: 0.8
+                                    }
+                                });
+                                gameUtils.attachSomethingToBody({
+                                    something: doomNote1,
+                                    body: benefittingUnit.body
+                                });
+                                gameUtils.attachSomethingToBody({
+                                    something: doomNote2,
+                                    body: benefittingUnit.body,
+                                    offset: offset2
+                                });
+                                gameUtils.attachSomethingToBody({
+                                    something: doomNote3,
+                                    body: benefittingUnit.body,
+                                    offset: offset3
+                                });
+                                graphicsUtils.floatSprite(doomNote1, {
+                                    runs: 45
+                                });
+                                graphicsUtils.floatSprite(doomNote2, {
+                                    runs: 50
+                                });
+                                graphicsUtils.floatSprite(doomNote3, {
+                                    runs: 65
+                                });
+
+                                if (benefittingUnit.hasGritDodge) {
+                                    var healthGained = benefittingUnit.giveHealth(benefittingUnit.afflictedHealthLifeGain, benefittingUnit);
+                                    Matter.Events.trigger(afflictingUnit, 'afflictHealthGain', {
+                                        afflictedUnit: unit,
+                                        afflictingUnit: afflictingUnit,
+                                        id: id,
+                                        healthGained: healthGained
+
+                                    });
+                                    healSound.play();
+                                } else {
+                                    benefittingUnit.giveGritDodge(true);
+                                    Matter.Events.trigger(afflictingUnit, 'afflictBlockGain', {
+                                        afflictedUnit: unit,
+                                        afflictingUnit: afflictingUnit,
+                                        id: id
+                                    });
+                                }
+                                gameUtils.doSomethingAfterDuration(() => {
+                                    doomSound.play();
+                                }, 200);
+                            }
+                        };
+                        var projectile = new Projectile(projectileOptions);
+                        var dpfunction = function() {
+                            projectile.cleanUp();
+                        };
+                        gameUtils.deathPact(benefittingUnit, dpfunction);
+                        Matter.Events.on(projectile, 'remove', () => {
+                            gameUtils.undeathPact(benefittingUnit, dpfunction);
+                        });
                     });
                 });
             },

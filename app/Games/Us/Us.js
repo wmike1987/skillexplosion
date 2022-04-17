@@ -425,7 +425,7 @@ var game = {
             });
 
             if (battleOuting) {
-                gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic));
+                gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic), {repeat: true});
             } else {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }

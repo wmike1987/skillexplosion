@@ -939,8 +939,18 @@ var gameUtils = {
     playAsMusic: function(newSong, options) {
         options = Object.assign({
             fadeDuration: 750,
-            newSongDelay: 0
+            newSongDelay: 0,
+            repeat: false
         }, options);
+
+        //clear old repeat listener
+        newSong.off('end');
+
+        if(options.repeat) {
+            newSong.on('end', () => {
+                globals.currentGame.currentSong.id = newSong.play();
+            });
+        }
 
         //fade out last song
         var currentSong = globals.currentGame.currentSong.h;

@@ -477,7 +477,7 @@ export default function Medic(options) {
         //make units attack move at the vanish destination
         unitUtils.getUnitEnemies(this).forEach((enemy) => {
             gameUtils.doSomethingAfterDuration(() => {
-                if(enemy.isAttacker && !enemy.isDead) {
+                if (enemy.isAttacker && !enemy.isDead) {
                     enemy.attackMove(destination);
                 }
             }, 100 + Math.random() * 650);
@@ -705,7 +705,9 @@ export default function Medic(options) {
                     unitUtils.applyToUnitsByTeam(function(team) {
                         return self.team != team;
                     }, function(unit) {
-                        return mathArrayUtils.distanceBetweenUnits({position: self.footPosition}, unit) <= softLandingAugment.radius;
+                        return mathArrayUtils.distanceBetweenUnits({
+                            position: self.footPosition
+                        }, unit) <= softLandingAugment.radius;
                     }, function(unit) {
                         unit.applySoftenBuff({
                             duration: softLandingAugment.duration
@@ -1019,7 +1021,7 @@ export default function Medic(options) {
             entity: mine
         });
 
-        if(sparePartsAugment) {
+        if (sparePartsAugment) {
             Matter.Events.trigger(globals.currentGame, sparePartsEventName, {
                 value: sparePartsAugment.energyReduction
             });
@@ -1178,7 +1180,7 @@ export default function Medic(options) {
                         let sum = 12000 + mathArrayUtils.getSumOfArrayOfValues(medic.scorchDurationAdditions);
                         return {
                             index: 0,
-                            value: 'Leave an explosion area lasting ' + sum/1000 + ' seconds which maims'
+                            value: 'Leave an explosion area lasting ' + sum / 1000 + ' seconds which maims'
                         };
                     }
                 },
@@ -1209,14 +1211,18 @@ export default function Medic(options) {
                 description: 'Afflict surviving enemies for 6 seconds.',
                 equip: function(unit) {
                     this.healthHandler = Matter.Events.on(unit, 'afflictHealthGain', (event) => {
-                        if(event.id == 'sideEffects') {
-                            Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {healthGained: event.healthGained});
+                        if (event.id == 'sideEffects') {
+                            Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
+                                healthGained: event.healthGained
+                            });
                         }
                     });
 
                     this.blockHandler = Matter.Events.on(unit, 'afflictBlockGain', (event) => {
-                        if(event.id == 'sideEffects') {
-                            Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {blocksGained: 1});
+                        if (event.id == 'sideEffects') {
+                            Matter.Events.trigger(globals.currentGame, sideEffectsEventName, {
+                                blocksGained: 1
+                            });
                         }
                     });
                 },
@@ -1322,8 +1328,8 @@ export default function Medic(options) {
                 name: 'formula e',
                 icon: graphicsUtils.createDisplayObject('FormulaE'),
                 title: 'Formula E',
-                amount: 4,
-                description: ['Grant ally enrage (+3) for 4 seconds upon giving 20 health.'],
+                amount: 5,
+                description: ['Grant ally enrage (+5) for 4 seconds upon giving 20 health.'],
                 equip: function(unit) {
                     this.resetListener = Matter.Events.on(globals.currentGame, 'EnterLevel', () => {
                         medic.hpGivenTally = 0;
@@ -1538,14 +1544,13 @@ export default function Medic(options) {
         }
     });
 
-    var hhDDuration = 3000;
+    var hhDDuration = 4000;
     var hhADuration = 5000;
     var healthyHabits = new Passive({
         title: 'Healthy Habits',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Self and allies gain 10 hp and regenerate hp at 2x rate for 5 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Grant a health gem to self and allies for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies regenerate hp at 2x rate for 3 seconds.'],
-        passiveSystemMessage: ['Condemned units suffer -1 armor and heal condemner for 15hp upon death.'],
+        unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies regenerate hp at 2x rate for 5 seconds.'],
         textureName: 'HealthyHabits',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1558,7 +1563,7 @@ export default function Medic(options) {
             alliesAndSelf.forEach((unit) => {
                 unit.applyHealthGem({
                     id: "hhHealthGain",
-                    duration: 3000,
+                    duration: 5000,
                 });
             });
         },
@@ -1582,19 +1587,9 @@ export default function Medic(options) {
         aggressionAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
-                unit.applyBuff({
-                    id: "hhHealthGain",
-                    textureName: 'HealthyHabitsHealingBuff',
+                unit.applyHealthGem({
                     duration: hhADuration,
-                    applyChanges: function() {
-                        unit.healthRegenerationMultiplier *= 2;
-                        unitUtils.applyHealthGainAnimationToUnit(unit);
-                        unit.giveHealth(10, medic);
-                        healSound.play();
-                    },
-                    removeChanges: function() {
-                        unit.healthRegenerationMultiplier /= 2;
-                    }
+                    id: "hhHealthGain"
                 });
             });
 
@@ -1603,7 +1598,7 @@ export default function Medic(options) {
             };
         },
         collector: {
-            aggressionLabel: 'Duration of 2x hp regeneration',
+            aggressionLabel: 'Duration of health gem',
             aggressionSuffix: 'seconds',
             defensiveLabel: 'Healing from condemned',
             defensiveFormat: function(v) {
@@ -1864,7 +1859,9 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             var attackingUnit = event.performingUnit;
-            attackingUnit.applyPlagueGem({duration: wwADuration});
+            attackingUnit.applyPlagueGem({
+                duration: wwADuration
+            });
 
             return {
                 value: 1

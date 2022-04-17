@@ -359,12 +359,31 @@ var sceneryUtils = {
             bodyScale: null,
             textureName: randomTreeName
         }, treeDetails[randomTreeName]);
+
+        var treeGrassName = mathArrayUtils.getRandomElementOfArray(["CampDoodads/TreeGrass1", "CampDoodads/TreeGrass2", "CampDoodads/TreeGrass3", "CampDoodads/TreeGrass4"]);
+        var variation = Math.random() * 0.1;
+        var grassObj = {
+            data: treeGrassName,
+            name: treeGrassName,
+            alpha: 0.5 + Math.random() * 0.2,
+            tint: options.grassTint || 0xffffff,
+            where: 'backgroundOne',
+            scale: {
+                x: 1.0 + variation,
+                y: 1.0 + variation,
+            },
+            offset: myDetails.shadowOffset || {
+                x: -6,
+                y: 20
+            }
+        };
+
         var tree = new Doodad({
             collides: myDetails.collides,
             autoAdd: false,
             radius: myDetails.radius || 1,
             // drawWire: true,
-            texture: 'Doodads/' + myDetails.textureName,
+            texture: ['Doodads/' + myDetails.textureName, grassObj],
             stage: options.where,
             tint: options.tint,
             noZone: myDetails.noZone,

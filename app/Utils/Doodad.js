@@ -94,11 +94,12 @@ var Doodad = function(options) {
                     options.collisionSound.play();
                 }
                 options.animateOnCollision = false;
+
+                if(options._onCollision) {
+                    options._onCollision({body: this.body});
+                }
             }
 
-            if(options._onCollision) {
-                options._onCollision({body: this.body});
-            }
         }.bind(this));
     }
 

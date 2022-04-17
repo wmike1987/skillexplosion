@@ -48,6 +48,7 @@ var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
 var borderTints = [0xFC00FF, 0xBB5633];
 var rockTints = [0xffcccc, 0xe59ab6];
 var treeTints = [0xC9A771, 0xC398FB];
+var grassTints = [0xcccccc, 0xacacac];
 var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
 var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
 var ambientLightTints = [
@@ -1877,7 +1878,8 @@ var campNoir = {
                 scene.add(rockContainer);
 
                 var tree = SceneryUtils.createTree({
-                    tint: treeTints[tIndex]
+                    tint: treeTints[tIndex],
+                    grassTint: grassTints[tIndex]
                 });
                 tree.unique = true;
                 tree.groupingOptions = {
@@ -1888,6 +1890,7 @@ var campNoir = {
 
                 var tree2 = SceneryUtils.createTree({
                     tint: treeTints[tIndex],
+                    grassTint: grassTints[tIndex]
                 });
                 tree2.unique = true;
                 tree2.groupingOptions = {
@@ -1897,6 +1900,7 @@ var campNoir = {
 
                 var tree3 = SceneryUtils.createTree({
                     tint: treeTints[tIndex],
+                    grassTint: grassTints[tIndex]
                 });
                 tree3.unique = true;
                 tree3.groupingOptions = {
