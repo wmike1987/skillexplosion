@@ -1238,7 +1238,10 @@ export default function Medic(options) {
                     },
                     presentation: {
                         labels: ['Health gained', 'Blocks gained'],
-                        values: ['healthGained', 'blocksGained']
+                        values: ['healthGained', 'blocksGained'],
+                        formats: [function(v) {
+                            return v.toFixed(1);
+                        }]
                     }
                 }
             },
