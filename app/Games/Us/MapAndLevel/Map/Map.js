@@ -84,6 +84,7 @@ var map = function(specs) {
         style: styles.fatigueText,
         where: "hudOne"
     });
+
     Matter.Events.on(this, "SetFatigue", function(event) {
         if(event.includeStartingFatigue) {
             this.startingFatigue = event.amount;
@@ -93,6 +94,11 @@ var map = function(specs) {
         this.fatigueText.text = 'Fatigue: ' + event.amount + '%';
         this.fatigueAmount = event.amount;
     }.bind(this));
+
+    Matter.Events.on(this, "SetStartingFatigue", function(event) {
+        this.startingFatigue = event.amount;
+    }.bind(this));
+
     gameUtils.attachSomethingToBody({
         something: this.fatigueText,
         body: this.headTokenBody,
@@ -236,7 +242,11 @@ var map = function(specs) {
 
     this.flashAndHideAdrenalineBlocks = function() {
         this.removedAdrenalineBlocks.forEach((item, i) => {
+            if(item.adrenalineAlreadyDying) {
+                return;
+            }
             graphicsUtils.addOrShowDisplayObject(item);
+            item.adrenalineAlreadyDying = true;
             graphicsUtils.flashSprite({
                 sprite: item,
                 fromColor: item.tint,
@@ -413,8 +423,6 @@ var map = function(specs) {
     };
 
     this.retriggerTravelToken = function(node) {
-        //travel tokens
-        var self = this;
         node.arriveAtNode();
     };
 
@@ -453,8 +461,15 @@ var map = function(specs) {
         };
 
         this.isShowing = true;
-        this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
-        this.fatigueAmount = this.startingFatigue || 0;
+
+        //manage showing current fatigue, or startingFatigue
+        if(this.currentNode.travelToken) {
+            this.fatigueText.text = 'Fatigue: ' + (this.fatigueAmount || 0) + '%';
+        } else {
+            this.fatigueText.text = 'Fatigue: ' + (this.startingFatigue || 0) + '%';
+            this.fatigueAmount = this.startingFatigue || 0;
+        }
+
         this.fatigueText.alpha = 0.3;
 
         if (!this.outingInProgress) {
@@ -1021,7 +1036,7 @@ var map = function(specs) {
             destinationCallback();
         }.bind(this));
         Matter.Events.trigger(globals.currentGame, "TravelStarted", {
-            continueFromCurrentFatigue: (this.lastNode.travelToken && !this.lastNode.continueWithStartingFatigue),
+            continueFromCurrentFatigue: this.lastNode.travelToken,
             node: node,
             headVelocity: this.headTokenBody.velocity,
             startingFatigue: this.startingFatigue

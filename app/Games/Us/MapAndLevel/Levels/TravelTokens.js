@@ -52,7 +52,8 @@ commonTravelToken.initExtension = function() {
     this.mapNode.saveMapState = function() {
         //capture or restore states
         if (!self.stateCaptured) {
-            self.fatigueState = globals.currentGame.map.startingFatigue;
+            self.fatigueState = globals.currentGame.map.fatigueAmount;
+            self.startingFatigueState = globals.currentGame.map.startingFatigue;
             self.adrenalineState = globals.currentGame.map.adrenaline;
             self.morphineState = globals.currentGame.map.morphine;
             self.healthDepot = globals.currentGame.map.getAdditionalState().healthDepot;
@@ -64,6 +65,7 @@ commonTravelToken.initExtension = function() {
     this.mapNode.restoreMapState = function() {
         var mapState = {
             fatigue: self.fatigueState,
+            startingFatigue: self.startingFatigueState,
             adrenaline: self.adrenalineState,
             morphine: self.morphineState,
             healthDepot: self.healthDepot,
@@ -74,7 +76,10 @@ commonTravelToken.initExtension = function() {
         //starting fatigue/fatigue
         Matter.Events.trigger(globals.currentGame.map, 'SetFatigue', {
             amount: mapState.fatigue,
-            includeStartingFatigue: true
+        });
+
+        Matter.Events.trigger(globals.currentGame.map, 'SetStartingFatigue', {
+            amount: mapState.startingFatigue,
         });
 
         //morphine
@@ -201,7 +206,6 @@ var restStop = function(options) {
     this.specialTokenName = 'RestStopTokenGleaming';
 
     this.tokenSpecificInit = function() {
-        this.mapNode.continueWithStartingFatigue = true;
         this._incursTravelFatigue = false;
     };
 

@@ -993,7 +993,7 @@ var enemyDefs = {
             addedProps: {
                 immuneToAugment: true
             },
-            hz: 8000
+            hz: 5500
         }, hardFlyObj]
     },
     critterBoss: {
@@ -1034,7 +1034,7 @@ var enemyDefs = {
             addedProps: {
                 immuneToAugment: true
             },
-            hz: 7500
+            hz: 5500
         }, hardFlyObj]
     },
 

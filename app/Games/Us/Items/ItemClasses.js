@@ -91,7 +91,7 @@ var ItemClasses = {
         item: {
             description: 'Pill',
             tint: 0x80ffbb,
-            items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill', 'Vitamin'],
+            items: ['Amphetamine', 'PepPill', 'Steroid', 'SugarPill', 'Vitamin', 'Potassium', 'Zinc'],
             gleamAnimation: 'PillGleam',
             mapNodeIndicator: 'VitaminOne'
         },

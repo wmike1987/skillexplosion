@@ -442,7 +442,11 @@ var game = {
                 return el != null;
             });
 
-            if(!event.continueFromCurrentFatigue) {
+            if(event.continueFromCurrentFatigue) {
+                this.unitsInPlay.forEach((unit) => {
+                    unit.fatigue = globals.currentGame.map.fatigueAmount || 0;
+                });
+            } else {
                 this.unitsInPlay.forEach((unit) => {
                     unit.fatigue = event.startingFatigue || 0;
                 });
