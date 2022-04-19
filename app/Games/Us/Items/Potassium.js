@@ -9,7 +9,7 @@ export default function(options) {
         name: "Potassium",
         description: "Consume to add 0.1 to health regeneration.",
         systemMessage: "Ctrl+Click to consume.",
-        icon: 'VitaminThree',
+        icon: 'VitaminBFour',
         fontType: 'stimulant',
         consume: function(unit) {
             unit.healthRegenerationRate += 0.1;

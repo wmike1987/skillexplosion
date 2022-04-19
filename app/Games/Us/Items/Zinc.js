@@ -9,7 +9,7 @@ export default function(options) {
         name: "Zinc",
         description: "Consume to add 0.1 to energy regeneration.",
         systemMessage: "Ctrl+Click to consume.",
-        icon: 'VitaminTwo',
+        icon: 'VitaminBFive',
         fontType: 'stimulant',
         consume: function(unit) {
             unit.energyRegenerationRate += 0.1;

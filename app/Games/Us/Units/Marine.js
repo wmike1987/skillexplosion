@@ -496,7 +496,7 @@ export default function Marine(options) {
         if (defensivePostureAugment) {
             marine.applyDefenseBuff({
                 id: 'defpostbuff',
-                duration: 4000,
+                duration: 5000,
                 amount: defensivePostureGain
             });
             Matter.Events.trigger(globals.currentGame, dPostureEventName, {
@@ -656,7 +656,7 @@ export default function Marine(options) {
                 name: 'defensive posture',
                 icon: graphicsUtils.createDisplayObject('DefensivePosture'),
                 title: 'Defensive Posture',
-                description: 'Gain 2 defense upon dashing for 4 seconds.',
+                description: 'Gain 2 defense upon dashing for 5 seconds.',
                 collector: {
                     eventName: dPostureEventName,
                     presentation: {
