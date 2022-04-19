@@ -6,7 +6,7 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 export default function(options) {
     var item = Object.assign({
-        name: "Vitamin",
+        name: "Iron",
         description: "Consume to add 0.15 to armor.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'VitaminOne',

@@ -22,7 +22,7 @@ var manipulations = {
                 item.cancelCharge();
                 item.chargeHandler.removeHandler();
                 item.chargeActive = false;
-                var buff = this.this.getBuffById("DodgeBuff" + item.id);
+                var buff = this.getBuffById("DodgeBuff" + item.id);
                 if(buff) {
                     buff.removeBuff();
                 }
