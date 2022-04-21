@@ -68,8 +68,8 @@ var rockPit = function() {
         this.textureName[3] = {
             data: grassName,
             name: grassName,
-            alpha: 0.60,
-            tint: 0xffffff,
+            alpha: 0.35,
+            tint: 0xcccccc,
             where: 'backgroundOne',
             scale: {
                 x: 1.1,

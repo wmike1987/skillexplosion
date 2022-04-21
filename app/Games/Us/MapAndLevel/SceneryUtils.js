@@ -269,7 +269,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 10 * randomScale
                     },
-                    radius: 50
+                    radius: 60
                 },
                 offset: {
                     x: 0,
@@ -294,7 +294,7 @@ var sceneryUtils = {
                         x: -2,
                         y: 10 * randomScale
                     },
-                    radius: 50
+                    radius: 60
                 },
                 offset: {
                     x: -4,
@@ -319,7 +319,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 10 * randomScale
                     },
-                    radius: 35
+                    radius: 55
                 },
                 offset: {
                     x: 2,
@@ -365,7 +365,7 @@ var sceneryUtils = {
         var grassObj = {
             data: treeGrassName,
             name: treeGrassName,
-            alpha: 0.5 + Math.random() * 0.2,
+            alpha: 0.35 + Math.random() * 0.2,
             tint: options.grassTint || 0xffffff,
             where: 'backgroundOne',
             scale: {

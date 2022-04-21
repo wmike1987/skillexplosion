@@ -48,7 +48,7 @@ var acceptableTileTints = [0xff9e9e, 0x6253B7]; //0xe59ab6
 var borderTints = [0xFC00FF, 0xBB5633];
 var rockTints = [0xffcccc, 0xe59ab6];
 var treeTints = [0xC9A771, 0xC398FB];
-var grassTints = [0xcccccc, 0xacacac];
+var grassTints = [0xcccccc, 0xcccccc];
 var acceptableOrnamentTints = [0xffab7a, 0xB5584F];
 var acceptableFlowerTints = [0xf78d8d, 0x754FB5];
 var ambientLightTints = [
@@ -2557,6 +2557,21 @@ var campNoir = {
                 rotateSpeed: 5
             });
             var lborder = gameUtils.createAmbientLightBorder(borderTints[tIndex], 'backgroundOne', 0.65);
+
+            var grassTextures = ["CampDoodads/FieldGrass1", "CampDoodads/FieldGrass2", "CampDoodads/FieldGrass3", "CampDoodads/FieldGrass4", "CampDoodads/FieldGrass5"];
+            l1.forEach((light) => {
+                if(pitPosition && mathArrayUtils.distanceBetweenPoints(light.position, pitPosition) < 500) {
+                    return;
+                }
+                let grass = graphicsUtils.createDisplayObject(mathArrayUtils.getRandomElementOfArray(grassTextures), {
+                    position: light.position,
+                    where: 'backgroundOne',
+                    tint: grassTints[tIndex],
+                    alpha: 0.5 + (Math.random() * 0.2)
+                });
+                scene.add(grass);
+            });
+
             scene.add(l1);
             scene.add(lborder);
         }
