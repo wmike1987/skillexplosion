@@ -207,19 +207,19 @@ export default function DamageFlySwarm(options) {
             graphicsUtils.fadeSpriteOverTime({
                 sprite: flyAnim,
                 duration: 300,
-                nokill: true
+                noKill: true
             });
 
             graphicsUtils.fadeSpriteOverTime({
                 sprite: blackFlyAnim,
                 duration: 300,
-                nokill: true
+                noKill: true
             });
 
             graphicsUtils.fadeSpriteOverTime({
                 sprite: self.renderlings.shadow,
                 duration: 300,
-                nokill: true
+                noKill: true
             });
 
             graphicsUtils.flashSprite({

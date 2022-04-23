@@ -1283,6 +1283,7 @@ var UnitSystem = function(properties) {
                     unit.showingBarsWithAlt = true;
                     unit.showLifeBar(true);
                     unit.showEnergyBar(true);
+                    unit.showGritBlock(true);
                 });
             }
         }.bind(this));
@@ -1347,6 +1348,7 @@ var UnitSystem = function(properties) {
                         unit.showingBarsWithAlt = false;
                         unit.showLifeBar(false);
                         unit.showEnergyBar(false);
+                        unit.showGritBlock(false);
                     });
                 }
             }.bind(this));

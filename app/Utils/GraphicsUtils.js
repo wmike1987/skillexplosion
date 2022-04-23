@@ -312,7 +312,7 @@ var graphicsUtils = {
         this.fadeSpriteOverTime({
             sprite: sprite,
             duration: duration || 500,
-            nokill: true
+            noKill: true
         });
     },
 
@@ -321,14 +321,14 @@ var graphicsUtils = {
             time: options.duration || 1000,
             fadeIn: false,
             callback: null,
-            nokill: false,
+            noKill: false,
             makeVisible: false
         }, options);
 
-        this.fadeSpriteOverTimeLegacy(options.sprite, options.time, options.fadeIn, options.callback, options.nokill, options.makeVisible);
+        this.fadeSpriteOverTimeLegacy(options.sprite, options.time, options.fadeIn, options.callback, options.noKill, options.makeVisible);
     },
 
-    fadeSpriteOverTimeLegacy: function(sprite, time, fadeIn, callback, nokill, makeVisible) {
+    fadeSpriteOverTimeLegacy: function(sprite, time, fadeIn, callback, noKill, makeVisible) {
         var startingAlpha = sprite.alpha || 1.0;
         var finalAlpha = 0;
         if (fadeIn) {
@@ -353,7 +353,7 @@ var graphicsUtils = {
             },
             totallyDoneCallback: function() {
                 if (!fadeIn) {
-                    if (!nokill) {
+                    if (!noKill) {
                         graphicsUtils.removeSomethingFromRenderer(sprite);
                     } else {
                         sprite.visible = false;

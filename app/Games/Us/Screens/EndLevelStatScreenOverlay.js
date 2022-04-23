@@ -86,7 +86,7 @@ var overlayCommonFade = function(sprite, delay) {
             sprite: sprite,
             duration: 1000,
             fadeIn: true,
-            nokill: true,
+            noKill: true,
             makeVisible: true
         });
     }, delay);
@@ -611,7 +611,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             sprite: titleText,
             duration: 0,
             fadeIn: true,
-            nokill: true,
+            noKill: true,
             makeVisible: true
         });
         scene.add(titleText);
@@ -635,7 +635,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: marinePortrait,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime);
@@ -652,7 +652,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: marinePortraitBorder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime);
@@ -728,7 +728,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: marineHealth,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime);
@@ -795,7 +795,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: marineEnergy,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime);
@@ -817,7 +817,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -846,7 +846,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneKillsTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -870,7 +870,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneKills,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -893,7 +893,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -918,7 +918,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDamageTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -941,7 +941,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDamage,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -964,7 +964,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -989,7 +989,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDamageTakenTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1012,7 +1012,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDamageTaken,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1035,7 +1035,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1060,7 +1060,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDamageReducedByAmorTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1083,7 +1083,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDamageReducedByAmor,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1106,7 +1106,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1131,7 +1131,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDodgedTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1154,7 +1154,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneDodgedText,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1177,7 +1177,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1202,7 +1202,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneHealingDoneTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1225,7 +1225,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneHealingDone,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1248,7 +1248,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
                 //globals.currentGame.soundPool.keypressSound.play();
@@ -1304,7 +1304,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneLeftArrow,
                     duration: 500,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true,
                     callback: () => {
                         shaneLeftArrow.isPressable = true;
@@ -1361,7 +1361,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: shaneRightArrow,
                     duration: 500,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true,
                     callback: () => {
                         shaneRightArrow.isPressable = true;
@@ -1594,7 +1594,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: medicPortrait,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true,
                 });
             }, startFadeTime);
@@ -1681,7 +1681,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: medicHealth,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime);
@@ -1748,7 +1748,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: medicEnergy,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime);
@@ -1771,7 +1771,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 2);
@@ -1798,7 +1798,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaKillsTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 2);
@@ -1820,7 +1820,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaKills,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 2);
@@ -1842,7 +1842,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 3);
@@ -1866,7 +1866,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDamageTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 3);
@@ -1888,7 +1888,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDamage,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 3);
@@ -1910,7 +1910,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 4);
@@ -1934,7 +1934,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDamageTakenTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 4);
@@ -1956,7 +1956,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDamageTaken,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 4);
@@ -1978,7 +1978,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 5);
@@ -2002,7 +2002,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDamageReducedByAmorTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 5);
@@ -2024,7 +2024,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDamageReducedByAmor,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 5);
@@ -2046,7 +2046,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 6);
@@ -2070,7 +2070,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDodgedTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 6);
@@ -2092,7 +2092,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaDodgedText,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 6);
@@ -2114,7 +2114,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 7);
@@ -2138,7 +2138,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaHealingDoneTitle,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 7);
@@ -2160,7 +2160,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaHealingDone,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 7);
@@ -2182,7 +2182,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: placeholder,
                     duration: 1000,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true
                 });
             }, startFadeTime * 8);
@@ -2237,7 +2237,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaLeftArrow,
                     duration: 500,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true,
                     callback: () => {
                         ursulaLeftArrow.isPressable = true;
@@ -2294,7 +2294,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     sprite: ursulaRightArrow,
                     duration: 500,
                     fadeIn: true,
-                    nokill: true,
+                    noKill: true,
                     makeVisible: true,
                     callback: () => {
                         ursulaRightArrow.isPressable = true;

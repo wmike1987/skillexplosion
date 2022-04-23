@@ -101,7 +101,7 @@ var ItemClasses = {
         item: {
             description: 'Stimulant',
             tint: 0x80ffbb,
-            items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic'],
+            items: ['SlipperySoup', 'StoutShot', 'Painkiller', 'EndorphinHit', 'PlateletShot', 'LifeExtract', 'CoarseBrine', 'ChemicalConcentrate', 'AwarenessTonic'],
             gleamAnimation: "StimulantGleam",
             mapNodeIndicator: 'BlackSyringe'
         },

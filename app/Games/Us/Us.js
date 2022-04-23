@@ -846,7 +846,7 @@ var game = {
                 sprite: mapTable.body.renderlings.mainData0,
                 duration: 1000,
                 fadeIn: true,
-                nokill: true,
+                noKill: true,
                 makeVisible: true
             });
 
@@ -854,7 +854,7 @@ var game = {
             //     sprite: gunrack.body.renderlings.mainData0,
             //     duration: 1000,
             //     fadeIn: true,
-            //     nokill: true,
+            //     noKill: true,
             //     makeVisible: true
             // });
 
@@ -862,7 +862,7 @@ var game = {
                 sprite: flag,
                 duration: 1000,
                 fadeIn: true,
-                nokill: true,
+                noKill: true,
                 makeVisible: true
             });
         }

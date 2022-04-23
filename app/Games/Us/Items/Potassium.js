@@ -7,12 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Potassium",
-        description: "Consume to add 0.15 to health regeneration.",
+        description: "Consume to add 0.08 to health regeneration rate.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'VitaminBFour',
         fontType: 'stimulant',
         consume: function(unit) {
-            unit.healthRegenerationRate += 0.15;
+            unit.healthRegenerationRate += 0.08;
         },
     }, options, Consumable);
     return new ic(item);

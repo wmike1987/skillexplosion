@@ -1538,7 +1538,7 @@ export default function Marine(options) {
         textureName: 'ClearPerspective',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 9000,
+        defenseCooldown: 4000,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,

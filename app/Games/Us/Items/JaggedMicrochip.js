@@ -4,7 +4,7 @@ import {globals} from '@core/Fundamental/GlobalState.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import chipBase from '@games/Us/Items/MicrochipBase.js';
 
-var amount = 3;
+var amount = 2;
 
 export default function(options) {
     var item = Object.assign({}, chipBase, {

@@ -861,6 +861,7 @@ var UnitBase = {
             this.isSelectable = false;
             this.hideLifeBar = true;
             this.hideEnergyBar = true;
+            this.hideGritBar = true;
         }
     },
 
@@ -1205,6 +1206,18 @@ var UnitBase = {
                 });
             }
             this.showingLifeBars = value;
+        };
+
+        this.showGritBlock = function(value) {
+            if (this.hideGritBar) return;
+            if (value !== false) {
+                value = true;
+            }
+
+            if (this.gritBlockIndicator && this.hasGritDodge) {
+                this.gritBlockIndicator.alpha = value ? 1.0 : 0.0;
+                this.gritBlockIndicator.visible = value;
+            }
         };
 
         var fadeDuration = 375;
@@ -2854,33 +2867,38 @@ var UnitBase = {
 
     giveGritDodge: function(value) {
         if (value) {
-            var gritBlockIndicator = graphicsUtils.addSomethingToRenderer('GritBuff', {
-                where: 'stageOne',
-                scale: {
-                    x: 1.1,
-                    y: 1.1
-                }
-            });
+            if(!this.gritBlockIndicator) {
+                this.gritBlockIndicator = graphicsUtils.addSomethingToRenderer('GritBuff', {
+                    where: 'stageOne',
+                    scale: {
+                        x: 1.1,
+                        y: 1.1
+                    }
+                });
+
+                gameUtils.attachSomethingToBody({
+                    something: this.gritBlockIndicator,
+                    runImmediately: true,
+                    body: this.body,
+                    somethingId: 'gritBlockIndicator'
+                });
+            }
+
             // graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 650, gleamWidth: 10});
-            graphicsUtils.fadeSpriteOverTimeLegacy(gritBlockIndicator, 250, true);
+            graphicsUtils.fadeSpriteOverTime({sprite: this.gritBlockIndicator, duration: 250, noKill: true, fadeIn: true});
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.addGleamToSprite({
-                    sprite: gritBlockIndicator,
+                    sprite: this.gritBlockIndicator,
                     duration: 750,
                     gleamWidth: 20
                 });
             }, 250);
             gainKillingBlow.play();
             gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteOverTimeLegacy(gritBlockIndicator, 250, false);
+                graphicsUtils.fadeSpriteOverTime({sprite: this.gritBlockIndicator, duration: 250, noKill: true});
             }, 850);
-            gameUtils.attachSomethingToBody({
-                something: gritBlockIndicator,
-                runImmediately: true,
-                body: this.body,
-                somethingId: 'gritBlockIndicator'
-            });
         }
+
         this.hasGritDodge = value;
     },
 

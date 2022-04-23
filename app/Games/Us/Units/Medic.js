@@ -355,6 +355,10 @@ export default function Medic(options) {
         volume: 0.4,
         rate: 1.3
     });
+    var gritBlastSound = gameUtils.getSound('gainkillingblow.wav', {
+        volume: 0.045,
+        rate: 2.5
+    });
 
     var holdPositionSound = gameUtils.getSound('ursula_dodge.mp3', {
         volume: 0.4,
@@ -1490,12 +1494,15 @@ export default function Medic(options) {
                 }
             });
         },
+        defensePredicate: function(event) {
+            var attacker = event.performingUnit;
+            return attacker && attacker.isMelee && !attacker.isDead;
+        },
         defenseAction: function(event) {
             //damage attacker
             let grit = medic.getTotalGrit() / 2.0;
             if (grit > 0) {
                 var attacker = event.performingUnit;
-                if (!attacker || attacker.isDead || !attacker.isMelee) return;
 
                 attacker.sufferAttack(grit, medic, {
                     dodgeable: false,
@@ -1503,23 +1510,18 @@ export default function Medic(options) {
                 });
                 var maimBlast = gameUtils.getAnimation({
                     spritesheetName: 'BaseUnitAnimations1',
-                    animationName: 'gritblast2',
-                    speed: 0.9,
-                    transform: [attacker.position.x, attacker.position.y, 0.75, 0.75]
+                    animationName: 'newGritBlast',
+                    speed: 1.0,
+                    transform: [attacker.position.x, attacker.position.y, 0.5, 0.5]
                 });
-                if (grit >= 20) {
-                    maimBlast.scale = {
-                        x: 0.8,
-                        y: 0.8
-                    };
-                }
+                gritBlastSound.play();
                 if (grit >= 35) {
                     maimBlast.scale = {
-                        x: 1.0,
-                        y: 1.0
+                        x: 0.7,
+                        y: 0.7
                     };
                 }
-                maimBlast.tint = 0xffeea7;
+                maimBlast.tint = 0xffca7c;
                 maimBlast.rotation = Math.random() * Math.PI;
                 maimBlast.play();
                 graphicsUtils.addSomethingToRenderer(maimBlast, 'stageOne');
@@ -2330,7 +2332,7 @@ export default function Medic(options) {
         radius: rad,
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-        slaves: [healSound, dodgeSound, soundLandingSound, holdPositionSound, manaHealSound, blockSound, criticalHitSound, knifeImpactSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
+        slaves: [healSound, dodgeSound, soundLandingSound, holdPositionSound, gritBlastSound, manaHealSound, blockSound, criticalHitSound, knifeImpactSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
             moveSpeed: 2.35,

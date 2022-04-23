@@ -14,7 +14,7 @@ import chipBase from '@games/Us/Items/MicrochipBase.js';
 var durationBuff = 6000;
 export default function(options) {
     var item = Object.assign({}, chipBase, {
-        name: "ToxicMicrochip",
+        name: "Toxic Microchip",
         description: ["Enable a Mine augment.", 'Increase Scorch area duration by 6 seconds.'],
         poweredByMessage: {
             text: 'Toxic Microchip',

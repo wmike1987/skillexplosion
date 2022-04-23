@@ -94,15 +94,20 @@ export default function(options) {
         }.bind(this));
 
         //if we're tracking and the unit dies, use the death position
+        var trackingTargetDeathHandler = null;
         if (this.tracking) {
-            Matter.Events.on(this.target, 'death', function(event) {
+            trackingTargetDeathHandler = gameUtils.matterOnce(this.target, 'death', function(event) {
                 trackingTimer.invalidate();
             });
         }
         gameUtils.deathPact(this.body, impactTick);
         gameUtils.deathPact(this.body, function() {
             Matter.Events.trigger(this, 'remove');
+            if(trackingTargetDeathHandler) {
+                trackingTargetDeathHandler.removeHandler();
+            }
         }.bind(this));
+
         if (trackingTimer) {
             gameUtils.deathPact(this.body, trackingTimer);
         }

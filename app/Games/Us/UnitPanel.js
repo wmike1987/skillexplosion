@@ -122,7 +122,7 @@ var unitPanel = function(options) {
                     value: ''
                 };
                 if (this.prevailingUnit) {
-                    result.value = 'Subtract ' + (this.prevailingUnit.getTotalDefense().toFixed(1)) + ' damage from incoming attacks.';
+                    result.value = 'Subtract ' + (this.prevailingUnit.getTotalDefense().toFixed(2)) + ' damage from incoming attacks.';
                 }
                 return result;
             }.bind(this)
@@ -1970,7 +1970,7 @@ unitPanel.prototype.displayUnitAbilities = function() {
                     position: ability.icon.position
                 });
                 ability.addSlave(b);
-                ability.autoCastTimer = graphicsUtils.graduallyTint(ability.abilityBorder, 0x284422, 0x27EC00, 1300, null, 500);
+                ability.autoCastTimer = graphicsUtils.graduallyTint(ability.abilityBorder, 0x2bffe3, 0x27EC00, 1300, null, 500);
                 ability.addSlave(ability.autoCastTimer);
                 ability.abilityBorder.visible = ability.getAutoCastVariable;
                 ability.icon.interactive = true;
