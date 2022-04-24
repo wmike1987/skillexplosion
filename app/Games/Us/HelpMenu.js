@@ -50,7 +50,7 @@ var Page = function(options) {
     this.background = graphicsUtils.createDisplayObject('TintableSquare', {
         tint: mainColor,
         position: pagePosition,
-        where: 'hud'
+        where: 'hudTwo'
     });
     graphicsUtils.makeSpriteSize(this.background, {
         x: pageWidth,

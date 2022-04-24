@@ -2558,10 +2558,26 @@ var EndLevelStatScreenOverlay = function(units, options) {
 
                 //get adrenaline lost during an outing... only subtract 1 max per loss
                 gameUtils.doSomethingAfterDuration(() => {
-                    if (adrenalineGained) {
-                        globals.currentGame.map.removeAdrenalineBlock();
-                        globals.currentGame.soundPool.negativeSound.play();
-                        var adrText = graphicsUtils.floatText('-1' + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                    // if (adrenalineGained) {
+                    //     globals.currentGame.map.removeAdrenalineBlock();
+                    //     globals.currentGame.soundPool.negativeSound.play();
+                    //     var adrText = graphicsUtils.floatText('-1' + ' adrenaline', gameUtils.getPlayableCenterPlus({
+                    //         y: 300
+                    //     }), {
+                    //         where: 'hudTwo',
+                    //         style: styles.adrenalineTextLarge,
+                    //         speed: 6,
+                    //         duration: rewardDuration * 2.0
+                    //     });
+                    //     graphicsUtils.addGleamToSprite({
+                    //         sprite: adrText,
+                    //         gleamWidth: 30,
+                    //         duration: 1000
+                    //     });
+                    // }
+                    //trying out losing lives instead of adrenaline
+                    globals.currentGame.addLives(-1);
+                    var adrText = graphicsUtils.floatText('-1 life', gameUtils.getPlayableCenterPlus({
                             y: 300
                         }), {
                             where: 'hudTwo',
@@ -2574,7 +2590,6 @@ var EndLevelStatScreenOverlay = function(units, options) {
                             gleamWidth: 30,
                             duration: 1000
                         });
-                    }
                 }, pauseTime);
 
                 //present items if we've completed nodes
@@ -2674,7 +2689,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                                 done: options.done,
                                 airDropIndicators: airDropIndicators
                             });
-                        }, 3200);
+                        }, 2800);
                     }, adrenalineGained ? pauseTime + rewardDuration * 2.0 : pauseTime);
                 } else {
                     //else we'll have space to continue show up

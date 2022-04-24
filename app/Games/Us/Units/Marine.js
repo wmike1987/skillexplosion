@@ -1623,6 +1623,9 @@ export default function Marine(options) {
                 value: ssDDuration / 1000
             };
         },
+        aggressionPredicate: function(event) {
+            return event.performingUnit.name != 'empty';
+        },
         aggressionAction: function(event) {
             var f = {};
             var energyGained = null;

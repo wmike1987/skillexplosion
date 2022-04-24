@@ -1130,7 +1130,7 @@ var UnitSystem = function(properties) {
 
         //'A' or 'a' dispatch (reserved for attack/move) and 'W' or 'w' dispatch (for changing s.o.m)
         $('body').on('keydown.unitSystem', function(event) {
-            if (!this.active || this.box.active) return;
+            if (!this.active || (this.box && this.box.active)) return;
 
             if (event.key == 'X' || event.key == 'x') {
                 if (keyStates.Control) {
@@ -1216,7 +1216,7 @@ var UnitSystem = function(properties) {
 
         //dispatch generic key events
         $('body').on('keydown.unitSystem', function(event) {
-            if (!this.active || this.box.active) return;
+            if (!this.active || (this.box && this.box.active)) return;
 
             var key = event.key.toLowerCase();
             if (key == 'escape') {

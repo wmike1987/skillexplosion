@@ -759,7 +759,7 @@ var enemyDefs = {
                 hz: 4000
             }, {
                 type: 'Critter',
-                amount: [3, 4],
+                amount: [5, 6],
                 atATime: 1,
                 hz: 3000
             },
@@ -993,7 +993,7 @@ var enemyDefs = {
             addedProps: {
                 immuneToAugment: true
             },
-            hz: 5500
+            hz: 5100
         }, hardFlyObj]
     },
     critterBoss: {
@@ -1034,7 +1034,7 @@ var enemyDefs = {
             addedProps: {
                 immuneToAugment: true
             },
-            hz: 5500
+            hz: 5100
         }, hardFlyObj]
     },
 
@@ -1290,7 +1290,6 @@ var phaseTwo = function(options) {
 
             var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
 
-            var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened']);
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
                     randomAugment: true,

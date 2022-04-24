@@ -2880,7 +2880,8 @@ var UnitBase = {
                     something: this.gritBlockIndicator,
                     runImmediately: true,
                     body: this.body,
-                    somethingId: 'gritBlockIndicator'
+                    somethingId: 'gritBlockIndicator',
+                    deathPactSomething: true
                 });
             }
 

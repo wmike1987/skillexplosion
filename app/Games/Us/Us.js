@@ -64,10 +64,11 @@ var game = {
     level: 1,
     // victoryCondition: {type: 'timed', limit: 5},
     victoryCondition: {
-        type: 'unlimited'
+        type: 'lives',
+        limit: 3
     },
     enableUnitSystem: true,
-    enablePathingSystem: true,
+    enablePathingSystem: true, //this does nothing right now, lol
     enableItemSystem: true,
     noClickIndicator: true,
     hideScore: true,
@@ -1194,6 +1195,10 @@ var game = {
         }, 200);
     },
 
+    endGameExtension: function() {
+        this.currentWorldIndex = 0;
+    },
+
     dustAndItemBox: function(options) {
         options = Object.assign({
             special: false,
@@ -1330,21 +1335,25 @@ var game = {
         this.level = 0;
     },
 
-    nukeExtension: function() {
-        $('body').off('keydown.us');
-        $('body').off('keydown.map');
-        if (this.currentScene) {
-            this.currentScene.clear();
-        }
+    nukeExtension: function(options) {
+        this.unitSystem.unpause();
+        
+        if(!options.savePersistables) {
+            $('body').off('keydown.us');
+            $('body').off('keydown.map');
+            if (this.currentScene) {
+                this.currentScene.clear();
+            }
 
-        if (this.heartbeat) {
-            this.heartbeat.unload();
-            this.flyoverSound.unload();
-            this.boxSound.unload();
-            this.reconfigureSound.unload();
-            mathArrayUtils.operateOnObjectByKey(this.soundPool, (key, value) => {
-                value.unload();
-            });
+            if (this.heartbeat) {
+                this.heartbeat.unload();
+                this.flyoverSound.unload();
+                this.boxSound.unload();
+                this.reconfigureSound.unload();
+                mathArrayUtils.operateOnObjectByKey(this.soundPool, (key, value) => {
+                    value.unload();
+                });
+            }
         }
     }
 };

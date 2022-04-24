@@ -102,6 +102,7 @@ var common = {
         this.invincibleTickCallbacks = [];
         this.eventListeners = [];
         this.invincibleListeners = [];
+        this.hideables = {};
         this.timers = {}; /* {name: string, timeLimit: double, callback: function} */
         this.mousePosition = mousePosition;
         this.debugObj = {};
@@ -170,24 +171,6 @@ var common = {
             }
             is(value);
         }.bind(this);
-
-        $('body').on('mousemove', function(event) {
-            //figure out mouse position and scale based on screen resolution scale factor
-            var rect = this.canvasEl.getBoundingClientRect();
-            let position = mathArrayUtils.scaleScreenPositionToWorldPosition({
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top
-            });
-
-            this.mousePosition.x = position.x;
-            this.mousePosition.y = position.y;
-
-            // console.info(this.mousePosition.x + '-' + this.mousePosition.y);
-            this.debugObj.playableCenterOffset = {
-                x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
-                y: this.mousePosition.y - gameUtils.getPlayableCenter().y
-            };
-        }.bind(this));
     },
 
     showLoadingScreen: function() {
@@ -545,7 +528,8 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
                      // this.shane.stun({duration: 6000});
-                     this.shane.applyVitalityBuff({duration: 2000, amount: 50});
+                     // this.shane.applyVitalityBuff({duration: 2000, amount: 50});
+                     this.addLives(-1);
                     // unitUtils.addRandomAugmentToAbility({
                     //     unit: this.shane
                     // });
@@ -887,6 +871,24 @@ var common = {
             e.preventDefault();
         }));
 
+        $('body').on('mousemove', function(event) {
+            //figure out mouse position and scale based on screen resolution scale factor
+            var rect = this.canvasEl.getBoundingClientRect();
+            let position = mathArrayUtils.scaleScreenPositionToWorldPosition({
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            });
+
+            this.mousePosition.x = position.x;
+            this.mousePosition.y = position.y;
+
+            // console.info(this.mousePosition.x + '-' + this.mousePosition.y);
+            this.debugObj.playableCenterOffset = {
+                x: this.mousePosition.x - gameUtils.getPlayableCenter().x,
+                y: this.mousePosition.y - gameUtils.getPlayableCenter().y
+            };
+        }.bind(this));
+
         //initialize any state needed for each period of play
         this._initStartGameState();
 
@@ -958,7 +960,7 @@ var common = {
         //timer overlay, if necessary
         if (!this.hideEndCondition) {
             if (this.victoryCondition.type == 'timed') {
-                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hud', {
+                this.gameTime = graphicsUtils.addSomethingToRenderer("TEX+:" + this.victoryCondition.limit, 'hudText', {
                     x: this.canvasRect.width / 2,
                     y: 5,
                     anchor: {
@@ -967,8 +969,9 @@ var common = {
                     },
                     style: styles.scoreStyle
                 });
+                this.addHideable('nonDialogue', this.gameTime);
             } else if (this.victoryCondition.type == 'lives') {
-                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hud', {
+                this.hudLives = graphicsUtils.addSomethingToRenderer("TEX+:" + "Lives: " + this.victoryCondition.limit, 'hudText', {
                     x: this.canvasRect.width / 2,
                     y: 5,
                     anchor: {
@@ -977,6 +980,8 @@ var common = {
                     },
                     style: styles.scoreStyle
                 });
+
+                this.addHideable('nonDialogue', this.hudLives);
             }
         }
 
@@ -1325,6 +1330,8 @@ var common = {
         //Clear vertice histories
         this.vertexHistories = [];
 
+        this.hideables = {};
+
         //Clear body listeners if no mercy
         if (options.noMercy) {
             $('body').off();
@@ -1350,6 +1357,31 @@ var common = {
             this.resetGameExtension();
 
         this.preGame();
+    },
+
+    addHideable: function(key, something) {
+        if(!this.hideables[key]) {
+            this.hideables[key] = [];
+        }
+        this.hideables[key].push(something);
+    },
+
+    hideHideables: function(key) {
+        if(!this.hideables[key]) {
+            return;
+        }
+        this.hideables[key].forEach((nd) => {
+            graphicsUtils.fadeSpriteOutQuickly(nd);
+        });
+    },
+
+    showHideables: function(key) {
+        if(!this.hideables[key]) {
+            return;
+        }
+        this.hideables[key].forEach((nd) => {
+            graphicsUtils.fadeSpriteInQuickly(nd);
+        });
     },
 
     addTimer: function(timer) {
@@ -1451,22 +1483,7 @@ var common = {
             this.loseLife();
             //shake life text
             self = this;
-            this.addTimer({
-                name: 'shakeLifeTimer',
-                timeLimit: 48,
-                runs: 12,
-                callback: function() {
-                    self.hudLives.position = {
-                        x: self.hudLives.x + (this.runs % 2 == 0 ? 1 : -1) * 2,
-                        y: self.hudLives.y
-                    };
-                    if (this.runs % 2 == 0) {
-                        self.hudLives.style = styles.redScoreStyle;
-                    } else {
-                        self.hudLives.style = styles.scoreStyle;
-                    }
-                }
-            });
+            graphicsUtils.shakeSprite(self.hudLives, 500);
         }
 
         this.lives = this.lives + numberOfLives;

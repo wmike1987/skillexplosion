@@ -24,6 +24,8 @@ var DialogueScene = {
             this.initExtension(dialogueScene, dialogueChain);
         }
 
+        globals.currentGame.hideHideables('nonDialogue');
+
         //indicate skipping behavior
         var skipText;
         if(!this.dontShowEscText) {
@@ -55,6 +57,7 @@ var DialogueScene = {
 
             if(immediateEscape) {
                 this.escape();
+                globals.currentGame.showHideables('nonDialogue');
             }
 
             graphicsUtils.removeSomethingFromRenderer(skipText);
@@ -70,6 +73,7 @@ var DialogueScene = {
                     $('body').off('keydown.' + 'DScene:' + this.id);
                     graphicsUtils.graduallyTint(spacetoContinue, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
                             this.escape();
+                            globals.currentGame.showHideables('nonDialogue');
                     }.bind(this));
                 }
             }.bind(this));
