@@ -577,39 +577,26 @@ var renderer = function(engine, options) {
     };
 
     //This is used to clear the pixi app while keeping the app alive. Here, we remove and destroy unwanted children but keep the stages (pixi containers)
-    this.clear = function(noMercy, savePersistables) {
-        if (noMercy) { //no mercy
-            $.each(this.stages, function(key, value) {
-                var i = this.stages[key].children.length;
-                while (i--) {
-                    //even though we're decrementing here, cleaning up pixi particles can remove more than one child at a time
-                    //so getChildAt could fail. If it does, let's just move on
-                    try {
-                        this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i));
-                    } catch (err) {
-                        //caught a child doesn't exist, which we just want to swallow and move on
+    this.clear = function(savePersistables) {
+        $.each(this.stages, function(key, value) {
+            var i = this.stages[key].children.length;
+            while (i--) {
+                //even though we're decrementing here, cleaning up pixi particles can remove more than one child at a time
+                //so getChildAt could fail. If it does, let's just move on
+                try {
+                    if ((savePersistables && this.stages[key].getChildAt(i).persists)) {
+                        continue;
                     }
+                    this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i));
+                } catch (err) {
+                    //caught a child doesn't exist, which we just want to swallow and move on
                 }
-            }.bind(this));
-            $(this.canvasEl).off('contextmenu');
-        } else { //have mercy on background and on persistables if wanted
-            $.each(this.stages, function(key, value) {
-                if (key == "background") return;
-                var i = this.stages[key].children.length;
-                while (i--) {
-                    //even though we're decrementing here, cleaning up pixi particles can remove more than one child at a time
-                    //so getChildAt could fail. If it does, let's just move on
-                    try {
-                        if ((savePersistables && this.stages[key].getChildAt(i).persists)) {
-                            continue;
-                        }
-                        this.removeAndDestroyChild(this.stages[key], this.stages[key].getChildAt(i));
-                    } catch (err) {
-                        //caught a child doesn't exist, which we just want to swallow and move on
-                    }
-                }
-            }.bind(this));
-        }
+            }
+        }.bind(this));
+
+        mathArrayUtils.operateOnObjectByKey(this.layers, (layerKey, layer) => {
+            layer.filters = null;
+        });
     };
 
     //helper method for removing the child from its parent and calling the destroy method on the object being removed

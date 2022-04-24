@@ -197,15 +197,17 @@ var common = {
 
         var titleScene = new Scene();
         this.backgroundImage = this.getLoadingScreen();
+        this.backgroundImage.persists = options.persists;
         titleScene.add(this.backgroundImage);
         graphicsUtils.makeSpriteSize(this.backgroundImage, gameUtils.getCanvasWH());
         titleScene.add(this.backgroundImage);
         this.splashScreenText = graphicsUtils.addSomethingToRenderer("TEX+:Loading: ", {
-            where: 'hudText',
+            where: 'hudTextOne',
             style: styles.titleOneStyle,
             x: this.canvas.width / 2,
             y: this.canvas.height * 3 / 4
         });
+        this.splashScreenText.persists = options.persists;
         mathArrayUtils.roundPositionToWholeNumbers(this.splashScreenText.position);
         titleScene.add(this.splashScreenText);
         if(options.transition) {
@@ -214,6 +216,8 @@ var common = {
             this.currentScene = titleScene;
             titleScene.initializeScene();
         }
+
+        return titleScene;
     },
 
     setSplashScreenText: function(value) {
@@ -1030,48 +1034,54 @@ var common = {
     },
 
     endGame: function(options) {
-        this.gameState = 'ending';
-        this.endGameSound.play();
-        this.nuke({
-            savePersistables: true
-        });
+        var endGameDeferred = null;
 
-        //prompt for the score
-        var scoreSubmission = $.Deferred();
-        setTimeout(function() {
-            this.scoreContainer = $('<div>').appendTo('#gameTheater');
-            this.nameInput = $('<input>', {
-                'class': 'nameInput'
-            }).appendTo(this.scoreContainer);
-            this.submitButton = $('<div>', {
-                'class': 'submitButton'
-            }).appendTo(this.scoreContainer).text('Submit').on('click', function() {
-                $(this.scoreContainer).remove();
-                scoreSubmission.resolve();
-                hs.ps(this.gameName, $(this.nameInput).val(), this.score.scoreValue, this.s, this.showWave ? this.wave.waveValue : null, this.subLevel ? this.subLevel : null);
-                gtag('event', 'submission', {
-                    'event_category': 'score',
-                    'event_label': this.gameName + " - " + $(this.nameInput).val() + " - " + this.score.scoreValue,
-                });
-            }.bind(this));
+        //call a custom end-game action
+        if (this.endGameExtension) {
+            endGameDeferred = this.endGameExtension();
+        }
 
-            this.continueButton = $('<div>', {
-                'class': 'playAgainButton'
-            }).appendTo(this.scoreContainer).text('Play Again').on('click', function() {
-                $(this.scoreContainer).remove();
-                scoreSubmission.resolve();
-            }.bind(this));
+        if(!endGameDeferred) {
+            endGameDeferred = $.Deferred();
+        }
 
-            $(this.scoreContainer).css('position', 'absolute');
-            $(this.scoreContainer).css('left', this.canvasRect.width / 2 - $(this.scoreContainer).width() / 2);
-            $(this.scoreContainer).css('top', this.canvasRect.height / 2 - $(this.scoreContainer).height() / 2);
-        }.bind(this), 500);
+        //reset game upon deferred completing
+        endGameDeferred.done(this.resetGame.bind(this));
 
-        if (this.endGameExtension)
-            this.endGameExtension();
+        //if we have a high score, do the default thing... this is legacy and will probably be replaced
+        if(this.hasHighScore) {
+            this.endGameSound.play();
 
-        //reset to beginning
-        scoreSubmission.done(this.resetGame.bind(this));
+            //prompt for the score
+            setTimeout(function() {
+                this.scoreContainer = $('<div>').appendTo('#gameTheater');
+                this.nameInput = $('<input>', {
+                    'class': 'nameInput'
+                }).appendTo(this.scoreContainer);
+                this.submitButton = $('<div>', {
+                    'class': 'submitButton'
+                }).appendTo(this.scoreContainer).text('Submit').on('click', function() {
+                    $(this.scoreContainer).remove();
+                    endGameDeferred.resolve();
+                    hs.ps(this.gameName, $(this.nameInput).val(), this.score.scoreValue, this.s, this.showWave ? this.wave.waveValue : null, this.subLevel ? this.subLevel : null);
+                    gtag('event', 'submission', {
+                        'event_category': 'score',
+                        'event_label': this.gameName + " - " + $(this.nameInput).val() + " - " + this.score.scoreValue,
+                    });
+                }.bind(this));
+
+                this.continueButton = $('<div>', {
+                    'class': 'playAgainButton'
+                }).appendTo(this.scoreContainer).text('Play Again').on('click', function() {
+                    $(this.scoreContainer).remove();
+                    endGameDeferred.resolve();
+                }.bind(this));
+
+                $(this.scoreContainer).css('position', 'absolute');
+                $(this.scoreContainer).css('left', this.canvasRect.width / 2 - $(this.scoreContainer).width() / 2);
+                $(this.scoreContainer).css('top', this.canvasRect.height / 2 - $(this.scoreContainer).height() / 2);
+            }.bind(this), 500);
+        }
     },
 
     addUnit: function(unit) {
@@ -1315,7 +1325,7 @@ var common = {
         Matter.Engine.clear(this.engine);
 
         //Clear the renderer, save persistables
-        this.renderer.clear(options.noMercy, options.savePersistables);
+        this.renderer.clear(options.savePersistables);
 
         //Unload sounds we've created
         if (options.noMercy) {
@@ -1357,14 +1367,16 @@ var common = {
 
     resetGame: function() {
         this.resetting = true;
+        var resetDeferred = null;
         if (this.score)
             graphicsUtils.removeSomethingFromRenderer(this.score);
         if (this.wave)
             graphicsUtils.removeSomethingFromRenderer(this.wave);
-        if (this.resetGameExtension)
-            this.resetGameExtension();
+        if (this.resetGameExtension) {
+            resetDeferred = this.resetGameExtension() || $.Deferred().resolve();
+        }
 
-        this.preGame();
+        resetDeferred.done(this.preGame.bind(this));
     },
 
     addHideable: function(key, something) {
@@ -1487,30 +1499,42 @@ var common = {
     },
 
     addLives: function(numberOfLives) {
+        //play an animation
+        var self = this;
         if (numberOfLives < 0) {
             this.loseLife();
-            self = this;
-            graphicsUtils.shakeSprite(self.hudLives, 250);
-            self.hudLives.tint = 0xff7070;
+            graphicsUtils.shakeSprite(self.hudLives, 300);
+            self.hudLives.tint = 0xff7979;
             gameUtils.doSomethingAfterDuration(() => {
                 self.hudLives.tint = 0xffffff;
-            }, 250);
+            }, 300);
         } else {
             graphicsUtils.flashSprite({sprite: self.hudLives, toColor: 0x22c600});
         }
 
+        //set the number of lives
         this.lives = this.lives + numberOfLives;
-        if (this.lives < 0) this.lives = 0;
-        if (this.lives <= 0)
-            this.regulationPlay.resolve();
+        if (this.lives < 0) {
+            this.lives = 0;
+        }
         this.hudLives.text = "Lives: " + this.lives;
+
+        //return the ability to end regulation play
+        if (this.lives <= 0) {
+            return {
+                endGame: function() {
+                    this.regulationPlay.resolve();
+                }.bind(this)
+            };
+        } else {
+            return {};
+        }
     },
+
     loseLife: function() {
         this.loseLifeSound.play();
-        var self = this;
-        var runs = 8;
-        var timer = this.getTimer('lifeFlash');
     },
+
     addToGameTimer: function(amount) { //in millis
         this.timeLeft += amount;
     },

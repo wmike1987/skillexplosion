@@ -585,7 +585,7 @@ var game = {
 
     getLoadingScreen: function() {
         var background = graphicsUtils.createDisplayObject('SplashColoredBordered', {
-            where: 'hudText',
+            where: 'hudTextOne',
             anchor: {
                 x: 0,
                 y: 0
@@ -596,11 +596,21 @@ var game = {
         return background;
     },
 
-    preGameExtension: function() {
-        if(this.resetting) {
-            this.applyBackgroundImageAndText({transition: true});
-        }
+    resetGameExtension: function() {
+        this.level = 0;
+        this.currentWorldIndex = 0;
 
+        var titleScene = this.applyBackgroundImageAndText({transition: true, persists: true});
+        Matter.Events.on(titleScene, 'sceneFadeInDone', () => {
+            this.nuke({savePersistables: true});
+            resetDeferred.resolve();
+        });
+
+        var resetDeferred = $.Deferred();
+        return resetDeferred;
+    },
+
+    preGameExtension: function() {
         gameUtils.matterOnce(this, 'preGameLoadComplete', () => {
             this.setSplashScreenText('Click anywhere to begin');
         });
@@ -1326,9 +1336,8 @@ var game = {
         }
     },
 
-    resetGameExtension: function() {
-        this.level = 0;
-        this.currentWorldIndex = 0;
+    endGameExtension: function() {
+        return $.Deferred().resolve();
     },
 
     nukeExtension: function(options) {
