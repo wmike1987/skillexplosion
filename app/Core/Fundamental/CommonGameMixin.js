@@ -74,14 +74,14 @@ var common = {
      *
      * Load Game:
      * loadGame: called upon clicking the game link
-     * commonGameInitialization: setup common attributes of the game
+     * commonGameInitialization: setup common attributes of the game (game level, not play level)
      *
      * Load Assets:
      * showLoadingScreen: a pre-init step which will show a splash screen which is meant to hide the loading of assets
      * loadAssets: load the games assets
      *
      * Initialize Game:
-     * postLoadInit: initialize more complex game components (unit system etc)
+     * postAssetLoadInit: initialize more complex game components (unit system etc)
      * preGame:      game state prior to playing the game, typically a 'click to proceed' screen. Calls preGameExtension().
      * startGame:    create game objects and game listeners (those that will be cleaned up after victory is satisfied)
      *               calls play() which is meant to be implemented by each individual game in which game-specific obj are created
@@ -115,9 +115,9 @@ var common = {
         this.endGameSound = gameUtils.getSound('bells.wav', {
             volume: 0.05
         });
-        this.loseLifeSound = gameUtils.getSound('loselife1.mp3', {
-            rate: 1.4,
-            volume: 5.0
+        this.loseLifeSound = gameUtils.getSound('negative_sound.wav', {
+            volume: 0.22,
+            rate: 1.2
         });
         this.s = {
             s: 0,
@@ -180,21 +180,7 @@ var common = {
         var loadingScreenShowingDeferred = $.Deferred();
 
         loader.loaderDeferred.done(() => {
-            var titleScene = new Scene();
-            this.currentScene = titleScene;
-
-            var backgroundImage = this.getLoadingScreen();
-            graphicsUtils.makeSpriteSize(backgroundImage, gameUtils.getCanvasWH());
-            titleScene.add(backgroundImage);
-            this.splashScreenText = graphicsUtils.addSomethingToRenderer("TEX+:Loading: ", {
-                where: 'hudText',
-                style: styles.titleOneStyle,
-                x: this.canvas.width / 2,
-                y: this.canvas.height * 3 / 4
-            });
-            mathArrayUtils.roundPositionToWholeNumbers(this.splashScreenText.position);
-            titleScene.add(this.splashScreenText);
-            titleScene.initializeScene();
+            this.applyBackgroundImageAndText();
             loadingScreenShowingDeferred.resolve();
         });
 
@@ -203,8 +189,31 @@ var common = {
             loaderProgressFunction: function(loader) {
                 this.setSplashScreenText("Loading: " + loader.percentDone + '%');
             }.bind(this),
-            loadingTextUpdater: this.setSplashScreenText.bind(this)
         };
+    },
+
+    applyBackgroundImageAndText: function(options) {
+        options = options || {};
+
+        var titleScene = new Scene();
+        this.backgroundImage = this.getLoadingScreen();
+        titleScene.add(this.backgroundImage);
+        graphicsUtils.makeSpriteSize(this.backgroundImage, gameUtils.getCanvasWH());
+        titleScene.add(this.backgroundImage);
+        this.splashScreenText = graphicsUtils.addSomethingToRenderer("TEX+:Loading: ", {
+            where: 'hudText',
+            style: styles.titleOneStyle,
+            x: this.canvas.width / 2,
+            y: this.canvas.height * 3 / 4
+        });
+        mathArrayUtils.roundPositionToWholeNumbers(this.splashScreenText.position);
+        titleScene.add(this.splashScreenText);
+        if(options.transition) {
+            this.currentScene.transitionToScene({newScene: titleScene, transitionLength: 200});
+        } else {
+            this.currentScene = titleScene;
+            titleScene.initializeScene();
+        }
     },
 
     setSplashScreenText: function(value) {
@@ -215,7 +224,7 @@ var common = {
         return AssetLoader.load(this.totalAssets);
     },
 
-    postLoadInit: function() {
+    postAssetLoadInit: function() {
 
         //enable unit and item systems
         if (this.enableUnitSystem) {
@@ -813,21 +822,17 @@ var common = {
                         gameUtils.executeSomethingNextFrame(() => {
                             proceedPastPregame.resolve();
                             onClick();
-                        }); //dissociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
+                        }); //disassociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
                     }, this));
                 });
             });
         }
 
-        //execute the pregame loading next frame so that we immediate display the splash screen
+        //execute the pregame loading next frame so that we immediately display the splash screen
+        this.setSplashScreenText('Initializing');
         gameUtils.executeSomethingNextFrame(() => {
             this._preGameLoad();
         });
-
-        //used for other ways to enter a game
-        if (this.alternatePregameSetup) {
-            this.alternatePregameSetup(proceedPastPregame);
-        }
 
         proceedPastPregame.done(this.startGame.bind(this));
     },
@@ -853,6 +858,7 @@ var common = {
      * Init various common game elements
      */
     startGame: function(options) {
+        this.resetting = false;
 
         //disable right click during game
         $('body').on("contextmenu.common", function(e) {
@@ -1267,7 +1273,8 @@ var common = {
         $('body').off("keydown.common");
 
         //destroy mousedown priority listener
-        $('body').off("mousedown.priority");
+        this.priorityMouseDownEvents = [];
+        // $('body').off("mousedown.priority");
 
         $('body').off('mousemove');
 
@@ -1349,6 +1356,7 @@ var common = {
     },
 
     resetGame: function() {
+        this.resetting = true;
         if (this.score)
             graphicsUtils.removeSomethingFromRenderer(this.score);
         if (this.wave)
@@ -1481,9 +1489,14 @@ var common = {
     addLives: function(numberOfLives) {
         if (numberOfLives < 0) {
             this.loseLife();
-            //shake life text
             self = this;
-            graphicsUtils.shakeSprite(self.hudLives, 500);
+            graphicsUtils.shakeSprite(self.hudLives, 250);
+            self.hudLives.tint = 0xff7070;
+            gameUtils.doSomethingAfterDuration(() => {
+                self.hudLives.tint = 0xffffff;
+            }, 250);
+        } else {
+            graphicsUtils.flashSprite({sprite: self.hudLives, toColor: 0x22c600});
         }
 
         this.lives = this.lives + numberOfLives;

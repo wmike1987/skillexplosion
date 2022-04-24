@@ -567,7 +567,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             titleText = graphicsUtils.createDisplayObject("TEX+:" + 'Victory', {
                 position: {
                     x: gameUtils.getPlayableWidth() / 2,
-                    y: gameUtils.getCanvasHeight() / 15
+                    y: gameUtils.getCanvasHeight() / 9
                 },
                 style: styles.statScreenVictoryTitleStyle,
                 where: "hudText",
@@ -581,7 +581,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
             titleText = graphicsUtils.createDisplayObject("TEX+:" + 'Defeat', {
                 position: {
                     x: gameUtils.getPlayableWidth() / 2,
-                    y: gameUtils.getCanvasHeight() / 15
+                    y: gameUtils.getCanvasHeight() / 9
                 },
                 style: styles.statScreenDefeatTitleStyle,
                 where: "hudText",
@@ -2577,19 +2577,19 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     // }
                     //trying out losing lives instead of adrenaline
                     globals.currentGame.addLives(-1);
-                    var adrText = graphicsUtils.floatText('-1 life', gameUtils.getPlayableCenterPlus({
-                            y: 300
-                        }), {
-                            where: 'hudTwo',
-                            style: styles.adrenalineTextLarge,
-                            speed: 6,
-                            duration: rewardDuration * 2.0
-                        });
-                        graphicsUtils.addGleamToSprite({
-                            sprite: adrText,
-                            gleamWidth: 30,
-                            duration: 1000
-                        });
+                    // var adrText = graphicsUtils.floatText('-1 life', gameUtils.getPlayableCenterPlus({
+                    //         y: 300
+                    //     }), {
+                    //         where: 'hudTwo',
+                    //         style: styles.adrenalineTextLarge,
+                    //         speed: 6,
+                    //         duration: rewardDuration * 2.0
+                    //     });
+                    //     graphicsUtils.addGleamToSprite({
+                    //         sprite: adrText,
+                    //         gleamWidth: 30,
+                    //         duration: 1000
+                    //     });
                 }, pauseTime);
 
                 //present items if we've completed nodes

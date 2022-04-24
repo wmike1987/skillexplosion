@@ -83,7 +83,6 @@ var CommonGameStarter = function(game) {
     var ret = game.showLoadingScreen();
 	let splashScreenDeferred = ret.splashScreenDeferred;
 	let progressFunction = ret.loaderProgressFunction;
-    let loadingTextUpdater = ret.loadingTextUpdater;
 
 	//once our loading screen is visible, begin loading all assets
     splashScreenDeferred.done(() => {
@@ -118,8 +117,8 @@ var CommonGameStarter = function(game) {
                     pixiRenderer.resume();
                 });
 
-                //Run through the Common Game Lifecycle. postLoadInit() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()
-                game.postLoadInit();
+                //Run through the Common Game Lifecycle. postAssetLoadInit() --> pregame() ---Deferred.done---> startGame() ---Deferred.done---> endGame()
+                game.postAssetLoadInit();
 
                 game.preGame();
             });

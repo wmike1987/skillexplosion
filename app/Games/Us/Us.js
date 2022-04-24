@@ -202,11 +202,11 @@ var game = {
             rate: 1.5
         });
         this.soundPool.negativeSound = gameUtils.getSound('negative_sound.wav', {
-            volume: 0.1,
-            rate: 1.0
+            volume: 0.22,
+            rate: 1.2
         });
         this.soundPool.negativeSound2 = gameUtils.getSound('negative_sound.wav', {
-            volume: 0.07,
+            volume: 0.22,
             rate: 1.5
         });
         this.soundPool.keypressSound = gameUtils.getSound('keypress1.wav', {
@@ -231,7 +231,9 @@ var game = {
         });
 
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
+    },
 
+    play: function(options) {
         //next phase detector
         Matter.Events.on(this, 'nodeCompleted', function(event) {
             if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllRequiredNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
@@ -532,9 +534,6 @@ var game = {
                 });
             }.bind(this));
         }.bind(this));
-    },
-
-    play: function(options) {
 
         this.initNextMap();
 
@@ -594,13 +593,13 @@ var game = {
         });
 
         graphicsUtils.makeSpriteSize(background, gameUtils.getCanvasWH());
-        this.currentScene.add(background);
-
         return background;
     },
 
     preGameExtension: function() {
-        this.setSplashScreenText('Initializing');
+        if(this.resetting) {
+            this.applyBackgroundImageAndText({transition: true});
+        }
 
         gameUtils.matterOnce(this, 'preGameLoadComplete', () => {
             this.setSplashScreenText('Click anywhere to begin');
@@ -1195,10 +1194,6 @@ var game = {
         }, 200);
     },
 
-    endGameExtension: function() {
-        this.currentWorldIndex = 0;
-    },
-
     dustAndItemBox: function(options) {
         options = Object.assign({
             special: false,
@@ -1333,12 +1328,13 @@ var game = {
 
     resetGameExtension: function() {
         this.level = 0;
+        this.currentWorldIndex = 0;
     },
 
     nukeExtension: function(options) {
         this.unitSystem.unpause();
-        
-        if(!options.savePersistables) {
+
+        if(options.noMercy) {
             $('body').off('keydown.us');
             $('body').off('keydown.map');
             if (this.currentScene) {

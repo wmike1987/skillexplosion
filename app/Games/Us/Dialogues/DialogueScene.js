@@ -24,7 +24,9 @@ var DialogueScene = {
             this.initExtension(dialogueScene, dialogueChain);
         }
 
-        globals.currentGame.hideHideables('nonDialogue');
+        if(!options.preserveHideables) {
+            globals.currentGame.hideHideables('nonDialogue');
+        }
 
         //indicate skipping behavior
         var skipText;
