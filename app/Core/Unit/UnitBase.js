@@ -2163,13 +2163,14 @@ var UnitBase = {
         }
 
         var unit = this;
+        var thisHandler = null;
         unit.applyBuff({
             id: id,
             textureName: 'SureDodgeBuff',
             duration: duration,
             applyChanges: function() {
                 var self = this;
-                unit.dodgeHandler = gameUtils.matterConditionalOnce(unit, 'preDodgeSufferAttack', function(event) {
+                thisHandler = gameUtils.matterConditionalOnce(unit, 'preDodgeSufferAttack', function(event) {
                     if(event.alreadySureDodged) {
                         return false;
                     } else {
@@ -2187,6 +2188,9 @@ var UnitBase = {
 
             },
             removeChanges: function() {
+                if(thisHandler) {
+                    thisHandler.removeHandler();
+                }
             }
         });
 

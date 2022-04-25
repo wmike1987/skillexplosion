@@ -841,9 +841,14 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Rammian',
-            amount: [7, 8],
+            amount: [6, 8],
             atATime: 2,
-            hz: 8000
+            hz: 7000
+        },{
+            type: 'Critter',
+            amount: [4],
+            atATime: 1,
+            hz: 7000
         }, hardFlyObj]
     },
     mobRammians: {
@@ -950,7 +955,7 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: 12,
+            amount: [12, 13],
             atATime: 2,
             hz: 4000
         }, {
