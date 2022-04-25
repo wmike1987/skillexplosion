@@ -1371,18 +1371,18 @@ export default function Marine(options) {
         }
     });
 
-    var robDDuration = 2000;
+    var robDDuration = 1000;
     var robADuration = 4000;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for 2 seconds.'],
+        defenseDescription: ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for 1 second.'],
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain movement speed for 4 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Gain 10% of max hp.'],
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'preReceiveHeal',
         defenseDuration: robDDuration,
-        defenseCooldown: 6000,
+        defenseCooldown: 5000,
         aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
         aggressionCooldown: 4000,
@@ -1391,6 +1391,9 @@ export default function Marine(options) {
             marine.giveHealth(healthToGive, marine);
             unitUtils.applyHealthGainAnimationToUnit(marine);
             healsound.play();
+        },
+        defensePredicate: function(event) {
+            return event.performingUnit.name != 'empty';
         },
         defenseAction: function(event) {
             var f = {};
@@ -1577,17 +1580,17 @@ export default function Marine(options) {
     });
 
     var ssDDuration = 5000;
-    var ssADuration = 2000;
+    var ssADuration = 1000;
     var spiritualState = new Passive({
         title: 'Spiritual State',
-        aggressionDescription: ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for 2 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for 1 second.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
         unequippedDescription: ['Unequipped Mode (Upon level/wave start)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'preSufferAttack',
-        defenseCooldown: 3000,
-        defenseDuration: 5000,
+        defenseCooldown: 5000,
+        defenseDuration: 4000,
         aggressionEventName: 'preReceiveHeal',
         aggressionCooldown: 6000,
         aggressionDuration: ssADuration,

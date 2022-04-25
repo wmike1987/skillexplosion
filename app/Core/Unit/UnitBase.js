@@ -2187,7 +2187,6 @@ var UnitBase = {
 
             },
             removeChanges: function() {
-                unit.dodgeHandler.removeHandler();
             }
         });
 
