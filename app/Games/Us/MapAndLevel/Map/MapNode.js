@@ -121,10 +121,17 @@ var MapLevelNode = function(options) {
             return;
         }
         enemyDescriptions.push(' x ' + set.spawn.total);
-        let iconObj = {icon: set.icon, borderTint: 0x252f59};
+
+        var defaultBorderTint = 0x252f59;
+        let iconObj = {icon: set.icon, borderTint: defaultBorderTint};
         enemyIcons.push(iconObj);
-        if(self.levelDetails.isBossLevel() && !set.addedProps.immuneToAugment) {
-            iconObj.borderTint = 0x6710ab;
+
+        if(self.levelDetails.isAugmented() && !set.addedProps.immuneToAugment) {
+            var tint = self.levelDetails.levelAugments[0].tint || defaultBorderTint;
+            if(self.levelDetails.levelAugments.length > 1) {
+                tint = 0x3442fe;
+            }
+            iconObj.borderTint = tint;
         }
     });
 

@@ -1321,8 +1321,12 @@ unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
         graphicsUtils.makeSpriteSize(icon, this.enemyIconSize);
 
         let borderTint = 0x252f59;
-        if(level.isBossLevel() && !set.addedProps.immuneToAugment) {
-            borderTint = 0x6710ab;
+        if(level.isAugmented() && !set.addedProps.immuneToAugment) {
+            var tint = level.levelAugments[0].tint || borderTint;
+            if(level.levelAugments.length > 1) {
+                tint = 0x3442fe;
+            }
+            borderTint = tint;
         }
 
         var border = graphicsUtils.addBorderToSprite({
@@ -1331,8 +1335,7 @@ unitPanel.prototype.addEnemyIcons = function(level, additionalOffset) {
             tint: borderTint,
             thickness: 0,
             doubleBorder: true,
-            doubleBorderThickness: 1,
-            doubleBorderTint: 0xb3b3b3,
+            doubleBorderThickness: 1
         });
 
         graphicsUtils.fadeSpriteInQuickly(icon.addedBorder, fadeInTime);

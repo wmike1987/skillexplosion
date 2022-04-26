@@ -30,6 +30,7 @@ var levelAugments = {
         action: function(enemy) {
             enemy.enrage({duration: 99999, amount: 4});
         },
+        tint: 0x550f0f,
         getSystemMessage: () => {
             return {text: 'Enraged', style: 'systemMessageTextAugment', tint: 0xbd1515};
         }
@@ -38,6 +39,7 @@ var levelAugments = {
         action: function(enemy) {
             enemy.applyDefenseBuff({duration: 99999, amount: 2});
         },
+        tint: 0x3d3d3d,
         getSystemMessage: () => {
             return {text: 'Armored', style: 'systemMessageTextAugment', tint: 0x7b759f};
         }
@@ -63,6 +65,7 @@ var levelAugments = {
         action: function(enemy) {
             enemy.applyDodgeBuff({duration: 99999, amount: 30});
         },
+        tint: 0x144614,
         getSystemMessage: () => {
             return {text: 'Slippery', style: 'systemMessageTextAugment', tint: 0x0d853d};
         }
@@ -72,6 +75,7 @@ var levelAugments = {
             enemy.giveGritDodge(true);
             enemy.grit = 1;
         },
+        tint: 0x674501,
         getSystemMessage: () => {
             return {text: 'Hardened', style: 'systemMessageTextAugment', tint: 0xa67b29};
         }
@@ -80,6 +84,7 @@ var levelAugments = {
         init: function(level) {
             level._isBossLevel = true;
         },
+        tint: 0x3f064b,
         action: function(enemy) {
             enemy.applyVitalityBuff({duration: 999999, amount: 250});
 

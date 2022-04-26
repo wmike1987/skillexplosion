@@ -789,6 +789,27 @@ var graphicsUtils = {
         return this.rgbToHex(newR, newG, newB);
     },
 
+    lightenDarkenColor: function(color, percent) {
+        color = color.toString(16);
+        var R = parseInt(color.substring(0,2),16);
+        var G = parseInt(color.substring(2,4),16);
+        var B = parseInt(color.substring(4,6),16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R<255)?R:255;
+        G = (G<255)?G:255;
+        B = (B<255)?B:255;
+
+        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+        return "0x"+RR+GG+BB;
+    },
+
     graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds, times, onEnd) {
         var utils = this;
         var forward = true;
@@ -1055,15 +1076,16 @@ var graphicsUtils = {
         });
         border.position = sprite.position;
 
+        var defaultDoubleAlpha = 0.25;
         if (options.doubleBorder) {
             var border2 = graphicsUtils.addSomethingToRenderer('TintableSquare', {
                 where: options.where || sprite.where,
-                alpha: options.alpha + 0.25,
+                alpha: options.alpha + mathArrayUtils.defaultValue(options.doubleBorderAlpha, defaultDoubleAlpha),
             });
             border2.borderOptions = options;
             border2.sortYOffset = -2;
             border2.isBorder = true;
-            border2.tint = options.doubleBorderTint || options.tint;
+            border2.tint = graphicsUtils.lightenDarkenColor(options.tint, 100);
             border2.visible = sprite.parent && sprite.visible;
 
             graphicsUtils.latchDisplayObjectOnto({

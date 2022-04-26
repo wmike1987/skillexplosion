@@ -184,6 +184,14 @@ var mathArrayUtils = {
         return (!value && (value !== 0));
     },
 
+    defaultValue: function(value, defaultValue) {
+        if(this.isFalseNotZero(value)) {
+            return defaultValue;
+        } else {
+            return value;
+        }
+    },
+
     resolveBooleanParam: function(value) {
         if (value === false || value === null) {
             return false;

@@ -75,6 +75,9 @@ var Tooltip = function(options) {
         $.each(options.descriptionIcons, function(i, iconObj) {
             let icon = iconObj.icon;
             let borderTint = iconObj.borderTint;
+            let borderAlpha = iconObj.borderAlpha || 0.7;
+            let doubleBorderAlpha = iconObj.doubleBorderAlpha || null;
+            let doubleBorderTint = iconObj.doubleBorderTint || 0xb3b3b3;
 
             var sizedIcon = graphicsUtils.createDisplayObject(icon, {
                 where: 'hudText',
@@ -92,12 +95,13 @@ var Tooltip = function(options) {
 
             var border = graphicsUtils.addBorderToSprite({
                 sprite: sizedIcon,
-                alpha: 0.7,
+                alpha: borderAlpha,
                 tint: borderTint,
                 thickness: 0,
                 doubleBorder: true,
                 doubleBorderThickness: 1,
-                doubleBorderTint: 0xb3b3b3,
+                doubleBorderTint: doubleBorderTint,
+                doubleBorderAlpha: doubleBorderAlpha
             });
             border.anchor = sizedIcon.anchor;
             border.visible = false;
