@@ -2393,8 +2393,12 @@ unitPanel.prototype.displayCommands = function() {
     }
 };
 
-unitPanel.prototype.swapStatesOfMind = function(unit) {
+unitPanel.prototype.refreshPassivesForUnit = function(unit) {
     this.unitPassivePanel.refreshForUnit(unit);
+};
+
+unitPanel.prototype.swapStatesOfMind = function(unit) {
+    this.refreshPassivesForUnit(unit);
     this.displayUnitPassives();
 };
 

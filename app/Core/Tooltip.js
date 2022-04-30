@@ -27,6 +27,8 @@ var Tooltip = function(options) {
     this.systemMessagesBuffer = 2;
     this.buffer = 5;
     this.iconBuffer = 0;
+    this.customTitleBuffer = options.customTitleBuffer || 0;
+    this.borderTint = options.borderTint;
 
     this.title = graphicsUtils.createDisplayObject('TEX+:' + options.title + (options.hotkey ? " - '" + options.hotkey + "'" : ""), {
         style: styles.abilityTitle,
@@ -233,7 +235,7 @@ Tooltip.prototype.sizeBase = function() {
         this.iconBuffer = this.iconSize / 2 + buffer;
     }
     var width = Math.max(titleWidth, descriptionWidth, systemMessageWidth) + 15 + iconWidthAdjustment;
-    var height = this.title.height + buffer / 2 + descriptionHeight + buffer + systemMessageHeight + (this.systemMessages.length ? buffer : 0) + buffer;
+    var height = this.title.height + this.customTitleBuffer + buffer / 2 + descriptionHeight + buffer + systemMessageHeight + (this.systemMessages.length ? buffer : 0) + buffer;
     graphicsUtils.makeSpriteSize(this.base, {
         w: width,
         h: height
@@ -279,6 +281,7 @@ Tooltip.prototype.destroy = function(options) {
 Tooltip.prototype.display = function(position, options) {
     options = options || {};
     this.visible = true;
+    this.position = mathArrayUtils.clonePosition(position);
 
     //lean our tooltip left or right so that it doesn't go off the screen
     var xOffset = 0;
@@ -342,7 +345,7 @@ Tooltip.prototype.display = function(position, options) {
     $.each(this.descriptions, function(i, descr) {
         descr.position = {
             x: position.x - xOffset + this.buffer,
-            y: position.y + yOffset - this.base.height + this.title.height + this.buffer / 2 + (this.iconBuffer || this.buffer) + (i * (this.descrHeight))
+            y: position.y + yOffset - this.base.height + this.title.height + this.customTitleBuffer + this.buffer / 2 + (this.iconBuffer || this.buffer) + (i * (this.descrHeight))
         };
         mathArrayUtils.roundPositionToWholeNumbers(descr.position);
 
@@ -359,7 +362,7 @@ Tooltip.prototype.display = function(position, options) {
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.position = {
             x: position.x - xOffset + this.buffer,
-            y: position.y + yOffset - this.base.height + this.title.height + this.buffer / 2 + this.buffer + (this.descriptions.length) * this.descrHeight + this.descriptionSystemMessageBuffer + ((i * sysMessage.height) + (i * this.systemMessagesBuffer))
+            y: position.y + yOffset - this.base.height + this.title.height + this.customTitleBuffer + this.buffer / 2 + this.buffer + (this.descriptions.length) * this.descrHeight + this.descriptionSystemMessageBuffer + ((i * sysMessage.height) + (i * this.systemMessagesBuffer))
         };
         mathArrayUtils.roundPositionToWholeNumbers(sysMessage.position);
     }.bind(this));
@@ -386,7 +389,7 @@ Tooltip.prototype.display = function(position, options) {
         this.baseBorder = graphicsUtils.addBorderToSprite({
             sprite: this.base,
             thickness: 2,
-            tint: 0xa2a2a2,
+            tint: this.borderTint || 0xa2a2a2,
             alpha: 0.75
         });
     } else {
@@ -410,6 +413,10 @@ Tooltip.prototype.display = function(position, options) {
         tooltip: this
     });
 };
+
+Tooltip.prototype.retintBorder = function(tint) {
+    this.baseBorder.tint = tint;
+},
 
 Tooltip.prototype.resizeAndPositionBorder = function() {
     if (!this.baseBorder) {

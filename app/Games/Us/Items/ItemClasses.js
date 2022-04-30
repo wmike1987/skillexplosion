@@ -117,6 +117,16 @@ var ItemClasses = {
         }
     },
 
+    novel: {
+        item: {
+            description: 'Novel',
+            tint: 0x1169de,
+            items: ['Novel'],
+            gleamAnimation: 'BookGleam',
+            mapNodeIndicator: 'BlueBook'
+        }
+    },
+
     noClass: {
         item: {
             tint: 0xffffff,

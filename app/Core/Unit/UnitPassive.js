@@ -23,6 +23,7 @@ var unequippedPassive = 'unequippedPassive';
 export default function(options) {
     Object.assign(this, options);
     this.isEquipped = false;
+    this.customTitleBuffer = 5;
 
     //Automate some of the panel tooltip text
     this.decoratedAggressionDescription = [].concat(this.aggressionDescription);
@@ -34,41 +35,61 @@ export default function(options) {
     this.decoratedPassiveDescription = [].concat(this.unequippedDescription);
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
-    this.descriptions = this.decoratedAggressionDescription.concat([aggCooldown])
-        .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown]).concat([' ']).concat(this.decoratedPassiveDescription));
+    this.descriptions = this.decoratedPassiveDescription.concat([' '])
+        .concat(this.decoratedAggressionDescription.concat([aggCooldown].concat([' ']))
+        .concat(this.decoratedDefenseDescription.concat([defCooldown])));
 
-    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText];
-    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText];
+    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded, styles.cooldownText];
+    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded, styles.cooldownText];
     this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
-    this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).
-    concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
+    this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText])
+        .concat(this.aggressionDescrStyle.concat([styles.systemMessageText]))
+        .concat(this.defensiveDescrStyle);
     this.systemMessage = options.passiveSystemMessage;
 
     var setTooltip = function(eventName, options) {
         options = options || {};
-        var agressionActive = this.attackPassive ? 'Active' : 'Click to activate';
+        var aggressionActive = this.attackPassive ? 'Active' : 'Click to activate';
         var defensiveActive = this.defensePassive ? 'Active' : 'Ctrl+Click to activate';
-        var activeOrInactive = this.defensePassive || this.attackPassive ? "Inactive" : "Active";
-        this.descriptions = this.decoratedAggressionDescription.concat([aggCooldown]).concat([agressionActive])
-            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat([defensiveActive])
-            .concat([' '].concat(this.decoratedPassiveDescription).concat([activeOrInactive]));
-        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityText, styles.cooldownText, styles.systemMessageText];
-        this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded, styles.systemMessageText];
-        this.descriptionStyle = this.aggressionDescrStyle.concat([styles.systemMessageText]).concat(this.defensiveDescrStyle).concat([styles.systemMessageText]).concat(this.passiveDescrStyle);
+        this.descriptions = this.decoratedPassiveDescription.concat([' ']).concat(this.decoratedAggressionDescription.concat([aggCooldown]).concat([aggressionActive])
+            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat([defensiveActive]));
+        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded, styles.cooldownText, styles.systemMessageText];
+        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded, styles.cooldownText, styles.systemMessageText];
+        this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
+        this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText].concat(this.aggressionDescrStyle).concat([styles.systemMessageText]).concat(this.defensiveDescrStyle));
         this.systemMessage = options.passiveSystemMessage;
+
+        var newTint = 0x005518;
+        if(this.attackPassive) {
+            newTint = 0x9f2222;
+        } else if(this.defensePassive) {
+            newTint = 0x2467b6;
+        }
+        this.borderTint = newTint;
+
+        //if we're in the process of reequiping, aka unequipping by equipping a passive to the other mode, avoid retooltipping here since
+        //the subsequent equip will handle it
+        if(options.reequipping) {
+            return;
+        }
+
+        var tooltipPosition = mousePosition;
+        if(this.actionBox.tooltipObj && this.actionBox.tooltipObj.position) {
+            tooltipPosition = this.actionBox.tooltipObj.position;
+        }
+
         Tooltip.makeTooltippable(this.actionBox, this);
 
-        var showTooltip = !this.unit.swappingStatesOfMind && (eventName != 'Unequip' || options.manual);
+        var showTooltip = !this.unit.swappingStatesOfMind && (eventName != 'Unequip' || options.manual) && !options.preventTooltipShow;
 
         if (showTooltip) {
-            this.actionBox.tooltipObj.display(mousePosition);
+            this.actionBox.tooltipObj.display(tooltipPosition);
         }
     }.bind(this);
 
     Matter.Events.on(this, 'unlockedSomething', function(event) {
         this.unlocked = true;
-        setTooltip("Unlock");
+        setTooltip("Unlock", {preventTooltipShow: true});
 
         //register the collector
         this.collectorEventName = this.title.replace(/\s+/g, '') + 'Collector';
@@ -158,7 +179,8 @@ export default function(options) {
 
     Matter.Events.on(this, 'Unequip', function(event) {
         setTooltip("Unequip", {
-            manual: event.manual
+            manual: event.manual,
+            reequipping: event.reequipping
         });
     }.bind(this));
 
@@ -179,7 +201,7 @@ export default function(options) {
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'EnterLevel MultiLevelCampComplete', function(event) {
-        if (!this.isEquipped && event.level.isBattleLevel() && this.unlocked) {
+        if (/*!this.isEquipped &&*/ event.level.isBattleLevel() && this.unlocked) {
             var order = ++this.unit.passiveOrder;
             gameUtils.doSomethingAfterDuration(() => {
                 var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {

@@ -777,6 +777,33 @@ var UnitBase = {
         return mathArrayUtils.getRandomElementOfArray(Object.values(this.abilities));
     },
 
+    getPassiveByName: function(passiveName) {
+        var passive = this.passiveAbilities.find((myPassive) => {
+            return myPassive.title == passiveName;
+        });
+
+        return passive;
+    },
+
+    getRandomPassive: function() {
+        var chosenPassive = null;
+        while(!chosenPassive) {
+            let randomPassive = mathArrayUtils.getRandomElementOfArray(this.passiveAbilities);
+            if(!this.availablePassives.includes(randomPassive)) {
+                chosenPassive = randomPassive;
+            }
+        }
+        return chosenPassive;
+    },
+
+    acquirePassive: function(passiveName) {
+        this.availablePassives.push(this.getPassiveByName(passiveName));
+    },
+
+    acquireRandomPassive: function() {
+        this.availablePassives.push(this.getRandomPassive());
+    },
+
     equipPassive: function(passive, type) {
         //equip the new passive
         this[type] = passive;
@@ -817,7 +844,8 @@ var UnitBase = {
 
         Matter.Events.trigger(passive, 'Unequip', {
             type: type,
-            manual: options.manual
+            manual: options.manual,
+            reequipping: options.reequipping
         });
     },
 

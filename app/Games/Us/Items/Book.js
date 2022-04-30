@@ -1,60 +1,22 @@
 import ic from '@core/Unit/ItemConstructor.js';
 import * as Matter from 'matter-js';
 import {globals} from '@core/Fundamental/GlobalState.js';
+import Consumable from '@games/Us/Items/Consumable.js';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 
 export default function(options) {
     var item = Object.assign({
         name: "Book",
-        description: ['Learn a state of mind.'],
+        description: ['Learn a random state of mind.'],
         fontType: 'book',
-        additionCondition: function(augment) {
-            return augment.name == 'first aid pouch';
-        },
-
-        systemMessage: "Drop on a state of mind to learn.",
+        systemMessage: "Crtl+Click to read.",
         icon: 'BlueBook',
-
-        dropCallback: function(position) {
-            this.owningUnit.removeUnlockerKey('mind');
-            this.owningUnit.clearUnlockContext('mind');
-            this.unlockHandler.removeHandler();
-            if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
-            }
-            return true;
-        },
-
-        grabCallback: function() {
-            this.owningUnit.giveUnlockerKey('mind');
-            this.owningUnit.setUnlockContext('mind', this);
-            if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.showPassivesForUnit(this.owningUnit);
-            }
-            this.unlockHandler = gameUtils.matterOnce(this.owningUnit, 'unlockedSomething', function() {
-                globals.currentGame.itemSystem.removeItem(this);
-            }.bind(this));
-        },
-
-        placeCallback: function() {
-            this.owningUnit.removeUnlockerKey('mind');
-            this.owningUnit.clearUnlockContext('mind');
-            this.unlockHandler.removeHandler();
-            if(globals.currentGame.isCurrentLevelConfigurable()) {
-                globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
+        consume: function(unit) {
+            if(unit.availablePassives.length < 6) {
+                unit.acquireRandomPassive();
+                globals.currentGame.unitSystem.unitPanel.showPassivesForUnit(unit);
             }
         },
-        dropPredicate: function(dropPosition) {
-            //if we're outsite the playing area, drop
-            if(!gameUtils.isPositionWithinPlayableBounds(dropPosition)) {
-                return true;
-            }
-
-            //else check to see if we're trying to drop within an augment panel, in which case don't drop
-            var unitAugmentPanel = globals.currentGame.unitSystem.unitPanel.unitAugmentPanel;
-            var unitPassivePanel = globals.currentGame.unitSystem.unitPanel.unitPassivePanel;
-            return (!unitAugmentPanel.collidesWithPoint(dropPosition) && !unitPassivePanel.collidesWithPoint(dropPosition));
-        }
-    }, options);
+    }, options, Consumable);
     return new ic(item);
 }

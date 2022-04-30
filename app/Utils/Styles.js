@@ -382,10 +382,11 @@ export default {
 
     cooldownText: new PIXI.TextStyle({
         name: 'cooldownText',
-        fill: "#838080",
+        fill: "#8b8b8b",
         fillGradientType: 1,
+        fontStyle: "italic",
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 14,
+        fontSize: 12,
         strokeThickness: 1
     }),
 
@@ -762,16 +763,18 @@ export default {
     passiveDStyle: new PIXI.TextStyle({
         name: 'passiveDStyle',
         fill: "#8c88f4",
+        fontStyle: "italic",
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 15,
+        fontSize: 14,
         miterLimit: 0
     }),
 
     passiveAStyle: new PIXI.TextStyle({
         name: 'passiveAStyle',
         fill: "#cd5c5c",
+        fontStyle: "italic",
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 15,
+        fontSize: 14,
         miterLimit: 0
     }),
 
@@ -780,7 +783,7 @@ export default {
         fill: "#169d00",
         fontFamily: "Tahoma, Geneva, sans-serif",
         fontStyle: "italic",
-        fontSize: 13,
+        fontSize: 14,
         miterLimit: 0
     }),
 
@@ -790,7 +793,7 @@ export default {
         fontStyle: "italic",
         fillGradientType: 1,
         fontFamily: "Tahoma, Geneva, sans-serif",
-        fontSize: 12,
+        fontSize: 13,
         strokeThickness: 1
     }),
 };

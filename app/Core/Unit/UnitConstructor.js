@@ -42,6 +42,7 @@ function UnitConstructor(options) {
     if (newUnit.passiveAbilities) {
         options.slaves = options.slaves.concat(newUnit.passiveAbilities);
     }
+    newUnit.availablePassives = [];
 
     if (newUnit.abilities) {
         options.slaves = options.slaves.concat(newUnit.abilities);
