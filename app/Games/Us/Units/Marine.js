@@ -1941,7 +1941,7 @@ export default function Marine(options) {
         ],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 2.50,
+            moveSpeed: 2.3,
             walkAnimations: walkAnimations,
         },
         attacker: {

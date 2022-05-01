@@ -399,6 +399,15 @@ export default {
         strokeThickness: 1
     }),
 
+    systemMessageTextWhite: new PIXI.TextStyle({
+        name: 'systemMessageTextWhite',
+        fill: "#9a9a9a",
+        fillGradientType: 1,
+        fontFamily: "Tahoma, Geneva, sans-serif",
+        fontSize: 12,
+        strokeThickness: 1
+    }),
+
     systemMessageText: new PIXI.TextStyle({
         name: 'systemMessageText',
         fill: "#7DD4FF",

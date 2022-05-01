@@ -632,6 +632,10 @@ var map = function(specs) {
         this.outingNodes.push(node);
         this.updateOutingEngagement();
         this.updateRouteArrows();
+
+        if(this.outingIsAtMaxLength()) {
+            Matter.Events.trigger(this, 'maxOutingLengthReached');
+        }
     };
 
     this.removeNodeFromOuting = function(node) {
@@ -842,6 +846,9 @@ var map = function(specs) {
             $('body').on('keydown.engagespace', function(event) {
                 var key = event.key.toLowerCase();
                 if (key == ' ') {
+                    if(!this.keyEventsAllowed) {
+                        return;
+                    }
                     var legal = this.isOutingLegal();
                     if(!legal.result) {
                         game.toastMessage({message: legal.message, state: 'cantdo'});
@@ -874,14 +881,17 @@ var map = function(specs) {
         return nonTokenNodes;
     };
 
+    this.outingIsAtMaxLength = function() {
+        var nonTokenNodes = this.getNonTokenNodes();
+        return nonTokenNodes.length == this.maxOutingLength;
+    };
+
     this.canAddNodeToOuting = function(node) {
         if(node.travelToken) {
             return true;
         }
 
-        var nonTokenNodes = this.getNonTokenNodes();
-
-        return nonTokenNodes.length < this.maxOutingLength;
+        return !this.outingIsAtMaxLength();
     };
 
     this.isOutingLegal = function() {

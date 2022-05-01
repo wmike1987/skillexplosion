@@ -7,13 +7,14 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Book",
-        description: ['Learn a random state of mind.'],
+        description: ['Learn a State of Mind.'],
         fontType: 'book',
         systemMessage: "Crtl+Click to read.",
         icon: 'BlueBook',
         consume: function(unit) {
             if(unit.availablePassives.length < 6) {
-                unit.acquireRandomPassive();
+                let passive = unit.acquireRandomPassive();
+                Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindLearned', {unit: unit, passive: passive});
                 globals.currentGame.unitSystem.unitPanel.showPassivesForUnit(unit);
             }
         },

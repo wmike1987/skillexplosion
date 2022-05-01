@@ -14,7 +14,9 @@ import {
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';
-import {Scene} from '@core/Scene.js';
+import {
+    Scene
+} from '@core/Scene.js';
 import styles from '@utils/Styles.js';
 import {
     DialogueScene
@@ -90,7 +92,7 @@ var MapLearning = function(scene) {
     var a9 = new Dialogue({
         actor: "Ursula",
         text: "but they give Command time to pack several options into a supply drop.",
-        delayAfterEnd: 3000,
+        delayAfterEnd: 3750,
         continuation: true,
         backgroundBox: true
     });
@@ -111,7 +113,7 @@ var MapLearning = function(scene) {
         text: "After an excursion, Command will deliver supplies based on the camps we cleared.",
         letterSpeed: 45,
         backgroundBox: true,
-        delayAfterEnd: 1000
+        delayAfterEnd: 1500
     });
     var a11a = new Dialogue({
         actor: "Info",
@@ -119,13 +121,13 @@ var MapLearning = function(scene) {
         isInfo: true,
         letterSpeed: 45,
         backgroundBox: true,
-        delayAfterEnd: 2500
+        delayAfterEnd: 2750
     });
 
     a11a.onFullyShown = function() {
         var itemBoxes = currentGame.map.graph.map(function(node) {
             var ind = node.displayObject.iconIndicator;
-            if(ind) {
+            if (ind) {
                 return ind;
             } else {
                 return false;
@@ -133,33 +135,20 @@ var MapLearning = function(scene) {
         });
 
         itemBoxes.forEach((ind) => {
-            if(ind) {
-                graphicsUtils.flashSprite({sprite: ind});
+            if (ind) {
+                graphicsUtils.flashSprite({
+                    sprite: ind,
+                    duration: 200,
+                    times: 6
+                });
             }
         });
-    };
-
-    var a11b = new Dialogue({
-        actor: "Ursula",
-        text: "Some stops are beneficial. This health depot can be incorporated into our excursion.",
-        letterSpeed: 45,
-        newBreak: true,
-        backgroundBox: true,
-        delayAfterEnd: 5500
-    });
-    a11b.onFullyShown = function() {
-        let healthDepot = globals.currentGame.map.findNodeById('healthDepot');
-        let arrow = graphicsUtils.pointToSomethingWithArrow(healthDepot, -20, 0.5);
-        gameUtils.doSomethingAfterDuration(() => {
-            graphicsUtils.removeSomethingFromRenderer(arrow);
-        }, 5000);
     };
 
     var a12 = new Dialogue({
         actor: "Ursula",
         text: "Finally, after each camp we'll gain one point of adrenaline.",
         letterSpeed: 45,
-        continuation: true,
         backgroundBox: true
     });
     var a13 = new Dialogue({
@@ -167,7 +156,7 @@ var MapLearning = function(scene) {
         text: "Adrenaline is shown in the lower left of the map.",
         isInfo: true,
         backgroundBox: true,
-        delayAfterEnd: 1500
+        delayAfterEnd: 1750
     });
 
     a13.onFullyShown = function() {
@@ -208,24 +197,58 @@ var MapLearning = function(scene) {
         backgroundBox: true
     });
 
-    var a18 = new Dialogue({
+    var a19 = new Dialogue({
+        actor: "Task",
+        text: "Click on 3 enemy camps to build a long excursion.",
+        isTask: true,
+        newBreak: true,
+        backgroundBox: true
+    });
+
+    a19.onStart = function() {
+        globals.currentGame.map.allowClickEvents(true);
+        gameUtils.matterOnce(globals.currentGame.map, 'maxOutingLengthReached', () => {
+            achieve.play();
+            completeTaskAndRelease(a19);
+        });
+    };
+
+    var a20 = new Dialogue({
+        isInfo: true,
+        text: "Some stops, like this health depot, are beneficial. They can be incorporated into your excursion.",
+        letterSpeed: 45,
+        newBreak: true,
+        backgroundBox: true,
+        delayAfterEnd: 5500
+    });
+
+    a20.onFullyShown = function() {
+        let healthDepot = globals.currentGame.map.findNodeById('healthDepot');
+        let arrow = graphicsUtils.pointToSomethingWithArrow(healthDepot, -20, 0.5);
+        gameUtils.doSomethingAfterDuration(() => {
+            graphicsUtils.removeSomethingFromRenderer(arrow);
+            globals.currentGame.map.allowKeyEvents(true);
+        }, 5000);
+    };
+
+    var a21 = new Dialogue({
         actor: "Ursula",
-        text: "You'll get the hang of it, let's go.",
+        text: "Great job, let's go.",
         backgroundBox: true,
         delayAfterEnd: 1800
     });
 
-    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a11a, a11b, a12, a13, a14, a15, a16, a16b, /*a17, a17a,*/ a18], {
+    var chain = new DialogueChain([a1, a3, a4, a5, a6, a7, a8, a9, a10, a11, a11a, a12, a13, a14, a15, a16, a16b, /*a17, a17a,*/ a19, a20, a21], {
         cleanUpOnDone: true,
         startDelay: 200,
         done: () => {
             Matter.Events.trigger(globals.currentGame.map, 'mapGleam');
-            globals.currentGame.map.allowClickEvents(true);
         }
     });
 
     //disable map
     globals.currentGame.map.allowClickEvents(false);
+    globals.currentGame.map.allowKeyEvents(false);
 
     a3.onStart = function() {
         gameUtils.matterConditionalOnce(globals.currentGame, 'tooltipShown', function(event) {
@@ -252,10 +275,10 @@ var MapLearning = function(scene) {
         if (event.unit.name != 'Ursula' && event.unit.name != 'Shane') return;
         if (item.name == 'Book') {
             var book = item;
-            book.notGrabbable = true;
+            book.preventConsumption = true;
             var d0 = new Dialogue({
                 actor: 'Ursula',
-                text: "Books are used to learn states of mind.",
+                text: "Books are used to learn States of Mind.",
                 backgroundBox: true,
                 delayAfterEnd: 1500,
             });
@@ -271,24 +294,24 @@ var MapLearning = function(scene) {
                 delayAfterEnd: 1500
             });
             var d3 = new Dialogue({
-                text: "Grab the book and drop it on a state of mind.",
+                text: "Read the book to learn a State of Mind.",
                 isTask: true,
                 backgroundBox: true
             });
             var d4 = new Dialogue({
-                text: "This state of mind is now available to equip.",
+                text: "These skills always grant a boost at the beginning of a camp.",
+                isInfo: true,
+                backgroundBox: true,
+                delayAfterEnd: 2500
+            });
+            var d5 = new Dialogue({
+                text: "Furthermore, they can be activated to grant more frequent benefits.",
                 isInfo: true,
                 backgroundBox: true,
                 delayAfterEnd: 1500
             });
-            var d5 = new Dialogue({
-                text: "Each state of mind has two active-modes and an unequipped-mode.",
-                isInfo: true,
-                backgroundBox: true,
-                delayAfterEnd: 1000
-            });
             var d6 = new Dialogue({
-                text: "Activate the aggression mode of your learned state of mind. (Click)",
+                text: "Activate the aggression mode of your State of Mind. (Click)",
                 isTask: true,
                 backgroundBox: true
             });
@@ -298,7 +321,7 @@ var MapLearning = function(scene) {
                 backgroundBox: true
             });
             var d8 = new Dialogue({
-                text: "Press 'w' to swap your current states of mind. This can be done at any time.",
+                text: "Press 'w' to swap modes of your current States of Mind. This can be done at any time.",
                 isTask: true,
                 backgroundBox: true
             });
@@ -312,6 +335,7 @@ var MapLearning = function(scene) {
             d1.onStart = function() {
                 var arrow = graphicsUtils.pointToSomethingWithArrow(book, -10, 0.5);
                 gameUtils.matterOnce(book.icon, 'tooltipShown', () => {
+                    book.preventConsumption = false;
                     graphicsUtils.removeSomethingFromRenderer(arrow);
                     achieve.play();
                     completeTaskAndRelease(d1);
@@ -319,19 +343,10 @@ var MapLearning = function(scene) {
             };
 
             d3.onStart = function() {
-                book.notGrabbable = false;
-                gameUtils.matterConditionalOnce(globals.currentGame.itemSystem, "usergrab", function(event) {
-                    var item = event.item;
-                    var unit = event.unit;
-                    if (item == book) {
-                        globals.currentGame.unitSystem.unitPanel.hideAugmentsForCurrentUnit();
-                        // arrow = graphicsUtils.pointToSomethingWithArrow(microchip, -5, 0.5);
-                        gameUtils.matterOnce(globals.currentGame.unitSystem, 'stateOfMindLearned', function() {
-                            achieve.play();
-                            completeTaskAndRelease(d3);
-                        });
-                        return true;
-                    }
+                gameUtils.matterOnce(globals.currentGame.unitSystem, 'stateOfMindLearned', function() {
+                    achieve.play();
+                    completeTaskAndRelease(d3);
+                    return true;
                 });
             };
 

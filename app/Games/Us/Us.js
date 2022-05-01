@@ -83,6 +83,7 @@ var game = {
 
     //debug options
     goStraightToUrsulaTasks: false,
+    immediateMapTasks: false,
     mapTableAlwaysActive: true,
 
     initExtension: function() {

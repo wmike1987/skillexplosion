@@ -12,6 +12,10 @@ export default {
         return true;
     },
     _consume: function() {
+        if(this.preventConsumption) {
+            return;
+        }
+
         var unit = globals.currentGame.unitSystem.unitPanel.prevailingUnit;
         this.consume(unit);
         Matter.Events.trigger(unit, 'consume', {item: this});

@@ -33,14 +33,18 @@ var completeTaskAndRelease = function(dialogue) {
 
 var UrsulaTasks = function(scene) {
 
-    var immediateMapTasks = false;
-    if(immediateMapTasks) {
+    if(globals.currentGame.immediateMapTasks) {
+        globals.currentGame.nextPhase();
         globals.currentGame.currentLevel.mapTableActive = true;
         gameUtils.matterOnce(globals.currentGame, 'showMap', () => {
             //Enable the map learning section
             var mapLearning = new MapLearning(scene);
             mapLearning.play();
         });
+
+        return {play: function() {
+            //fake chain
+        }};
     }
 
     var achieve = gameUtils.getSound('fullheal.wav', {volume: 0.045, rate: 0.75});

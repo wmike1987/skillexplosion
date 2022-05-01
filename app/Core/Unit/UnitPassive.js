@@ -36,11 +36,11 @@ export default function(options) {
 
     //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
     this.descriptions = this.decoratedPassiveDescription.concat([' '])
-        .concat(this.decoratedAggressionDescription.concat([aggCooldown].concat([' ']))
-        .concat(this.decoratedDefenseDescription.concat([defCooldown])));
+        .concat(this.decoratedAggressionDescription.concat([' ']))
+        .concat(this.decoratedDefenseDescription);
 
-    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded, styles.cooldownText];
-    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded, styles.cooldownText];
+    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded];
+    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded];
     this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
     this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText])
         .concat(this.aggressionDescrStyle.concat([styles.systemMessageText]))
@@ -49,32 +49,36 @@ export default function(options) {
 
     var setTooltip = function(eventName, options) {
         options = options || {};
-        var aggressionActive = this.attackPassive ? 'Active' : 'Click to activate';
-        var defensiveActive = this.defensePassive ? 'Active' : 'Ctrl+Click to activate';
-        this.descriptions = this.decoratedPassiveDescription.concat([' ']).concat(this.decoratedAggressionDescription.concat([aggCooldown]).concat([aggressionActive])
-            .concat([' ']).concat(this.decoratedDefenseDescription.concat([defCooldown])).concat([defensiveActive]));
-        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded, styles.cooldownText, styles.systemMessageText];
-        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded, styles.cooldownText, styles.systemMessageText];
+        var aggressionActive = this.attackPassive ? ('Active - ' + aggCooldown) : 'Inactive - Click to activate';
+        var defensiveActive = this.defensePassive ? ('Active - ' + defCooldown) : 'Inactive - Ctrl+Click to activate';
+        this.descriptions = this.decoratedPassiveDescription.concat([' ']).concat(this.decoratedAggressionDescription.concat([aggressionActive])
+            .concat([' ']).concat(this.decoratedDefenseDescription).concat([defensiveActive]));
+
+        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded, this.attackPassive ? styles.systemMessageText : styles.systemMessageTextWhite];
+        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded, this.defensePassive ? styles.systemMessageText : styles.systemMessageTextWhite];
         this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
-        this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText].concat(this.aggressionDescrStyle).concat([styles.systemMessageText]).concat(this.defensiveDescrStyle));
+        this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText]
+            .concat(this.aggressionDescrStyle)
+            .concat([styles.systemMessageText])
+            .concat(this.defensiveDescrStyle));
         this.systemMessage = options.passiveSystemMessage;
 
         var newTint = 0x005518;
-        if(this.attackPassive) {
+        if (this.attackPassive) {
             newTint = 0x9f2222;
-        } else if(this.defensePassive) {
+        } else if (this.defensePassive) {
             newTint = 0x2467b6;
         }
         this.borderTint = newTint;
 
         //if we're in the process of reequiping, aka unequipping by equipping a passive to the other mode, avoid retooltipping here since
         //the subsequent equip will handle it
-        if(options.reequipping) {
+        if (options.reequipping) {
             return;
         }
 
         var tooltipPosition = mousePosition;
-        if(this.actionBox.tooltipObj && this.actionBox.tooltipObj.position) {
+        if (this.actionBox.tooltipObj && this.actionBox.tooltipObj.position) {
             tooltipPosition = this.actionBox.tooltipObj.position;
         }
 
@@ -89,7 +93,9 @@ export default function(options) {
 
     Matter.Events.on(this, 'unlockedSomething', function(event) {
         this.unlocked = true;
-        setTooltip("Unlock", {preventTooltipShow: true});
+        setTooltip("Unlock", {
+            preventTooltipShow: true
+        });
 
         //register the collector
         this.collectorEventName = this.title.replace(/\s+/g, '') + 'Collector';
@@ -201,7 +207,7 @@ export default function(options) {
     }.bind(this));
 
     Matter.Events.on(globals.currentGame, 'EnterLevel MultiLevelCampComplete', function(event) {
-        if (/*!this.isEquipped &&*/ event.level.isBattleLevel() && this.unlocked) {
+        if ( /*!this.isEquipped &&*/ event.level.isBattleLevel() && this.unlocked) {
             var order = ++this.unit.passiveOrder;
             gameUtils.doSomethingAfterDuration(() => {
                 var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {
@@ -284,7 +290,7 @@ export default function(options) {
                 gameUtils.doSomethingAfterDuration(function() {
                     this.active = false;
                     this.inProcess = false;
-                    if(this.aggressionStopAction) {
+                    if (this.aggressionStopAction) {
                         this.aggressionStopAction();
                     }
                 }.bind(this), this.aggressionDuration);
@@ -315,7 +321,7 @@ export default function(options) {
                 gameUtils.doSomethingAfterDuration(function() {
                     this.active = false;
                     this.inProcess = false;
-                    if(this.defenseStopAction) {
+                    if (this.defenseStopAction) {
                         this.defenseStopAction();
                     }
                 }.bind(this), this.defenseDuration);
@@ -354,7 +360,7 @@ export default function(options) {
             return true;
         };
 
-        if(predicate.call(this)) {
+        if (predicate.call(this)) {
             Matter.Events.trigger(globals.currentGame, this.collectorEventName, {
                 mode: attackPassive,
                 collectorPayload: {
@@ -370,7 +376,7 @@ export default function(options) {
             return true;
         };
 
-        if(predicate.call(this)) {
+        if (predicate.call(this)) {
             Matter.Events.trigger(globals.currentGame, this.collectorEventName, {
                 mode: defensePassive,
                 collectorPayload: {
@@ -387,10 +393,10 @@ export default function(options) {
         this.active = false;
         this.inProcess = false;
         this.activeMode = null;
-        if(this.defenseStopAction) {
+        if (this.defenseStopAction) {
             this.defenseStopAction();
         }
-        if(this.aggressionStopAction) {
+        if (this.aggressionStopAction) {
             this.aggressionStopAction();
         }
         if (this.clearListener) {

@@ -448,7 +448,7 @@ export default function Gargoyle(options) {
         slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 3.0,
+            moveSpeed: 2.2,
             walkAnimations: runAnimations,
         },
         attacker: {

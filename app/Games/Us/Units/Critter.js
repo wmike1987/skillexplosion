@@ -296,7 +296,7 @@ export default function Critter(options) {
             slaves: [attackSound, /*meText,*/ deathSound, unitProperties.portrait, unitProperties.wireframe],
             unit: unitProperties,
             moveable: {
-                moveSpeed: 3.00,
+                moveSpeed: 2.6,
                 walkAnimations: runAnimations,
             }, attacker: {
                 attackAnimations: attackAnimations,

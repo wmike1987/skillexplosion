@@ -510,7 +510,7 @@ export default function Rammian(options) {
         slaves: [attackSound, deathSound, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 2.5,
+            moveSpeed: 2.2,
             walkAnimations: runAnimations,
         },
         attacker: {
