@@ -943,30 +943,25 @@ var gameUtils = {
             repeat: false
         }, options);
 
-        //clear old repeat listener
-        newSong.off('end');
+        //capture current song
+        var currentSong = globals.currentGame.currentSong.h;
+        var currentSongId = globals.currentGame.currentSong.id;
+
+        //play new song
+        globals.currentGame.currentSong.h = newSong;
+        globals.currentGame.currentSong.id = newSong.play();
 
         if(options.repeat) {
-            newSong.on('end', () => {
-                globals.currentGame.currentSong.id = newSong.play();
-            });
+            newSong.loop(true, globals.currentGame.currentSong.id);
         }
 
         //fade out last song
-        var currentSong = globals.currentGame.currentSong.h;
-        var currentSongId = globals.currentGame.currentSong.id;
         if (currentSong && currentSong.playing(currentSongId)) {
             currentSong.once('fade', () => {
                 currentSong.stop(currentSongId);
             }, currentSongId);
             currentSong.fade(currentSong.volume(currentSongId), 0, options.fadeDuration, currentSongId);
         }
-
-        //play new song
-        gameUtils.doSomethingAfterDuration(() => {
-            globals.currentGame.currentSong.h = newSong;
-            globals.currentGame.currentSong.id = newSong.play();
-        }, options.newSongDelay);
     },
 
     praise: function(options) {

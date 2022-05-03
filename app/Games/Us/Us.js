@@ -235,7 +235,13 @@ var game = {
             rate: 1.05
         });
 
-        this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
+        this.soundPool.whistling = gameUtils.getSound('music/singing.mp3', {
+            volume: 1.2,
+            rate: 1.05
+        });
+
+        // this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
+        this.levelEntryMusic = [this.soundPool.whistling, this.soundPool.whistling, this.soundPool.whistling];
     },
 
     play: function(options) {

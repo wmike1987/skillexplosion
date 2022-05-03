@@ -11,6 +11,9 @@ export default function(options) {
         fontType: 'book',
         systemMessage: "Crtl+Click to read.",
         icon: 'BlueBook',
+        consumptionPredicate: function() {
+            return globals.currentGame.currentLevel.isLevelConfigurable();
+        },
         consume: function(unit) {
             if(unit.availablePassives.length < 6) {
                 let passive = unit.acquireRandomPassive();
