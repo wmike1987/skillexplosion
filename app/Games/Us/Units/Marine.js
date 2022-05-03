@@ -1264,11 +1264,11 @@ export default function Marine(options) {
             },
             {
                 name: 'lead bullets',
-                armorSubtractor: 2,
+                armorSubtractor: 1,
                 dodgeManipulator: 0.5,
                 icon: graphicsUtils.createDisplayObject('LeadBulletsIcon'),
                 title: 'Lead Bullets',
-                description: 'Attacks bypass 50% of target\'s dodge and ignore up to 2 armor.',
+                description: 'Attacks bypass 50% of target\'s dodge and ignore up to 1 armor.',
                 collector: {
                     eventName: leadBulletsCollectorEventName,
                     presentation: {
@@ -1376,7 +1376,7 @@ export default function Marine(options) {
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
         defenseDescription: ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for 1 second.'],
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain movement speed for 4 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4 seconds.'],
         unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain 10% of max hp.'],
         textureName: 'RushOfBlood',
         unit: marine,
@@ -1584,8 +1584,8 @@ export default function Marine(options) {
     var spiritualState = new Passive({
         title: 'Spiritual State',
         aggressionDescription: ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for 1 second.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies rengerate energy at x2 rate for 5 seconds.'],
+        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for 5 seconds.'],
+        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for 5 seconds.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1657,7 +1657,7 @@ export default function Marine(options) {
             aggressionFormat: function(v) {
                 return v.toFixed(1);
             },
-            defensiveLabel: 'Duration of 2x energy regeneration',
+            defensiveLabel: 'Duration of health gem',
             defensiveSuffix: 'seconds'
         }
     });
@@ -2065,7 +2065,7 @@ export default function Marine(options) {
                     speed: 0.85,
                     transform: [target.position.x + variance2, target.position.y + variance2, scale, scale]
                 });
-                nonOrganicRifleAnimation.tint = leadBulletsAugment ? 0xaafffc : 0xfbffc9;
+                nonOrganicRifleAnimation.tint = leadBulletsAugment ? 0x64cdfa : 0xfbffc9;
                 nonOrganicRifleAnimation.play();
                 nonOrganicRifleAnimation.rotation = Math.random() * Math.PI;
                 graphicsUtils.addSomethingToRenderer(nonOrganicRifleAnimation, 'foreground');

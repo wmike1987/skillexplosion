@@ -704,7 +704,7 @@ export default function Medic(options) {
                         position: medic.footPosition
                     });
                     graphicsUtils.makeSpriteSize(slGraphic, softLandingAugment.radius * 2);
-                    graphicsUtils.fadeSpriteOutQuickly(slGraphic, 600);
+                    graphicsUtils.fadeSpriteOutQuickly(slGraphic, 900);
 
                     unitUtils.applyToUnitsByTeam(function(team) {
                         return self.team != team;
@@ -793,7 +793,7 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('SoftLanding'),
                 title: 'Soft Landing',
                 duration: 5000,
-                radius: 125,
+                radius: 160,
                 description: 'Soften nearby enemies upon landing.',
                 collector: {
                     eventName: slCollEventName,
@@ -1555,7 +1555,7 @@ export default function Medic(options) {
         title: 'Healthy Habits',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Grant a health gem to self and allies for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies regenerate hp at 2x rate for 5 seconds.'],
+        unequippedDescription: ['Initial Boost (Upon camp start)', 'Grant a health gem to self and allies for 5 seconds.'],
         textureName: 'HealthyHabits',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -2082,6 +2082,7 @@ export default function Medic(options) {
         mineDamage: 20,
         damageLabel: "Heal",
         hpGivenTally: 0,
+        passiveOffset: 450,
         attackSpeedLabel: "Heal Speed",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;

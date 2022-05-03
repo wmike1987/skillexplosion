@@ -209,6 +209,7 @@ export default function(options) {
     Matter.Events.on(globals.currentGame, 'EnterLevel MultiLevelCampComplete', function(event) {
         if ( /*!this.isEquipped &&*/ event.level.isBattleLevel() && this.unlocked) {
             var order = ++this.unit.passiveOrder;
+            var timingOffset = this.unit.passiveOffset || 0;
             gameUtils.doSomethingAfterDuration(() => {
                 var iconUp = graphicsUtils.addSomethingToRenderer(this.textureName, {
                     where: 'stageTwo',
@@ -239,9 +240,10 @@ export default function(options) {
                 });
                 if (this.passiveAction) {
                     this.passiveAction();
+                    globals.currentGame.soundPool.softBeep.play();
                     // Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: unequippedPassive});
                 }
-            }, 1800 + order * 750);
+            }, 1800 + timingOffset + (order * 950));
         }
     }.bind(this));
 

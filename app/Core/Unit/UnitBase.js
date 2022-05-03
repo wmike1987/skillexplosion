@@ -1147,9 +1147,9 @@ var UnitBase = {
         var resetPassiveOrder = function() {
             this.passiveOrder = 0;
         }.bind(this);
-        Matter.Events.on(globals.currentGame, "VictoryDefeatSceneFadeIn MultiLevelCampComplete", resetPassiveOrder);
+        Matter.Events.on(globals.currentGame, "VictoryOrDefeat MultiLevelCampComplete", resetPassiveOrder);
         gameUtils.deathPact(this, () => {
-            Matter.Events.off(globals.currentGame, "VictoryDefeatSceneFadeIn MultiLevelCampComplete", resetPassiveOrder);
+            Matter.Events.off(globals.currentGame, "VictoryOrDefeat MultiLevelCampComplete", resetPassiveOrder);
         });
 
         Matter.Events.on(this, "changeHoldPosition", function(event) {
@@ -3276,7 +3276,7 @@ var UnitBase = {
         //setup the events we'll be removed by
         var removeEvents = options.removeEvents || [{
                 obj: globals.currentGame,
-                eventName: 'VictoryDefeatSceneFadeIn'
+                eventName: 'VictoryOrDefeat OutingLevelCompleted TravelStarted'
             },
             {
                 obj: this,

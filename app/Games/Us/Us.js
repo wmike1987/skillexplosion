@@ -230,6 +230,10 @@ var game = {
             volume: 0.05,
             rate: 1.5
         });
+        this.soundPool.softBeep = gameUtils.getSound('softBeep.wav', {
+            volume: 0.05,
+            rate: 1.05
+        });
 
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
     },
@@ -301,7 +305,7 @@ var game = {
                                 coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {
                                     x: coloredTextAdjustment
                                 });
-                                coloredText.tint = 0xba4227;
+                                coloredText.tint = 0xba2727;
                                 graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
 
                                 let shaneIcon = graphicsUtils.cloneSprite(shaneAugment.icon, {
@@ -429,7 +433,9 @@ var game = {
             });
 
             if (battleOuting) {
-                gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic), {repeat: true});
+                gameUtils.playAsMusic(mathArrayUtils.getRandomElementOfArray(this.levelEntryMusic), {
+                    repeat: true
+                });
             } else {
                 gameUtils.playAsMusic(this.soundPool.fillerMovement);
             }
@@ -446,7 +452,7 @@ var game = {
                 return el != null;
             });
 
-            if(event.continueFromCurrentFatigue) {
+            if (event.continueFromCurrentFatigue) {
                 this.unitsInPlay.forEach((unit) => {
                     unit.fatigue = globals.currentGame.map.fatigueAmount || 0;
                 });
@@ -574,14 +580,14 @@ var game = {
             this.rewardManager.startNewRewardCollector();
         });
 
-        Matter.Events.on(this, 'VictoryOrDefeat OutingLevelCompleted TravelStarted', () => {
-            let self = this;
-            unitUtils.applyToUnitsByTeam(function(team) {
-                return self.playerTeam == team;
-            }, null, function(unit) {
-                unit.removeAllBuffs();
-            });
-        });
+        // Matter.Events.on(this, 'VictoryOrDefeat OutingLevelCompleted TravelStarted', () => {
+        //     let self = this;
+        //     unitUtils.applyToUnitsByTeam(function(team) {
+        //         return self.playerTeam == team;
+        //     }, null, function(unit) {
+        //         unit.removeAllBuffs();
+        //     });
+        // });
     },
 
     getLoadingScreen: function() {
@@ -601,9 +607,14 @@ var game = {
         this.level = 0;
         this.currentWorldIndex = 0;
 
-        var titleScene = this.applyBackgroundImageAndText({transition: true, persists: true});
+        var titleScene = this.applyBackgroundImageAndText({
+            transition: true,
+            persists: true
+        });
         Matter.Events.on(titleScene, 'sceneFadeInDone', () => {
-            this.nuke({savePersistables: true});
+            this.nuke({
+                savePersistables: true
+            });
             resetDeferred.resolve();
         });
 
@@ -1298,21 +1309,24 @@ var game = {
     },
 
     toastMessage: function(options) {
-        options = gameUtils.mixinDefaults({params: options, defaults: {
-            style: styles.fatigueTextLarge,
-            scene: options.scene || globals.currentGame.currentScene,
-            state: 'positive',
-            sound: null
-        }});
+        options = gameUtils.mixinDefaults({
+            params: options,
+            defaults: {
+                style: styles.fatigueTextLarge,
+                scene: options.scene || globals.currentGame.currentScene,
+                state: 'positive',
+                sound: null
+            }
+        });
 
         let sound = options.sound;
-        if(options.state == 'none') {
+        if (options.state == 'none') {
             //do nothing
-        } else if(options.state == 'positive') {
+        } else if (options.state == 'positive') {
             sound = this.soundPool.positiveSoundFast;
-        } else if(options.state == 'cantdo') {
+        } else if (options.state == 'cantdo') {
             sound = this.soundPool.cantdo;
-        } else if(options.state == 'negative') {
+        } else if (options.state == 'negative') {
             sound = this.soundPool.negativeSound;
         }
 
@@ -1332,7 +1346,7 @@ var game = {
         });
         options.scene.add(toastText);
         graphicsUtils.fadeSpriteInQuickly(toastText, 500);
-        if(sound) {
+        if (sound) {
             sound.play();
         }
     },
@@ -1344,7 +1358,7 @@ var game = {
     nukeExtension: function(options) {
         this.unitSystem.unpause();
 
-        if(options.noMercy) {
+        if (options.noMercy) {
             $('body').off('keydown.us');
             $('body').off('keydown.map');
             if (this.currentScene) {

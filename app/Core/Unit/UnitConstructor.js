@@ -30,15 +30,17 @@ function UnitConstructor(options) {
 
     //use the given object as our base -- "unitObj"
     var unitObj = options.givenUnitObj || {};
+
+    //add in a unit id
     Object.assign(unitObj, {
         unitId: mathArrayUtils.uuidv4()
-    }); //add in a unit id
+    });
 
     //mixin the unit options into the unit base then into the unit object
     var unitBase = $.extend(true, {}, UnitBase);
     var newUnit = Object.assign(unitObj, unitBase, options.unit);
 
-    //add passives (and probably abilities in the future to slaves)
+    //add passives and abilities to the unit's slaves
     if (newUnit.passiveAbilities) {
         options.slaves = options.slaves.concat(newUnit.passiveAbilities);
     }

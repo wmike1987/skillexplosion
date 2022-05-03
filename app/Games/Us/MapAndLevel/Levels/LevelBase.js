@@ -170,7 +170,7 @@ var levelBase = {
         mathArrayUtils.setRandomToTrueRandom();
     },
 
-    startLevelSpawn: function(options) {
+    startHeartbeat: function(options) {
         options = options || {};
         options = Object.assign({
             startNewCollector: true
@@ -961,7 +961,7 @@ var modes = {
                     moveToCenter: true,
                     applyFatigue: true
                 });
-                level.startLevelSpawn(options);
+                level.startHeartbeat(options);
                 level._onLevelPlayable(scene);
             });
 

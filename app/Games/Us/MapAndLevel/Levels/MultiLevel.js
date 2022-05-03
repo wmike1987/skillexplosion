@@ -93,7 +93,7 @@ var multiLevel = function(options) {
                     globals.currentGame.setCurrentLevel(nextLevel, {
                         immediatePool: true
                     });
-                    nextLevel.startLevelSpawn({
+                    nextLevel.startHeartbeat({
                         startNewCollector: false
                     });
                 };
