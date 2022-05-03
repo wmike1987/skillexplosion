@@ -793,7 +793,7 @@ export default function Medic(options) {
                 icon: graphicsUtils.createDisplayObject('SoftLanding'),
                 title: 'Soft Landing',
                 duration: 5000,
-                radius: 90,
+                radius: 125,
                 description: 'Soften nearby enemies upon landing.',
                 collector: {
                     eventName: slCollEventName,
@@ -2335,7 +2335,7 @@ export default function Medic(options) {
         slaves: [healSound, dodgeSound, soundLandingSound, holdPositionSound, gritBlastSound, manaHealSound, blockSound, criticalHitSound, knifeImpactSound, mineSound, deathSoundBlood, deathSound, mineBeep, mineExplosion, footstepSound, shroudSound, combospiritinit, fullheal, unitProperties.portrait, unitProperties.wireframe],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 2.2,
+            moveSpeed: 2.3,
             walkAnimations: walkAnimations,
         },
         attacker: {

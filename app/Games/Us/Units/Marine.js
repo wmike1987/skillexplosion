@@ -1870,6 +1870,24 @@ export default function Marine(options) {
                     x: 16,
                     y: -18
                 }
+            },
+            {
+                animation: attackAnimations.downRight,
+                height: 8,
+                width: 38,
+                offset: {
+                    x: -2,
+                    y: -13
+                }
+            },
+            {
+                animation: attackAnimations.downLeft,
+                height: 8,
+                width: 38,
+                offset: {
+                    x: 2,
+                    y: -13
+                }
             }
         ],
         itemsEnabled: true,
@@ -1941,7 +1959,7 @@ export default function Marine(options) {
         ],
         unit: unitProperties,
         moveable: {
-            moveSpeed: 2.3,
+            moveSpeed: 2.35,
             walkAnimations: walkAnimations,
         },
         attacker: {

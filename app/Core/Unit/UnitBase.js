@@ -181,8 +181,8 @@ var UnitBase = {
     currentSpecialtyItems: [null, null, null, null, null, null],
     currentBackpack: [null, null, null],
     dropItemsOnDeath: true,
-    friendlyTint: 0x01ac7e,
-    enemyTint: 0x9d2a2a,
+    friendlyTint: 0x60d056,
+    enemyTint: 0xb14545,
     neutralTint: 0xb8b62d,
 
     sufferAttack: function(damage, attackingUnit, options) {

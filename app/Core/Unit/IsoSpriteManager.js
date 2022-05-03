@@ -58,7 +58,7 @@ function IsoSpriteManager(options) {
                 this.currentDirection = event.direction;
                 this.currentMoveAnimation = this.unit.walkAnimations[event.direction];
             }
-        }.bind(this))
+        }.bind(this));
 
         //turn on idle
         Matter.Events.on(this.unit, 'stop', function() {
@@ -70,7 +70,7 @@ function IsoSpriteManager(options) {
                 this.idle({
                     direction: this.currentDirection
                 });
-        }.bind(this))
+        }.bind(this));
     }
 
     if (this.unit.isAttacker) {
@@ -78,7 +78,7 @@ function IsoSpriteManager(options) {
             var animation = this.unit.attackAnimations[event.direction];
             this.switchAnimation(this.unit.attackAnimations[event.direction]);
             this.currentDirection = event.direction;
-        }.bind(this))
+        }.bind(this));
 
         Matter.Events.on(this.unit, 'attackStance', function(event) {
             var animation = this.unit.attackAnimations[event.direction];
@@ -105,10 +105,10 @@ function IsoSpriteManager(options) {
         }
 
         if (playAnimation) {
-            this.switchAnimation(this.unit[animationName + 'Animations'][direction])
+            this.switchAnimation(this.unit[animationName + 'Animations'][direction]);
             this.currentDirection = direction;
         }
-    }
+    };
 
     this.stopCurrentAnimation = function() {
         if (this.currentAnimation) {
@@ -126,7 +126,7 @@ function IsoSpriteManager(options) {
             this.idle({
                 direction: this.currentDirection
             });
-    }
+    };
 
     this.switchAnimation = function(animation, options) {
         options = options || {};
@@ -171,7 +171,7 @@ function IsoSpriteManager(options) {
             animation.alpha = mathArrayUtils.isFalseNotZero(this.unit.isoManagedAlpha) ? 1 : this.unit.isoManagedAlpha;
             animation.tint = this.unit.isoManagedTint || 0xFFFFFF;
         }, 'beforeRenderWorld');
-    }
+    };
 
     this.idle = function(options) {
         options = options || {};
@@ -215,9 +215,9 @@ function IsoSpriteManager(options) {
                     idle: true
                 });
             }
-        })
+        });
         gameUtils.deathPact(this.unit, this.idleTimer, this.idleTimer.name);
-    }
+    };
 }
 
 export default IsoSpriteManager;
