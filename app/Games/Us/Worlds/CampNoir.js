@@ -753,7 +753,7 @@ var enemyDefs = {
     },
     basicHunter: {
         noun: 'Hunter',
-        strength: 'basic',
+        strength: 'hard',
         enemySets: [{
                 type: 'Hunter',
                 amount: [2],
@@ -863,10 +863,10 @@ var enemyDefs = {
             type: 'Critter',
             amount: [13, 14],
             atATime: 2,
-            hz: 4000
+            hz: 5000
         }, {
             type: 'Hunter',
-            amount: [3, 4],
+            amount: [2, 3],
             atATime: 1,
             initialDelay: 3000,
             hz: 4500

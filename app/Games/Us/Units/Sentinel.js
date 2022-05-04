@@ -244,9 +244,9 @@ export default function Sentinel(options) {
     var unitProperties = $.extend({
         unitType: 'Sentinel',
         health: 35,
-        defense: 1,
+        defense: 2,
         energy: 0,
-        dodge: 10,
+        dodge: 8,
         energyRegenerationRate: 1,
         hitboxWidth: 40,
         hitboxHeight: 60,

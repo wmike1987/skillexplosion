@@ -331,12 +331,6 @@ var game = {
                                     }), {
                                         duration: floatDuration
                                 });
-                                graphicsUtils.floatSpriteNew(border,
-                                    gameUtils.getPlayableCenterPlus({
-                                        y: 60 + yOffset
-                                    }), {
-                                        duration: floatDuration
-                                });
 
                                 gameUtils.doSomethingAfterDuration(() => {
                                     let ursulaAugment = unitUtils.addRandomAugmentToAbility({
@@ -392,13 +386,7 @@ var game = {
                                             y: 60 + yOffset
                                         }), {
                                             duration: floatDuration
-                                        });
-                                    graphicsUtils.floatSpriteNew(border,
-                                        gameUtils.getPlayableCenterPlus({
-                                            y: 60 + yOffset
-                                        }), {
-                                            duration: floatDuration
-                                        });
+                                    });
                                 }, floatDuration - 750);
                             }, 1500);
                         }

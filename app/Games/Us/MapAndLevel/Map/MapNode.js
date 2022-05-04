@@ -84,7 +84,7 @@ var MapLevelNode = function(options) {
             token.interactive = true;
         });
     } else {
-        //default behavior
+        //default behavior - find the right token mapping based on level criteria
         var token = 'default';
         if(this.levelDetails.isBossLevel()) {
             token = 'bossToken';

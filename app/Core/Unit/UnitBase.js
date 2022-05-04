@@ -181,7 +181,7 @@ var UnitBase = {
     currentSpecialtyItems: [null, null, null, null, null, null],
     currentBackpack: [null, null, null],
     dropItemsOnDeath: true,
-    friendlyTint: 0x60d056,
+    friendlyTint: 0x7e518b,
     enemyTint: 0xb14545,
     neutralTint: 0xb8b62d,
 

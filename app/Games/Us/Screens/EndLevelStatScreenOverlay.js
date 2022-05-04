@@ -216,13 +216,12 @@ var presentItems = function(options) {
 
         //selection method
         var makeSelection = function(item) {
-            var selectionDuration = 750;
             globals.currentGame.soundPool.itemDropSound.play();
 
             graphicsUtils.flashSprite({
                 sprite: item.icon.addedBorder,
                 duration: 40,
-                times: 4,
+                times: 2,
                 toColor: 0xeb0250,
                 onEnd: () => {
                     choices.push(item.itemName);
