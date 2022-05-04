@@ -167,7 +167,7 @@ var graphicsUtils = {
         return this.createDisplayObject(sprite.creationTextureName, options);
     },
 
-    removeSomethingFromRenderer: function(something, where) {
+    removeSomethingFromRenderer: function(something) {
         if (!something) return;
 
         //harmless detach, just in case... "harmless"
@@ -187,7 +187,7 @@ var graphicsUtils = {
             }
         } else {
             // 2) we are alive and well and want to be destroyed
-            where = where || something.myLayer || 'stage';
+            var where = something.myLayer || 'stage';
             globals.currentGame.renderer.removeFromPixiStage(something, where);
             Matter.Events.trigger(something, 'destroy');
         }
@@ -339,6 +339,8 @@ var graphicsUtils = {
             sprite.visible = true;
         }
 
+        var border = sprite.addedBorder;
+
         var timer = globals.currentGame.addTimer({
             name: 'fadeSpriteOverTime:' + mathArrayUtils.getId(),
             timeLimit: time,
@@ -347,8 +349,18 @@ var graphicsUtils = {
             tickCallback: function() {
                 if (fadeIn) {
                     sprite.alpha = this.percentDone * finalAlpha;
+
+                    //also handle border
+                    if(border) {
+                        border = this.percentDone * finalAlpha;
+                    }
                 } else {
                     sprite.alpha = startingAlpha - (this.percentDone * startingAlpha);
+
+                    //also handle border
+                    if(border) {
+                        border = startingAlpha - (this.percentDone * startingAlpha);
+                    }
                 }
             },
             totallyDoneCallback: function() {
@@ -357,6 +369,10 @@ var graphicsUtils = {
                         graphicsUtils.removeSomethingFromRenderer(sprite);
                     } else {
                         sprite.visible = false;
+
+                        if(border) {
+                            border.visible = false;
+                        }
                     }
                 }
                 if (callback) {
@@ -457,7 +473,7 @@ var graphicsUtils = {
                 sprite.alpha -= 1.4 / (options.runs);
             },
             totallyDoneCallback: function() {
-                graphicsUtils.removeSomethingFromRenderer(sprite, 'foreground');
+                graphicsUtils.removeSomethingFromRenderer(sprite);
             }.bind(this)
         });
 
@@ -476,6 +492,8 @@ var graphicsUtils = {
 
         sprite.position = position;
         sprite.alpha = alphaBuffer;
+        var border = sprite.addedBorder;
+
         var timer = globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
             timeLimit: options.duration || 750,
@@ -484,17 +502,25 @@ var graphicsUtils = {
             tickCallback: function(delta) {
                 if (!options.stationary) {
                     sprite.position.y -= (delta * (options.speed / 100 || 0.03));
+
+                    if(border) {
+                        border.position.y -= (delta * (options.speed / 100 || 0.03));
+                    }
                 }
 
                 //if we're going to persist at end, don't fade anything
                 if (!options.persistAtEnd) {
                     sprite.alpha = alphaBuffer - this.percentDone * alphaBuffer;
+
+                    if(border) {
+                        border.alpha = alphaBuffer - this.percentDone * alphaBuffer;
+                    }
                 }
             },
             totallyDoneCallback: function() {
                 //if we are to persist at the end, don't remove the sprite
                 if (!options.persistAtEnd) {
-                    graphicsUtils.removeSomethingFromRenderer(sprite, options.where || 'hud');
+                    graphicsUtils.removeSomethingFromRenderer(sprite);
                 }
 
                 if (options.deferred) {
@@ -634,7 +660,7 @@ var graphicsUtils = {
             totallyDoneCallback: function() {
                 //if we are to persist at the end, don't remove the sprite
                 if (!options.persistAtEnd) {
-                    graphicsUtils.removeSomethingFromRenderer(floatedText, options.where || 'hud');
+                    graphicsUtils.removeSomethingFromRenderer(floatedText);
                 }
 
                 if (options.deferred) {
@@ -886,7 +912,7 @@ var graphicsUtils = {
         return this.graduallyTint(sprite, fromColor, toColor, duration, null, pauseDurationAtEnds, times, options.onEnd);
     },
 
-    shakeSprite: function(sprite, duration) {
+    shakeSprite: function(sprite, duration, onDone) {
         var shakeFrameLength = 32;
         let startOffset = 3.0;
         let finishOffset = 1.0;
@@ -907,6 +933,9 @@ var graphicsUtils = {
             totallyDoneCallback: function() {
                 sprite.position = position;
                 sprite.independentRender = false;
+                if(onDone) {
+                    onDone();
+                }
             }
         });
 

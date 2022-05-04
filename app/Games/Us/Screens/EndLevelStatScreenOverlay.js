@@ -216,41 +216,52 @@ var presentItems = function(options) {
 
         //selection method
         var makeSelection = function(item) {
-            choices.push(item.itemName);
-            item.icon.tooltipObj.hide();
-            globals.currentGame.soundPool.itemChoose.play();
-            graphicsUtils.removeSomethingFromRenderer(rewardText);
+            var selectionDuration = 750;
+            globals.currentGame.soundPool.itemDropSound.play();
 
-            //hide all icons, remove the click handlers, then destory the items
-            items.forEach((i) => {
-                i.icon.visible = false;
-                i.removeSelector();
-                i.destroy();
-            });
+            graphicsUtils.flashSprite({
+                sprite: item.icon.addedBorder,
+                duration: 40,
+                times: 4,
+                toColor: 0xeb0250,
+                onEnd: () => {
+                    choices.push(item.itemName);
+                    item.icon.tooltipObj.hide();
+                    graphicsUtils.removeSomethingFromRenderer(rewardText);
 
-            if (choices.length == globals.currentGame.map.completedNodes.length) {
-                airDropIndicators.forEach((adi, index) => {
-                    adi.remove();
-                });
-                globals.currentGame.flyover(() => {
-                    globals.currentGame.dustAndItemBox({
-                        location: gameUtils.getPlayableCenterPlus({
-                            y: 50
-                        }),
-                        item: choices,
-                        autoDestroyBox: true
+                    //hide all icons, remove the click handlers, then destory the items
+                    items.forEach((i) => {
+                        graphicsUtils.fadeSpriteOverTime({sprite: i.icon, duration: 100});
+                        i.removeSelector();
+                        gameUtils.doSomethingAfterDuration(() => {
+                            i.destroy();
+                        }, 100);
                     });
-                }, {
-                    quiet: true
-                });
-                done(); //We're done
-            } else {
-                //present the next set of choices
-                gameUtils.doSomethingAfterDuration(() => {
-                    recursivePresentation();
-                }, 100);
-            }
-            return;
+
+                    if (choices.length == globals.currentGame.map.completedNodes.length) {
+                        airDropIndicators.forEach((adi, index) => {
+                            adi.remove();
+                        });
+                        globals.currentGame.flyover(() => {
+                            globals.currentGame.dustAndItemBox({
+                                location: gameUtils.getPlayableCenterPlus({
+                                    y: 50
+                                }),
+                                item: choices,
+                                autoDestroyBox: true
+                            });
+                        }, {
+                            quiet: true
+                        });
+                        done(); //We're done
+                    } else {
+                        //present the next set of choices
+                        gameUtils.doSomethingAfterDuration(() => {
+                            recursivePresentation();
+                        }, 100);
+                    }
+                }
+            });
         };
     };
 

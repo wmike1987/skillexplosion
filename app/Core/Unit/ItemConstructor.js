@@ -118,10 +118,6 @@ var specialItemDropSound = gameUtils.getSound('itemdrop.wav', {
     volume: 0.035,
     rate: 1.5
 });
-var itemDropSound = gameUtils.getSound('itemdrop.wav', {
-    volume: 0.03,
-    rate: 1.75
-});
 var specialItemSwoosh = gameUtils.getSound('specialitemtoss.wav', {
     volume: 0.25,
     rate: 1.2
@@ -401,7 +397,7 @@ var ic = function(options) {
                             item: item
                         });
 
-                    var dropSound = itemDropSound;
+                    var dropSound = globals.currentGame.soundPool.itemDropSound;
                     if (item.classInformation.itemType == 'microchip') {
                         dropSound = microchipDropSound;
                     } else if (item.classInformation.itemClass == 'book') {

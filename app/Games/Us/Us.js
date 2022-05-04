@@ -186,10 +186,6 @@ var game = {
             volume: 0.07,
             rate: 1.0
         });
-        this.soundPool.positiveSound2 = gameUtils.getSound('positivesound2.wav', {
-            volume: 0.04,
-            rate: 0.9
-        });
         this.soundPool.positiveSound3 = gameUtils.getSound('positivesound3.wav', {
             volume: 0.06,
             rate: 0.9
@@ -227,12 +223,17 @@ var game = {
             rate: 1
         });
         this.soundPool.itemChoose = gameUtils.getSound('itemplace.wav', {
-            volume: 0.05,
-            rate: 1.5
+            volume: 0.08,
+            rate: 1.3
         });
         this.soundPool.softBeep = gameUtils.getSound('softBeep.wav', {
             volume: 0.05,
             rate: 1.05
+        });
+
+        this.soundPool.itemDropSound = gameUtils.getSound('itemdrop.wav', {
+            volume: 0.03,
+            rate: 1.75
         });
         //
         // this.soundPool.whistling = gameUtils.getSound('music/singing.mp3', {
