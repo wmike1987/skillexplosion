@@ -696,6 +696,8 @@ var enemyDefs = {
             hz: 4500
         }]
     },
+
+    //basics
     basic: {
         noun: 'Critter',
         strength: 'basic',
@@ -766,21 +768,18 @@ var enemyDefs = {
             easyFlyObj
         ]
     },
+
+    //basic hards
     basicHard: {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [2, 3, 4],
+            amount: [4, 5],
             atATime: 2,
             hz: 4000
         }, {
-            type: 'Sentinel',
-            amount: [1, 2],
-            atATime: 1,
-            hz: 4500
-        }, {
             type: 'Gargoyle',
-            amount: [2],
+            amount: [4],
             initialDelay: 6500,
             atATime: 1,
             hz: 5000
@@ -795,7 +794,7 @@ var enemyDefs = {
             hz: 4000
         }, {
             type: 'Sentinel',
-            amount: [3, 4],
+            amount: [4],
             atATime: 1,
             hz: 4500
         }, {
@@ -815,7 +814,7 @@ var enemyDefs = {
             hz: 2800
         }, {
             type: 'Sentinel',
-            amount: [3, 4],
+            amount: [1],
             atATime: 1,
             hz: 4500
         }, {
@@ -831,101 +830,9 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Sentinel',
-            amount: [5, 6],
-            atATime: 2,
-            hz: 5000
-        }, hardFlyObj]
-    },
-    rammians: {
-        noun: 'Rammian',
-        strength: 'hard',
-        enemySets: [{
-            type: 'Rammian',
-            amount: [6, 8],
-            atATime: 2,
-            hz: 7000
-        },{
-            type: 'Critter',
-            amount: [4],
-            atATime: 1,
-            hz: 7000
-        }, hardFlyObj]
-    },
-    mobRammians: {
-        noun: 'Eruptlet',
-        strength: 'hard',
-        enemySets: [{
-            type: 'Rammian',
-            amount: [5, 6],
-            atATime: 2,
-            hz: 8500
-        }, {
-            type: 'Eruptlet',
-            amount: 25,
-            atATime: 5,
-            hz: 3800
-        }, hardFlyObj]
-    },
-    hardGargs: {
-        noun: 'Gargoyle',
-        strength: 'hard',
-        enemySets: [{
-            type: 'Critter',
-            amount: 22,
-            atATime: 3,
-            hz: 5000
-        }, {
-            type: 'Gargoyle',
             amount: [6],
-            atATime: 2,
-            hz: 14000
-        }, hardFlyObj]
-    },
-
-    //outer basics
-    outerBasic: {
-        noun: 'Critter',
-        strength: 'hard',
-        enemySets: [{
-            type: 'Critter',
-            amount: 12,
-            atATime: 2,
-            hz: 4000
-        }, {
-            type: 'Sentinel',
-            amount: 4,
             atATime: 1,
-            hz: 4000
-        }, hardFlyObj]
-    },
-    outerBasicTwo: {
-        noun: 'Hunter',
-        strength: 'hard',
-        enemySets: [{
-            type: 'Critter',
-            amount: 12,
-            atATime: 2,
-            hz: 4000
-        }, {
-            type: 'Hunter',
-            amount: 3,
-            atATime: 1,
-            hz: 4000
-        }, hardFlyObj]
-    },
-    outerBasicThree: {
-        noun: 'Rammian',
-        strength: 'hard',
-        enemySets: [{
-            type: 'Critter',
-            amount: 15,
-            atATime: 2,
-            hz: 4000
-        }, {
-            type: 'Rammian',
-            amount: 3,
-            atATime: 1,
-            hz: 4000
+            hz: 3000
         }, hardFlyObj]
     },
 
@@ -934,15 +841,14 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [7, 8],
+            amount: [9, 10],
             atATime: 1,
             hz: 3000
         }, {
             type: 'Rammian',
-            amount: 3,
-            initialDelay: 5000,
+            amount: 4,
             atATime: 1,
-            hz: 5000
+            hz: 3000
         }, {
             type: 'Hunter',
             amount: 2,
@@ -955,12 +861,12 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [12, 13],
+            amount: [13, 14],
             atATime: 2,
             hz: 4000
         }, {
             type: 'Hunter',
-            amount: 2,
+            amount: [3, 4],
             atATime: 1,
             initialDelay: 3000,
             hz: 4500
@@ -968,7 +874,7 @@ var enemyDefs = {
             type: 'Sentinel',
             amount: 1,
             atATime: 1,
-            hz: 4000
+            hz: 12000
         }, hardFlyObj]
     },
     outerHardThree: {
@@ -982,7 +888,7 @@ var enemyDefs = {
         }, hardFlyObj]
     },
 
-    //boss
+    //boss configs
     sentinelBoss: {
         noun: 'Sentinel',
         strength: 'boss',
@@ -993,7 +899,7 @@ var enemyDefs = {
             hz: 12000
         }, {
             type: 'Critter',
-            amount: 12,
+            amount: 15,
             atATime: 1,
             addedProps: {
                 immuneToAugment: true
@@ -1043,6 +949,7 @@ var enemyDefs = {
         }, hardFlyObj]
     },
 
+    //random other level configs
     easyGargs: {
         noun: 'Gargoyle',
         strength: 'hard',
@@ -1076,6 +983,51 @@ var enemyDefs = {
             atATime: 2,
             hz: 5200
         }]
+    },
+    rammians: {
+        noun: 'Rammian',
+        strength: 'hard',
+        enemySets: [{
+            type: 'Rammian',
+            amount: [6, 8],
+            atATime: 2,
+            hz: 7000
+        },{
+            type: 'Critter',
+            amount: [4],
+            atATime: 1,
+            hz: 7000
+        }, hardFlyObj]
+    },
+    mobRammians: {
+        noun: 'Eruptlet',
+        strength: 'hard',
+        enemySets: [{
+            type: 'Rammian',
+            amount: [5, 6],
+            atATime: 2,
+            hz: 8500
+        }, {
+            type: 'Eruptlet',
+            amount: 25,
+            atATime: 5,
+            hz: 3800
+        }, hardFlyObj]
+    },
+    hardGargs: {
+        noun: 'Gargoyle',
+        strength: 'hard',
+        enemySets: [{
+            type: 'Critter',
+            amount: 22,
+            atATime: 3,
+            hz: 5000
+        }, {
+            type: 'Gargoyle',
+            amount: [3, 4],
+            atATime: 1,
+            hz: 7000
+        }, hardFlyObj]
     },
 };
 
@@ -1294,7 +1246,6 @@ var phaseTwo = function(options) {
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
 
             var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
-
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
                     randomAugment: true,
@@ -1514,19 +1465,23 @@ var phaseThree = function() {
     };
 
     //right levels
-    this.map.addMapNode('outerBasic', Object.assign(outerParam, {
+    var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         }
     }));
-    this.map.addMapNode('outerBasic', Object.assign(outerParam, {
+
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         }
     }));
 
     var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
-    this.map.addMapNode('outerBasicTwo', {
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    this.map.addMapNode(basicHardChoice, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         },
@@ -1537,7 +1492,8 @@ var phaseThree = function() {
     });
 
     //left levels
-    this.map.addMapNode('outerBasicThree', Object.assign(outerParam, {
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
         },
@@ -1607,10 +1563,11 @@ var phaseThree = function() {
         }
     });
 
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: ['rammians', 'easyGargs', 'outerBasic'],
+            enemyDefList: ['rammians', 'easyGargs', basicHardChoice],
             itemClass: 'stimulant',
         }
     });

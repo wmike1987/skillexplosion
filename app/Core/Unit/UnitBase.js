@@ -1147,9 +1147,9 @@ var UnitBase = {
         var resetPassiveOrder = function() {
             this.passiveOrder = 0;
         }.bind(this);
-        Matter.Events.on(globals.currentGame, "VictoryOrDefeat MultiLevelCampComplete", resetPassiveOrder);
+        Matter.Events.on(globals.currentGame, "VictoryOrDefeat OutingLevelCompleted MultiLevelCampComplete", resetPassiveOrder);
         gameUtils.deathPact(this, () => {
-            Matter.Events.off(globals.currentGame, "VictoryOrDefeat MultiLevelCampComplete", resetPassiveOrder);
+            Matter.Events.off(globals.currentGame, "VictoryOrDefeat OutingLevelCompleted MultiLevelCampComplete", resetPassiveOrder);
         });
 
         Matter.Events.on(this, "changeHoldPosition", function(event) {
