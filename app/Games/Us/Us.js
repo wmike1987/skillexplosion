@@ -234,14 +234,13 @@ var game = {
             volume: 0.05,
             rate: 1.05
         });
+        // 
+        // this.soundPool.whistling = gameUtils.getSound('music/singing.mp3', {
+        //     volume: 1.2,
+        //     rate: 1.05
+        // });
 
-        this.soundPool.whistling = gameUtils.getSound('music/singing.mp3', {
-            volume: 1.2,
-            rate: 1.05
-        });
-
-        // this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
-        this.levelEntryMusic = [this.soundPool.whistling, this.soundPool.whistling, this.soundPool.whistling];
+        this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
     },
 
     play: function(options) {

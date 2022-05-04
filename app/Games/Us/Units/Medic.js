@@ -1801,13 +1801,13 @@ export default function Medic(options) {
         }
     });
 
-    var wwADuration = 2000;
+    var wwADuration = 4000;
     var wwDDuration = 3000;
     var wwHandler = {};
     var wickedWays = new Passive({
         title: 'Wicked Ways',
         // originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
-        aggressionDescription: ['Agression Mode (When hit)', 'Plague attacker for 2 seconds.'],
+        aggressionDescription: ['Agression Mode (When hit)', 'Plague attacker for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
         unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain a free mine.'],
         textureName: 'WickedWays',

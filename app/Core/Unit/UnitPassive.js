@@ -230,20 +230,30 @@ export default function(options) {
                     something: border,
                     body: this.unit.body
                 });
-                graphicsUtils.floatSprite(iconUp, {
-                    direction: 1,
-                    runs: 50
+                graphicsUtils.floatSpriteNew(iconUp,
+                    {x: 0, y: 0}, {
+                    duration: 800,
+                    stationary: true
                 });
-                graphicsUtils.floatSprite(border, {
-                    direction: 1,
-                    runs: 50
+                // graphicsUtils.floatSprite(iconUp, {
+                //     direction: 1,
+                //     runs: 50
+                // });
+                graphicsUtils.floatSpriteNew(border,
+                    {x: 0, y: 0}, {
+                    duration: 800,
+                    stationary: true
                 });
+                // graphicsUtils.floatSprite(border, {
+                //     direction: 1,
+                //     runs: 50
+                // });
                 if (this.passiveAction) {
                     this.passiveAction();
                     globals.currentGame.soundPool.softBeep.play();
                     // Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: unequippedPassive});
                 }
-            }, 1800 + timingOffset + (order * 950));
+            }, 500 + timingOffset + (order * 950));
         }
     }.bind(this));
 
