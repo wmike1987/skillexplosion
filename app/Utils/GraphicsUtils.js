@@ -492,7 +492,6 @@ var graphicsUtils = {
 
         sprite.position = position;
         sprite.alpha = alphaBuffer;
-        var border = sprite.addedBorder;
 
         var timer = globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
@@ -500,6 +499,7 @@ var graphicsUtils = {
             killsSelf: true,
             runs: 1,
             tickCallback: function(delta) {
+                const border = sprite.addedBorder;
                 if (!options.stationary) {
                     sprite.position.y -= (delta * (options.speed / 100 || 0.03));
 

@@ -775,12 +775,12 @@ var enemyDefs = {
         enemySets: [{
             type: 'Critter',
             amount: [4, 5],
-            atATime: 2,
-            hz: 4000
+            atATime: 1,
+            hz: 5000
         }, {
             type: 'Gargoyle',
-            amount: [4],
-            initialDelay: 6500,
+            amount: [5],
+            initialDelay: 3250,
             atATime: 1,
             hz: 5000
         }, generalFlyObj]
@@ -830,7 +830,7 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Sentinel',
-            amount: [6],
+            amount: [5],
             atATime: 1,
             hz: 3000
         }, hardFlyObj]

@@ -321,16 +321,18 @@ var game = {
                                         y: 1.25
                                     }
                                 });
-                                graphicsUtils.addSomethingToRenderer(shaneIcon);
+                                graphicsUtils.addSomethingToRenderer(shaneIcon, {
+                                    position: gameUtils.getPlayableCenterPlus({
+                                        y: 60 + yOffset
+                                    })
+                                });
                                 let border = graphicsUtils.addBorderToSprite({
                                     sprite: shaneIcon
                                 });
                                 graphicsUtils.floatSpriteNew(shaneIcon,
-                                    gameUtils.getPlayableCenterPlus({
-                                        y: 60 + yOffset
-                                    }), {
+                                    shaneIcon.position, {
                                         duration: floatDuration
-                                });
+                                    });
 
                                 gameUtils.doSomethingAfterDuration(() => {
                                     let ursulaAugment = unitUtils.addRandomAugmentToAbility({
@@ -377,16 +379,18 @@ var game = {
                                             y: 1.25
                                         }
                                     });
-                                    graphicsUtils.addSomethingToRenderer(ursulaIcon);
+                                    graphicsUtils.addSomethingToRenderer(ursulaIcon, {
+                                        position: gameUtils.getPlayableCenterPlus({
+                                            y: 60 + yOffset
+                                        })
+                                    });
                                     let border = graphicsUtils.addBorderToSprite({
                                         sprite: ursulaIcon
                                     });
                                     graphicsUtils.floatSpriteNew(ursulaIcon,
-                                        gameUtils.getPlayableCenterPlus({
-                                            y: 60 + yOffset
-                                        }), {
+                                        ursulaIcon.position, {
                                             duration: floatDuration
-                                    });
+                                        });
                                 }, floatDuration - 750);
                             }, 1500);
                         }
