@@ -218,6 +218,17 @@ var presentItems = function(options) {
         var makeSelection = function(item) {
             globals.currentGame.soundPool.itemDropSound.play();
 
+            items.forEach((i) => {
+                if(i == item) {
+                    return;
+                }
+                graphicsUtils.fadeSpriteOverTime({sprite: i.icon, duration: 100});
+                i.removeSelector();
+                gameUtils.doSomethingAfterDuration(() => {
+                    i.destroy();
+                }, 100);
+            });
+
             graphicsUtils.flashSprite({
                 sprite: item.icon.addedBorder,
                 duration: 40,
@@ -229,13 +240,11 @@ var presentItems = function(options) {
                     graphicsUtils.removeSomethingFromRenderer(rewardText);
 
                     //hide all icons, remove the click handlers, then destory the items
-                    items.forEach((i) => {
-                        graphicsUtils.fadeSpriteOverTime({sprite: i.icon, duration: 100});
-                        i.removeSelector();
-                        gameUtils.doSomethingAfterDuration(() => {
-                            i.destroy();
-                        }, 100);
-                    });
+                    graphicsUtils.fadeSpriteOverTime({sprite: item.icon, duration: 100});
+                    item.removeSelector();
+                    gameUtils.doSomethingAfterDuration(() => {
+                        item.destroy();
+                    }, 100);
 
                     if (choices.length == globals.currentGame.map.completedNodes.length) {
                         airDropIndicators.forEach((adi, index) => {

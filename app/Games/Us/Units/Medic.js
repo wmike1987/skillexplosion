@@ -152,6 +152,8 @@ export default function Medic(options) {
 
     };
 
+    var masterScale = 1.07;
+
     var sc = {
         x: 0.33,
         y: 0.33
@@ -189,8 +191,8 @@ export default function Medic(options) {
             id: 'selected',
             data: 'IsometricSelectedSmall',
             scale: {
-                x: 1.0,
-                y: 1.0
+                x: 1.2,
+                y: 1.2
             },
             stage: 'stageNOne',
             visible: false,
@@ -205,8 +207,8 @@ export default function Medic(options) {
             id: 'selectionPending',
             data: unitUtils.getPendingAnimation(),
             scale: {
-                x: 0.33,
-                y: 0.33
+                x: 0.38,
+                y: 0.38
             },
             stage: 'stageNOne',
             visible: false,
@@ -219,7 +221,7 @@ export default function Medic(options) {
         }, {
             id: 'left',
             data: spineWest,
-            scale: sc,
+            scale: mathArrayUtils.multipleVectorByScalar(sc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -229,7 +231,7 @@ export default function Medic(options) {
         }, {
             id: 'right',
             data: spineEast,
-            scale: flipsc,
+            scale: mathArrayUtils.multipleVectorByScalar(flipsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -240,7 +242,7 @@ export default function Medic(options) {
         {
             id: 'up',
             data: spineNorth,
-            scale: adjustedUpsc,
+            scale: mathArrayUtils.multipleVectorByScalar(adjustedUpsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -251,7 +253,7 @@ export default function Medic(options) {
         {
             id: 'down',
             data: spineSouth,
-            scale: adjustedDownsc,
+            scale: mathArrayUtils.multipleVectorByScalar(adjustedDownsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -262,7 +264,7 @@ export default function Medic(options) {
         {
             id: 'upLeft',
             data: spineNorthWest,
-            scale: updiagsc,
+            scale: mathArrayUtils.multipleVectorByScalar(updiagsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -273,7 +275,7 @@ export default function Medic(options) {
         {
             id: 'upRight',
             data: spineNorthEast,
-            scale: flipupdiagsc,
+            scale: mathArrayUtils.multipleVectorByScalar(flipupdiagsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -284,7 +286,7 @@ export default function Medic(options) {
         {
             id: 'downRight',
             data: spineSouthEast,
-            scale: flipdowndiagsc,
+            scale: mathArrayUtils.multipleVectorByScalar(flipdowndiagsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -294,7 +296,7 @@ export default function Medic(options) {
         }, {
             id: 'downLeft',
             data: spineSouthWest,
-            scale: downdiagsc,
+            scale: mathArrayUtils.multipleVectorByScalar(downdiagsc, masterScale),
             rotate: 'none',
             visible: false,
             offset: {
@@ -2073,7 +2075,8 @@ export default function Medic(options) {
         energy: 60,
         grit: 5,
         hitboxWidth: 28,
-        hitboxHeight: 56,
+        hitboxHeight: 63,
+        hitboxYOffset: -6,
         adjustHitbox: false,
         itemsEnabled: true,
         frameTint: 0x0c7d10,

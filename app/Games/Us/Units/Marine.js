@@ -204,16 +204,16 @@ export default function Marine(options) {
     };
 
     var sc = {
-        x: 0.35,
-        y: 0.35
+        x: 0.38,
+        y: 0.38
     };
     var adjustedUpsc = {
-        x: 0.37,
-        y: 0.37
+        x: 0.4,
+        y: 0.4
     };
     var adjustedDownsc = {
-        x: 0.37,
-        y: 0.37
+        x: 0.4,
+        y: 0.4
     };
     var flipsc = {
         x: -1 * sc.x,
@@ -225,8 +225,8 @@ export default function Marine(options) {
             id: 'selected',
             data: 'IsometricSelectedSmall',
             scale: {
-                x: 1.0,
-                y: 1.0
+                x: 1.2,
+                y: 1.2
             },
             stage: 'stageNOne',
             visible: false,
@@ -242,8 +242,8 @@ export default function Marine(options) {
             id: 'selectionPending',
             data: unitUtils.getPendingAnimation(),
             scale: {
-                x: 0.33,
-                y: 0.33
+                x: 0.38,
+                y: 0.38
             },
             stage: 'stageNOne',
             visible: false,
@@ -1796,8 +1796,8 @@ export default function Marine(options) {
         dodgeSound: dodgeSound,
         holdPositionSound: holdPositionSound,
         consumeSound: yeahsound,
-        hitboxWidth: 30,
-        hitboxHeight: 58,
+        hitboxWidth: 34,
+        hitboxHeight: 63,
         // adjustHitbox: true,
         animationSpecificHitboxes: [{
                 animation: walkAnimations.down,
@@ -1805,7 +1805,7 @@ export default function Marine(options) {
                 width: 48,
                 offset: {
                     x: -6,
-                    y: -5
+                    y: -10
                 }
             },
             {
@@ -1813,8 +1813,8 @@ export default function Marine(options) {
                 height: 8,
                 width: 50,
                 offset: {
-                    x: 0,
-                    y: -8
+                    x: 2,
+                    y: -10
                 }
             },
             {
@@ -1841,7 +1841,7 @@ export default function Marine(options) {
                 width: 50,
                 offset: {
                     x: 0,
-                    y: -13
+                    y: -15
                 }
             },
             {
@@ -1850,7 +1850,7 @@ export default function Marine(options) {
                 width: 50,
                 offset: {
                     x: 0,
-                    y: -13
+                    y: -15
                 }
             },
             {

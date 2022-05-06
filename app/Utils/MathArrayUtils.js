@@ -185,7 +185,7 @@ var mathArrayUtils = {
     },
 
     defaultValue: function(value, defaultValue) {
-        if(this.isFalseNotZero(value)) {
+        if (this.isFalseNotZero(value)) {
             return defaultValue;
         } else {
             return value;
@@ -251,6 +251,17 @@ var mathArrayUtils = {
         return {
             x: position.x * scalar,
             y: position.y * scalar
+        };
+    },
+
+    multipleVectorByScalar: function(vector, scalar) {
+        vector = {
+            x: vector.x,
+            y: vector.y
+        };
+        return {
+            x: vector.x * scalar,
+            y: vector.y * scalar
         };
     },
 
