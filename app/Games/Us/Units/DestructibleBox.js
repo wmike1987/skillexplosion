@@ -66,7 +66,7 @@ export default function DestructibleBox(options) {
             data: unitUtils.getPendingAnimation(),
             scale: {
                 x: 0.5,
-                y: 0.62
+                y: 0.59
             },
             stage: 'stageNOne',
             visible: false,
