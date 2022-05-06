@@ -5,14 +5,23 @@ import UC from '@core/Unit/UnitConstructor.js';
 import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
 import style from '@utils/Styles.js';
-import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 
 export default function Eruptlet(options) {
     var eruptlet = {};
 
     options = options || {};
-    $.extend(options, {radius: 20}, options);
+    $.extend(options, {
+        radius: 20
+    }, options);
 
     //animation settings
     var runSpeed = 0.6;
@@ -140,102 +149,157 @@ export default function Eruptlet(options) {
     };
 
     var scale = 0.06;
-    var sc = {x: scale, y: scale};
-    var adjustedUpDownsc = {x: scale, y: scale};
-    var flipsc = {x: -1 * sc.x, y: sc.y};
+    var sc = {
+        x: scale,
+        y: scale
+    };
+    var adjustedUpDownsc = {
+        x: scale,
+        y: scale
+    };
+    var flipsc = {
+        x: -1 * sc.x,
+        y: sc.y
+    };
     var yOffset = 22;
-    var rc = [
-    {
-        id: 'selected',
-        data: 'IsometricSelectedSmall',
-        scale: {x: 1.0, y: 1.0},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },
-    {
-        id: 'selectionPending',
-        data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.34, y: 0.34},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },{
-        id: 'left',
-        data: spineWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-    },{
-        id: 'right',
-        data: spineEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'up',
-        data: spineNorth,
-        scale: adjustedUpDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'down',
-        data: spineSouth,
-        scale: adjustedUpDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upLeft',
-        data: spineNorthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upRight',
-        data: spineNorthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'downRight',
-        data: spineSouthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    }, {
-        id: 'downLeft',
-        data: spineSouthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },{
-        id: 'shadow',
-        data: 'IsoShadowBlurredSmall',
-        scale: {x: 1.0, y: 1.0},
-        visible: true,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        stage: "stageNTwo",
-        offset: {x: 0, y: 22}}];
+    var rc = [{
+            id: 'selected',
+            data: 'IsometricSelectedSmall',
+            scale: {
+                x: 1.0,
+                y: 1.2
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        },
+        {
+            id: 'selectionPending',
+            data: unitUtils.getPendingAnimation(),
+            scale: {
+                x: 0.34,
+                y: 0.4
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        }, {
+            id: 'left',
+            data: spineWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+        }, {
+            id: 'right',
+            data: spineEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'up',
+            data: spineNorth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'down',
+            data: spineSouth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upLeft',
+            data: spineNorthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upRight',
+            data: spineNorthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'downRight',
+            data: spineSouthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'downLeft',
+            data: spineSouthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'shadow',
+            data: 'IsoShadowBlurredSmall',
+            scale: {
+                x: 1.0,
+                y: 1.2
+            },
+            visible: true,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            stage: "stageNTwo",
+            offset: {
+                x: 0,
+                y: 22
+            }
+        }
+    ];
 
-    var burstSound = gameUtils.getSound('eruptletburst.wav', {volume: 0.08, rate: 1});
+    var burstSound = gameUtils.getSound('eruptletburst.wav', {
+        volume: 0.08,
+        rate: 1
+    });
 
     var unitProperties = $.extend({
         unitType: 'Eruptlet',
@@ -259,24 +323,28 @@ export default function Eruptlet(options) {
         idleSpecificAnimation: true,
         abilities: [],
         death: function() {
-            if(!this.alreadyAttacked && !this.isAttacking) {
+            if (!this.alreadyAttacked && !this.isAttacking) {
                 this.attack();
             }
             globals.currentGame.removeUnit(this);
         },
         _afterAddInit: function() {
             $.each(this.body.renderlings, function(key, renderling) {
-                if(renderling.skeleton) {
+                if (renderling.skeleton) {
                     $.each(renderling.skeleton.slots, function(i, slot) {
-                        if(slot.currentSprite) {
-                            if(slot.currentSpriteName.includes('1---4') ||
-                              (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length-1) == '1') ||
-                              (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
-                              slot.currentSpriteName.includes('1---3') ||
-                              slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
-                              slot.currentSpriteName.includes('North_0003_Layer-1---5'))
-                            {
-                                slot.customColor = {r: 0.2, g: 1.0, b: 0.2, a: 1.0};
+                        if (slot.currentSprite) {
+                            if (slot.currentSpriteName.includes('1---4') ||
+                                (slot.currentSpriteName.includes('1---1') && !slot.currentSpriteName.includes('1---11') && slot.currentSpriteName.charAt(slot.currentSpriteName.length - 1) == '1') ||
+                                (slot.currentSpriteName.includes('1---2') && !slot.currentSpriteName.includes('1---20')) ||
+                                slot.currentSpriteName.includes('1---3') ||
+                                slot.currentSpriteName.includes('NorthWest_0003_Layer-1---5') ||
+                                slot.currentSpriteName.includes('North_0003_Layer-1---5')) {
+                                slot.customColor = {
+                                    r: 0.2,
+                                    g: 1.0,
+                                    b: 0.2,
+                                    a: 1.0
+                                };
                             }
                         }
                     });
@@ -301,7 +369,7 @@ export default function Eruptlet(options) {
             attackAnimations: attackAnimations,
             cooldown: 650,
             honeRange: 300,
-            range: options.radius*2.25,
+            range: options.radius * 2.25,
             damage: 14,
             attack: function(target) {
                 var deathAnimation = gameUtils.getAnimation({
@@ -318,15 +386,20 @@ export default function Eruptlet(options) {
 
                 var blastRadius = 70;
                 var bodiesToDamage = [];
-                unitUtils.applyToUnitsByTeam(function(team) {return this.team != team;}.bind(this), function(unit) {
+                unitUtils.applyToUnitsByTeam(function(team) {
+                    return this.team != team;
+                }.bind(this), function(unit) {
                     return (mathArrayUtils.distanceBetweenBodies(this.body, unit.body) <= blastRadius && unit.isTargetable & unit != eruptlet);
                 }.bind(this), function(unit) {
                     // console.info('eruplet ' + this.unitId + ' attacked!');
                     unit.sufferAttack(this.damage, this);
                 }.bind(this));
                 this.alreadyAttacked = true;
-                if(!this.isDead) {
-                    this.sufferAttack(10000, null, {dodgeable: false, blockable: false});
+                if (!this.isDead) {
+                    this.sufferAttack(10000, null, {
+                        dodgeable: false,
+                        blockable: false
+                    });
                 }
             }
         },

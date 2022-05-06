@@ -5,14 +5,23 @@ import UC from '@core/Unit/UnitConstructor.js';
 import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
 import styles from '@utils/Styles.js';
-import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 
 export default function Critter(options) {
     var critter = {};
 
     options = options || {};
-    $.extend(options, {radius: 25}, options);
+    $.extend(options, {
+        radius: 25
+    }, options);
 
     //animation settings
     var runSpeed = 0.9;
@@ -142,103 +151,161 @@ export default function Critter(options) {
 
     };
 
-    var sc = {x: 0.1, y: 0.1};
-    var adjustedUpDownsc = {x: 0.1, y: 0.1};
-    var flipsc = {x: -1 * sc.x, y: sc.y};
+    var sc = {
+        x: 0.1,
+        y: 0.1
+    };
+    var adjustedUpDownsc = {
+        x: 0.1,
+        y: 0.1
+    };
+    var flipsc = {
+        x: -1 * sc.x,
+        y: sc.y
+    };
     var yOffset = 22;
-    var rc = [
-    {
-        id: 'selected',
-        data: 'IsometricSelectedSmall',
-        scale: {x: 1.1, y: 1.1},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },
-    {
-        id: 'selectionPending',
-        data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.35, y: 0.35},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },{
-        id: 'left',
-        data: spineWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-    },{
-        id: 'right',
-        data: spineEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'up',
-        data: spineNorth,
-        scale: adjustedUpDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'down',
-        data: spineSouth,
-        scale: adjustedUpDownsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upLeft',
-        data: spineNorthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upRight',
-        data: spineNorthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'downRight',
-        data: spineSouthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    }, {
-        id: 'downLeft',
-        data: spineSouthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },{
-        id: 'shadow',
-        data: 'IsoShadowBlurredSmall',
-        scale: {x: 1.1, y: 1.1},
-        visible: true,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        stage: "stageNTwo",
-        offset: {x: 0, y: 22}}];
+    var rc = [{
+            id: 'selected',
+            data: 'IsometricSelectedSmall',
+            scale: {
+                x: 1.2,
+                y: 1.3
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        },
+        {
+            id: 'selectionPending',
+            data: unitUtils.getPendingAnimation(),
+            scale: {
+                x: 0.35,
+                y: 0.45
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        }, {
+            id: 'left',
+            data: spineWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+        }, {
+            id: 'right',
+            data: spineEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'up',
+            data: spineNorth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'down',
+            data: spineSouth,
+            scale: adjustedUpDownsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upLeft',
+            data: spineNorthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upRight',
+            data: spineNorthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'downRight',
+            data: spineSouthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'downLeft',
+            data: spineSouthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'shadow',
+            data: 'IsoShadowBlurredSmall',
+            scale: {
+                x: 1.2,
+                y: 1.3
+            },
+            visible: true,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            stage: "stageNTwo",
+            offset: {
+                x: 0,
+                y: 22
+            }
+        }
+    ];
 
-    var attackSound = gameUtils.getSound('critterhit.wav', {volume: 0.15, rate: 1});
-    var deathSound = gameUtils.getSound('critterdeath.wav', {volume: 0.08, rate: 1.5});
+    var attackSound = gameUtils.getSound('critterhit.wav', {
+        volume: 0.15,
+        rate: 1
+    });
+    var deathSound = gameUtils.getSound('critterdeath.wav', {
+        volume: 0.08,
+        rate: 1.5
+    });
 
     // var meText = graphicsUtils.addSomethingToRenderer('TEX+:IsoShadowBlurred', {where: 'stage', style: styles.unitDamageStyle, position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {y: 22})});
 
@@ -273,49 +340,60 @@ export default function Critter(options) {
                 fadeTime: globals.currentGame.unitCorpseTime,
                 transform: [self.deathPosition.x, self.deathPosition.y, 1.1, 1.1]
             });
-            if(mathArrayUtils.flipCoin()) {
+            if (mathArrayUtils.flipCoin()) {
                 anim.scale.x *= -1;
             }
             graphicsUtils.addSomethingToRenderer(anim);
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(self.deathPosition, {y: 22})});
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {
+                where: 'stageNTwo',
+                scale: {
+                    x: 0.75,
+                    y: 0.75
+                },
+                position: mathArrayUtils.clonePosition(self.deathPosition, {
+                    y: 22
+                })
+            });
             graphicsUtils.fadeSpriteOverTimeLegacy(shadow, globals.currentGame.unitCorpseTime);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
             return [shadow, anim];
-        }}, options);
+        }
+    }, options);
 
     return UC({
-            givenUnitObj: critter,
-            renderChildren: rc,
-            radius: options.radius,
-            mass: options.mass || 8,
-            mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [attackSound, /*meText,*/ deathSound, unitProperties.portrait, unitProperties.wireframe],
-            unit: unitProperties,
-            moveable: {
-                moveSpeed: 2.7,
-                walkAnimations: runAnimations,
-            }, attacker: {
-                attackAnimations: attackAnimations,
-                cooldown: 650,
-                honeRange: 300,
-                isMelee: true,
-                range: options.radius*2+14,
-                damage: 6,
-                attackExtension: function(target) {
-                    var bloodAnimation = gameUtils.getAnimation({
-                        spritesheetName: 'UtilityAnimations1',
-                        animationName: 'GenericHit',
-                        speed: 1.0,
-                        transform: [target.position.x + Math.random()*8, target.position.y + Math.random()*8, 0.25, 0.25]
-                    });
-                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
-                    bloodAnimation.play();
-                    attackSound.play();
-                },
+        givenUnitObj: critter,
+        renderChildren: rc,
+        radius: options.radius,
+        mass: options.mass || 8,
+        mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+        slaves: [attackSound, /*meText,*/ deathSound, unitProperties.portrait, unitProperties.wireframe],
+        unit: unitProperties,
+        moveable: {
+            moveSpeed: 2.7,
+            walkAnimations: runAnimations,
+        },
+        attacker: {
+            attackAnimations: attackAnimations,
+            cooldown: 650,
+            honeRange: 300,
+            isMelee: true,
+            range: options.radius * 2 + 14,
+            damage: 6,
+            attackExtension: function(target) {
+                var bloodAnimation = gameUtils.getAnimation({
+                    spritesheetName: 'UtilityAnimations1',
+                    animationName: 'GenericHit',
+                    speed: 1.0,
+                    transform: [target.position.x + Math.random() * 8, target.position.y + Math.random() * 8, 0.25, 0.25]
+                });
+                graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                bloodAnimation.play();
+                attackSound.play();
             },
+        },
     });
 }

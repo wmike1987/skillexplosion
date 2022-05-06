@@ -5,14 +5,23 @@ import UC from '@core/Unit/UnitConstructor.js';
 import aug from '@core/Unit/_Unlocker.js';
 import Ability from '@core/Unit/UnitAbility.js';
 import Projectile from '@core/Unit/UnitProjectile.js';
-import {globals} from '@core/Fundamental/GlobalState';
-import {gameUtils, graphicsUtils, mathArrayUtils, unitUtils} from '@utils/UtilityMenu.js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils,
+    unitUtils
+} from '@utils/UtilityMenu.js';
 
 export default function Hunter(options) {
     var hunter = {};
 
     options = options || {};
-    $.extend(options, {radius: 25}, options);
+    $.extend(options, {
+        radius: 25
+    }, options);
 
     //animation settings
     var runSpeed = 0.9;
@@ -142,104 +151,165 @@ export default function Hunter(options) {
 
     };
 
-    var sc = {x: 0.33, y: 0.33};
-    var adjustedUpsc = {x: 0.36, y: 0.36};
-    var flipsc = {x: -1 * sc.x, y: sc.y};
+    var sc = {
+        x: 0.33,
+        y: 0.33
+    };
+    var adjustedUpsc = {
+        x: 0.36,
+        y: 0.36
+    };
+    var flipsc = {
+        x: -1 * sc.x,
+        y: sc.y
+    };
     var yOffset = 22;
-    var rc = [
-    {
-        id: 'selected',
-        data: 'IsometricSelectedSmall',
-        scale: {x: 1.0, y: 1.0},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },
-    {
-        id: 'selectionPending',
-        data: unitUtils.getPendingAnimation(),
-        scale: {x: 0.35, y: 0.35},
-        stage: 'stageNOne',
-        visible: false,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        offset: {x: 0, y: 22},
-    },{
-        id: 'left',
-        data: spineWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset},
-    },{
-        id: 'right',
-        data: spineEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'up',
-        data: spineNorth,
-        scale: adjustedUpsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'down',
-        data: spineSouth,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upLeft',
-        data: spineNorthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'upRight',
-        data: spineNorthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },
-    {
-        id: 'downRight',
-        data: spineSouthEast,
-        scale: flipsc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    }, {
-        id: 'downLeft',
-        data: spineSouthWest,
-        scale: sc,
-        rotate: 'none',
-        visible: false,
-        offset: {x: 0, y: yOffset}
-    },{
-        id: 'shadow',
-        data: 'IsoShadowBlurredSmall',
-        scale: {x: 1.0, y: 1.0},
-        visible: true,
-        avoidIsoMgr: true,
-        rotate: 'none',
-        stage: "stageNTwo",
-        offset: {x: 0, y: 22}}];
+    var rc = [{
+            id: 'selected',
+            data: 'IsometricSelectedSmall',
+            scale: {
+                x: 1.1,
+                y: 1.26
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        },
+        {
+            id: 'selectionPending',
+            data: unitUtils.getPendingAnimation(),
+            scale: {
+                x: 0.35,
+                y: 0.42
+            },
+            stage: 'stageNOne',
+            visible: false,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            offset: {
+                x: 0,
+                y: 22
+            },
+        }, {
+            id: 'left',
+            data: spineWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            },
+        }, {
+            id: 'right',
+            data: spineEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'up',
+            data: spineNorth,
+            scale: adjustedUpsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'down',
+            data: spineSouth,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upLeft',
+            data: spineNorthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'upRight',
+            data: spineNorthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        },
+        {
+            id: 'downRight',
+            data: spineSouthEast,
+            scale: flipsc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'downLeft',
+            data: spineSouthWest,
+            scale: sc,
+            rotate: 'none',
+            visible: false,
+            offset: {
+                x: 0,
+                y: yOffset
+            }
+        }, {
+            id: 'shadow',
+            data: 'IsoShadowBlurredSmall',
+            scale: {
+                x: 1.1,
+                y: 1.25
+            },
+            visible: true,
+            avoidIsoMgr: true,
+            rotate: 'none',
+            stage: "stageNTwo",
+            offset: {
+                x: 0,
+                y: 22
+            }
+        }
+    ];
 
-    var fireSound = gameUtils.getSound('sentinelfire.wav', {volume: 0.015, rate: 1});
-    var hitSound = gameUtils.getSound('sentinelhit.wav', {volume: 0.05, rate: 2});
-    var deathSound = gameUtils.getSound('sentineldeath.wav', {volume: 0.55, rate: 1});
+    var fireSound = gameUtils.getSound('sentinelfire.wav', {
+        volume: 0.015,
+        rate: 1
+    });
+    var hitSound = gameUtils.getSound('sentinelhit.wav', {
+        volume: 0.05,
+        rate: 2
+    });
+    var deathSound = gameUtils.getSound('sentineldeath.wav', {
+        volume: 0.55,
+        rate: 1
+    });
 
     var unitProperties = $.extend({
         unitType: 'Hunter',
@@ -272,7 +342,16 @@ export default function Hunter(options) {
             anim.play();
             deathSound.play();
 
-            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {where: 'stageNTwo', scale: {x: 0.75, y: 0.75}, position: mathArrayUtils.clonePosition(this.deathPosition, {y: 22})});
+            var shadow = graphicsUtils.addSomethingToRenderer('IsoShadowBlurred', {
+                where: 'stageNTwo',
+                scale: {
+                    x: 0.75,
+                    y: 0.75
+                },
+                position: mathArrayUtils.clonePosition(this.deathPosition, {
+                    y: 22
+                })
+            });
             graphicsUtils.fadeSpriteOverTimeLegacy(shadow, 3000);
             graphicsUtils.addSomethingToRenderer(shadow);
             globals.currentGame.removeUnit(this);
@@ -281,24 +360,32 @@ export default function Hunter(options) {
 
         _afterAddInit: function() {
             $.each(this.body.renderlings, function(key, renderling) {
-                if(renderling.skeleton) {
+                if (renderling.skeleton) {
                     $.each(renderling.skeleton.slots, function(i, slot) {
-                        if(slot.currentSprite) {
-                            if(slot.currentSpriteName.includes('Side_0001_Layer-17') || slot.currentSpriteName.includes('Side_0002_Layer-4') ||
-                            slot.currentSpriteName.includes('Back_0006_Layer-6') || slot.currentSpriteName.includes('Back_0003_Layer-16-copy') || slot.currentSpriteName.includes('Back_0000_Layer-4') ||
-                            slot.currentSpriteName.includes('quarterback_0005_Layer-1---6') || slot.currentSpriteName.includes('quarterback_0000_Layer-1---1') ||
-                            slot.currentSpriteName.includes('quarterback_0015_Layer-1---16') ||
-                            slot.currentSpriteName.includes('quarter_0000_Layer-1---1') ||
-                            slot.currentSpriteName.includes('head') || slot.currentSpriteName.includes('gun'))
-                            {
-                                slot.customColor = {r: 1.0, g: 0.25, b: 0.5, a: 1.0};
+                        if (slot.currentSprite) {
+                            if (slot.currentSpriteName.includes('Side_0001_Layer-17') || slot.currentSpriteName.includes('Side_0002_Layer-4') ||
+                                slot.currentSpriteName.includes('Back_0006_Layer-6') || slot.currentSpriteName.includes('Back_0003_Layer-16-copy') || slot.currentSpriteName.includes('Back_0000_Layer-4') ||
+                                slot.currentSpriteName.includes('quarterback_0005_Layer-1---6') || slot.currentSpriteName.includes('quarterback_0000_Layer-1---1') ||
+                                slot.currentSpriteName.includes('quarterback_0015_Layer-1---16') ||
+                                slot.currentSpriteName.includes('quarter_0000_Layer-1---1') ||
+                                slot.currentSpriteName.includes('head') || slot.currentSpriteName.includes('gun')) {
+                                slot.customColor = {
+                                    r: 1.0,
+                                    g: 0.25,
+                                    b: 0.5,
+                                    a: 1.0
+                                };
                             }
                         }
 
-                        if(slot.data) {
-                            if(slot.data.name.includes('Gun'))
-                            {
-                                slot.customColor = {r: 1.0, g: 0.25, b: 0.5, a: 1.0};
+                        if (slot.data) {
+                            if (slot.data.name.includes('Gun')) {
+                                slot.customColor = {
+                                    r: 1.0,
+                                    g: 0.25,
+                                    b: 0.5,
+                                    a: 1.0
+                                };
                             }
                         }
                     });
@@ -308,59 +395,64 @@ export default function Hunter(options) {
     }, options);
 
     return UC({
-            givenUnitObj: hunter,
-            renderChildren: rc,
-            radius: options.radius,
-            mass: options.mass || 8,
-            mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
-            slaves: [fireSound, hitSound, deathSound, unitProperties.wireframe, unitProperties.portrait],
-            unit: unitProperties,
-            moveable: {
-                moveSpeed: 3.00,
-                walkAnimations: runAnimations,
-            }, attacker: {
-                attackAnimations: attackAnimations,
-                cooldown: 1400,
-                honeRange: 500,
-                range: 440,
-                damage: 7,
-                itemsEnabled: true,
-                attack: function(target) {
-                    var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(target.position, this.position)));
-                    var numberOfBullets = 3;
-                    var start = (numberOfBullets-1)/-2;
-                    var spacing = 40;
-                    for(var n = start; n < start + numberOfBullets; n++) {
-                        var destination = Matter.Vector.add(target.position, Matter.Vector.mult(perpVector, n*spacing))
-                        var projectileOptions = {
-                            damage: this.damage,
-                            speed: 4,
-                            displayObject: graphicsUtils.createDisplayObject('SentinelBullet', {tint: 0xfb3b80}),
-                            destination: destination,
-                            impactType: 'collision',
-                            owningUnit: this,
-                            originOffset: 30,
-                            autoSend: true,
-                            impactExtension: function(target, options) {
-                                if(options.attackInfo.attackLanded) {
-                                    var position = target.getCurrentOrLastStandingPosition();
-                                    var bloodAnimation = gameUtils.getAnimation({
-                                        spritesheetName: 'UtilityAnimations1',
-                                        animationName: 'GenericHit',
-                                        speed: 0.8,
-                                        transform: [position.x + Math.random()*8, position.y + Math.random()*8, 0.35, 0.35]
-                                    });
-                                    target.maim({duration: 1000});
-                                    graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
-                                    bloodAnimation.play();
-                                    hitSound.play();
-                                }
+        givenUnitObj: hunter,
+        renderChildren: rc,
+        radius: options.radius,
+        mass: options.mass || 8,
+        mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
+        slaves: [fireSound, hitSound, deathSound, unitProperties.wireframe, unitProperties.portrait],
+        unit: unitProperties,
+        moveable: {
+            moveSpeed: 3.00,
+            walkAnimations: runAnimations,
+        },
+        attacker: {
+            attackAnimations: attackAnimations,
+            cooldown: 1400,
+            honeRange: 500,
+            range: 440,
+            damage: 7,
+            itemsEnabled: true,
+            attack: function(target) {
+                var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(target.position, this.position)));
+                var numberOfBullets = 3;
+                var start = (numberOfBullets - 1) / -2;
+                var spacing = 40;
+                for (var n = start; n < start + numberOfBullets; n++) {
+                    var destination = Matter.Vector.add(target.position, Matter.Vector.mult(perpVector, n * spacing))
+                    var projectileOptions = {
+                        damage: this.damage,
+                        speed: 4,
+                        displayObject: graphicsUtils.createDisplayObject('SentinelBullet', {
+                            tint: 0xfb3b80
+                        }),
+                        destination: destination,
+                        impactType: 'collision',
+                        owningUnit: this,
+                        originOffset: 30,
+                        autoSend: true,
+                        impactExtension: function(target, options) {
+                            if (options.attackInfo.attackLanded) {
+                                var position = target.getCurrentOrLastStandingPosition();
+                                var bloodAnimation = gameUtils.getAnimation({
+                                    spritesheetName: 'UtilityAnimations1',
+                                    animationName: 'GenericHit',
+                                    speed: 0.8,
+                                    transform: [position.x + Math.random() * 8, position.y + Math.random() * 8, 0.35, 0.35]
+                                });
+                                target.maim({
+                                    duration: 1000
+                                });
+                                graphicsUtils.addSomethingToRenderer(bloodAnimation, 'foreground');
+                                bloodAnimation.play();
+                                hitSound.play();
                             }
-                        };
-                        var projectile = new Projectile(projectileOptions);
-                    }
-                    fireSound.play();
-                },
+                        }
+                    };
+                    var projectile = new Projectile(projectileOptions);
+                }
+                fireSound.play();
             },
+        },
     });
 }

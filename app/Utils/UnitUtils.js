@@ -28,7 +28,7 @@ var unitUtils = {
         var pendingAnimation = gameUtils.getAnimation({
             spritesheetName: 'BaseUnitAnimations1',
             animationName: 'IsometricSelectedPending',
-            speed: 0.35,
+            speed: 0.4,
             loop: true,
         });
         pendingAnimation.isPendingAnimation = true;

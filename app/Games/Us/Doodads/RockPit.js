@@ -20,12 +20,12 @@ var rockPit = function() {
     this.sortYOffset = 0;
     this.scale = {
         x: 1.25,
-        y: 1.25
+        y: 1.45
     };
     // this.drawWire = true,
     this.bodyScale = {
         x: 1.3,
-        y: 0.5
+        y: 0.8
     };
     this.offset = {
         x: 0,

@@ -225,8 +225,8 @@ export default function Marine(options) {
             id: 'selected',
             data: 'IsometricSelectedSmall',
             scale: {
-                x: 1.2,
-                y: 1.2
+                x: 1.26,
+                y: 1.40
             },
             stage: 'stageNOne',
             visible: false,
@@ -242,8 +242,8 @@ export default function Marine(options) {
             id: 'selectionPending',
             data: unitUtils.getPendingAnimation(),
             scale: {
-                x: 0.38,
-                y: 0.38
+                x: 0.4,
+                y: 0.48
             },
             stage: 'stageNOne',
             visible: false,
@@ -351,8 +351,8 @@ export default function Marine(options) {
             id: 'shadow',
             data: 'IsoShadowBlurredSmall',
             scale: {
-                x: 1.0,
-                y: 1.0
+                x: 1.2,
+                y: 1.38
             },
             visible: true,
             avoidIsoMgr: true,
