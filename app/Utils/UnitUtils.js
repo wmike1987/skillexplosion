@@ -187,7 +187,7 @@ var unitUtils = {
         anim.tint = tint;
         anim.scale = {
             x: 0.4,
-            y: 0.4
+            y: 0.5
         };
         gameUtils.moveSpriteOffScreen(anim);
         graphicsUtils.addSomethingToRenderer(anim, 'stageNOne');

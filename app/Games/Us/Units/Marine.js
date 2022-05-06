@@ -352,7 +352,7 @@ export default function Marine(options) {
             data: 'IsoShadowBlurredSmall',
             scale: {
                 x: 1.2,
-                y: 1.38
+                y: 1.2
             },
             visible: true,
             avoidIsoMgr: true,

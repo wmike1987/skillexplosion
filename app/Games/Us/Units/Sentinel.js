@@ -285,7 +285,7 @@ export default function Sentinel(options) {
             data: 'IsoShadowBlurredSmall',
             scale: {
                 x: 1.1,
-                y: 1.25
+                y: 1.1
             },
             visible: true,
             avoidIsoMgr: true,

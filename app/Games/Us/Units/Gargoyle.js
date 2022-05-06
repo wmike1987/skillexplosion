@@ -182,7 +182,7 @@ export default function Gargoyle(options) {
             data: unitUtils.getPendingAnimation(),
             scale: {
                 x: 0.35,
-                y: 0.45
+                y: 0.42
             },
             stage: 'stageNOne',
             visible: false,
@@ -282,7 +282,7 @@ export default function Gargoyle(options) {
             data: 'IsoShadowBlurredSmall',
             scale: {
                 x: 1.2,
-                y: 1.3
+                y: 1.2
             },
             visible: true,
             tint: 0x000546,

@@ -283,7 +283,7 @@ export default function Eruptlet(options) {
             data: 'IsoShadowBlurredSmall',
             scale: {
                 x: 1.0,
-                y: 1.2
+                y: 1.0
             },
             visible: true,
             avoidIsoMgr: true,
