@@ -2118,7 +2118,25 @@ export default function Medic(options) {
                 }
             },
             {
+                animation: healAnimations.left,
+                height: 8,
+                width: 25,
+                offset: {
+                    x: -8,
+                    y: -18
+                }
+            },
+            {
                 animation: walkAnimations.right,
+                height: 8,
+                width: 25,
+                offset: {
+                    x: 8,
+                    y: -18
+                }
+            },
+            {
+                animation: healAnimations.right,
                 height: 8,
                 width: 25,
                 offset: {

@@ -241,6 +241,8 @@ var shaneLearning = function(options) {
         var pauseAfterCompleteTime = 0;
 
         globals.currentGame.setUnit(globals.currentGame.shane, {position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter()), moveToCenter: false});
+        globals.currentGame.unitSystem.pause();
+        
         enter.play();
         //begin dialogue
         var title = new Dialogue({blinkLastLetter: false, title: true, text: "Mega", delayAfterEnd: 1750});
@@ -306,7 +308,8 @@ var shaneLearning = function(options) {
         var initConditions = function() {
             var arrow = null;
             a1.onStart = function() {
-                arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.shane, -35, 0.5);
+                arrow = graphicsUtils.pointToSomethingWithArrow(globals.currentGame.shane, -40, 0.5);
+                globals.currentGame.unitSystem.unpause();
                 gameUtils.matterConditionalOnce(globals.currentGame.unitSystem, 'executeSelection', (event) => {
                     if(event.orderedSelection.length > 0 && event.orderedSelection[0].name == 'Shane') {
                         graphicsUtils.removeSomethingFromRenderer(arrow);

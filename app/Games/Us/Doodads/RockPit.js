@@ -20,12 +20,12 @@ var rockPit = function() {
     this.sortYOffset = 0;
     this.scale = {
         x: 1.25,
-        y: 1.45
+        y: 1.25
     };
     // this.drawWire = true,
     this.bodyScale = {
         x: 1.3,
-        y: 0.8
+        y: 0.6
     };
     this.offset = {
         x: 0,
@@ -75,6 +75,19 @@ var rockPit = function() {
                 x: 1.1,
                 y: 1.1
             }
+        };
+
+
+        this.textureName[4] = {
+            data: 'IsoShadowBlurred',
+            name: 'shadow',
+            alpha: 0.75,
+            where: 'backgroundOne',
+            scale: {
+                x: 1.4,
+                y: 1.4
+            },
+            offset: {x: 0, y: 10}
         };
     };
 };

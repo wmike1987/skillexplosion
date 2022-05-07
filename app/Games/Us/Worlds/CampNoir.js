@@ -1810,7 +1810,7 @@ var campNoir = {
 
                 //desert flower map
                 for (let i = 0; i <= 5; i++) {
-                    ornamentTiles.push('FrollGround/DesertFlower' + i);
+                    // ornamentTiles.push('FrollGround/DesertFlower' + i);
                 }
                 var decoratedTiles = {
                     tint: ornamentTint,
