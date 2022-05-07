@@ -774,7 +774,7 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [4, 5],
+            amount: [6, 7],
             atATime: 1,
             hz: 5000
         }, {
@@ -783,6 +783,12 @@ var enemyDefs = {
             initialDelay: 3250,
             atATime: 1,
             hz: 5000
+        }, {
+            type: 'Eruptlet',
+            amount: [5, 6],
+            initialDelay: 4000,
+            atATime: 1,
+            hz: 4200
         }, generalFlyObj]
     },
     basicHard2: {
@@ -852,9 +858,9 @@ var enemyDefs = {
         }, {
             type: 'Hunter',
             amount: 2,
-            initialDelay: 15000,
-            atATime: 2,
-            hz: 5000
+            initialDelay: 7000,
+            atATime: 1,
+            hz: 8000
         }, hardFlyObj]
     },
     outerHardTwo: {
@@ -866,7 +872,7 @@ var enemyDefs = {
             hz: 5000
         }, {
             type: 'Hunter',
-            amount: [2, 3],
+            amount: [3],
             atATime: 1,
             initialDelay: 3000,
             hz: 4500
@@ -917,7 +923,7 @@ var enemyDefs = {
             hz: 12000
         }, {
             type: 'Sentinel',
-            amount: 2,
+            amount: 4,
             atATime: 1,
             addedProps: {
                 immuneToAugment: true
@@ -992,7 +998,7 @@ var enemyDefs = {
             amount: [6, 8],
             atATime: 2,
             hz: 7000
-        },{
+        }, {
             type: 'Critter',
             amount: [4],
             atATime: 1,
@@ -1273,6 +1279,7 @@ var phaseTwo = function(options) {
                     prereqCount: 3,
                     itemClass: 'worn',
                     itemType: 'specialtyItem',
+                    adrenalinePenalty: 2,
                     uniqueItem: true,
                     regularTokenName: 'AirDropSpecialToken',
                     specialTokenName: 'AirDropSpecialTokenGleam'
@@ -1440,16 +1447,8 @@ var phaseThree = function() {
     this.map.clearAllNodesExcept('camp');
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
-    this.map.addMapNode('airDropStation', {
-        levelOptions: {
-            prereqCount: 1,
-            itemClass: 'worn'
-        }
-    });
-
     this.map.addMapNode('morphineStation');
     this.map.addMapNode('restStop');
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
     this.map.addMapNode('basic');
     this.map.addMapNode('basic');
@@ -1463,6 +1462,7 @@ var phaseThree = function() {
             outer: true,
         }
     };
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), outParam);
 
     //right levels
     var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
@@ -1540,6 +1540,7 @@ var phaseThree = function() {
             prereqCount: 3,
             itemClass: 'worn',
             itemType: 'specialtyItem',
+            adrenalinePenalty: 2,
             uniqueItem: true,
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
@@ -1552,6 +1553,7 @@ var phaseThree = function() {
             prereqCount: 3,
             itemClass: 'rugged',
             itemType: 'microchip',
+            adrenalinePenalty: 2,
             uniqueItem: true,
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
@@ -1618,21 +1620,6 @@ var finalPhase = function() {
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
 
-    //travel tokens
-    this.map.addMapNode('morphineStation');
-    this.map.addMapNode('restStop');
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
-        levelOptions: {
-            outer: true
-        }
-    });
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
-        levelOptions: {
-            outer: true
-        }
-    });
-
-
     var decision = mathArrayUtils.flipCoin();
     var positionOp = {
         minX: gameUtils.getCanvasCenter().x
@@ -1649,14 +1636,31 @@ var finalPhase = function() {
         };
     }
 
+    //travel tokens
+    this.map.addMapNode('morphineStation');
+    this.map.addMapNode('restStop');
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
+        levelOptions: {
+            outer: true
+        },
+        positionOptions: otherPositionOp
+    });
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
+        levelOptions: {
+            outer: true
+        },
+        positionOptions: positionOp
+    });
+
+
     //air drops
     this.map.addMapNode('airDropStation', {
         levelOptions: {
             outer: true,
-            bridge: true,
             prereqCount: 3,
             itemClass: 'rugged',
             itemType: 'microchip',
+            adrenalinePenalty: 2,
             uniqueItem: true,
             regularTokenName: 'AirDropSpecialToken',
             specialTokenName: 'AirDropSpecialTokenGleam'
@@ -1695,9 +1699,17 @@ var finalPhase = function() {
         }
     });
 
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+    this.map.addMapNode('multiLevel', {
         levelOptions: {
-            outer: true
+            outer: true,
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicHards), mathArrayUtils.getRandomElementOfArray(basicHards)],
+        }
+    });
+
+    this.map.addMapNode('multiLevel', {
+        levelOptions: {
+            outer: true,
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicHards), mathArrayUtils.getRandomElementOfArray(basicHards)],
         }
     });
 
@@ -1787,7 +1799,7 @@ var campNoir = {
                 tint: rockTints[tIndex]
             });
             let rock3 = SceneryUtils.createRock({
-                names: ['Rock2b'],
+                names: ['Rock2b', 'Rock2c'],
                 tint: rockTints[tIndex]
             });
 
@@ -2246,6 +2258,65 @@ var campNoir = {
 
                     var pitPosition = this.pit.list[0].position;
 
+                    var oppositePitPosition = {x: gameUtils.getPlayableWidth() - pitPosition.x, y: gameUtils.getPlayableHeight() - pitPosition.y};
+                    var oppositeTree = SceneryUtils.createTree({
+                        tint: treeTints[tIndex],
+                        grassTint: grassTints[tIndex]
+                    });
+                    oppositeTree.unique = true;
+                    oppositeTree.groupingOptions = {
+                        priority: 1
+                    };
+                    oppositeTree.reallyTry = true;
+                    oppositeTree.borderBuffer = true;
+
+                    var oppositeTree2 = SceneryUtils.createTree({
+                        tint: treeTints[tIndex],
+                        grassTint: grassTints[tIndex]
+                    });
+                    oppositeTree2.unique = true;
+                    oppositeTree2.groupingOptions = {
+                        priority: 1
+                    };
+                    oppositeTree2.reallyTry = true;
+                    oppositeTree2.borderBuffer = true;
+                    // if(mathArrayUtils.flipCoin()) {
+                    //     oppositeTree2 = null;
+                    // }
+                    oppositeTree.unique = true;
+                    this.oppositeTreeCluster = SceneryUtils.decorateTerrain({
+                        possibleDoodads: [oppositeTree2],
+                        tileWidth: tileSize,
+                        hz: 1.0,
+                        nonTilePosition: true,
+                        maxNumber: 1,
+                        explicitPosition: () => {
+                            return gameUtils.getRandomPositionWithinRadiusAroundPoint({
+                                point: oppositePitPosition,
+                                minRadius: 0,
+                                maxRadius: 450,
+                                withinPlayableBounds: true,
+                                playableBoundBuffer: 90
+                            });
+                        },
+                        groupings: {
+                            center: oppositeTree,
+                            possibleAmounts: [2],
+                            hz: 1.0,
+                            scalar: {
+                                min: 300,
+                                max: 600
+                            }
+                        },
+                        where: 'stageNOne',
+                        r: 1,
+                        noZones: noZones
+                    });
+                    scene.add(this.oppositeTreeCluster);
+                    scene.addCleanUpTask(() => {
+                        this.oppositeTreeCluster = null;
+                    });
+
                     //other footprints
                     var footprints = SceneryUtils.decorateTerrain({
                         possibleTextures: ['CampDoodads/CritterFootprint',
@@ -2480,7 +2551,7 @@ var campNoir = {
             }
 
             var myTileSize = tileSize / 1.2;
-            var myHz = 0.75;
+            var myHz = 0.5;
             if (!this.isCampProper) {
                 myTileSize = tileSize;
                 myHz = 0.3;
@@ -2521,7 +2592,7 @@ var campNoir = {
 
             var grassTextures = ["CampDoodads/FieldGrass1", "CampDoodads/FieldGrass2", "CampDoodads/FieldGrass3", "CampDoodads/FieldGrass4", "CampDoodads/FieldGrass5"];
             l1.forEach((light) => {
-                if(pitPosition && mathArrayUtils.distanceBetweenPoints(light.position, pitPosition) < 500) {
+                if (pitPosition && mathArrayUtils.distanceBetweenPoints(light.position, pitPosition) < 500) {
                     return;
                 }
                 let grass = graphicsUtils.createDisplayObject(mathArrayUtils.getRandomElementOfArray(grassTextures), {

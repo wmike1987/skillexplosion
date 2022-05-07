@@ -130,23 +130,36 @@ var sceneryUtils = {
                 }
             },
             Rock2: {
-                collides: false
+                collides: false,
+                textureName: 'Rock2p',
+                randomScaleVariation: 0.2
             },
             Rock2a: {
-                textureName: 'Rock1',
+                textureName: 'Rock4p',
                 collides: false,
                 scale: {
-                    x: 0.35,
-                    y: 0.35
-                }
+                    x: 0.8,
+                    y: 0.8
+                },
+                randomScaleVariation: 0.2
             },
             Rock2b: {
-                textureName: 'Rock5',
+                textureName: 'Rock5p',
                 scale: {
                     x: 1.0,
                     y: 1.0
                 },
-                collides: false
+                collides: false,
+                randomScaleVariation: 0.2
+            },
+            Rock2c: {
+                textureName: 'Rock1p',
+                scale: {
+                    x: 0.35,
+                    y: 0.35
+                },
+                collides: false,
+                randomScaleVariation: 0.2
             },
         };
 
@@ -205,6 +218,7 @@ var sceneryUtils = {
             stage: options.where,
             tint: options.tint,
             randomHFlip: options.randomHFlip,
+            randomScaleVariation: myDetails.randomScaleVariation,
             scale: myDetails.scale,
             offset: myDetails.offset,
             bodyScale: myDetails.bodyScale,

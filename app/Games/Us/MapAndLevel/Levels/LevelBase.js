@@ -88,10 +88,8 @@ var levelAugments = {
         action: function(enemy) {
             enemy.applyVitalityBuff({duration: 999999, amount: 250});
 
-            if(mathArrayUtils.flipCoin()) {
-                enemy.enrage({duration: 999999, amount: 5});
-            } else {
-                enemy.applyDefenseBuff({duration: 999999, amount: 2});
+            if(true) {
+                enemy.enrage({duration: 999999, amount: 6});
             }
         },
         getSystemMessage: () => {

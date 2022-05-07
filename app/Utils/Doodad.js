@@ -53,6 +53,10 @@ var Doodad = function(options) {
         this.collides = true;
     }
 
+    if(options.randomScaleVariation) {
+        options.scale = mathArrayUtils.multipleVectorByScalar(options.scale, 1 + (Math.random() * (2 * options.randomScaleVariation) - options.randomScaleVariation));
+    }
+
     //default no zone
     this.loneNZRadius = options.loneNZRadius || 60;
 

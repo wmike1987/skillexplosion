@@ -46,7 +46,6 @@ var stimulantRevealSound = gameUtils.getSound('itemreveal2.wav', {
 });
 
 var fatigueBenefit = 3;
-var adrenalinePenalty = 2;
 
 //Create the air drop base
 var commonAirDropStation = Object.create(levelBase);
@@ -56,10 +55,11 @@ commonAirDropStation.preNodeInit = function() {
     this.lesserSpin = true;
     this.entrySound = entrySound;
     this.isAirDrop = true;
+    this.adrenalinePenalty = this.adrenalinePenalty || 1;
     this._incursTravelFatigue = false;
     this.nodeTitle = "Air Drop Station";
     // this.tooltipDescription = 'Receive supply drop.';
-    this.tooltipDescription = ['Receive supply drop.', 'Subtract 2 adrenaline.'];
+    this.tooltipDescription = ['Receive supply drop.', 'Subtract ' + this.adrenalinePenalty + ' adrenaline.'];
     this.mode = this.possibleModes.CUSTOM;
     this.noSmokePit = true;
     this.noZones.push({
@@ -288,7 +288,7 @@ var airDropStation = function(options) {
 
         gameUtils.doSomethingAfterDuration(() => {
             globals.currentGame.toastMessage({
-                message: '-' + adrenalinePenalty + ' adrenaline',
+                message: '-' + this.adrenalinePenalty + ' adrenaline',
                 state: 'negative',
                 style: styles.adrenalineTextLarge
             });
@@ -297,7 +297,7 @@ var airDropStation = function(options) {
         //subtract fatigue
         mathArrayUtils.repeatXTimes(() => {
             globals.currentGame.map.removeAdrenalineBlock();
-        }, adrenalinePenalty);
+        }, this.adrenalinePenalty);
 
         //begin dialogue
         var title = new Dialogue({
