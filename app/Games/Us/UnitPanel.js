@@ -160,6 +160,7 @@ var unitPanel = function(options) {
         showInfoCursor: true,
         title: 'Grit',
         descriptions: ['', ''],
+        systemMessage: 'Blocking a killing blow reduces hp to 1',
         updaters: {
             descriptions: function() {
                 var result = [{
@@ -177,7 +178,7 @@ var unitPanel = function(options) {
                     }
 
                     if (this.prevailingUnit.getTotalGrit() > 0.0) {
-                        result[1].value = 'Dodge 1 killing blow every ' + this.prevailingUnit.gritCooldown + ' seconds';
+                        result[1].value = 'Block 1 killing blow every ' + this.prevailingUnit.gritCooldown + ' seconds.';
                     } else {
                         result[1].value = 'Gain grit to block killing blows.';
                     }

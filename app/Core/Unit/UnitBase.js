@@ -287,42 +287,28 @@ var UnitBase = {
         var alteredDamage = Math.max(1, (damage - totalDefense));
 
         //killing blow block
-        if (this.currentHealth - alteredDamage <= 0) {
-            if (this.hasGritDodge && attackContext.blockable) {
-                this.giveGritDodge(false);
-                this.gritDodgeTimer.reset();
-                Matter.Events.trigger(this, 'killingBlowBlock', {
-                    performingUnit: this,
-                    attackingUnit: attackingUnit,
-                    attackContext: attackContext
-                });
+        var blockedKillingBlow = false;
+        if (this.currentHealth - alteredDamage <= 0 && this.hasGritDodge && attackContext.blockable) {
+            alteredDamage = this.currentHealth - 1;
+            blockedKillingBlow = true;
+            this.giveGritDodge(false);
+            this.gritDodgeTimer.reset();
 
-                //trigger the event on currentGame for the stat collector
-                Matter.Events.trigger(globals.currentGame, 'killingBlowBlock', {
-                    performingUnit: this,
-                    attackingUnit: attackingUnit,
-                    attackContext: attackContext
-                });
+            //display a miss graphic
+            graphicsUtils.floatText('Block!', {
+                x: this.position.x,
+                y: this.position.y - 25
+            }, {
+                style: styles.dodgeKillingBlowText
+            });
 
-                //display a miss graphic
-                graphicsUtils.floatText('Block!', {
-                    x: this.position.x,
-                    y: this.position.y - 25
-                }, {
-                    style: styles.dodgeKillingBlowText
-                });
-
-                unitUtils.showBlockGraphic({
-                    attackContext: attackContext,
-                    attackingUnit: attackingUnit,
-                    unit: this,
-                    tint: 0xd55812
-                });
-                killingBlowBlock.play();
-
-                returnInformation.attackLanded = false;
-                return returnInformation;
-            }
+            unitUtils.showBlockGraphic({
+                attackContext: attackContext,
+                attackingUnit: attackingUnit,
+                unit: this,
+                tint: 0xd55812
+            });
+            killingBlowBlock.play();
         }
 
         var damageReducedByArmor = damage - alteredDamage;
@@ -336,6 +322,21 @@ var UnitBase = {
         this.fadeLifeAmount(this.currentHealth);
         this.currentHealth -= alteredDamage;
         this.updateHealthBar();
+
+        if(blockedKillingBlow) {
+            Matter.Events.trigger(this, 'killingBlowBlock', {
+                performingUnit: this,
+                attackingUnit: attackingUnit,
+                attackContext: attackContext
+            });
+
+            //trigger the event on currentGame for the stat collector
+            Matter.Events.trigger(globals.currentGame, 'killingBlowBlock', {
+                performingUnit: this,
+                attackingUnit: attackingUnit,
+                attackContext: attackContext
+            });
+        }
 
         if (this.currentHealth <= 0) {
             this._death({

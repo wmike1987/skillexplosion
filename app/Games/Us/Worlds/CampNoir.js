@@ -774,7 +774,7 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [6, 7],
+            amount: [4, 5],
             atATime: 1,
             hz: 5000
         }, {
@@ -785,7 +785,7 @@ var enemyDefs = {
             hz: 5000
         }, {
             type: 'Eruptlet',
-            amount: [5, 6],
+            amount: [4],
             initialDelay: 4000,
             atATime: 1,
             hz: 4200
@@ -1462,7 +1462,7 @@ var phaseThree = function() {
             outer: true,
         }
     };
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), outParam);
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), outerParam);
 
     //right levels
     var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
@@ -2281,7 +2281,7 @@ var campNoir = {
                     oppositeTree2.reallyTry = true;
                     oppositeTree2.borderBuffer = true;
                     // if(mathArrayUtils.flipCoin()) {
-                    //     oppositeTree2 = null;
+                        oppositeTree2 = null;
                     // }
                     oppositeTree.unique = true;
                     this.oppositeTreeCluster = SceneryUtils.decorateTerrain({
