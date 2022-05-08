@@ -337,12 +337,21 @@ var map = function(specs) {
         var position = genericOptions.position;
         var collision, outOfBounds = false;
         var nodeBuffer = 100;
-        var radius = genericOptions.levelOptions.outer ? 1000 : 200;
-        var minRadius = genericOptions.levelOptions.outer ? 400 : 0;
+        var radius = 200;
+        var minRadius = 0;
         var minX = genericOptions.positionOptions.minX;
         var maxX = genericOptions.positionOptions.maxX;
         var minY = genericOptions.positionOptions.minY;
         var maxY = genericOptions.positionOptions.maxY;
+        if(genericOptions.levelOptions.outer) {
+            radius = 1000;
+            minRadius = 400;
+        } else if(genericOptions.levelOptions.middle) {
+            radius = 500;
+            minRadius = 250;
+            minY = 200;
+            maxY = gameUtils.getPlayableHeight() - 250;
+        }
         var tries = 0;
         if (!position) {
             do {

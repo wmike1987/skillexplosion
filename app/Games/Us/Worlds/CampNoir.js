@@ -1462,7 +1462,13 @@ var phaseThree = function() {
             outer: true,
         }
     };
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), outerParam);
+
+    let middleParam = {
+        levelOptions: {
+            middle: true,
+        }
+    };
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), middleParam);
 
     //right levels
     var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
@@ -1641,13 +1647,13 @@ var finalPhase = function() {
     this.map.addMapNode('restStop');
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
         levelOptions: {
-            outer: true
+            middle: true
         },
         positionOptions: otherPositionOp
     });
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), {
         levelOptions: {
-            outer: true
+            middle: true
         },
         positionOptions: positionOp
     });
@@ -1656,14 +1662,9 @@ var finalPhase = function() {
     //air drops
     this.map.addMapNode('airDropStation', {
         levelOptions: {
-            outer: true,
-            prereqCount: 3,
+            prereqCount: 1,
             itemClass: 'rugged',
-            itemType: 'microchip',
-            adrenalinePenalty: 2,
-            uniqueItem: true,
-            regularTokenName: 'AirDropSpecialToken',
-            specialTokenName: 'AirDropSpecialTokenGleam'
+            adrenalinePenalty: 1,
         },
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
@@ -2258,7 +2259,10 @@ var campNoir = {
 
                     var pitPosition = this.pit.list[0].position;
 
-                    var oppositePitPosition = {x: gameUtils.getPlayableWidth() - pitPosition.x, y: gameUtils.getPlayableHeight() - pitPosition.y};
+                    var oppositePitPosition = {
+                        x: gameUtils.getPlayableWidth() - pitPosition.x,
+                        y: gameUtils.getPlayableHeight() - pitPosition.y
+                    };
                     var oppositeTree = SceneryUtils.createTree({
                         tint: treeTints[tIndex],
                         grassTint: grassTints[tIndex]
@@ -2281,7 +2285,7 @@ var campNoir = {
                     oppositeTree2.reallyTry = true;
                     oppositeTree2.borderBuffer = true;
                     // if(mathArrayUtils.flipCoin()) {
-                        oppositeTree2 = null;
+                    oppositeTree2 = null;
                     // }
                     oppositeTree.unique = true;
                     this.oppositeTreeCluster = SceneryUtils.decorateTerrain({
