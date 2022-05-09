@@ -1474,7 +1474,7 @@ export default function Medic(options) {
     var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) for 2 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) and reduce healing cost to 0 for 2 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
         unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
@@ -1482,7 +1482,7 @@ export default function Medic(options) {
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
         aggressionEventName: 'attack',
-        aggressionCooldown: 2000,
+        aggressionCooldown: 4000,
         aggressionDuration: rsADuration,
         passiveAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
@@ -1535,6 +1535,8 @@ export default function Medic(options) {
             }
         },
         aggressionAction: function(event) {
+            var healingAbility = medic.getAbilityByName('Heal');
+            healingAbility.bypassEnergyCost = true;
             medic.berserk({
                 duration: rsADuration,
                 id: 'raisedStakesBerserk',
@@ -1543,6 +1545,10 @@ export default function Medic(options) {
             return {
                 value: rsADuration / 1000
             };
+        },
+        aggressionStopAction: function() {
+            var healingAbility = medic.getAbilityByName('Heal');
+            healingAbility.bypassEnergyCost = false;
         },
         collector: {
             aggressionLabel: 'Duration of berserk',
@@ -1932,7 +1938,7 @@ export default function Medic(options) {
     var energyGain = 3;
     var ppDamage = 12;
     var elegantForm = new Passive({
-        title: 'Proper Posture',
+        title: 'Proud Posture',
         aggressionDescription: ['Agression Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain ' + energyGain + ' energy.'],
         unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain 15 energy.'],
@@ -2447,7 +2453,7 @@ export default function Medic(options) {
                     }
                 }
 
-                if (!ppBypass) {
+                if (!ppBypass && !thisAbility.bypassEnergyCost) {
                     this.spendEnergy(thisAbility.energyCost);
                 } else {
                     //we've healed at no cost, send the collector event
