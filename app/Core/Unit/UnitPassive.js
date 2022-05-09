@@ -117,7 +117,7 @@ export default function(options) {
                 tint: 0xbf0a81,
                 iconTextureName: this.textureName,
                 labels: ["active placeholder", 'defense placeholder'],
-                values: ["attackPassive", "defensePassive"],
+                values: [attackPassive, defensePassive],
                 formats: [null, null],
                 suffixes: ["", ""]
             },
@@ -176,6 +176,10 @@ export default function(options) {
             this.customCollector.defenseCollectorFunction = this.collector.defenseCollectorFunction;
         }
 
+        if(this.collector.collectorManipulator) {
+            this.collector.collectorManipulator(this.customCollector);
+        }
+
         this.unit.statCollector.registerCustomCollector(this.customCollector);
     }.bind(this));
 
@@ -199,7 +203,10 @@ export default function(options) {
         if (!collector) {
             return;
         }
-        if (this.activeMode == attackPassive) {
+
+        if(collector.presentation.customVariableLabels) {
+            collector.presentation.customVariableLabels(this.activeMode == attackPassive, collector);
+        } else if (this.activeMode == attackPassive) {
             collector.presentation.variableLabels[0] = this.customCollector.presentation.labels[0];
         } else {
             collector.presentation.variableLabels[1] = this.customCollector.presentation.labels[1];
@@ -253,7 +260,10 @@ export default function(options) {
         //if we've started the passive, enable the collector
         if (this.unit.statCollector.isCollecting()) {
             var customCollector = this.unit.statCollector.currentCollectorManager.getCustomCollector(this.customCollector.name);
-            if (mode == attackPassive) {
+
+            if(customCollector.presentation.customVariableLabels) {
+                customCollector.presentation.customVariableLabels(mode == attackPassive, customCollector);
+            } else if (mode == attackPassive) {
                 customCollector.presentation.variableLabels[0] = this.customCollector.presentation.labels[0];
             } else {
                 customCollector.presentation.variableLabels[1] = this.customCollector.presentation.labels[1];

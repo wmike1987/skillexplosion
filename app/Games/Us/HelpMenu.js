@@ -21,7 +21,7 @@ var Page = function(options) {
         x: gameUtils.getPlayableWidth() / 2.0,
         y: gameUtils.getPlayableHeight() / 2.0
     };
-    var pageHeight = 620;
+    var pageHeight = 630;
     var pageWidth = 450;
     var initialTextBuffer = 40;
     this.buffer = 20;
@@ -357,7 +357,12 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage1.addLine({
-        text: 'Decreases unit armor to 0.'
+        continuation: true,
+        text: 'Decreases unit armor to 0 and prevents'
+    });
+
+    BuffPage1.addLine({
+        text: 'unit from blocking killing blows.'
     });
 
     this.addPage(BuffPage1);
@@ -500,7 +505,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage3.addLine({
-        text: 'Death of condemned unit heals (10) condemning unit.'
+        text: 'Death of condemned unit heals (+10) condemning unit.'
     });
 
     BuffPage3.addLineTitle({
@@ -511,7 +516,7 @@ HelpMenu.prototype.initialize = function() {
         }
     });
     BuffPage3.addLine({
-        text: 'Death of afflicted unit either heals (5) afflicting unit',
+        text: 'Death of afflicted unit either heals (+5) afflicting unit',
         continuation: true
     });
     BuffPage3.addLine({

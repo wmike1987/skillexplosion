@@ -37,7 +37,7 @@ var levelAugments = {
     },
     armored: {
         action: function(enemy) {
-            enemy.applyDefenseBuff({duration: 99999, amount: 2});
+            enemy.applyDefenseBuff({duration: 99999, amount: 3});
         },
         tint: 0x3d3d3d,
         getSystemMessage: () => {
@@ -63,7 +63,7 @@ var levelAugments = {
     },
     slippery: {
         action: function(enemy) {
-            enemy.applyDodgeBuff({duration: 99999, amount: 30});
+            enemy.applyDodgeBuff({duration: 99999, amount: 25});
         },
         tint: 0x144614,
         getSystemMessage: () => {

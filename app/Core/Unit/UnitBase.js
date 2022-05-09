@@ -97,12 +97,15 @@ var UnitBase = {
     dodge: 0,
     dodgeAdditions: [],
     dodgeMax: 75,
+    dodgeSound: dodgeSound,
+    dodgeBlockers: 0,
     grit: 0,
     gritAdditions: [],
     gritDodgeTimer: null,
     gritCooldown: 14,
     gritMult: 1,
     gritMax: 100,
+    killingBlowBlockers: 0,
     additions: {},
     level: 1,
     fatigueReduction: 0,
@@ -129,7 +132,6 @@ var UnitBase = {
     showingLifeBars: false,
     showingEnergyBars: false,
     isSelectable: true,
-    dodgeSound: dodgeSound,
     smallerBodyWidthChange: false,
     smallerBodyHeightChange: false,
     abilityDamageMultiplier: 1,
@@ -232,7 +234,7 @@ var UnitBase = {
             return bool;
         });
 
-        if (attackContext.dodgeable && (attackDodged || attackContext.manualDodge)) {
+        if (this.canDodge() && attackContext.dodgeable && (attackDodged || attackContext.manualDodge)) {
             Matter.Events.trigger(globals.currentGame, 'dodgeAttack', {
                 performingUnit: this
             });
@@ -288,7 +290,7 @@ var UnitBase = {
 
         //killing blow block
         var blockedKillingBlow = false;
-        if (this.currentHealth - alteredDamage <= 0 && this.hasGritDodge && attackContext.blockable) {
+        if (this.canBlockKillingBlow() && (this.currentHealth - alteredDamage <= 0) && this.hasGritDodge && attackContext.blockable) {
             alteredDamage = this.currentHealth - 1;
             blockedKillingBlow = true;
             this.giveGritDodge(false);
@@ -2020,15 +2022,18 @@ var UnitBase = {
             id: id,
             textureName: 'SoftenBuff',
             duration: duration,
+            noCount: true,
             customSound: dearmorSound,
             applyChanges: function() {
                 unit.addDefenseAddition(amount);
+                unit.killingBlowBlockers += 1;
             },
             removeChanges: function() {
                 if (callback) {
                     callback();
                 }
                 unit.removeDefenseAddition(amount);
+                unit.killingBlowBlockers -= 1;
             }
         });
 
@@ -2921,7 +2926,7 @@ var UnitBase = {
             }
 
             // graphicsUtils.addGleamToSprite({sprite: gritBlockIndicator, duration: 650, gleamWidth: 10});
-            graphicsUtils.fadeSpriteOverTime({sprite: this.gritBlockIndicator, duration: 250, noKill: true, fadeIn: true});
+            graphicsUtils.fadeSpriteOverTime({sprite: this.gritBlockIndicator, duration: 250, noKill: true, fadeIn: true, makeVisible: true});
             gameUtils.doSomethingAfterDuration(() => {
                 graphicsUtils.addGleamToSprite({
                     sprite: this.gritBlockIndicator,
@@ -3391,6 +3396,14 @@ var UnitBase = {
 
     isBuffGroupExcludedFromPausing: function(textureName) {
         return this.buffPauseExclusions.includes(textureName);
+    },
+
+    canDodge: function() {
+        return this.dodgeBlockers == 0;
+    },
+
+    canBlockKillingBlow: function() {
+        return this.killingBlowBlockers == 0;
     },
 
     getBuffsAsArray: function(options) {

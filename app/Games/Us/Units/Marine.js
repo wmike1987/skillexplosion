@@ -1727,15 +1727,44 @@ export default function Marine(options) {
             }
         },
         collector: {
-            aggressionLabel: 'Health/Blocks gained',
+            aggressionLabel: 'Health gained',
             attackCollectorFunction: function(event) {
                 this.attackPassive.healthGained += event.healthGained || 0;
                 this.attackPassive.blocksGained += event.blocksGained || 0;
             },
             aggressionFormat: function(v) {
-                return v.healthGained.toFixed(1) + '/' + v.blocksGained;
+                return v.healthGained.toFixed(1);
+            },
+            collectorManipulator: function(collector) {
+                //copy the defensive values
+                collector.presentation.labels.push(collector.presentation.labels[1]);
+                collector.presentation.suffixes.push(collector.presentation.suffixes[1]);
+                collector.presentation.formats.push(collector.presentation.formats[1]);
+                collector.presentation.values.push(collector.presentation.values[1]);
+
+                //redo the [1] entry to be the second aggression label
+                collector.presentation.labels[1] = 'Blocks gained';
+                collector.presentation.suffixes[1] = '';
+                collector.presentation.values[1] = 'attackPassive';
+                collector.presentation.formats[1] = function(v) {
+                    return v.blocksGained.toFixed(1);
+                };
+
+                collector.presentation.customVariableLabels = function(attackMode, newCollector) {
+                    if(attackMode) {
+                        newCollector.presentation.variableLabels[0] = collector.presentation.labels[0];
+                        newCollector.presentation.variableLabels[1] = collector.presentation.labels[1];
+                    } else {
+                        newCollector.presentation.variableLabels[2] = collector.presentation.labels[2];
+                    }
+                };
             },
             _init: function() {
+                this.presentation.variableLabels.push('none');
+                this.canPresent = function() {
+                    return !(this.presentation.variableLabels[0] == "none" && this.presentation.variableLabels[1] == "none" && this.presentation.variableLabels[2] == "none");
+                };
+
                 let eventName = this.eventName;
                 this.healthHandler = Matter.Events.on(marine, 'afflictHealthGain', (event) => {
                     if (event.id == 'trueGrit') {

@@ -1983,7 +1983,7 @@ var campNoir = {
                                 max: 175
                             }
                         },
-                        possibleDoodads: [tentDoodad, trough1, trough2, rack1, enemyPost4, tree, tree2, (mathArrayUtils.flipCoin() ? tree3 : null), {
+                        possibleDoodads: [trough1, trough2, rack1, enemyPost4, tree, tree2, (mathArrayUtils.flipCoin() ? tree3 : null), {
                             textureName: 'bullets',
                             randomHFlip: true,
                             where: 'backgroundOne',
@@ -2257,7 +2257,10 @@ var campNoir = {
                         this.pit = null;
                     });
 
-                    var pitPosition = this.pit.list[0].position;
+                    var pitPosition = this.tent.list[0].position;
+                    if(this.pit.list[0]) {
+                        pitPosition = this.pit.list[0].position;
+                    }
 
                     var oppositePitPosition = {
                         x: gameUtils.getPlayableWidth() - pitPosition.x,
