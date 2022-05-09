@@ -2003,7 +2003,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }, {
                             textureName: 'CampDoodads/CritterFootprint2',
@@ -2017,7 +2016,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }, {
                             textureName: 'CampDoodads/bootprops',
@@ -2044,7 +2042,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }],
                         tileWidth: tileSize,
@@ -2180,7 +2177,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }, {
                             textureName: 'CampDoodads/CritterFootprint2',
@@ -2194,7 +2190,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }, {
                             textureName: 'CampDoodads/CritterFootprint3',
@@ -2208,7 +2203,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }, {
                             textureName: 'CampDoodads/CritterFootprint5',
@@ -2222,7 +2216,6 @@ var campNoir = {
                             },
                             alpha: 0.75,
                             randomHFlip: true,
-                            rotate: 'random',
                             where: 'stageNTwo'
                         }]),
                         tileWidth: tileSize,
@@ -2331,14 +2324,25 @@ var campNoir = {
                             'CampDoodads/CritterFootprint3',
                             'CampDoodads/CritterFootprint4',
                             'CampDoodads/CritterFootprint5',
-                            'CampDoodads/CritterFootprint6'
+                            'CampDoodads/CritterFootprint6',
+                            'CampDoodads/CritterFootprint7',
+                            'CampDoodads/CritterFootprint8',
+                            'CampDoodads/CritterFootprint9',
+                            'CampDoodads/CritterFootprint10',
+                            'CampDoodads/CritterFootprint11'
                         ],
                         tileWidth: 150,
-                        hz: 0.5,
-                        maxNumber: 5,
-                        alpha: 0.85,
+                        hz: 0.9,
+                        maxNumber: this.outer ? 12 : 5,
+                        randomAlpha: {
+                            min: 0.5,
+                            max: 0.8
+                        },
+                        randomScale: {
+                            min: 0.8,
+                            max: 1.0
+                        },
                         where: 'stageNOne',
-                        rotate: 'random',
                         r: 1,
                     });
                     scene.add(footprints);

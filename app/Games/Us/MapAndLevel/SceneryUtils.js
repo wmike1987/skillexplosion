@@ -696,16 +696,28 @@ var sceneryUtils = {
                             //set some explicitly passed in variables, or use the global values
                             let localTint = randomThing.tint || globalTint || 0xFFFFFF;
                             let localScale = randomThing.scale || globalScale || {x: 1, y: 1};
+
+                            //random scale
                             if(randomThing.randomScale) {
                                 let sc = mathArrayUtils.getRandomNumberBetween(randomThing.randomScale.min, randomThing.randomScale.max);
                                 localScale = {x: sc, y: sc};
                             }
 
+                            //h flip
                             if (randomThing.randomHFlip && mathArrayUtils.flipCoin()) {
                                 localScale.x *= -1;
                             }
+
+                            //sort y offset
                             let localSortYOffset = randomThing.sortYOffset || globalSortYOffset || 0;
+
+                            //random alpha
+                            if(randomThing.randomAlpha) {
+                                randomThing.alpha = mathArrayUtils.getRandomNumberBetween(randomThing.randomAlpha.min, randomThing.randomAlpha.max);
+                            }
                             let localAlpha = randomThing.alpha || globalAlpha || 1;
+
+                            //where and rotate
                             let localWhere = randomThing.where || where;
                             let localRotate = (randomThing.rotate || globalRotate) == 'random' ? Math.random() * (2 * Math.PI) : 0;
 
