@@ -611,7 +611,7 @@ var common = {
                 if (event.key == 'u' || event.key == 'U') {
                     //unit tester
                     if (true) {
-                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'Eruptlet', {
+                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'Rammian', {
                             team: this.enemyTeam,
                             // team: this.playerTeam,
                             idleCancel: false

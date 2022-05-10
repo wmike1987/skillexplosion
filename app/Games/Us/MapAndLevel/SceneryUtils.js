@@ -258,7 +258,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 15 * randomScale
                     },
-                    radius: 80 * randomScale
+                    radius: 30 * randomScale
                 },
                 offset: {
                     x: 0,
@@ -283,7 +283,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 10 * randomScale
                     },
-                    radius: 60
+                    radius: 30
                 },
                 offset: {
                     x: 0,
@@ -308,7 +308,7 @@ var sceneryUtils = {
                         x: -2,
                         y: 10 * randomScale
                     },
-                    radius: 60
+                    radius: 30
                 },
                 offset: {
                     x: -4,
@@ -333,7 +333,7 @@ var sceneryUtils = {
                         x: 0,
                         y: 10 * randomScale
                     },
-                    radius: 55
+                    radius: 23
                 },
                 offset: {
                     x: 2,

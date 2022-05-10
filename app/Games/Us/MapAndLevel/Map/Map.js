@@ -339,6 +339,7 @@ var map = function(specs) {
         var nodeBuffer = 100;
         var radius = 200;
         var minRadius = 0;
+        var noZones = genericOptions.positionOptions.noZones;
         var minX = genericOptions.positionOptions.minX;
         var maxX = genericOptions.positionOptions.maxX;
         var minY = genericOptions.positionOptions.minY;
@@ -346,6 +347,7 @@ var map = function(specs) {
         if(genericOptions.levelOptions.outer) {
             radius = 1000;
             minRadius = 400;
+            noZones = {center: {x: 60, y: gameUtils.getPlayableHeight() - 60}, radius: 60};
         } else if(genericOptions.levelOptions.middle) {
             radius = 500;
             minRadius = 250;
@@ -369,7 +371,8 @@ var map = function(specs) {
                     minX: minX,
                     maxX: maxX,
                     minY: minY,
-                    maxY: maxY
+                    maxY: maxY,
+                    noZones: noZones
                 });
                 if (!gameUtils.isPositionWithinMapBounds(position, {x: 50, y: 50})) {
                     outOfBounds = true;

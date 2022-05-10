@@ -58,7 +58,7 @@ var Doodad = function(options) {
     }
 
     //default no zone
-    this.loneNZRadius = options.loneNZRadius || 60;
+    this.loneNZRadius = options.loneNZRadius || 5;
 
     if (!options.scale.x) {
         options.scale = {

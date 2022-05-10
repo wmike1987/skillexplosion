@@ -2081,7 +2081,7 @@ export default function Medic(options) {
         energy: 60,
         grit: 5,
         hitboxWidth: 28,
-        hitboxHeight: 63,
+        hitboxHeight: 70,
         hitboxYOffset: -6,
         adjustHitbox: false,
         itemsEnabled: true,

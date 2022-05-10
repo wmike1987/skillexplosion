@@ -55,15 +55,15 @@ var UnitSystem = function(properties) {
         this.box.permaPendingUnit = null;
         this.box.pendingSelections = {};
         // this.box.tint = 0x47ff9c;
-        this.box.tint = 0x21c2d7;
+        this.box.tint = 0x3fedf2;
         this.box.isBox = true;
-        this.box.borderAlpha = 0.6;
+        this.box.borderAlpha = 0.8;
         this.box.renderChildren = [{
             id: 'box',
             data: 'TintableSquare',
             tint: this.box.tint,
             stage: 'foreground',
-            alpha: 0.15
+            alpha: 0.1
         }];
         this.box.topBorder = graphicsUtils.createDisplayObject('TintableSquare', {
             where: 'foreground',

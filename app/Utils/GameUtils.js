@@ -506,12 +506,19 @@ var gameUtils = {
     },
 
     detectNoZoneCollision: function(nz1, nz2) {
-        var biggestRadius = Math.max(nz1.radius, nz2.radius);
-        return mathArrayUtils.distanceBetweenPoints(nz1.center, nz2.center) < biggestRadius;
+        var combinedRadius = nz1.radius + nz2.radius;
+        return mathArrayUtils.distanceBetweenPoints(nz1.center, nz2.center) < combinedRadius;
+    },
+
+    detectNoZoneCollisions: function(nz1, nzArray) {
+        return nzArray.some((nz) => {
+            let combinedRadius = nz1.radius + nz.radius;
+            return mathArrayUtils.distanceBetweenPoints(nz1.center, nz.center) < combinedRadius;
+        });
     },
 
     getRandomPositionWithinRadiusAroundPoint: function(options) {
-        var point, radius, buffer, minRadius, maxRadius, maxX, minX, maxY, minY, withinPlayableBounds, playableBoundBuffer;
+        var point, radius, buffer, minRadius, maxRadius, maxX, minX, maxY, minY, withinPlayableBounds, playableBoundBuffer, noZones;
         ({
             point,
             radius,
@@ -523,8 +530,15 @@ var gameUtils = {
             maxY,
             minY,
             withinPlayableBounds,
-            playableBoundBuffer
+            playableBoundBuffer,
+            noZones
         } = options);
+
+        if (noZones) {
+            noZones = mathArrayUtils.convertToArray(noZones);
+        } else {
+            noZones = [];
+        }
 
         var position = {
             x: 0,
@@ -544,7 +558,8 @@ var gameUtils = {
             position.x = point.x - radius + (Math.random() * (radius * 2));
             position.y = point.y - radius + (Math.random() * (radius * 2));
 
-        } while ((position.y > maxY ||
+        } while ((gameUtils.detectNoZoneCollisions({center: position, radius: 20}, noZones) ||
+                position.y > maxY ||
                 position.y < minY ||
                 position.x > maxX ||
                 position.x < minX ||
@@ -1116,7 +1131,7 @@ var gameUtils = {
             return;
         }
 
-        return globals.currentGame.addTimer({
+        var timer =  globals.currentGame.addTimer({
             name: options.timerName || ('afterDurationTask:' + mathArrayUtils.getId()),
             timeLimit: duration,
             killsSelf: true,
@@ -1124,8 +1139,11 @@ var gameUtils = {
             executeOnNuke: options.executeOnNuke,
             totallyDoneCallback: function() {
                 callback();
+                gameUtils.fullUndeathPact(timer);
             }
         });
+
+        return timer;
     },
 
     signalNewWave: function(wave, deferred) {

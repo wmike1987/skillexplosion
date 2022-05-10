@@ -2064,7 +2064,7 @@ var campNoir = {
                     enemyPost4.groupingOptions = {
                         priority: 2,
                         min: 70,
-                        max: 90,
+                        max: 110,
                     };
 
                     var trashArray = [];
@@ -2188,7 +2188,7 @@ var campNoir = {
                     enemyPost.groupingOptions = {
                         priority: 1,
                         min: 70,
-                        max: 90,
+                        max: 200,
                     };
 
                     var enemyPost2 = DoodadFactory.createDoodad({
@@ -2199,7 +2199,7 @@ var campNoir = {
                     enemyPost2.groupingOptions = {
                         priority: 1,
                         min: 70,
-                        max: 90,
+                        max: 200,
                     };
 
                     var enemyPost3 = DoodadFactory.createDoodad({
@@ -2211,7 +2211,7 @@ var campNoir = {
                     enemyPost3.groupingOptions = {
                         priority: 1,
                         min: 70,
-                        max: 90,
+                        max: 200,
                     };
 
                     var log1 = DoodadFactory.createDoodad({
@@ -2222,11 +2222,11 @@ var campNoir = {
                     log1.groupingOptions = {
                         priority: 0,
                         rotateTowardCenter: true,
-                        min: 75,
-                        max: 80
+                        min: 80,
+                        max: 105
                     };
 
-                    var basicPitArray = [rockPitDoodad, rock1, rock2, rock3, enemyPost, enemyPost2, enemyPost3, log1, log1];
+                    var basicPitArray = [rockPitDoodad, enemyPost, enemyPost2, enemyPost3, log1, log1];
                     if (this.outer) {
                         var amountOver = Math.min(4, this.totalEnemies - 4);
                         mathArrayUtils.repeatXTimes(() => {
@@ -2238,8 +2238,8 @@ var campNoir = {
                             ep.unique = true;
                             ep.groupingOptions = {
                                 priority: 1,
-                                min: 70,
-                                max: 115,
+                                min: 30,
+                                max: 300,
                             };
                             basicPitArray.push(ep);
                         }, amountOver);
@@ -2258,7 +2258,7 @@ var campNoir = {
                             groupingOptions: {
                                 priority: 2,
                                 min: 100,
-                                max: 175
+                                max: 200
                             }
                         },
                         possibleDoodads: basicPitArray.concat([{
@@ -2342,8 +2342,8 @@ var campNoir = {
                             hz: 1.0,
                             possibleAmounts: [10 + this.totalEnemies * 2],
                             scalar: {
-                                min: 75,
-                                max: 115
+                                min: 30,
+                                max: 250
                             }
                         },
                         where: 'stageNOne',

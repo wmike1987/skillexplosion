@@ -312,7 +312,7 @@ export default function Rammian(options) {
 
     var unitProperties = $.extend({
         unitType: 'Rammian',
-        health: 25,
+        health: 30,
         grit: 20,
         defense: 2,
         energy: 0,
@@ -369,7 +369,7 @@ export default function Rammian(options) {
                                 speed: 2.8,
                                 transform: [self.deathPosition.x, self.deathPosition.y, 2.0, 2.0]
                             });
-                            var blastRadius = 90;
+                            var blastRadius = 100;
                             graphicsUtils.makeSpriteSize(mineExplosionAnimation, {
                                 x: blastRadius * 2.9,
                                 y: blastRadius * 2.9
@@ -486,17 +486,36 @@ export default function Rammian(options) {
             this.enrageAvailable = true;
             this.enrageCooldown = 1800;
             this.enrageLength = 2000;
+            this.chargeTime = 1250;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
                 if (this.enrageAvailable && this.currentHealth < this.maxHealth / 2) {
                     this.enrageAvailable = false;
-                    gameUtils.doSomethingAfterDuration(() => {
-                        this.enrageAvailable = true;
-                    }, this.enrageCooldown + this.enrageLength);
 
-                    this.applySpeedBuff({
-                        duration: this.enrageLength,
-                        amount: 2.0
+                    gameUtils.deathPact(this, gameUtils.doSomethingAfterDuration(() => {
+                        this.enrageAvailable = true;
+                    }, this.enrageCooldown + this.enrageLength));
+
+                    this.stop(null, {
+                        peaceful: true
                     });
+                    this.canMove = false;
+                    this.canAttack = false;
+                    graphicsUtils.flashSprite({
+                        sprite: this,
+                        tintableName: 'isoManagedTint',
+                        toColor: 0x0341df,
+                        duration: 125,
+                        times: 5
+                    });
+                    gameUtils.deathPact(this, gameUtils.doSomethingAfterDuration(() => {
+                        this.stop();
+                        this.canMove = true;
+                        this.canAttack = true;
+                        this.applySpeedBuff({
+                            duration: this.enrageLength,
+                            amount: 2.25
+                        });
+                    }, this.chargeTime));
                 }
             }.bind(this));
         },

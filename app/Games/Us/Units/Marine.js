@@ -1826,8 +1826,8 @@ export default function Marine(options) {
         holdPositionSound: holdPositionSound,
         consumeSound: yeahsound,
         hitboxWidth: 34,
-        hitboxHeight: 63,
-        // adjustHitbox: true,
+        hitboxHeight: 68,
+        adjustHitbox: false,
         animationSpecificHitboxes: [{
                 animation: walkAnimations.down,
                 height: 8,
