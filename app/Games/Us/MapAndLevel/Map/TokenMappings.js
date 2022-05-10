@@ -11,6 +11,7 @@ var tokenMappings = {
     hard: 'HardCampToken',
     augmentedHard: 'HardAugmentedCampToken',
     bossToken: 'BossCampToken',
+    lightBossToken: 'LightBossCampToken',
     airDropStations: 'AirDropToken',
     airDropSpecialStations: 'AirDropSpecialToken',
     default: 'BasicCampToken',

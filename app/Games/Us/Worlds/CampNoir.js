@@ -638,6 +638,15 @@ var hardFlyObj = {
     hz: 1500
 };
 
+var marathonHardFlyObj = {
+    type: 'DamageFlySwarm',
+    amount: [50],
+    trivial: true,
+    atATime: 2,
+    initialDelay: 0.1,
+    hz: 5000
+};
+
 var ultraHardFlyObj = {
     type: 'DamageFlySwarm',
     amount: [50],
@@ -761,7 +770,7 @@ var enemyDefs = {
                 hz: 4000
             }, {
                 type: 'Critter',
-                amount: [5, 6],
+                amount: [2, 3],
                 atATime: 1,
                 hz: 3000
             },
@@ -770,7 +779,7 @@ var enemyDefs = {
     },
 
     //basic hards
-    basicHard: {
+    aHard1: {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
@@ -791,7 +800,7 @@ var enemyDefs = {
             hz: 4200
         }, generalFlyObj]
     },
-    basicHard2: {
+    aHard2: {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
@@ -811,7 +820,7 @@ var enemyDefs = {
             hz: 5000
         }, generalFlyObj]
     },
-    basicHard3: {
+    aHard3: {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
@@ -831,19 +840,39 @@ var enemyDefs = {
             hz: 4200
         }, generalFlyObj]
     },
-    basicHard4: {
+    aHard4: {
         noun: 'Sentinel',
         strength: 'hard',
         enemySets: [{
             type: 'Sentinel',
-            amount: [5],
+            amount: [6],
             atATime: 1,
-            hz: 3000
+            hz: 4000
+        }, hardFlyObj]
+    },
+    aHard5: {
+        noun: 'Hunter',
+        strength: 'hard',
+        enemySets: [{
+            type: 'Hunter',
+            amount: [3],
+            atATime: 1,
+            hz: 4500
+        }, {
+            type: 'Sentinel',
+            amount: [2],
+            atATime: 1,
+            hz: 5000
+        }, {
+            type: 'Critter',
+            amount: [1, 2],
+            atATime: 1,
+            hz: 6000
         }, hardFlyObj]
     },
 
     //outer hards
-    outerHardOne: {
+    bHard1: {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
@@ -863,7 +892,7 @@ var enemyDefs = {
             hz: 8000
         }, hardFlyObj]
     },
-    outerHardTwo: {
+    bHard2: {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
@@ -883,7 +912,7 @@ var enemyDefs = {
             hz: 12000
         }, hardFlyObj]
     },
-    outerHardThree: {
+    bHard3: {
         noun: 'Critter',
         strength: 'hard',
         enemySets: [{
@@ -892,6 +921,77 @@ var enemyDefs = {
             atATime: 6,
             hz: 6000
         }, hardFlyObj]
+    },
+    bHard4: {
+        noun: 'Hunter',
+        strength: 'hard',
+        enemySets: [{
+            type: 'Hunter',
+            amount: 9,
+            atATime: 3,
+            hz: 8000
+        }, hardFlyObj]
+    },
+
+    //light boss configs
+    lightSentinelBoss: {
+        noun: 'Sentinel',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Sentinel',
+            amount: 1,
+            atATime: 1,
+            hz: 12000
+        }, {
+            type: 'Critter',
+            amount: 8,
+            atATime: 1,
+            addedProps: {
+                immuneToAugment: true
+            },
+            hz: 5100
+        }, marathonHardFlyObj]
+    },
+    lightCritterBoss: {
+        noun: 'Critter',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Critter',
+            amount: 2,
+            atATime: 1,
+            hz: 12000
+        }, {
+            type: 'Sentinel',
+            amount: 2,
+            atATime: 1,
+            addedProps: {
+                immuneToAugment: true
+            },
+            hz: 8000
+        }, marathonHardFlyObj]
+    },
+    lightMixedBoss: {
+        noun: 'Enemy',
+        strength: 'boss',
+        enemySets: [{
+            type: 'Sentinel',
+            amount: 1,
+            atATime: 1,
+            initialDelay: 12000,
+        }, {
+            type: 'Critter',
+            amount: 1,
+            atATime: 1,
+            hz: 12000
+        }, {
+            type: 'Critter',
+            amount: 3,
+            atATime: 1,
+            addedProps: {
+                immuneToAugment: true
+            },
+            hz: 5100
+        }, marathonHardFlyObj]
     },
 
     //boss configs
@@ -911,7 +1011,7 @@ var enemyDefs = {
                 immuneToAugment: true
             },
             hz: 5100
-        }, hardFlyObj]
+        }, marathonHardFlyObj]
     },
     critterBoss: {
         noun: 'Critter',
@@ -929,7 +1029,7 @@ var enemyDefs = {
                 immuneToAugment: true
             },
             hz: 8000
-        }, hardFlyObj]
+        }, marathonHardFlyObj]
     },
     mixedBoss: {
         noun: 'Enemy',
@@ -952,7 +1052,7 @@ var enemyDefs = {
                 immuneToAugment: true
             },
             hz: 5100
-        }, hardFlyObj]
+        }, marathonHardFlyObj]
     },
 
     //random other level configs
@@ -981,14 +1081,6 @@ var enemyDefs = {
             atATime: 1,
             hz: 8000
         }, hardFlyObj]
-    },
-    easySentinels: {
-        enemySets: [{
-            type: 'Sentinel',
-            amount: [4, 5],
-            atATime: 2,
-            hz: 5200
-        }]
     },
     rammians: {
         noun: 'Rammian',
@@ -1223,43 +1315,38 @@ var phaseTwo = function(options) {
         done: () => {
             var campLevel = world.gotoLevelById('camp');
             world.map.clearAllNodesExcept('camp');
-            world.map.addMapNode('basic');
 
-            // var bossMix = ['sentinelBoss', 'critterBoss', 'mixedBoss'];
-            // world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bossMix), {
-            //     levelOptions: {
-            //         outer: true,
-            //         specificAugment: 'vitalityBoss',
-            //         itemClass: 'rugged',
-            //     }
-            // });
-
-            world.map.addMapNode('basicHunter', {
-                levelOptions: {
-                    token: 'hard',
-                    itemClass: 'stimulant',
-                }
-            });
+            //travel tokens
             world.map.addMapNode('morphineStation');
             world.map.addMapNode('restStop');
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
-            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+
+            //first hunter encounter
+            world.map.addMapNode('basicHunter');
+
+            //easy augment encounter
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
                 levelOptions: {
                     randomAugment: true,
+                    itemClass: 'stimulant'
                 }
             });
+
+            //basics
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+            world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
             world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
 
-            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+            //first outer augment
+            var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['aHard1', 'aHard2', 'aHard3', 'aHard4', 'aHard5']);
             world.map.addMapNode(basicHardChoice, {
                 levelOptions: {
-                    randomAugment: true,
-                    itemClass: 'stimulant',
+                    itemClass: 'book',
                     outer: true
                 }
             });
 
+            //first multi level
             world.map.addMapNode('multiLevel', {
                 levelOptions: {
                     enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList), mathArrayUtils.getRandomElementOfArray(basicList)],
@@ -1267,6 +1354,7 @@ var phaseTwo = function(options) {
                 }
             });
 
+            //air drops
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
                     prereqCount: 1,
@@ -1274,6 +1362,8 @@ var phaseTwo = function(options) {
                     itemType: 'item'
                 }
             });
+
+
             world.map.addMapNode('airDropStation', {
                 levelOptions: {
                     prereqCount: 3,
@@ -1285,6 +1375,7 @@ var phaseTwo = function(options) {
                     specialTokenName: 'AirDropSpecialTokenGleam'
                 }
             });
+
             if (options.skippedTutorial) {
                 campLevel.skippedTutorial = true;
                 campLevel.mapTableFalseOverride = true;
@@ -1426,7 +1517,11 @@ var phaseTwo = function(options) {
                                 x: 200,
                                 y: 120
                             }),
-                            item: ['BasicMicrochip', 'Book'],
+                            item: ['BasicMicrochip', {
+                                itemClass: 'lightStimulant',
+                            }, {
+                                itemClass: 'stimulant',
+                            }],
                             special: true
                         });
                     });
@@ -1445,16 +1540,6 @@ var phaseTwo = function(options) {
 
 var phaseThree = function() {
     this.map.clearAllNodesExcept('camp');
-    this.map.addMapNode('basic');
-    this.map.addMapNode('basic');
-    this.map.addMapNode('morphineStation');
-    this.map.addMapNode('restStop');
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
-    this.map.addMapNode('basic');
-    this.map.addMapNode('basic');
-    this.map.addMapNode('easySentinels', {
-        levelOptions: mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested'])
-    });
 
     //outer
     let outerParam = {
@@ -1468,45 +1553,72 @@ var phaseThree = function() {
             middle: true,
         }
     };
+
+    //travel tokens
+    this.map.addMapNode('morphineStation');
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), middleParam);
+    this.map.addMapNode('restStop');
 
-    //right levels
-    var basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    //basics
+    let basicList = ['basic', 'basic2', 'basic3'];
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+
+    //light boxx
+    var lightBossMix = ['lightSentinelBoss', 'lightCritterBoss', 'lightMixedBoss'];
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(lightBossMix), {
+        levelOptions: {
+            outer: true,
+            specificAugment: 'vitalityBoss',
+            itemClass: 'rugged',
+            itemType: 'microchip'
+        }
+    });
+
+    //right outer levels
+    let aHardList = ['aHard1', 'aHard2', 'aHard3', 'aHard4', 'aHard5'];
+    var basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         }
     }));
 
-    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         }
     }));
 
-    var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
-    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    //augmented outer level
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, {
         positionOptions: {
             minX: gameUtils.getCanvasCenter().x
         },
         levelOptions: {
             randomAugment: true,
-            outer: true
+            outer: true,
+            itemClass: 'stimulant'
         }
     });
 
-    //left levels
-    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
+    //left outer levels
+    basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
         positionOptions: {
             maxX: gameUtils.getCanvasCenter().x
         },
     }));
 
-    randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
-    this.map.addMapNode('outerHardTwo', {
+    //another augmented outer level
+    let aHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
+    this.map.addMapNode(bHardChoice, {
         levelOptions: {
             outer: true,
             itemClass: 'stimulant',
@@ -1516,6 +1628,8 @@ var phaseThree = function() {
             maxX: gameUtils.getCanvasCenter().x
         }
     });
+
+    //custom mob
     this.map.addMapNode('mobs', {
         levelOptions: {
             outer: true,
@@ -1526,10 +1640,24 @@ var phaseThree = function() {
         }
     });
 
-    this.map.addMapNode('outerHardOne', {
+    //give book here...
+    let bHardList = ['bHard1', 'bHard2', 'bHard3', 'bHard4'];
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bHardList), {
         levelOptions: {
             token: 'hard',
             itemClass: 'book'
+        }
+    });
+
+    //multi level
+    let aHardChoice1 = mathArrayUtils.getRandomElementOfArray(aHardList);
+    let aHardChoice2 = mathArrayUtils.getRandomElementOfArray(aHardList);
+    let aHardChoice3 = mathArrayUtils.getRandomElementOfArray(aHardList);
+    this.map.addMapNode('multiLevel', {
+        levelOptions: {
+            outer: true,
+            enemyDefList: [aHardChoice1, aHardChoice2, aHardChoice3],
+            itemClass: 'stimulant',
         }
     });
 
@@ -1553,32 +1681,6 @@ var phaseThree = function() {
         },
     });
 
-    this.map.addMapNode('airDropStation', {
-        levelOptions: {
-            outer: true,
-            prereqCount: 3,
-            itemClass: 'rugged',
-            itemType: 'microchip',
-            adrenalinePenalty: 2,
-            uniqueItem: true,
-            regularTokenName: 'AirDropSpecialToken',
-            specialTokenName: 'AirDropSpecialTokenGleam'
-        },
-        positionOptions: {
-            minX: gameUtils.getCanvasCenter().x,
-            maxY: gameUtils.getCanvasCenter().y + 50,
-            minY: gameUtils.getCanvasCenter().y - 50,
-        }
-    });
-
-    basicHardChoice = mathArrayUtils.getRandomElementOfArray(['basicHard', 'basicHard2', 'basicHard3', 'basicHard4']);
-    this.map.addMapNode('multiLevel', {
-        levelOptions: {
-            outer: true,
-            enemyDefList: ['rammians', 'easyGargs', basicHardChoice],
-            itemClass: 'stimulant',
-        }
-    });
 
     return {
         nextPhase: 'allNodesComplete',
@@ -1601,30 +1703,24 @@ var phaseThree = function() {
             });
             globals.currentGame.currentScene.add(chain);
             chain.play();
-            gameUtils.doSomethingAfterDuration(() => {
-                globals.currentGame.flyover(() => {
-                    globals.currentGame.dustAndItemBox({
-                        location: gameUtils.getPlayableCenterPlus({
-                            x: 200,
-                            y: 120
-                        }),
-                        item: ['Book', 'BasicMicrochip'],
-                        special: true
-                    });
-                });
-            }, 2000);
+            // gameUtils.doSomethingAfterDuration(() => {
+            //     globals.currentGame.flyover(() => {
+            //         globals.currentGame.dustAndItemBox({
+            //             location: gameUtils.getPlayableCenterPlus({
+            //                 x: 200,
+            //                 y: 120
+            //             }),
+            //             item: ['Book', 'BasicMicrochip'],
+            //             special: true
+            //         });
+            //     });
+            // }, 2000);
         }
     };
 };
 
 var finalPhase = function() {
     this.map.clearAllNodesExcept('camp');
-
-    //basic levels
-    let basicList = ['basic', 'basic2', 'basic3'];
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
 
     var decision = mathArrayUtils.flipCoin();
     var positionOp = {
@@ -1642,6 +1738,12 @@ var finalPhase = function() {
         };
     }
 
+    //basic levels
+    let basicList = ['basic', 'basic2', 'basic3'];
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
+
     //travel tokens
     this.map.addMapNode('morphineStation');
     this.map.addMapNode('restStop');
@@ -1658,7 +1760,6 @@ var finalPhase = function() {
         positionOptions: positionOp
     });
 
-
     //air drops
     this.map.addMapNode('airDropStation', {
         levelOptions: {
@@ -1671,53 +1772,56 @@ var finalPhase = function() {
         }
     });
 
+    var aHards = ['aHard1', 'aHard2', 'aHard3', 'aHard4', 'aHard5'];
+    var bHards = ['bHard1', 'bHard2', 'bHard3', 'bHard4'];
+
+    //two multi levels, mixing a's and b's
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: ['rammians', 'hardGargs', 'mobs'],
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(aHards), mathArrayUtils.getRandomElementOfArray(bHards), mathArrayUtils.getRandomElementOfArray(bHards)],
             itemClass: 'stimulant',
         },
         positionOptions: positionOp
     });
 
-
-    var outerHards = ['outerHardOne', 'outerHardTwo', 'outerHardThree'];
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: [mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards), mathArrayUtils.getRandomElementOfArray(outerHards)],
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(aHards), mathArrayUtils.getRandomElementOfArray(bHards), mathArrayUtils.getRandomElementOfArray(bHards)],
             itemClass: 'stimulant',
         },
         positionOptions: otherPositionOp
     });
 
-    var basicHards = ['basicHard', 'basicHard2', 'basicHard3', 'basicHard4'];
-    var randomAugment = mathArrayUtils.getRandomElementOfArray(['enraged', 'armored', 'slippery', 'hardened', 'infested']);
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+    this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            randomAugment: true
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(bHards), mathArrayUtils.getRandomElementOfArray(bHards)],
         }
     });
 
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicHards), mathArrayUtils.getRandomElementOfArray(basicHards)],
+            enemyDefList: [mathArrayUtils.getRandomElementOfArray(bHards), mathArrayUtils.getRandomElementOfArray(bHards)],
         }
     });
 
-    this.map.addMapNode('multiLevel', {
+    //augmented levels
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bHards), {
         levelOptions: {
             outer: true,
-            enemyDefList: [mathArrayUtils.getRandomElementOfArray(basicHards), mathArrayUtils.getRandomElementOfArray(basicHards)],
+            randomAugment: true,
+            itemClass: 'stimulant',
         }
     });
 
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicHards), {
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bHards), {
         levelOptions: {
             outer: true,
-            randomAugment: true
+            randomAugment: true,
+            itemClass: 'stimulant',
         }
     });
 
@@ -1727,6 +1831,7 @@ var finalPhase = function() {
             outer: true,
             specificAugment: 'vitalityBoss',
             itemClass: 'rugged',
+            itemType: 'microchip'
         },
         positionOptions: otherPositionOp
     });
@@ -2251,7 +2356,7 @@ var campNoir = {
                     });
 
                     var pitPosition = this.tent.list[0].position;
-                    if(this.pit.list[0]) {
+                    if (this.pit.list[0]) {
                         pitPosition = this.pit.list[0].position;
                     }
 

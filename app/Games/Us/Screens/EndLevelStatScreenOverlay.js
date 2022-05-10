@@ -123,7 +123,7 @@ var presentItems = function(options) {
         nodeIndex += 1;
 
         airDropIndicators.forEach((adi, index) => {
-            if(index + 1 == nodeIndex) {
+            if (index + 1 == nodeIndex) {
                 adi.highlight();
             } else {
                 adi.dim();
@@ -219,10 +219,13 @@ var presentItems = function(options) {
             globals.currentGame.soundPool.itemDropSound.play();
 
             items.forEach((i) => {
-                if(i == item) {
+                if (i == item) {
                     return;
                 }
-                graphicsUtils.fadeSpriteOverTime({sprite: i.icon, duration: 100});
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: i.icon,
+                    duration: 100
+                });
                 i.removeSelector();
                 gameUtils.doSomethingAfterDuration(() => {
                     i.destroy();
@@ -240,7 +243,10 @@ var presentItems = function(options) {
                     graphicsUtils.removeSomethingFromRenderer(rewardText);
 
                     //hide all icons, remove the click handlers, then destory the items
-                    graphicsUtils.fadeSpriteOverTime({sprite: item.icon, duration: 100});
+                    graphicsUtils.fadeSpriteOverTime({
+                        sprite: item.icon,
+                        duration: 100
+                    });
                     item.removeSelector();
                     gameUtils.doSomethingAfterDuration(() => {
                         item.destroy();
@@ -423,10 +429,12 @@ var EndLevelStatScreenOverlay = function(units, options) {
     //determine pages
     var pageSize = 5;
     var shanePages = [
-        [], []
+        [],
+        []
     ];
     var ursulaPages = [
-        [], []
+        [],
+        []
     ];
 
     var fillPages = function(options) {
@@ -2559,7 +2567,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
         //if we lost...
         var setupContinueListener = (listenerOptions) => {
             listenerOptions = listenerOptions || {};
-            if(listenerOptions.onDoneSubstitute) {
+            if (listenerOptions.onDoneSubstitute) {
                 options.done = listenerOptions.onDoneSubstitute;
             }
             //setup the listener for space... if we have a space indicator
@@ -2582,123 +2590,133 @@ var EndLevelStatScreenOverlay = function(units, options) {
         var endGameRet = null;
         if (!isVictory) {
             var adrenalineGained = globals.currentGame.map.outingAdrenalineGained;
-            var pauseTime = adrenalineGained ? rewardDuration * 2.0 : 0;
+            var pauseTime = rewardDuration * 3.0;
+
+            //get adrenaline lost during an outing... only subtract 1 max per loss
             gameUtils.doSomethingAfterDuration(() => {
 
-                //get adrenaline lost during an outing... only subtract 1 max per loss
-                gameUtils.doSomethingAfterDuration(() => {
-                    // if (adrenalineGained) {
-                    //     globals.currentGame.map.removeAdrenalineBlock();
-                    //     globals.currentGame.soundPool.negativeSound.play();
-                    //     var adrText = graphicsUtils.floatText('-1' + ' adrenaline', gameUtils.getPlayableCenterPlus({
-                    //         y: 300
-                    //     }), {
-                    //         where: 'hudTwo',
-                    //         style: styles.adrenalineTextLarge,
-                    //         speed: 6,
-                    //         duration: rewardDuration * 2.0
-                    //     });
-                    //     graphicsUtils.addGleamToSprite({
-                    //         sprite: adrText,
-                    //         gleamWidth: 30,
-                    //         duration: 1000
-                    //     });
-                    // }
-                    //trying out losing lives instead of adrenaline
-                    endGameRet = globals.currentGame.addLives(-1);
-                    if(endGameRet.endGame) {
-                        gameIsOver = true;
-                    }
-                    // var adrText = graphicsUtils.floatText('-1 life', gameUtils.getPlayableCenterPlus({
-                    //         y: 300
-                    //     }), {
-                    //         where: 'hudTwo',
-                    //         style: styles.adrenalineTextLarge,
-                    //         speed: 6,
-                    //         duration: rewardDuration * 2.0
-                    //     });
-                    //     graphicsUtils.addGleamToSprite({
-                    //         sprite: adrText,
-                    //         gleamWidth: 30,
-                    //         duration: 1000
-                    //     });
-                    if(gameIsOver) {
-                        //else we'll have space to continue show up to reset the game
+                //trying out losing lives instead of adrenaline
+                endGameRet = globals.currentGame.addLives(-1);
+                if (endGameRet.endGame) {
+                    gameIsOver = true;
+                }
+
+                var adrText = graphicsUtils.floatText('-1 life', gameUtils.getPlayableCenterPlus({
+                    y: 300
+                }), {
+                    where: 'hudTwo',
+                    style: styles.adrenalineTextLarge,
+                    speed: 6,
+                    duration: rewardDuration * 3.0
+                });
+                graphicsUtils.addGleamToSprite({
+                    sprite: adrText,
+                    gleamWidth: 30,
+                    duration: 1000
+                });
+
+                if (gameIsOver) {
+                    //else we'll have space to continue show up to reset the game
+                    gameUtils.doSomethingAfterDuration(() => {
+                        this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to play again", {
+                            where: 'hudText',
+                            style: styles.escapeToContinueStyle,
+                            anchor: {
+                                x: 0.5,
+                                y: 1
+                            },
+                            position: {
+                                x: gameUtils.getPlayableWidth() - 210,
+                                y: gameUtils.getCanvasHeight() - 35
+                            }
+                        });
+                        this.spaceFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
+                        globals.currentGame.soundPool.positiveSound.play();
+                        scene.add(this.spaceToContinue);
+                        this.spaceToContinue.visible = true;
+                        setupContinueListener({
+                            onDoneSubstitute: endGameRet.endGame
+                        });
+                    }, pauseTime);
+                } else if (globals.currentGame.map.completedNodes.length > 0) {
+                    //present items if we've completed nodes
+                    gameUtils.doSomethingAfterDuration(() => {
+                        //float levels completed text
+                        globals.currentGame.soundPool.positiveSoundFast.play();
+                        var nodesCompleted = globals.currentGame.map.completedNodes.length;
+                        var levelsCompletedText = campsCompleted == 1 ? "1 camp cleared!" : campsCompleted + " camps cleared!";
+                        var txt = levelsCompletedText;
+
+                        var airDropIndicators = globals.currentGame.map.completedNodes.map((node) => {
+                            if (!node.customAirdropDisplay) {
+                                return {
+                                    fadeInAtPosition: function(position, where) {
+                                        var sp = graphicsUtils.addSomethingToRenderer(graphicsUtils.cloneSprite(node.displayObject), {
+                                            position: position,
+                                            where: where
+                                        });
+                                        this.sprite = sp;
+                                        this.dim();
+                                        graphicsUtils.makeSpriteSize(sp, node.defaultTokenSize);
+                                        graphicsUtils.fadeSpriteOverTime({
+                                            sprite: sp,
+                                            fadeIn: true,
+                                            duration: 200
+                                        });
+                                    },
+                                    dim: function() {
+                                        this.sprite.alpha = 0.2;
+                                    },
+                                    highlight: function() {
+                                        this.sprite.alpha = 1.0;
+                                        graphicsUtils.addGleamToSprite({
+                                            sprite: this.sprite
+                                        });
+                                    },
+                                    remove: function() {
+                                        graphicsUtils.removeSomethingFromRenderer(this.sprite);
+                                    }
+                                };
+                            } else {
+                                return node.customAirdropDisplay();
+                            }
+                        });
+
+                        var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
+                            numberOfPositions: nodesCompleted,
+                            position: gameUtils.getPlayableCenterPlus({
+                                x: 0,
+                                y: airDropYPositionOffset
+                            }),
+                            spacing: 120
+                        });
+
+                        airDropIndicators.forEach((nodeSprite, index) => {
+                            gameUtils.doSomethingAfterDuration(() => {
+                                nodeSprite.fadeInAtPosition(positions[index], 'hudTwo', true);
+                            }, 500 + 250 * index);
+                        });
+
+                        var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                            y: 300
+                        }), {
+                            where: 'hudTwo',
+                            style: styles.rewardTextLarge,
+                            speed: 6,
+                            duration: rewardDuration * 2.0
+                        });
+                        lText.tint = 0x08d491;
+                        graphicsUtils.addGleamToSprite({
+                            sprite: lText,
+                            gleamWidth: 30,
+                            duration: 1000
+                        });
+
+                        //show supply drop message
                         gameUtils.doSomethingAfterDuration(() => {
-                            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to play again", {
-                                where: 'hudText',
-                                style: styles.escapeToContinueStyle,
-                                anchor: {
-                                    x: 0.5,
-                                    y: 1
-                                },
-                                position: {
-                                    x: gameUtils.getPlayableWidth() - 210,
-                                    y: gameUtils.getCanvasHeight() - 35
-                                }
-                            });
-                            this.spaceFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
-                            globals.currentGame.soundPool.positiveSound.play();
-                            scene.add(this.spaceToContinue);
-                            this.spaceToContinue.visible = true;
-                            setupContinueListener({onDoneSubstitute: endGameRet.endGame});
-                        }, pauseTime + rewardDuration * 2.0);
-                    } else if (globals.currentGame.map.completedNodes.length > 0) {
-                        //present items if we've completed nodes
-                        gameUtils.doSomethingAfterDuration(() => {
-                            //float levels completed text
                             globals.currentGame.soundPool.positiveSoundFast.play();
-                            var nodesCompleted = globals.currentGame.map.completedNodes.length;
-                            var levelsCompletedText = campsCompleted == 1 ? "1 camp cleared!" : campsCompleted + " camps cleared!";
-                            var txt = levelsCompletedText;
-
-                            var airDropIndicators = globals.currentGame.map.completedNodes.map((node) => {
-                                if (!node.customAirdropDisplay) {
-                                    return {
-                                        fadeInAtPosition: function(position, where) {
-                                            var sp = graphicsUtils.addSomethingToRenderer(graphicsUtils.cloneSprite(node.displayObject), {
-                                                position: position,
-                                                where: where
-                                            });
-                                            this.sprite = sp;
-                                            this.dim();
-                                            graphicsUtils.makeSpriteSize(sp, node.defaultTokenSize);
-                                            graphicsUtils.fadeSpriteOverTime({sprite: sp, fadeIn: true, duration: 200});
-                                        },
-                                        dim: function() {
-                                            this.sprite.alpha = 0.2;
-                                        },
-                                        highlight: function() {
-                                            this.sprite.alpha = 1.0;
-                                            graphicsUtils.addGleamToSprite({
-                                                sprite: this.sprite
-                                            });
-                                        },
-                                        remove: function() {
-                                            graphicsUtils.removeSomethingFromRenderer(this.sprite);
-                                        }
-                                    };
-                                } else {
-                                    return node.customAirdropDisplay();
-                                }
-                            });
-
-                            var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
-                                numberOfPositions: nodesCompleted,
-                                position: gameUtils.getPlayableCenterPlus({
-                                    x: 0,
-                                    y: airDropYPositionOffset
-                                }),
-                                spacing: 120
-                            });
-
-                            airDropIndicators.forEach((nodeSprite, index) => {
-                                gameUtils.doSomethingAfterDuration(() => {
-                                    nodeSprite.fadeInAtPosition(positions[index], 'hudTwo', true);
-                                }, 500 + 250 * index);
-                            });
-
-                            var lText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
+                            var txt = 'Supply drop en route...';
+                            var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
                                 y: 300
                             }), {
                                 where: 'hudTwo',
@@ -2706,67 +2724,47 @@ var EndLevelStatScreenOverlay = function(units, options) {
                                 speed: 6,
                                 duration: rewardDuration * 2.0
                             });
-                            lText.tint = 0x08d491;
-                            graphicsUtils.addGleamToSprite({
-                                sprite: lText,
-                                gleamWidth: 30,
-                                duration: 1000
+                            graphicsUtils.flashSprite({
+                                sprite: sdText,
+                                times: 4,
+                                fromColor: 0x01cd46,
+                                toColor: 0xc39405,
+                                duration: 200,
                             });
+                        }, rewardDuration * 2.0);
 
-                            //show supply drop message
-                            gameUtils.doSomethingAfterDuration(() => {
-                                globals.currentGame.soundPool.positiveSoundFast.play();
-                                var txt = 'Supply drop en route...';
-                                var sdText = graphicsUtils.floatText(txt, gameUtils.getPlayableCenterPlus({
-                                    y: 300
-                                }), {
-                                    where: 'hudTwo',
-                                    style: styles.rewardTextLarge,
-                                    speed: 6,
-                                    duration: rewardDuration * 2.0
-                                });
-                                graphicsUtils.flashSprite({
-                                    sprite: sdText,
-                                    times: 4,
-                                    fromColor: 0x01cd46,
-                                    toColor: 0xc39405,
-                                    duration: 200,
-                                });
-                            }, rewardDuration * 2.0);
-
-                            //then present items
-                            gameUtils.doSomethingAfterDuration(() => {
-                                presentItems({
-                                    done: options.done,
-                                    airDropIndicators: airDropIndicators
-                                });
-                            }, 2800);
-                        }, adrenalineGained ? pauseTime + rewardDuration * 2.0 : pauseTime);
-                    } else {
-                        //else we'll have space to continue show up
+                        //then present items
                         gameUtils.doSomethingAfterDuration(() => {
-                            this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
-                                where: 'hudText',
-                                style: styles.escapeToContinueStyle,
-                                anchor: {
-                                    x: 0.5,
-                                    y: 1
-                                },
-                                position: {
-                                    x: gameUtils.getPlayableWidth() - 210,
-                                    y: gameUtils.getCanvasHeight() - 35
-                                }
+                            presentItems({
+                                done: options.done,
+                                airDropIndicators: airDropIndicators
                             });
-                            this.spaceFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
-                            globals.currentGame.soundPool.positiveSound.play();
-                            scene.add(this.spaceToContinue);
-                            this.spaceToContinue.visible = true;
-                            setupContinueListener();
-                        }, pauseTime + rewardDuration * 2.0);
-                    }
+                        }, 2800);
+                    }, pauseTime);
+                } else {
+                    //else we'll have space to continue show up
+                    gameUtils.doSomethingAfterDuration(() => {
+                        this.spaceToContinue = graphicsUtils.addSomethingToRenderer("TEX+:Space to continue", {
+                            where: 'hudText',
+                            style: styles.escapeToContinueStyle,
+                            anchor: {
+                                x: 0.5,
+                                y: 1
+                            },
+                            position: {
+                                x: gameUtils.getPlayableWidth() - 210,
+                                y: gameUtils.getCanvasHeight() - 35
+                            }
+                        });
+                        this.spaceFlashTimer = graphicsUtils.graduallyTint(this.spaceToContinue, 0xFFFFFF, 0x3183fe, 120, null, false, 3);
+                        globals.currentGame.soundPool.positiveSound.play();
+                        scene.add(this.spaceToContinue);
+                        this.spaceToContinue.visible = true;
+                        setupContinueListener();
+                    }, pauseTime);
+                }
 
-                }, (adrenalineGained ? 0 : (startFadeTime * 9 + 300)));
-                }, pauseTime);
+            }, startFadeTime * 9 + 300);
 
 
         } else if (isVictory) {
@@ -2799,7 +2797,11 @@ var EndLevelStatScreenOverlay = function(units, options) {
                                     this.sprite = sp;
                                     this.dim();
                                     graphicsUtils.makeSpriteSize(sp, node.defaultTokenSize);
-                                    graphicsUtils.fadeSpriteOverTime({sprite: sp, fadeIn: true, duration: 200});
+                                    graphicsUtils.fadeSpriteOverTime({
+                                        sprite: sp,
+                                        fadeIn: true,
+                                        duration: 200
+                                    });
                                 },
                                 dim: function() {
                                     this.sprite.alpha = 0.2;

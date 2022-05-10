@@ -313,6 +313,7 @@ export default function Rammian(options) {
     var unitProperties = $.extend({
         unitType: 'Rammian',
         health: 25,
+        grit: 20,
         defense: 2,
         energy: 0,
         energyRegenerationRate: 0,

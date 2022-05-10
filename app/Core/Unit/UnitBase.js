@@ -679,13 +679,14 @@ var UnitBase = {
 
         //spawn new item of same type
         var spawnPosition = {};
+        var dropRadius = 40;
         do {
             if (this.forcedItemDropOffset) {
                 spawnPosition = mathArrayUtils.clonePosition(this.position, this.forcedItemDropOffset);
             } else {
                 spawnPosition = {
-                    x: this.position.x + (Math.random() * 60 - 30),
-                    y: this.position.y + (Math.random() * 60 - 30)
+                    x: this.position.x + (Math.random() * (dropRadius * 2) - dropRadius),
+                    y: this.position.y + (Math.random() * (dropRadius * 2) - dropRadius)
                 };
             }
         } while (!gameUtils.isPositionWithinPlayableBounds(spawnPosition));
@@ -699,6 +700,7 @@ var UnitBase = {
     },
 
     dropAllItems: function() {
+        var lag = 0;
         $.each(this.currentItems, function(i, item) {
             if (item) {
                 this._dropItem(item);

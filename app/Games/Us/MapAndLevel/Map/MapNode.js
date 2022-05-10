@@ -88,6 +88,7 @@ var MapLevelNode = function(options) {
         var token = 'default';
         if(this.levelDetails.isBossLevel()) {
             token = 'bossToken';
+            this.defaultTokenSize = 50;
         } else if(this.levelDetails.isAugmented()) {
             if(this.levelDetails.outer) {
                 token = 'augmentedHard';
