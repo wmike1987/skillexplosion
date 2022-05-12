@@ -257,7 +257,7 @@ var unitPanel = function(options) {
     this.toGraphViewButton.on('mousedown', function(event) {
         this.swapStatView();
     }.bind(this));
-    graphicsUtils.mouseOverOutTint(this.toGraphViewButton);
+    graphicsUtils.mouseOverOutTint({sprite: this.toGraphViewButton});
 
     this.toNumberViewButton = this.experienceMeter = graphicsUtils.createDisplayObject('NumberView', {
         position: this.unitViewChangePosition,
@@ -275,7 +275,7 @@ var unitPanel = function(options) {
     this.toNumberViewButton.on('mousedown', function(event) {
         this.swapStatView();
     }.bind(this));
-    graphicsUtils.mouseOverOutTint(this.toNumberViewButton);
+    graphicsUtils.mouseOverOutTint({sprite: this.toNumberViewButton});
     this.currentViewState = this.toNumberViewButton;
 
     //chart bars
@@ -295,7 +295,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0x555453
     });
-    graphicsUtils.mouseOverOutTint(this.damageHealBar, this.damageHealBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.damageHealBar, startTint: this.damageHealBar.tint});
     graphicsUtils.makeSpriteSize(this.damageHealBar, {
         x: this.chartBarWidth,
         y: 1
@@ -323,7 +323,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0xb40026
     });
-    graphicsUtils.mouseOverOutTint(this.healthChartBar, this.healthChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.healthChartBar, startTint: this.healthChartBar.tint});
     graphicsUtils.makeSpriteSize(this.healthChartBar, {
         x: this.chartBarWidth,
         y: 1
@@ -351,7 +351,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0xe75983
     });
-    graphicsUtils.mouseOverOutTint(this.healthRegenerationBar, this.healthRegenerationBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.healthRegenerationBar, startTint: this.healthRegenerationBar.tint});
     graphicsUtils.makeSpriteSize(this.healthRegenerationBar, {
         x: this.chartBarWidth,
         y: 1
@@ -379,7 +379,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0x860ed9
     });
-    graphicsUtils.mouseOverOutTint(this.energyChartBar, this.energyChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.energyChartBar, startTint: this.energyChartBar.tint});
     graphicsUtils.makeSpriteSize(this.energyChartBar, {
         x: this.chartBarWidth,
         y: 1
@@ -407,7 +407,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0xe2a1e8
     });
-    graphicsUtils.mouseOverOutTint(this.energyRegenerationBar, this.energyRegenerationBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.energyRegenerationBar, startTint: this.energyRegenerationBar.tint});
     graphicsUtils.makeSpriteSize(this.energyRegenerationBar, {
         x: this.chartBarWidth,
         y: 1
@@ -435,7 +435,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0x0734ba
     });
-    graphicsUtils.mouseOverOutTint(this.armorChartBar, this.armorChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.armorChartBar, startTint: this.armorChartBar.tint});
     graphicsUtils.makeSpriteSize(this.armorChartBar, {
         x: this.chartBarWidth,
         y: 1
@@ -463,7 +463,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0xdbc81d
     });
-    graphicsUtils.mouseOverOutTint(this.gritChartBar, this.gritChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.gritChartBar, startTinte: this.gritChartBar.tint});
     graphicsUtils.makeSpriteSize(this.gritChartBar, {
         x: this.chartBarWidth,
         y: 1
@@ -491,7 +491,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0x2f811f
     });
-    graphicsUtils.mouseOverOutTint(this.dodgeChartBar, this.dodgeChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.dodgeChartBar, startTint: this.dodgeChartBar.tint});
     graphicsUtils.makeSpriteSize(this.dodgeChartBar, {
         x: this.chartBarWidth,
         y: 1
@@ -519,7 +519,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0xa26513
     });
-    graphicsUtils.mouseOverOutTint(this.rangeChartBar, this.rangeChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.rangeChartBar, startTint: this.rangeChartBar.tint});
     graphicsUtils.makeSpriteSize(this.rangeChartBar, {
         x: this.chartBarWidth,
         y: 1
@@ -547,7 +547,7 @@ var unitPanel = function(options) {
         where: 'hudOne',
         tint: 0x31c4a1
     });
-    graphicsUtils.mouseOverOutTint(this.asChartBar, this.asChartBar.tint);
+    graphicsUtils.mouseOverOutTint({sprite: this.asChartBar, startTint: this.asChartBar.tint});
     graphicsUtils.makeSpriteSize(this.asChartBar, {
         x: this.chartBarWidth,
         y: 1

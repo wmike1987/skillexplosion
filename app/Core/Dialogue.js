@@ -580,8 +580,16 @@ var DialogueChain = function DialogueChain(arrayOfDialogues, options) {
                 }.bind(this));
             } else {
                 if (this.done) {
+                    let augmentedDone = this.done;
+                    if(this.cleanUpOnDone) {
+                        augmentedDone = function() {
+                            this.done();
+                            this.cleanUp();
+                        }.bind(this);
+                    }
+
                     currentDia.chain = this;
-                    currentDia.deferred.done(this.done);
+                    currentDia.deferred.done(augmentedDone);
                 }
 
                 if(this.cleanUpOnDone) {

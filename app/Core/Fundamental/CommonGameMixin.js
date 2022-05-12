@@ -354,7 +354,7 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
 
-
+                    this.presentNewAugmentChoices();
                     // var floatDuration = 4000;
                     // let shaneAugment = unitUtils.addRandomAugmentToAbility({
                     //     unit: globals.currentGame.shane
@@ -467,7 +467,7 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    globals.currentGame.nextPhase();
+                    // globals.currentGame.nextPhase();
                     // this.shane.dodgeSound.play();
                     //
 

@@ -1469,12 +1469,12 @@ export default function Medic(options) {
         ]
     });
 
-    var rsADuration = 2000;
+    var rsADuration = 1500;
     var rsDAmount = 25;
     var rsPassiveGritAddAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) and reduce healing cost to 0 for 2 seconds.'],
+        aggressionDescription: ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) and reduce healing cost to 0 for 1.5 seconds.'],
         defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
         unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
         textureName: 'RaisedStakes',
@@ -1563,7 +1563,7 @@ export default function Medic(options) {
         title: 'Healthy Habits',
         aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Grant a health gem to self and allies for 4 seconds.'],
         defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Grant a health gem to self and allies for 5 seconds.'],
+        unequippedDescription: ['Initial Boost (Upon camp start)', 'Grant a health gem to self and allies for 3 seconds.'],
         textureName: 'HealthyHabits',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1576,7 +1576,7 @@ export default function Medic(options) {
             alliesAndSelf.forEach((unit) => {
                 unit.applyHealthGem({
                     id: "hhHealthGain",
-                    duration: 5000,
+                    duration: 3000,
                 });
             });
         },
@@ -2091,7 +2091,7 @@ export default function Medic(options) {
         mineDamage: 20,
         damageLabel: "Heal",
         hpGivenTally: 0,
-        passiveOffset: 450,
+        passiveOffset: 750,
         attackSpeedLabel: "Heal Speed",
         damageMember: function() {
             return this.getAbilityByName('Heal').healAmount;
@@ -2250,8 +2250,8 @@ export default function Medic(options) {
 
             //randomize initial augments
             this.abilities.forEach((ability) => {
-                ability.addAvailableAugment();
-                // ability.addAllAvailableAugments();
+                ability.addRandomAugment();
+                // ability.addAllPendingAugments();
             });
 
             this.fullhpTallyMeterWidth = 30;

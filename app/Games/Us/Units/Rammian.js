@@ -486,7 +486,7 @@ export default function Rammian(options) {
             this.enrageAvailable = true;
             this.enrageCooldown = 1800;
             this.enrageLength = 2000;
-            this.chargeTime = 1250;
+            this.chargeTime = 800;
             Matter.Events.on(this, 'sufferNonLethalAttack', function(event) {
                 if (this.enrageAvailable && this.currentHealth < this.maxHealth / 2) {
                     this.enrageAvailable = false;
@@ -504,8 +504,8 @@ export default function Rammian(options) {
                         sprite: this,
                         tintableName: 'isoManagedTint',
                         toColor: 0x0341df,
-                        duration: 125,
-                        times: 5
+                        duration: 100,
+                        times: 4
                     });
                     gameUtils.deathPact(this, gameUtils.doSomethingAfterDuration(() => {
                         this.stop();

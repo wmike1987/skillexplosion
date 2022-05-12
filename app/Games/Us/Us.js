@@ -15,6 +15,7 @@ import {
 } from '@utils/UtilityMenu.js';
 import Marine from '@games/Us/Units/Marine.js';
 import Medic from '@games/Us/Units/Medic.js';
+import Tooltip from '@core/Tooltip.js';
 import campfireShader from '@shaders/CampfireAtNightShader.js';
 import valueShader from '@shaders/ValueShader.js';
 import TileMapper from '@core/TileMapper.js';
@@ -235,13 +236,236 @@ var game = {
             volume: 0.03,
             rate: 1.75
         });
-        //
-        // this.soundPool.whistling = gameUtils.getSound('music/singing.mp3', {
-        //     volume: 1.2,
-        //     rate: 1.05
-        // });
+
+        this.soundPool.techappear = gameUtils.getSound('technologyappear.wav', {
+            volume: 0.10,
+            rate: 1.4
+        });
+
+        this.soundPool.techappear2 = gameUtils.getSound('technologyappear2.wav', {
+            volume: 0.13,
+            rate: 1.0
+        });
+        this.soundPool.niceReveal = gameUtils.getSound('itemreveal2.wav', {
+            volume: 0.08,
+            rate: 1.0
+        });
 
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
+    },
+
+    presentNewAugmentChoices: function() {
+        this.augmentChoiceDeferred = $.Deferred();
+        var randomUnit = mathArrayUtils.flipCoin() ? this.shane : this.ursula;
+
+        //mac murray dialog
+        var a1 = new Dialogue({
+            actor: "MacMurray",
+            text: "Good news, new technology has arrived from Command for... " + randomUnit.name,
+            backgroundBox: true,
+            pauseAfterWord: [{
+                word: 'news,',
+                duration: 500
+            }, {
+                word: 'for... ',
+                duration: 800
+            }],
+            letterSpeed: 30,
+        });
+
+        var a2 = new Dialogue({
+            actor: "MacMurray",
+            continuation: true,
+            text: "Take your pick...",
+            backgroundBox: true,
+            pauseAfterWord: [{
+                word: 'pick...',
+                duration: 150
+            }],
+            letterSpeed: 30,
+            delayAfterEnd: 250
+        });
+
+        var self = this;
+        var chain = new DialogueChain([a1, a2], {
+            startDelay: 750,
+            done: () => {
+                //call present choices
+                presentAugments(randomUnit, 3);
+            }
+        });
+        globals.currentGame.currentScene.add(chain);
+        chain.play();
+
+        //present choices
+        var presentAugments = function(unit, possibilities) {
+            var augmentChoices = this._selectRandomAugmentChoices(unit, possibilities);
+
+            //display call
+            this._displayNewAugmentChoices(augmentChoices, randomUnit, chain);
+        }.bind(this);
+
+        return this.augmentChoiceDeferred;
+    },
+
+    _selectRandomAugmentChoices: function(unit, possibilities) {
+        return unitUtils.getRandomAugments({
+            unit: unit,
+            number: possibilities
+        });
+    },
+
+    _displayNewAugmentChoices: function(augmentChoices, unit, chain) {
+        var length = augmentChoices.length;
+        var spacing = 120;
+        var subtractionAmount = spacing / 2 * (length - 1) - 0.5;
+        var j = 0;
+
+        var positions = mathArrayUtils.distributeXPositionsEvenlyAroundPoint({
+            numberOfPositions: length,
+            position: gameUtils.getPlayableCenterPlus({
+                x: 0,
+                y: 0
+            }),
+            spacing: spacing
+        });
+
+        var augIcons = [];
+        augmentChoices.forEach((augment, index) => {
+            let augIcon = graphicsUtils.cloneSprite(augment.icon, {
+                where: 'hudOne',
+                scale: {
+                    x: 1.25,
+                    y: 1.25
+                }
+            });
+            augIcons.push(augIcon);
+            graphicsUtils.addSomethingToRenderer(augIcon, {
+                position: positions[index]
+            });
+            let border = graphicsUtils.addBorderToSprite({
+                sprite: augIcon,
+                tint: unit.name == 'Shane' ? 0xcd2525 : 0x02ad28
+            });
+
+            Tooltip.makeTooltippable(augIcon, {
+                title: augment.title + ' - (Augment for ' + augment.ability.title + ')',
+                description: augment.description,
+                updaters: augment.updaters,
+                systemMessage: 'Click to acquire'
+            });
+
+            //mouse down listener
+            var f = function(event) {
+                chain.cleanUp();
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: panel,
+                    duration: 500
+                });
+                augIcons.forEach((ai) => {
+                    graphicsUtils.fadeSpriteOverTime({
+                        sprite: ai,
+                        duration: 500,
+                        noKill: false
+                    });
+                });
+
+                //show nice image for acquiring the augment
+                this._presentAcquiredAugment(augment, unit);
+
+                //and actually acquire the augment
+                augment.ability.addAugment(augment);
+
+                gameUtils.doSomethingAfterDuration(() => {
+                    this.augmentChoiceDeferred.resolve();
+                }, 3000);
+            }.bind(this);
+            augIcon.on('mousedown', f);
+
+            graphicsUtils.mouseOverOutTint({sprite: augIcon, startTint: 0xdadada});
+        });
+
+        //show choice border
+        var panel = graphicsUtils.addSomethingToRenderer("PanelWithBorder", {
+            where: 'hud',
+            scale: {
+                x: 0.8,
+                y: 0.8
+            },
+            alpha: 0.75,
+            position: gameUtils.getPlayableCenterPlus({
+                x: 0,
+                y: 0
+            }),
+        });
+        graphicsUtils.addGleamToSprite({
+            power: 0.1,
+            sprite: panel,
+            leanAmount: 125,
+            gleamWidth: 150,
+            duration: 750,
+            alphaIncluded: true
+        });
+        this.soundPool.niceReveal.play();
+    },
+
+    _presentAcquiredAugment: function(augment, unit) {
+        let yOffset = 50;
+        let floatDuration = 4000;
+        let myAugment = augment;
+
+        let myText = unit.name + ' acquired ';
+        let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
+            y: yOffset
+        }), {
+            duration: floatDuration,
+            style: styles.titleTwoStyle
+        });
+        globals.currentGame.soundPool.techappear2.play();
+        graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
+
+        let coloredText = graphicsUtils.floatText(myAugment.title, gameUtils.getPlayableCenterPlus({
+            y: yOffset,
+        }), {
+            duration: floatDuration,
+            style: styles.titleTwoStyle
+        });
+
+        let totalWidth = acquiredText.width + coloredText.width;
+        let acquiredPercent = acquiredText.width / totalWidth;
+        let coloredPercent = coloredText.width / totalWidth;
+        let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
+        let acquiredTextAdjustment = coloredPercent * totalAdjustment;
+        let coloredTextAdjustment = acquiredPercent * totalAdjustment;
+
+        acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {
+            x: -acquiredTextAdjustment
+        });
+        coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {
+            x: coloredTextAdjustment
+        });
+        coloredText.tint = unit.name == 'Shane' ? 0xba2727 : 0x047816;
+        graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
+
+        let myAugIcon = graphicsUtils.cloneSprite(myAugment.icon, {
+            where: 'hudOne',
+            scale: {
+                x: 1.25,
+                y: 1.25
+            }
+        });
+        graphicsUtils.addSomethingToRenderer(myAugIcon, {
+            position: gameUtils.getPlayableCenterPlus({
+                y: 60 + yOffset
+            })
+        });
+        let border = graphicsUtils.addBorderToSprite({
+            sprite: myAugIcon
+        });
+        graphicsUtils.floatSpriteNew(myAugIcon,
+            myAugIcon.position, {
+                duration: floatDuration
+            });
     },
 
     play: function(options) {
@@ -271,142 +495,22 @@ var game = {
                         campNode.manualEnable = false;
                         campNode.activeCampTooltipOverride = null;
 
-                        let onEnterDelay = 0;
-                        let yOffset = 50;
+                        var acquireAugmentDeferred = $.Deferred();
                         if (currentPhaseObj.acquireAugmentsUponCompletion) {
-                            globals.currentGame.makeCurrentLevelNonConfigurable();
-                            onEnterDelay = 8500;
-                            gameUtils.doSomethingAfterDuration(() => {
-                                var floatDuration = 4000;
-                                let shaneAugment = unitUtils.addRandomAugmentToAbility({
-                                    unit: globals.currentGame.shane
-                                });
-                                let myText = 'Shane acquired ';
-                                let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
-                                    y: yOffset
-                                }), {
-                                    duration: floatDuration,
-                                    style: styles.titleTwoStyle
-                                });
-                                globals.currentGame.soundPool.positiveSoundFast.play();
-                                graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
-
-                                let coloredText = graphicsUtils.floatText(shaneAugment.title, gameUtils.getPlayableCenterPlus({
-                                    y: yOffset,
-                                }), {
-                                    duration: floatDuration,
-                                    style: styles.titleTwoStyle
-                                });
-
-                                let totalWidth = acquiredText.width + coloredText.width;
-                                let acquiredPercent = acquiredText.width / totalWidth;
-                                let coloredPercent = coloredText.width / totalWidth;
-                                let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
-                                let acquiredTextAdjustment = coloredPercent * totalAdjustment;
-                                let coloredTextAdjustment = acquiredPercent * totalAdjustment;
-
-                                acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {
-                                    x: -acquiredTextAdjustment
-                                });
-                                coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {
-                                    x: coloredTextAdjustment
-                                });
-                                coloredText.tint = 0xba2727;
-                                graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
-
-                                let shaneIcon = graphicsUtils.cloneSprite(shaneAugment.icon, {
-                                    where: 'hudOne',
-                                    scale: {
-                                        x: 1.25,
-                                        y: 1.25
-                                    }
-                                });
-                                graphicsUtils.addSomethingToRenderer(shaneIcon, {
-                                    position: gameUtils.getPlayableCenterPlus({
-                                        y: 60 + yOffset
-                                    })
-                                });
-                                let border = graphicsUtils.addBorderToSprite({
-                                    sprite: shaneIcon
-                                });
-                                graphicsUtils.floatSpriteNew(shaneIcon,
-                                    shaneIcon.position, {
-                                        duration: floatDuration
-                                    });
-
-                                gameUtils.doSomethingAfterDuration(() => {
-                                    let ursulaAugment = unitUtils.addRandomAugmentToAbility({
-                                        unit: globals.currentGame.ursula
-                                    });
-
-                                    let myText = 'Ursula acquired ';
-                                    let acquiredText = graphicsUtils.floatText(myText, gameUtils.getPlayableCenterPlus({
-                                        y: yOffset
-                                    }), {
-                                        duration: floatDuration,
-                                        style: styles.titleTwoStyle
-                                    });
-                                    globals.currentGame.soundPool.positiveSoundFast.play();
-                                    graphicsUtils.fadeSpriteInQuickly(acquiredText, 500);
-
-                                    let coloredText = graphicsUtils.floatText(ursulaAugment.title, gameUtils.getPlayableCenterPlus({
-                                        y: yOffset,
-                                    }), {
-                                        duration: floatDuration,
-                                        style: styles.titleTwoStyle
-                                    });
-
-                                    let totalWidth = acquiredText.width + coloredText.width;
-                                    let acquiredPercent = acquiredText.width / totalWidth;
-                                    let coloredPercent = coloredText.width / totalWidth;
-                                    let totalAdjustment = (acquiredText.width / 2.0) + (coloredText.width / 2.0);
-                                    let acquiredTextAdjustment = coloredPercent * totalAdjustment;
-                                    let coloredTextAdjustment = acquiredPercent * totalAdjustment;
-
-                                    acquiredText.position = mathArrayUtils.clonePosition(acquiredText.position, {
-                                        x: -acquiredTextAdjustment
-                                    });
-                                    coloredText.position = mathArrayUtils.clonePosition(coloredText.position, {
-                                        x: coloredTextAdjustment
-                                    });
-                                    coloredText.tint = 0x047816;
-                                    graphicsUtils.fadeSpriteInQuickly(coloredText, 500);
-
-                                    let ursulaIcon = graphicsUtils.cloneSprite(ursulaAugment.icon, {
-                                        where: 'hudOne',
-                                        scale: {
-                                            x: 1.25,
-                                            y: 1.25
-                                        }
-                                    });
-                                    graphicsUtils.addSomethingToRenderer(ursulaIcon, {
-                                        position: gameUtils.getPlayableCenterPlus({
-                                            y: 60 + yOffset
-                                        })
-                                    });
-                                    let border = graphicsUtils.addBorderToSprite({
-                                        sprite: ursulaIcon
-                                    });
-                                    graphicsUtils.floatSpriteNew(ursulaIcon,
-                                        ursulaIcon.position, {
-                                            duration: floatDuration
-                                        });
-                                }, floatDuration - 750);
-                            }, 1500);
+                            acquireAugmentDeferred = globals.currentGame.presentNewAugmentChoices();
                         }
 
-                        gameUtils.doSomethingAfterDuration(() => {
-                            globals.currentGame.makeCurrentLevelConfigurable();
+                        acquireAugmentDeferred.done(() => {
                             if (currentPhaseObj.onEnterAfterCompletionBehavior) {
                                 currentPhaseObj.onEnterAfterCompletionBehavior();
                             }
+                        });
 
-                            if (!currentPhaseObj.wrappedNextPhase) {
-                                globals.currentGame.nextPhase();
-                            } else {
-                                currentPhaseObj.wrappedNextPhase();
-                            }
-                        }, onEnterDelay);
+                        if (!currentPhaseObj.wrappedNextPhase) {
+                            globals.currentGame.nextPhase();
+                        } else {
+                            currentPhaseObj.wrappedNextPhase();
+                        }
                     };
                 }.bind(this));
             }

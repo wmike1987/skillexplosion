@@ -247,6 +247,33 @@ var unitUtils = {
         return chosenAbility.addAvailableAugment();
     },
 
+    getRandomAugments: function(options) {
+        options = gameUtils.mixinDefaults({params: options, defaults: {
+            number: 3
+        }});
+
+        let returnAugments = [];
+
+        let filteredAbilities = options.unit.abilities.filter((ability) => {
+            return !ability.allAugmentsAvailable();
+        });
+
+        let pendingAugments = [];
+        filteredAbilities.forEach((ability) => {
+            pendingAugments.push(...ability.getPendingAugments());
+        });
+
+        mathArrayUtils.repeatXTimes(() => {
+            let randomAugment = mathArrayUtils.getRandomElementOfArray(pendingAugments);
+            mathArrayUtils.removeObjectFromArray(randomAugment, pendingAugments);
+            returnAugments.push(randomAugment);
+        }, options.number);
+
+        return returnAugments.filter((el) => {
+            return el != null;
+        });
+    },
+
     getUnitAllies: function(meUnit, includeMe) {
         var allies = [];
         this.applyToUnitsByTeam(function(team) {

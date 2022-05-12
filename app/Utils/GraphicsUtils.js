@@ -351,15 +351,15 @@ var graphicsUtils = {
                     sprite.alpha = this.percentDone * finalAlpha;
 
                     //also handle border
-                    if(border) {
-                        border = this.percentDone * finalAlpha;
+                    if (border) {
+                        border.alpha = this.percentDone * finalAlpha;
                     }
                 } else {
                     sprite.alpha = startingAlpha - (this.percentDone * startingAlpha);
 
                     //also handle border
-                    if(border) {
-                        border = startingAlpha - (this.percentDone * startingAlpha);
+                    if (border) {
+                        border.alpha = startingAlpha - (this.percentDone * startingAlpha);
                     }
                 }
             },
@@ -370,7 +370,7 @@ var graphicsUtils = {
                     } else {
                         sprite.visible = false;
 
-                        if(border) {
+                        if (border) {
                             border.visible = false;
                         }
                     }
@@ -503,7 +503,7 @@ var graphicsUtils = {
                 if (!options.stationary) {
                     sprite.position.y -= (delta * (options.speed / 100 || 0.03));
 
-                    if(border) {
+                    if (border) {
                         border.position.y -= (delta * (options.speed / 100 || 0.03));
                     }
                 }
@@ -512,7 +512,7 @@ var graphicsUtils = {
                 if (!options.persistAtEnd) {
                     sprite.alpha = alphaBuffer - this.percentDone * alphaBuffer;
 
-                    if(border) {
+                    if (border) {
                         border.alpha = alphaBuffer - this.percentDone * alphaBuffer;
                     }
                 }
@@ -817,23 +817,23 @@ var graphicsUtils = {
 
     lightenDarkenColor: function(color, percent) {
         color = color.toString(16);
-        var R = parseInt(color.substring(0,2),16);
-        var G = parseInt(color.substring(2,4),16);
-        var B = parseInt(color.substring(4,6),16);
+        var R = parseInt(color.substring(0, 2), 16);
+        var G = parseInt(color.substring(2, 4), 16);
+        var B = parseInt(color.substring(4, 6), 16);
 
         R = parseInt(R * (100 + percent) / 100);
         G = parseInt(G * (100 + percent) / 100);
         B = parseInt(B * (100 + percent) / 100);
 
-        R = (R<255)?R:255;
-        G = (G<255)?G:255;
-        B = (B<255)?B:255;
+        R = (R < 255) ? R : 255;
+        G = (G < 255) ? G : 255;
+        B = (B < 255) ? B : 255;
 
-        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+        var RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+        var GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+        var BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
 
-        return "0x"+RR+GG+BB;
+        return "0x" + RR + GG + BB;
     },
 
     graduallyTint: function(tintable, startColor, finalColor, transitionTime, tintableName, pauseDurationAtEnds, times, onEnd) {
@@ -933,7 +933,7 @@ var graphicsUtils = {
             totallyDoneCallback: function() {
                 sprite.position = position;
                 sprite.independentRender = false;
-                if(onDone) {
+                if (onDone) {
                     onDone();
                 }
             }
@@ -1146,12 +1146,26 @@ var graphicsUtils = {
         }, borderedSprite.addedBorder.borderOptions));
     },
 
-    mouseOverOutTint: function(sprite, startTint, finalTint) {
-        startTint = startTint || 0xffffff;
-        finalTint = finalTint || 0x3e3e3e;
+    mouseOverOutTint: function(options) {
+        options = gameUtils.mixinDefaults({
+            params: options,
+            defaults: {
+                startTint: 0xffffff,
+                finalTint: 0x3e3e3e,
+                sound: true
+            }
+        });
+        let sprite = options.sprite;
+        let startTint = options.startTint;
+        let finalTint = options.finalTint;
+        let sound = options.sound;
+
         sprite.interactive = true;
         sprite.on('mouseover', function(event) {
             sprite.tint = finalTint;
+            if (sound) {
+                globals.currentGame.soundPool.keypressSound.play();
+            }
         }.bind(this));
         sprite.on('mouseout', function(event) {
             sprite.tint = startTint;

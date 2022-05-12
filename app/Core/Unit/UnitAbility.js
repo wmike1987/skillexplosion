@@ -131,7 +131,12 @@ export default function(options) {
         });
     };
 
-    this.addAvailableAugment = function(options) {
+    this.addAugment = function(augment) {
+        augment.isAvailable = true;
+        this.availableAugments.push(augment);
+    };
+
+    this.getAvailableAugment = function(options) {
         if(this.allAugmentsAvailable()) {
             return;
         }
@@ -139,26 +144,30 @@ export default function(options) {
         options = Object.assign({
             random: true
         }, options);
-        let nonAvailableAugments = this.augments.filter((augment) => {
-            return !augment.isAvailable;
-        });
+        let nonAvailableAugments = this.getPendingAugments();
 
         let randomAugment = null;
         if(options.random) {
             randomAugment = mathArrayUtils.getRandomElementOfArray(nonAvailableAugments);
-            if(randomAugment) {
-                randomAugment.isAvailable = true;
-                this.availableAugments.push(randomAugment);
-            }
         }
 
         return randomAugment;
     };
 
-    this.addAllAvailableAugments = function() {
-        mathArrayUtils.repeatXTimes(() => {
-            this.addAvailableAugment();
-        }, 10);
+    this.addRandomAugment = function() {
+        this.addAugment(this.getAvailableAugment());
+    };
+
+    this.getPendingAugments = function() {
+        return this.augments.filter((augment) => {
+            return !augment.isAvailable;
+        });
+    };
+
+    this.addAllPendingAugments = function() {
+        this.getPendingAugments().forEach((augment) => {
+            this.addAugment(augment);
+        });
     };
 
     this.getAvailableAugments = function() {

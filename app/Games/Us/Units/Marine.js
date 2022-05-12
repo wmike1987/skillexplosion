@@ -1585,7 +1585,7 @@ export default function Marine(options) {
         title: 'Spiritual State',
         aggressionDescription: ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for 1 second.'],
         defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for 5 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for 5 seconds.'],
+        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for 3 seconds.'],
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1599,7 +1599,7 @@ export default function Marine(options) {
             alliesAndSelf.forEach((unit) => {
                 unit.applyEnergyGem({
                     id: "spiritualStateGain",
-                    duration: ssDDuration
+                    duration: 3000
                 });
             });
         },
@@ -1970,8 +1970,8 @@ export default function Marine(options) {
 
             //randomize initial augments
             this.abilities.forEach((ability) => {
-                ability.addAvailableAugment();
-                // ability.addAllAvailableAugments();
+                ability.addRandomAugment();
+                // ability.addAllPendingAugments();
             });
 
         }

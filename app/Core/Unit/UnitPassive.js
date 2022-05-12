@@ -239,7 +239,7 @@ export default function(options) {
                 });
                 graphicsUtils.floatSpriteNew(iconUp,
                     {x: 0, y: 0}, {
-                    duration: 800,
+                    duration: 1750,
                     stationary: true
                 });
                 if (this.passiveAction) {
@@ -247,7 +247,7 @@ export default function(options) {
                     globals.currentGame.soundPool.softBeep.play();
                     // Matter.Events.trigger(globals.currentGame, this.collectorEventName, {mode: unequippedPassive});
                 }
-            }, 500 + timingOffset + (order * 950));
+            }, 500 + timingOffset + (order * 1450));
         }
     }.bind(this));
 

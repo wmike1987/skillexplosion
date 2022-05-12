@@ -219,6 +219,7 @@ var presentItems = function(options) {
             globals.currentGame.soundPool.itemDropSound.play();
 
             items.forEach((i) => {
+                i.removeSelector();
                 if (i == item) {
                     return;
                 }
@@ -226,7 +227,6 @@ var presentItems = function(options) {
                     sprite: i.icon,
                     duration: 100
                 });
-                i.removeSelector();
                 gameUtils.doSomethingAfterDuration(() => {
                     i.destroy();
                 }, 100);
@@ -247,7 +247,6 @@ var presentItems = function(options) {
                         sprite: item.icon,
                         duration: 100
                     });
-                    item.removeSelector();
                     gameUtils.doSomethingAfterDuration(() => {
                         item.destroy();
                     }, 100);

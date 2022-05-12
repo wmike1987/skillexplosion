@@ -470,7 +470,7 @@ ConfigPanel.prototype.deregisterAugmentImpeder = function() {
 ConfigPanel.prototype.hideOpenButton = function() {
     //hide all passives first and lower the button
     this.hideForCurrentUnit();
-    
+
     this.showButton.visible = false;
     this.showButton.state = "hidden";
     this.showButtonGlass.visible = false;
