@@ -1287,14 +1287,20 @@ export default function Marine(options) {
     var gsADuration = 300;
     var allyArmorDuration = 7000;
     var armorGiven = 1.0;
-    var allyHeal = 6;
+    var allyHeal = 3;
     var allyEnergyHeal = 1;
     var passiveAllyPercentageHeal = 15;
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
-        defenseDescription: ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp and ' + allyEnergyHeal + ' energy.'],
-        aggressionDescription: ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 7 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Heal ally for ' + passiveAllyPercentageHeal + '% of max hp.'],
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp and ' + allyEnergyHeal + ' energy.'];
+        },
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 7 seconds.'];
+        },
+        getUnequippedDescription: () => {
+            return  ['Initial Boost (Upon camp start)', 'Heal ally for ' + passiveAllyPercentageHeal + '% of max hp.'];
+        },
         textureName: 'PositiveMindset',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1303,6 +1309,14 @@ export default function Marine(options) {
         aggressionEventName: 'kill',
         aggressionDuration: gsADuration,
         aggressionCooldown: 4000,
+        upgrade: function() {
+            allyHeal += 3;
+            allyEnergyHeal += 1;
+
+            armorGiven += 1;
+
+            passiveAllyPercentageHeal += 5;
+        },
         passiveAction: function(event) {
             var allies = unitUtils.getUnitAllies(marine);
             allies.forEach((ally) => {
@@ -1373,11 +1387,19 @@ export default function Marine(options) {
 
     var robDDuration = 1000;
     var robADuration = 4000;
+    var robHeal = 10;
     var rushOfBlood = new Passive({
         title: 'Rush Of Blood',
-        defenseDescription: ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for 1 second.'],
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Increase movement speed for 4 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain 10% of max hp.'],
+        getDefenseDescription: () => {
+            var secondText = robDDuration == 1000 ? ' second.' : ' seconds.';
+            return ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for ' + robDDuration/1000 + secondText];
+        },
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon dealing damage)', 'Increase movement speed for ' + robADuration/1000 + ' seconds.'];
+        },
+        getUnequippedDescription: () => {
+            return  ['Initial Boost (Upon camp start)', 'Gain ' + robHeal + '% of max hp.'];
+        },
         textureName: 'RushOfBlood',
         unit: marine,
         defenseEventName: 'preReceiveHeal',
@@ -1386,8 +1408,17 @@ export default function Marine(options) {
         aggressionEventName: 'dealDamage',
         aggressionDuration: robADuration,
         aggressionCooldown: 4000,
+        upgrade: function() {
+            robDDuration += 500;
+            this.defenseDuration += 500;
+
+            robADuration += 1000;
+            this.aggressionDuration += 1000;
+
+            robHeal += 5;
+        },
         passiveAction: function(event) {
-            var healthToGive = marine.maxHealth / 10.0;
+            var healthToGive = marine.maxHealth / robHeal;
             marine.giveHealth(healthToGive, marine);
             unitUtils.applyHealthGainAnimationToUnit(marine);
             healsound.play();
@@ -1473,25 +1504,44 @@ export default function Marine(options) {
     };
 
     var kiEnrageAmount = 3;
+    var kiDefenseDuration = 2000;
+    var kiAggressionDuration = 4000;
+    var kiKniveStart = 2;
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Maim enemy for 6 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Become enraged for 2 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain two free knives.'],
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit)', 'Become enraged (+' + kiEnrageAmount + ') for ' + Math.trunc(kiDefenseDuration/1000) + ' seconds.'];
+        },
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon dealing damage)', 'Maim enemy for ' + Math.trunc(kiAggressionDuration/1000) + ' seconds.'];
+        },
+        getUnequippedDescription: () => {
+            return  ['Initial Boost (Upon camp start)', 'Gain ' + kiKniveStart + ' free knives.'];
+        },
         textureName: 'KillerInstinct',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 3000,
-        defenseDuration: 2000,
+        defenseDuration: kiDefenseDuration,
         aggressionEventName: 'dealNonLethalDamage',
         aggressionCooldown: 5000,
+        upgrade: function() {
+            kiEnrageAmount += 2;
+            kiDefenseDuration += 1000;
+            this.defenseDuration += 1000;
+
+            kiAggressionDuration += 2000;
+
+            kiKniveStart += 2;
+        },
         passiveAction: function(event) {
-            marine.grantFreeKnife();
-            marine.grantFreeKnife();
+            mathArrayUtils.repeatXTimes(() => {
+                marine.grantFreeKnife();
+            }, kiKniveStart);
         },
         defenseAction: function(event) {
             marine.enrage({
-                duration: 2000,
+                duration: kiDefenseDuration,
                 amount: kiEnrageAmount
             });
 
@@ -1518,7 +1568,7 @@ export default function Marine(options) {
         aggressionAction: function(event) {
             var targetUnit = event.sufferingUnit;
             targetUnit.maim({
-                duration: 6000
+                duration: kiAggressionDuration
             });
 
             return {
@@ -1533,11 +1583,20 @@ export default function Marine(options) {
 
     var cpADuration = 4000;
     var cpRange = 180;
+    var vpKnives = 1;
+    var vpPassiveDuration = 10000;
     var clearPerspective = new Passive({
         title: 'Clear Perspective',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Add 180 to rifle range for 4 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Throw knife in attacker\'s direction.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Add 180 to rifle range for 10 seconds.'],
+        getDefenseDescription: () => {
+            let knifeText = vpKnives == 1 ? ' knife' : ' knives';
+            return ['Defensive Mode (When hit by projectile)', 'Throw ' + vpKnives + knifeText + ' in attacker\'s direction.'];
+        },
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon dealing damage)', 'Add ' + cpRange + ' to rifle range for ' + Math.trunc(cpADuration/1000) + ' seconds.'];
+        },
+        getUnequippedDescription: () => {
+            return  ['Initial Boost (Upon camp start)', 'Add ' + cpRange + ' to rifle range for ' + vpPassiveDuration/1000 + ' seconds.'];
+        },
         textureName: 'ClearPerspective',
         unit: marine,
         defenseEventName: 'preSufferAttack',
@@ -1545,10 +1604,19 @@ export default function Marine(options) {
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 4000,
         aggressionDuration: cpADuration,
+        upgrade: function() {
+            vpKnives += 1;
+
+            cpRange += 70;
+            cpADuration += 1000;
+            this.aggressionDuration += 1000;
+
+            vpPassiveDuration += 4000;
+        },
         passiveAction: function(event) {
             var currentRange = marine.range;
             marine.applyRangeBuff({
-                duration: 10000,
+                duration: vpPassiveDuration,
                 amount: currentRange
             });
         },
@@ -1556,10 +1624,16 @@ export default function Marine(options) {
             return event.attackContext.isProjectile;
         },
         defenseAction: function(event) {
-            marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
+            let delay = 0;
+            mathArrayUtils.repeatXTimes(() => {
+                gameUtils.doSomethingAfterDuration(() => {
+                    marine.getAbilityByName('Throw Knife').method.call(marine, event.performingUnit.position);
+                }, delay);
+                delay += 100;
+            }, vpKnives);
 
             return {
-                value: 1
+                value: vpKnives
             };
         },
         aggressionAction: function(event) {
@@ -1579,27 +1653,41 @@ export default function Marine(options) {
         }
     });
 
-    var ssDDuration = 5000;
+    var ssDDuration = 4000;
     var ssADuration = 1000;
     var spiritualState = new Passive({
         title: 'Spiritual State',
-        aggressionDescription: ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for 1 second.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for 5 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for 3 seconds.'],
+        getDefenseDescription: () => {
+            var secondText = ssDDuration == 1000 ? ' second.' : ' seconds.';
+            return ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + secondText];
+        },
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for ' + ssADuration/1000 + ' second.'];
+        },
+        getUnequippedDescription: () => {
+            return  ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + ' seconds.'];
+        },
         textureName: 'SpiritualState',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 5000,
-        defenseDuration: 4000,
+        defenseDuration: ssDDuration,
         aggressionEventName: 'preReceiveHeal',
         aggressionCooldown: 6000,
         aggressionDuration: ssADuration,
+        upgrade: function() {
+            ssDDuration += 2000;
+            this.aggressionDuration += 2000;
+
+            ssADuration += 500;
+            this.aggressionDuration += 500;
+        },
         passiveAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyEnergyGem({
                     id: "spiritualStateGain",
-                    duration: 3000
+                    duration: ssDDuration
                 });
             });
         },
@@ -1662,20 +1750,32 @@ export default function Marine(options) {
         }
     });
 
-    var trueGritGain = 2;
+    var trueGritGain = 1;
     var trueGritCap = 20;
     var passiveGritGain = 4;
+    var trueGritAfflictDuration = 5000;
     var trueGrit = new Passive({
         title: 'True Grit',
-        aggressionDescription: ['Agression Mode (Upon rifle attack)', 'Afflict target.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Grant self and allies ' + trueGritGain + ' grit for length of excursion.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain ' + passiveGritGain + ' grit for length of excursion.'],
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit)', 'Grant self and allies ' + trueGritGain + ' grit for length of excursion.'];
+        },
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon rifle attack)', 'Afflict target for ' + trueGritAfflictDuration/1000 + ' seconds.'];
+        },
+        getUnequippedDescription: () => {
+            return  ['Initial Boost (Upon camp start)', 'Self and allies gain ' + passiveGritGain + ' grit for length of excursion.'];
+        },
         textureName: 'TrueGrit',
         unit: marine,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: 6000,
         aggressionEventName: 'preDealDamage',
         aggressionCooldown: 5000,
+        upgrade: function() {
+            trueGritGain += 1;
+            trueGritAfflictDuration += 2000;
+            passiveGritGain += 3;
+        },
         passiveAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(marine, true);
             alliesAndSelf.forEach((unit) => {
@@ -1720,7 +1820,7 @@ export default function Marine(options) {
             if (event.attackContext.id == 'rifle') {
                 var sufferingUnit = event.sufferingUnit;
                 sufferingUnit.afflict({
-                    duration: 5000,
+                    duration: trueGritAfflictDuration,
                     afflictingUnit: marine,
                     id: 'trueGrit'
                 });

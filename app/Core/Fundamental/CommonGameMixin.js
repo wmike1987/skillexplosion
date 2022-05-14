@@ -467,7 +467,7 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    // globals.currentGame.nextPhase();
+                    globals.currentGame.nextPhase();
                     // this.shane.dodgeSound.play();
                     //
 

@@ -9,12 +9,12 @@ export default function(options) {
         description: ['Master of a state of mind.'],
         fontType: 'book',
 
-        systemMessage: "Drop on a state of mind to master.",
+        systemMessage: "Drop on a state of mind to increase its effectiveness.",
         icon: 'GoldBook',
 
         dropCallback: function(position) {
-            this.owningUnit.removeUnlockerKey('mind');
-            this.owningUnit.clearUnlockContext('mind');
+            this.owningUnit.removeUnlockerKey('mindMaster');
+            this.owningUnit.clearUnlockContext('mindMaster');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();
@@ -23,19 +23,41 @@ export default function(options) {
         },
 
         grabCallback: function() {
-            this.owningUnit.giveUnlockerKey('mind');
-            this.owningUnit.setUnlockContext('mind', this);
+            this.owningUnit.giveUnlockerKey('mindMaster');
+            this.owningUnit.setUnlockContext('mindMaster', this);
             if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.showPassivesForUnit(this.owningUnit);
             }
             this.unlockHandler = gameUtils.matterOnce(this.owningUnit, 'unlockedSomething', function() {
                 globals.currentGame.itemSystem.removeItem(this);
+
+                globals.currentGame.soundPool.passiveUpgrade.play();
+
+                //show the icon fading
+                var fadingIcon = graphicsUtils.cloneSprite(this.icon);
+                fadingIcon.where = 'hud';
+                fadingIcon.position = {x: gameUtils.getPlayableCenter().x, y: gameUtils.getPlayableHeight() - 30};
+                graphicsUtils.makeSpriteSize(fadingIcon, 40);
+                graphicsUtils.addSomethingToRenderer(fadingIcon);
+                graphicsUtils.addBorderToSprite({
+                    sprite: fadingIcon,
+                    thickness: 1,
+                    tint: 0xffffff
+                });
+
+                var fadeDuration = 750;
+                graphicsUtils.fadeSpriteOverTime({sprite: fadingIcon, duration: 1000, noKill: false});
+
+                graphicsUtils.floatSpriteNew(fadingIcon,
+                    fadingIcon.position, {
+                    duration: fadeDuration,
+                });
             }.bind(this));
         },
 
         placeCallback: function() {
-            this.owningUnit.removeUnlockerKey('mind');
-            this.owningUnit.clearUnlockContext('mind');
+            this.owningUnit.removeUnlockerKey('mindMaster');
+            this.owningUnit.clearUnlockContext('mindMaster');
             this.unlockHandler.removeHandler();
             if(globals.currentGame.isCurrentLevelConfigurable()) {
                 globals.currentGame.unitSystem.unitPanel.hidePassivesForCurrentUnit();

@@ -120,10 +120,10 @@ var ItemClasses = {
     novel: {
         item: {
             description: 'Novel',
-            tint: 0x1169de,
+            tint: 0xddb300,
             items: ['Novel'],
             gleamAnimation: 'BookGleam',
-            mapNodeIndicator: 'BlueBook'
+            mapNodeIndicator: 'GoldBook'
         }
     },
 

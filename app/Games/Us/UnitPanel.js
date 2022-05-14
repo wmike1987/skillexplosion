@@ -1064,7 +1064,7 @@ unitPanel.prototype.initialize = function(options) {
 
     //listen for when the prevailing unit changes
     Matter.Events.on(this.unitSystem, 'unitPassiveRefresh', function(event) {
-        this.displayUnitPassives(event.unit);
+        this.displayUnitPassives();
     }.bind(this));
 
     //swap som listener
@@ -2130,7 +2130,7 @@ unitPanel.prototype.displayUnitPassives = function(options) {
         }
         Tooltip.makeTooltippable(unit.defensePassive.activeIcon, {
             title: unit.defensePassive.title,
-            description: unit.defensePassive.defenseDescription,
+            description: unit.defensePassive.getDefenseDescription(),
             descriptionStyle: unit.defensePassive.defensiveDescrStyle,
             systemMessage: unit.defensePassive.defenseCooldown / 1000 + ' second cooldown'
         });
@@ -2184,7 +2184,7 @@ unitPanel.prototype.displayUnitPassives = function(options) {
         }
         Tooltip.makeTooltippable(unit.attackPassive.activeIcon, {
             title: unit.attackPassive.title,
-            description: unit.attackPassive.aggressionDescription,
+            description: unit.attackPassive.getAggressionDescription(),
             descriptionStyle: unit.attackPassive.aggressionDescrStyle,
             systemMessage: unit.attackPassive.aggressionCooldown / 1000 + ' second cooldown'
         });
@@ -2397,6 +2397,11 @@ unitPanel.prototype.displayCommands = function() {
 unitPanel.prototype.refreshPassivesForUnit = function(unit) {
     this.unitPassivePanel.refreshForUnit(unit);
 };
+
+unitPanel.prototype.refreshAugmentsForUnit = function(unit) {
+    this.unitAugmentPanel.refreshForUnit(unit);
+};
+
 
 unitPanel.prototype.swapStatesOfMind = function(unit) {
     this.refreshPassivesForUnit(unit);

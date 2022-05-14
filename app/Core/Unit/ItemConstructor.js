@@ -367,7 +367,7 @@ var ic = function(options) {
 
             //play drop animation
             var dropAnimationName = item.classInformation.itemType == 'microchip' ? 'MicrochipDrop' : 'ItemDropFroll';
-            if (item.classInformation.itemClass == 'book') {
+            if (item.classInformation.itemClass == 'book' || item.classInformation.itemClass == 'novel') {
                 dropAnimationName = 'BookDrop';
             } else if (item.classInformation.itemClass == 'stimulant') {
                 dropAnimationName = 'StimulantDrop';
@@ -400,7 +400,7 @@ var ic = function(options) {
                     var dropSound = globals.currentGame.soundPool.itemDropSound;
                     if (item.classInformation.itemType == 'microchip') {
                         dropSound = microchipDropSound;
-                    } else if (item.classInformation.itemClass == 'book') {
+                    } else if (item.classInformation.itemClass == 'book' || item.classInformation.itemClass == 'novel') {
                         dropSound = bookDropSound;
                     } else if (item.classInformation.itemClass == 'stimulant') {
                         dropSound = stimulantDropSound;

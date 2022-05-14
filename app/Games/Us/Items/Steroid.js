@@ -7,12 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Steroid",
-        description: "Consume to add 2 to grit.",
+        description: "Consume to add 1 to grit.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'AlternatePillOne',
         fontType: 'stimulant',
         consume: function(currentUnit) {
-            currentUnit.grit += 2;
+            currentUnit.grit += 1;
         },
     }, options, Consumable);
     return new ic(item);

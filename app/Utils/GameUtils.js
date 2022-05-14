@@ -1206,6 +1206,10 @@ var gameUtils = {
         var params = options.params;
         var defaults = options.defaults;
         return Object.assign({}, defaults, params);
+    },
+
+    createMultiStyleText: function() {
+
     }
 };
 

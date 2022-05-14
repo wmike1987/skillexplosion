@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 import Tooltip from '@core/Tooltip.js';
 import * as Matter from 'matter-js';
+import styles from '@utils/Styles.js';
 import {globals, keyStates, mousePosition} from '@core/Fundamental/GlobalState.js';
 
 var equipShow = gameUtils.getSound('menuopen1.wav', {volume: 0.08, rate: 1.0});
@@ -141,9 +142,15 @@ ConfigPanel.prototype.showPassives = function(unit) {
             let shelf = Math.floor(j / 2);
             let position = {x: xpos, y: gameUtils.getPlayableHeight() + this.initialYOffset + shelf * this.spacing};
             passive.icon = graphicsUtils.addSomethingToRenderer(passive.textureName, {position: position, where: 'hudOne'});
-            // passive.lock = graphicsUtils.addSomethingToRenderer('LockIcon', {position: position, where: 'hudTwo'});
-            // passive.lock.visible = false;
-            // passive.unlocked = true; //for debugging
+
+            passive.levelIndicator = graphicsUtils.addSomethingToRenderer("TEX+:1", {
+                position: mathArrayUtils.clonePosition(position, {x: 10, y: 10}),
+                where: 'hudTwo',
+                style: styles.fpsStyle
+            });
+            passive.levelIndicator.visible = true;
+            passive.unlocked = true; //for debugging
+
             passive.actionBox = graphicsUtils.addSomethingToRenderer('TransparentSquare', {position: position, where: 'hudTwo'});
 
             //delay this for a sec... it takes some time to load the bitmap font and don't want a delay in bringing up the panel
@@ -157,12 +164,21 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.border.sortYOffset = -10;
             passive.actionBox.interactive = true;
 
-            passive.addSlave(passive.icon, /*passive.lock,*/ passive.actionBox, passive.border);
+            passive.addSlave(passive.icon, passive.levelIndicator, passive.actionBox, passive.border);
 
             var lastPassive = null;
             var mindType = 'mind';
             passive.actionBox.on('mousedown', function(event) {
-                if(keyStates.Control && passive.unlocked) {
+                //check for upgrades
+                var mindMaster = this.prevailingUnit.canUnlockSomething('mindMaster');
+                if(mindMaster) {
+                    if(passive.canUpgrade) {
+                        this.prevailingUnit.unlockSomething('mindMaster', passive);
+                        passive.levelIndicator.text = 3 - passive.canUpgrade;
+                    } else {
+                        cantdo.play();
+                    }
+                } else if(keyStates.Control && passive.unlocked) {
                     if(!passive.defensePassive) {
                         if(passive.attackPassive) {
                             unit.unequipPassive(passive, {reequipping: true});
@@ -229,7 +245,7 @@ ConfigPanel.prototype.showPassives = function(unit) {
                     unit.unlockSomething(mindType, passive);
                     Matter.Events.trigger(globals.currentGame.unitSystem, 'stateOfMindLearned', {unit: this.prevailingUnit, passive: passive});
                     unlockAugmentSound.play();
-                    // passive.lock.visible = false;
+                    // passive.levelIndicator.visible = false;
                 }
             }.bind(this));
             passive.actionBox.on('mouseover', function(event) {
@@ -262,10 +278,11 @@ ConfigPanel.prototype.showPassives = function(unit) {
             passive.border.alpha = alphaPassive;
             passive.border.visible = true;
             if(!passive.unlocked) {
-                // passive.lock.visible = true;
+                // passive.levelIndicator.visible = true;
             }
         }
         passive.icon.visible = true;
+        passive.levelIndicator.visible = true;
         passive.actionBox.visible = true;
     }.bind(this));
 };
@@ -285,7 +302,8 @@ ConfigPanel.prototype.hideForCurrentUnit = function() {
         passive.border.visible = false;
         passive.actionBox.tooltipObj.hide();
         passive.actionBox.visible = false;
-        // passive.lock.visible = false;
+        passive.levelIndicator.visible = false;
+        // passive.levelIndicator.visible = false;
         this.currentDefensePassiveBorder.visible = false;
         this.currentAttackPassiveBorder.visible = false;
     }.bind(this));

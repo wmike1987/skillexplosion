@@ -346,7 +346,7 @@ var selectionMechanism = {
             itemClass: this.itemClass,
             itemType: this.itemType,
             amount: 3,
-            uniqueItem: this.uniqueItem
+            uniqueItem: this.uniqueItem,
         });
     },
 
@@ -371,6 +371,7 @@ var selectionMechanism = {
 
                 //show item icon
                 graphicsUtils.addDisplayObjectToRenderer(item.icon);
+                graphicsUtils.mouseOverOutTint({sprite: item.icon});
                 graphicsUtils.makeSpriteSize(item.icon, 36);
                 item.icon.position = mathArrayUtils.clonePosition(gameUtils.getPlayableCenter(), {
                     x: j * spacing - subtractionAmount,
@@ -434,32 +435,48 @@ var selectionMechanism = {
         // globals.currentGame.itemSystem.registerItem(item);
         // item.drop(item.icon.position);
         item.icon.tooltipObj.hide();
+        globals.currentGame.soundPool.positiveSound3.play();
 
-        graphicsUtils.removeSomethingFromRenderer(this.panel);
+        graphicsUtils.flashSprite({
+            sprite: item.icon.addedBorder,
+            times: 4,
+            duration: 50,
+            onEnd: () => {
+                graphicsUtils.fadeSpriteOverTime({
+                    sprite: this.panel,
+                    duration: 250
+                });
 
-        //restore original tooltip
-        // Tooltip.makeTooltippable(item.icon, item.originalTooltipObj);
+                //restore original tooltip
+                // Tooltip.makeTooltippable(item.icon, item.originalTooltipObj);
 
-        //hide all icons, remove the click handlers, then destory the non-chosen items
-        this.items.forEach((i) => {
-            i.icon.visible = false;
-            i.removeAirDrop();
-            // if(i != item) {
-            i.destroy();
-            // }
+                //hide all icons, remove the click handlers, then destory the non-chosen items
+                this.items.forEach((i) => {
+                    i.removeAirDrop();
+                    graphicsUtils.fadeSpriteOverTime({
+                        sprite: i.icon,
+                        duration: 250
+                    });
+
+                    gameUtils.doSomethingAfterDuration(() => {
+                        i.destroy();
+                    }, 250);
+                });
+
+                this.onChoice();
+
+                globals.currentGame.flyover(() => {
+                    globals.currentGame.dustAndItemBox({
+                        location: this.level.airDropLocation,
+                        item: [item.itemName],
+                        special: true,
+                        autoDestroyBox: false
+                    });
+                    this.level.mapTableActive = true;
+                });
+            }
         });
 
-        this.onChoice();
-
-        globals.currentGame.flyover(() => {
-            globals.currentGame.dustAndItemBox({
-                location: this.level.airDropLocation,
-                item: [item.itemName],
-                special: true,
-                autoDestroyBox: false
-            });
-            this.level.mapTableActive = true;
-        });
     },
 
     presentChoices: function(options) {

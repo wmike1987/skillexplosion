@@ -398,6 +398,13 @@ ConfigPanel.prototype.showAugments = function(unit) {
     }.bind(this));
 };
 
+ConfigPanel.prototype.refreshForUnit = function() {
+    if(this.prevailingUnit) {
+        this.liftOpenButton();
+        this.showAugments(this.prevailingUnit);
+    }
+};
+
 ConfigPanel.prototype.hideForCurrentUnit = function() {
     if (!this.prevailingUnit) {
         return;

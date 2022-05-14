@@ -40,14 +40,14 @@ export default {
         if(something) {
             something.unlocked = true;
         }
-        Matter.Events.trigger(this, 'unlockedSomething', {something: something});
-        Matter.Events.trigger(something, 'unlockedSomething');
+        Matter.Events.trigger(this, 'unlockedSomething', {something: something, id: id});
+        Matter.Events.trigger(something, 'unlockedSomething', {id: id});
         this.keyPoints[id] -= 1;
         this.unlockContext[id] = null;
     },
 
     freeUnlockSomething: function(something) {
         Matter.Events.trigger(this, 'unlockedSomething', {something: something});
-        Matter.Events.trigger(something, 'unlockedSomething');
+        Matter.Events.trigger(something, 'unlockedSomething', {id: 'free'});
     }
 };

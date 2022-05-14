@@ -1469,14 +1469,20 @@ export default function Medic(options) {
         ]
     });
 
-    var rsADuration = 1500;
+    var rsADuration = 1000;
     var rsDAmount = 25;
-    var rsPassiveGritAddAmount = 5;
+    var rsPassiveGritAddAmount = 3;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) and reduce healing cost to 0 for 1.5 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'],
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) and reduce healing cost to 0 for ' + rsADuration/1000 + ' seconds.'];
+        },
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'];
+        },
+        getUnequippedDescription: () => {
+            return ['Initial Boost (Upon camp start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'];
+        },
         textureName: 'RaisedStakes',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1484,6 +1490,12 @@ export default function Medic(options) {
         aggressionEventName: 'attack',
         aggressionCooldown: 4000,
         aggressionDuration: rsADuration,
+        upgrade: function() {
+            rsADuration += 500;
+            this.aggressionDuration += 500;
+
+            rsPassiveGritAddAmount += 2;
+        },
         passiveAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
@@ -1557,13 +1569,20 @@ export default function Medic(options) {
         }
     });
 
-    var hhDDuration = 4000;
-    var hhADuration = 5000;
+    var hhADuration = 4000;
+    var hhCondemnDuration = 3000;
+    var hhPassiveDuration = 3000;
     var healthyHabits = new Passive({
         title: 'Healthy Habits',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Grant a health gem to self and allies for 4 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Condemn attacker for 3 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Grant a health gem to self and allies for 3 seconds.'],
+        getAggressionDescription: function() {
+            return ['Agression Mode (Upon dealing damage)', 'Grant a health gem to self and allies for ' + Math.trunc(hhADuration/1000) + ' seconds.'];
+        },
+        getDefenseDescription: function() {
+            return ['Defensive Mode (When hit)', 'Condemn attacker for ' + Math.trunc(hhCondemnDuration/1000) + ' seconds.'];
+        },
+        getUnequippedDescription: function() {
+            return ['Initial Boost (Upon camp start)', 'Grant a health gem to self and allies for ' + Math.trunc(hhPassiveDuration/1000) + ' seconds.'];
+        },
         textureName: 'HealthyHabits',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1571,12 +1590,20 @@ export default function Medic(options) {
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 3000,
         aggressionDuration: hhADuration,
+        upgrade: function() {
+            hhADuration += 1000;
+            this.aggressionDuration += 1000;
+
+            hhCondemnDuration += 1000;
+
+            hhPassiveDuration += 1000;
+        },
         passiveAction: function(event) {
             var alliesAndSelf = unitUtils.getUnitAllies(medic, true);
             alliesAndSelf.forEach((unit) => {
                 unit.applyHealthGem({
                     id: "hhHealthGain",
-                    duration: 3000,
+                    duration: hhPassiveDuration,
                 });
             });
         },
@@ -1584,7 +1611,7 @@ export default function Medic(options) {
             var attackingUnit = event.performingUnit;
             if (attackingUnit.condemn) {
                 attackingUnit.condemn({
-                    duration: hhDDuration,
+                    duration: hhCondemnDuration,
                     condemningUnit: medic,
                     onHealingRecieved: function(options) {
                         Matter.Events.trigger(globals.currentGame, 'HealthyHabitsCollector', {
@@ -1621,16 +1648,23 @@ export default function Medic(options) {
     });
 
     var dodgeGain = 2;
-    var dodgeMax = 10;
+    var upToMax = 10;
     var allyDodgeGain = 20;
     var totalDodgeGained = 0;
     var slADuration = 3000;
     var addedDodgeRolls = 2;
+    var passiveSlyLogicGain = 3;
     var slyLogic = new Passive({
         title: 'Sly Logic',
-        aggressionDescription: ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for 3 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to 10) for length of excursion.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain 3 dodge for length of excursion.'],
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for ' + Math.trunc(slADuration/1000) + ' seconds.'];
+        },
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to ' + upToMax + ') for length of excursion.'];
+        },
+        getUnequippedDescription: () => {
+            return ['Initial Boost (Upon camp start)', 'Gain ' + passiveSlyLogicGain + ' dodge for length of excursion.'];
+        },
         textureName: 'SlyLogic',
         unit: medic,
         defenseEventName: 'preDodgeSufferAttack',
@@ -1638,8 +1672,18 @@ export default function Medic(options) {
         aggressionEventName: 'performHeal',
         aggressionCooldown: 3000,
         aggressionDuration: slADuration,
+        upgrade: function() {
+            slADuration += 1000;
+            this.aggressionDuration += 1000;
+
+            allyDodgeGain += 5;
+            passiveSlyLogicGain += 2;
+            addedDodgeRolls += 2;
+            dodgeGain += 2;
+            upToMax += 4;
+        },
         passiveAction: function(event) {
-            var addedDodge = 3; //Math.floor(medic.getTotalDodge() / 4.0);
+            var addedDodge = passiveSlyLogicGain; //Math.floor(medic.getTotalDodge() / 4.0);
             if (addedDodge > 0) {
                 medic.addDodgeAddition(addedDodge);
                 gameUtils.matterOnce(globals.currentGame, 'VictoryOrDefeat', function() {
@@ -1649,7 +1693,7 @@ export default function Medic(options) {
         },
         defenseAction: function(event) {
             event.attackContext.dodgeRolls += addedDodgeRolls;
-            if (totalDodgeGained >= dodgeMax) {
+            if (totalDodgeGained >= upToMax) {
                 return;
             }
             totalDodgeGained += dodgeGain;
@@ -1695,11 +1739,20 @@ export default function Medic(options) {
     });
 
     var ffDDuration = 3000;
+    var ffMaxFreeVanishes = 2;
+    var ffPassiveFreeVanish = 1;
     var familiarFace = new Passive({
         title: 'Familiar Face',
-        aggressionDescription: ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to two).'],
-        defenseDescription: ['Defensive Mode (When hit)', 'Stun attacker and gain movement speed for 3 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain a free vanish.'],
+        getAggressionDescription: () => {
+            return ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to ' + ffMaxFreeVanishes + ').'];
+        },
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit)', 'Stun attacker and gain movement speed for ' + Math.trunc(ffDDuration/1000) + ' seconds.'];
+        },
+        getUnequippedDescription: () => {
+            let vanishText = ffPassiveFreeVanish == 1 ? ' vanish.' : ' vanishes.';
+            return ['Initial Boost (Upon camp start)', 'Gain ' + ffPassiveFreeVanish + vanishText];
+        },
         textureName: 'FamiliarFace',
         unit: medic,
         defenseEventName: 'preSufferAttack',
@@ -1707,11 +1760,18 @@ export default function Medic(options) {
         defenseDuration: ffDDuration,
         aggressionEventName: 'dealDamage',
         aggressionCooldown: 6000,
+        upgrade: function() {
+            ffMaxFreeVanishes += 1;
+            ffPassiveFreeVanish += 1;
+
+            ffDDuration += 1000;
+            this.defenseDuration += 1000;
+        },
         aggressionPredicate: function() {
             if (!medic.freeSteps) {
                 medic.freeSteps = 0;
             }
-            return medic.freeSteps < 2;
+            return medic.freeSteps < ffMaxFreeVanishes;
         },
         passiveAction: function(event) {
             if (!medic.freeSteps) {
@@ -1753,16 +1813,10 @@ export default function Medic(options) {
                     duration: ffDDuration
                 });
 
-                medic.applyBuff({
+                medic.applySpeedBuff({
                     id: 'familiarFaceSpeed',
-                    textureName: 'SpeedBuff',
-                    duration: ffDDuration,
-                    applyChanges: function() {
-                        medic.moveSpeed += 0.5;
-                    },
-                    removeChanges: function() {
-                        medic.moveSpeed -= 0.5;
-                    }
+                    amount: 0.5,
+                    duration: ffDDuration
                 });
 
                 return {
@@ -1811,19 +1865,32 @@ export default function Medic(options) {
 
     var wwADuration = 4000;
     var wwDDuration = 3000;
+    var wwFreeMineGain = 1;
     var wwHandler = {};
     var wickedWays = new Passive({
         title: 'Wicked Ways',
         // originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
-        aggressionDescription: ['Agression Mode (When hit)', 'Plague attacker for 4 seconds.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for 3 seconds.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain a free mine.'],
+        getAggressionDescription: () => {
+            return ['Agression Mode (When hit)', 'Plague attacker for ' + Math.trunc(wwADuration/1000) + ' seconds.'];
+        },
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for ' + Math.trunc(wwDDuration/1000) + ' seconds.'];
+        },
+        getUnequippedDescription: () => {
+            let mineText = wwFreeMineGain == 1 ? ' mine.' : ' mines.'
+            return ['Initial Boost (Upon camp start)', 'Gain ' + wwFreeMineGain + mineText];
+        },
         textureName: 'WickedWays',
         unit: medic,
         defenseEventName: 'sufferAttack',
         defenseCooldown: 6000,
         aggressionEventName: 'sufferAttack',
         aggressionCooldown: wwADuration,
+        upgrade: function() {
+            wwADuration += 2000;
+            wwDDuration += 1000;
+            wwFreeMineGain += 1;
+        },
         passiveAction: function(event) {
             if (!medic.freeMines) {
                 medic.freeMines = 0;
@@ -1936,18 +2003,30 @@ export default function Medic(options) {
     var efADuration = 4000;
     var efDDuration = 4000;
     var energyGain = 3;
-    var ppDamage = 12;
+    var ppDamage = 10;
+    var efEnergyGain = 10;
     var elegantForm = new Passive({
         title: 'Proud Posture',
-        aggressionDescription: ['Agression Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'],
-        defenseDescription: ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain ' + energyGain + ' energy.'],
-        unequippedDescription: ['Initial Boost (Upon camp start)', 'Gain 15 energy.'],
+        getAggressionDescription: () => {
+            return ['Agression Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'];
+        },
+        getDefenseDescription: () => {
+            return ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain ' + energyGain + ' energy.'];
+        },
+        getUnequippedDescription: () => {
+            return ['Initial Boost (Upon camp start)', 'Gain ' + efEnergyGain + ' energy.'];
+        },
         textureName: 'ElegantForm',
         unit: medic,
         defenseEventName: 'preSufferAttack',
         defenseCooldown: efDDuration,
         aggressionEventName: 'preSufferAttack',
         aggressionCooldown: efADuration,
+        upgrade: function() {
+            efEnergyGain += 5;
+            ppDamage += 5;
+            energyGain += 3;
+        },
         passiveAction: function(event) {
             medic.giveEnergy(15);
             unitUtils.applyEnergyGainAnimationToUnit(medic);

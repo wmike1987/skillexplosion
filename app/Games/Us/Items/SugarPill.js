@@ -7,12 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Sugar Pill",
-        description: "Consume to add 2 to max health.",
+        description: "Consume to add 1 to max health.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'SugarPill',
         fontType: 'stimulant',
         consume: function(currentUnit) {
-            currentUnit.maxHealth += 2;
+            currentUnit.maxHealth += 1;
         },
     }, options, Consumable);
     return new ic(item);

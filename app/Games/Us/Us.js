@@ -250,6 +250,10 @@ var game = {
             volume: 0.08,
             rate: 1.0
         });
+        this.soundPool.passiveUpgrade = gameUtils.getSound('passiveupgrade.wav', {
+            volume: 0.08,
+            rate: 1.0
+        });
 
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
     },
@@ -375,6 +379,7 @@ var game = {
 
                 //and actually acquire the augment
                 augment.ability.addAugment(augment);
+                this.unitSystem.unitPanel.refreshAugmentsForUnit();
 
                 gameUtils.doSomethingAfterDuration(() => {
                     this.augmentChoiceDeferred.resolve();
@@ -1119,6 +1124,7 @@ var game = {
         });
         this.shane = s;
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Book"], unit: this.shane});
+        // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["Novel"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["BlueVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PolarizedVisor"], unit: this.shane});
         // ItemUtils.giveUnitItem({gamePrefix: "Us", itemName: ["PictureOfTheMoon"], unit: this.shane});

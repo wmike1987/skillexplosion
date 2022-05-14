@@ -23,34 +23,41 @@ var unequippedPassive = 'unequippedPassive';
 export default function(options) {
     Object.assign(this, options);
     this.isEquipped = false;
+    this.canUpgrade = 2;
     this.customTitleBuffer = 5;
+    this.titleExtension = ' - Lv. 1';
+    this.originalTitle = this.title;
 
     //Automate some of the panel tooltip text
-    this.decoratedAggressionDescription = [].concat(this.aggressionDescription);
-    var aggCooldown = this.aggressionCooldown / 1000 + ' second cooldown';
+    this.renewTooltipAttributes = function() {
+        this.decoratedAggressionDescription = [].concat(this.getAggressionDescription());
+        this.aggCooldownText = this.aggressionCooldown / 1000 + ' second cooldown';
 
-    this.decoratedDefenseDescription = [].concat(this.defenseDescription);
-    var defCooldown = this.defenseCooldown / 1000 + ' second cooldown';
+        this.decoratedDefenseDescription = [].concat(this.getDefenseDescription());
+        this.defCooldownText = this.defenseCooldown / 1000 + ' second cooldown';
 
-    this.decoratedPassiveDescription = [].concat(this.unequippedDescription);
+        this.decoratedPassiveDescription = [].concat(this.getUnequippedDescription());
 
-    //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
-    this.descriptions = this.decoratedPassiveDescription.concat([' '])
+        //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
+        this.descriptions = this.decoratedPassiveDescription.concat([' '])
         .concat(this.decoratedAggressionDescription.concat([' ']))
         .concat(this.decoratedDefenseDescription);
 
-    this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded];
-    this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded];
-    this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
-    this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText])
+        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded];
+        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded];
+        this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
+        this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText])
         .concat(this.aggressionDescrStyle.concat([styles.systemMessageText]))
         .concat(this.defensiveDescrStyle);
-    this.systemMessage = options.passiveSystemMessage;
+        this.systemMessage = options.passiveSystemMessage;
+        this.title = this.originalTitle + this.titleExtension;
+    };
 
     var setTooltip = function(eventName, options) {
         options = options || {};
-        var aggressionActive = this.attackPassive ? ('Active - ' + aggCooldown) : 'Inactive - Click to activate';
-        var defensiveActive = this.defensePassive ? ('Active - ' + defCooldown) : 'Inactive - Ctrl+Click to activate';
+        this.renewTooltipAttributes();
+        var aggressionActive = this.attackPassive ? ('Active - ' + this.aggCooldownText) : 'Inactive - Click to activate';
+        var defensiveActive = this.defensePassive ? ('Active - ' + this.defCooldownText) : 'Inactive - Ctrl+Click to activate';
         this.descriptions = this.decoratedPassiveDescription.concat([' ']).concat(this.decoratedAggressionDescription.concat([aggressionActive])
             .concat([' ']).concat(this.decoratedDefenseDescription).concat([defensiveActive]));
 
@@ -91,7 +98,26 @@ export default function(options) {
         }
     }.bind(this);
 
+    this.upgradeWrapper = function() {
+        this.upgrade();
+        this.aggressionCooldown -= 500;
+        this.defenseCooldown -= 500;
+        this.canUpgrade -= 1;
+        if(this.canUpgrade == 1) {
+            this.titleExtension = ' - Lv. 2';
+        } else if(this.canUpgrade == 0) {
+            this.titleExtension = ' - Mastered';
+        }
+        this.refresh();
+        setTooltip();
+    }.bind(this);
+
     Matter.Events.on(this, 'unlockedSomething', function(event) {
+        if(event.id == 'mindMaster') {
+            this.upgradeWrapper();
+            return;
+        }
+
         this.unlocked = true;
         setTooltip("Unlock", {
             preventTooltipShow: true
@@ -252,6 +278,13 @@ export default function(options) {
     }.bind(this));
 
     this.cooldownTimer = null;
+
+    this.refresh = function() {
+        this.stop();
+        this.start(this.activeMode);
+        Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
+    };
+
     this.start = function(mode) {
         //stop previous
         this.stop();
@@ -346,7 +379,10 @@ export default function(options) {
             gogogo: true,
             timeLimit: 1,
             tickCallback: function(deltaTime) {
-                if (this.active) return;
+                if (this.active) {
+                    return;
+                }
+
                 this.newCharge = true;
                 progress += deltaTime;
                 this.coolDownMeterPercent = Math.min(1, progress / cooldown);

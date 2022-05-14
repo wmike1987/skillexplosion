@@ -507,10 +507,13 @@ export default function Rammian(options) {
                         duration: 100,
                         times: 4
                     });
+
+                    this.setSleep(true, 'rammianLock');
                     gameUtils.deathPact(this, gameUtils.doSomethingAfterDuration(() => {
                         this.stop();
                         this.canMove = true;
                         this.canAttack = true;
+                        this.setSleep(false, 'rammianLock');
                         this.applySpeedBuff({
                             duration: this.enrageLength,
                             amount: 2.25

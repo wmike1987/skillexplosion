@@ -1361,7 +1361,8 @@ var phaseTwo = function(options) {
             world.map.addMapNode('basicHunter');
 
             //for debugging a phase change...
-            if (false) {
+            let debugFirstCamp = false;
+            if (!debugFirstCamp) {
 
                 //easy augment encounter
                 world.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList), {
@@ -1593,15 +1594,24 @@ var phaseThree = function() {
         }
     };
 
+    let outerPosition = {
+        minX: gameUtils.getCanvasCenter().x
+    };
+
+    if(mathArrayUtils.flipCoin()) {
+        outerPosition = {
+            maxX: gameUtils.getCanvasCenter().x
+        };
+    }
+
     //travel tokens
     this.map.addMapNode('morphineStation');
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), middleParam);
+    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), Object.assign({}, middleParam, {positionOptions: outerPosition}));
     this.map.addMapNode('restStop');
 
     //basics
     let basicList = ['basic', 'basic2', 'basic3'];
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(basicList));
@@ -1615,31 +1625,26 @@ var phaseThree = function() {
             specificAugment: 'vitalityBoss',
             itemClass: 'worn',
             itemType: 'microchip'
-        }
+        },
+        positionOptions: outerPosition
     });
 
     //right outer levels
     let aHardList = ['aHard1', 'aHard2', 'aHard3', 'aHard4', 'aHard5', 'aHard6'];
     var basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
-        positionOptions: {
-            minX: gameUtils.getCanvasCenter().x
-        }
+        positionOptions: outerPosition
     }));
 
     basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
-        positionOptions: {
-            minX: gameUtils.getCanvasCenter().x
-        }
+        positionOptions: outerPosition
     }));
 
     //augmented outer level
     basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode(basicHardChoice, {
-        positionOptions: {
-            minX: gameUtils.getCanvasCenter().x
-        },
+        positionOptions: outerPosition,
         levelOptions: {
             randomAugment: true,
             outer: true,
@@ -1647,37 +1652,14 @@ var phaseThree = function() {
         }
     });
 
-    //left outer levels
-    basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
-    this.map.addMapNode(basicHardChoice, Object.assign(outerParam, {
-        positionOptions: {
-            maxX: gameUtils.getCanvasCenter().x
-        },
-    }));
-
-    //another augmented outer level
-    basicHardChoice = mathArrayUtils.getRandomElementOfArray(aHardList);
-    this.map.addMapNode(basicHardChoice, {
-        levelOptions: {
-            outer: true,
-            itemClass: 'stimulant',
-            randomAugment: true
-        },
-        positionOptions: {
-            maxX: gameUtils.getCanvasCenter().x
-        }
-    });
-
-    //custom mob
-    this.map.addMapNode('mobs', {
-        levelOptions: {
-            outer: true,
-            itemClass: 'stimulant',
-            positionOptions: {
-                maxX: gameUtils.getCanvasCenter().x
-            }
-        }
-    });
+    // //custom mob
+    // this.map.addMapNode('mobs', {
+    //     levelOptions: {
+    //         outer: true,
+    //         itemClass: 'stimulant',
+    //         positionOptions: outerPosition
+    //     }
+    // });
 
     //give book here...
     let bHardList = ['bHard1', 'bHard2', 'bHard3', 'bHard4'];
@@ -1697,7 +1679,8 @@ var phaseThree = function() {
             outer: true,
             enemyDefList: [aHardChoice1, aHardChoice2, aHardChoice3],
             itemClass: 'stimulant',
-        }
+        },
+        positionOptions: outerPosition
     });
 
     this.map.addMapNode('airDropStation', {
@@ -1742,18 +1725,20 @@ var phaseThree = function() {
             });
             globals.currentGame.currentScene.add(chain);
             chain.play();
-            // gameUtils.doSomethingAfterDuration(() => {
-            //     globals.currentGame.flyover(() => {
-            //         globals.currentGame.dustAndItemBox({
-            //             location: gameUtils.getPlayableCenterPlus({
-            //                 x: 200,
-            //                 y: 120
-            //             }),
-            //             item: ['Book', 'BasicMicrochip'],
-            //             special: true
-            //         });
-            //     });
-            // }, 2000);
+            gameUtils.doSomethingAfterDuration(() => {
+                globals.currentGame.flyover(() => {
+                    globals.currentGame.dustAndItemBox({
+                        location: gameUtils.getPlayableCenterPlus({
+                            x: 200,
+                            y: 120
+                        }),
+                        item: ['BasicMicrochip', {
+                            itemClass: 'stimulant'
+                        }],
+                        special: true
+                    });
+                });
+            }, 2000);
         }
     };
 };
@@ -1869,8 +1854,7 @@ var finalPhase = function() {
         levelOptions: {
             outer: true,
             specificAugment: 'vitalityBoss',
-            itemClass: 'rugged',
-            itemType: 'microchip'
+            itemClass: 'novel',
         },
         positionOptions: otherPositionOp
     });
