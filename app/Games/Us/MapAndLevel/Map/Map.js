@@ -260,12 +260,6 @@ var map = function(specs) {
         });
     };
 
-    Matter.Events.on(globals.currentGame, 'VictoryOrDefeat OutingLevelCompleted', function(event) {
-        if (event.result == 'victory') {
-            this.startingFatigue += this.fatigueIncrement;
-        }
-    }.bind(this));
-
     this.backgroundSprite = graphicsUtils.createDisplayObject('TintableSquare', {
         where: 'foregroundOne',
         position: gameUtils.getPlayableCenter(),

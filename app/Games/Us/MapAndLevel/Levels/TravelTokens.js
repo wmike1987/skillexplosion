@@ -211,7 +211,7 @@ var restStop = function(options) {
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Rest Stop";
-        this.tooltipDescription = ['Subtract half of current fatigue.', 'Subtract 1 adrenaline.'];
+        this.tooltipDescription = ['Subtract half of current fatigue.'];
     };
 
     this.arriveCallback = function() {
@@ -223,7 +223,6 @@ var restStop = function(options) {
             amount: Math.floor(globals.currentGame.map.getCurrentFatigue() / 2.0),
             includeStartingFatigue: true
         });
-        globals.currentGame.map.removeAdrenalineBlock();
     };
 };
 restStop.prototype = commonTravelToken;

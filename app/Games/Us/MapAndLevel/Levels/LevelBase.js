@@ -557,7 +557,7 @@ var levelBase = {
         //default to +1 adrenaline
         var adrenalineIsFull = globals.currentGame.map.isAdrenalineFull();
         var addedAdrenaline = 1;
-        var rewardText = '';
+        var rewardText = null;
         var t = '+1 adrenaline!';
 
         //check for +2 reward
@@ -572,8 +572,8 @@ var levelBase = {
             onDone: onDone
         });
 
-        //show reward (efficient clearance)... maybe
-        if (rewardText && !adrenalineIsFull) {
+        //show reward (efficient clearance)
+        if (rewardText) {
             textChain.add({
                 text: rewardText,
                 position: gameUtils.getPlayableCenterPlus({
@@ -626,33 +626,40 @@ var levelBase = {
                     }
                 }
             });
-        } else {
-            textChain.add({
-                text: 'Excellent',
-                position: gameUtils.getPlayableCenterPlus({
-                    y: 300
-                }),
-                additionalOptions: {
-                    where: 'hudTwo',
-                    fadeIn: true,
-                    style: styles.adrenalineTextLarge,
-                    speed: 6,
-                    duration: 1800,
-                    startNextAfter: 1000,
-                    onStart: (myText) => {
-                        globals.currentGame.soundPool.positiveSoundFast.play();
-                        graphicsUtils.addGleamToSprite({
-                            sprite: myText,
-                            gleamWidth: 50,
-                            duration: 500
-                        });
-                    }
-                }
-            });
         }
+        // else {
+        //     textChain.add({
+        //         text: 'Excellent',
+        //         position: gameUtils.getPlayableCenterPlus({
+        //             y: 300
+        //         }),
+        //         additionalOptions: {
+        //             where: 'hudTwo',
+        //             fadeIn: true,
+        //             style: styles.adrenalineTextLarge,
+        //             speed: 6,
+        //             duration: 1800,
+        //             startNextAfter: 1000,
+        //             onStart: (myText) => {
+        //                 globals.currentGame.soundPool.positiveSoundFast.play();
+        //                 graphicsUtils.addGleamToSprite({
+        //                     sprite: myText,
+        //                     gleamWidth: 50,
+        //                     duration: 500
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
 
+        var fatiguePenalty = currentGame.map.fatigueIncrement;
+        if(rewardText) {
+            fatiguePenalty = 2;
+        }
+        currentGame.map.startingFatigue += fatiguePenalty;
+        
         textChain.add({
-            text: '+ ' + currentGame.map.fatigueIncrement + ' starting fatigue',
+            text: '+ ' + fatiguePenalty + ' starting fatigue',
             position: gameUtils.getPlayableCenterPlus({
                 y: 300
             }),
