@@ -99,7 +99,10 @@ export default function(options) {
     }.bind(this);
 
     this.upgradeWrapper = function() {
+        //call upgrade
         this.upgrade();
+
+        //lower cooldowns
         this.aggressionCooldown -= 500;
         this.defenseCooldown -= 500;
         this.canUpgrade -= 1;
@@ -108,8 +111,13 @@ export default function(options) {
         } else if(this.canUpgrade == 0) {
             this.titleExtension = ' - Mastered';
         }
-        this.refresh();
+
+        //reset the tooltip
         setTooltip();
+
+        //trigger a refresh of the panel
+        this.start(this.activeMode);
+        Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
     }.bind(this);
 
     Matter.Events.on(this, 'unlockedSomething', function(event) {
@@ -278,12 +286,6 @@ export default function(options) {
     }.bind(this));
 
     this.cooldownTimer = null;
-
-    this.refresh = function() {
-        this.stop();
-        this.start(this.activeMode);
-        Matter.Events.trigger(globals.currentGame.unitSystem, 'unitPassiveRefresh', {});
-    };
 
     this.start = function(mode) {
         //stop previous

@@ -159,7 +159,7 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     equipShow.play();
 
     //show augments
-    this.showAugments(unit);
+    this.showAugments();
 
     //flash panel
     this.flashPanel();
@@ -167,7 +167,8 @@ ConfigPanel.prototype.showForUnit = function(unit) {
 
 var augmentInactiveTint = 0x535353;
 var augmentId = 'augment';
-ConfigPanel.prototype.showAugments = function(unit) {
+ConfigPanel.prototype.showAugments = function() {
+    var unit = this.prevailingUnit;
     var inactiveSysMessage = {
         text: 'Inactive',
         style: 'augmentInactiveText'
@@ -401,7 +402,7 @@ ConfigPanel.prototype.showAugments = function(unit) {
 ConfigPanel.prototype.refreshForUnit = function() {
     if(this.prevailingUnit) {
         this.liftOpenButton();
-        this.showAugments(this.prevailingUnit);
+        this.showAugments();
     }
 };
 

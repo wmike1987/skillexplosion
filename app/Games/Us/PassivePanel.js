@@ -98,26 +98,24 @@ ConfigPanel.prototype.showForUnit = function(unit) {
     //hide showbutton and text
     this.liftOpenButton();
 
-    //hide for last unit
-    // this.hideForCurrentUnit();
-
     //play sounds
     equipShow.play();
 
     //show augments
-    this.showPassives(unit);
+    this.showPassives();
 
     //flash panel
     this.flashPanel();
 };
 
-ConfigPanel.prototype.refreshForUnit = function(unit) {
-    if(unit && this.showButton.state == 'lifted') {
-        this.showPassives(unit);
+ConfigPanel.prototype.refreshForUnit = function() {
+    if(this.prevailingUnit && this.showButton.state == 'lifted') {
+        this.showPassives();
     }
 };
 
-ConfigPanel.prototype.showPassives = function(unit) {
+ConfigPanel.prototype.showPassives = function() {
+    var unit = this.prevailingUnit;
     var passiveCenterX = this.unitPanelRef.passiveCenterX;
     var alphaPassive = 0.8;
 

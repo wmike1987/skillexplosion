@@ -964,7 +964,7 @@ var enemyDefs = {
             hz: 12000
         }, {
             type: 'Critter',
-            amount: 15,
+            amount: 12,
             atATime: 1,
             addedProps: {
                 immuneToAugment: true
@@ -1008,7 +1008,7 @@ var enemyDefs = {
             initialDelay: 12000,
         }, {
             type: 'Critter',
-            amount: 1,
+            amount: 2,
             atATime: 1,
             hz: 12000
         }, {

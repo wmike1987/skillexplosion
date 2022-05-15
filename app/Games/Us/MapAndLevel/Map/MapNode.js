@@ -156,6 +156,10 @@ var MapLevelNode = function(options) {
         levelDetails: this.levelDetails
     };
 
+    Matter.Events.on(globals.currentGame, 'TravelStarted', () => {
+        this.unfocusNode();
+    });
+
     //create the supply drop indicator
     if (this.levelDetails.isSupplyDropEligible) {
         var indicator = graphicsUtils.createDisplayObject(ItemClasses[this.levelDetails.itemClass][this.levelDetails.itemType].mapNodeIndicator, {

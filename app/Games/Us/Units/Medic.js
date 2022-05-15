@@ -1679,8 +1679,8 @@ export default function Medic(options) {
             allyDodgeGain += 5;
             passiveSlyLogicGain += 2;
             addedDodgeRolls += 2;
-            dodgeGain += 2;
-            upToMax += 4;
+            dodgeGain += 1;
+            upToMax += 3;
         },
         passiveAction: function(event) {
             var addedDodge = passiveSlyLogicGain; //Math.floor(medic.getTotalDodge() / 4.0);

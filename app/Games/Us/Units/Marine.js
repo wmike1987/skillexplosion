@@ -1658,11 +1658,11 @@ export default function Marine(options) {
     var spiritualState = new Passive({
         title: 'Spiritual State',
         getDefenseDescription: () => {
-            var secondText = ssDDuration == 1000 ? ' second.' : ' seconds.';
-            return ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + secondText];
+            return ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + ' seconds.'];
         },
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for ' + ssADuration/1000 + ' second.'];
+            var secondText = ssADuration == 1000 ? ' second.' : ' seconds.';
+            return ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for ' + ssADuration/1000 + secondText];
         },
         getUnequippedDescription: () => {
             return  ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + ' seconds.'];

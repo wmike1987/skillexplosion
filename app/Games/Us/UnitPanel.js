@@ -1064,7 +1064,7 @@ unitPanel.prototype.initialize = function(options) {
 
     //listen for when the prevailing unit changes
     Matter.Events.on(this.unitSystem, 'unitPassiveRefresh', function(event) {
-        this.displayUnitPassives();
+        this.refreshPassivesForUnit();
     }.bind(this));
 
     //swap som listener
@@ -2394,18 +2394,18 @@ unitPanel.prototype.displayCommands = function() {
     }
 };
 
-unitPanel.prototype.refreshPassivesForUnit = function(unit) {
-    this.unitPassivePanel.refreshForUnit(unit);
-};
-
-unitPanel.prototype.refreshAugmentsForUnit = function(unit) {
-    this.unitAugmentPanel.refreshForUnit(unit);
-};
-
-
-unitPanel.prototype.swapStatesOfMind = function(unit) {
-    this.refreshPassivesForUnit(unit);
+unitPanel.prototype.refreshPassivesForUnit = function() {
+    this.unitPassivePanel.refreshForUnit();
     this.displayUnitPassives();
+};
+
+unitPanel.prototype.refreshAugmentsForUnit = function() {
+    this.unitAugmentPanel.refreshForUnit();
+};
+
+
+unitPanel.prototype.swapStatesOfMind = function() {
+    this.refreshPassivesForUnit();
 };
 
 unitPanel.prototype.showAugmentsForUnit = function(unit) {
