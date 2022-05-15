@@ -653,7 +653,7 @@ var ultraHardFlyObj = {
     trivial: true,
     atATime: 4,
     initialDelay: 0.1,
-    hz: 1800
+    hz: 2100
 };
 
 var enemyDefs = {
