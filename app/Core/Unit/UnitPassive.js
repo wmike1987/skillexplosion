@@ -132,7 +132,7 @@ export default function(options) {
         });
 
         //register the collector
-        this.collectorEventName = this.title.replace(/\s+/g, '') + 'Collector';
+        this.collectorEventName = this.originalTitle.replace(/\s+/g, '') + 'Collector';
         this.customCollector = new CustomCollector(Object.assign({
             eventName: this.collectorEventName,
             priority: 25,

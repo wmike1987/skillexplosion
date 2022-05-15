@@ -1816,15 +1816,16 @@ export default function Marine(options) {
                 value: trueGritGain * 2
             };
         },
+        aggressionPredicate: function(event) {
+            return event.attackContext.id == 'rifle';
+        },
         aggressionAction: function(event) {
-            if (event.attackContext.id == 'rifle') {
-                var sufferingUnit = event.sufferingUnit;
-                sufferingUnit.afflict({
-                    duration: trueGritAfflictDuration,
-                    afflictingUnit: marine,
-                    id: 'trueGrit'
-                });
-            }
+            var sufferingUnit = event.sufferingUnit;
+            sufferingUnit.afflict({
+                duration: trueGritAfflictDuration,
+                afflictingUnit: marine,
+                id: 'trueGrit'
+            });
         },
         collector: {
             aggressionLabel: 'Health gained',
@@ -2016,6 +2017,24 @@ export default function Marine(options) {
                 offset: {
                     x: 2,
                     y: -13
+                }
+            },
+            {
+                animation: attackAnimations.upRight,
+                height: 16,
+                width: 35,
+                offset: {
+                    x: -2,
+                    y: -22
+                }
+            },
+            {
+                animation: attackAnimations.upLeft,
+                height: 16,
+                width: 35,
+                offset: {
+                    x: 2,
+                    y: -22
                 }
             }
         ],
