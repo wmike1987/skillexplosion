@@ -1471,9 +1471,9 @@ export default function Marine(options) {
         }
 
         //limit... may need to rethink this
-        if (marine.freeKnives >= 2) {
-            return;
-        }
+        // if (marine.freeKnives >= 2) {
+        //     return;
+        // }
 
         marine.applyBuff({
             id: 'freeKnife' + (marine.freeKnives + 1),

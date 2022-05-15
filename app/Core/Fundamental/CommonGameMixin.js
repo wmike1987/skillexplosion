@@ -354,7 +354,8 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
 
-                    this.presentNewAugmentChoices();
+
+                    // this.presentNewAugmentChoices();
                     // var floatDuration = 4000;
                     // let shaneAugment = unitUtils.addRandomAugmentToAbility({
                     //     unit: globals.currentGame.shane
@@ -467,7 +468,7 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    globals.currentGame.nextPhase();
+                    // globals.currentGame.nextPhase();
                     // this.shane.dodgeSound.play();
                     //
 
@@ -541,6 +542,8 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
                      this.ursula.applySoftenBuff({duration: 20000});
+                     this.shane.applyHealthGem({duration: 20000});
+                     this.ursula.applyHealthGem({duration: 20000});
                      // this.shane.applyVitalityBuff({duration: 2000, amount: 50});
                      // this.addLives(-1);
                      // gameUtils.playAsMusic(this.soundPool.whistling, {

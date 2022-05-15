@@ -1338,6 +1338,7 @@ var phaseOneAndAHalf = function(options) {
 
 //phase two is the "first" phase, it includes the starting dialog
 var phaseTwo = function(options) {
+    Matter.Events.off(globals.currentGame, "VictoryOrDefeat", phaseOneCountingFunction);
     phaseOneMusicHandler.removeHandler();
     globals.currentGame.map.setHeadToken('headtoken');
     let campNode = this.map.findNodeById('camp');
