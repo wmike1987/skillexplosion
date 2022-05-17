@@ -783,9 +783,9 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [4, 5],
+            amount: [6, 7],
             atATime: 1,
-            hz: 5000
+            hz: 3800
         }, {
             type: 'Gargoyle',
             amount: [5],
@@ -794,7 +794,7 @@ var enemyDefs = {
             hz: 5000
         }, {
             type: 'Eruptlet',
-            amount: [4],
+            amount: [5, 6],
             initialDelay: 4000,
             atATime: 1,
             hz: 4200
@@ -804,9 +804,9 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [2, 3],
+            amount: [3, 4],
             atATime: 2,
-            hz: 4000
+            hz: 3000
         }, {
             type: 'Sentinel',
             amount: [4],
@@ -814,7 +814,7 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Gargoyle',
-            amount: [1],
+            amount: [2],
             initialDelay: 6500,
             atATime: 1,
             hz: 5000
@@ -834,10 +834,10 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Eruptlet',
-            amount: [12, 13],
+            amount: [16, 18],
             initialDelay: 4000,
             atATime: 3,
-            hz: 4200
+            hz: 4000
         }, generalFlyObj]
     },
     aHard4: {
@@ -847,7 +847,7 @@ var enemyDefs = {
             type: 'Sentinel',
             amount: [6],
             atATime: 1,
-            hz: 4000
+            hz: 3750
         }, hardFlyObj]
     },
     aHard5: {
