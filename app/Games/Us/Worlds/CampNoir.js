@@ -1663,12 +1663,15 @@ var phaseThree = function() {
     // });
 
     //give book here...
-    let bHardList = ['bHard1', 'bHard2', 'bHard3', 'bHard4'];
-    this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(bHardList), {
+    let aHardChoiceBook1 = mathArrayUtils.getRandomElementOfArray(aHardList);
+    let aHardChoiceBook2 = mathArrayUtils.getRandomElementOfArray(aHardList);
+    this.map.addMapNode('multiLevel', {
         levelOptions: {
+            enemyDefList: [aHardChoiceBook1, aHardChoiceBook2],
             token: 'hard',
             itemClass: 'book'
-        }
+        },
+        positionOptions: outerPosition
     });
 
     //multi level

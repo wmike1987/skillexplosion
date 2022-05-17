@@ -55,6 +55,32 @@ var map = function(specs) {
         isSensor: true,
         frictionAir: 0.0,
     });
+
+    this.planeDropIndicator1 = graphicsUtils.createDisplayObject('PlaneDrop1', {
+        where: "hudOne",
+        scale: {x: 0.85, y: 0.85},
+        tint: 0xb4a200,
+        alpha: 1.0,
+        sortYOffset: -50
+    });
+
+    this.planeDropIndicator2 = graphicsUtils.createDisplayObject('PlaneDrop2', {
+        where: "hudOne",
+        scale: {x: 0.85, y: 0.85},
+        tint: 0x984d00,
+        alpha: 1.0,
+        sortYOffset: -50
+    });
+
+    this.planeDropIndicator3 = graphicsUtils.createDisplayObject('PlaneDrop3', {
+        where: "hudOne",
+        scale: {x: 0.85, y: 0.85},
+        tint: 0x860000,
+        alpha: 1.0,
+        sortYOffset: -50
+    });
+    this.planeDropIndicators = [this.planeDropIndicator1, this.planeDropIndicator2, this.planeDropIndicator3];
+
     var fatigueScaleX = 1;
     var fatigueScaleY = 1;
     this.headTokenBody.renderChildren = [{
@@ -567,6 +593,7 @@ var map = function(specs) {
         }
 
         this.updateRouteArrows();
+        this.updatePlaneDropIndicators();
 
         Matter.Events.trigger(this, 'showMap', {});
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
@@ -599,6 +626,11 @@ var map = function(specs) {
 
         //Clear the outing if we're in progress
         this.clearOuting();
+
+        //turn plane indicators off
+        this.planeDropIndicators.forEach((plane, index) => {
+            plane.visible = false;
+        });
 
         this.headTokenSprite.visible = false;
         this.fatigueText.visible = false;
@@ -638,6 +670,7 @@ var map = function(specs) {
         this.outingNodes.push(node);
         this.updateOutingEngagement();
         this.updateRouteArrows();
+        this.updatePlaneDropIndicators();
 
         if(this.outingIsAtMaxLength()) {
             Matter.Events.trigger(this, 'maxOutingLengthReached');
@@ -649,6 +682,30 @@ var map = function(specs) {
         mathArrayUtils.removeObjectFromArray(node, this.outingNodes);
         this.updateOutingEngagement();
         this.updateRouteArrows();
+        this.updatePlaneDropIndicators();
+    };
+
+    this.updatePlaneDropIndicators = function() {
+        var nodesToSample = this.outingInProgress ? this.outingNodeMemory : this.outingNodes;
+        var relevantNodes = nodesToSample.filter((node) => {
+            return !node.travelToken;
+        });
+        var outingLength = relevantNodes.length;
+
+        //turn everthing off
+        this.planeDropIndicators.forEach((plane, index) => {
+            plane.visible = false;
+        });
+
+        if(outingLength == 0) {
+            return;
+        }
+
+        //enable our relevant air drop
+        var relevantPlane = this.planeDropIndicators[outingLength-1];
+        var lastNode = relevantNodes.slice(-1)[0];
+        graphicsUtils.addOrShowDisplayObject(relevantPlane);
+        relevantPlane.position = mathArrayUtils.clonePosition(lastNode.position, {x: 28, y: 28});
     };
 
     this.updateRouteArrows = function() {

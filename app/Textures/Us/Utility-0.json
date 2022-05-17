@@ -370,7 +370,7 @@
 },
 "FireMapToken.png":
 {
-	"frame": {"x":1968,"y":815,"w":49,"h":50},
+	"frame": {"x":1968,"y":823,"w":49,"h":50},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":49,"h":50},
@@ -450,8 +450,8 @@
 },
 "HoldText.png":
 {
-	"frame": {"x":581,"y":1787,"w":29,"h":31},
-	"rotated": true,
+	"frame": {"x":547,"y":1787,"w":29,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":12,"y":10,"w":29,"h":31},
 	"sourceSize": {"w":50,"h":50}
@@ -594,7 +594,7 @@
 },
 "MicrochipFootprint.png":
 {
-	"frame": {"x":547,"y":1787,"w":32,"h":29},
+	"frame": {"x":1968,"y":875,"w":32,"h":29},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":29},
@@ -610,7 +610,7 @@
 },
 "MorphineToken.png":
 {
-	"frame": {"x":1972,"y":607,"w":50,"h":50},
+	"frame": {"x":1972,"y":615,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -618,7 +618,7 @@
 },
 "MorphineTokenGleaming.png":
 {
-	"frame": {"x":1968,"y":659,"w":50,"h":50},
+	"frame": {"x":1968,"y":667,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -672,9 +672,33 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":210},
 	"sourceSize": {"w":50,"h":210}
 },
+"PlaneDrop1.png":
+{
+	"frame": {"x":1990,"y":501,"w":36,"h":41},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":36,"h":41},
+	"sourceSize": {"w":36,"h":43}
+},
+"PlaneDrop2.png":
+{
+	"frame": {"x":1990,"y":539,"w":36,"h":41},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":36,"h":41},
+	"sourceSize": {"w":36,"h":43}
+},
+"PlaneDrop3.png":
+{
+	"frame": {"x":1990,"y":577,"w":36,"h":41},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":36,"h":41},
+	"sourceSize": {"w":36,"h":43}
+},
 "RestStopToken.png":
 {
-	"frame": {"x":1968,"y":711,"w":50,"h":50},
+	"frame": {"x":1968,"y":719,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -682,7 +706,7 @@
 },
 "RestStopTokenGleaming.png":
 {
-	"frame": {"x":1968,"y":763,"w":50,"h":50},
+	"frame": {"x":1968,"y":771,"w":50,"h":50},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":50},
@@ -882,6 +906,7 @@
 }},
 "animations": {
 	"AmbientLight": ["AmbientLight1.png","AmbientLight2.png","AmbientLight3.png"],
+	"PlaneDrop": ["PlaneDrop1.png","PlaneDrop2.png","PlaneDrop3.png"],
 	"RockFirePit": ["RockFirePit2.png","RockFirePit3.png"]
 },
 "meta": {
@@ -891,6 +916,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2032,"h":1821},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:8ddc8208791727ebb1718c4513dd76e1:4e4a04ccbbcf6b8fbd4f5858c45eee02:c620824ee04793fe2ac623dfe499fa2c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:79afccc3a00ea1ec20b6295bf95c05da:c0dab69ba34d0342db4cc4ddafe9eb26:c620824ee04793fe2ac623dfe499fa2c$"
 }
 }
