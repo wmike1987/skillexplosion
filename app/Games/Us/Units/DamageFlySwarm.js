@@ -233,13 +233,8 @@ export default function DamageFlySwarm(options) {
             this.moveSpeed = 0.5 + Math.random() * 0.7;
             var currentPosition = this.position;
 
-            var attackPosX = Math.random() * gameUtils.getPlayableWidth();
-            var attackPosY = Math.random() * gameUtils.getPlayableHeight();
-            var amPosition = {
-                x: attackPosX,
-                y: attackPosY
-            };
-            amPosition = mathArrayUtils.addScalarToVectorTowardDestination(currentPosition, amPosition, 9999);
+            var randomPosition = gameUtils.getRandomPlacementWithinPlayableBounds({buffer: {x: 500, y: 200}});
+            var amPosition = mathArrayUtils.addScalarToVectorTowardDestination(currentPosition, randomPosition, 9999);
 
             this.move(amPosition);
             flyAnim.play();

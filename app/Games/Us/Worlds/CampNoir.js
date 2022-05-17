@@ -631,11 +631,11 @@ var generalFlyObj = {
 
 var hardFlyObj = {
     type: 'DamageFlySwarm',
-    amount: [10],
+    amount: [20],
     trivial: true,
     atATime: 2,
     initialDelay: 0.1,
-    hz: 1500
+    hz: 1750
 };
 
 var marathonHardFlyObj = {
@@ -798,7 +798,7 @@ var enemyDefs = {
             initialDelay: 4000,
             atATime: 1,
             hz: 4200
-        }, generalFlyObj]
+        }, hardFlyObj]
     },
     aHard2: {
         strength: 'hard',
@@ -818,7 +818,7 @@ var enemyDefs = {
             initialDelay: 6500,
             atATime: 1,
             hz: 5000
-        }, generalFlyObj]
+        }, hardFlyObj]
     },
     aHard3: {
         strength: 'hard',
@@ -838,7 +838,7 @@ var enemyDefs = {
             initialDelay: 4000,
             atATime: 3,
             hz: 4000
-        }, generalFlyObj]
+        }, hardFlyObj]
     },
     aHard4: {
         noun: 'Sentinel',
