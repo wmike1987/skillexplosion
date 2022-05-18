@@ -794,7 +794,7 @@ var enemyDefs = {
             hz: 5000
         }, {
             type: 'Eruptlet',
-            amount: [5, 6],
+            amount: [7, 8],
             initialDelay: 4000,
             atATime: 1,
             hz: 4200
@@ -814,7 +814,7 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Gargoyle',
-            amount: [2],
+            amount: [3, 4],
             initialDelay: 6500,
             atATime: 1,
             hz: 5000
@@ -824,7 +824,7 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [3, 4],
+            amount: [4, 5],
             atATime: 1,
             hz: 2800
         }, {
@@ -834,10 +834,10 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Eruptlet',
-            amount: [16, 18],
+            amount: [20, 24],
             initialDelay: 4000,
-            atATime: 3,
-            hz: 4000
+            atATime: 4,
+            hz: 6000
         }, hardFlyObj]
     },
     aHard4: {
@@ -865,7 +865,7 @@ var enemyDefs = {
             hz: 5000
         }, {
             type: 'Critter',
-            amount: [1, 2],
+            amount: [2, 3],
             atATime: 1,
             hz: 6000
         }, hardFlyObj]
@@ -874,7 +874,7 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Rammian',
-            amount: [3, 4],
+            amount: [4, 5],
             atATime: 1,
             hz: 2800
         }, {
@@ -884,7 +884,7 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Eruptlet',
-            amount: [5],
+            amount: [7, 8],
             initialDelay: 4000,
             atATime: 3,
             hz: 4200
@@ -896,14 +896,20 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [9, 10],
+            amount: [8, 9],
+            atATime: 2,
+            hz: 5500
+        }, {
+            type: 'Rammian',
+            amount: [4, 5],
             atATime: 1,
             hz: 3000
         }, {
-            type: 'Rammian',
-            amount: 4,
+            type: 'Gargoyle',
+            amount: [2, 3],
             atATime: 1,
-            hz: 3000
+            initialDelay: 10000,
+            hz: 4000
         }, {
             type: 'Hunter',
             amount: 2,
@@ -927,7 +933,7 @@ var enemyDefs = {
             hz: 4500
         }, {
             type: 'Sentinel',
-            amount: 1,
+            amount: 2,
             atATime: 1,
             hz: 12000
         }, hardFlyObj]

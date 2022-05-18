@@ -36,6 +36,7 @@ var load = function() {
     importantStyles.push(styles.fatigueTextLarge);
     importantStyles.push(styles.titleOneStyle);
     importantStyles.push(styles.titleTwoStyle);
+    importantStyles.push(styles.verySmallStyleNonItalic);
 
     var killMe = [];
     importantStyles.forEach(function(style) {

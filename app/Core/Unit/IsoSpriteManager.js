@@ -66,10 +66,11 @@ function IsoSpriteManager(options) {
                 this.currentMoveAnimation.stop();
             this.stopCurrentAnimation();
             this.currentMoveAnimation = null;
-            if (!this.idleTimer)
+            if (!this.idleTimer) {
                 this.idle({
                     direction: this.currentDirection
                 });
+            }
         }.bind(this));
     }
 
@@ -86,7 +87,7 @@ function IsoSpriteManager(options) {
                 stop: true
             });
             this.currentDirection = event.direction;
-        }.bind(this))
+        }.bind(this));
     }
 
     this.playSpecifiedAnimation = function(animationName, direction, options) {
@@ -198,19 +199,20 @@ function IsoSpriteManager(options) {
 
         animation.spine.state.clearTrack(0);
         animation.spine.lastTime = null;
-        animation.spine.skeleton.setToSetupPose();
 
         this.idleTimer = globals.currentGame.addTimer({
             name: 'idleTimer' + this.unit.unitId,
             gogogo: true,
-            timeLimit: 2000 + Math.random() * 1000,
+            timeLimit: 100 + Math.random() * 50,
             callback: function() {
                 this.timeLimit = 2000 + Math.random() * 2000;
                 if (self.unit.idleCancel || self.unit.isDead) {
                     return;
                 }
                 var index = mathArrayUtils.getRandomIntInclusive(0, Object.keys(self.unit.walkAnimations).length - 1);
-                self.switchAnimation(self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]], {
+                var randomAnimation = self.unit.walkAnimations[Object.keys(self.unit.walkAnimations)[index]];
+                randomAnimation.spine.skeleton.setToSetupPose();
+                self.switchAnimation(randomAnimation, {
                     stop: true,
                     idle: true
                 });
