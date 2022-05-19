@@ -21,12 +21,6 @@ var capitalizeFirstLetter = function(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-// var startItemCollectorForUnit = function(item, unit) {
-//     if(globals.currentGame.isOutingInProgress) {
-//         unit.
-//     }
-// };
-
 var baseItem = {
     equip: function(unit) {
         if (!this.manipulations) return;
@@ -332,7 +326,7 @@ var ic = function(options) {
 
         newItem.removePhysicalForm = function() {
             this.showName(false);
-            globals.currentGame.removeBody(this.body);
+            globals.currentGame.removeBody(this.body, true);
             this.body = null;
         };
 
@@ -451,7 +445,8 @@ var ic = function(options) {
             itemAnim.play();
             itemAnim.tint = item.footprintTint || item.classInformation.typeInfo.tint;
 
-            newItem.renderChildren = [{
+            newItem.renderChildren = [
+                {
                     id: 'itemFootprint',
                     data: itemAnim,
                     sortYOffset: 0,

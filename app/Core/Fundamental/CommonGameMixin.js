@@ -353,7 +353,15 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
+                    unitUtils.applyToUnitsByTeam(function(team) {
+                        return team == globals.currentGame.enemyTeam
+                    }, function(unit) {
+                        return unit;
+                    }, function(unit) {
+                        globals.currentGame.removeUnit(unit);
+                    }.bind(this));
 
+                    // globals.currentGame.nextPhase();
 
                     // this.presentNewAugmentChoices();
                     // var floatDuration = 4000;
@@ -468,7 +476,7 @@ var common = {
                     // this.map.addAdrenalineBlock();
                     // unitUtils.applyHealthGainAnimationToUnit(this.shane);
                     // unitUtils.applyEnergyGainAnimationToUnit(this.ursula);
-                    // globals.currentGame.nextPhase();
+
                     // this.shane.dodgeSound.play();
                     //
 
@@ -1173,7 +1181,7 @@ var common = {
         // }
 
         //This might have some performance impact... possibly will investigate
-        if (body.idAdded) {
+        if (body.isAdded) {
             console.warn("attempting to add already-added body");
             console.warn(body);
         }

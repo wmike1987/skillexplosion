@@ -53,8 +53,15 @@ var mathArrayUtils = {
         var b = bodyA.position.y - bodyB.position.y;
         return Math.sqrt(a * a + b * b);
     },
+
     distanceBetweenPoints: function(A, B) {
         return (Matter.Vector.magnitude(Matter.Vector.sub(A, B)));
+    },
+
+    addVectorToPointInDirection: function(initialPoint, endPoint, scalar) {
+        var normal = Matter.Vector.normalise(Matter.Vector.sub(endPoint, initialPoint));
+        var multdVector = this.multipleVectorByScalar(normal, scalar);
+        return {x: initialPoint.x + multdVector.x, y: initialPoint.y + multdVector.y};
     },
 
     isObject: function(varr) {

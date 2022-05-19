@@ -164,11 +164,18 @@ var itemSystem = function(properties) {
                     x: 35 - variationX,
                     y: 35
                 });
+
+                let tryRadius = 70;
                 do {
-                    dropPosition = {
-                        x: item.owningUnit.position.x + (Math.random() * 60 - 30),
-                        y: item.owningUnit.position.y + (Math.random() * 60 - 30)
-                    };
+                    if(tryRadius) {
+                        dropPosition = mathArrayUtils.addVectorToPointInDirection(item.owningUnit.position, globals.currentGame.mousePosition, tryRadius);
+                        tryRadius -= 10;
+                    } else {
+                        dropPosition = {
+                            x: item.owningUnit.position.x + (Math.random() * 60 - 30),
+                            y: item.owningUnit.position.y + (Math.random() * 60 - 30)
+                        };
+                    }
                 } while (!gameUtils.isPositionWithinPlayableBounds(dropPosition));
 
                 var dropAnyway = null;
