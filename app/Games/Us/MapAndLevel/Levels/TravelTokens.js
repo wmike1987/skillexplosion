@@ -211,7 +211,7 @@ var restStop = function(options) {
 
     this.setNodeTitle = function() {
         this.nodeTitle = "Rest Stop";
-        this.tooltipDescription = ['Subtract half of current fatigue.'];
+        this.tooltipDescription = ['Incur no fatigue traveling to this rest stop.', 'Subtract half of current fatigue.'];
     };
 
     this.arriveCallback = function() {

@@ -254,6 +254,22 @@ var game = {
             volume: 0.08,
             rate: 1.0
         });
+        this.soundPool.growl1 = gameUtils.getSound('growl1.wav', {
+            volume: 0.5,
+            rate: 1.0
+        });
+        this.soundPool.growl2 = gameUtils.getSound('growl2.wav', {
+            volume: 0.5,
+            rate: 1.0
+        });
+        this.soundPool.growl3 = gameUtils.getSound('growl3.wav', {
+            volume: 0.5,
+            rate: 1.0
+        });
+        this.soundPool.growl4 = gameUtils.getSound('growl4.wav', {
+            volume: 0.5,
+            rate: 1.0
+        });
 
         this.levelEntryMusic = [this.soundPool.mainMarch, this.soundPool.hecticLevelVamp, this.soundPool.nightPiano];
     },

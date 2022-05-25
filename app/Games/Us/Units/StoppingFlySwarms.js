@@ -306,7 +306,8 @@ export default function DamageFlySwarm(options) {
                     }.bind(this));
 
                     if(attacked) {
-                        flyAnim.animationSpeed = 0.5;
+                        graphicsUtils.flashSprite({sprite: flyAnim, fromColor: 0xde3c3c, toColor: 0xffbf00, times: 1});
+                        flyAnim.animationSpeed = 0.9;
                         mathArrayUtils.getRandomElementOfArray(attackSounds).play();
                     }
                 }.bind(this)

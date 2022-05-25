@@ -83,6 +83,7 @@ var levelAugments = {
     vitalityBoss: {
         init: function(level) {
             level._isBossLevel = true;
+            level.entrySound = mathArrayUtils.getRandomElementOfArray([globals.currentGame.soundPool.growl1, globals.currentGame.soundPool.growl2, globals.currentGame.soundPool.growl3, globals.currentGame.soundPool.growl4]);
         },
         tint: 0x3f064b,
         action: function(enemy) {
@@ -509,6 +510,9 @@ var levelBase = {
 
     _onLevelPlayable: function(scene) {
         Matter.Events.trigger(globals.currentGame, "onLevelPlayable");
+        if(this.entrySound) {
+            this.entrySound.play();
+        }
         if (this.onLevelPlayable) {
             this.onLevelPlayable(scene);
         }
@@ -657,7 +661,7 @@ var levelBase = {
             fatiguePenalty = 2;
         }
         currentGame.map.startingFatigue += fatiguePenalty;
-        
+
         textChain.add({
             text: '+ ' + fatiguePenalty + ' starting fatigue',
             position: gameUtils.getPlayableCenterPlus({

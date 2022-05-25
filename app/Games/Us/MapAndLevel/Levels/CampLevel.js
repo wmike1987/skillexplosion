@@ -22,10 +22,6 @@ import MapNode from '@games/Us/MapAndLevel/Map/MapNode.js';
 import styles from '@utils/Styles.js';
 import UnitMenu from '@games/Us/UnitMenu.js';
 
-var entrySound = gameUtils.getSound('enterairdrop1.wav', {
-    volume: 0.04,
-    rate: 1
-});
 var airDropClickTokenSound = gameUtils.getSound('clickairdroptoken1.wav', {
     volume: 0.03,
     rate: 1

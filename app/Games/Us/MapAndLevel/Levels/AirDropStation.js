@@ -279,9 +279,6 @@ var airDropStation = function(options) {
             moveToCenter: true
         });
 
-        //play sound
-        this.entrySound.play();
-
         //create the selection mechanism
         var selection = Object.create(selectionMechanism);
         selection.level = this;

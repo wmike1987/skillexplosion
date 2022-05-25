@@ -649,7 +649,7 @@ var marathonHardFlyObj = {
 
 var ultraHardFlyObj = {
     type: 'DamageFlySwarm',
-    amount: [50],
+    amount: [60],
     trivial: true,
     atATime: 4,
     initialDelay: 0.1,

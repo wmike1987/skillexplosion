@@ -626,20 +626,23 @@ var EndLevelStatScreenOverlay = function(units, options) {
         }
 
         var titleTextFadetime = 300;
-        graphicsUtils.flashSprite({
+        titleText.tint = tintTo;
+        graphicsUtils.addGleamToSprite({
             sprite: titleText,
-            fromColor: 0xffffff,
-            toColor: tintTo,
-            duration: titleTextFadetime,
-            times: 0.5
+            duration: 800,
+            gleamWidth: 60,
+            leanAmount: 20,
+
         });
-        graphicsUtils.fadeSpriteOverTime({
-            sprite: titleText,
-            duration: 0,
-            fadeIn: true,
-            noKill: true,
-            makeVisible: true
-        });
+        titleText.visible = true;
+        titleText.alpha = 1.0;
+        // graphicsUtils.fadeSpriteOverTime({
+        //     sprite: titleText,
+        //     duration: 0,
+        //     fadeIn: true,
+        //     noKill: true,
+        //     makeVisible: true
+        // });
         scene.add(titleText);
 
         var skinnyDivider = '———————';
