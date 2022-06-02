@@ -902,29 +902,49 @@ var UnitBase = {
         }
     },
 
+    _initPosition: function() {
+        unitUtils.moveUnitOffScreen(this);
+    },
+
     initUnit: function() {
+        this._initPosition();
         this.applyUnitStates();
 
-        //Enter playable event setup
+        //Pre Enter playable event setup
         var preEnterPlayableTick = globals.currentGame.addTickCallback(() => {
-            if (gameUtils.isPositionWithinPlayableBounds(this.position, 10)) {
-                Matter.Events.trigger(globals.currentGame, 'UnitPreEneteredPlayable', {
+            if (gameUtils.isPositionWithinPlayableBounds(this.position, -15)) {
+                Matter.Events.trigger(globals.currentGame, 'UnitPreEnteredPlayable', {
                     unit: this
                 });
+                Matter.Events.trigger(this, 'UnitPreEnteredPlayable', {});
                 globals.currentGame.removeTickCallback(preEnterPlayableTick);
             }
         }, false);
         gameUtils.deathPact(this, preEnterPlayableTick);
 
+        //Enter playable event setup
         var enterPlayableTick = globals.currentGame.addTickCallback(() => {
-            if (gameUtils.isPositionWithinPlayableBounds(this.position, 30)) {
-                Matter.Events.trigger(globals.currentGame, 'UnitEneteredPlayable', {
+            if (gameUtils.isPositionWithinPlayableBounds(this.position, 1)) {
+                Matter.Events.trigger(globals.currentGame, 'UnitEnteredPlayable', {
                     unit: this
                 });
+                Matter.Events.trigger(this, 'UnitEnteredPlayable', {});
                 globals.currentGame.removeTickCallback(enterPlayableTick);
             }
         }, false);
         gameUtils.deathPact(this, enterPlayableTick);
+
+        //Post Enter playable event setup
+        var postEnterPlayableTick = globals.currentGame.addTickCallback(() => {
+            if (gameUtils.isPositionWithinPlayableBounds(this.position, 10)) {
+                Matter.Events.trigger(globals.currentGame, 'UnitPostEnteredPlayable', {
+                    unit: this
+                });
+                Matter.Events.trigger(this, 'UnitPostEnteredPlayable', {});
+                globals.currentGame.removeTickCallback(postEnterPlayableTick);
+            }
+        }, false);
+        gameUtils.deathPact(this, postEnterPlayableTick);
 
         Object.defineProperty(this, 'maxHealth', {
             get: function() {

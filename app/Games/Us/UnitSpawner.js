@@ -44,7 +44,7 @@ var unitSpawner = function(options) {
             this.itemRandomFlips[enemy.id] = itemRandomFlips;
             for (k = 0; k < enemy.spawn.total; k++) {
                 //locations
-                locationArray.push(gameUtils.getJustOffscreenPosition('random'));
+                locationArray.push(gameUtils.getJustOffscreenPosition('random', 20, 120));
 
                 //item index
                 itemRandomFlips.push(mathArrayUtils.flipCoin());
@@ -121,6 +121,7 @@ var unitSpawner = function(options) {
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                         newUnit.honeRange = 9000;
                         Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.id].shift());
+                        Matter.Events.trigger(globals.currentGame, 'UnitSpawnerAddedUnit', {unit: newUnit});
 
                         //update unit panel when we die
                         gameUtils.matterOnce(newUnit, 'death', () => {

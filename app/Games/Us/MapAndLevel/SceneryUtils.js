@@ -512,7 +512,7 @@ var sceneryUtils = {
                     //comprehend groupings
                     var doGrouping = Math.random() < groupings.hz;
                     var numberInGrouping = doGrouping ? mathArrayUtils.getRandomElementOfArray(groupings.possibleAmounts) : 1;
-                    var possibleAngles = [12, 32, 63, 122, 150, 192, 219, 240, 270, 286, 330];
+                    var possibleAngles = [40, 63, 122, 150, 195, 219, 240, 270, 286, 325];
 
                     //check max
                     if (maxNumber && hits == maxNumber) {

@@ -610,7 +610,9 @@ var game = {
             this.setCurrentLevel(node.levelDetails);
 
             //fatigue timer
-            let timeLimit = 75 + this.map.adrenaline * 22;
+            let fatigueAccumulationSpeed = 55;
+            let adrenalineSpeedDamper = 28;
+            let timeLimit = fatigueAccumulationSpeed + (this.map.adrenaline * adrenalineSpeedDamper);
             this.fatigueTimer = this.addTimer({
                 name: 'fatigueTimer',
                 gogogo: true,
@@ -623,11 +625,11 @@ var game = {
                     this.unitsInPlay.forEach((unit) => {
                         unit.fatigue += 1;
                     });
-                    Matter.Events.trigger(this.map, 'SetFatigue', {
-                        amount: this.unitsInPlay[0].fatigue
-                    });
                     this.unitsInPlay.forEach((unit) => {
                         unit.fatigue = Math.min(99, unit.fatigue);
+                    });
+                    Matter.Events.trigger(this.map, 'SetFatigue', {
+                        amount: this.unitsInPlay[0].fatigue
                     });
                 }.bind(this)
             });

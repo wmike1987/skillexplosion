@@ -353,14 +353,16 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
-                    unitUtils.applyToUnitsByTeam(function(team) {
-                        return team == globals.currentGame.enemyTeam
-                    }, function(unit) {
-                        return unit;
-                    }, function(unit) {
-                        globals.currentGame.removeUnit(unit);
-                    }.bind(this));
 
+                    // unitUtils.applyToUnitsByTeam(function(team) {
+                    //     return team == globals.currentGame.enemyTeam
+                    // }, function(unit) {
+                    //     return unit;
+                    // }, function(unit) {
+                    //     globals.currentGame.removeUnit(unit);
+                    // }.bind(this));
+                    console.info(gameUtils.getPlayableWidth());
+                    console.info(gameUtils.getPlayableHeight());
                     globals.currentGame.nextPhase();
 
                     // this.presentNewAugmentChoices();

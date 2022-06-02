@@ -38,7 +38,7 @@ var MapLevelNode = function(options) {
     this.type = this.levelDetails.type;
     this.id = mathArrayUtils.getId();
     this.defaultTokenSize = options.tokenSize || this.levelDetails.tokenSize || defaultTokenSize;
-    this.enlargedTokenSize = options.largeTokenSize || this.levelDetails.largeTokenSize || enlargedTokenSize;
+    this.enlargedTokenSize = this.defaultTokenSize + 10;
     this.indicatorOffset = options.indicatorOffset || {
         x: -18,
         y: -18
@@ -88,7 +88,6 @@ var MapLevelNode = function(options) {
         var token = 'default';
         if(this.levelDetails.isBossLevel()) {
             token = 'bossToken';
-            this.defaultTokenSize = 50;
         } else if(this.levelDetails.isAugmented()) {
             if(this.levelDetails.outer) {
                 token = 'augmentedHard';
@@ -100,6 +99,7 @@ var MapLevelNode = function(options) {
                 token = 'hard';
             }
         }
+
         var tokenMapping = tokenMappings[this.levelDetails.token || token];
         this.displayObject = graphicsUtils.createDisplayObject(tokenMapping, {
             where: 'hudNTwo',
@@ -108,6 +108,23 @@ var MapLevelNode = function(options) {
                 y: 1
             }
         });
+
+        //determine node size
+        if(tokenMapping.toLowerCase().includes('hard')) {
+            this.defaultTokenSize = 46;
+            this.indicatorOffset = options.indicatorOffset || {
+                x: -21,
+                y: -21
+            };
+        } else if(tokenMapping.toLowerCase().includes('boss')) {
+            this.defaultTokenSize = 52;
+            this.indicatorOffset = options.indicatorOffset || {
+                x: -23,
+                y: -23
+            };
+        }
+        this.enlargedTokenSize = this.defaultTokenSize + 10;
+
         graphicsUtils.makeSpriteSize(this.displayObject, this.defaultTokenSize);
         this.displayObject.interactive = true;
     }

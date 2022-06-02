@@ -186,6 +186,9 @@ var levelBase = {
         //create augment listener
         this._applyLevelAugments();
 
+        //create unit notifiers
+        this._applyUnitNotifiers();
+
         //show heart beats
         gameUtils.doSomethingAfterDuration(() => {
             graphicsUtils.floatText('.', gameUtils.getPlayableCenterPlus({
@@ -511,7 +514,9 @@ var levelBase = {
     _onLevelPlayable: function(scene) {
         Matter.Events.trigger(globals.currentGame, "onLevelPlayable");
         if(this.entrySound) {
-            this.entrySound.play();
+            gameUtils.doSomethingAfterDuration(() => {
+                this.entrySound.play();
+            }, 250);
         }
         if (this.onLevelPlayable) {
             this.onLevelPlayable(scene);
@@ -520,7 +525,7 @@ var levelBase = {
 
     _applyLevelAugments: function() {
         var level = this;
-        this.augmentListener = Matter.Events.on(globals.currentGame, 'UnitPreEneteredPlayable', (event) => {
+        this.augmentListener = Matter.Events.on(globals.currentGame, 'UnitPostEnteredPlayable', (event) => {
             let unit = event.unit;
 
             //establish exceptions
@@ -535,8 +540,63 @@ var levelBase = {
         });
     },
 
+    _applyUnitNotifiers: function() {
+        var level = this;
+        this.unitNotifierListener = Matter.Events.on(globals.currentGame, 'UnitSpawnerAddedUnit', (event) => {
+            let unit = event.unit;
+
+            //establish exceptions
+            if(unit.hazard || unit.team != globals.currentGame.enemyTeam || unit.immuneToAugment) {
+                return;
+            }
+
+            let notifierArrow = graphicsUtils.addSomethingToRenderer('UnitNotifierArrow', {where: 'hudTwo', alpha: 0.8, scale: {x: 0.75, y: 0.75}, tint: 0xffffff});
+            graphicsUtils.flashSprite(notifierArrow);
+            graphicsUtils.flashSprite({
+                sprite: notifierArrow,
+                duration: 75,
+                times: 12,
+                toColor: 0xff2424
+            });
+            let offset = 20;
+            var unitNotifierTick = globals.currentGame.addTickCallback(() => {
+                notifierArrow.position = mathArrayUtils.clonePosition(unit.position);
+                if(notifierArrow.position.x > gameUtils.getPlayableWidth()) {
+                    notifierArrow.position.x = gameUtils.getPlayableWidth()-offset;
+                }
+
+                if(notifierArrow.position.x < 0) {
+                    notifierArrow.position.x = offset;
+                }
+
+                if(notifierArrow.position.y > gameUtils.getPlayableHeight()) {
+                    notifierArrow.position.y = gameUtils.getPlayableHeight()-offset;
+                }
+
+                if(notifierArrow.position.y < 0) {
+                    notifierArrow.position.y = offset;
+                }
+                notifierArrow.rotation = mathArrayUtils.pointInDirection(notifierArrow.position, unit.position);
+            }, false);
+
+            gameUtils.deathPact(unit, notifierArrow);
+            gameUtils.deathPact(unit, unitNotifierTick);
+
+            unit.unitNotifierTick = unitNotifierTick;
+
+            Matter.Events.on(unit, 'UnitPreEnteredPlayable', () => {
+                graphicsUtils.removeSomethingFromRenderer(notifierArrow);
+                globals.currentGame.removeTickCallback(unitNotifierTick);
+            });
+        });
+    },
+
     _removeLevelAugmentListener: function() {
-        Matter.Events.off(globals.currentGame, 'UnitPreEneteredPlayable', this.augmentListener);
+        Matter.Events.off(globals.currentGame, 'UnitPostEnteredPlayable', this.augmentListener);
+    },
+
+    _removeUnitNotifierListener: function() {
+        Matter.Events.off(globals.currentGame, 'UnitSpawnerAddedUnit', this.unitNotifierListener);
     },
 
     getAugmentSystemMessages: function() {
@@ -756,6 +816,7 @@ var levelBase = {
         //to-be called upon the win/loss conditions being fulfilled
         var commonLossTasks = function() {
             this._removeLevelAugmentListener();
+            this._removeUnitNotifierListener();
             globals.currentGame.itemSystem.removeAllItemsOnGround(true);
             globals.currentGame.unitSystem.pause();
             removeCurrentConditions.call(this);
@@ -826,6 +887,7 @@ var levelBase = {
 
                 //remove level augment listener
                 this._removeLevelAugmentListener();
+                this._removeUnitNotifierListener();
 
                 //remove win/loss condition
                 removeCurrentConditions();

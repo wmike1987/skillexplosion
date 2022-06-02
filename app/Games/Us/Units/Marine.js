@@ -1138,10 +1138,10 @@ export default function Marine(options) {
             },
             {
                 name: 'friendly fire',
-                duration: 4000,
+                duration: 6000,
                 icon: graphicsUtils.createDisplayObject('FriendlyFireIcon'),
                 title: 'Friendly Fire',
-                description: ['Grant allies health/energy gems for 4 seconds', 'by hitting them with a knife.'],
+                description: ['Grant allies health/energy gems for 6 seconds', 'by hitting them with a knife.'],
                 systemMessage: 'Health and energy gems are granted alternately.',
                 collector: {
                     eventName: friendlyFireCollectorEventName,

@@ -756,10 +756,10 @@ var gameUtils = {
         return placement;
     },
 
-    getJustOffscreenPosition: function(direction, variation) {
+    getJustOffscreenPosition: function(direction, variation, offset) {
         var placement = {};
         var randomPlacement = this.getRandomPlacementWithinCanvasBounds();
-        var offscreenAmount = 50;
+        var offscreenAmount = offset || 50;
         variation = Math.random() * (variation || offscreenAmount);
         offscreenAmount += variation;
         if (direction == 'random' || !direction) {

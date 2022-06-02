@@ -2766,7 +2766,7 @@ var EndLevelStatScreenOverlay = function(units, options) {
                     }, pauseTime);
                 }
 
-            }, startFadeTime * 9 + 300);
+            }, startFadeTime * 9 + 750);
 
 
         } else if (isVictory) {
