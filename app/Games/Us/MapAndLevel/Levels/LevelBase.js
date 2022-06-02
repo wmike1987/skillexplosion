@@ -551,6 +551,7 @@ var levelBase = {
             }
 
             let notifierArrow = graphicsUtils.addSomethingToRenderer('UnitNotifierArrow', {where: 'hudTwo', alpha: 0.8, scale: {x: 0.75, y: 0.75}, tint: 0xffffff});
+
             graphicsUtils.flashSprite(notifierArrow);
             graphicsUtils.flashSprite({
                 sprite: notifierArrow,
@@ -577,7 +578,7 @@ var levelBase = {
                     notifierArrow.position.y = offset;
                 }
                 notifierArrow.rotation = mathArrayUtils.pointInDirection(notifierArrow.position, unit.position);
-            }, false);
+            }, {runImmediately: true});
 
             gameUtils.deathPact(unit, notifierArrow);
             gameUtils.deathPact(unit, unitNotifierTick);

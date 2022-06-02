@@ -9,7 +9,7 @@ import {
 /*
  * options
  */
-var enemyPost = function() {
+var log = function() {
     this.textureName = [null];
     this.radius = 8;
     this.collides = false;
@@ -48,4 +48,4 @@ var enemyPost = function() {
     };
 };
 
-export default enemyPost;
+export default log;

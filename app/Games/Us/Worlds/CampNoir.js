@@ -2032,7 +2032,7 @@ var campNoir = {
                         tentDoodad.unique = true;
                     } else {
                         tentDoodad = {
-                            textureName: 'CampDoodads/BarrelTrash1',
+                            textureName: 'CampDoodads/MiniTent1',
                             randomScale: {
                                 min: 0.8,
                                 max: 1.0
@@ -2114,7 +2114,7 @@ var campNoir = {
                                 max: 1.0
                             },
                             randomHFlip: true,
-                            where: 'stageNOne',
+                            where: 'backgroundOne',
                             groupingOptions: {
                                 priority: 2,
                                 min: 100,
@@ -2287,7 +2287,7 @@ var campNoir = {
                                 max: 1.0
                             },
                             randomHFlip: true,
-                            where: 'stageNOne',
+                            where: 'backgroundOne',
                             groupingOptions: {
                                 priority: 2,
                                 min: 100,
@@ -2311,9 +2311,9 @@ var campNoir = {
                             },
                             groupingOptions: {
                                 min: 80,
-                                max: 600
+                                max: 120
                             },
-                            alpha: 0.75,
+                            alpha: 0.6,
                             randomHFlip: true,
                             where: 'stageNTwo'
                         }, {
@@ -2324,7 +2324,7 @@ var campNoir = {
                             },
                             groupingOptions: {
                                 min: 80,
-                                max: 400
+                                max: 100
                             },
                             alpha: 0.75,
                             randomHFlip: true,
@@ -2337,9 +2337,9 @@ var campNoir = {
                             },
                             groupingOptions: {
                                 min: 80,
-                                max: 400
+                                max: 100
                             },
-                            alpha: 0.75,
+                            alpha: 0.6,
                             randomHFlip: true,
                             where: 'stageNTwo'
                         }, {
@@ -2350,7 +2350,7 @@ var campNoir = {
                             },
                             groupingOptions: {
                                 min: 80,
-                                max: 400
+                                max: 100
                             },
                             alpha: 0.75,
                             randomHFlip: true,
@@ -2480,7 +2480,7 @@ var campNoir = {
                             min: 0.8,
                             max: 1.0
                         },
-                        where: 'stageNOne',
+                        where: 'stageNTwo',
                         r: 1,
                     });
                     scene.add(footprints);

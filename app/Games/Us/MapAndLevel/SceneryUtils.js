@@ -512,7 +512,8 @@ var sceneryUtils = {
                     //comprehend groupings
                     var doGrouping = Math.random() < groupings.hz;
                     var numberInGrouping = doGrouping ? mathArrayUtils.getRandomElementOfArray(groupings.possibleAmounts) : 1;
-                    var possibleAngles = [40, 63, 122, 150, 195, 219, 240, 270, 286, 325];
+                    var originalAngles = [40, 63, 122, 150, 195, 219, 240, 270, 286, 325];
+                    var possibleAngles = [...originalAngles];
 
                     //check max
                     if (maxNumber && hits == maxNumber) {
@@ -530,15 +531,20 @@ var sceneryUtils = {
                             myScalar = mathArrayUtils.getRandomIntInclusive(myScalar.min, myScalar.max);
                         }
 
-                        if(retry) {
+                        //refresh our angle list, or add the last chosen angle if we're on a retry, unless we retrying with 1 angle in the list
+                        if(possibleAngles.length == 0 || (possibleAngles.length == 1 && retry)) {
+                            console.info('wow')
+                            possibleAngles = [...originalAngles];
+                        } else if (retry) {
                             possibleAngles.push(lastAngleChosen);
                         }
 
                         var angle = mathArrayUtils.getRandomElementOfArray(possibleAngles);
                         lastAngleChosen = angle;
-                        if(possibleAngles.length > 1) {
-                            mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
-                        }
+
+
+                        mathArrayUtils.removeObjectFromArray(angle, possibleAngles);
+
                         var newPosition = mathArrayUtils.addScalarToVectorAtAngle({
                             x: originalPosition.x,
                             y: originalPosition.y
@@ -576,10 +582,12 @@ var sceneryUtils = {
                         arrayOfThings.forEach(function(thing) {
                             //TextureGroups allow us to specify a "thing" that
                             //contains common attributes, but multiple textures
-                            if (thing.textureGroup && thing.textureGroupCount > 0) {
-                                thing.textureGroup.forEach(function(t) {
-                                    expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
-                                });
+                            if (thing.textureGroup) {
+                                if(thing.textureGroupCount > 0) {
+                                    thing.textureGroup.forEach(function(t) {
+                                        expandedThings.push(thing); //add the same array multiple times so that it's chosen properly
+                                    });
+                                }
                             } else {
                                 expandedThings.push(thing);
                             }
