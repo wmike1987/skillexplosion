@@ -5,14 +5,15 @@ import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
     knifeDamage: 2,
-    knifeSpeed: 12
+    knifeSpeed: 12,
+    defenseAddition: 0.3,
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Leather Glove",
-        description: ["Add 2 to knife damage.", "Increase knife speed."],
+        description: ["Add 2 to knife damage.", "Increase knife speed.", "Add 0.3 to armor."],
         icon: 'ThrowingGlove',
     }, options, shaneOnly);
     return new ic(item);

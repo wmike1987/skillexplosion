@@ -2298,7 +2298,7 @@ var campNoir = {
                             textureName: 'bullets',
                             where: 'backgroundOne',
                             randomHFlip: true,
-                            // unique: true,
+                            unique: true,
                             randomScale: {
                                 min: 0.8,
                                 max: 1.0

@@ -12,7 +12,7 @@ import {
 
 var manipulations = {
     gritAddition: 15,
-    dodgeAddition: 6,
+    dodgeAddition: 5,
 };
 
 export default function(options) {

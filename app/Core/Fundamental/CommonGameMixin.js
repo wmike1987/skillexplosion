@@ -624,7 +624,7 @@ var common = {
                 if (event.key == 'u' || event.key == 'U') {
                     //unit tester
                     if (true) {
-                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'DamageFlySwarm', {
+                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'Eruptlet', {
                             team: this.enemyTeam,
                             // team: this.playerTeam,
                             idleCancel: false
@@ -636,7 +636,7 @@ var common = {
                             x: 500,
                             y: 400
                         };
-                        unitT.moveSpeed = 0.0001;
+                        // unitT.moveSpeed = 0.1;
                         // unitUtils.moveUnitOffScreen(unitT);
                         this.addUnit(unitT);
                         this.newUnitTest = unitT;

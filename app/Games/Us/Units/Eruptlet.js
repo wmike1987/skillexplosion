@@ -148,7 +148,7 @@ export default function Eruptlet(options) {
         }),
     };
 
-    var scale = 0.06;
+    var scale = 0.08;
     var sc = {
         x: scale,
         y: scale
@@ -166,8 +166,8 @@ export default function Eruptlet(options) {
             id: 'selected',
             data: 'IsometricSelectedSmall',
             scale: {
-                x: 1.0,
-                y: 1.2
+                x: 1.1,
+                y: 1.3
             },
             stage: 'stageNOne',
             visible: false,
@@ -182,8 +182,8 @@ export default function Eruptlet(options) {
             id: 'selectionPending',
             data: unitUtils.getPendingAnimation(),
             scale: {
-                x: 0.34,
-                y: 0.4
+                x: 0.36,
+                y: 0.42
             },
             stage: 'stageNOne',
             visible: false,
@@ -369,13 +369,13 @@ export default function Eruptlet(options) {
             attackAnimations: attackAnimations,
             cooldown: 650,
             honeRange: 300,
-            range: options.radius * 2.25,
-            damage: 14,
+            range: options.radius * 2.3,
+            damage: 12,
             attack: function(target) {
                 var deathAnimation = gameUtils.getAnimation({
                     spritesheetName: 'EruptletAnimations1',
                     animationName: 'eruptletExplode',
-                    speed: 1,
+                    speed: 1.2,
                     transform: [this.position.x, this.position.y, 1.5, 1.5]
                 });
 
