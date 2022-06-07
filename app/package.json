@@ -19,6 +19,7 @@
     "pixi-particles": "^4.2.1",
     "pixi-spine": "^2.1.11",
     "pixi.js": "^6.2.2",
+    "pixi-tagged-text": "^3.7.4",
     "poly-decomp": "^0.3.0",
     "seedrandom": "^3.0.5",
     "stats.js": "^0.17.0"

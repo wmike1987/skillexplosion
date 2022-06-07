@@ -28,24 +28,28 @@ export default function(options) {
     this.titleExtension = ' - Lv. 1';
     this.originalTitle = this.title;
 
+    let descriptionWrapper = function(st) {
+        return st
+    }
+
     //Automate some of the panel tooltip text
     this.renewTooltipAttributes = function() {
-        this.decoratedAggressionDescription = [].concat(this.getAggressionDescription());
+        this.decoratedAggressionDescription = [].concat(descriptionWrapper(this.getAggressionDescription()));
         this.aggCooldownText = this.aggressionCooldown / 1000 + ' second cooldown';
 
-        this.decoratedDefenseDescription = [].concat(this.getDefenseDescription());
+        this.decoratedDefenseDescription = [].concat(descriptionWrapper(this.getDefenseDescription()));
         this.defCooldownText = this.defenseCooldown / 1000 + ' second cooldown';
 
-        this.decoratedPassiveDescription = [].concat(this.getUnequippedDescription());
+        this.decoratedPassiveDescription = [].concat(descriptionWrapper(this.getUnequippedDescription()));
 
         //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
         this.descriptions = this.decoratedPassiveDescription.concat([' '])
         .concat(this.decoratedAggressionDescription.concat([' ']))
         .concat(this.decoratedDefenseDescription);
 
-        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded];
-        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded];
-        this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
+        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.passiveMultiTextStyle];
+        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.passiveMultiTextStyle];
+        this.passiveDescrStyle = [styles.passivePStyle, styles.passiveMultiTextStyle];
         this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText])
         .concat(this.aggressionDescrStyle.concat([styles.systemMessageText]))
         .concat(this.defensiveDescrStyle);
@@ -61,9 +65,9 @@ export default function(options) {
         this.descriptions = this.decoratedPassiveDescription.concat([' ']).concat(this.decoratedAggressionDescription.concat([aggressionActive])
             .concat([' ']).concat(this.decoratedDefenseDescription).concat([defensiveActive]));
 
-        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.abilityTextFaded, this.attackPassive ? styles.systemMessageText : styles.systemMessageTextWhite];
-        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.abilityTextFaded, this.defensePassive ? styles.systemMessageText : styles.systemMessageTextWhite];
-        this.passiveDescrStyle = [styles.passivePStyle, styles.abilityTextFaded];
+        this.aggressionDescrStyle = options.aggressionDescStyle || [styles.passiveAStyle, styles.passiveMultiTextStyle, this.attackPassive ? styles.systemMessageText : styles.systemMessageTextWhite];
+        this.defensiveDescrStyle = options.defensiveDescrStyle || [styles.passiveDStyle, styles.passiveMultiTextStyle, this.defensePassive ? styles.systemMessageText : styles.systemMessageTextWhite];
+        this.passiveDescrStyle = [styles.passivePStyle, styles.passiveMultiTextStyle];
         this.descriptionStyle = this.passiveDescrStyle.concat([styles.systemMessageText]
             .concat(this.aggressionDescrStyle)
             .concat([styles.systemMessageText])

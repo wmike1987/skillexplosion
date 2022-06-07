@@ -17,6 +17,7 @@ import {
     PIXIHooks,
     StatsJSAdapter
 } from 'gstats';
+import * as TaggedText from 'pixi-tagged-text';
 import Stats from 'stats.js';
 
 //main renderer module
@@ -484,6 +485,14 @@ var renderer = function(engine, options) {
             var textPlusId = 'TEXT:';
             if (something.indexOf(textPlusId) >= 0) {
                 var t = new PIXI.Text(something.substring(something.indexOf(textPlusId) + 5), options.style);
+                t.resolution = 1;
+                return t;
+            }
+
+            //Multi-Text
+            var mtextPlusId = 'TEXM:';
+            if (something.indexOf(mtextPlusId) >= 0) {
+                var t = new TaggedText.default(something.substring(something.indexOf(mtextPlusId) + 5), options.style.textStyle, options.style.taggedTextOptions);
                 t.resolution = 1;
                 return t;
             }

@@ -805,4 +805,26 @@ export default {
         fontSize: 13,
         strokeThickness: 1
     }),
-};
+
+    passiveMultiTextStyle: {
+        textStyle: {
+            st: {
+                fill: "#c3c3c3",
+                fontStyle: "italic",
+                fontFamily: "Tahoma, Geneva, sans-serif",
+                fontSize: 13,
+                padding: 5
+            },
+            highlight: {
+                fill: "#d182ed",
+                fontStyle: "italic",
+                fontFamily: "Tahoma, Geneva, sans-serif",
+                fontSize: 13,
+                padding: 5
+            }
+        },
+        taggedTextOptions: {
+            drawWhitespace: true
+        }
+    }
+}

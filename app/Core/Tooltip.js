@@ -51,7 +51,13 @@ var Tooltip = function(options) {
         if ($.isArray(options.descriptionStyle)) {
             style = options.descriptionStyle[i];
         }
-        this.descriptions.push(graphicsUtils.createDisplayObject('TEX+:' + descr, {
+
+        //support for tagged text...
+        let textType = 'TEX+:'
+        if(descr.includes('</')) {
+            textType = 'TEXM:'
+        }
+        this.descriptions.push(graphicsUtils.createDisplayObject(textType + descr, {
             style: style,
             anchor: textAnchor
         }));
@@ -225,7 +231,7 @@ Tooltip.prototype.sizeBase = function() {
         }
     }.bind(this));
     $.each(this.descriptions, function(i, descr) {
-        descriptionWidth = Math.max(descriptionWidth, descr.width);
+        descriptionWidth = Math.max(descriptionWidth, descr.getBounds().width);
         descriptionHeight += this.descrHeight;
     }.bind(this));
 

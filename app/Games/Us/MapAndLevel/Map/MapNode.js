@@ -30,7 +30,6 @@ var unclickTokenSound = gameUtils.getSound('augmenthover.wav', {
 });
 
 var defaultTokenSize = 40;
-var enlargedTokenSize = 50;
 
 //Define node object
 var MapLevelNode = function(options) {

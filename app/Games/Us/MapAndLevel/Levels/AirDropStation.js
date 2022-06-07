@@ -136,8 +136,8 @@ commonAirDropStation.createMapNode = function(options) {
     var mapNode = new MapNode({
         levelDetails: this,
         mapRef: options.mapRef,
-        tokenSize: 50,
-        largeTokenSize: 60,
+        // tokenSize: 50,
+        // largeTokenSize: 60,
         indicatorOffset: {
             x: -22,
             y: -22

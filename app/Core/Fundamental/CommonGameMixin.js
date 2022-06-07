@@ -4,6 +4,7 @@ import * as $ from 'jquery';
 import hs from '@utils/HS.js';
 import * as h from 'howler';
 import styles from '@utils/Styles.js';
+import * as TaggedText from 'pixi-tagged-text';
 import {
     gameUtils,
     graphicsUtils,
@@ -363,7 +364,10 @@ var common = {
                     // }.bind(this));
                     console.info(gameUtils.getPlayableWidth());
                     console.info(gameUtils.getPlayableHeight());
-                    globals.currentGame.nextPhase();
+                    // globals.currentGame.nextPhase();
+
+                    let text = new TaggedText.default("Big <red>text<red>", { red: {fill: 0xf2251e} });
+                    graphicsUtils.addSomethingToRenderer(text, {where: 'hud', position: gameUtils.getPlayableCenter()});
 
                     // this.presentNewAugmentChoices();
                     // var floatDuration = 4000;

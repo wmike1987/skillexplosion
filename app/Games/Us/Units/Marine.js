@@ -1291,6 +1291,12 @@ export default function Marine(options) {
         ],
     });
 
+    var highlight = function(st) {
+        return '<highlight>' + st + '</highlight>';
+    }
+    var markMultiText = function(st) {
+        return '<st>' + st + '</st>';
+    }
     var gsDDuration = 300;
     var gsADuration = 300;
     var allyArmorDuration = 7000;
@@ -1301,13 +1307,13 @@ export default function Marine(options) {
     var givingSpirit = new Passive({
         title: 'Giving Spirit',
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit)', 'Heal ally for ' + allyHeal + ' hp and ' + allyEnergyHeal + ' energy.'];
+            return ['Defensive Mode (When hit)', markMultiText('Heal ally for ' + highlight(allyHeal) + ' hp and ' + highlight(allyEnergyHeal) + ' energy.')];
         },
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon kill)', 'Grant ally ' + armorGiven + ' def for 7 seconds.'];
+            return ['Agression Mode (Upon kill)', markMultiText('Grant ally ' + highlight(armorGiven) + ' def for 7 seconds.')];
         },
         getUnequippedDescription: () => {
-            return  ['Initial Boost (Upon camp start)', 'Heal ally for ' + passiveAllyPercentageHeal + '% of max hp.'];
+            return  ['Initial Boost (Upon camp start)', markMultiText('Heal ally for ' + highlight(passiveAllyPercentageHeal + '%') + ' of max hp.')];
         },
         textureName: 'PositiveMindset',
         unit: marine,
