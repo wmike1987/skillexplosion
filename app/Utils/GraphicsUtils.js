@@ -493,6 +493,10 @@ var graphicsUtils = {
         sprite.position = position;
         sprite.alpha = alphaBuffer;
 
+        if (!sprite.floatYOffset) {
+            sprite.floatYOffset = 0;
+        }
+
         var timer = globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
             timeLimit: options.duration || 750,
@@ -502,6 +506,7 @@ var graphicsUtils = {
                 const border = sprite.addedBorder;
                 if (!options.stationary) {
                     sprite.position.y -= (delta * (options.speed / 100 || 0.03));
+                    sprite.floatYOffset -= (delta * (options.speed / 100 || 0.03));
 
                     if (border) {
                         border.position.y -= (delta * (options.speed / 100 || 0.03));
@@ -629,11 +634,11 @@ var graphicsUtils = {
         var alphaBuffer = 2.0;
         var newStyle;
         if (options.textSize) {
-            newStyle = $.extend({}, styles.style, {
+            newStyle = $.extend({}, styles[options.style], {
                 fontSize: options.textSize
             });
         } else {
-            newStyle = styles.style;
+            newStyle = styles[options.style];
         }
         var floatedText = graphicsUtils.addSomethingToRenderer("TEX+:" + text, options.where || 'hud', {
             style: options.style || newStyle,
@@ -642,6 +647,13 @@ var graphicsUtils = {
         });
         floatedText.position = position;
         floatedText.alpha = alphaBuffer;
+        floatedText.tint = options.tint || 0xffffff;
+
+        let xShift = 0;
+        let xShiftMax = 10;
+        if(options.randomXShift) {
+            xShift = Math.random() * (xShiftMax * 2) - xShiftMax;
+        }
         var timer = globals.currentGame.addTimer({
             name: 'floatText:' + mathArrayUtils.getId(),
             timeLimit: options.duration || 750,
@@ -650,7 +662,9 @@ var graphicsUtils = {
             tickCallback: function(delta) {
                 if (!options.stationary) {
                     floatedText.position.y -= (delta * (options.speed / 100 || 0.03));
+                    floatedText.position.x -= (delta * xShift/1000);
                 }
+
 
                 //if we're going to persist at end, don't fade anything
                 if (!options.persistAtEnd) {

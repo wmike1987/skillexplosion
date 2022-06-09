@@ -2202,12 +2202,12 @@ export default function Marine(options) {
                     });
                     fireSound.play();
                     criticalHitSound.play();
-                    var chText = graphicsUtils.floatText(returnInfo.rawDamage + '!', {
-                        x: target.position.x,
-                        y: target.position.y - 15
-                    }, {
-                        style: styles.critHitText
-                    });
+                    // var chText = graphicsUtils.floatText(returnInfo.rawDamage + '!', {
+                    //     x: target.position.x,
+                    //     y: target.position.y - 15
+                    // }, {
+                    //     style: styles.critHitText
+                    // });
                 } else {
                     fireSound.play();
                 }

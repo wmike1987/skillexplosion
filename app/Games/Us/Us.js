@@ -1429,7 +1429,7 @@ var game = {
         if (options.autoDestroyBox) {
             box.isTargetable = false;
             gameUtils.doSomethingAfterDuration(() => {
-                box.sufferAttack(1000);
+                box.sufferAttack(1000, null, {systemDealt: true});
             }, 200);
         }
     },

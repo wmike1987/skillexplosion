@@ -398,7 +398,8 @@ export default function Eruptlet(options) {
                 if (!this.isDead) {
                     this.sufferAttack(10000, null, {
                         dodgeable: false,
-                        blockable: false
+                        blockable: false,
+                        systemDealt: true
                     });
                 }
             }

@@ -48,6 +48,10 @@ var mathArrayUtils = {
         }
     },
 
+    getRandomNegToPos: function(number) {
+        return Math.random() * (number * 2) - number;
+    },
+
     distanceBetweenBodies: function(bodyA, bodyB) {
         var a = bodyA.position.x - bodyB.position.x;
         var b = bodyA.position.y - bodyB.position.y;

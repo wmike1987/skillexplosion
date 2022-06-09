@@ -91,6 +91,7 @@ var UnitBase = {
     maxHealth: 20,
     canTakeAbilityDamage: true,
     currentHealth: 20,
+    damageTextOffsets: [{x: -12, y: -12}, {x: -12, y: 12}, {x: 12, y: 12}, {x: 12, y: -12}, {x: 0, y: 0}],
     damageAdditions: [],
     defense: 0,
     defenseAdditions: [],
@@ -201,6 +202,7 @@ var UnitBase = {
             ignoreArmor: false,
             dodgeRolls: 1,
             damageMultiplier: 1,
+            systemDealt: false,
             dodgeManipulator: (dodge) => {
                 return dodge;
             },
@@ -380,6 +382,31 @@ var UnitBase = {
                 gameUtils.deathPact(this, this.barTimer);
             } else {
                 this.barTimer.reset();
+            }
+        }
+
+        if(!attackContext.systemDealt) {
+            let damageTextOffset = {x: mathArrayUtils.getRandomNegToPos(12), y: mathArrayUtils.getRandomNegToPos(12)};
+            if(this.damageTextOffsets.length > 0) {
+                damageTextOffset = mathArrayUtils.getRandomElementOfArray(this.damageTextOffsets);
+                mathArrayUtils.removeObjectFromArray(damageTextOffset, this.damageTextOffsets);
+            }
+
+            let damageTextTint = this.team == globals.currentGame.playerTeam ? 0xee0d0d : 0xd1a430;
+            let damageText = graphicsUtils.addSomethingToRenderer("TEX+:" + Math.floor(alteredDamage), 'hud', {
+                style: styles.thinStyle,
+                alpha: 1.0,
+                scale: {x: 1 + alteredDamage/100, y: 1 + alteredDamage/100}
+            });
+            graphicsUtils.flashSprite({sprite: damageText, duration: 200, times: 2})
+            graphicsUtils.floatSpriteNew(damageText, this.body, {duration: 750, speed: 2, onDone: () => {
+                this.damageTextOffsets.push(damageTextOffset);
+            }});
+
+            if(this.isDead) {
+                damageText.position = mathArrayUtils.clonePosition(this.deathPosition, damageTextOffset);
+            } else {
+                gameUtils.attachSomethingToBody({something: damageText, body: this.body, offset: damageTextOffset});
             }
         }
 
@@ -1021,6 +1048,12 @@ var UnitBase = {
         Object.defineProperty(this, 'footPosition', {
             get: function() {
                 return mathArrayUtils.clonePosition(this.position, this.body.renderlings.selected.offset);
+            },
+        });
+
+        Object.defineProperty(this, 'headPlusPosition', {
+            get: function() {
+                return {x: this.position.x, y: this.body.renderlings.healthbarbackground.position.y - 15};
             },
         });
 
