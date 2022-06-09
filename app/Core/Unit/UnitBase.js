@@ -392,21 +392,31 @@ var UnitBase = {
                 mathArrayUtils.removeObjectFromArray(damageTextOffset, this.damageTextOffsets);
             }
 
+            let attackTextAmount = alteredDamage.toFixed(1);
+            if(attackTextAmount.includes('.0')) {
+                attackTextAmount = alteredDamage;
+            }
+
             let damageTextTint = this.team == globals.currentGame.playerTeam ? 0xee0d0d : 0xd1a430;
-            let damageText = graphicsUtils.addSomethingToRenderer("TEX+:" + Math.floor(alteredDamage), 'hud', {
+            let damageText = graphicsUtils.addSomethingToRenderer("TEX+:" + attackTextAmount, 'hud', {
                 style: styles.thinStyle,
                 alpha: 1.0,
                 scale: {x: 1 + alteredDamage/100, y: 1 + alteredDamage/100}
             });
-            graphicsUtils.flashSprite({sprite: damageText, duration: 200, times: 2})
-            graphicsUtils.floatSpriteNew(damageText, this.body, {duration: 750, speed: 2, onDone: () => {
+            graphicsUtils.flashSprite({sprite: damageText, fromColor: 0xfb1e1e, toColor: 0xffffff, duration: 32, times: 5, onEnd: () => {
+                damageText.alpha = 0.8;
+            }});
+            graphicsUtils.floatSpriteNew(damageText, this.body, {duration: 1000, speed: 2, persistAtEnd: true, onDone: () => {
                 this.damageTextOffsets.push(damageTextOffset);
             }});
+            gameUtils.doSomethingAfterDuration(() => {
+                graphicsUtils.fadeSpriteQuicklyThenDestroy(damageText, 200);
+            }, 800);
 
             if(this.isDead) {
                 damageText.position = mathArrayUtils.clonePosition(this.deathPosition, damageTextOffset);
             } else {
-                gameUtils.attachSomethingToBody({something: damageText, body: this.body, offset: damageTextOffset});
+                gameUtils.attachSomethingToBody({something: damageText, body: this.body, offset: damageTextOffset, detachUponUnitDeath: true});
             }
         }
 

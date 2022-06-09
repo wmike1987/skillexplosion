@@ -39,11 +39,11 @@ export default {
         name: 'thinStyle',
         dropShadowAngle: 7.1,
         dropShadowBlur: -12,
-        dropShadowDistance: 2,
+        dropShadowDistance: 3,
         fill: "white",
         fillGradientType: 1,
-        fontFamily: "Helvetica",
-        fontSize: 14,
+        fontFamily: "Arial",
+        fontSize: 12,
         strokeThickness: 2
     }),
 

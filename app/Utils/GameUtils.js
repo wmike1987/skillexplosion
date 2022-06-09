@@ -311,6 +311,13 @@ var gameUtils = {
         something.bodyAttachmentBody = body;
         this.deathPact(body, tick, somethingId);
 
+        //assumes we have a unit
+        if(options.detachUponUnitDeath && body.unit) {
+            gameUtils.matterOnce(body.unit, 'death', () => {
+                this.detachSomethingFromBody(something);
+            });
+        }
+
         //this option allows us to deathpact the attachment image (or body) with the master body
         if (options.deathPactSomething) {
             this.deathPact(body, something);
