@@ -386,38 +386,7 @@ var UnitBase = {
         }
 
         if(!attackContext.systemDealt) {
-            let damageTextOffset = {x: mathArrayUtils.getRandomNegToPos(12), y: mathArrayUtils.getRandomNegToPos(12)};
-            if(this.damageTextOffsets.length > 0) {
-                damageTextOffset = mathArrayUtils.getRandomElementOfArray(this.damageTextOffsets);
-                mathArrayUtils.removeObjectFromArray(damageTextOffset, this.damageTextOffsets);
-            }
-
-            let attackTextAmount = alteredDamage.toFixed(1);
-            if(attackTextAmount.includes('.0')) {
-                attackTextAmount = alteredDamage;
-            }
-
-            let damageTextTint = this.team == globals.currentGame.playerTeam ? 0xee0d0d : 0xd1a430;
-            let damageText = graphicsUtils.addSomethingToRenderer("TEX+:" + attackTextAmount, 'hud', {
-                style: styles.thinStyle,
-                alpha: 1.0,
-                scale: {x: 1 + alteredDamage/100, y: 1 + alteredDamage/100}
-            });
-            graphicsUtils.flashSprite({sprite: damageText, fromColor: 0xfb1e1e, toColor: 0xffffff, duration: 32, times: 5, onEnd: () => {
-                damageText.alpha = 0.8;
-            }});
-            graphicsUtils.floatSpriteNew(damageText, this.body, {duration: 1000, speed: 2, persistAtEnd: true, onDone: () => {
-                this.damageTextOffsets.push(damageTextOffset);
-            }});
-            gameUtils.doSomethingAfterDuration(() => {
-                graphicsUtils.fadeSpriteQuicklyThenDestroy(damageText, 200);
-            }, 800);
-
-            if(this.isDead) {
-                damageText.position = mathArrayUtils.clonePosition(this.deathPosition, damageTextOffset);
-            } else {
-                gameUtils.attachSomethingToBody({something: damageText, body: this.body, offset: damageTextOffset, detachUponUnitDeath: true});
-            }
+            unitUtils.floatNumberOnUnit({unit: this, tint: 0xfb1e1e, amount: alteredDamage});
         }
 
         Matter.Events.trigger(globals.currentGame, 'sufferAttack', {
@@ -536,6 +505,7 @@ var UnitBase = {
 
         if (!options.invisible) {
             this.showLifeBar(true);
+            unitUtils.floatNumberOnUnit({unit: this, tint: 0x5fed5c, amount: healingDone, italic: true})
             if (!this.barTimer) {
                 this.barTimer = globals.currentGame.addTimer({
                     name: this.unitId + 'barTimer',
@@ -602,6 +572,7 @@ var UnitBase = {
         }
 
         if (!options.invisible) {
+            unitUtils.floatNumberOnUnit({unit: this, tint: 0xd533f2, amount: energyGained, customToColor: 0xd533f2, italic: true})
             this.showEnergyBar(true);
             if (!this.energyTimer) {
                 this.energyTimer = globals.currentGame.addTimer({

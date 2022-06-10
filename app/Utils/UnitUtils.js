@@ -205,6 +205,49 @@ var unitUtils = {
         return anim;
     },
 
+    floatNumberOnUnit: function(options) {
+        let unit = options.unit;
+        let tint = options.tint;
+        let amount = options.amount;
+
+        let damageTextOffset = {x: mathArrayUtils.getRandomNegToPos(12), y: mathArrayUtils.getRandomNegToPos(12)};
+        let readdOffset = false;
+        if(unit.damageTextOffsets.length > 0) {
+            damageTextOffset = mathArrayUtils.getRandomElementOfArray(unit.damageTextOffsets);
+            mathArrayUtils.removeObjectFromArray(damageTextOffset, unit.damageTextOffsets);
+            readdOffset = true;
+        }
+
+        let attackTextAmount = amount.toFixed(1);
+        if(attackTextAmount.includes('.0')) {
+            attackTextAmount = amount;
+        }
+
+        let numberText = graphicsUtils.addSomethingToRenderer("TEX+:" + attackTextAmount, 'hud', {
+            style: options.italic ? styles.thinStyleItalic : styles.thinStyle,
+            alpha: 1.0,
+            scale: {x: 1 + amount/100, y: 1 + amount/100}
+        });
+        graphicsUtils.flashSprite({sprite: numberText, fromColor: tint, toColor: options.customToColor || 0xffffff, duration: 20, times: 5, onEnd: () => {
+            numberText.alpha = 0.9;
+        }});
+        graphicsUtils.floatSpriteNew(numberText, unit.body, {duration: 1000, speed: 2, persistAtEnd: true, onDone: () => {
+
+        }});
+        gameUtils.doSomethingAfterDuration(() => {
+            if(readdOffset) {
+                unit.damageTextOffsets.push(damageTextOffset);
+            }
+            graphicsUtils.fadeSpriteQuicklyThenDestroy(numberText, 200);
+        }, 800);
+
+        if(unit.isDead) {
+            numberText.position = mathArrayUtils.clonePosition(unit.deathPosition, damageTextOffset);
+        } else {
+            gameUtils.attachSomethingToBody({something: numberText, body: unit.body, offset: damageTextOffset, detachUponUnitDeath: true});
+        }
+    },
+
     createUnitRanOffStageListener: function(unit, callback) {
         var myTicker = globals.currentGame.addTickCallback(function() {
             if (gameUtils.bodyRanOffStage(unit.body)) {

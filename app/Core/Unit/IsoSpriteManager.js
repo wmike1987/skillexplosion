@@ -47,7 +47,7 @@ function IsoSpriteManager(options) {
         configurable: true
     });
 
-    //attach listeners (using the matter event system)
+    //attach listeners
     if (this.unit.isMoveable) {
         Matter.Events.on(this.unit, 'move', function(event) {
             if (this.currentMoveAnimation != this.unit.walkAnimations[event.direction]) {
@@ -151,6 +151,7 @@ function IsoSpriteManager(options) {
                     renderling.visible = false;
             }.bind(this));
 
+            //stop
 
             //turn one on
             this.currentAnimation = animation;
