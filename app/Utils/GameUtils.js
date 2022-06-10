@@ -247,6 +247,7 @@ var gameUtils = {
 
         anim.stop = function() {
             options.spine.state.clearTrack(0);
+            options.spine.state.clearTrack(1);
             if(options.setupUponStop) {
                 options.spine.skeleton.setToSetupPose();
             }

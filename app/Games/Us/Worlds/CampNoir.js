@@ -1615,7 +1615,7 @@ var phaseThree = function() {
     this.map.addMapNode('morphineStation');
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']));
     this.map.addMapNode(mathArrayUtils.getRandomElementOfArray(['energyDepot', 'healthDepot', 'dodgeDepot']), Object.assign({}, middleParam, {positionOptions: outerPosition}));
-    this.map.addMapNode('restStop');
+    this.map.addMapNode('restStop', Object.assign({}, middleParam, {positionOptions: outerPosition}));
 
     //basics
     let basicList = ['basic', 'basic2', 'basic3'];

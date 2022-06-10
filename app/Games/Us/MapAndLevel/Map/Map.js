@@ -369,10 +369,10 @@ var map = function(specs) {
             minRadius = 400;
             noZones = {center: {x: 60, y: gameUtils.getPlayableHeight() - 60}, radius: 80};
         } else if(genericOptions.levelOptions.middle) {
-            radius = 500;
+            radius = 450;
             minRadius = 250;
             minY = 200;
-            maxY = gameUtils.getPlayableHeight() - 250;
+            maxY = gameUtils.getPlayableHeight() - 200;
         }
         var tries = 0;
         if (!position) {

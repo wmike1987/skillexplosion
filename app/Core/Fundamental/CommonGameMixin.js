@@ -362,12 +362,12 @@ var common = {
                     // }, function(unit) {
                     //     globals.currentGame.removeUnit(unit);
                     // }.bind(this));
-                    console.info(gameUtils.getPlayableWidth());
-                    console.info(gameUtils.getPlayableHeight());
+                    // console.info(gameUtils.getPlayableWidth());
+                    // console.info(gameUtils.getPlayableHeight());
                     // globals.currentGame.nextPhase();
 
-                    let text = new TaggedText.default("Big <red>text<red>", { red: {fill: 0xf2251e} });
-                    graphicsUtils.addSomethingToRenderer(text, {where: 'hud', position: gameUtils.getPlayableCenter()});
+                    // let text = new TaggedText.default("Big <red>text<red>", { red: {fill: 0xf2251e} });
+                    // graphicsUtils.addSomethingToRenderer(text, {where: 'hud', position: gameUtils.getPlayableCenter()});
 
                     // this.presentNewAugmentChoices();
                     // var floatDuration = 4000;

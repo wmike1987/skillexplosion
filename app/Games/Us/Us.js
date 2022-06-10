@@ -610,7 +610,7 @@ var game = {
             this.setCurrentLevel(node.levelDetails);
 
             //fatigue timer
-            let fatigueAccumulationSpeed = 55;
+            let fatigueAccumulationSpeed = 45; //lower the more fatigue
             let adrenalineSpeedDamper = 28;
             let timeLimit = fatigueAccumulationSpeed + (this.map.adrenaline * adrenalineSpeedDamper);
             this.fatigueTimer = this.addTimer({
