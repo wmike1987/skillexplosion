@@ -533,7 +533,6 @@ var sceneryUtils = {
 
                         //refresh our angle list, or add the last chosen angle if we're on a retry, unless we retrying with 1 angle in the list
                         if(possibleAngles.length == 0 || (possibleAngles.length == 1 && retry)) {
-                            console.info('wow')
                             possibleAngles = [...originalAngles];
                         } else if (retry) {
                             possibleAngles.push(lastAngleChosen);

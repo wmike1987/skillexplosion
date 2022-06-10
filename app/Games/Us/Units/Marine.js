@@ -1406,13 +1406,13 @@ export default function Marine(options) {
         title: 'Rush Of Blood',
         getDefenseDescription: () => {
             var secondText = robDDuration == 1000 ? ' second.' : ' seconds.';
-            return ['Defensive Mode (Upon being healed)', 'Absorb 2x healing for ' + robDDuration/1000 + secondText];
+            return ['Defensive Mode (Upon being healed)', markMultiText('Absorb 2x healing for ' + highlight(robDDuration/1000) + secondText)];
         },
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon dealing damage)', 'Increase movement speed for ' + robADuration/1000 + ' seconds.'];
+            return ['Agression Mode (Upon dealing damage)', markMultiText('Increase movement speed for ' + highlight(robADuration/1000) + ' seconds.')];
         },
         getUnequippedDescription: () => {
-            return  ['Initial Boost (Upon camp start)', 'Gain ' + robHeal + '% of max hp.'];
+            return  ['Initial Boost (Upon camp start)', markMultiText('Gain ' + highlight(robHeal + '%') + ' of max hp.')];
         },
         textureName: 'RushOfBlood',
         unit: marine,
@@ -1524,13 +1524,13 @@ export default function Marine(options) {
     var killerInstinct = new Passive({
         title: 'Killer Instinct',
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit)', 'Become enraged (+' + kiEnrageAmount + ') for ' + Math.trunc(kiDefenseDuration/1000) + ' seconds.'];
+            return ['Defensive Mode (When hit)', markMultiText('Become enraged (' + highlight('+' + kiEnrageAmount) + ') for ' + highlight(Math.trunc(kiDefenseDuration/1000)) + ' seconds.')];
         },
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon dealing damage)', 'Maim enemy for ' + Math.trunc(kiAggressionDuration/1000) + ' seconds.'];
+            return ['Agression Mode (Upon dealing damage)', markMultiText('Maim enemy for ' + highlight(Math.trunc(kiAggressionDuration/1000)) + ' seconds.')];
         },
         getUnequippedDescription: () => {
-            return  ['Initial Boost (Upon camp start)', 'Gain ' + kiKniveStart + ' free knives.'];
+            return  ['Initial Boost (Upon camp start)', markMultiText('Gain ' + highlight(kiKniveStart) + ' free knives.')];
         },
         textureName: 'KillerInstinct',
         unit: marine,
@@ -1603,13 +1603,13 @@ export default function Marine(options) {
         title: 'Clear Perspective',
         getDefenseDescription: () => {
             let knifeText = vpKnives == 1 ? ' knife' : ' knives';
-            return ['Defensive Mode (When hit by projectile)', 'Throw ' + vpKnives + knifeText + ' in attacker\'s direction.'];
+            return ['Defensive Mode (When hit by projectile)', markMultiText('Throw ' + highlight(vpKnives) + knifeText + ' in attacker\'s direction.')];
         },
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon dealing damage)', 'Add ' + cpRange + ' to rifle range for ' + Math.trunc(cpADuration/1000) + ' seconds.'];
+            return ['Agression Mode (Upon dealing damage)', markMultiText('Add ' + highlight(cpRange) + ' to rifle range for ' + highlight(Math.trunc(cpADuration/1000)) + ' seconds.')];
         },
         getUnequippedDescription: () => {
-            return  ['Initial Boost (Upon camp start)', 'Add ' + cpRange + ' to rifle range for ' + vpPassiveDuration/1000 + ' seconds.'];
+            return  ['Initial Boost (Upon camp start)', markMultiText('Add ' + highlight(cpRange) + ' to rifle range for ' + highlight(vpPassiveDuration/1000) + ' seconds.')];
         },
         textureName: 'ClearPerspective',
         unit: marine,
@@ -1672,14 +1672,14 @@ export default function Marine(options) {
     var spiritualState = new Passive({
         title: 'Spiritual State',
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit by projectile)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + ' seconds.'];
+            return ['Defensive Mode (When hit by projectile)', markMultiText('Self and allies gain an energy gem for ' + highlight(Math.trunc(ssDDuration/1000)) + ' seconds.')];
         },
         getAggressionDescription: () => {
             var secondText = ssADuration == 1000 ? ' second.' : ' seconds.';
-            return ['Agression Mode (Upon being healed)', 'Gain 1 energy for every 1 hp recieved from healing for ' + ssADuration/1000 + secondText];
+            return ['Agression Mode (Upon being healed)', markMultiText('Gain 1 energy for every 1 hp recieved from healing for ' + highlight(ssADuration/1000) + secondText)];
         },
         getUnequippedDescription: () => {
-            return  ['Initial Boost (Upon camp start)', 'Self and allies gain an energy gem for ' + Math.trunc(ssDDuration/1000) + ' seconds.'];
+            return  ['Initial Boost (Upon camp start)', markMultiText('Self and allies gain an energy gem for ' + highlight(Math.trunc(ssDDuration/1000)) + ' seconds.')];
         },
         textureName: 'SpiritualState',
         unit: marine,
@@ -1771,13 +1771,13 @@ export default function Marine(options) {
     var trueGrit = new Passive({
         title: 'True Grit',
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit)', 'Grant self and allies ' + trueGritGain + ' grit for length of excursion.'];
+            return ['Defensive Mode (When hit)', markMultiText('Grant self and allies ' + highlight(trueGritGain) + ' grit for length of excursion.')];
         },
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon rifle attack)', 'Afflict target for ' + trueGritAfflictDuration/1000 + ' seconds.'];
+            return ['Agression Mode (Upon rifle attack)', markMultiText('Afflict target for ' + highlight(trueGritAfflictDuration/1000) + ' seconds.')];
         },
         getUnequippedDescription: () => {
-            return  ['Initial Boost (Upon camp start)', 'Self and allies gain ' + passiveGritGain + ' grit for length of excursion.'];
+            return  ['Initial Boost (Upon camp start)', markMultiText('Self and allies gain ' + highlight(passiveGritGain) + ' grit for length of excursion.')];
         },
         textureName: 'TrueGrit',
         unit: marine,

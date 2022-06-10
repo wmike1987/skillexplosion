@@ -1477,19 +1477,27 @@ export default function Medic(options) {
         ]
     });
 
+    var highlight = function(st) {
+        return '<highlight>' + st + '</highlight>';
+    }
+    var markMultiText = function(st) {
+        return '<st>' + st + '</st>';
+    }
+
     var rsADuration = 1000;
     var rsDAmount = 25;
     var rsPassiveGritAddAmount = 3;
+    var rsEnrageAmount = 5;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon heal)', 'Go berserk (2x multiplier) and reduce healing cost to 0 for ' + rsADuration/1000 + ' seconds.'];
+            return ['Agression Mode (Upon heal)', markMultiText('Become enraged (' + highlight('+' + rsEnrageAmount) + ') for ' + highlight(rsADuration/1000) + ' seconds.')];
         },
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit by melee attack)', 'Deal damage equal to half of Ursula\'s total grit back to attacker.'];
+            return ['Defensive Mode (When hit by melee attack)', markMultiText('Deal damage equal to half of Ursula\'s total grit back to attacker.')];
         },
         getUnequippedDescription: () => {
-            return ['Initial Boost (Upon camp start)', 'Self and allies gain ' + rsPassiveGritAddAmount + ' grit for length of excursion.'];
+            return ['Initial Boost (Upon camp start)', markMultiText('Self and allies gain ' + highlight(rsPassiveGritAddAmount) + ' grit for length of excursion.')];
         },
         textureName: 'RaisedStakes',
         unit: medic,
@@ -1499,7 +1507,9 @@ export default function Medic(options) {
         aggressionCooldown: 4000,
         aggressionDuration: rsADuration,
         upgrade: function() {
-            rsADuration += 500;
+            rsADuration += 1000;
+            rsEnrageAmount += 3;
+            
             this.aggressionDuration += 500;
 
             rsPassiveGritAddAmount += 2;
@@ -1556,11 +1566,10 @@ export default function Medic(options) {
         },
         aggressionAction: function(event) {
             var healingAbility = medic.getAbilityByName('Heal');
-            healingAbility.bypassEnergyCost = true;
-            medic.berserk({
+            medic.enrage({
                 duration: rsADuration,
                 id: 'raisedStakesBerserk',
-                amount: 2
+                amount: 5
             });
             return {
                 value: rsADuration / 1000
@@ -1571,7 +1580,7 @@ export default function Medic(options) {
             healingAbility.bypassEnergyCost = false;
         },
         collector: {
-            aggressionLabel: 'Duration of berserk',
+            aggressionLabel: 'Duration enraged',
             aggressionSuffix: 'seconds',
             defensiveLabel: 'Damage dealt',
         }
@@ -1583,13 +1592,13 @@ export default function Medic(options) {
     var healthyHabits = new Passive({
         title: 'Healthy Habits',
         getAggressionDescription: function() {
-            return ['Agression Mode (Upon dealing damage)', 'Grant a health gem to self and allies for ' + Math.trunc(hhADuration/1000) + ' seconds.'];
+            return ['Agression Mode (Upon dealing damage)', markMultiText('Grant a health gem to self and allies for ' + highlight(Math.trunc(hhADuration/1000)) + ' seconds.')];
         },
         getDefenseDescription: function() {
-            return ['Defensive Mode (When hit)', 'Condemn attacker for ' + Math.trunc(hhCondemnDuration/1000) + ' seconds.'];
+            return ['Defensive Mode (When hit)', markMultiText('Condemn attacker for ' + highlight(Math.trunc(hhCondemnDuration/1000)) + ' seconds.')];
         },
         getUnequippedDescription: function() {
-            return ['Initial Boost (Upon camp start)', 'Grant a health gem to self and allies for ' + Math.trunc(hhPassiveDuration/1000) + ' seconds.'];
+            return ['Initial Boost (Upon camp start)', markMultiText('Grant a health gem to self and allies for ' + highlight(Math.trunc(hhPassiveDuration/1000)) + ' seconds.')];
         },
         textureName: 'HealthyHabits',
         unit: medic,
@@ -1665,13 +1674,13 @@ export default function Medic(options) {
     var slyLogic = new Passive({
         title: 'Sly Logic',
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon heal)', 'Grant allies ' + allyDodgeGain + ' dodge for ' + Math.trunc(slADuration/1000) + ' seconds.'];
+            return ['Agression Mode (Upon heal)', markMultiText('Grant allies ' + highlight(allyDodgeGain) + ' dodge for ' + highlight(Math.trunc(slADuration/1000)) + ' seconds.')];
         },
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit)', 'Add ' + addedDodgeRolls + ' dodge rolls for incoming attack and gain ' + dodgeGain + ' dodge (up to ' + upToMax + ') for length of excursion.'];
+            return ['Defensive Mode (When hit)', markMultiText('Add ' + highlight(addedDodgeRolls) + ' dodge rolls for incoming attack and gain ' + highlight(dodgeGain) + ' dodge (up to ' + highlight(upToMax) + ')\nfor length of excursion.')];
         },
         getUnequippedDescription: () => {
-            return ['Initial Boost (Upon camp start)', 'Gain ' + passiveSlyLogicGain + ' dodge for length of excursion.'];
+            return ['Initial Boost (Upon camp start)', markMultiText('Gain ' + highlight(passiveSlyLogicGain) + ' dodge for length of excursion.')];
         },
         textureName: 'SlyLogic',
         unit: medic,
@@ -1752,14 +1761,14 @@ export default function Medic(options) {
     var familiarFace = new Passive({
         title: 'Familiar Face',
         getAggressionDescription: () => {
-            return ['Agression Mode (Upon dealing damage)', 'Gain a free vanish (up to ' + ffMaxFreeVanishes + ').'];
+            return ['Agression Mode (Upon dealing damage)', markMultiText('Gain a free vanish (up to ' + highlight(ffMaxFreeVanishes) + ').')];
         },
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit)', 'Stun attacker and gain movement speed for ' + Math.trunc(ffDDuration/1000) + ' seconds.'];
+            return ['Defensive Mode (When hit)', markMultiText('Stun attacker and gain movement speed for ' + highlight(Math.trunc(ffDDuration/1000)) + ' seconds.')];
         },
         getUnequippedDescription: () => {
             let vanishText = ffPassiveFreeVanish == 1 ? ' vanish.' : ' vanishes.';
-            return ['Initial Boost (Upon camp start)', 'Gain ' + ffPassiveFreeVanish + vanishText];
+            return ['Initial Boost (Upon camp start)', markMultiText('Gain ' + highlight(ffPassiveFreeVanish) + vanishText)];
         },
         textureName: 'FamiliarFace',
         unit: medic,
@@ -1879,14 +1888,14 @@ export default function Medic(options) {
         title: 'Wicked Ways',
         // originalAggressionDescription: ['Agression Mode (Upon kill)', 'Activate defensive state of mind\'s aggression mode.'],
         getAggressionDescription: () => {
-            return ['Agression Mode (When hit)', 'Plague attacker for ' + Math.trunc(wwADuration/1000) + ' seconds.'];
+            return ['Agression Mode (When hit)', markMultiText('Plague attacker for ' + highlight(Math.trunc(wwADuration/1000)) + ' seconds.')];
         },
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit by projectile)', 'Lay mine and petrify attacker for ' + Math.trunc(wwDDuration/1000) + ' seconds.'];
+            return ['Defensive Mode (When hit by projectile)', markMultiText('Lay mine and petrify attacker for ' + highlight(Math.trunc(wwDDuration/1000)) + ' seconds.')];
         },
         getUnequippedDescription: () => {
             let mineText = wwFreeMineGain == 1 ? ' mine.' : ' mines.'
-            return ['Initial Boost (Upon camp start)', 'Gain ' + wwFreeMineGain + mineText];
+            return ['Initial Boost (Upon camp start)', markMultiText('Gain ' + highlight(wwFreeMineGain) + mineText)];
         },
         textureName: 'WickedWays',
         unit: medic,
@@ -2016,13 +2025,13 @@ export default function Medic(options) {
     var elegantForm = new Passive({
         title: 'Proud Posture',
         getAggressionDescription: () => {
-            return ['Agression Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and deal ' + ppDamage + ' damage to attacker.'];
+            return ['Agression Mode (When hit by projectile)', markMultiText('Reduce damage of projectile to 1 and deal ' + highlight(ppDamage) + ' damage to attacker.')];
         },
         getDefenseDescription: () => {
-            return ['Defensive Mode (When hit by projectile)', 'Reduce damage of projectile to 1 and gain ' + energyGain + ' energy.'];
+            return ['Defensive Mode (When hit by projectile)', markMultiText('Reduce damage of projectile to 1 and gain ' + highlight(energyGain) + ' energy.')];
         },
         getUnequippedDescription: () => {
-            return ['Initial Boost (Upon camp start)', 'Gain ' + efEnergyGain + ' energy.'];
+            return ['Initial Boost (Upon camp start)', markMultiText('Gain ' + highlight(efEnergyGain) + ' energy.')];
         },
         textureName: 'ElegantForm',
         unit: medic,

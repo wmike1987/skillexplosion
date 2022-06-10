@@ -28,19 +28,15 @@ export default function(options) {
     this.titleExtension = ' - Lv. 1';
     this.originalTitle = this.title;
 
-    let descriptionWrapper = function(st) {
-        return st
-    }
-
     //Automate some of the panel tooltip text
     this.renewTooltipAttributes = function() {
-        this.decoratedAggressionDescription = [].concat(descriptionWrapper(this.getAggressionDescription()));
+        this.decoratedAggressionDescription = [].concat(this.getAggressionDescription());
         this.aggCooldownText = this.aggressionCooldown / 1000 + ' second cooldown';
 
-        this.decoratedDefenseDescription = [].concat(descriptionWrapper(this.getDefenseDescription()));
+        this.decoratedDefenseDescription = [].concat(this.getDefenseDescription());
         this.defCooldownText = this.defenseCooldown / 1000 + ' second cooldown';
 
-        this.decoratedPassiveDescription = [].concat(descriptionWrapper(this.getUnequippedDescription()));
+        this.decoratedPassiveDescription = [].concat(this.getUnequippedDescription());
 
         //this is the main description used by the config panel (as opposed to the unit panel which strips down the description)
         this.descriptions = this.decoratedPassiveDescription.concat([' '])

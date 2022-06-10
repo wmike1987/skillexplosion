@@ -801,7 +801,7 @@ export default {
 
     passivePStyle: new PIXI.TextStyle({
         name: 'passivePStyle',
-        fill: "#169d00",
+        fill: "#64ad6b",
         fontFamily: "Tahoma, Geneva, sans-serif",
         fontStyle: "italic",
         fontSize: 14,
@@ -828,7 +828,7 @@ export default {
                 padding: 5
             },
             highlight: {
-                fill: "#d182ed",
+                fill: "#fa37db",
                 fontStyle: "italic",
                 fontFamily: "Tahoma, Geneva, sans-serif",
                 fontSize: 13,

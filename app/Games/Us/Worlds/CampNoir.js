@@ -983,7 +983,7 @@ var enemyDefs = {
         strength: 'boss',
         enemySets: [{
             type: 'Critter',
-            amount: 3,
+            amount: 2,
             atATime: 1,
             hz: 12000
         }, {
@@ -1014,12 +1014,12 @@ var enemyDefs = {
             initialDelay: 12000,
         }, {
             type: 'Critter',
-            amount: 2,
+            amount: 1,
             atATime: 1,
             hz: 12000
         }, {
             type: 'Critter',
-            amount: 15,
+            amount: 12,
             atATime: 1,
             addedProps: {
                 immuneToAugment: true

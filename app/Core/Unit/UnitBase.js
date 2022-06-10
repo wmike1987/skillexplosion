@@ -844,7 +844,7 @@ var UnitBase = {
 
     acquireRandomPassive: function() {
         let passive = this.getRandomPassive();
-        passive = this.passiveAbilities[0];
+        // passive = this.passiveAbilities[0];
         this.availablePassives.push(passive);
 
         return passive;

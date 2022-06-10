@@ -57,10 +57,15 @@ var Tooltip = function(options) {
         if(descr.includes('</')) {
             textType = 'TEXM:'
         }
-        this.descriptions.push(graphicsUtils.createDisplayObject(textType + descr, {
+
+        let newText = graphicsUtils.createDisplayObject(textType + descr, {
             style: style,
             anchor: textAnchor
-        }));
+        });
+        if(textType = 'TEXM:' && descr.includes('\n')) {
+            newText.lineAmount = 2;
+        }
+        this.descriptions.push(newText);
     }.bind(this));
 
     //always provide a blank description
@@ -232,7 +237,7 @@ Tooltip.prototype.sizeBase = function() {
     }.bind(this));
     $.each(this.descriptions, function(i, descr) {
         descriptionWidth = Math.max(descriptionWidth, descr.getBounds().width);
-        descriptionHeight += this.descrHeight;
+        descriptionHeight += this.descrHeight * (descr.lineAmount || 1);
     }.bind(this));
 
     var iconWidthAdjustment = 0;
@@ -348,11 +353,14 @@ Tooltip.prototype.display = function(position, options) {
     mathArrayUtils.roundPositionToWholeNumbers(this.title.position);
 
     //place descriptions and description icons
+    let descriptionHeightTally = 0;
     $.each(this.descriptions, function(i, descr) {
         descr.position = {
             x: position.x - xOffset + this.buffer,
-            y: position.y + yOffset - this.base.height + this.title.height + this.customTitleBuffer + this.buffer / 2 + (this.iconBuffer || this.buffer) + (i * (this.descrHeight))
+            y: position.y + yOffset - this.base.height + this.title.height + this.customTitleBuffer + this.buffer / 2 + (this.iconBuffer || this.buffer) + descriptionHeightTally
         };
+        descriptionHeightTally += this.descrHeight * (descr.lineAmount || 1);
+
         mathArrayUtils.roundPositionToWholeNumbers(descr.position);
 
         //if we're using description icons, need to make some alterations
@@ -368,7 +376,7 @@ Tooltip.prototype.display = function(position, options) {
     $.each(this.systemMessages, function(i, sysMessage) {
         sysMessage.position = {
             x: position.x - xOffset + this.buffer,
-            y: position.y + yOffset - this.base.height + this.title.height + this.customTitleBuffer + this.buffer / 2 + this.buffer + (this.descriptions.length) * this.descrHeight + this.descriptionSystemMessageBuffer + ((i * sysMessage.height) + (i * this.systemMessagesBuffer))
+            y: position.y + yOffset - this.base.height + this.title.height + this.customTitleBuffer + this.buffer / 2 + this.buffer + descriptionHeightTally + this.descriptionSystemMessageBuffer + ((i * sysMessage.height) + (i * this.systemMessagesBuffer))
         };
         mathArrayUtils.roundPositionToWholeNumbers(sysMessage.position);
     }.bind(this));
