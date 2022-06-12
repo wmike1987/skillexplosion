@@ -262,6 +262,15 @@ var MapLevelNode = function(options) {
                     sound: true,
                     nodeToEnter: this
                 };
+
+                if(options.mouseDownPreBehavior) {
+                    var returnOptions = options.mouseDownPreBehavior.call(this, this.mapRef);
+                    returnOptions = returnOptions || {};
+                    if(returnOptions.cancelSubsequentOperations) {
+                        return;
+                    }
+                }
+
                 if (options.mouseDownCallback) {
                     var ret = options.mouseDownCallback.call(self, mouseDownOptions);
                     if (ret) {
@@ -284,7 +293,7 @@ var MapLevelNode = function(options) {
                             this.mapRef.removeNodeFromOuting(behavior.nodeToEnter);
                             unclickTokenSound.play();
                         } else {
-                            //If we trying to add a fourth, just ignore this request
+                            //If we're trying to add a fourth, just ignore this request
                             if (!this.mapRef.canAddNodeToOuting(behavior.nodeToEnter)) {
                                 return;
                             }

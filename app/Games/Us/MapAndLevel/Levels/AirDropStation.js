@@ -184,6 +184,14 @@ commonAirDropStation.createMapNode = function(options) {
                 return pr.isCompleted;
             });
         },
+        mouseDownPreBehavior: function(map) {
+            if(map.outingNodes.length > 0) {
+                map.clearOuting();
+                return {
+                    cancelSubsequentOperations: true
+                }
+            }
+        },
         mouseDownCallback: function() {
             this.flashNode();
             this.displayObject.tooltipObj.disable();

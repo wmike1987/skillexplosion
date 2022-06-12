@@ -496,7 +496,7 @@ var levelBase = {
             $('body').on('keydown.map', function(event) {
                 var key = event.key.toLowerCase();
                 if (key == 'escape' && this.mapActive && this.map.keyEventsAllowed && !this.map.isOnActiveTravelToken()) {
-                    this.closeMap();
+                    this.closeMap({forceClose: false});
                 }
             }.bind(globals.currentGame));
         });

@@ -5,6 +5,7 @@ import hs from '@utils/HS.js';
 import * as h from 'howler';
 import styles from '@utils/Styles.js';
 import * as TaggedText from 'pixi-tagged-text';
+import MenuBox from '@core/MenuBox.js';
 import {
     gameUtils,
     graphicsUtils,
@@ -26,7 +27,6 @@ import {
     mousePosition
 } from '@core/Fundamental/GlobalState.js';
 import AssetLoader from '@core/Fundamental/AssetLoader.js';
-import seedrandom from 'seedrandom';
 import {
     DoodadFactory
 } from '@games/Us/Doodads/DoodadFactory.js';
@@ -211,8 +211,11 @@ var common = {
         this.splashScreenText.persists = options.persists;
         mathArrayUtils.roundPositionToWholeNumbers(this.splashScreenText.position);
         titleScene.add(this.splashScreenText);
-        if(options.transition) {
-            this.currentScene.transitionToScene({newScene: titleScene, transitionLength: 200});
+        if (options.transition) {
+            this.currentScene.transitionToScene({
+                newScene: titleScene,
+                transitionLength: 200
+            });
         } else {
             this.currentScene = titleScene;
             titleScene.initializeScene();
@@ -354,6 +357,26 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
+
+                    this.mb = new MenuBox({
+                        title: 'wow!',
+                        menuOptions: [{
+                            text: 'option1',
+                            action: () => {
+                                console.info('whoa!')
+                            },
+                            style: styles.abilityTitle,
+                        }, {
+                            text: 'option2',
+                            action: () => {
+                                console.info('whoa2!')
+                            },
+                            style: styles.abilityTitle,
+                        }],
+                        style: styles.abilityTitle,
+                    });
+
+                    this.mb.display(gameUtils.getPlayableCenter());
 
                     // unitUtils.applyToUnitsByTeam(function(team) {
                     //     return team == globals.currentGame.enemyTeam
@@ -522,6 +545,7 @@ var common = {
                 globals.currentGame.slotTracker += 1;
                 var unitInQuestion = globals.currentGame.unitSystem.selectedUnit;
                 if (event.key == 'v' || event.key == 'V') {
+                    this.mb.hide();
                     globals.currentGame.ursula.alterHealingColor({
                         r: 1,
                         g: 0.2,
@@ -555,14 +579,20 @@ var common = {
 
             if (keyStates.Alt) {
                 if (event.key == 'w' || event.key == 'W') {
-                     this.ursula.applySoftenBuff({duration: 20000});
-                     this.shane.applyHealthGem({duration: 20000});
-                     this.ursula.applyHealthGem({duration: 20000});
-                     // this.shane.applyVitalityBuff({duration: 2000, amount: 50});
-                     // this.addLives(-1);
-                     // gameUtils.playAsMusic(this.soundPool.whistling, {
-                     //     repeat: true
-                     // });
+                    this.ursula.applySoftenBuff({
+                        duration: 20000
+                    });
+                    this.shane.applyHealthGem({
+                        duration: 20000
+                    });
+                    this.ursula.applyHealthGem({
+                        duration: 20000
+                    });
+                    // this.shane.applyVitalityBuff({duration: 2000, amount: 50});
+                    // this.addLives(-1);
+                    // gameUtils.playAsMusic(this.soundPool.whistling, {
+                    //     repeat: true
+                    // });
                     // unitUtils.addRandomAugmentToAbility({
                     //     unit: this.shane
                     // });
@@ -620,7 +650,9 @@ var common = {
                     // this.shane.stun({
                     //     duration: 1000
                     // });
-                    this.shane.applyPlagueGem({duration: 2000});
+                    this.shane.applyPlagueGem({
+                        duration: 2000
+                    });
                 }
             }
 
@@ -1061,7 +1093,7 @@ var common = {
             endGameDeferred = this.endGameExtension();
         }
 
-        if(!endGameDeferred) {
+        if (!endGameDeferred) {
             endGameDeferred = $.Deferred();
         }
 
@@ -1069,7 +1101,7 @@ var common = {
         endGameDeferred.done(this.resetGame.bind(this));
 
         //if we have a high score, do the default thing... this is legacy and will probably be replaced
-        if(this.hasHighScore) {
+        if (this.hasHighScore) {
             this.endGameSound.play();
 
             //prompt for the score
@@ -1400,14 +1432,14 @@ var common = {
     },
 
     addHideable: function(key, something) {
-        if(!this.hideables[key]) {
+        if (!this.hideables[key]) {
             this.hideables[key] = [];
         }
         this.hideables[key].push(something);
     },
 
     hideHideables: function(key) {
-        if(!this.hideables[key]) {
+        if (!this.hideables[key]) {
             return;
         }
         this.hideables[key].forEach((nd) => {
@@ -1416,7 +1448,7 @@ var common = {
     },
 
     showHideables: function(key) {
-        if(!this.hideables[key]) {
+        if (!this.hideables[key]) {
             return;
         }
         this.hideables[key].forEach((nd) => {
@@ -1529,7 +1561,10 @@ var common = {
                 self.hudLives.tint = 0xffffff;
             }, 300);
         } else {
-            graphicsUtils.flashSprite({sprite: self.hudLives, toColor: 0x22c600});
+            graphicsUtils.flashSprite({
+                sprite: self.hudLives,
+                toColor: 0x22c600
+            });
         }
 
         //set the number of lives

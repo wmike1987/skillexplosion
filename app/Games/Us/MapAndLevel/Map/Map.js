@@ -599,6 +599,14 @@ var map = function(specs) {
         Matter.Events.trigger(globals.currentGame, 'showMap', {});
     };
 
+    this.handleEscape = function() {
+        if(this.outingNodes.length == 0) {
+            this.hide()
+        } else {
+            this.clearOuting();
+        }
+    },
+
     this.hide = function() {
         this.isShowing = false;
         Matter.Events.trigger(this, 'hideMap', {});
@@ -861,6 +869,7 @@ var map = function(specs) {
             this.outingNodes = [];
             this.outingNodeMemory = [];
             this.updateRouteArrows();
+            this.updatePlaneDropIndicators()
             this.inProgressOutingNodes = [];
 
             this.engageText = null;

@@ -919,7 +919,7 @@ var graphicsUtils = {
             sprite = options.sprite;
         }
         var times = options.times || 4;
-        var fromColor = options.fromColor || 0xFFFFFF;
+        var fromColor = mathArrayUtils.isFalseNotZero(options.fromColor) ? 0xFFFFFF : options.fromColor;
         var toColor = options.toColor || 0xf20000;
         var duration = options.duration || 100;
         var pauseDurationAtEnds = options.pauseDurationAtEnds || 0;

@@ -105,6 +105,7 @@ var UnitBase = {
     gritDodgeTimer: null,
     gritCooldown: 14,
     gritMult: 1,
+    gritSwitch: false,
     gritMax: 100,
     killingBlowBlockers: 0,
     additions: {},
@@ -1270,6 +1271,7 @@ var UnitBase = {
                 value = true;
             if (this.renderlings.healthbarbackground) {
                 this.renderlings.healthbarbackground.visible = value;
+                this.renderlings.healthbarbackgroundtwo.visible = value;
                 this.renderlings.healthbar.visible = value;
                 this.renderlings.healthbarfade.visible = value;
                 this.healthFadeBars.forEach(function(bar) {
@@ -1649,6 +1651,27 @@ var UnitBase = {
                     visible: false,
                     sortYOffset: 250,
                 }, {
+                    id: 'healthbarbackgroundtwo',
+                    data: 'TintableSquare',
+                    scale: {
+                        x: backgroundScaleX-2,
+                        y: backgroundScaleY-2
+                    },
+                    offset: {
+                        x: 0,
+                        y: -this.unitHeight / 2 + healthBarYOffset
+                    },
+                    anchor: {
+                        x: 0.5,
+                        y: 0.5
+                    },
+                    stage: 'foreground',
+                    rotate: 'none',
+                    tint: 0x000000,
+                    avoidIsoMgr: true,
+                    visible: false,
+                    sortYOffset: 300,
+                }, {
                     id: 'healthbarfade',
                     data: 'TintableSquare',
                     scale: {
@@ -1790,8 +1813,19 @@ var UnitBase = {
             var gritSum = this.getTotalGrit();
             if (this.currentHealth < gritSum / 100 * this.maxHealth) {
                 this.gritMult = 2;
+                if(!this.gritSwitch) {
+                    this.gritSwitch = true;
+                    this.gritSwitchTint = graphicsUtils.graduallyTint(this.renderlings.healthbarbackground, 0x000000, 0xd29d15, 250, null, null, 0.5);
+                }
             } else {
                 this.gritMult = 1;
+                if(this.gritSwitch) {
+                    this.gritSwitch = false;
+                    if(this.gritSwitchTint) {
+                        this.gritSwitchTint.invalidate();
+                    }
+                    this.renderlings.healthbarbackground.tint = 0x000000;
+                }
             }
         }.bind(this));
         gameUtils.deathPact(this, this.gritHandler);

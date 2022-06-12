@@ -1072,10 +1072,22 @@ var game = {
         });
     },
 
-    closeMap: function() {
-        this.unitSystem.unpause();
-        this.mapActive = false;
-        this.map.hide();
+    closeMap: function(options) {
+        options = gameUtils.mixinDefaults({params: options, defaults: {
+            forceClose: true
+        }});
+
+        if(!options.forceClose) {
+            this.map.handleEscape();
+        } else {
+            this.map.hide();
+        }
+
+        if(!this.map.isShowing) {
+            this.unitSystem.unpause();
+            this.mapActive = false;
+        }
+
     },
 
     setCurrentLevel: function(level, poolingOptions) {

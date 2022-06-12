@@ -219,11 +219,9 @@ Tooltip.prototype.sizeBase = function() {
     var systemMessageWidth = 0;
     var systemMessageHeight = 0;
     var titleWidth = 0;
-    var titleHeight = 0;
     var buffer = this.buffer;
 
     titleWidth = Math.max(titleWidth, this.title.width);
-    titleHeight = this.title.height;
     if (this.titleOnly) {
         buffer = 2.5;
     }
