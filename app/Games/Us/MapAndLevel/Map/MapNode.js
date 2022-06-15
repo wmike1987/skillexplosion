@@ -263,7 +263,7 @@ var MapLevelNode = function(options) {
                     nodeToEnter: this
                 };
 
-                if(options.mouseDownPreBehavior) {
+                if(options.mouseDownPreBehavior && !mouseDownOptions.systemTriggered) {
                     var returnOptions = options.mouseDownPreBehavior.call(this, this.mapRef);
                     returnOptions = returnOptions || {};
                     if(returnOptions.cancelSubsequentOperations) {
@@ -283,11 +283,12 @@ var MapLevelNode = function(options) {
                     }
                 }
 
+                //enter self...
                 if (behavior.nodeToEnter == globals.currentGame.currentLevel.mapNode && this.enterSelfBehavior) {
                     this.enterSelfBehavior();
                     this.displayObject.tooltipObj.enable();
                 } else {
-                    //detect if we can add this node to an outing
+                    //handle outing behavior
                     if (behavior.nodeToEnter.levelDetails.isOutingReady() && !mouseDownOptions.systemTriggered) {
                         if (this.mapRef.isNodeInOuting(behavior.nodeToEnter)) {
                             this.mapRef.removeNodeFromOuting(behavior.nodeToEnter);
@@ -305,7 +306,9 @@ var MapLevelNode = function(options) {
                             }
                             this.mapRef.addNodeToOuting(behavior.nodeToEnter);
                         }
+                    //handle default behavior
                     } else if (this.mapRef.outingNodes.length == 0 || mouseDownOptions.systemTriggered) {
+
                         if (behavior.flash) {
                             this.flashNode();
                         }

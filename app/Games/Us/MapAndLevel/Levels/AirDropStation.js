@@ -16,6 +16,7 @@ import Tooltip from '@core/Tooltip.js';
 import TileMapper from '@core/TileMapper.js';
 import ItemUtils from '@core/Unit/ItemUtils.js';
 import styles from '@utils/Styles.js';
+import MenuBox from '@core/MenuBox.js';
 import {
     Doodad
 } from '@utils/Doodad.js';
@@ -55,11 +56,13 @@ commonAirDropStation.preNodeInit = function() {
     this.lesserSpin = true;
     this.entrySound = entrySound;
     this.isAirDrop = true;
+    this.numberOfChoices = 1;
     this.adrenalinePenalty = this.adrenalinePenalty || 1;
     this._incursTravelFatigue = false;
     this.nodeTitle = "Air Drop Station";
     // this.tooltipDescription = 'Receive supply drop.';
-    this.tooltipDescription = ['Receive supply drop.', 'Subtract ' + this.adrenalinePenalty + ' adrenaline.'];
+    this.tooltipDescription = ['Complete the prerequisite camps to enable.'];
+    this.activeTooltipDescription = ['Enabled, click for options...'];
     this.mode = this.possibleModes.CUSTOM;
     this.noSmokePit = true;
     this.noZones.push({
@@ -179,14 +182,63 @@ commonAirDropStation.createMapNode = function(options) {
             return true;
         },
         travelPredicate: function() {
-            var allowed = false;
-            return this.prereqs.every((pr) => {
-                return pr.isCompleted;
-            });
+            return true;
+            // var allowed = false;
+            // return this.prereqs.every((pr) => {
+            //     return pr.isCompleted;
+            // });
         },
         mouseDownPreBehavior: function(map) {
+            let mapNode = this;
             if(map.outingNodes.length > 0) {
                 map.clearOuting();
+                return {
+                    cancelSubsequentOperations: true
+                }
+            } else {
+                this.myMenu = new MenuBox({
+                    onShow: () => {
+                        mapNode.displayObject.tooltipObj.hide();
+                        mapNode.displayObject.tooltipObj.disable();
+                    },
+                    onHideOrDestroy: () => {
+                        mapNode.displayObject.tooltipObj.enable();
+                    },
+                    title: "Select an option",
+                    style: styles.abilityTitle,
+                    menuOptions: [{
+                        text: '3 choices, -2 adrenaline',
+                        action: () => {
+                            self.adrenalinePenalty = 2;
+                            self.numberOfChoices = 3;
+                            this.onMouseDownBehavior({
+                                systemTriggered: true
+                            });
+                        },
+                        style: styles.abilityTitle,
+                    }, {
+                        text: '2 choices, -1 adrenaline',
+                        action: () => {
+                            self.adrenalinePenalty = 1;
+                            self.numberOfChoices = 2;
+                            this.onMouseDownBehavior({
+                                systemTriggered: true
+                            });
+                        },
+                        style: styles.abilityTitle,
+                    }, {
+                        text: '1 choice, no adrenaline penalty',
+                        action: () => {
+                            self.adrenalinePenalty = 0;
+                            self.numberOfChoices = 1;
+                            this.onMouseDownBehavior({
+                                systemTriggered: true
+                            });
+                        },
+                        style: styles.abilityTitle,
+                    }],
+                });
+                this.myMenu.display(mousePosition);
                 return {
                     cancelSubsequentOperations: true
                 }
@@ -216,6 +268,7 @@ commonAirDropStation.createMapNode = function(options) {
                     if (this.travelPredicate()) {
                         //indicate we're available if this is the first time we available
                         if (!this.indicatedAvailable) {
+
                             this.indicatedAvailable = true;
                             gameUtils.doSomethingAfterDuration(() => {
                                 globals.currentGame.soundPool.noticeme.play();
@@ -292,11 +345,13 @@ var airDropStation = function(options) {
         selection.level = this;
 
         gameUtils.doSomethingAfterDuration(() => {
-            globals.currentGame.toastMessage({
-                message: '-' + this.adrenalinePenalty + ' adrenaline',
-                state: 'negative',
-                style: styles.adrenalineTextLarge
-            });
+            if(this.adrenalinePenalty > 0) {
+                globals.currentGame.toastMessage({
+                    message: '-' + this.adrenalinePenalty + ' adrenaline',
+                    state: 'negative',
+                    style: styles.adrenalineTextLarge
+                });
+            }
         }, 1000);
 
         //subtract fatigue
@@ -324,7 +379,7 @@ var airDropStation = function(options) {
         a1.onFullyShown = () => {
             gameUtils.doSomethingAfterDuration(() => {
                 selection.presentChoices({
-                    numberOfChoices: 3,
+                    numberOfChoices: self.numberOfChoices,
                     itemClass: self.itemClass,
                     itemType: self.itemType,
                     uniqueItem: self.uniqueItem,
@@ -350,7 +405,7 @@ var selectionMechanism = {
         this.presentedChoices = ItemUtils.getRandomItemsFromClass({
             itemClass: this.itemClass,
             itemType: this.itemType,
-            amount: 3,
+            amount: this.numberOfChoices,
             uniqueItem: this.uniqueItem,
         });
     },
@@ -384,7 +439,7 @@ var selectionMechanism = {
                 });
                 graphicsUtils.addBorderToSprite({
                     sprite: item.icon,
-                    thickness: 3,
+                    thickness: 2,
                     tint: item.borderTint || 0xffffff
                 });
 
@@ -489,6 +544,7 @@ var selectionMechanism = {
         this.itemType = options.itemType;
         this.onChoice = options.onChoice;
         this.uniqueItem = options.uniqueItem;
+        this.numberOfChoices = options.numberOfChoices;
 
         this._chooseRandomItems();
 

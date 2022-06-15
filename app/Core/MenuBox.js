@@ -1,50 +1,69 @@
-import * as Matter from 'matter-js';
-import * as $ from 'jquery';
+import * as Matter from "matter-js";
+import * as $ from "jquery";
 import {
     gameUtils,
     graphicsUtils,
-    mathArrayUtils
-} from '@utils/UtilityMenu.js';
-import styles from '@utils/Styles.js';
-import {
-    globals
-} from '@core/Fundamental/GlobalState.js';
+    mathArrayUtils,
+} from "@utils/UtilityMenu.js";
+import styles from "@utils/Styles.js";
+import { globals } from "@core/Fundamental/GlobalState.js";
 
-var MenuBox = function(options) {
+var MenuBox = function (options) {
+    options = gameUtils.mixinDefaults({params: options, defaults: {
+        destroyOnChoice: true,
+        onShow: function() {},
+        onHideOrDestroy: function() {},
+    }});
+
     var textAnchor = {
         x: 0,
-        y: 0
+        y: 0,
     };
-    this.buffer = 5;
 
-    this.title = graphicsUtils.createDisplayObject('TEX+:' + options.title, {where: 'hudText', style: options.style, anchor: textAnchor});;
+    options.onShow();
+    this.onHideOrDestroy = options.onHideOrDestroy;
+    
+    this.buffer = 5;
+    this.title = graphicsUtils.createDisplayObject("TEX+:" + options.title, {
+        where: "hudText",
+        style: options.style,
+        anchor: textAnchor,
+    });
     this.onClickObject = options.onClickObject;
+    this.destroyOnChoice = options.destroyOnChoice;
 
     //menu option should be... {text: XXXX, action: function()}
     this.menuOptions = options.menuOptions.map((option) => {
-        let textType = option.multiStyle ? 'TEXM:' : 'TEX+:';
-        let t = graphicsUtils.createDisplayObject(textType + '> ' + option.text, {where: 'hudText', anchor: textAnchor, style: option.style});
+        let textType = option.multiStyle ? "TEXM:" : "TEX+:";
+        let t = graphicsUtils.createDisplayObject(
+            textType + "> " + option.text,
+            {
+                where: "hudText",
+                anchor: textAnchor,
+                style: option.style,
+            }
+        );
         return {
             text: t,
-            action: option.action
-        }
+            action: option.action,
+        };
     });
 
     this.menuOptionHeight = this.menuOptions[0].text.height;
 
-    var baseTint = 0x00042D;
-    this.base = graphicsUtils.createDisplayObject('TintableSquare', {
+    var baseTint = 0x00042d;
+    this.base = graphicsUtils.createDisplayObject("TintableSquare", {
         tint: baseTint,
         scale: {
             x: 1,
-            y: 1
+            y: 1,
         },
         alpha: 0.85,
-        where: 'hudThree'
+        where: "hudThree",
     });
     this.sizeBase();
 
-    this.display = function(position) {
+    this.display = function (position) {
         this.visible = true;
         this.position = mathArrayUtils.clonePosition(position);
 
@@ -53,14 +72,14 @@ var MenuBox = function(options) {
         if (position.x + this.base.width >= gameUtils.getPlayableWidth() - 15) {
             this.base.anchor = {
                 x: 1,
-                y: 1
+                y: 1,
             };
             xOffset = this.base.width;
             //lean left
         } else {
             this.base.anchor = {
                 x: 0,
-                y: 1
+                y: 1,
             };
             //lean right
         }
@@ -79,7 +98,7 @@ var MenuBox = function(options) {
         if (options.middleAnchor) {
             this.base.anchor = {
                 x: 0.5,
-                y: 0.5
+                y: 0.5,
             };
             xOffset = this.base.width / 2.0;
             yOffset = this.base.height / 2.0;
@@ -99,7 +118,7 @@ var MenuBox = function(options) {
         //place title
         this.title.position = {
             x: position.x - xOffset + this.buffer,
-            y: position.y + yOffset - this.base.height + this.buffer / 2
+            y: position.y + yOffset - this.base.height + this.buffer / 2,
         };
         mathArrayUtils.roundPositionToWholeNumbers(this.title.position);
 
@@ -108,9 +127,17 @@ var MenuBox = function(options) {
         this.menuOptions.forEach((option) => {
             option.text.position = {
                 x: position.x - xOffset + this.buffer,
-                y: position.y + yOffset - this.base.height + this.title.height + this.buffer / 2 + (this.iconBuffer || this.buffer) + descriptionHeightTally
+                y:
+                    position.y +
+                    yOffset -
+                    this.base.height +
+                    this.title.height +
+                    this.buffer / 2 +
+                    (this.iconBuffer || this.buffer) +
+                    descriptionHeightTally,
             };
-            descriptionHeightTally += this.menuOptionHeight * (option.text.lineAmount || 1);
+            descriptionHeightTally +=
+                this.menuOptionHeight * (option.text.lineAmount || 1);
 
             mathArrayUtils.roundPositionToWholeNumbers(option.text.position);
         });
@@ -125,7 +152,7 @@ var MenuBox = function(options) {
                 sprite: this.base,
                 thickness: 2,
                 tint: this.borderTint || 0xa2a2a2,
-                alpha: 0.75
+                alpha: 0.75,
             });
         } else {
             graphicsUtils.resizeBorder(this.base);
@@ -136,35 +163,59 @@ var MenuBox = function(options) {
         var borderPosition = this.base.position;
         if (this.base.anchor.x != 0.5 && this.base.anchor.y != 0.5) {
             borderPosition = mathArrayUtils.clonePosition(this.base.position, {
-                x: this.base.width / 2 * (this.base.anchor.x ? -1 : 1),
-                y: this.base.height / 2 * (this.base.anchor.y ? -1 : 1)
+                x: (this.base.width / 2) * (this.base.anchor.x ? -1 : 1),
+                y: (this.base.height / 2) * (this.base.anchor.y ? -1 : 1),
             });
-            this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
+            this.baseBorder.sortYOffset =
+                -1 - this.base.position.y - borderPosition.y;
         }
         this.baseBorder.position = borderPosition;
 
         //setup hover listeners
         this.menuOptions.forEach((option) => {
-            if(option.hoverFulfilled) {
+            if (option.hoverFulfilled) {
                 return;
             }
             option.hoverFulfilled = true;
-            graphicsUtils.mouseOverOutTint({sprite: option.text});
+            graphicsUtils.mouseOverOutTint({ sprite: option.text });
         });
 
         //setup click listeners
         this.menuOptions.forEach((option) => {
-            if(option.clickFulfilled) {
+            if (option.clickFulfilled) {
                 return;
             }
-            option.clickFulfilled = true;
-            option.text.on('mousedown', function(event) {
-                option.action();
-            })
-        });
-    }
 
-    this.hide = function() {
+            let self = this;
+            option.clickFulfilled = true;
+            option.text.on("mousedown", function (event) {
+                if(self.destroyOnChoice) {
+                    self.destroy();
+                }
+                option.action();
+            });
+        });
+
+        //setup closing click listener
+        let impederOpts = {
+            x: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.getBounds().left),
+            y: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.getBounds().top),
+            width: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.width),
+            height: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.height),
+            id: 'menuBoxImpeder' + mathArrayUtils.getId()
+        };
+
+        this.baseImpeder = mathArrayUtils.getImpeder(impederOpts);
+
+        this.impederEvent = globals.currentGame.addListener('mousedown', (event) => {
+            if(!this.baseImpeder.impedesPoint(globals.currentGame.mousePosition)) {
+                this.hide();
+            }
+        });
+
+    };
+
+    this.hide = function () {
         //hide title
         graphicsUtils.hideDisplayObject(this.title);
         graphicsUtils.hideDisplayObject(this.base);
@@ -175,31 +226,27 @@ var MenuBox = function(options) {
             graphicsUtils.hideDisplayObject(option.text);
         });
 
-        //hide base and border
+        globals.currentGame.removeListener(this.impederEvent);
 
-        //remove hover listeners
+        this.onHideOrDestroy();
+    };
 
-        //remove click listeners
-    }
-
-    this.destroy = function() {
-        graphicsUtils.removeSomethingFromRenderer(this.base);
-        graphicsUtils.removeSomethingFromRenderer(this.baseBorder);
-        graphicsUtils.removeSomethingFromRenderer(this.title);
+    this.destroy = function () {
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.base);
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.baseBorder);
+        graphicsUtils.fadeSpriteQuicklyThenDestroy(this.title);
 
         this.menuOptions.forEach((option) => {
-            graphicsUtils.removeSomethingFromRenderer(option.text);
+            graphicsUtils.fadeSpriteQuicklyThenDestroy(option.text);
         });
 
-        //remove listeners
+        globals.currentGame.removeListener(this.impederEvent);
+        
+        this.onHideOrDestroy();
+    };
+};
 
-        //remove title
-
-        //remove menu items
-    }
-}
-
-MenuBox.prototype.sizeBase = function() {
+MenuBox.prototype.sizeBase = function () {
     var optionWidth = 0;
     var optionHeight = 0;
     var systemMessageWidth = 0;
@@ -220,15 +267,16 @@ MenuBox.prototype.sizeBase = function() {
     });
 
     var width = Math.max(titleWidth, optionWidth) + 15;
-    var height = this.title.height + buffer / 2 + optionHeight + buffer + buffer;
+    var height =
+        this.title.height + buffer / 2 + optionHeight + buffer + buffer;
     graphicsUtils.makeSpriteSize(this.base, {
         w: width,
-        h: height
+        h: height,
     });
     this.resizeAndPositionBorder();
 };
 
-MenuBox.prototype.resizeAndPositionBorder = function() {
+MenuBox.prototype.resizeAndPositionBorder = function () {
     if (!this.baseBorder) {
         return;
     } else {
@@ -240,10 +288,11 @@ MenuBox.prototype.resizeAndPositionBorder = function() {
         var borderPosition = this.base.position;
         if (this.base.anchor.x != 0.5 && this.base.anchor.y != 0.5) {
             borderPosition = mathArrayUtils.clonePosition(this.base.position, {
-                x: this.base.width / 2 * (this.base.anchor.x ? -1 : 1),
-                y: this.base.height / 2 * (this.base.anchor.y ? -1 : 1)
+                x: (this.base.width / 2) * (this.base.anchor.x ? -1 : 1),
+                y: (this.base.height / 2) * (this.base.anchor.y ? -1 : 1),
             });
-            this.baseBorder.sortYOffset = -1 - this.base.position.y - borderPosition.y;
+            this.baseBorder.sortYOffset =
+                -1 - this.base.position.y - borderPosition.y;
         }
         this.baseBorder.position = borderPosition;
     }
