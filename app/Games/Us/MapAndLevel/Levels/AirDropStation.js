@@ -182,11 +182,10 @@ commonAirDropStation.createMapNode = function(options) {
             return true;
         },
         travelPredicate: function() {
-            return true;
-            // var allowed = false;
-            // return this.prereqs.every((pr) => {
-            //     return pr.isCompleted;
-            // });
+            var allowed = false;
+            return this.prereqs.every((pr) => {
+                return pr.isCompleted;
+            });
         },
         mouseDownPreBehavior: function(map) {
             let mapNode = this;
@@ -195,18 +194,13 @@ commonAirDropStation.createMapNode = function(options) {
                 return {
                     cancelSubsequentOperations: true
                 }
-            } else {
-                this.myMenu = new MenuBox({
-                    onShow: () => {
-                        mapNode.displayObject.tooltipObj.hide();
-                        mapNode.displayObject.tooltipObj.disable();
-                    },
-                    onHideOrDestroy: () => {
-                        mapNode.displayObject.tooltipObj.enable();
-                    },
-                    title: "Select an option",
-                    style: styles.abilityTitle,
-                    menuOptions: [{
+            } else if (!this.myMenu) {
+                //determine available options
+                let adrenaline = globals.currentGame.map.adrenaline;
+                let menuOptions = [];
+                
+                if(adrenaline >= 2) {
+                    menuOptions.push({
                         text: '3 choices, -2 adrenaline',
                         action: () => {
                             self.adrenalinePenalty = 2;
@@ -215,8 +209,11 @@ commonAirDropStation.createMapNode = function(options) {
                                 systemTriggered: true
                             });
                         },
-                        style: styles.abilityTitle,
-                    }, {
+                    });
+                }
+
+                if(adrenaline >= 1) {
+                    menuOptions.push({
                         text: '2 choices, -1 adrenaline',
                         action: () => {
                             self.adrenalinePenalty = 1;
@@ -225,23 +222,45 @@ commonAirDropStation.createMapNode = function(options) {
                                 systemTriggered: true
                             });
                         },
-                        style: styles.abilityTitle,
-                    }, {
-                        text: '1 choice, no adrenaline penalty',
-                        action: () => {
-                            self.adrenalinePenalty = 0;
-                            self.numberOfChoices = 1;
-                            this.onMouseDownBehavior({
-                                systemTriggered: true
-                            });
-                        },
-                        style: styles.abilityTitle,
-                    }],
+                    });
+                }
+
+                menuOptions.push({
+                    text: '1 choice, no adrenaline penalty',
+                    action: () => {
+                        self.adrenalinePenalty = 0;
+                        self.numberOfChoices = 1;
+                        this.onMouseDownBehavior({
+                            systemTriggered: true
+                        });
+                    },
+                });
+
+                this.myMenu = new MenuBox({
+                    onShow: () => {
+                        mapNode.displayObject.tooltipObj.hide();
+                        mapNode.displayObject.tooltipObj.disable();
+                    },
+                    onHideOrDestroy: () => {
+                        mapNode.displayObject.tooltipObj.enable();
+                        this.myMenu = null;
+                    },
+                    title: "Select an option",
+                    menuOptions: menuOptions,
                 });
                 this.myMenu.display(mousePosition);
                 return {
                     cancelSubsequentOperations: true
                 }
+            } else if(this.myMenu) {
+                return {
+                    cancelSubsequentOperations: true
+                }
+            }
+        },
+        onMapHide: function() {
+            if(this.myMenu) {
+                this.myMenu.destroy();
             }
         },
         mouseDownCallback: function() {

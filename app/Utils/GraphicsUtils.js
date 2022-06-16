@@ -1177,12 +1177,23 @@ var graphicsUtils = {
         sprite.interactive = true;
         sprite.on('mouseover', function(event) {
             sprite.tint = finalTint;
+            sprite.children.forEach((child) => {
+                child.children.forEach((ch) => {
+                    ch.tint = finalTint;
+                }); 
+            });
+
             if (sound) {
                 globals.currentGame.soundPool.keypressSound.play();
             }
         }.bind(this));
         sprite.on('mouseout', function(event) {
             sprite.tint = startTint;
+            sprite.children.forEach((child) => {
+                child.children.forEach((ch) => {
+                    ch.tint = startTint;
+                }); 
+            });
         }.bind(this));
     },
 

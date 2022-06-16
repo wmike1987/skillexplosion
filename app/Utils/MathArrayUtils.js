@@ -359,22 +359,35 @@ var mathArrayUtils = {
     },
 
     getImpeder: function(options) {
-        var impeder = {
-            id: options.id,
-            x: options.x,
-            y: options.y,
-            width: options.width,
-            height: options.height,
-        };
+        var impeder;
+        if(options.sprite) {
+            impeder = {
+                id: options.id,
+                x: mathArrayUtils.scaleScreenValueToWorldCoordinate(options.sprite.getBounds().left),
+                y: mathArrayUtils.scaleScreenValueToWorldCoordinate(options.sprite.getBounds().top),
+                width: mathArrayUtils.scaleScreenValueToWorldCoordinate(options.sprite.getBounds().width),
+                height: mathArrayUtils.scaleScreenValueToWorldCoordinate(options.sprite.getBounds().height),
+            }
+        } else {
+            impeder = {
+                id: options.id,
+                x: options.x,
+                y: options.y,
+                width: options.width,
+                height: options.height,
+            };
+        }
+
         impeder.impedesPoint = function(point) {
             let impeded = true;
             let pointX = point.x;
             let pointY = point.y;
 
-            if (pointX < this.x || pointX > this.x + this.width) {
+            //add/subtract one to width and height to account for any screen --> world rounding errors
+            if (pointX < (this.x - 1) || pointX > this.x + (this.width + 1)) {
                 impeded = false;
             }
-            if (pointY < this.y || pointY > this.y + this.height) {
+            if (pointY < (this.y - 1) || pointY > this.y + (this.height + 1)) {
                 impeded = false;
             }
 

@@ -619,6 +619,9 @@ var map = function(specs) {
             if (node.displayObject.tooltipObj) {
                 node.displayObject.tooltipObj.hide();
             }
+            if (node.displayObject.tooltipObj) {
+                node.displayObject.tooltipObj.hide();
+            }
             if (node.manualTokens) {
                 node.manualTokens.forEach((token) => {
                     graphicsUtils.hideDisplayObject(token);
@@ -627,6 +630,10 @@ var map = function(specs) {
             if (node.isFocused) {
                 node.unfocusNode();
                 graphicsUtils.removeSomethingFromRenderer(node.focusCircle);
+            }
+
+            if(node.onMapHide) {
+                node.onMapHide();
             }
         });
 

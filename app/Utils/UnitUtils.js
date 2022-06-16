@@ -218,15 +218,17 @@ var unitUtils = {
             readdOffset = true;
         }
 
-        let attackTextAmount = amount.toFixed(1);
-        if(attackTextAmount.includes('.0')) {
-            attackTextAmount = amount;
+        let finalText = amount.toFixed(1);
+        if(finalText.includes('.0')) {
+            finalText = amount.toFixed(0);;
         }
 
-        let numberText = graphicsUtils.addSomethingToRenderer("TEX+:" + attackTextAmount, 'hud', {
+        console.log(finalText);
+
+        let numberText = graphicsUtils.addSomethingToRenderer("TEX+:" + finalText, 'hud', {
             style: options.italic ? styles.thinStyleItalic : styles.thinStyle,
             alpha: 1.0,
-            scale: {x: 1 + amount/100, y: 1 + amount/100}
+            scale: {x: 1 + (Math.min(200, amount))/100, y: 1 + (Math.min(200, amount))/100}
         });
         graphicsUtils.flashSprite({sprite: numberText, fromColor: tint, toColor: options.customToColor || 0xffffff, duration: 20, times: 5, onEnd: () => {
             numberText.alpha = 0.9;

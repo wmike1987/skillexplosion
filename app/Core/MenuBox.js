@@ -13,6 +13,8 @@ var MenuBox = function (options) {
         destroyOnChoice: true,
         onShow: function() {},
         onHideOrDestroy: function() {},
+        titleStyle: styles.passiveDStyle,
+        optionStyle: styles.abilityText
     }});
 
     var textAnchor = {
@@ -26,21 +28,21 @@ var MenuBox = function (options) {
     this.buffer = 5;
     this.title = graphicsUtils.createDisplayObject("TEX+:" + options.title, {
         where: "hudText",
-        style: options.style,
+        style: options.titleStyle,
         anchor: textAnchor,
     });
     this.onClickObject = options.onClickObject;
     this.destroyOnChoice = options.destroyOnChoice;
 
     //menu option should be... {text: XXXX, action: function()}
-    this.menuOptions = options.menuOptions.map((option) => {
-        let textType = option.multiStyle ? "TEXM:" : "TEX+:";
+    this.menuOptions = options.menuOptions.map((option, index) => {
+        let textType = "TEXM:";
         let t = graphicsUtils.createDisplayObject(
-            textType + "> " + option.text,
+            textType + "<st><highlight>" + (index + 1) + ")</highlight> " + option.text + "</st>",
             {
                 where: "hudText",
                 anchor: textAnchor,
-                style: option.style,
+                style: styles.menuMultiTextStyle,
             }
         );
         return {
@@ -49,7 +51,7 @@ var MenuBox = function (options) {
         };
     });
 
-    this.menuOptionHeight = this.menuOptions[0].text.height;
+    this.menuOptionHeight = this.menuOptions[0].text.getBounds().height-8;
 
     var baseTint = 0x00042d;
     this.base = graphicsUtils.createDisplayObject("TintableSquare", {
@@ -177,7 +179,7 @@ var MenuBox = function (options) {
                 return;
             }
             option.hoverFulfilled = true;
-            graphicsUtils.mouseOverOutTint({ sprite: option.text });
+            graphicsUtils.mouseOverOutTint({ sprite: option.text, finalTint: 0x9beb34});
         });
 
         //setup click listeners
@@ -197,15 +199,7 @@ var MenuBox = function (options) {
         });
 
         //setup closing click listener
-        let impederOpts = {
-            x: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.getBounds().left),
-            y: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.getBounds().top),
-            width: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.width),
-            height: mathArrayUtils.scaleScreenValueToWorldCoordinate(this.base.height),
-            id: 'menuBoxImpeder' + mathArrayUtils.getId()
-        };
-
-        this.baseImpeder = mathArrayUtils.getImpeder(impederOpts);
+        this.baseImpeder = mathArrayUtils.getImpeder({sprite: this.base, id: mathArrayUtils.getId()});
 
         this.impederEvent = globals.currentGame.addListener('mousedown', (event) => {
             if(!this.baseImpeder.impedesPoint(globals.currentGame.mousePosition)) {
@@ -217,6 +211,7 @@ var MenuBox = function (options) {
 
     this.hide = function () {
         //hide title
+        this.visible = false;
         graphicsUtils.hideDisplayObject(this.title);
         graphicsUtils.hideDisplayObject(this.base);
         graphicsUtils.hideDisplayObject(this.baseBorder);
@@ -232,6 +227,12 @@ var MenuBox = function (options) {
     };
 
     this.destroy = function () {
+        if(this.destroyed) {
+            return;
+        }
+
+        this.destroyed = true;
+        this.visible = false;
         graphicsUtils.fadeSpriteQuicklyThenDestroy(this.base);
         graphicsUtils.fadeSpriteQuicklyThenDestroy(this.baseBorder);
         graphicsUtils.fadeSpriteQuicklyThenDestroy(this.title);

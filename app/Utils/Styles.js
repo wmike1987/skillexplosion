@@ -851,5 +851,27 @@ export default {
         taggedTextOptions: {
             drawWhitespace: true
         }
+    },
+
+    menuMultiTextStyle: {
+        textStyle: {
+            st: {
+                fill: "#c3c3c3",
+                fontStyle: "italic",
+                fontFamily: "Tahoma, Geneva, sans-serif",
+                fontSize: 13,
+                padding: 5
+            },
+            highlight: {
+                fill: "#e07800",
+                fontStyle: "italic",
+                fontFamily: "Tahoma, Geneva, sans-serif",
+                fontSize: 13,
+                padding: 5
+            }
+        },
+        taggedTextOptions: {
+            drawWhitespace: true
+        }
     }
 }
