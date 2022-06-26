@@ -619,6 +619,9 @@ var renderer = function(engine, options) {
             // child.destroy();
         } else if (child.destroy && !child._destroyed) {
             Matter.Events.trigger(child, 'destroy', {});
+            // if(child.destroyImgMap) {
+            //     child.destroyImgMap();
+            // }
             child.destroy(); //i'm unsure if I need to check for a destroy method first
             // this.frequencyDestroyer.destroy(child);
         } else if (child._destroyed) {
@@ -633,7 +636,7 @@ var renderer = function(engine, options) {
         }
 
         //destroy texture cache
-        PIXI_UTILS.destroyTextureCache();
+        // PIXI_UTILS.destroyTextureCache();
 
         window.removeEventListener('resize', this.resizeFunction);
     };

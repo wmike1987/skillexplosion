@@ -1487,7 +1487,7 @@ export default function Medic(options) {
     var rsADuration = 1000;
     var rsDAmount = 25;
     var rsPassiveGritAddAmount = 3;
-    var rsEnrageAmount = 5;
+    var rsEnrageAmount = 3;
     var raisedStakes = new Passive({
         title: 'Raised Stakes',
         getAggressionDescription: () => {
@@ -1508,7 +1508,7 @@ export default function Medic(options) {
         aggressionDuration: rsADuration,
         upgrade: function() {
             rsADuration += 1000;
-            rsEnrageAmount += 3;
+            rsEnrageAmount += 2;
             
             this.aggressionDuration += 500;
 
@@ -1569,7 +1569,7 @@ export default function Medic(options) {
             medic.enrage({
                 duration: rsADuration,
                 id: 'raisedStakesBerserk',
-                amount: 5
+                amount: rsEnrageAmount
             });
             return {
                 value: rsADuration / 1000

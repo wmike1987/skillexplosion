@@ -285,7 +285,7 @@ commonAirDropStation.createMapNode = function(options) {
                     // this.deactivateToken();
                 } else {
                     if (this.travelPredicate()) {
-                        //indicate we're available if this is the first time we available
+                        //indicate we're available if this is the first time we available and alter to the active tooltip
                         if (!this.indicatedAvailable) {
 
                             this.indicatedAvailable = true;
@@ -294,7 +294,10 @@ commonAirDropStation.createMapNode = function(options) {
                                 graphicsUtils.shakeSprite(this.regularToken, 800);
                                 graphicsUtils.shakeSprite(this.specialToken, 800);
                             }, globals.currentGame.map.outingInProgress ? 1000 : 300);
+
+                            this.establishTooltip(self.activeTooltipDescription);
                         }
+
 
                         regularToken.visible = true;
                         specialToken.visible = true;

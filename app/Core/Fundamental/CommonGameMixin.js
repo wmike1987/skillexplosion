@@ -4,7 +4,6 @@ import * as $ from 'jquery';
 import hs from '@utils/HS.js';
 import * as h from 'howler';
 import styles from '@utils/Styles.js';
-import * as TaggedText from 'pixi-tagged-text';
 import MenuBox from '@core/MenuBox.js';
 import {
     gameUtils,

@@ -223,6 +223,10 @@ var unitUtils = {
             finalText = amount.toFixed(0);;
         }
 
+        if(finalText.includes('0.') && finalText[0] == '0') {
+            finalText = finalText.substring(1);
+        }
+
         console.log(finalText);
 
         let numberText = graphicsUtils.addSomethingToRenderer("TEX+:" + finalText, 'hud', {

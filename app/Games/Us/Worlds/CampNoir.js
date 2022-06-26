@@ -857,17 +857,17 @@ var enemyDefs = {
             type: 'Hunter',
             amount: [3],
             atATime: 1,
-            hz: 4500
+            hz: 5200
         }, {
             type: 'Sentinel',
             amount: [2],
             atATime: 1,
-            hz: 5000
+            hz: 6200
         }, {
             type: 'Critter',
             amount: [2, 3],
             atATime: 1,
-            hz: 6000
+            hz: 6500
         }, hardFlyObj]
     },
     aHard6: {
@@ -1412,7 +1412,7 @@ var phaseTwo = function(options) {
 
                 world.map.addMapNode('airDropStation', {
                     levelOptions: {
-                        prereqCount: 3,
+                        prereqCount: 1,
                         itemClass: 'worn',
                         itemType: 'specialtyItem',
                         adrenalinePenalty: 2,
@@ -1703,7 +1703,7 @@ var phaseThree = function() {
 
     this.map.addMapNode('airDropStation', {
         levelOptions: {
-            prereqCount: 3,
+            prereqCount: 1,
             itemClass: 'worn',
             itemType: 'specialtyItem',
             adrenalinePenalty: 2,

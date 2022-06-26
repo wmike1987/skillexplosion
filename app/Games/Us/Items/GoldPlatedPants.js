@@ -11,7 +11,7 @@ import * as Matter from 'matter-js';
 
 var armorGainDuration = 8000;
 var armorGain = 2;
-var chargeLength = 1000;
+var chargeLength = 500;
 var eventName = 'goldenPlatedPantsTimesActive';
 
 var manipulations = {
@@ -69,7 +69,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Gold Plated Pants",
-        description: ["Add 10 grit.", "Gain " + armorGain + " armor for 8 seconds by holding position for 1 second."],
+        description: ["Add 10 grit.", "Gain " + armorGain + " armor for 8 seconds by holding position for 0.5 seconds."],
         icon: 'Pants2',
         collector: {
             eventName: eventName,

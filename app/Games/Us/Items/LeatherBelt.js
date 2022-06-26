@@ -11,7 +11,7 @@ import * as Matter from 'matter-js';
 
 var dodgeGain = 6;
 var gainDuration = 8000;
-var chargeLength = 1000;
+var chargeLength = 500;
 var eventName = 'leatherBeltTimesActive';
 
 var manipulations = {
@@ -72,7 +72,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Leather Belt",
-        description: ["Add 0.3 to armor.", "Gain " + dodgeGain + " dodge for 8 seconds by holding position for 1 second."],
+        description: ["Add 0.3 to armor.", "Gain " + dodgeGain + " dodge for 8 seconds by holding position for 0.5 seconds."],
         icon: 'LeatherBelt',
         collector: {
             eventName: eventName,

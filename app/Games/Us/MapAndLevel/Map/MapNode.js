@@ -161,16 +161,21 @@ var MapLevelNode = function(options) {
     var augmentMessages = this.levelDetails.getAugmentSystemMessages();
     var systemMessageArray = [supplyDropSystemMessage].concat(augmentMessages);
 
-    Tooltip.makeTooltippable(this.displayObject, {
-        title: options.tooltipTitle || this.levelDetails.nodeTitle,
-        description: options.tooltipDescription || this.levelDetails.tooltipDescription || enemyDescriptions,
-        descriptionIcons: enemyIcons,
-        briefDelay: true,
-        systemMessage: systemMessageArray
-    });
-    this.displayObject.tooltipObj.tooltipContext = {
-        levelDetails: this.levelDetails
-    };
+    
+    this.establishTooltip = function(description) {        
+        Tooltip.makeTooltippable(this.displayObject, {
+            title: options.tooltipTitle || this.levelDetails.nodeTitle,
+            description: description || options.tooltipDescription || this.levelDetails.tooltipDescription || enemyDescriptions,
+            descriptionIcons: enemyIcons,
+            briefDelay: true,
+            systemMessage: systemMessageArray
+        });
+        
+        this.displayObject.tooltipObj.tooltipContext = {
+            levelDetails: this.levelDetails
+        };
+    }
+    this.establishTooltip();
 
     Matter.Events.on(globals.currentGame, 'TravelStarted', () => {
         this.unfocusNode();
