@@ -168,7 +168,7 @@ var game = {
             rate: 1.0
         });
         this.soundPool.swipeQuiet = gameUtils.getSound('dashsound2.wav', {
-            volume: 0.003,
+            volume: 0.004,
             rate: 1.5
         });
         this.soundPool.sceneSwipe = gameUtils.getSound('dashsound2.wav', {
@@ -190,6 +190,10 @@ var game = {
         this.soundPool.positiveSound3 = gameUtils.getSound('positivesound3.wav', {
             volume: 0.06,
             rate: 0.9
+        });
+        this.soundPool.positiveSound4 = gameUtils.getSound('positivesound4.wav', {
+            volume: 0.035,
+            rate: 1.2
         });
         this.soundPool.noticeme = gameUtils.getSound('noticeme1.wav', {
             volume: 0.05,

@@ -66,8 +66,10 @@ var MenuBox = function (options) {
     this.sizeBase();
 
     this.display = function (position) {
+        let fadeInDuration = 250;
         this.visible = true;
         this.position = mathArrayUtils.clonePosition(position);
+        globals.currentGame.soundPool.positiveSound4.play();
 
         //lean our tooltip left or right so that it doesn't go off the screen
         var xOffset = 0;
@@ -107,15 +109,18 @@ var MenuBox = function (options) {
         }
 
         //show title
-        graphicsUtils.addDisplayObjectToRenderer(this.title);
+        graphicsUtils.addOrShowDisplayObject(this.title);
+        graphicsUtils.fadeSpriteInQuickly(this.title, fadeInDuration);
 
         //show menu options
         this.menuOptions.forEach((option) => {
-            graphicsUtils.addDisplayObjectToRenderer(option.text);
+            graphicsUtils.addOrShowDisplayObject(option.text);
+            graphicsUtils.fadeSpriteInQuickly(option.text, fadeInDuration);
         });
 
         //show base
-        graphicsUtils.addDisplayObjectToRenderer(this.base);
+        graphicsUtils.addOrShowDisplayObject(this.base);
+        graphicsUtils.fadeSpriteInQuickly(this.base, fadeInDuration);
 
         //place title
         this.title.position = {
@@ -160,6 +165,7 @@ var MenuBox = function (options) {
             graphicsUtils.resizeBorder(this.base);
         }
         graphicsUtils.addOrShowDisplayObject(this.baseBorder);
+        graphicsUtils.fadeSpriteInQuickly(this.baseBorder, fadeInDuration);
 
         //set the border position
         var borderPosition = this.base.position;
@@ -179,7 +185,7 @@ var MenuBox = function (options) {
                 return;
             }
             option.hoverFulfilled = true;
-            graphicsUtils.mouseOverOutTint({ sprite: option.text, finalTint: 0x9beb34});
+            graphicsUtils.mouseOverOutTint({sprite: option.text, finalTint: 0x9beb34});
         });
 
         //setup click listeners

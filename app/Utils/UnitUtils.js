@@ -55,17 +55,17 @@ var unitUtils = {
             animationName: 'lifegain2',
             // speed: 0.65 + Math.random() * 0.40,
             speed: 0.75,
-            transform: [unit.position.x, unit.position.y, 0.85, 0.85]
+            transform: [unit.position.x, unit.position.y, 0.5, 0.5]
         });
         a1.play();
-        a1.alpha = 1.0;
+        a1.alpha = 0.6;
         a1.tint = tint;
         gameUtils.attachSomethingToBody({
             something: a1,
             body: unit.body,
             offset: {
                 x: Math.random() * 15 - 7.5,
-                y: -40
+                y: -15
             }
         });
         graphicsUtils.addSomethingToRenderer(a1, 'foreground');

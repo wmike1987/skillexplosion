@@ -429,6 +429,16 @@ export default function Marine(options) {
         volume: 0.1,
         rate: 1.0
     });
+    var ohyeahsound = gameUtils.getSound('shaneohyeah.wav', {
+        volume: 0.13,
+        rate: 1.0
+    });
+    var nowweretalkin = gameUtils.getSound('shanenowweretalkin.wav', {
+        volume: 0.28,
+        rate: 1.0
+    });
+
+    var specialtySounds = [ohyeahsound, nowweretalkin];
 
     //Dash
     var dashVelocity = 0.8;
@@ -2107,6 +2117,39 @@ export default function Marine(options) {
                 // ability.addAllPendingAugments();
             });
 
+            Matter.Events.on(this, 'pickupItem', (event => {
+                if(event.item.currentSlot.type == this.unitType) {
+                    mathArrayUtils.getRandomElementOfArray(specialtySounds).play();
+                    
+                    //show the icon fading
+                    var fadingIcon = graphicsUtils.cloneSprite(event.item.icon);
+                    fadingIcon.where = 'hud';
+                    fadingIcon.position = {x: gameUtils.getPlayableCenter().x, y: gameUtils.getPlayableHeight() - 50};
+                    graphicsUtils.makeSpriteSize(fadingIcon, 40);
+                    graphicsUtils.addSomethingToRenderer(fadingIcon);
+                    graphicsUtils.addBorderToSprite({
+                        sprite: fadingIcon,
+                        thickness: 1,
+                        tint: 0xffffff
+                    });
+
+                    graphicsUtils.addGleamToSprite({
+                        sprite: fadingIcon,
+                        gleamWidth: 32,
+                        red: 1.0,
+                        green: 0.8,
+                        blue: 0.8,
+                        power: 1.0,
+                        leanAmount: 12,
+                        duration: 1000
+                    });
+
+                    gameUtils.doSomethingAfterDuration(() => {
+                        graphicsUtils.fadeSpriteOverTime({sprite: fadingIcon, duration: 200, noKill: false});
+                    }, 1500)
+
+                }
+            }));
         }
     }, options);
 
@@ -2117,7 +2160,7 @@ export default function Marine(options) {
         mass: options.mass || 8,
         mainRenderSprite: ['left', 'right', 'up', 'down', 'upRight', 'upLeft', 'downRight', 'downLeft'],
         slaves: [dashSound, dodgeSound, knifeBreakSound, shockSound, holdPositionSound, deathSound, deathSoundBlood, fireSound, knifeThrowSound, knifeImpactSound,
-            poisonSound, criticalHitSound, yeahsound, healsound, manaHealSound, unitProperties.wireframe, unitProperties.portrait
+            poisonSound, nowweretalkin, ohyeahsound, criticalHitSound, yeahsound, healsound, manaHealSound, unitProperties.wireframe, unitProperties.portrait
         ],
         unit: unitProperties,
         moveable: {

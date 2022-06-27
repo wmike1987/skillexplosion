@@ -573,7 +573,7 @@ var UnitBase = {
         }
 
         if (!options.invisible) {
-            unitUtils.floatNumberOnUnit({unit: this, tint: 0xd533f2, amount: energyGained, customToColor: 0xd533f2, italic: true})
+            unitUtils.floatNumberOnUnit({unit: this, tint: 0xFFABFF, amount: energyGained, customToColor: 0xFFABFF, italic: true})
             this.showEnergyBar(true);
             if (!this.energyTimer) {
                 this.energyTimer = globals.currentGame.addTimer({

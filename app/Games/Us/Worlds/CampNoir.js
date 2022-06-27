@@ -896,20 +896,20 @@ var enemyDefs = {
         strength: 'hard',
         enemySets: [{
             type: 'Critter',
-            amount: [6, 7],
+            amount: [2, 3],
             atATime: 2,
             hz: 5500
         }, {
             type: 'Rammian',
             amount: [4, 5],
             atATime: 1,
-            hz: 3000
+            hz: 6000
         }, {
             type: 'Gargoyle',
             amount: [2, 3],
             atATime: 1,
             initialDelay: 15000,
-            hz: 4000
+            hz: 6000
         }, {
             type: 'Hunter',
             amount: 1,
