@@ -542,7 +542,7 @@ var levelBase = {
 
     _applyUnitNotifiers: function() {
         var level = this;
-        this.unitNotifierListener = Matter.Events.on(globals.currentGame, 'UnitSpawnerAddedUnit', (event) => {
+        this.unitNotifierListener = Matter.Events.on(globals.currentGame, 'UnitSpawnerNewUnit', (event) => {
             let unit = event.unit;
 
             //establish exceptions
@@ -597,7 +597,7 @@ var levelBase = {
     },
 
     _removeUnitNotifierListener: function() {
-        Matter.Events.off(globals.currentGame, 'UnitSpawnerAddedUnit', this.unitNotifierListener);
+        Matter.Events.off(globals.currentGame, 'UnitSpawnerNewUnit', this.unitNotifierListener);
     },
 
     getAugmentSystemMessages: function() {

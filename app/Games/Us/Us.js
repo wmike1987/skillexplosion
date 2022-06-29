@@ -61,13 +61,27 @@ var game = {
         unitPanelConstructor: UnitPanel
     },
 
+    difficultyProfiles: {
+        rookie: {
+            lives: 6,
+            enemyHealth: 0.5
+        },
+        novice: {
+            lives: 5,
+            enemyHealth: 0.75
+        },
+        expert: {
+            lives: 4,
+            enemyHealth: 1
+        },
+        maniac: {
+            lives: 1,
+            enemyHealth: 1
+        }
+    },
+
     gameName: 'Us',
     level: 1,
-    // victoryCondition: {type: 'timed', limit: 5},
-    victoryCondition: {
-        type: 'lives',
-        limit: 3
-    },
     enableUnitSystem: true,
     enablePathingSystem: true, //this does nothing right now, lol
     enableItemSystem: true,
@@ -88,6 +102,18 @@ var game = {
     mapTableAlwaysActive: true,
 
     initExtension: function() {
+        this.difficultyChoice = 'rookie';
+        this.difficulty = this.difficultyProfiles[this.difficultyChoice];
+        this.victoryCondition = {
+            type: 'lives',
+            limit: this.difficulty.lives
+        },
+        Matter.Events.on(this, 'UnitSpawnerNewUnit', (event) => {
+            if(event.unit.health > 1) {
+                event.unit.health *= this.difficulty.enemyHealth;
+            }
+        });
+
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
             volume: 0.12,
             rate: 0.9

@@ -121,7 +121,7 @@ var unitSpawner = function(options) {
                         newUnit.body.collisionFilter.mask -= 0x0004; //subtract wall
                         newUnit.honeRange = 9000;
                         Matter.Body.setPosition(newUnit.body, spawner.locationPool[enemy.id].shift());
-                        Matter.Events.trigger(globals.currentGame, 'UnitSpawnerAddedUnit', {unit: newUnit});
+                        Matter.Events.trigger(globals.currentGame, 'UnitSpawnerNewUnit', {unit: newUnit});
 
                         //update unit panel when we die
                         gameUtils.matterOnce(newUnit, 'death', () => {

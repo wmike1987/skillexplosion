@@ -411,7 +411,7 @@ export default function Hunter(options) {
             cooldown: 1400,
             honeRange: 500,
             range: 440,
-            damage: 7,
+            damage: 6,
             itemsEnabled: true,
             attack: function(target) {
                 var perpVector = Matter.Vector.normalise(Matter.Vector.perp(Matter.Vector.sub(target.position, this.position)));
