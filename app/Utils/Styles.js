@@ -868,10 +868,60 @@ export default {
                 fontFamily: "Tahoma, Geneva, sans-serif",
                 fontSize: 13,
                 padding: 5
-            }
+            },
+            highlight2: {
+                fill: "#41fc03",
+                fontStyle: "italic",
+                fontFamily: "Tahoma, Geneva, sans-serif",
+                fontSize: 13,
+                padding: 5
+            },
         },
         taggedTextOptions: {
             drawWhitespace: true
+        }
+    },
+
+    menuMultiTextLargeStyle: {
+        textStyle: {
+            default: {
+                fontFamily: "Arial",
+                fontSize: "17px",
+                fill: "#669900",
+                wordWrap: false,
+                align: "left",
+                padding: 5
+            },
+            st: {
+                fill: "white",
+                fontSize: 35,
+                fontStyle: "italic",
+                fontWeight: "bold",
+                lineJoin: "round",
+                miterLimit: 0,
+                strokeThickness: 4
+            },
+            highlight: {
+                fill: "white",
+                fontSize: 35,
+                fontStyle: "italic",
+                fontWeight: "bold",
+                lineJoin: "round",
+                miterLimit: 0,
+                strokeThickness: 4
+            },
+            highlight2: {
+                fill: "white",
+                fontSize: 35,
+                fontStyle: "italic",
+                fontWeight: "bold",
+                lineJoin: "round",
+                miterLimit: 0,
+                strokeThickness: 4
+            },
+        },
+        taggedTextOptions: {
+            drawWhitespace: true,
         }
     }
 }

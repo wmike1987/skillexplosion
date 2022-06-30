@@ -102,18 +102,6 @@ var game = {
     mapTableAlwaysActive: true,
 
     initExtension: function() {
-        this.difficultyChoice = 'rookie';
-        this.difficulty = this.difficultyProfiles[this.difficultyChoice];
-        this.victoryCondition = {
-            type: 'lives',
-            limit: this.difficulty.lives
-        },
-        Matter.Events.on(this, 'UnitSpawnerNewUnit', (event) => {
-            if(event.unit.health > 1) {
-                event.unit.health *= this.difficulty.enemyHealth;
-            }
-        });
-
         this.heartbeat = gameUtils.getSound('heartbeat.wav', {
             volume: 0.12,
             rate: 0.9
@@ -520,6 +508,17 @@ var game = {
     },
 
     play: function(options) {
+        this.difficulty = this.difficultyProfiles[options.difficulty];
+        this.victoryCondition = {
+            type: 'lives',
+            limit: this.difficulty.lives
+        },
+        Matter.Events.on(this, 'UnitSpawnerNewUnit', (event) => {
+            if(event.unit.health > 1) {
+                event.unit.health *= this.difficulty.enemyHealth;
+            }
+        });
+
         //next phase detector
         Matter.Events.on(this, 'nodeCompleted', function(event) {
             if (this.currentPhaseObj.nextPhase == 'allNodesComplete' && this.map.areAllRequiredNodesExceptCampCompleted() && !this.currentPhaseObj.alreadyClosed) {
@@ -778,12 +777,42 @@ var game = {
     },
 
     preGameExtension: function() {
-        gameUtils.matterOnce(this, 'preGameLoadComplete', () => {
-            this.setSplashScreenText('Click anywhere to begin');
-        });
+        let menuOptions = [
+            {
+                text: '<st>Rookie (6 lives, 50% enemy health) + Tutorial</st>',
+                startingOptions: {
+                    difficulty: 'rookie',
+                    playTutorial: true
+                }
+            },
+            {
+                text: '<st>Novice (5 lives, 75% enemy health)</st>',
+                startingOptions: {
+                    difficulty: 'novice',
+                    playTutorial: false
+                }
+            },
+            {
+                text: '<st>Expert (4 lives, 100% enemy health)</st>',
+                startingOptions: {
+                    difficulty: 'expert',
+                    playTutorial: false
+                }
+            },
+            {
+                text: '<st>Maniac (1 life, 100% enemy health)</st>',
+                startingOptions: {
+                    difficulty: 'maniac',
+                    playTutorial: false
+                }
+            },
+        ]
 
-        return () => {
-            this.soundPool.sceneContinue.play();
+        return {
+            menuOptions: menuOptions,
+            onAdvance: () => {
+                this.soundPool.sceneContinue.play();
+            }
         };
     },
 

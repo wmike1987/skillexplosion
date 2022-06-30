@@ -847,39 +847,59 @@ var common = {
      */
     preGame: function() {
         this.gameState = 'pregame';
+        let startingOptions = null;
 
-        var onClick = null;
+        var preGameOptions = {
+            menuOptions: null, 
+            onAdvance: null
+        };
+
         if (this.preGameExtension) {
-            onClick = this.preGameExtension() || function() {};
+            preGameOptions = this.preGameExtension() || function() {};
         } else {
-            var startGameText = graphicsUtils.addSomethingToRenderer("TEX+:" + this.clickAnywhereToStart, 'hud', {
-                style: styles.style,
-                x: this.canvas.width / 2,
-                y: this.canvas.height / 2
-            });
-            onClick = function() {
-                graphicsUtils.removeSomethingFromRenderer(startGameText);
-            };
+            preGameOptions.clickAnywhereToStart = true;
         }
 
         //pregame deferred (proceed to startGame when clicked)
         var proceedPastPregame = $.Deferred();
         if (!this.bypassPregame) {
             let game = this;
+            
+            gameUtils.matterOnce(this, 'preGameLoadComplete', () => {
+                //default... click anywhere to continue
+                if(preGameOptions.clickAnywhereToStart) {
+                    this.setSplashScreenText('Click anywhere to begin');
 
-            Matter.Events.on(this, 'preGameLoadComplete', () => {
-                //once we complete the preload, wait a frame to create the mouse listener. Any events queued up during the preload
-                //would immediately execute otherwise, and our goal is to ignore events entered during the preload, so we'll let the queue'd
-                //events fire, then create the listener the next frame
-                gameUtils.executeSomethingNextFrame(() => {
-                    $(this.canvasEl).on('mouseup', $.proxy(function(event) {
-                        $(this).off(event);
-                        gameUtils.executeSomethingNextFrame(() => {
+                    //once we complete the preload, wait a frame to create the mouse listener. Any events queued up during the preload
+                    //would immediately execute otherwise, and our goal is to ignore events entered during the preload, so we'll let the queue'd
+                    //events fire, then create the listener the next frame
+                    gameUtils.executeSomethingNextFrame(() => {
+                        $(this.canvasEl).on('mouseup', $.proxy(function(event) {
+                            $(this).off(event);
+                            gameUtils.executeSomethingNextFrame(() => {
+                                proceedPastPregame.resolve();
+                                preGameOptions.onAdvance();
+                            }); //disassociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
+                        }, this));
+                    });
+                } else {
+                    this.setSplashScreenText('');
+                    let realizedMenuOptions = [];
+                    //else build menu
+                    preGameOptions.menuOptions.forEach((option, index) => {
+                        let item = graphicsUtils.addSomethingToRenderer('TEXM:' + option.text, {style: styles.menuMultiTextLargeStyle, anchor: {x: 0.5, y: 0.5},  where: 'hudTextOne', position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -200, y: index * 50})});
+                        realizedMenuOptions.push(item);
+                        graphicsUtils.mouseOverOutTint({sprite: item, finalTint: 0x9beb34});
+                        item.on('mouseup', () => {
+                            startingOptions = option.startingOptions;
                             proceedPastPregame.resolve();
-                            onClick();
-                        }); //disassociate this mouseup event from any listeners setup during start game, it appears that listeners setup during an event get called during that event.
-                    }, this));
-                });
+                            preGameOptions.onAdvance();
+                            realizedMenuOptions.forEach((item) => {
+                                graphicsUtils.removeSomethingFromRenderer(item);
+                            })
+                        });
+                    });
+                }
             });
         }
 
@@ -889,7 +909,9 @@ var common = {
             this._preGameLoad();
         });
 
-        proceedPastPregame.done(this.startGame.bind(this));
+        proceedPastPregame.done(() => {
+            this.startGame(startingOptions);
+        });
     },
 
     _preGameLoad: function() {
@@ -1018,6 +1040,10 @@ var common = {
             this.setWave(0);
         }
 
+        //call the game's play method
+        this.play(options);
+        this.gameState = 'playing';
+
         //timer overlay, if necessary
         if (!this.hideEndCondition) {
             if (this.victoryCondition.type == 'timed') {
@@ -1045,10 +1071,6 @@ var common = {
                 this.addHideable('nonDialogue', this.hudLives);
             }
         }
-
-        //call the game's play method
-        this.play(options);
-        this.gameState = 'playing';
 
         //create click indication listener
         if (!this.noClickIndicator) {
