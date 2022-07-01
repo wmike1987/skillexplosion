@@ -493,7 +493,8 @@ var renderer = function(engine, options) {
             var mtextPlusId = 'TEXM:';
             if (something.indexOf(mtextPlusId) >= 0) {
                 var t = new TaggedText.default(something.substring(something.indexOf(mtextPlusId) + 5), options.style.textStyle, options.style.taggedTextOptions);
-                t.resolution = 1;
+                t.anchor = {x: 1, y: 1};
+                t.resolution = 2;
                 return t;
             }
 

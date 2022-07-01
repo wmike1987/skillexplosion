@@ -894,7 +894,7 @@ export default {
             },
             st: {
                 fill: "white",
-                fontSize: 35,
+                fontSize: 30,
                 fontStyle: "italic",
                 fontWeight: "bold",
                 lineJoin: "round",
@@ -902,7 +902,7 @@ export default {
                 strokeThickness: 4
             },
             highlight: {
-                fill: "white",
+                fill: "#41fc03",
                 fontSize: 35,
                 fontStyle: "italic",
                 fontWeight: "bold",
@@ -922,6 +922,7 @@ export default {
         },
         taggedTextOptions: {
             drawWhitespace: true,
+            // debug: true
         }
     }
 }

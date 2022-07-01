@@ -160,12 +160,12 @@ var ShaneIntro = function(options) {
     this.initExtension = function(scene, chain) {
         //indicate skipping behavior
         Matter.Events.on(scene, 'sceneFadeInDone', () => {
-            this.skipText = graphicsUtils.addSomethingToRenderer("TEX+:Ctrl+C to skip tutorial", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.05, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
+            this.skipText = graphicsUtils.addSomethingToRenderer("TEX+:'S' to skip tutorial", {where: 'hudText', scale: {x: 0.5, y: 0.5}, style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.05, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
             scene.add(this.skipText);
 
             //escape to skip tutorial
             $('body').on('keydown.skipTutorial', function( event ) {
-                if(keyStates.Control && (keyStates.c || keyStates.C)) {
+                if(keyStates.s || keyStates.s) {
                     this.skipText.alpha = 0.5;
                     $('body').off('keydown.skipTutorial');
                     globals.currentGame.soundPool.sceneContinue.play();

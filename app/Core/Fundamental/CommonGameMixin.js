@@ -30,6 +30,7 @@ import {
     DoodadFactory
 } from '@games/Us/Doodads/DoodadFactory.js';
 import UnitMenu from '@games/Us/UnitMenu.js';
+import * as TaggedText from 'pixi-tagged-text';
 
 /*
  * This module is meant to provide common, game-lifecycle functionality, utility functions, and matter.js/pixi objects to a specific game module
@@ -357,25 +358,25 @@ var common = {
             if (keyStates.Alt) {
                 if (event.key == 's' || event.key == 'S') {
 
-                    this.mb = new MenuBox({
-                        title: 'wow!',
-                        menuOptions: [{
-                            text: 'option1',
-                            action: () => {
-                                console.info('whoa!')
-                            },
-                            style: styles.abilityTitle,
-                        }, {
-                            text: 'option2',
-                            action: () => {
-                                console.info('whoa2!')
-                            },
-                            style: styles.abilityTitle,
-                        }],
-                        style: styles.abilityTitle,
-                    });
+                    // this.mb = new MenuBox({
+                    //     title: 'wow!',
+                    //     menuOptions: [{
+                    //         text: 'option1',
+                    //         action: () => {
+                    //             console.info('whoa!')
+                    //         },
+                    //         style: styles.abilityTitle,
+                    //     }, {
+                    //         text: 'option2',
+                    //         action: () => {
+                    //             console.info('whoa2!')
+                    //         },
+                    //         style: styles.abilityTitle,
+                    //     }],
+                    //     style: styles.abilityTitle,
+                    // });
 
-                    this.mb.display(gameUtils.getPlayableCenter());
+                    // this.mb.display(gameUtils.getPlayableCenter());
 
                     // unitUtils.applyToUnitsByTeam(function(team) {
                     //     return team == globals.currentGame.enemyTeam
@@ -388,8 +389,14 @@ var common = {
                     // console.info(gameUtils.getPlayableHeight());
                     // globals.currentGame.nextPhase();
 
-                    // let text = new TaggedText.default("Big <red>text<red>", { red: {fill: 0xf2251e} });
+                    // let text = new TaggedText.default("Big <red>text</red>", { default: {align: 'right'}, red: {fill: 0xf2251e} }, {debug: true});
+                    // const container = new PIXI.Container();
+                    // container.anchor = {x: 1, y: 1};
+                    // container.addChild(text);
+                    // container.position = gameUtils.getCanvasCenter();
+                    
                     // graphicsUtils.addSomethingToRenderer(text, {where: 'hud', position: gameUtils.getPlayableCenter()});
+                    // this.renderer.addToPixiStage(container, 'hud');
 
                     // this.presentNewAugmentChoices();
                     // var floatDuration = 4000;
@@ -883,20 +890,78 @@ var common = {
                         }, this));
                     });
                 } else {
+                    //else build menu
                     this.setSplashScreenText('');
                     let realizedMenuOptions = [];
-                    //else build menu
+                    let realizedMenuHoverText = [];
+                    let chosen = false;
                     preGameOptions.menuOptions.forEach((option, index) => {
-                        let item = graphicsUtils.addSomethingToRenderer('TEXM:' + option.text, {style: styles.menuMultiTextLargeStyle, anchor: {x: 0.5, y: 0.5},  where: 'hudTextOne', position: mathArrayUtils.clonePosition(gameUtils.getCanvasCenter(), {x: -200, y: index * 50})});
+                        let item = graphicsUtils.addSomethingToRenderer('TEX+:' + option.text, {style: styles.titleOneStyle, anchor: {x: 0.5, y: 0.5},  where: 'hudTextOne', position: {x: gameUtils.getCanvasCenter().x, y: 550 + 50 * index}});
+                        item.visible = false;
+                        gameUtils.doSomethingAfterDuration(() => {
+                            graphicsUtils.fadeSpriteInQuickly(item, 100);
+                        }, index * 100);
+                        if(option.textTint) {
+                            item.tint = option.textTint;
+                            item.originalTint = option.textTint;
+                        }
                         realizedMenuOptions.push(item);
-                        graphicsUtils.mouseOverOutTint({sprite: item, finalTint: 0x9beb34});
+                        item.interactive = true;
+                        
+                        graphicsUtils.mouseOverOutTint({sprite: item, startTint: item.tint, finalTint: 0xa30083});
+                        item.on('mouseover', function(event) {
+                            realizedMenuOptions.filter(i => i != item).forEach(i => i.alpha = 0.5);
+                        }.bind(this));
+                        item.on('mouseout', function(event) {
+                            realizedMenuOptions.filter(i => i != item).forEach(i => i.alpha = 1.0);
+                        }.bind(this));
+
+
+                        if(option.hoverInfo) {
+                            let hoverInfo = graphicsUtils.addSomethingToRenderer('TEX+:(' + option.hoverInfo + ')', {style: styles.titleOneStyle, scale: {x: 0.75, y: 0.75}, anchor: {x: 0.0, y: 0.5},  where: 'hudTextOne', position: {x: gameUtils.getCanvasCenter().x + item.width/2.0, y: 550 + 50 * index}});
+                            hoverInfo.tint = 0x5cff95;
+                            hoverInfo.visible = false;
+                            realizedMenuHoverText.push(hoverInfo);
+                            item.on('mouseover', function(event) {
+                                hoverInfo.visible = true;
+                            }.bind(this));
+                            item.on('mouseout', function(event) {
+                                hoverInfo.visible = false;
+                            }.bind(this));
+                        }
+
                         item.on('mouseup', () => {
-                            startingOptions = option.startingOptions;
-                            proceedPastPregame.resolve();
-                            preGameOptions.onAdvance();
-                            realizedMenuOptions.forEach((item) => {
-                                graphicsUtils.removeSomethingFromRenderer(item);
-                            })
+                            if(chosen) {
+                                return;
+                            }
+                            chosen = true;
+
+                            realizedMenuOptions.forEach((i) => {
+                                i.interactive = false;
+                            });
+
+                            if(preGameOptions.onMenuClick) {
+                                preGameOptions.onMenuClick();
+                            }
+                            realizedMenuOptions.filter(i => i != item).forEach(i => i.alpha = 0.1);
+                            graphicsUtils.flashSprite({
+                                fromColor: 0xc20000,
+                                toColor: 0x5c6aff,
+                                sprite: item,
+                                duration: 50,
+                                times: 4,
+                                onEnd: function() {
+                                    item.tint = item.tint;
+                                    startingOptions = option.startingOptions;
+                                    proceedPastPregame.resolve();
+                                    realizedMenuOptions.forEach((item) => {
+                                        graphicsUtils.removeSomethingFromRenderer(item);
+                                    });
+                                    realizedMenuHoverText.forEach((item) => {
+                                        graphicsUtils.removeSomethingFromRenderer(item);
+                                    });
+                                }
+                            });
                         });
                     });
                 }
@@ -935,6 +1000,9 @@ var common = {
      * Init various common game elements
      */
     startGame: function(options) {
+        //initialize any state needed for each period of play
+        this._initStartGameState(options);
+
         this.resetting = false;
 
         //disable right click during game
@@ -971,9 +1039,6 @@ var common = {
                 y: this.mousePosition.y - gameUtils.getPlayableCenter().y
             };
         }.bind(this));
-
-        //initialize any state needed for each period of play
-        this._initStartGameState();
 
         //create border unless not wanted
         if (!this.noBorder) {
@@ -1040,10 +1105,6 @@ var common = {
             this.setWave(0);
         }
 
-        //call the game's play method
-        this.play(options);
-        this.gameState = 'playing';
-
         //timer overlay, if necessary
         if (!this.hideEndCondition) {
             if (this.victoryCondition.type == 'timed') {
@@ -1071,6 +1132,10 @@ var common = {
                 this.addHideable('nonDialogue', this.hudLives);
             }
         }
+        
+        //call the game's play method
+        this.play(options);
+        this.gameState = 'playing';
 
         //create click indication listener
         if (!this.noClickIndicator) {

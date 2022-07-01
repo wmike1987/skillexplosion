@@ -30,10 +30,13 @@ var DialogueScene = {
 
         //indicate skipping behavior
         var skipText;
+        var cancelText;
         if(!this.dontShowEscText) {
             Matter.Events.on(dialogueScene, 'sceneFadeInDone', () => {
-                skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to fast-forward", {where: 'hudText', style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
+                skipText = graphicsUtils.addSomethingToRenderer("TEX+:Esc to fast-forward", {where: 'hudText', scale: {x: 0.5, y: 0.5}, style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 40}});
+                cancelText = graphicsUtils.addSomethingToRenderer("TEX+:S to skip", {where: 'hudText', scale: {x: 0.5, y: 0.5}, style: styles.titleOneStyle, anchor: {x: 1, y: 1}, alpha: 0.1, position: {x: gameUtils.getPlayableWidth() - 20, y: gameUtils.getCanvasHeight() - 20}});
                 dialogueScene.add(skipText);
+                dialogueScene.add(cancelText);
                 dialogueChain.escapeExtension = function() {
                     graphicsUtils.graduallyTint(skipText, 0xFFFFFF, 0x6175ff, 60, null, false, 1);
                 };
@@ -41,10 +44,12 @@ var DialogueScene = {
                 if(!this.overrideSkipBehavior) {
                     //escape the chain
                     $('body').on('keydown.completeScene', function( event ) {
-                        if(keyStates.Control && (keyStates.c || keyStates.C)) {
+                        if(keyStates.s || keyStates.S) {
                             $('body').off('keydown.' + 'completeScene');
                             globals.currentGame.soundPool.sceneContinue.play();
-                            dialogueChain.done(true);
+                            graphicsUtils.graduallyTint(cancelText, 0xFFFFFF, 0x6175ff, 60, null, false, 3, function() {
+                                dialogueChain.done(true);
+                            });
                         }
                     }.bind(this));
                 }
