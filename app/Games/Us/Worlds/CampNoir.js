@@ -642,9 +642,9 @@ var marathonHardFlyObj = {
     type: 'DamageFlySwarm',
     amount: [70],
     trivial: true,
-    atATime: 3,
+    atATime: 2,
     initialDelay: 0.1,
-    hz: 4200
+    hz: 4500
 };
 
 var ultraHardFlyObj = {
@@ -1034,7 +1034,7 @@ var enemyDefs = {
         strength: 'boss',
         enemySets: [{
             type: 'Sentinel',
-            amount: 4,
+            amount: 3,
             atATime: 1,
             hz: 12000
         }, {
@@ -1052,12 +1052,12 @@ var enemyDefs = {
         strength: 'boss',
         enemySets: [{
             type: 'Critter',
-            amount: 4,
+            amount: 3,
             atATime: 1,
             hz: 12000
         }, {
             type: 'Sentinel',
-            amount: 4,
+            amount: 1,
             atATime: 1,
             addedProps: {
                 immuneToAugment: true
@@ -1083,7 +1083,7 @@ var enemyDefs = {
             initialDelay: 12000,
         }, {
             type: 'Critter',
-            amount: 2,
+            amount: 1,
             atATime: 1,
             hz: 12000
         }, {

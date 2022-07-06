@@ -215,7 +215,7 @@ var UnitBase = {
         };
 
         if (attackContext.abilityType) {
-            damage *= this.abilityDamageMultiplier;
+            damage = Math.round(damage * this.abilityDamageMultiplier);
         }
 
         var damageObj = {
@@ -2633,7 +2633,7 @@ var UnitBase = {
                 unit.isTargetable = false;
                 unit.isoManagedAlpha = 0.6;
                 unit.idleCancel = true;
-                unit.abilityDamageMultiplier *= 2;
+                unit.abilityDamageMultiplier *= 1.5;
                 unit.setSleep(true, 'petrifySleeperLock');
                 if (this.petrifyTintTimer) {
                     globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
@@ -2650,7 +2650,7 @@ var UnitBase = {
                 unit.isPetrified -= 1;
                 unit.isTargetable = true;
                 unit.idleCancel = false;
-                unit.abilityDamageMultiplier /= 2;
+                unit.abilityDamageMultiplier /= 1.5;
                 gameUtils.undeathPact(unit, shakeTimer);
                 globals.currentGame.invalidateTimer(unit.petrifyTintTimer);
                 unit.isoManagedTint = null;

@@ -269,7 +269,7 @@ HelpMenu.prototype.initialize = function() {
         continuation: true
     });
     BuffPage1.addLine({
-        text: 'attacks but takes 2x ability damage.'
+        text: 'attacks but takes 1.5x ability damage.'
     });
 
     BuffPage1.addLineTitle({

@@ -345,8 +345,8 @@ export default function Medic(options) {
         volume: 0.06,
         rate: 1.2
     });
-    var deathSound = gameUtils.getSound('medicdeathsound.wav', {
-        volume: 0.2,
+    var deathSound = gameUtils.getSound('ursuladeath.wav', {
+        volume: 0.4,
         rate: 1.05
     });
     var blockSound = gameUtils.getSound('blocksound.wav', {
@@ -361,18 +361,18 @@ export default function Medic(options) {
         volume: 0.03,
         rate: 1.75
     });
-    var dodgeSound = gameUtils.getSound('ursula_dodge.mp3', {
-        volume: 0.4,
-        rate: 1.3
+    var dodgeSound = gameUtils.getSound('ursuladodge.wav', {
+        volume: 0.09,
+        rate: 1.0
     });
     var gritBlastSound = gameUtils.getSound('gainkillingblow.wav', {
         volume: 0.045,
         rate: 2.5
     });
 
-    var holdPositionSound = gameUtils.getSound('ursula_dodge.mp3', {
-        volume: 0.4,
-        rate: 1.15
+    var holdPositionSound = gameUtils.getSound('ursuladodge.wav', {
+        volume: 0.075,
+        rate: 1.08
     });
 
     var combospiritinit = gameUtils.getSound('combospiritinit.wav', {
@@ -399,6 +399,13 @@ export default function Medic(options) {
         volume: 0.08,
         rate: 1.6
     });
+
+    var thankyou = gameUtils.getSound('ursulathankyou.wav', {
+        volume: 0.13,
+        rate: 1.0
+    });
+
+    var specialtySounds = [thankyou];
 
     var secretStep = function(destination, commandObj) {
         //alter destination for foot destination
@@ -1263,8 +1270,8 @@ export default function Medic(options) {
                 name: 'spare parts',
                 icon: graphicsUtils.createDisplayObject('SparePartsIcon'),
                 title: 'Spare Parts',
-                energyReduction: 3,
-                description: 'Reduce energy cost by 3.',
+                energyReduction: 4,
+                description: 'Reduce energy cost by 4.',
                 equip: function(unit) {
                     unit.getAbilityByName('Mine').energyCost -= this.energyReduction;
                 },
@@ -1880,7 +1887,7 @@ export default function Medic(options) {
         }
     });
 
-    var wwADuration = 4000;
+    var wwADuration = 8000;
     var wwDDuration = 3000;
     var wwFreeMineGain = 1;
     var wwHandler = {};
@@ -1904,7 +1911,7 @@ export default function Medic(options) {
         aggressionEventName: 'sufferAttack',
         aggressionCooldown: wwADuration,
         upgrade: function() {
-            wwADuration += 2000;
+            wwADuration += 8000;
             wwDDuration += 1000;
             wwFreeMineGain += 1;
         },
@@ -2404,6 +2411,40 @@ export default function Medic(options) {
             });
 
             this.scorchDurationAdditions = [];
+
+            Matter.Events.on(this, 'pickupItem', (event => {
+                if(event.item.currentSlot.type == this.unitType) {
+                    mathArrayUtils.getRandomElementOfArray(specialtySounds).play();
+                    
+                    //show the icon fading
+                    var fadingIcon = graphicsUtils.cloneSprite(event.item.icon);
+                    fadingIcon.where = 'hud';
+                    fadingIcon.position = {x: gameUtils.getPlayableCenter().x, y: gameUtils.getPlayableHeight() - 50};
+                    graphicsUtils.makeSpriteSize(fadingIcon, 40);
+                    graphicsUtils.addSomethingToRenderer(fadingIcon);
+                    graphicsUtils.addBorderToSprite({
+                        sprite: fadingIcon,
+                        thickness: 1,
+                        tint: 0xffffff
+                    });
+
+                    graphicsUtils.addGleamToSprite({
+                        sprite: fadingIcon,
+                        gleamWidth: 32,
+                        red: 1.0,
+                        green: 0.8,
+                        blue: 0.8,
+                        power: 1.0,
+                        leanAmount: 12,
+                        duration: 1000
+                    });
+
+                    gameUtils.doSomethingAfterDuration(() => {
+                        graphicsUtils.fadeSpriteOverTime({sprite: fadingIcon, duration: 200, noKill: false});
+                    }, 1500)
+
+                }
+            }));
         },
         _afterAddInit: function() {
             // this.normalHealingColor = {

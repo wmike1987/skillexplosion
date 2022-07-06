@@ -18,7 +18,7 @@ var eventName = 'sereneStarEnergyGain';
 var energyGain = 2;
 
 var manipulations = {
-    energyRegenerationRate: 0.2,
+    energyRegenerationRate: 0.25,
     events: {
         knifeKill: {
             callback: function(event) {
@@ -35,7 +35,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Savage Star",
-        description: ["Regenerate +0.2 energy per second.", "Gain 2 energy after knife kill."],
+        description: ["Regenerate +0.25 energy per second.", "Gain 2 energy after knife kill."],
         icon: 'SereneStar',
         collector: {
             eventName: eventName,

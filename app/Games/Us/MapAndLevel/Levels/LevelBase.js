@@ -87,6 +87,7 @@ var levelAugments = {
         },
         tint: 0x3f064b,
         action: function(enemy) {
+            enemy.isoManagedTint = 0xF84B5A;
             enemy.applyVitalityBuff({duration: 999999, amount: 250});
 
             if(true) {

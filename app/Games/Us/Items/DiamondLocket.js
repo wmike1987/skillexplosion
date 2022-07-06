@@ -25,7 +25,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Diamond Locket",
-        description: ["Add 0.8 to armor.", "Gain " + amount + " energy after dodging killing blow.", "Increase move speed for 2 second after dodging killing blow"],
+        description: ["Add 0.8 to armor.", "Gain " + amount + " energy after blocking killing blow.", "Increase move speed for 2 second after dodging killing blow"],
         icon: 'DiamondLocket',
         collector: {
             eventName: eventName,

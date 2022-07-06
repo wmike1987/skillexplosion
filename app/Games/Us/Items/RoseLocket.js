@@ -23,7 +23,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Rose Locket",
-        description: ["Add 0.8 to armor.", "Gain " + amount + " hp after dodging killing blow."],
+        description: ["Add 0.8 to armor.", "Gain " + amount + " hp after blocking killing blow."],
         icon: 'GoldenLocket',
         collector: {
             eventName: eventName,

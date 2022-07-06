@@ -1,17 +1,16 @@
 import ic from '@core/Unit/ItemConstructor.js';
 
 var manipulations = {
-    defense: 0.75,
-    maxEnergy: 5,
-    maxHealth: 8
+    defense: 1.0,
+    maxHealth: 10
 };
 
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Medal Of Merit",
-        description: ["Add 0.75 to armor.", "Add 5 to maximum energy.", "Add 8 to maximum health."],
-        icon: 'MedalOfMerit'
+        name: "Medal Of Resilience",
+        description: ["Add 1.0 to armor.", "Add 10 to maximum health."],
+        icon: 'SilverMedalDiamond2'
     }, options);
     return new ic(item);
 }

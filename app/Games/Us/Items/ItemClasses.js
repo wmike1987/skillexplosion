@@ -15,7 +15,7 @@ var ItemClasses = {
         item: {
             description: 'Worn Item',
             tint: 0x949494,
-            items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', 'OwlMedallion', 'LeatherBelt',
+            items: ['MedalOfHeart', 'MedalOfMoxie', 'BearMedallion', /*'OwlMedallion',*/ 'LeatherBelt',
                 'PictureOfEarth', 'SturdyCanteen', 'PoundCake', 'CoffeeCup', 'SilverLocket', 'PictureOfTheMoon', 'PlatedPants'
             ],
             mapNodeIndicator: 'SturdyCanteen'
@@ -29,7 +29,7 @@ var ItemClasses = {
         },
         specialtyItem: {
             description: 'Worn Specialty Item',
-            items: ['LeatherGlove', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'BlackTippedCartridge', 'ExtraShrapnel', 'SavageStar', 'PillBottle', 'TrustMedallion', 'SkyMedallion', 'Beret'],
+            items: ['LeatherGlove', 'BlackTippedCartridge', 'SilverDogTags', 'SavageStar', 'SkyMedallion', 'Beret', 'RoseRing', 'SilverYinYang', 'SteadySyringe', 'ExtraShrapnel', 'PillBottle', 'TrustMedallion'],
             mapNodeIndicator: 'RoseRing'
         },
     },

@@ -1,44 +1,43 @@
 import ic from '@core/Unit/ItemConstructor.js';
-import {globals} from '@core/Fundamental/GlobalState.js';
+import {shaneOnly, ursulaOnly} from '@games/Us/Items/SpecialtyValues.js';
 import * as Matter from 'matter-js';
+import {
+    globals
+} from '@core/Fundamental/GlobalState.js';
 
-var eventName = 'emeraldLocketTimeActive';
+var dodgeAddition = 6;
+var eventName = 'silverDogTagsEvent';
 
 var manipulations = {
-    dodgeAddition: 4,
+    dodgeAddition: dodgeAddition,
     events: {
         killingBlowBlock: {
             callback: function(event) {
                 var blockingUnit = event.performingUnit;
-                var attackingUnit = event.attackingUnit;
+                blockingUnit.applySureDodgeBuff({amount: 1});
 
-                attackingUnit.petrify({duration: 3000, petrifyingUnit: blockingUnit});
+                event.sureDodges = 1;
                 Matter.Events.trigger(globals.currentGame, eventName, event);
             }
         }
     }
 };
-
 export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
-        name: "Emerald Locket",
-        description: ["Upon blocking killing blow, petrify attacker for 3 seconds."],
-        icon: 'EmeraldLocket',
+        name: "Silver Dog Tags",
+        description: ["Gain a sure-dodge after blocking a killing blow.", "Add 6 to dodge"],
         collector: {
             eventName: eventName,
-            init: function() {
-                this.health = 0;
-                this.energy = 0;
-            },
             collectorFunction: function(event) {
-                this.value += 1;
+                this.value += event.sureDodges;
             },
             presentation: {
-                labels: ["Times activated"],
+                labels: ["Sure-dodges gained"],
                 values: ["value"]
             }
-        }
-    }, options);
+        },
+        icon: 'Dogtags1',
+    }, options, shaneOnly);
     return new ic(item);
 }

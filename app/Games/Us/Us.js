@@ -735,7 +735,7 @@ var game = {
         // });
     },
 
-    _initStartGameState: function(options) {
+    _initStartGameStateExtension: function(options) {
         this.difficulty = this.difficultyProfiles[options.difficulty];
         this.victoryCondition = {
             type: 'lives',

@@ -666,11 +666,13 @@ var common = {
                 if (event.key == 'u' || event.key == 'U') {
                     //unit tester
                     if (true) {
-                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'Eruptlet', {
+                        var unitT = UnitMenu.createUnit(this.debugUnitName || 'Critter', {
                             team: this.enemyTeam,
                             // team: this.playerTeam,
                             idleCancel: false
                         });
+
+                        unitT.isoManagedTint = 0xF84B5A;
 
 
                         // unitT.body.drawWire = true;
@@ -954,12 +956,15 @@ var common = {
                                     item.tint = item.tint;
                                     startingOptions = option.startingOptions;
                                     proceedPastPregame.resolve();
-                                    realizedMenuOptions.forEach((item) => {
-                                        graphicsUtils.removeSomethingFromRenderer(item);
-                                    });
-                                    realizedMenuHoverText.forEach((item) => {
-                                        graphicsUtils.removeSomethingFromRenderer(item);
-                                    });
+                                    gameUtils.executeSomethingNextFrame(() => {
+                                        realizedMenuOptions.forEach((item) => {
+                                            graphicsUtils.removeSomethingFromRenderer(item);
+                                        });
+                                        realizedMenuHoverText.forEach((item) => {
+                                            graphicsUtils.removeSomethingFromRenderer(item);
+                                        });
+                                    }
+                                    );
                                 }
                             });
                         });
@@ -975,7 +980,7 @@ var common = {
         });
 
         proceedPastPregame.done(() => {
-            this.startGame(startingOptions);
+            gameUtils.executeSomethingNextFrame(this.startGame.bind(this, startingOptions));
         });
     },
 
@@ -1157,8 +1162,11 @@ var common = {
         this.regulationPlay.done(this.endGame.bind(this));
     },
 
-    _initStartGameState: function() {
-        //init the start time
+    _initStartGameState: function(options) {
+        if(this._initStartGameStateExtension) {
+            this._initStartGameStateExtension(options);
+        }       
+
         this.timeLeft = (this.victoryCondition.limit + 1) * 1000;
         this.lives = this.victoryCondition.limit;
     },

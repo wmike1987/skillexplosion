@@ -370,7 +370,7 @@ export default function Eruptlet(options) {
             cooldown: 650,
             honeRange: 300,
             range: options.radius * 2.3,
-            damage: 12,
+            damage: 13,
             attack: function(target) {
                 var deathAnimation = gameUtils.getAnimation({
                     spritesheetName: 'EruptletAnimations1',
