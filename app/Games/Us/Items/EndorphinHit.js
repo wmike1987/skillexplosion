@@ -7,12 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Endorphin Hit",
-        description: "Consume to add 0.1 to energy regeneration rate.",
+        description: "Consume to add 0.13 to energy regeneration rate.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'PurpleSyringe',
         fontType: 'stimulant',
         consume: function(currentUnit) {
-            currentUnit.energyRegenerationRate += 0.1;
+            currentUnit.energyRegenerationRate += 0.13;
         },
     }, options, Consumable);
     return new ic(item);

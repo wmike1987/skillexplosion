@@ -153,6 +153,10 @@ export default function Eruptlet(options) {
         x: scale,
         y: scale
     };
+    var diagsc = {
+        x: scale + 0.006,
+        y: scale + 0.006
+    };
     var adjustedUpDownsc = {
         x: scale,
         y: scale
@@ -160,6 +164,10 @@ export default function Eruptlet(options) {
     var flipsc = {
         x: -1 * sc.x,
         y: sc.y
+    };
+    var flipdiagsc = {
+        x: -1 * diagsc.x,
+        y: diagsc.y
     };
     var yOffset = 22;
     var rc = [{
@@ -239,7 +247,7 @@ export default function Eruptlet(options) {
         {
             id: 'upLeft',
             data: spineNorthWest,
-            scale: sc,
+            scale: diagsc,
             rotate: 'none',
             visible: false,
             offset: {
@@ -250,7 +258,7 @@ export default function Eruptlet(options) {
         {
             id: 'upRight',
             data: spineNorthEast,
-            scale: flipsc,
+            scale: flipdiagsc,
             rotate: 'none',
             visible: false,
             offset: {
@@ -261,7 +269,7 @@ export default function Eruptlet(options) {
         {
             id: 'downRight',
             data: spineSouthEast,
-            scale: flipsc,
+            scale: flipdiagsc,
             rotate: 'none',
             visible: false,
             offset: {
@@ -271,7 +279,7 @@ export default function Eruptlet(options) {
         }, {
             id: 'downLeft',
             data: spineSouthWest,
-            scale: sc,
+            scale: diagsc,
             rotate: 'none',
             visible: false,
             offset: {

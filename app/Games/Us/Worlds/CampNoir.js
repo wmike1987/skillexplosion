@@ -620,13 +620,13 @@ var easyFlyObj = {
     hz: 1500
 };
 
-var generalFlyObj = {
+var aHardFlyObj = {
     type: 'DamageFlySwarm',
-    amount: [5],
+    amount: [10],
     trivial: true,
     atATime: 2,
     initialDelay: 0.1,
-    hz: 1500
+    hz: 5500
 };
 
 var hardFlyObj = {
@@ -635,7 +635,7 @@ var hardFlyObj = {
     trivial: true,
     atATime: 2,
     initialDelay: 0.1,
-    hz: 1750
+    hz: 4000
 };
 
 var marathonHardFlyObj = {
@@ -644,7 +644,7 @@ var marathonHardFlyObj = {
     trivial: true,
     atATime: 2,
     initialDelay: 0.1,
-    hz: 4500
+    hz: 6000
 };
 
 var ultraHardFlyObj = {
@@ -798,7 +798,7 @@ var enemyDefs = {
             initialDelay: 4000,
             atATime: 1,
             hz: 4200
-        }, hardFlyObj]
+        }, aHardFlyObj]
     },
     aHard2: {
         strength: 'hard',
@@ -811,14 +811,14 @@ var enemyDefs = {
             type: 'Sentinel',
             amount: [4],
             atATime: 1,
-            hz: 4500
+            hz: 8000
         }, {
             type: 'Gargoyle',
             amount: [3, 4],
             initialDelay: 6500,
             atATime: 1,
-            hz: 5000
-        }, hardFlyObj]
+            hz: 6000
+        }, aHardFlyObj]
     },
     aHard3: {
         strength: 'hard',
@@ -838,7 +838,7 @@ var enemyDefs = {
             initialDelay: 4000,
             atATime: 4,
             hz: 6000
-        }, hardFlyObj]
+        }, aHardFlyObj]
     },
     aHard4: {
         noun: 'Sentinel',
@@ -848,7 +848,7 @@ var enemyDefs = {
             amount: [6],
             atATime: 1,
             hz: 3750
-        }, hardFlyObj]
+        }, aHardFlyObj]
     },
     aHard5: {
         noun: 'Hunter',
@@ -868,7 +868,7 @@ var enemyDefs = {
             amount: [2, 3],
             atATime: 1,
             hz: 6500
-        }, hardFlyObj]
+        }, aHardFlyObj]
     },
     aHard6: {
         strength: 'hard',
@@ -876,19 +876,19 @@ var enemyDefs = {
             type: 'Rammian',
             amount: [4, 5],
             atATime: 1,
-            hz: 2800
+            hz: 4000
         }, {
             type: 'Sentinel',
             amount: [2],
             atATime: 1,
-            hz: 4500
+            hz: 7500
         }, {
             type: 'Eruptlet',
             amount: [7, 8],
             initialDelay: 4000,
-            atATime: 3,
-            hz: 4200
-        }, generalFlyObj]
+            atATime: 1,
+            hz: 2000
+        }, aHardFlyObj]
     },
 
     //outer hards
@@ -1633,6 +1633,9 @@ var phaseThree = function() {
             itemClass: 'worn',
             itemType: 'microchip'
         },
+        mapNodeOptions: {
+            canBePrereq: () => {false},
+        },
         positionOptions: outerPosition
     });
 
@@ -1683,11 +1686,10 @@ var phaseThree = function() {
     //multi level
     let aHardChoice1 = mathArrayUtils.getRandomElementOfArray(aHardList);
     let aHardChoice2 = mathArrayUtils.getRandomElementOfArray(aHardList);
-    let aHardChoice3 = mathArrayUtils.getRandomElementOfArray(aHardList);
     this.map.addMapNode('multiLevel', {
         levelOptions: {
             outer: true,
-            enemyDefList: [aHardChoice1, aHardChoice2, aHardChoice3],
+            enemyDefList: [aHardChoice1, aHardChoice2],
             itemClass: 'stimulant',
         },
         positionOptions: outerPosition
@@ -1695,10 +1697,12 @@ var phaseThree = function() {
 
     this.map.addMapNode('airDropStation', {
         levelOptions: {
+            outer: true,
             prereqCount: 1,
             itemClass: 'worn',
             itemType: 'item'
-        }
+        },
+        positionOptions: outerPosition
     });
 
     this.map.addMapNode('airDropStation', {

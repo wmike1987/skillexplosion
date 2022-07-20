@@ -345,9 +345,9 @@ export default function Medic(options) {
         volume: 0.06,
         rate: 1.2
     });
-    var deathSound = gameUtils.getSound('ursuladeath.wav', {
+    var deathSound = gameUtils.getSound('sarahdeath1.wav', {
         volume: 0.4,
-        rate: 1.05
+        rate: 1.00
     });
     var blockSound = gameUtils.getSound('blocksound.wav', {
         volume: 0.1,
@@ -370,9 +370,9 @@ export default function Medic(options) {
         rate: 2.5
     });
 
-    var holdPositionSound = gameUtils.getSound('ursuladodge.wav', {
+    var holdPositionSound = gameUtils.getSound('sarahuh1.wav', {
         volume: 0.075,
-        rate: 1.08
+        rate: 1.00
     });
 
     var combospiritinit = gameUtils.getSound('combospiritinit.wav', {
@@ -391,9 +391,9 @@ export default function Medic(options) {
         volume: 0.1,
         rate: 1.5
     });
-    var ahSound = gameUtils.getSound('ursulastim.wav', {
+    var ahSound = gameUtils.getSound('sarahah1.wav', {
         volume: 0.1,
-        rate: 1.5
+        rate: 1.0
     });
     var knifeImpactSound = gameUtils.getSound('knifeimpact.wav', {
         volume: 0.08,
@@ -405,7 +405,17 @@ export default function Medic(options) {
         rate: 1.0
     });
 
-    var specialtySounds = [thankyou];
+    var thankyou2 = gameUtils.getSound('sarahwow1.wav', {
+        volume: 0.13,
+        rate: 1.0
+    });
+
+    var thankyou3 = gameUtils.getSound('sarahdanka.wav', {
+        volume: 0.13,
+        rate: 1.0
+    });
+
+    var specialtySounds = [thankyou, thankyou2, thankyou3];
 
     var secretStep = function(destination, commandObj) {
         //alter destination for foot destination

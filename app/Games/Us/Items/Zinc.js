@@ -7,12 +7,12 @@ import {gameUtils, graphicsUtils, mathArrayUtils} from '@utils/UtilityMenu.js';
 export default function(options) {
     var item = Object.assign({
         name: "Zinc",
-        description: "Consume to add 0.03 to energy regeneration.",
+        description: "Consume to add 0.04 to energy regeneration.",
         systemMessage: "Ctrl+Click to consume.",
         icon: 'VitaminBFive',
         fontType: 'stimulant',
         consume: function(unit) {
-            unit.energyRegenerationRate += 0.03;
+            unit.energyRegenerationRate += 0.04;
         },
     }, options, Consumable);
     return new ic(item);

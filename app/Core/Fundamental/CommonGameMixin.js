@@ -387,7 +387,7 @@ var common = {
                     // }.bind(this));
                     // console.info(gameUtils.getPlayableWidth());
                     // console.info(gameUtils.getPlayableHeight());
-                    // globals.currentGame.nextPhase();
+                    globals.currentGame.nextPhase();
 
                     // let text = new TaggedText.default("Big <red>text</red>", { default: {align: 'right'}, red: {fill: 0xf2251e} }, {debug: true});
                     // const container = new PIXI.Container();

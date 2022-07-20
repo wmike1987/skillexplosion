@@ -4,8 +4,14 @@ import * as Matter from 'matter-js';
 import {
     globals
 } from '@core/Fundamental/GlobalState.js';
+import {
+    gameUtils,
+    graphicsUtils,
+    mathArrayUtils
+} from '@utils/UtilityMenu.js';
 
 var dodgeAddition = 6;
+var sureDodgeAmount = 2;
 var eventName = 'silverDogTagsEvent';
 
 var manipulations = {
@@ -14,9 +20,11 @@ var manipulations = {
         killingBlowBlock: {
             callback: function(event) {
                 var blockingUnit = event.performingUnit;
-                blockingUnit.applySureDodgeBuff({amount: 1});
+                mathArrayUtils.repeatXTimes(() => {
+                    blockingUnit.applySureDodgeBuff();
+                }, sureDodgeAmount);
 
-                event.sureDodges = 1;
+                event.sureDodges = 2;
                 Matter.Events.trigger(globals.currentGame, eventName, event);
             }
         }
@@ -26,7 +34,7 @@ export default function(options) {
     var item = Object.assign({
         manipulations: manipulations,
         name: "Silver Dog Tags",
-        description: ["Gain a sure-dodge after blocking a killing blow.", "Add 6 to dodge"],
+        description: ["Gain two sure-dodges after blocking a killing blow.", "Add 6 to dodge"],
         collector: {
             eventName: eventName,
             collectorFunction: function(event) {

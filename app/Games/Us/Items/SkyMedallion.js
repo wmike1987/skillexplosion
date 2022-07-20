@@ -11,8 +11,8 @@ import {
 } from '@games/Us/Items/SpecialtyValues.js';
 
 var manipulations = {
-    gritAddition: 15,
-    dodgeAddition: 5,
+    gritAddition: 5,
+    dodgeAddition: 10,
 };
 
 export default function(options) {

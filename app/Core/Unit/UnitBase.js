@@ -2262,8 +2262,6 @@ var UnitBase = {
     applySureDodgeBuff: function(options) {
         options = options || {};
         let duration = options.duration || 999999;
-        let amount = options.amount;
-        let callback = options.callback;
         let id = options.id || "SureDodgeBuff" + mathArrayUtils.getId();
 
         if (this.isDead || !this.canTakeBuff()) {
